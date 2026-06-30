@@ -1,11 +1,169 @@
-
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+// ════════════════════════════════════════════════════════════════════════
+// ÖZEL METİN SEÇİM MENÜSÜ
+// Sıra: Kes, Kopyala, Yapıştır, Tümünü Seç, Paylaş, Çevir.
+// Metin Türkçe değilse "Çevir" en başa alınır.
+// Tüm butonlar Android'in native görünümünü korur (AdaptiveTextSelectionToolbar).
+// ════════════════════════════════════════════════════════════════════════
+
+// Türkçe tespiti: score >= 3 olursa Türkçe sayılır.
+// Türkçe karakter varsa +3 (güçlü sinyal), Türkçe kelime varsa +1.
+// Saf İngilizce metin genellikle 0 alır.
+bool _looksTurkish(String text) {
+  final trimmed = text.trim();
+  if (trimmed.length < 3) return true;
+  final lower = trimmed.toLowerCase();
+  int score = 0;
+  for (final ch in ['ı', 'ğ', 'ş', 'ç', 'ö', 'ü']) {
+    if (lower.contains(ch)) { score += 3; break; } // bir tane yeter, Türkçe harf kesin
+  }
+  for (final word in [
+    'bir', 've', 'ile', 'için', 'değil', 'var', 'yok', 'gibi',
+    'ama', 'çünkü', 'daha', 'evet', 'hayır', 'olan', 'olarak',
+  ]) {
+    if (RegExp('\\b$word\\b').hasMatch(lower)) score += 1;
+  }
+  return score >= 3;
+}
+
+Future<void> _shareSelectedText(BuildContext context, String text) async {
+  if (text.trim().isEmpty) return;
+  try {
+    await SharePlus.instance.share(ShareParams(text: text));
+  } catch (_) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Paylaşım başlatılamadı.')),
+      );
+    }
+  }
+}
+
+Future<void> _openInTranslate(BuildContext context, String text) async {
+  if (text.trim().isEmpty) return;
+  final uri = Uri.parse(
+    'https://translate.google.com/?sl=auto&tl=tr&text=${Uri.encodeComponent(text)}&op=translate',
+  );
+  try {
+    final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!launched && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Çeviri açılamadı.')),
+      );
+    }
+  } catch (_) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Çeviri açılamadı.')),
+      );
+    }
+  }
+}
+
+ContextMenuButtonItem? _findBtn(
+  List<ContextMenuButtonItem> items,
+  ContextMenuButtonType type,
+) {
+  for (final item in items) {
+    if (item.type == type) return item;
+  }
+  return null;
+}
+
+Widget buildCustomContextMenu(
+  BuildContext context,
+  EditableTextState editableTextState,
+) {
+  final base = editableTextState.contextMenuButtonItems;
+  final fullText = editableTextState.textEditingValue.text;
+  final selection = editableTextState.textEditingValue.selection;
+  final selectedText = selection.isValid && !selection.isCollapsed
+      ? selection.textInside(fullText)
+      : '';
+  final hasSelection = selectedText.trim().isNotEmpty;
+
+  // İstenen sıra: Kes, Kopyala, Yapıştır, Tümünü Seç, Paylaş, Çevir
+  final ordered = <ContextMenuButtonItem>[];
+
+  final cut      = _findBtn(base, ContextMenuButtonType.cut);
+  final copy     = _findBtn(base, ContextMenuButtonType.copy);
+  final paste    = _findBtn(base, ContextMenuButtonType.paste);
+  final selectAll = _findBtn(base, ContextMenuButtonType.selectAll);
+
+  if (cut != null)      ordered.add(cut);
+  if (copy != null)     ordered.add(copy);
+  if (paste != null)    ordered.add(paste);
+  if (selectAll != null) ordered.add(selectAll);
+
+  // Paylaş butonu (yalnızca seçim varsa)
+  ContextMenuButtonItem? shareBtn;
+  if (hasSelection) {
+    shareBtn = ContextMenuButtonItem(
+      label: 'Paylaş',
+      onPressed: () {
+        editableTextState.hideToolbar();
+        _shareSelectedText(context, selectedText);
+      },
+    );
+  }
+
+  // Çevir butonu (yalnızca seçim varsa)
+  ContextMenuButtonItem? translateBtn;
+  if (hasSelection) {
+    translateBtn = ContextMenuButtonItem(
+      label: 'Çevir',
+      onPressed: () {
+        editableTextState.hideToolbar();
+        _openInTranslate(context, selectedText);
+      },
+    );
+  }
+
+  // Sıra: Çevir, Paylaş — metin Türkçe değilse Çevir en başa alınır
+  if (translateBtn != null) {
+    if (_looksTurkish(fullText)) {
+      ordered.add(translateBtn);
+      if (shareBtn != null) ordered.add(shareBtn);
+    } else {
+      ordered.insert(0, translateBtn);
+      if (shareBtn != null) ordered.add(shareBtn);
+    }
+  } else {
+    if (shareBtn != null) ordered.add(shareBtn);
+  }
+
+  if (ordered.isEmpty) {
+    return AdaptiveTextSelectionToolbar.editableText(
+      editableTextState: editableTextState,
+    );
+  }
+
+  return AdaptiveTextSelectionToolbar.buttonItems(
+    anchors: editableTextState.contextMenuAnchors,
+    buttonItems: ordered,
+  );
+}
 
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      systemNavigationBarColor: Color(0xFF121212),
+      systemNavigationBarIconBrightness: Brightness.light,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarContrastEnforced: false,
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+    ),
+  );
   runApp(const DNoteApp());
 }
 
@@ -17,12 +175,28 @@ class DNoteApp extends StatelessWidget {
     return MaterialApp(
       title: 'DNote',
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('tr', 'TR'),
+        Locale('en', 'US'),
+      ],
+      locale: const Locale('tr', 'TR'),
       theme: ThemeData(
         brightness: Brightness.dark,
         primaryColor: Colors.amber,
         scaffoldBackgroundColor: const Color(0xFF121212),
         cardTheme: const CardThemeData(
           color: Color(0xFF1E1E1E),
+        ),
+        appBarTheme: const AppBarTheme(
+          // Liste kaydırıldığında AppBar'ın rengi otomatik koyulaşmasın diye
+          // Material 3'ün scroll-altı tint/elevation efektini kapatıyoruz.
+          surfaceTintColor: Colors.transparent,
+          scrolledUnderElevation: 0,
         ),
       ),
       home: const NoteListScreen(),
@@ -43,22 +217,23 @@ class _NoteListScreenState extends State<NoteListScreen> {
   List<Map<String, dynamic>> _deletedNotes = [];
   List<String> _categories = [];
   Map<String, String> _categoryColors = {};
+  Set<String> _lockedCategories = {};
   String _activeCategory = 'Tümü';
   DateTime? _lastBackPressTime;
 
   static const List<Color> _categoryPalette = [
-    Colors.amber,
-    Colors.redAccent,
-    Colors.pinkAccent,
-    Colors.purpleAccent,
-    Colors.deepPurpleAccent,
-    Colors.indigoAccent,
-    Colors.blueAccent,
-    Colors.cyanAccent,
-    Colors.tealAccent,
-    Colors.greenAccent,
-    Colors.lightGreenAccent,
-    Colors.orangeAccent,
+    Color(0xFFFFD600), // Canlı sarı
+    Color(0xFFFF6D00), // Turuncu
+    Color(0xFFFF1744), // Kırmızı
+    Color(0xFFFF4081), // Pembe
+    Color(0xFFD500F9), // Mor
+    Color(0xFF651FFF), // Derin mor
+    Color(0xFF2979FF), // Mavi
+    Color(0xFF00B0FF), // Açık mavi
+    Color(0xFF00E5FF), // Turkuaz
+    Color(0xFF00E676), // Yeşil
+    Color(0xFFB2FF59), // Açık yeşil
+    Color(0xFF69F0AE), // Nane yeşili
   ];
 
   Color _getCategoryColor(String? category) {
@@ -134,6 +309,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
       });
     }
 
+    final String? lockedCatsString = prefs.getString('locked_categories');
+    if (lockedCatsString != null) {
+      final List<dynamic> decoded = jsonDecode(lockedCatsString);
+      setState(() {
+        _lockedCategories = decoded.map((e) => e.toString()).toSet();
+      });
+    }
+
     if (notesString != null) {
       final List<dynamic> decodedList = jsonDecode(notesString);
       setState(() {
@@ -179,7 +362,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
       _sortCriteria = prefs.getString('sort_criteria') ?? 'Oluşturulma';
       _isAscending = prefs.getBool('is_ascending') ?? true;
       _isListView = prefs.getBool('is_list_view') ?? true;
-      _activeCategory = prefs.getString('active_category') ?? 'Tümü';
+      _activeCategory = 'Tümü'; // Her açılışta Notlar ekranından başlat
       // Güvenlik: uygulama kapanıp açıldığında "Kilitli" klasörü şifre
       // sorulmadan otomatik açılmasın; varsayılan görünüme dön.
       if (_activeCategory == '__locked__') {
@@ -210,6 +393,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     await prefs.setString('deleted_notes_v2', jsonEncode(_deletedNotes));
     await prefs.setString('saved_categories', jsonEncode(_categories));
     await prefs.setString('saved_category_colors', jsonEncode(_categoryColors));
+    await prefs.setString('locked_categories', jsonEncode(_lockedCategories.toList()));
     await prefs.setString('sort_criteria', _sortCriteria);
     await prefs.setBool('is_ascending', _isAscending);
     await prefs.setBool('is_list_view', _isListView);
@@ -224,7 +408,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     await prefs.setBool('colorful_notes', _colorfulNotes);
     await prefs.setString('font_family', _fontFamily);
     await prefs.setDouble('global_font_size', _globalFontSize);
-    await prefs.setInt('text_color', _textColor.value);
+    await prefs.setInt('text_color', _textColor.toARGB32());
     await prefs.setInt('preview_lines', _previewLines);
     await prefs.setDouble('widget_font_size', _widgetFontSize);
     await prefs.setDouble('widget_bg_opacity', _widgetBgOpacity);
@@ -280,6 +464,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     setState(() {
       _categories.remove(category);
       _categoryColors.remove(category);
+      _lockedCategories.remove(category);
       for (final note in _notes) {
         if (note['category'] == category) {
           note['category'] = null;
@@ -298,6 +483,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
   }
 
   void _showCategoryOptions(String category) {
+    final isLocked = _lockedCategories.contains(category);
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xFF1E1E1E),
@@ -338,6 +524,73 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 onTap: () {
                   Navigator.pop(sheetContext);
                   _showAddCategoryDialog(editingCategory: category);
+                },
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(
+                  isLocked ? Icons.lock_open_outlined : Icons.lock_outline,
+                  color: Colors.blueGrey,
+                ),
+                title: Text(
+                  isLocked ? 'Kilidi Kaldır' : 'Kilitle',
+                  style: const TextStyle(color: Colors.white),
+                ),
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  if (!_notePasswordEnabled) {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        backgroundColor: const Color(0xFF1E1E1E),
+                        title: const Text('Parola Gerekiyor', style: TextStyle(color: Colors.amber)),
+                        content: const Text(
+                          'Kategoriyi kilitleyebilmek için önce Ayarlar > Not Şifresi bölümünden bir parola belirlemeniz gerekiyor.',
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                        actions: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                            onPressed: () => Navigator.pop(ctx),
+                            child: const Text('Tamam', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                          ),
+                        ],
+                      ),
+                    );
+                    return;
+                  }
+                  final ok = await _checkPasswordPrompt();
+                  if (!mounted) return;
+                  if (ok) {
+                    setState(() {
+                      if (isLocked) {
+                        _lockedCategories.remove(category);
+                      } else {
+                        _lockedCategories.add(category);
+                        if (_activeCategory == category) {
+                          _activeCategory = 'Tümü';
+                        }
+                      }
+                    });
+                    _saveData();
+                    _showInfoBar(isLocked ? 'Kilit kaldırıldı' : 'Kategori kilitlendi');
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) => AlertDialog(
+                        backgroundColor: const Color(0xFF1E1E1E),
+                        title: const Text('Hatalı Parola', style: TextStyle(color: Colors.red)),
+                        content: const Text('Girdiğiniz parola yanlış.', style: TextStyle(color: Colors.white70)),
+                        actions: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                            onPressed: () => Navigator.pop(ctx),
+                            child: const Text('Tamam', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                 },
               ),
               ListTile(
@@ -438,7 +691,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
             decoration: BoxDecoration(
               color: const Color(0xFF1E1E1E),
               borderRadius: BorderRadius.circular(8),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 8, offset: const Offset(0, 2))],
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.4), blurRadius: 8, offset: const Offset(0, 2))],
             ),
             child: Row(
               children: [
@@ -481,7 +734,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       child: SliderTheme(
                         data: SliderTheme.of(context).copyWith(
                           activeTrackColor: Colors.amber, inactiveTrackColor: const Color(0xFF3A3A3A),
-                          thumbColor: Colors.amber, overlayColor: Colors.amber.withOpacity(0.2),
+                          thumbColor: Colors.amber, overlayColor: Colors.amber.withValues(alpha: 0.2),
                           valueIndicatorColor: Colors.amber, valueIndicatorTextStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                         child: Slider(value: tempSize, min: 10, max: 30, divisions: 20, label: '${tempSize.round()}',
@@ -538,6 +791,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
+                contextMenuBuilder: buildCustomContextMenu,
+                  selectionHeightStyle: ui.BoxHeightStyle.max,
                 controller: ctrl,
                 obscureText: true,
                 style: const TextStyle(color: Colors.white),
@@ -614,6 +869,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
               ),
               const SizedBox(height: 12),
               TextField(
+                contextMenuBuilder: buildCustomContextMenu,
+                  selectionHeightStyle: ui.BoxHeightStyle.max,
                 controller: answerCtrl,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
@@ -729,6 +986,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     }
 
     final ok = await _checkPasswordPrompt();
+    if (!mounted) return;
     if (ok) {
       setState(() => _activeCategory = '__locked__');
       _saveData();
@@ -763,7 +1021,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withValues(alpha: 0.4),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -798,12 +1056,19 @@ class _NoteListScreenState extends State<NoteListScreen> {
   void _showAddMenu() {
     showModalBottomSheet(
       context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
       backgroundColor: const Color(0xFF1E1E1E),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+        padding: EdgeInsets.fromLTRB(
+          16,
+          24,
+          16,
+          MediaQuery.of(context).padding.bottom + 24,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -876,6 +1141,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
+                contextMenuBuilder: buildCustomContextMenu,
+                  selectionHeightStyle: ui.BoxHeightStyle.max,
                 controller: controller,
                 autofocus: true,
                 textCapitalization: TextCapitalization.words,
@@ -898,7 +1165,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 spacing: 10,
                 runSpacing: 10,
                 children: _categoryPalette.map((color) {
-                  final isSelected = selectedColor.value == color.value;
+                  final isSelected = selectedColor.toARGB32() == color.toARGB32();
                   return GestureDetector(
                     onTap: () {
                       setDialogState(() {
@@ -934,7 +1201,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
               onPressed: () {
                 final rawName = controller.text.trim();
                 final name = _capitalizeFirstLetterTr(rawName);
-                final colorHex = selectedColor.value.toRadixString(16);
+                final colorHex = selectedColor.toARGB32().toRadixString(16);
                 if (name.isEmpty) {
                   Navigator.pop(context);
                   return;
@@ -1055,7 +1322,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       return ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: Icon(Icons.folder_outlined,
-                            color: isSelected ? catColor : catColor.withOpacity(0.6)),
+                            color: isSelected ? catColor : catColor.withValues(alpha: 0.6)),
                         title: Text(cat,
                             style: TextStyle(
                                 color: isSelected
@@ -1093,6 +1360,100 @@ class _NoteListScreenState extends State<NoteListScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  // Not ayrıntılarını gösteren dialog
+  void _showNoteDetails(int noteIndex) {
+    if (noteIndex < 0 || noteIndex >= _notes.length) return;
+    final note = _notes[noteIndex];
+
+    String formatDetailDate(String? rawDate) {
+      if (rawDate == null || rawDate.isEmpty) return 'Bilinmiyor';
+      try {
+        final dt = DateTime.parse(rawDate);
+        final day = dt.day.toString().padLeft(2, '0');
+        final month = dt.month.toString().padLeft(2, '0');
+        final hour = dt.hour.toString().padLeft(2, '0');
+        final minute = dt.minute.toString().padLeft(2, '0');
+        return '$day.$month.${dt.year} $hour:$minute';
+      } catch (_) {
+        return rawDate;
+      }
+    }
+
+    final content = (note['content'] as String? ?? '').trim();
+    final charCount = content.length;
+    final wordCount = content.isEmpty
+        ? 0
+        : content.split(RegExp(r'\s+')).where((w) => w.isNotEmpty).length;
+
+    final createdStr = formatDetailDate(note['createdDate'] as String?);
+    final modifiedStr = formatDetailDate(note['modifiedDate'] as String?);
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1E1E1E),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+        title: Row(
+          children: const [
+            Icon(Icons.info_outline, color: Colors.lightBlueAccent, size: 22),
+            SizedBox(width: 10),
+            Text('Ayrıntılar', style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _detailRow(Icons.calendar_today_outlined, Colors.amber, 'Oluşturulma', createdStr),
+              const SizedBox(height: 14),
+              _detailRow(Icons.edit_calendar_outlined, Colors.greenAccent, 'Son Düzenleme', modifiedStr),
+              const SizedBox(height: 14),
+              _detailRow(Icons.abc_outlined, Colors.purpleAccent, 'Karakter Sayısı', '$charCount karakter'),
+              const SizedBox(height: 14),
+              _detailRow(Icons.text_fields_outlined, Colors.cyanAccent, 'Kelime Sayısı', '$wordCount kelime'),
+            ],
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.amber, foregroundColor: Colors.black),
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Tamam', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _detailRow(IconData icon, Color iconColor, String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: iconColor.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: iconColor, size: 20),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: const TextStyle(color: Colors.grey, fontSize: 11)),
+              const SizedBox(height: 2),
+              Text(value, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -1145,18 +1506,26 @@ class _NoteListScreenState extends State<NoteListScreen> {
         'color': Colors.lime,
         'key': 'shortcut'
       },
+      {
+        'icon': Icons.info_outline,
+        'label': 'Ayrıntılar',
+        'color': Colors.lightBlueAccent,
+        'key': 'details'
+      },
     ];
 
     showModalBottomSheet(
       context: ctx,
       backgroundColor: const Color(0xFF1E1E1E),
+      barrierColor: Colors.black.withValues(alpha: 0.55),
       isScrollControlled: true,
+      clipBehavior: Clip.antiAlias,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (_) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -1165,93 +1534,104 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 height: 4,
                 decoration: BoxDecoration(color: Colors.grey[700], borderRadius: BorderRadius.circular(2)),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 10),
               const Text('Eylem Seç',
-                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
-              Wrap(
-                spacing: 12,
-                runSpacing: 16,
-                alignment: WrapAlignment.start,
-                children: actions.map((action) {
-                  return SizedBox(
-                    width: 72,
-                    child: GestureDetector(
-                      onTap: () async {
-                        final key = action['key'] as String;
-                        Navigator.pop(ctx);
-                        if (noteIndex < 0) return;
+                  style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 4,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 0.95,
+                ),
+                itemCount: actions.length,
+                itemBuilder: (_, i) {
+                  final action = actions[i];
+                  return GestureDetector(
+                    onTap: () async {
+                      final key = action['key'] as String;
+                      Navigator.pop(ctx);
+                      if (noteIndex < 0) return;
 
-                        if (key == 'favorite') {
-                          setState(() {
-                            _notes[noteIndex]['isFavorite'] = !(_notes[noteIndex]['isFavorite'] == true);
-                          });
-                          _saveData();
-                        } else if (key == 'archive') {
-                          setState(() {
-                            _notes[noteIndex]['isArchived'] = !(_notes[noteIndex]['isArchived'] == true);
-                          });
-                          _saveData();
-                        } else if (key == 'delete') {
-                          _deleteNote(noteIndex);
-                        } else if (key == 'classify') {
-                          _showClassifyDialog(noteIndex);
-                        } else if (key == 'duplicate') {
-                          _duplicateNote(noteIndex);
-                        } else if (key == 'copy_text') {
-                          _copyNoteContent(noteIndex);
-                        } else if (key == 'text_size') {
-                          _showTextSizeSlider(noteIndex);
-                        } else if (key == 'lock') {
-                          final currentlyLocked = _notes[noteIndex]['isLocked'] == true;
-                          if (currentlyLocked) {
-                            // Kilidi kaldır: "Kilitli" klasörüne girişte zaten parola
-                            // doğrulanmış oluyor, notun kendisinde tekrar sormaya gerek yok.
-                            setState(() => _notes[noteIndex]['isLocked'] = false);
-                            _saveData();
-                            _showInfoBar('Kilidi kaldırıldı');
-                          } else {
-                            // Kilitleme: önce global parola etkin mi kontrolü
-                            if (!_notePasswordEnabled) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Önce Ayarlar > Not Şifresi ile parola belirleyin.'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                              return;
-                            }
-                            setState(() => _notes[noteIndex]['isLocked'] = true);
-                            _saveData();
-                            _showInfoBar('Not kilitlendi');
-                          }
+                      if (key == 'favorite') {
+                        setState(() {
+                          _notes[noteIndex]['isFavorite'] = !(_notes[noteIndex]['isFavorite'] == true);
+                        });
+                        _saveData();
+                      } else if (key == 'archive') {
+                        setState(() {
+                          _notes[noteIndex]['isArchived'] = !(_notes[noteIndex]['isArchived'] == true);
+                        });
+                        _saveData();
+                      } else if (key == 'delete') {
+                        _deleteNote(noteIndex);
+                      } else if (key == 'classify') {
+                        _showClassifyDialog(noteIndex);
+                      } else if (key == 'duplicate') {
+                        _duplicateNote(noteIndex);
+                      } else if (key == 'share') {
+                        final note = _notes[noteIndex];
+                        final title = (note['title'] ?? '').toString().trim();
+                        final content = (note['content'] ?? '').toString().trim();
+                        final text = [if (title.isNotEmpty) title, if (content.isNotEmpty) content].join('\n\n');
+                        if (text.isNotEmpty) {
+                          await SharePlus.instance.share(ShareParams(text: text));
                         }
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 52,
-                            height: 52,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF2A2A2A),
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Icon(action['icon'] as IconData,
-                                color: action['color'] as Color, size: 24),
+                      } else if (key == 'copy_text') {
+                        _copyNoteContent(noteIndex);
+                      } else if (key == 'text_size') {
+                        _showTextSizeSlider(noteIndex);
+                      } else if (key == 'lock') {
+                        final currentlyLocked = _notes[noteIndex]['isLocked'] == true;
+                        if (currentlyLocked) {
+                          setState(() => _notes[noteIndex]['isLocked'] = false);
+                          _saveData();
+                          _showInfoBar('Kilidi kaldırıldı');
+                        } else {
+                          if (!_notePasswordEnabled) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Önce Ayarlar > Not Şifresi ile parola belirleyin.'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+                          setState(() => _notes[noteIndex]['isLocked'] = true);
+                          _saveData();
+                          _showInfoBar('Not kilitlendi');
+                        }
+                      } else if (key == 'details') {
+                        _showNoteDetails(noteIndex);
+                      }
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 64,
+                          height: 64,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2A2A2A),
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          const SizedBox(height: 6),
-                          Text(
-                            action['label'] as String,
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            style: const TextStyle(color: Colors.white70, fontSize: 10),
-                          ),
-                        ],
-                      ),
+                          child: Icon(action['icon'] as IconData,
+                              color: action['color'] as Color, size: 30),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          action['label'] as String,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          style: const TextStyle(color: Colors.white, fontSize: 12),
+                        ),
+                      ],
                     ),
                   );
-                }).toList(),
+                },
               ),
             ],
           ),
@@ -1260,18 +1640,63 @@ class _NoteListScreenState extends State<NoteListScreen> {
     );
   }
 
-  void _saveNoteIfValid(int? index, String noteType, List<Map<String, dynamic>> checkItems) {
+  bool _saveNoteIfValid(int? index, String noteType, List<Map<String, dynamic>> checkItems) {
     final isValid = noteType == 'text'
         ? _contentController.text.trim().isNotEmpty
         : checkItems.any((e) => (e['text'] as String).trim().isNotEmpty);
 
     if (isValid) {
-      final currentRawTime = DateTime.now().toString();
-      setState(() {
-        if (index == null) {
+      if (index != null) {
+        // Mevcut bir not düzenleniyor: gerçekten bir değişiklik olup
+        // olmadığını kontrol et. Değişiklik yoksa (not sadece açılıp
+        // kapatıldıysa) modifiedDate güncellenmemeli, yoksa not "son
+        // düzenleme" sıralamasında haksız yere başa taşınır.
+        final newTitle = _capitalizeFirstLetterTr(_titleController.text.trim());
+        final newContent = noteType == 'text' ? _contentController.text : '';
+        final newCheckItems = noteType == 'checklist' ? checkItems : <Map<String, dynamic>>[];
+
+        final oldTitle = (_notes[index]['title'] ?? '').toString();
+        final oldContent = (_notes[index]['content'] ?? '').toString();
+        final oldType = (_notes[index]['type'] ?? 'text').toString();
+        final oldCheckItemsRaw = _notes[index]['checkItems'];
+        final oldCheckItems = oldCheckItemsRaw is List
+            ? List<Map<String, dynamic>>.from(
+                oldCheckItemsRaw.map((e) => Map<String, dynamic>.from(e)))
+            : <Map<String, dynamic>>[];
+
+        final checkItemsChanged = newCheckItems.length != oldCheckItems.length ||
+            List.generate(newCheckItems.length, (i) {
+              final a = newCheckItems[i];
+              final b = oldCheckItems[i];
+              return a['text'] != b['text'] || a['checked'] != b['checked'];
+            }).any((changed) => changed);
+
+        final hasChanges = newTitle != oldTitle ||
+            newContent != oldContent ||
+            noteType != oldType ||
+            checkItemsChanged;
+
+        if (!hasChanges) return false;
+
+        final currentRawTime = DateTime.now().toString();
+        setState(() {
+          _notes[index] = {
+            ..._notes[index],
+            'title': newTitle,
+            'content': newContent,
+            'checkItems': newCheckItems,
+            'modifiedDate': currentRawTime,
+            'type': noteType,
+          };
+        });
+        _saveData();
+        return true;
+      } else {
+        final currentRawTime = DateTime.now().toString();
+        setState(() {
           _notes.add({
             'id': currentRawTime,
-            'title': _titleController.text.trim(),
+            'title': _capitalizeFirstLetterTr(_titleController.text.trim()),
             'content': noteType == 'text' ? _contentController.text : '',
             'checkItems': noteType == 'checklist' ? checkItems : [],
             'date': _getFormattedDate(),
@@ -1286,21 +1711,16 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 : _activeCategory,
             'color': 'Amber',
             'type': noteType,
-            'isLocked': false, // Yeni: not varsayılan olarak kilitli değil
+            'isFavorite': _activeCategory == '__favorites__',
+            'isLocked': _activeCategory == '__locked__',
+            'isArchived': _activeCategory == '__archive__',
           });
-        } else {
-          _notes[index] = {
-            ..._notes[index],
-            'title': _titleController.text.trim(),
-            'content': noteType == 'text' ? _contentController.text : '',
-            'checkItems': noteType == 'checklist' ? checkItems : [],
-            'modifiedDate': currentRawTime,
-            'type': noteType,
-          };
-        }
-      });
-      _saveData();
+        });
+        _saveData();
+        return true;
+      }
     }
+    return false;
   }
 
   Future<bool> _handleBackPress() async {
@@ -1312,9 +1732,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Çıkmak için tekrar geri tuşuna basın'),
+            content: Text('Çıkmak için tekrar geri tuşuna basın', style: TextStyle(color: Colors.white)),
             duration: Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
+            backgroundColor: Color(0xFF424242),
           ),
         );
       }
@@ -1328,7 +1749,23 @@ class _NoteListScreenState extends State<NoteListScreen> {
     String noteDate = "";
     String noteType = type;
     List<Map<String, dynamic>> checkItems = [];
+    List<TextEditingController> checkControllers = [];
+    List<FocusNode> checkFocusNodes = [];
+    int? newlyAddedIndex; // hangi maddeye autofocus verilecek
     String? noteCategory;
+
+    void syncControllersAndFocusNodes() {
+      // controller ve focusnode sayısını checkItems ile eşitle
+      while (checkControllers.length < checkItems.length) {
+        final idx = checkControllers.length;
+        checkControllers.add(TextEditingController(text: checkItems[idx]['text'] as String? ?? ''));
+        checkFocusNodes.add(FocusNode());
+      }
+      while (checkControllers.length > checkItems.length) {
+        checkControllers.removeLast().dispose();
+        checkFocusNodes.removeLast().dispose();
+      }
+    }
 
     if (index != null) {
       _titleController.text = _notes[index]['title'] ?? '';
@@ -1349,8 +1786,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
       _contentController.clear();
       if (noteType == 'checklist') {
         checkItems = [{'text': '', 'checked': false}];
+        newlyAddedIndex = 0;
       }
     }
+    syncControllersAndFocusNodes();
 
     Navigator.of(context).push(
       PageRouteBuilder(
@@ -1359,35 +1798,63 @@ class _NoteListScreenState extends State<NoteListScreen> {
         pageBuilder: (context, animation, secondaryAnimation) {
           return StatefulBuilder(
             builder: (context, setModalState) {
+              final catColor = _getCategoryColor(noteCategory);
+              final isDark = ThemeData.estimateBrightnessForColor(catColor) == Brightness.dark;
+              SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                statusBarColor: catColor,
+                statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+                statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+              ));
               return PopScope(
                 canPop: false,
                 onPopInvokedWithResult: (didPop, result) {
                   if (didPop) return;
-                  _saveNoteIfValid(index, noteType, checkItems);
+                  final saved = _saveNoteIfValid(index, noteType, checkItems);
+                  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+                    statusBarColor: Colors.transparent,
+                    statusBarIconBrightness: Brightness.light,
+                    statusBarBrightness: Brightness.dark,
+                  ));
+                  if (saved) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text('Not kaydedildi ✓', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
+                        backgroundColor: const Color(0xFF3D3D3D),
+                        duration: const Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.04, left: 60, right: 60),
+                      ),
+                    );
+                  }
                   Navigator.pop(context);
                 },
                 child: Scaffold(
                 backgroundColor: const Color(0xFF1E1E1E),
-                resizeToAvoidBottomInset: false,
+                resizeToAvoidBottomInset: true,
                 appBar: AppBar(
                   backgroundColor: const Color(0xFF161616),
-                  systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
-                    statusBarColor: _getCategoryColor(noteCategory),
-                    statusBarIconBrightness:
-                        ThemeData.estimateBrightnessForColor(_getCategoryColor(noteCategory)) ==
-                                Brightness.light
-                            ? Brightness.dark
-                            : Brightness.light,
-                    statusBarBrightness:
-                        ThemeData.estimateBrightnessForColor(_getCategoryColor(noteCategory)) ==
-                                Brightness.light
-                            ? Brightness.light
-                            : Brightness.dark,
-                  ),
                   leading: IconButton(
                     icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
                     onPressed: () {
-                      _saveNoteIfValid(index, noteType, checkItems);
+                      final saved = _saveNoteIfValid(index, noteType, checkItems);
+                      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+                        statusBarColor: Colors.transparent,
+                        statusBarIconBrightness: Brightness.light,
+                        statusBarBrightness: Brightness.dark,
+                      ));
+                      if (saved) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text('Not kaydedildi ✓', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
+                            backgroundColor: const Color(0xFF3D3D3D),
+                            duration: const Duration(seconds: 2),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.04, left: 60, right: 60),
+                          ),
+                        );
+                      }
                       Navigator.pop(context);
                     },
                   ),
@@ -1395,7 +1862,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 ),
                 bottomNavigationBar: SafeArea(
                   child: Builder(builder: (context) {
-                    final barColor = _getCategoryColor(noteCategory);
+                    final Color barColor;
+                    if (_colorfulNotes && index != null && index! >= 0) {
+                      barColor = _categoryPalette[index! % _categoryPalette.length].withValues(alpha: 0.75);
+                    } else {
+                      barColor = _getCategoryColor(noteCategory);
+                    }
                     return Container(
                       height: 52,
                       decoration: BoxDecoration(
@@ -1474,17 +1946,16 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     );
                   }),
                 ),
-                body: AnimatedPadding(
-                  duration: const Duration(milliseconds: 180),
-                  curve: Curves.easeOut,
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                  child: SingleChildScrollView(
+                body: SingleChildScrollView(
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextField(
+                        contextMenuBuilder: buildCustomContextMenu,
+                  selectionHeightStyle: ui.BoxHeightStyle.max,
                         controller: _titleController,
+                        textCapitalization: TextCapitalization.sentences,
                         decoration: const InputDecoration(
                           hintText: 'Başlık',
                           hintStyle: TextStyle(color: Colors.grey),
@@ -1493,13 +1964,17 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           focusedBorder:
                               UnderlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
                         ),
-                        style: const TextStyle(
-                            color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            color: _textColor, fontSize: 20, fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 20),
                       if (noteType == 'text')
                         TextField(
+                          contextMenuBuilder: buildCustomContextMenu,
+                  selectionHeightStyle: ui.BoxHeightStyle.max,
                           controller: _contentController,
+                          autofocus: true,
+                          textCapitalization: TextCapitalization.sentences,
                           maxLines: null,
                           keyboardType: TextInputType.multiline,
                           decoration: const InputDecoration(
@@ -1531,7 +2006,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               ),
                               Expanded(
                                 child: TextField(
-                                  controller: TextEditingController(text: item['text']),
+                                  controller: checkControllers[i],
+                                  focusNode: checkFocusNodes[i],
+                                  autofocus: newlyAddedIndex == i,
+                                  textCapitalization: TextCapitalization.sentences,
+                                  contextMenuBuilder: buildCustomContextMenu,
+                  selectionHeightStyle: ui.BoxHeightStyle.max,
                                   style: const TextStyle(color: Colors.white, fontSize: 16),
                                   decoration: const InputDecoration(
                                     hintText: 'Madde...',
@@ -1548,6 +2028,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 onPressed: () {
                                   setModalState(() {
                                     checkItems.removeAt(i);
+                                    checkControllers.removeAt(i).dispose();
+                                    checkFocusNodes.removeAt(i).dispose();
+                                    newlyAddedIndex = null;
                                   });
                                 },
                               ),
@@ -1558,6 +2041,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           onPressed: () {
                             setModalState(() {
                               checkItems.add({'text': '', 'checked': false});
+                              checkControllers.add(TextEditingController());
+                              checkFocusNodes.add(FocusNode());
+                              newlyAddedIndex = checkItems.length - 1;
+                            });
+                            // Kısa gecikmeyle focus ver (widget build olduktan sonra)
+                            Future.microtask(() {
+                              checkFocusNodes.last.requestFocus();
                             });
                           },
                           icon: const Icon(Icons.add, color: Colors.amber),
@@ -1568,6 +2058,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       Builder(builder: (context) {
                         final hasCategory =
                             noteCategory != null && noteCategory!.isNotEmpty;
+                        if (!hasCategory) return const SizedBox.shrink();
                         return OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             foregroundColor: _textColor,
@@ -1577,7 +2068,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                           ),
-                          child: Text(hasCategory ? noteCategory! : 'Kategori Ekle'),
+                          child: Text(noteCategory!),
                           onPressed: () {
                             if (index != null) {
                               _showClassifyDialog(index!, onChanged: (cat) {
@@ -1603,13 +2094,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     ],
                   ),
                 ),
-                ),
-                ),
-              );
-            },
-          );
-        },
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              ),
+            );
+          },
+        );
+      },
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
           final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: Curves.easeInOut));
@@ -1622,6 +2112,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> filteredNotes;
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
+    ));
     bool isTrash = _activeCategory == '__trash__';
 
     if (isTrash) {
@@ -1700,17 +2195,28 @@ class _NoteListScreenState extends State<NoteListScreen> {
           FocusScope.of(context).unfocus();
           return;
         }
+
+        if (_activeCategory != 'Tümü' && _activeCategory != 'Notlar') {
+          setState(() {
+            _activeCategory = 'Tümü';
+          });
+          _saveData();
+          return;
+        }
+
         await _handleBackPress();
       },
       child: Scaffold(
       key: _scaffoldKey,
-      resizeToAvoidBottomInset: false,
-      drawerEdgeDragWidth: MediaQuery.of(context).size.width * 0.5,
+      resizeToAvoidBottomInset: true,
+      drawerEdgeDragWidth: MediaQuery.of(context).size.width,
       appBar: AppBar(
         title: _isSearching
             ? TextField(
                 controller: _searchController,
                 autofocus: true,
+                contextMenuBuilder: buildCustomContextMenu,
+                  selectionHeightStyle: ui.BoxHeightStyle.max,
                 decoration: const InputDecoration(
                   hintText: 'Notlarda ara...',
                   border: InputBorder.none,
@@ -1729,7 +2235,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
               ),
         backgroundColor: const Color(0xFF1E1E1E),
         elevation: 0,
-        centerTitle: true,
+        centerTitle: false,
+        titleSpacing: 0,
         iconTheme: const IconThemeData(color: Colors.amber),
         actions: [
           IconButton(
@@ -1777,7 +2284,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   );
                 } else if (choice == 'restore_all') {
                   setState(() {
-                    _notes.addAll(_deletedNotes);
+                    for (var n in _deletedNotes) { n['createdDate']=DateTime.now().toString(); n['modifiedDate']=DateTime.now().toString(); }
+                    _notes.insertAll(0, _deletedNotes);
                     _deletedNotes.clear();
                   });
                   _saveData();
@@ -1845,11 +2353,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     checked: _sortCriteria == 'Kategori',
                     child: const Text('Sırala: Kategori'),
                   ),
-                  CheckedPopupMenuItem<String>(
-                    value: 'Renk',
-                    checked: _sortCriteria == 'Renk',
-                    child: const Text('Sırala: Renk'),
-                  ),
                 ];
               },
             ),
@@ -1869,9 +2372,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
         ],
       ),
       drawer: Drawer(
-        child: Container(
-          color: const Color(0xFF1E1E1E),
-          child: ListView(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: SafeArea(
+          top: false,
+          child: Container(
+            color: const Color(0xFF1E1E1E),
+            child: ListView(
             padding: EdgeInsets.zero,
             children: [
               const DrawerHeader(
@@ -1898,14 +2405,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
               ),
               Container(
                 color: (_activeCategory == 'Tümü' || _activeCategory == 'Notlar')
-                    ? Colors.white.withOpacity(0.08)
+                    ? Colors.white.withValues(alpha: 0.08)
                     : Colors.transparent,
                 child: ListTile(
                   leading: const Icon(Icons.notes, color: Colors.amber),
                   title: const Text('Notlar', style: TextStyle(color: Colors.white)),
                   trailing: Text(
                     _getCountForCategory('Tümü').toString(),
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    style: const TextStyle(color: Colors.grey, fontSize: 16),
                   ),
                   onTap: () {
                     setState(() => _activeCategory = 'Tümü');
@@ -1916,14 +2423,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
               ),
               Container(
                 color: _activeCategory == '__favorites__'
-                    ? Colors.white.withOpacity(0.08)
+                    ? Colors.white.withValues(alpha: 0.08)
                     : Colors.transparent,
                 child: ListTile(
                   leading: const Icon(Icons.star_outline, color: Colors.amber),
                   title: const Text('Favoriler', style: TextStyle(color: Colors.white)),
                   trailing: Text(
                     _getCountForCategory('__favorites__').toString(),
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    style: const TextStyle(color: Colors.grey, fontSize: 16),
                   ),
                   onTap: () {
                     setState(() => _activeCategory = '__favorites__');
@@ -1934,28 +2441,28 @@ class _NoteListScreenState extends State<NoteListScreen> {
               ),
               Container(
                 color: _activeCategory == '__locked__'
-                    ? Colors.white.withOpacity(0.08)
+                    ? Colors.white.withValues(alpha: 0.08)
                     : Colors.transparent,
                 child: ListTile(
                   leading: const Icon(Icons.lock_outline, color: Colors.amber),
                   title: const Text('Kilitli', style: TextStyle(color: Colors.white)),
                   trailing: Text(
                     _getCountForCategory('__locked__').toString(),
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    style: const TextStyle(color: Colors.grey, fontSize: 16),
                   ),
                   onTap: () => _openLockedFolder(),
                 ),
               ),
               Container(
                 color: _activeCategory == '__archive__'
-                    ? Colors.white.withOpacity(0.08)
+                    ? Colors.white.withValues(alpha: 0.08)
                     : Colors.transparent,
                 child: ListTile(
                   leading: const Icon(Icons.archive_outlined, color: Colors.amber),
                   title: const Text('Arşiv', style: TextStyle(color: Colors.white)),
                   trailing: Text(
                     _getCountForCategory('__archive__').toString(),
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    style: const TextStyle(color: Colors.grey, fontSize: 16),
                   ),
                   onTap: () {
                     setState(() => _activeCategory = '__archive__');
@@ -1966,14 +2473,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
               ),
               Container(
                 color: _activeCategory == '__trash__'
-                    ? Colors.white.withOpacity(0.08)
+                    ? Colors.white.withValues(alpha: 0.08)
                     : Colors.transparent,
                 child: ListTile(
                   leading: const Icon(Icons.delete_outline, color: Colors.amber),
                   title: const Text('Çöp Kutusu', style: TextStyle(color: Colors.white)),
                   trailing: Text(
                     _deletedNotes.length.toString(),
-                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                    style: const TextStyle(color: Colors.grey, fontSize: 16),
                   ),
                   onTap: () {
                     setState(() => _activeCategory = '__trash__');
@@ -1992,23 +2499,84 @@ class _NoteListScreenState extends State<NoteListScreen> {
               ),
               ..._categories.map((cat) {
                 final catColor = _getCategoryColor(cat);
+                final isCatLocked = _lockedCategories.contains(cat);
                 return Container(
                   color: _activeCategory == cat
-                      ? Colors.white.withOpacity(0.08)
+                      ? Colors.white.withValues(alpha: 0.08)
                       : Colors.transparent,
                   child: ListTile(
-                    leading: Icon(Icons.folder_outlined, color: catColor),
+                    leading: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Icon(Icons.folder_outlined, color: catColor),
+                        if (isCatLocked)
+                          Positioned(
+                            right: -4,
+                            bottom: -4,
+                            child: Icon(Icons.lock, color: Colors.blueGrey[300], size: 12),
+                          ),
+                      ],
+                    ),
                     title: Text(cat,
                         style: TextStyle(
                             color: _activeCategory == cat ? catColor : Colors.white)),
                     trailing: Text(
                       _getCountForCategory(cat).toString(),
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                      style: const TextStyle(color: Colors.grey, fontSize: 16),
                     ),
-                    onTap: () {
-                      setState(() => _activeCategory = cat);
-                      _saveData();
-                      Navigator.pop(context);
+                    onTap: () async {
+                      if (isCatLocked) {
+                        Navigator.pop(context); // drawer'ı kapat
+                        await Future.delayed(const Duration(milliseconds: 350));
+                        if (!mounted) return;
+                        if (!_notePasswordEnabled) {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              backgroundColor: const Color(0xFF1E1E1E),
+                              title: const Text('Parola Gerekiyor', style: TextStyle(color: Colors.amber)),
+                              content: const Text(
+                                'Kilitli kategoriye girebilmek için önce Ayarlar > Not Şifresi bölümünden bir parola belirlemeniz gerekiyor.',
+                                style: TextStyle(color: Colors.white70),
+                              ),
+                              actions: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                                  onPressed: () => Navigator.pop(ctx),
+                                  child: const Text('Tamam', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                                ),
+                              ],
+                            ),
+                          );
+                          return;
+                        }
+                        final ok = await _checkPasswordPrompt();
+                        if (!mounted) return;
+                        if (ok) {
+                          setState(() => _activeCategory = cat);
+                          _saveData();
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              backgroundColor: const Color(0xFF1E1E1E),
+                              title: const Text('Hatalı Parola', style: TextStyle(color: Colors.red)),
+                              content: const Text('Girdiğiniz parola yanlış.', style: TextStyle(color: Colors.white70)),
+                              actions: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                                  onPressed: () => Navigator.pop(ctx),
+                                  child: const Text('Tamam', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      } else {
+                        setState(() => _activeCategory = cat);
+                        _saveData();
+                        Navigator.pop(context);
+                      }
                     },
                     onLongPress: () => _showCategoryOptions(cat),
                   ),
@@ -2017,7 +2585,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
               ListTile(
                 leading: const Icon(Icons.add_circle_outline, color: Colors.white),
                 title: const Text('Kategori Ekle',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+                    style: TextStyle(color: Colors.white)),
                 onTap: () {
                   Navigator.pop(context);
                   _showAddCategoryDialog();
@@ -2071,16 +2639,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 title: const Text('Hakkında', style: TextStyle(color: Colors.white)),
                 onTap: () => Navigator.pop(context),
               ),
-              const SizedBox(height: 16),
             ],
+            ),
           ),
         ),
       ),
-      body: AnimatedPadding(
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeOut,
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: GestureDetector(
+      body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () {
           if (_isSearching) {
@@ -2094,9 +2658,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
             FocusScope.of(context).unfocus();
           }
         },
-        child: SafeArea(
         child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: EdgeInsets.only(
+          left: 8.0,
+          right: 8.0,
+          bottom: MediaQuery.of(context).padding.bottom,
+        ),
         child: filteredNotes.isEmpty
             ? const Center(
                 child: Text('Not bulunamadı.',
@@ -2104,6 +2671,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
               )
             : _isListView
                 ? ListView.builder(
+                    padding: const EdgeInsets.only(top: 12.0),
                     itemCount: filteredNotes.length,
                     itemBuilder: (context, index) {
                       final note = filteredNotes[index];
@@ -2118,7 +2686,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       final isChecklist = note['type'] == 'checklist';
                       final isFavorite = note['isFavorite'] == true;
                       final noteCardColor = _colorfulNotes
-                          ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) % _categoryPalette.length].withOpacity(0.13)
+                          ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) % _categoryPalette.length].withValues(alpha: 0.75)
                           : const Color(0xFF2D2D2D);
                       final fontScale = _previewFontScale(note);
 
@@ -2150,7 +2718,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                     color: Colors.black)),
                                             onPressed: () {
                                               setState(() {
-                                                _notes.add(
+                                                _notes.insert(0,
                                                     _deletedNotes[originalIndex]);
                                                 _deletedNotes
                                                     .removeAt(originalIndex);
@@ -2184,42 +2752,84 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 );
                               }
                             : () => _showNoteActions(context, originalIndex, false),
-                        child: Card(
-                          margin: const EdgeInsets.symmetric(vertical: 6),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Card(
+                          margin: EdgeInsets.zero,
                           color: noteCardColor,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                           child: InkWell(
-                            onTap: () => _openNoteWithPasswordCheck(originalIndex),
+                            onTap: isTrash
+                                ? () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      backgroundColor: const Color(0xFF1E1E1E),
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                      ),
+                                      builder: (_) => SafeArea(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(16),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              ElevatedButton.icon(
+                                                style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                                                icon: const Icon(Icons.restore_outlined, color: Colors.black),
+                                                label: const Text('Geri Yükle', style: TextStyle(color: Colors.black)),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _deletedNotes[originalIndex]['createdDate'] = DateTime.now().toString();
+                                  _deletedNotes[originalIndex]['modifiedDate'] = DateTime.now().toString();
+                                  _notes.insert(0, _deletedNotes[originalIndex]);
+                                                    _deletedNotes.removeAt(originalIndex);
+                                                  });
+                                                  _saveData();
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                              ElevatedButton.icon(
+                                                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                                                icon: const Icon(Icons.delete_forever, color: Colors.white),
+                                                label: const Text('Kalıcı Sil', style: TextStyle(color: Colors.white)),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _deletedNotes.removeAt(originalIndex);
+                                                  });
+                                                  _saveData();
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                : () => _openNoteWithPasswordCheck(originalIndex),
                             borderRadius: BorderRadius.circular(12),
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 16),
+                              padding: const EdgeInsets.all(16.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   if (hasTitle) ...[
                                     Row(
                                       children: [
-                                        if (isChecklist)
-                                          const Padding(
-                                            padding: EdgeInsets.only(right: 6),
-                                            child: Icon(Icons.checklist,
-                                                color: Colors.amber, size: 16),
-                                          ),
                                         Expanded(
                                           child: Text(
-                                            note['title'],
+                                            _capitalizeFirstLetterTr((note['title'] ?? '').toString()),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18 * fontScale,
-                                                color: Colors.amber),
+                                                color: _textColor),
                                           ),
                                         ),
                                         if (isFavorite)
-                                          const Padding(
-                                            padding: EdgeInsets.only(left: 6),
-                                            child: Icon(Icons.star, color: Colors.amber, size: 16),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 6),
+                                            child: Icon(Icons.star, color: Colors.amber, size: 18),
                                           ),
                                         if (note['isLocked'] == true)
                                           const Padding(
@@ -2249,12 +2859,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                     style: TextStyle(
                                                       color: item['checked'] == true
                                                           ? Colors.grey
-                                                          : Colors.white70,
+                                                          : _textColor,
                                                       decoration:
                                                           item['checked'] == true
                                                               ? TextDecoration.lineThrough
                                                               : null,
-                                                      fontSize: 13 * fontScale,
+                                                      fontSize: (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize,
                                                     ),
                                                     maxLines: 1,
                                                     overflow: TextOverflow.ellipsis,
@@ -2279,10 +2889,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                           ),
                                         ),
                                         if (isFavorite)
-                                          const Padding(
-                                            padding: EdgeInsets.only(left: 4),
-                                            child: Icon(Icons.star,
-                                                color: Colors.amber, size: 14),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 6),
+                                            child: Icon(Icons.star, color: Colors.amber, size: 18),
                                           ),
                                       ],
                                     ),
@@ -2293,8 +2902,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                       child: Text(
                                         note['category'],
                                         style: TextStyle(
-                                          color: _textColor.withOpacity(0.7),
-                                          fontSize: 12 * fontScale,
+                                          color: _textColor.withValues(alpha: 0.7),
+                                          fontSize: (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize,
                                           fontStyle: FontStyle.italic,
                                         ),
                                         maxLines: 1,
@@ -2306,19 +2915,19 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               ),
                             ),
                           ),
+                          ),
                         ),
                       );
                     },
                   )
                 : SingleChildScrollView(
+                    padding: const EdgeInsets.only(top: 12.0),
                     child: _buildGridView(
                       filteredNotes: filteredNotes,
                       isTrash: isTrash,
                     ),
                   ),
         ),
-        ),
-      ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddMenu,
@@ -2338,9 +2947,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
     required bool isTrash,
   }) {
     const int crossAxisCount = 2;
-    const double spacing = 6;
-    const double outerPadding = 12.0; // bkz. dış ListView/SingleChildScrollView konteyner padding'i
-    const double cardInnerPadding = 14.0; // _buildGridNoteCard içindeki Padding değeri
+    const double spacing = 10;
+    const double outerPadding = 0.0; // dış konteyner zaten 16px padding veriyor
+    const double cardInnerPadding = 16.0; // _buildGridNoteCard içindeki Padding değeri
 
     // Her sütunun gerçek genişliğini hesapla: ekran genişliğinden dış
     // padding'leri ve sütunlar arası boşluğu çıkar, crossAxisCount'a böl.
@@ -2370,8 +2979,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
         }
       }
 
-      final estimatedLines = _estimateNoteLines(note, cardContentWidth);
-      columnHeights[shortestColumn] += estimatedLines.toDouble();
+      final estimatedHeight = _estimateNoteHeight(note, cardContentWidth);
+      columnHeights[shortestColumn] += estimatedHeight;
 
       columnChildren[shortestColumn].add(
         Padding(
@@ -2436,33 +3045,31 @@ class _NoteListScreenState extends State<NoteListScreen> {
     return painter.computeLineMetrics().length;
   }
 
-  // Kartın gerçekte kaç satır yer kaplayacağını ölçer (sütun dengelemesi
-  // için). Metin sarmasını TextPainter ile gerçek genişlik ve font boyutu
-  // (fontScale) baz alınarak hesaplar; bu sayede metin boyutu ayarı
-  // büyütülse de sütunlar arası dengeleme bozulmaz. _previewLines ile
-  // sınırlandırılır; gerçek görsel sınır Text widget'ındaki maxLines
-  // tarafından zaten uygulanır.
-  int _estimateNoteLines(Map<String, dynamic> note, double cardContentWidth) {
+  // Kartın gerçekte kaç piksel yükseklik kaplayacağını ölçer (sütun
+  // dengelemesi için). Önceki sürüm sadece "satır sayısı" topluyordu; bu,
+  // başlık/içerik/checklist satırlarının farklı font boyutlarına ve kartın
+  // sabit iç boşluklarına (padding, SizedBox aralıkları) duyarsız kalıp
+  // sütunlar arasında kümülatif sapmaya yol açıyordu (bazı notların hep
+  // aynı sütuna yığılması). Gerçek piksel yüksekliği, kartın
+  // _buildGridNoteCard içindeki gerçek yapısıyla (16px iç padding, başlık
+  // sonrası 12px boşluk, kategori öncesi 8px boşluk, checklist öğeleri
+  // arası 4px boşluk) bire bir eşleşecek şekilde hesaplanır.
+  double _estimateNoteHeight(Map<String, dynamic> note, double cardContentWidth) {
     final hasTitle = (note['title'] ?? '').toString().isNotEmpty;
     final isChecklist = note['type'] == 'checklist';
-    int lines = 0;
+    final fontScale = _previewFontScale(note);
+    double height = 32.0; // kartın iç padding'i: 16 üst + 16 alt
 
     if (hasTitle) {
-      // Başlık tek satıra sabitlenmiş (maxLines: 1), o yüzden 1 olarak sayılır.
-      lines += 1;
-    }
-
-    if ((note['category'] ?? '').toString().isNotEmpty) {
-      // Kategori etiketi de tek satır olarak hesaba katılır.
-      lines += 1;
+      height += (18 * fontScale) * 1.2; // başlık satırı (tek satır, maxLines:1)
+      height += 12.0; // başlık sonrası SizedBox
     }
 
     if (isChecklist) {
       final items = (note['checkItems'] as List? ?? []);
       final itemCount = items.length.clamp(0, _previewLines);
-      // Her checklist öğesi maxLines: 1 ile sınırlı, bu yüzden sarma
-      // hesaplanmaz; öğe sayısı kadar satır eklenir.
-      lines += itemCount;
+      // Her checklist öğesi tek satır + altında 4px boşluk.
+      height += itemCount * ((12 * fontScale) * 1.3 + 4.0);
     } else {
       final content = (note['content'] ?? '').toString();
       if (content.isNotEmpty) {
@@ -2474,12 +3081,19 @@ class _NoteListScreenState extends State<NoteListScreen> {
               .clamp(0, 999);
           if (paragraph.isEmpty) wrapped += 1; // boş satır da yer kaplar
         }
-        lines += wrapped.clamp(0, _previewLines);
+        final cappedLines = wrapped.clamp(0, _previewLines);
+        height += cappedLines * (noteFontSize * 1.3);
       }
     }
 
-    return lines < 1 ? 1 : lines;
+    if ((note['category'] ?? '').toString().isNotEmpty) {
+      height += 8.0; // kategori öncesi SizedBox
+      height += (11 * fontScale) * 1.2; // kategori satırı
+    }
+
+    return height < 1 ? 1 : height;
   }
+
 
   // Izgara görünümündeki tek bir not kartı. Yüksekliği içeriğe göre belirlenir;
   // başlık + içerik metni doğal yüksekliğini alır (Expanded YOK), maksimum
@@ -2494,7 +3108,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     final isFavorite = note['isFavorite'] == true;
     final gridCardColor = _colorfulNotes
         ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) % _categoryPalette.length]
-            .withOpacity(0.13)
+            .withValues(alpha: 0.75)
         : const Color(0xFF2D2D2D);
     final fontScale = _previewFontScale(note);
 
@@ -2519,7 +3133,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           label: const Text('Geri Yükle', style: TextStyle(color: Colors.black)),
                           onPressed: () {
                             setState(() {
-                              _notes.add(_deletedNotes[originalIndex]);
+                              _deletedNotes[originalIndex]['createdDate'] = DateTime.now().toString();
+                                  _deletedNotes[originalIndex]['modifiedDate'] = DateTime.now().toString();
+                                  _notes.insert(0, _deletedNotes[originalIndex]);
                               _deletedNotes.removeAt(originalIndex);
                             });
                             _saveData();
@@ -2546,28 +3162,78 @@ class _NoteListScreenState extends State<NoteListScreen> {
             }
           : () => _showNoteActions(context, originalIndex, false),
       child: Card(
+        margin: EdgeInsets.zero,
         color: gridCardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: InkWell(
-          onTap: () => _openNoteWithPasswordCheck(originalIndex),
+          onTap: isTrash
+              ? () {
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: const Color(0xFF1E1E1E),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                    ),
+                    builder: (_) => SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                              icon: const Icon(Icons.restore_outlined, color: Colors.black),
+                              label: const Text('Geri Yükle', style: TextStyle(color: Colors.black)),
+                              onPressed: () {
+                                setState(() {
+                                  _deletedNotes[originalIndex]['createdDate'] = DateTime.now().toString();
+                                  _deletedNotes[originalIndex]['modifiedDate'] = DateTime.now().toString();
+                                  _notes.insert(0, _deletedNotes[originalIndex]);
+                                  _deletedNotes.removeAt(originalIndex);
+                                });
+                                _saveData();
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                              icon: const Icon(Icons.delete_forever, color: Colors.white),
+                              label: const Text('Kalıcı Sil', style: TextStyle(color: Colors.white)),
+                              onPressed: () {
+                                setState(() {
+                                  _deletedNotes.removeAt(originalIndex);
+                                });
+                                _saveData();
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              : () => _openNoteWithPasswordCheck(originalIndex),
           borderRadius: BorderRadius.circular(12),
           child: Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.all(14.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (hasTitle)
                       Text(
-                        note['title'],
+                        _capitalizeFirstLetterTr((note['title'] ?? '').toString()),
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16 * fontScale,
-                            color: Colors.amber),
+                            fontSize: 18 * fontScale,
+                            color: _textColor),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.start,
+                        textDirection: TextDirection.ltr,
                       ),
                     if (hasTitle) const SizedBox(height: 12),
                     isChecklist
@@ -2579,6 +3245,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 .map<Widget>((item) => Padding(
                                       padding: const EdgeInsets.only(bottom: 4),
                                       child: Row(
+                                        textDirection: TextDirection.ltr,
                                         children: [
                                           Icon(
                                             item['checked'] == true
@@ -2594,14 +3261,16 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                               style: TextStyle(
                                                 color: item['checked'] == true
                                                     ? Colors.grey
-                                                    : Colors.white70,
+                                                    : _textColor,
                                                 decoration: item['checked'] == true
                                                     ? TextDecoration.lineThrough
                                                     : null,
-                                                fontSize: 12 * fontScale,
+                                                fontSize: (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize,
                                               ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.start,
+                                              textDirection: TextDirection.ltr,
                                             ),
                                           ),
                                         ],
@@ -2617,18 +3286,22 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                     _globalFontSize),
                             maxLines: _previewLines,
                             overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
+                            textDirection: TextDirection.ltr,
                           ),
                     if ((note['category'] ?? '').toString().isNotEmpty) ...[
                       const SizedBox(height: 8),
                       Text(
                         note['category'],
                         style: TextStyle(
-                          color: _textColor.withOpacity(0.7),
-                          fontSize: 11 * fontScale,
+                          color: _textColor.withValues(alpha: 0.7),
+                          fontSize: (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize,
                           fontStyle: FontStyle.italic,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.start,
+                        textDirection: TextDirection.ltr,
                       ),
                     ],
                   ],
@@ -2666,7 +3339,7 @@ class _SettingsPage extends StatefulWidget {
   State<_SettingsPage> createState() => _SettingsPageState();
 }
 
-Rclass _SettingsPageState extends State<_SettingsPage> {
+class _SettingsPageState extends State<_SettingsPage> {
   _NoteListScreenState get s => widget.state;
 
   // ── Şifre ipucu soruları (sabit liste) ──────────────────────────────
@@ -2702,7 +3375,7 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
               ),
               const SizedBox(height: 14),
               DropdownButtonFormField<String>(
-                value: selectedQuestion,
+                initialValue: selectedQuestion,
                 dropdownColor: const Color(0xFF2A2A2A),
                 style: const TextStyle(color: Colors.white, fontSize: 14),
                 decoration: const InputDecoration(
@@ -2718,6 +3391,8 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
               ),
               const SizedBox(height: 12),
               TextField(
+                contextMenuBuilder: buildCustomContextMenu,
+                  selectionHeightStyle: ui.BoxHeightStyle.max,
                 controller: answerCtrl,
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
@@ -2782,6 +3457,8 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
               children: [
                 if (!isNew)
                   TextField(
+                    contextMenuBuilder: buildCustomContextMenu,
+                  selectionHeightStyle: ui.BoxHeightStyle.max,
                     controller: ctrl1,
                     obscureText: obscure1,
                     style: const TextStyle(color: Colors.white),
@@ -2798,6 +3475,8 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
                   )
                 else ...[
                   TextField(
+                    contextMenuBuilder: buildCustomContextMenu,
+                  selectionHeightStyle: ui.BoxHeightStyle.max,
                     controller: ctrl1,
                     obscureText: obscure1,
                     style: const TextStyle(color: Colors.white),
@@ -2814,6 +3493,8 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
                   ),
                   const SizedBox(height: 12),
                   TextField(
+                    contextMenuBuilder: buildCustomContextMenu,
+                  selectionHeightStyle: ui.BoxHeightStyle.max,
                     controller: ctrl2,
                     obscureText: obscure2,
                     style: const TextStyle(color: Colors.white),
@@ -2835,7 +3516,7 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
                   ),
                   const SizedBox(height: 10),
                   DropdownButtonFormField<String>(
-                    value: selectedHintQuestion,
+                    initialValue: selectedHintQuestion,
                     dropdownColor: const Color(0xFF2A2A2A),
                     style: const TextStyle(color: Colors.white, fontSize: 14),
                     decoration: const InputDecoration(
@@ -2851,6 +3532,8 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
                   ),
                   const SizedBox(height: 12),
                   TextField(
+                    contextMenuBuilder: buildCustomContextMenu,
+                  selectionHeightStyle: ui.BoxHeightStyle.max,
                     controller: hintAnswerCtrl,
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
@@ -3015,7 +3698,7 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
   }) => ListTile(
     leading: Container(
       width: 36, height: 36,
-      decoration: BoxDecoration(color: iconColor.withOpacity(0.15), borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: iconColor.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
       child: Icon(icon, color: iconColor, size: 20),
     ),
     title: Text(title, style: const TextStyle(color: Colors.white, fontSize: 14)),
@@ -3059,7 +3742,7 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
                   subtitle: s._notePasswordEnabled ? 'Şifre ayarlandı ✓' : 'Şifre ayarlanmadı',
                   trailing: Switch(
                     value: s._notePasswordEnabled,
-                    activeColor: Colors.amber,
+                    activeThumbColor: Colors.amber,
                     onChanged: (val) {
                       if (val) {
                         _showPasswordDialog(isNew: true);
@@ -3106,7 +3789,7 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
                   subtitle: 'Karanlık arayüz modunu etkinleştirir.',
                   trailing: Switch(
                     value: s._darkTheme,
-                    activeColor: Colors.amber,
+                    activeThumbColor: Colors.amber,
                     onChanged: (val) {
                       s.setState(() => s._darkTheme = val);
                       setState(() {});
@@ -3122,7 +3805,7 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
                   subtitle: 'Her not kartı farklı renk tonu alır.',
                   trailing: Switch(
                     value: s._colorfulNotes,
-                    activeColor: Colors.amber,
+                    activeThumbColor: Colors.amber,
                     onChanged: (val) {
                       s.setState(() => s._colorfulNotes = val);
                       setState(() {});
@@ -3220,7 +3903,7 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
                                       child: SliderTheme(
                                         data: SliderTheme.of(context).copyWith(
                                           activeTrackColor: Colors.amber, inactiveTrackColor: const Color(0xFF3A3A3A),
-                                          thumbColor: Colors.amber, overlayColor: Colors.amber.withOpacity(0.2),
+                                          thumbColor: Colors.amber, overlayColor: Colors.amber.withValues(alpha: 0.2),
                                           valueIndicatorColor: Colors.amber,
                                           valueIndicatorTextStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                                         ),
@@ -3344,7 +4027,7 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
                                 SliderTheme(
                                   data: SliderTheme.of(context).copyWith(
                                     activeTrackColor: Colors.amber, inactiveTrackColor: const Color(0xFF3A3A3A),
-                                    thumbColor: Colors.amber, overlayColor: Colors.amber.withOpacity(0.2),
+                                    thumbColor: Colors.amber, overlayColor: Colors.amber.withValues(alpha: 0.2),
                                     valueIndicatorColor: Colors.amber,
                                     valueIndicatorTextStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                                   ),
@@ -3404,8 +4087,8 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
                   margin: const EdgeInsets.all(12),
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.amber.withOpacity(0.08),
-                    border: Border.all(color: Colors.amber.withOpacity(0.3)),
+                    color: Colors.amber.withValues(alpha: 0.08),
+                    border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Row(
@@ -3448,7 +4131,7 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
                         subtitle: 'Widget için koyu renk şeması.',
                         trailing: Switch(
                           value: s._widgetDark,
-                          activeColor: Colors.amber,
+                          activeThumbColor: Colors.amber,
                           onChanged: null,
                         ),
                       ),
@@ -3459,10 +4142,9 @@ Rclass _SettingsPageState extends State<_SettingsPage> {
             ),
           ),
 
-          const SizedBox(height: 32),
         ],
         ),
       ),
     );
   }
-}
+} 

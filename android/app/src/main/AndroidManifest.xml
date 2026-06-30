@@ -41,5 +41,13 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- Google Translate'in cihazda yüklü olup olmadığını kontrol edebilmek
+             için (özel metin seçim menüsündeki "Çevir" butonunun ikonu). -->
+        <package android:name="com.google.android.apps.translate" />
+        <!-- url_launcher'ın https bağlantılarını açabilmesi için (Android 11+). -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
     </queries>
 </manifest>
