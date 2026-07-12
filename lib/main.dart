@@ -4,9 +4,236 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as p;
+
+// ════════════════════════════════════════════════════════════════════════
+// SQLITE VERİ TABANI KATMANI
+// Notlar, çöp kutusu, kategoriler ve ayarlar artık SharedPreferences yerine
+// yerel bir SQLite veritabanında (dnote.db) tutulur.
+// Üst katmandaki (_NoteListScreenState) _notes / _deletedNotes / _categories
+// gibi değişkenler AYNI ŞEKİLDE bellekte List/Map olarak kullanılmaya devam
+// eder; sadece _loadData()/_saveData() artık DBHelper üzerinden çalışır.
+// ════════════════════════════════════════════════════════════════════════
+class DBHelper {
+  DBHelper._internal();
+  static final DBHelper instance = DBHelper._internal();
+
+  Database? _db;
+
+  Future<Database> get database async {
+    if (_db != null) return _db!;
+    _db = await _initDB();
+    return _db!;
+  }
+
+  Future<Database> _initDB() async {
+    final dbDir = await getDatabasesPath();
+    final path = p.join(dbDir, 'dnote.db');
+    return openDatabase(
+      path,
+      version: 1,
+      onCreate: (db, version) async {
+        await db.execute('''
+          CREATE TABLE notes (
+            id TEXT PRIMARY KEY,
+            title TEXT,
+            content TEXT,
+            date TEXT,
+            createdDate TEXT,
+            modifiedDate TEXT,
+            category TEXT,
+            color TEXT,
+            type TEXT,
+            fontSize REAL,
+            checkItems TEXT,
+            isLocked INTEGER NOT NULL DEFAULT 0,
+            isArchived INTEGER NOT NULL DEFAULT 0,
+            isFavorite INTEGER NOT NULL DEFAULT 0
+          )
+        ''');
+        await db.execute('''
+          CREATE TABLE deleted_notes (
+            id TEXT PRIMARY KEY,
+            title TEXT,
+            content TEXT,
+            date TEXT,
+            createdDate TEXT,
+            modifiedDate TEXT,
+            category TEXT,
+            color TEXT,
+            type TEXT,
+            fontSize REAL,
+            checkItems TEXT,
+            isLocked INTEGER NOT NULL DEFAULT 0,
+            isArchived INTEGER NOT NULL DEFAULT 0,
+            isFavorite INTEGER NOT NULL DEFAULT 0
+          )
+        ''');
+        await db.execute('''
+          CREATE TABLE categories (
+            name TEXT PRIMARY KEY,
+            color TEXT,
+            isLocked INTEGER NOT NULL DEFAULT 0,
+            sortOrder INTEGER NOT NULL DEFAULT 0
+          )
+        ''');
+        await db.execute('''
+          CREATE TABLE settings (
+            key TEXT PRIMARY KEY,
+            value TEXT
+          )
+        ''');
+      },
+    );
+  }
+
+  // ── Not <-> satır dönüşümleri ─────────────────────────────────────────
+  Map<String, dynamic> _noteToRow(Map<String, dynamic> note) {
+    return {
+      'id': note['id']?.toString(),
+      'title': note['title']?.toString(),
+      'content': note['content']?.toString(),
+      'date': note['date']?.toString(),
+      'createdDate': note['createdDate']?.toString(),
+      'modifiedDate': note['modifiedDate']?.toString(),
+      'category': note['category'],
+      'color': note['color']?.toString(),
+      'type': note['type']?.toString(),
+      'fontSize': (note['fontSize'] as num?)?.toDouble(),
+      'checkItems': note['checkItems'] != null
+          ? jsonEncode(note['checkItems'])
+          : null,
+      'isLocked': (note['isLocked'] == true) ? 1 : 0,
+      'isArchived': (note['isArchived'] == true) ? 1 : 0,
+      'isFavorite': (note['isFavorite'] == true) ? 1 : 0,
+    };
+  }
+
+  Map<String, dynamic> _rowToNote(Map<String, dynamic> row) {
+    return {
+      'id': row['id'],
+      'title': row['title'],
+      'content': row['content'],
+      'date': row['date'],
+      'createdDate': row['createdDate'],
+      'modifiedDate': row['modifiedDate'],
+      'category': row['category'],
+      'color': row['color'],
+      'type': row['type'],
+      if (row['fontSize'] != null) 'fontSize': row['fontSize'],
+      if (row['checkItems'] != null)
+        'checkItems': jsonDecode(row['checkItems'] as String),
+      'isLocked': row['isLocked'] == 1,
+      'isArchived': row['isArchived'] == 1,
+      'isFavorite': row['isFavorite'] == 1,
+    };
+  }
+
+  // ── Notlar ─────────────────────────────────────────────────────────────
+  Future<List<Map<String, dynamic>>> getNotes() async {
+    final db = await database;
+    final rows = await db.query('notes');
+    return rows.map(_rowToNote).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> getDeletedNotes() async {
+    final db = await database;
+    final rows = await db.query('deleted_notes');
+    return rows.map(_rowToNote).toList();
+  }
+
+  Future<void> replaceNotes(List<Map<String, dynamic>> notes) async {
+    final db = await database;
+    await db.transaction((txn) async {
+      await txn.delete('notes');
+      final batch = txn.batch();
+      for (final n in notes) {
+        batch.insert(
+          'notes',
+          _noteToRow(n),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      await batch.commit(noResult: true);
+    });
+  }
+
+  Future<void> replaceDeletedNotes(List<Map<String, dynamic>> notes) async {
+    final db = await database;
+    await db.transaction((txn) async {
+      await txn.delete('deleted_notes');
+      final batch = txn.batch();
+      for (final n in notes) {
+        batch.insert(
+          'deleted_notes',
+          _noteToRow(n),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      await batch.commit(noResult: true);
+    });
+  }
+
+  // ── Kategoriler ──────────────────────────────────────────────────────
+  Future<void> replaceCategories(
+    List<String> categories,
+    Map<String, String> colors,
+    Set<String> locked,
+  ) async {
+    final db = await database;
+    await db.transaction((txn) async {
+      await txn.delete('categories');
+      final batch = txn.batch();
+      for (var i = 0; i < categories.length; i++) {
+        final name = categories[i];
+        batch.insert('categories', {
+          'name': name,
+          'color': colors[name],
+          'isLocked': locked.contains(name) ? 1 : 0,
+          'sortOrder': i,
+        });
+      }
+      await batch.commit(noResult: true);
+    });
+  }
+
+  Future<Map<String, dynamic>> getCategoriesData() async {
+    final db = await database;
+    final rows = await db.query('categories', orderBy: 'sortOrder ASC');
+    final categories = <String>[];
+    final colors = <String, String>{};
+    final locked = <String>{};
+    for (final row in rows) {
+      final name = row['name'] as String;
+      categories.add(name);
+      if (row['color'] != null) colors[name] = row['color'] as String;
+      if (row['isLocked'] == 1) locked.add(name);
+    }
+    return {'categories': categories, 'colors': colors, 'locked': locked};
+  }
+
+  // ── Ayarlar (key-value) ──────────────────────────────────────────────
+  Future<void> setSetting(String key, String? value) async {
+    final db = await database;
+    if (value == null) {
+      await db.delete('settings', where: 'key = ?', whereArgs: [key]);
+    } else {
+      await db.insert('settings', {
+        'key': key,
+        'value': value,
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
+    }
+  }
+
+  Future<Map<String, String>> getAllSettings() async {
+    final db = await database;
+    final rows = await db.query('settings');
+    return {for (final r in rows) r['key'] as String: r['value'] as String};
+  }
+}
 
 // ════════════════════════════════════════════════════════════════════════
 // ÖZEL METİN SEÇİM MENÜSÜ
@@ -300,46 +527,26 @@ class _NoteListScreenState extends State<NoteListScreen> {
   }
 
   Future<void> _loadData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? notesString = prefs.getString('saved_notes_v2');
-    final String? deletedNotesString = prefs.getString('deleted_notes_v2');
-    final String? catsString = prefs.getString('saved_categories');
-    final String? catColorsString = prefs.getString('saved_category_colors');
+    final db = DBHelper.instance;
 
-    if (catsString != null) {
-      final List<dynamic> decoded = jsonDecode(catsString);
-      setState(() {
-        _categories = decoded.map((e) => e.toString()).toList();
-      });
-    }
+    final catData = await db.getCategoriesData();
+    final notes = await db.getNotes();
+    final deletedNotes = await db.getDeletedNotes();
+    final settings = await db.getAllSettings();
+    // Veritabanı hiç yazılmamışsa (uygulamanın ilk açılışı) 'never
+    // initialized' durumu; bu durumda hoş geldin notu eklenir. Kullanıcı
+    // daha sonra tüm notlarını silerse (notes tablosu boş ama initialized
+    // işaretli) hoş geldin notu tekrar EKLENMEZ.
+    final bool neverInitialized = !settings.containsKey('_initialized');
 
-    if (catColorsString != null) {
-      final Map<String, dynamic> decoded = jsonDecode(catColorsString);
-      setState(() {
-        _categoryColors = decoded.map((k, v) => MapEntry(k, v.toString()));
-      });
-    }
+    setState(() {
+      _categories = List<String>.from(catData['categories'] as List);
+      _categoryColors = Map<String, String>.from(catData['colors'] as Map);
+      _lockedCategories = Set<String>.from(catData['locked'] as Set);
 
-    final String? lockedCatsString = prefs.getString('locked_categories');
-    if (lockedCatsString != null) {
-      final List<dynamic> decoded = jsonDecode(lockedCatsString);
-      setState(() {
-        _lockedCategories = decoded.map((e) => e.toString()).toSet();
-      });
-    }
-
-    if (notesString != null) {
-      final List<dynamic> decodedList = jsonDecode(notesString);
-      setState(() {
-        _notes = decodedList.map((item) {
-          final note = Map<String, dynamic>.from(item);
-          note['id'] ??= note['createdDate'] ?? DateTime.now().toString();
-          note['isLocked'] ??= false;
-          return note;
-        }).toList();
-      });
-    } else {
-      setState(() {
+      if (notes.isNotEmpty || !neverInitialized) {
+        _notes = notes;
+      } else {
         _notes = [
           {
             'id': '2026-06-18 22:05:00',
@@ -354,25 +561,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
             'isLocked': false,
           },
         ];
-      });
-    }
+      }
 
-    if (deletedNotesString != null) {
-      final List<dynamic> decodedList = jsonDecode(deletedNotesString);
-      setState(() {
-        _deletedNotes = decodedList.map((item) {
-          final note = Map<String, dynamic>.from(item);
-          note['id'] ??= note['createdDate'] ?? DateTime.now().toString();
-          note['isLocked'] ??= false;
-          return note;
-        }).toList();
-      });
-    }
+      _deletedNotes = deletedNotes;
 
-    setState(() {
-      _sortCriteria = prefs.getString('sort_criteria') ?? 'Oluşturulma';
-      _isAscending = prefs.getBool('is_ascending') ?? true;
-      _isListView = prefs.getBool('is_list_view') ?? true;
+      _sortCriteria = settings['sort_criteria'] ?? 'Oluşturulma';
+      _isAscending = (settings['is_ascending'] ?? 'true') == 'true';
+      _isListView = (settings['is_list_view'] ?? 'true') == 'true';
       _activeCategory = 'Tümü'; // Her açılışta Notlar ekranından başlat
       // Güvenlik: uygulama kapanıp açıldığında "Kilitli" klasörü şifre
       // sorulmadan otomatik açılmasın; varsayılan görünüme dön.
@@ -381,52 +576,63 @@ class _NoteListScreenState extends State<NoteListScreen> {
       }
 
       // Ayarlar
-      _notePasswordEnabled = prefs.getBool('note_password_enabled') ?? false;
-      _notePassword = prefs.getString('note_password') ?? '';
-      _passwordHintQuestion = prefs.getString('password_hint_question') ?? '';
-      _passwordHintAnswer = prefs.getString('password_hint_answer') ?? '';
-      _darkTheme = prefs.getBool('dark_theme') ?? true;
-      _colorfulNotes = prefs.getBool('colorful_notes') ?? false;
-      _fontFamily = prefs.getString('font_family') ?? 'Varsayılan';
-      _globalFontSize = prefs.getDouble('global_font_size') ?? 16.0;
-      final textColorVal = prefs.getInt('text_color');
+      _notePasswordEnabled =
+          (settings['note_password_enabled'] ?? 'false') == 'true';
+      _notePassword = settings['note_password'] ?? '';
+      _passwordHintQuestion = settings['password_hint_question'] ?? '';
+      _passwordHintAnswer = settings['password_hint_answer'] ?? '';
+      _darkTheme = (settings['dark_theme'] ?? 'true') == 'true';
+      _colorfulNotes = (settings['colorful_notes'] ?? 'false') == 'true';
+      _fontFamily = settings['font_family'] ?? 'Varsayılan';
+      _globalFontSize =
+          double.tryParse(settings['global_font_size'] ?? '') ?? 16.0;
+      final textColorVal = int.tryParse(settings['text_color'] ?? '');
       if (textColorVal != null) _textColor = Color(textColorVal);
-      _previewLines = prefs.getInt('preview_lines') ?? 3;
-      _widgetFontSize = prefs.getDouble('widget_font_size') ?? 14.0;
-      _widgetBgOpacity = prefs.getDouble('widget_bg_opacity') ?? 1.0;
-      _widgetDark = prefs.getBool('widget_dark') ?? true;
+      _previewLines = int.tryParse(settings['preview_lines'] ?? '') ?? 3;
+      _widgetFontSize =
+          double.tryParse(settings['widget_font_size'] ?? '') ?? 14.0;
+      _widgetBgOpacity =
+          double.tryParse(settings['widget_bg_opacity'] ?? '') ?? 1.0;
+      _widgetDark = (settings['widget_dark'] ?? 'true') == 'true';
     });
+
+    // İlk açılışta oluşturulan hoş geldin notunu kalıcı hale getir ve
+    // veritabanının artık başlatılmış olduğunu işaretle.
+    if (neverInitialized) {
+      await db.replaceNotes(_notes);
+      await db.setSetting('_initialized', 'true');
+    }
   }
 
   Future<void> _saveData() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('saved_notes_v2', jsonEncode(_notes));
-    await prefs.setString('deleted_notes_v2', jsonEncode(_deletedNotes));
-    await prefs.setString('saved_categories', jsonEncode(_categories));
-    await prefs.setString('saved_category_colors', jsonEncode(_categoryColors));
-    await prefs.setString(
-      'locked_categories',
-      jsonEncode(_lockedCategories.toList()),
-    );
-    await prefs.setString('sort_criteria', _sortCriteria);
-    await prefs.setBool('is_ascending', _isAscending);
-    await prefs.setBool('is_list_view', _isListView);
-    await prefs.setString('active_category', _activeCategory);
+    final db = DBHelper.instance;
+    await db.replaceNotes(_notes);
+    await db.replaceDeletedNotes(_deletedNotes);
+    await db.replaceCategories(_categories, _categoryColors, _lockedCategories);
+
+    await db.setSetting('_initialized', 'true');
+    await db.setSetting('sort_criteria', _sortCriteria);
+    await db.setSetting('is_ascending', _isAscending.toString());
+    await db.setSetting('is_list_view', _isListView.toString());
+    await db.setSetting('active_category', _activeCategory);
 
     // Ayarlar
-    await prefs.setBool('note_password_enabled', _notePasswordEnabled);
-    await prefs.setString('note_password', _notePassword);
-    await prefs.setString('password_hint_question', _passwordHintQuestion);
-    await prefs.setString('password_hint_answer', _passwordHintAnswer);
-    await prefs.setBool('dark_theme', _darkTheme);
-    await prefs.setBool('colorful_notes', _colorfulNotes);
-    await prefs.setString('font_family', _fontFamily);
-    await prefs.setDouble('global_font_size', _globalFontSize);
-    await prefs.setInt('text_color', _textColor.toARGB32());
-    await prefs.setInt('preview_lines', _previewLines);
-    await prefs.setDouble('widget_font_size', _widgetFontSize);
-    await prefs.setDouble('widget_bg_opacity', _widgetBgOpacity);
-    await prefs.setBool('widget_dark', _widgetDark);
+    await db.setSetting(
+      'note_password_enabled',
+      _notePasswordEnabled.toString(),
+    );
+    await db.setSetting('note_password', _notePassword);
+    await db.setSetting('password_hint_question', _passwordHintQuestion);
+    await db.setSetting('password_hint_answer', _passwordHintAnswer);
+    await db.setSetting('dark_theme', _darkTheme.toString());
+    await db.setSetting('colorful_notes', _colorfulNotes.toString());
+    await db.setSetting('font_family', _fontFamily);
+    await db.setSetting('global_font_size', _globalFontSize.toString());
+    await db.setSetting('text_color', _textColor.toARGB32().toString());
+    await db.setSetting('preview_lines', _previewLines.toString());
+    await db.setSetting('widget_font_size', _widgetFontSize.toString());
+    await db.setSetting('widget_bg_opacity', _widgetBgOpacity.toString());
+    await db.setSetting('widget_dark', _widgetDark.toString());
   }
 
   String _getFormattedDate() {
