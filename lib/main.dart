@@ -24,11 +24,27 @@ bool _looksTurkish(String text) {
   final lower = trimmed.toLowerCase();
   int score = 0;
   for (final ch in ['ı', 'ğ', 'ş', 'ç', 'ö', 'ü']) {
-    if (lower.contains(ch)) { score += 3; break; } // bir tane yeter, Türkçe harf kesin
+    if (lower.contains(ch)) {
+      score += 3;
+      break;
+    } // bir tane yeter, Türkçe harf kesin
   }
   for (final word in [
-    'bir', 've', 'ile', 'için', 'değil', 'var', 'yok', 'gibi',
-    'ama', 'çünkü', 'daha', 'evet', 'hayır', 'olan', 'olarak',
+    'bir',
+    've',
+    'ile',
+    'için',
+    'değil',
+    'var',
+    'yok',
+    'gibi',
+    'ama',
+    'çünkü',
+    'daha',
+    'evet',
+    'hayır',
+    'olan',
+    'olarak',
   ]) {
     if (RegExp('\\b$word\\b').hasMatch(lower)) score += 1;
   }
@@ -41,9 +57,9 @@ Future<void> _shareSelectedText(BuildContext context, String text) async {
     await SharePlus.instance.share(ShareParams(text: text));
   } catch (_) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Paylaşım başlatılamadı.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Paylaşım başlatılamadı.')));
     }
   }
 }
@@ -56,15 +72,15 @@ Future<void> _openInTranslate(BuildContext context, String text) async {
   try {
     final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!launched && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Çeviri açılamadı.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Çeviri açılamadı.')));
     }
   } catch (_) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Çeviri açılamadı.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Çeviri açılamadı.')));
     }
   }
 }
@@ -94,14 +110,14 @@ Widget buildCustomContextMenu(
   // İstenen sıra: Kes, Kopyala, Yapıştır, Tümünü Seç, Paylaş, Çevir
   final ordered = <ContextMenuButtonItem>[];
 
-  final cut      = _findBtn(base, ContextMenuButtonType.cut);
-  final copy     = _findBtn(base, ContextMenuButtonType.copy);
-  final paste    = _findBtn(base, ContextMenuButtonType.paste);
+  final cut = _findBtn(base, ContextMenuButtonType.cut);
+  final copy = _findBtn(base, ContextMenuButtonType.copy);
+  final paste = _findBtn(base, ContextMenuButtonType.paste);
   final selectAll = _findBtn(base, ContextMenuButtonType.selectAll);
 
-  if (cut != null)      ordered.add(cut);
-  if (copy != null)     ordered.add(copy);
-  if (paste != null)    ordered.add(paste);
+  if (cut != null) ordered.add(cut);
+  if (copy != null) ordered.add(copy);
+  if (paste != null) ordered.add(paste);
   if (selectAll != null) ordered.add(selectAll);
 
   // Paylaş butonu (yalnızca seçim varsa)
@@ -180,18 +196,13 @@ class DNoteApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('tr', 'TR'),
-        Locale('en', 'US'),
-      ],
+      supportedLocales: const [Locale('tr', 'TR'), Locale('en', 'US')],
       locale: const Locale('tr', 'TR'),
       theme: ThemeData(
         brightness: Brightness.dark,
         primaryColor: Colors.amber,
         scaffoldBackgroundColor: const Color(0xFF121212),
-        cardTheme: const CardThemeData(
-          color: Color(0xFF1E1E1E),
-        ),
+        cardTheme: const CardThemeData(color: Color(0xFF1E1E1E)),
         appBarTheme: const AppBarTheme(
           // Liste kaydırıldığında AppBar'ın rengi otomatik koyulaşmasın diye
           // Material 3'ün scroll-altı tint/elevation efektini kapatıyoruz.
@@ -341,7 +352,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
             'color': 'Amber',
             'type': 'text',
             'isLocked': false,
-          }
+          },
         ];
       });
     }
@@ -393,7 +404,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
     await prefs.setString('deleted_notes_v2', jsonEncode(_deletedNotes));
     await prefs.setString('saved_categories', jsonEncode(_categories));
     await prefs.setString('saved_category_colors', jsonEncode(_categoryColors));
-    await prefs.setString('locked_categories', jsonEncode(_lockedCategories.toList()));
+    await prefs.setString(
+      'locked_categories',
+      jsonEncode(_lockedCategories.toList()),
+    );
     await prefs.setString('sort_criteria', _sortCriteria);
     await prefs.setBool('is_ascending', _isAscending);
     await prefs.setBool('is_list_view', _isListView);
@@ -502,25 +516,31 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                      color: Colors.grey[700],
-                      borderRadius: BorderRadius.circular(2)),
+                    color: Colors.grey[700],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
               ),
               const SizedBox(height: 14),
               Padding(
                 padding: const EdgeInsets.only(bottom: 4),
-                child: Text(category,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
+                child: Text(
+                  category,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               const SizedBox(height: 8),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.edit_outlined, color: Colors.white),
-                title: const Text('Adını Düzenle / Renk',
-                    style: TextStyle(color: Colors.white)),
+                title: const Text(
+                  'Adını Düzenle / Renk',
+                  style: TextStyle(color: Colors.white),
+                ),
                 onTap: () {
                   Navigator.pop(sheetContext);
                   _showAddCategoryDialog(editingCategory: category);
@@ -543,16 +563,27 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       context: context,
                       builder: (ctx) => AlertDialog(
                         backgroundColor: const Color(0xFF1E1E1E),
-                        title: const Text('Parola Gerekiyor', style: TextStyle(color: Colors.amber)),
+                        title: const Text(
+                          'Parola Gerekiyor',
+                          style: TextStyle(color: Colors.amber),
+                        ),
                         content: const Text(
                           'Kategoriyi kilitleyebilmek için önce Ayarlar > Not Şifresi bölümünden bir parola belirlemeniz gerekiyor.',
                           style: TextStyle(color: Colors.white70),
                         ),
                         actions: [
                           ElevatedButton(
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.amber,
+                            ),
                             onPressed: () => Navigator.pop(ctx),
-                            child: const Text('Tamam', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                            child: const Text(
+                              'Tamam',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -573,19 +604,35 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       }
                     });
                     _saveData();
-                    _showInfoBar(isLocked ? 'Kilit kaldırıldı' : 'Kategori kilitlendi');
+                    _showInfoBar(
+                      isLocked ? 'Kilit kaldırıldı' : 'Kategori kilitlendi',
+                    );
                   } else {
                     showDialog(
                       context: context,
                       builder: (ctx) => AlertDialog(
                         backgroundColor: const Color(0xFF1E1E1E),
-                        title: const Text('Hatalı Parola', style: TextStyle(color: Colors.red)),
-                        content: const Text('Girdiğiniz parola yanlış.', style: TextStyle(color: Colors.white70)),
+                        title: const Text(
+                          'Hatalı Parola',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        content: const Text(
+                          'Girdiğiniz parola yanlış.',
+                          style: TextStyle(color: Colors.white70),
+                        ),
                         actions: [
                           ElevatedButton(
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.amber,
+                            ),
                             onPressed: () => Navigator.pop(ctx),
-                            child: const Text('Tamam', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                            child: const Text(
+                              'Tamam',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -596,34 +643,44 @@ class _NoteListScreenState extends State<NoteListScreen> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.delete_outline, color: Colors.red),
-                title: const Text('Kategoriyi Sil',
-                    style: TextStyle(color: Colors.red)),
+                title: const Text(
+                  'Kategoriyi Sil',
+                  style: TextStyle(color: Colors.red),
+                ),
                 onTap: () {
                   Navigator.pop(sheetContext);
                   showDialog(
                     context: context,
                     builder: (confirmContext) => AlertDialog(
                       backgroundColor: const Color(0xFF1E1E1E),
-                      title: const Text('Kategoriyi Sil',
-                          style: TextStyle(color: Colors.amber)),
+                      title: const Text(
+                        'Kategoriyi Sil',
+                        style: TextStyle(color: Colors.amber),
+                      ),
                       content: Text(
-                          '"$category" kategorisini silmek istediğinize emin misiniz? Bu kategorideki notlar kategorisiz kalacak.',
-                          style: const TextStyle(color: Colors.white70)),
+                        '"$category" kategorisini silmek istediğinize emin misiniz? Bu kategorideki notlar kategorisiz kalacak.',
+                        style: const TextStyle(color: Colors.white70),
+                      ),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(confirmContext),
-                          child: const Text('İptal',
-                              style: TextStyle(color: Colors.grey)),
+                          child: const Text(
+                            'İptal',
+                            style: TextStyle(color: Colors.grey),
+                          ),
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red),
+                            backgroundColor: Colors.red,
+                          ),
                           onPressed: () {
                             Navigator.pop(confirmContext);
                             _deleteCategory(category);
                           },
-                          child: const Text('Sil',
-                              style: TextStyle(color: Colors.white)),
+                          child: const Text(
+                            'Sil',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ],
                     ),
@@ -648,7 +705,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
     _showDeletedBar(deletedNote);
   }
 
-
   void _duplicateNote(int index) {
     final original = _notes[index];
     final now = DateTime.now();
@@ -672,7 +728,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
     final note = _notes[index];
     final title = (note['title'] ?? '').toString().trim();
     final content = (note['content'] ?? '').toString().trim();
-    final text = [if (title.isNotEmpty) title, if (content.isNotEmpty) content].join('\n\n');
+    final text = [
+      if (title.isNotEmpty) title,
+      if (content.isNotEmpty) content,
+    ].join('\n\n');
     await Clipboard.setData(ClipboardData(text: text));
     _showInfoBar('Kopyalandı');
   }
@@ -691,7 +750,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
             decoration: BoxDecoration(
               color: const Color(0xFF1E1E1E),
               borderRadius: BorderRadius.circular(8),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.4), blurRadius: 8, offset: const Offset(0, 2))],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.4),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Row(
               children: [
@@ -709,12 +774,15 @@ class _NoteListScreenState extends State<NoteListScreen> {
   }
 
   void _showTextSizeSlider(int noteIndex) {
-    final currentSize = (_notes[noteIndex]['fontSize'] as num?)?.toDouble() ?? _globalFontSize;
+    final currentSize =
+        (_notes[noteIndex]['fontSize'] as num?)?.toDouble() ?? _globalFontSize;
     double tempSize = currentSize;
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xFF1E1E1E),
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (sheetCtx) => StatefulBuilder(
         builder: (context, setSheet) => SafeArea(
           child: Padding(
@@ -722,9 +790,23 @@ class _NoteListScreenState extends State<NoteListScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[700], borderRadius: BorderRadius.circular(2))),
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[700],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
                 const SizedBox(height: 16),
-                const Text('Metin Boyutu', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                const Text(
+                  'Metin Boyutu',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 Row(
                   children: [
@@ -733,12 +815,24 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     Expanded(
                       child: SliderTheme(
                         data: SliderTheme.of(context).copyWith(
-                          activeTrackColor: Colors.amber, inactiveTrackColor: const Color(0xFF3A3A3A),
-                          thumbColor: Colors.amber, overlayColor: Colors.amber.withValues(alpha: 0.2),
-                          valueIndicatorColor: Colors.amber, valueIndicatorTextStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                          activeTrackColor: Colors.amber,
+                          inactiveTrackColor: const Color(0xFF3A3A3A),
+                          thumbColor: Colors.amber,
+                          overlayColor: Colors.amber.withValues(alpha: 0.2),
+                          valueIndicatorColor: Colors.amber,
+                          valueIndicatorTextStyle: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        child: Slider(value: tempSize, min: 10, max: 30, divisions: 20, label: '${tempSize.round()}',
-                          onChanged: (v) => setSheet(() => tempSize = v)),
+                        child: Slider(
+                          value: tempSize,
+                          min: 10,
+                          max: 30,
+                          divisions: 20,
+                          label: '${tempSize.round()}',
+                          onChanged: (v) => setSheet(() => tempSize = v),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -746,21 +840,42 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                Text('Örnek metin', style: TextStyle(color: Colors.white70, fontSize: tempSize)),
+                Text(
+                  'Örnek metin',
+                  style: TextStyle(color: Colors.white70, fontSize: tempSize),
+                ),
                 const SizedBox(height: 20),
                 Row(
                   children: [
-                    Expanded(child: TextButton(onPressed: () => Navigator.pop(sheetCtx), child: const Text('İptal', style: TextStyle(color: Colors.grey)))),
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(sheetCtx),
+                        child: const Text(
+                          'İptal',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.amber,
+                        ),
                         onPressed: () {
-                          setState(() => _notes[noteIndex]['fontSize'] = tempSize);
+                          setState(
+                            () => _notes[noteIndex]['fontSize'] = tempSize,
+                          );
                           _saveData();
                           Navigator.pop(sheetCtx);
                         },
-                        child: const Text('Uygula', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                        child: const Text(
+                          'Uygula',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -785,7 +900,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx2, setDlg) => AlertDialog(
           backgroundColor: const Color(0xFF1E1E1E),
-          title: const Text('Parola Gerekiyor', style: TextStyle(color: Colors.amber)),
+          title: const Text(
+            'Parola Gerekiyor',
+            style: TextStyle(color: Colors.amber),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -793,15 +911,19 @@ class _NoteListScreenState extends State<NoteListScreen> {
               TextField(
                 selectionWidthStyle: ui.BoxWidthStyle.tight,
                 contextMenuBuilder: buildCustomContextMenu,
-                  selectionHeightStyle: ui.BoxHeightStyle.max,
+                selectionHeightStyle: ui.BoxHeightStyle.max,
                 controller: ctrl,
                 obscureText: true,
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
                   hintText: 'Parolayı girin',
                   hintStyle: TextStyle(color: Colors.grey),
-                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF444444))),
-                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFF444444)),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber),
+                  ),
                 ),
               ),
               if (_passwordHintQuestion.isNotEmpty) ...[
@@ -839,7 +961,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 Navigator.pop(ctx);
                 completer.complete(ok);
               },
-              child: const Text('Doğrula', style: TextStyle(color: Colors.black)),
+              child: const Text(
+                'Doğrula',
+                style: TextStyle(color: Colors.black),
+              ),
             ),
           ],
         ),
@@ -859,27 +984,37 @@ class _NoteListScreenState extends State<NoteListScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx2, setDlg) => AlertDialog(
           backgroundColor: const Color(0xFF1E1E1E),
-          title: const Text('Güvenlik Sorusu', style: TextStyle(color: Colors.amber)),
+          title: const Text(
+            'Güvenlik Sorusu',
+            style: TextStyle(color: Colors.amber),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 _passwordHintQuestion,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               const SizedBox(height: 12),
               TextField(
                 selectionWidthStyle: ui.BoxWidthStyle.tight,
                 contextMenuBuilder: buildCustomContextMenu,
-                  selectionHeightStyle: ui.BoxHeightStyle.max,
+                selectionHeightStyle: ui.BoxHeightStyle.max,
                 controller: answerCtrl,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Cevabınız',
                   hintStyle: const TextStyle(color: Colors.grey),
-                  enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF444444))),
-                  focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+                  enabledBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFF444444)),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber),
+                  ),
                   errorText: errorText,
                 ),
                 onSubmitted: (_) {},
@@ -894,7 +1029,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
               onPressed: () {
-                final correct = answerCtrl.text.trim().toLowerCase() ==
+                final correct =
+                    answerCtrl.text.trim().toLowerCase() ==
                     _passwordHintAnswer.trim().toLowerCase();
                 if (correct) {
                   Navigator.pop(ctx);
@@ -903,7 +1039,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   setDlg(() => errorText = 'Cevap yanlış. Tekrar deneyin.');
                 }
               },
-              child: const Text('Onayla', style: TextStyle(color: Colors.black)),
+              child: const Text(
+                'Onayla',
+                style: TextStyle(color: Colors.black),
+              ),
             ),
           ],
         ),
@@ -937,7 +1076,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
               child: SelectableText(
                 _notePassword,
                 style: const TextStyle(
-                    color: Colors.amber, fontSize: 18, fontWeight: FontWeight.bold),
+                  color: Colors.amber,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -946,7 +1088,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Tamam', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+            child: const Text(
+              'Tamam',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
@@ -964,9 +1112,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
   // ── Ayarlar Sayfası ────────────────────────────────────────
   void _openSettings() {
     Navigator.pop(context); // drawer'ı kapat
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => _SettingsPage(state: this)),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => _SettingsPage(state: this)));
   }
 
   // Yeni: "Kilitli" klasörüne girmeden önce parola sorar.
@@ -994,7 +1142,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
       _saveData();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Parola yanlış.'), backgroundColor: Colors.red),
+        const SnackBar(
+          content: Text('Parola yanlış.'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -1032,17 +1183,25 @@ class _NoteListScreenState extends State<NoteListScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Not silindi', style: TextStyle(color: Colors.white)),
+                const Text(
+                  'Not silindi',
+                  style: TextStyle(color: Colors.white),
+                ),
                 TextButton(
                   onPressed: () {
                     setState(() {
                       _notes.add(deletedNote);
-                      _deletedNotes.removeWhere((n) => n['id'] == deletedNote['id']);
+                      _deletedNotes.removeWhere(
+                        (n) => n['id'] == deletedNote['id'],
+                      );
                     });
                     _saveData();
                     _hideDeletedBar();
                   },
-                  child: const Text('Geri Getir', style: TextStyle(color: Colors.amber)),
+                  child: const Text(
+                    'Geri Getir',
+                    style: TextStyle(color: Colors.amber),
+                  ),
                 ),
               ],
             ),
@@ -1075,8 +1234,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.text_snippet_outlined, color: Colors.amber),
-              title: const Text('Metin Notu', style: TextStyle(color: Colors.white)),
+              leading: const Icon(
+                Icons.text_snippet_outlined,
+                color: Colors.amber,
+              ),
+              title: const Text(
+                'Metin Notu',
+                style: TextStyle(color: Colors.white),
+              ),
               onTap: () {
                 Navigator.pop(context);
                 _showNoteDialog(type: 'text');
@@ -1084,7 +1249,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.checklist, color: Colors.amber),
-              title: const Text('Kontrol Listesi', style: TextStyle(color: Colors.white)),
+              title: const Text(
+                'Kontrol Listesi',
+                style: TextStyle(color: Colors.white),
+              ),
               onTap: () {
                 Navigator.pop(context);
                 _showNoteDialog(type: 'checklist');
@@ -1092,7 +1260,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.folder_outlined, color: Colors.amber),
-              title: const Text('Kategori', style: TextStyle(color: Colors.white)),
+              title: const Text(
+                'Kategori',
+                style: TextStyle(color: Colors.white),
+              ),
               onTap: () {
                 Navigator.pop(context);
                 _showAddCategoryDialog();
@@ -1124,9 +1295,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
     return upperFirst + text.substring(1);
   }
 
-  void _showAddCategoryDialog({void Function(String)? onAdded, String? editingCategory}) {
+  void _showAddCategoryDialog({
+    void Function(String)? onAdded,
+    String? editingCategory,
+  }) {
     final isEditing = editingCategory != null;
-    final controller = TextEditingController(text: isEditing ? editingCategory : '');
+    final controller = TextEditingController(
+      text: isEditing ? editingCategory : '',
+    );
     Color selectedColor = isEditing
         ? _getCategoryColor(editingCategory)
         : _categoryPalette[_categories.length % _categoryPalette.length];
@@ -1136,8 +1312,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
           backgroundColor: const Color(0xFF1E1E1E),
-          title: Text(isEditing ? 'Kategoriyi Düzenle' : 'Yeni Kategori',
-              style: const TextStyle(color: Colors.amber)),
+          title: Text(
+            isEditing ? 'Kategoriyi Düzenle' : 'Yeni Kategori',
+            style: const TextStyle(color: Colors.amber),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1145,30 +1323,37 @@ class _NoteListScreenState extends State<NoteListScreen> {
               TextField(
                 selectionWidthStyle: ui.BoxWidthStyle.tight,
                 contextMenuBuilder: buildCustomContextMenu,
-                  selectionHeightStyle: ui.BoxHeightStyle.max,
+                selectionHeightStyle: ui.BoxHeightStyle.max,
                 controller: controller,
                 autofocus: true,
                 textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
                   labelText: 'Kategori adı',
                   labelStyle: TextStyle(color: Colors.grey),
-                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber),
+                  ),
                 ),
                 style: const TextStyle(color: Colors.white),
               ),
               const SizedBox(height: 18),
               const Align(
                 alignment: Alignment.centerLeft,
-                child: Text('Renk',
-                    style: TextStyle(color: Colors.grey, fontSize: 12)),
+                child: Text(
+                  'Renk',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
               ),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 10,
                 runSpacing: 10,
                 children: _categoryPalette.map((color) {
-                  final isSelected = selectedColor.toARGB32() == color.toARGB32();
+                  final isSelected =
+                      selectedColor.toARGB32() == color.toARGB32();
                   return GestureDetector(
                     onTap: () {
                       setDialogState(() {
@@ -1186,7 +1371,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             : null,
                       ),
                       child: isSelected
-                          ? const Icon(Icons.check, color: Colors.black, size: 18)
+                          ? const Icon(
+                              Icons.check,
+                              color: Colors.black,
+                              size: 18,
+                            )
                           : null,
                     ),
                   );
@@ -1249,8 +1438,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 }
                 Navigator.pop(context);
               },
-              child: Text(isEditing ? 'Kaydet' : 'Ekle',
-                  style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              child: Text(
+                isEditing ? 'Kaydet' : 'Ekle',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),
@@ -1288,29 +1482,41 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                      color: Colors.grey[700],
-                      borderRadius: BorderRadius.circular(2)),
+                    color: Colors.grey[700],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
               ),
               const SizedBox(height: 14),
-              const Text('Sınıflandır',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold)),
+              const Text(
+                'Sınıflandır',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 12),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.add_circle_outline,
-                    color: Colors.white),
-                title: const Text('Kategori Ekle',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w500)),
+                leading: const Icon(
+                  Icons.add_circle_outline,
+                  color: Colors.white,
+                ),
+                title: const Text(
+                  'Kategori Ekle',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
                 onTap: () {
                   Navigator.pop(sheetContext);
-                  _showAddCategoryDialog(onAdded: (name) {
-                    assignCategory(name);
-                  });
+                  _showAddCategoryDialog(
+                    onAdded: (name) {
+                      assignCategory(name);
+                    },
+                  );
                 },
               ),
               if (_categories.isNotEmpty) ...[
@@ -1324,16 +1530,20 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       final catColor = _getCategoryColor(cat);
                       return ListTile(
                         contentPadding: EdgeInsets.zero,
-                        leading: Icon(Icons.folder_outlined,
-                            color: isSelected ? catColor : catColor.withValues(alpha: 0.6)),
-                        title: Text(cat,
-                            style: TextStyle(
-                                color: isSelected
-                                    ? catColor
-                                    : Colors.white)),
+                        leading: Icon(
+                          Icons.folder_outlined,
+                          color: isSelected
+                              ? catColor
+                              : catColor.withValues(alpha: 0.6),
+                        ),
+                        title: Text(
+                          cat,
+                          style: TextStyle(
+                            color: isSelected ? catColor : Colors.white,
+                          ),
+                        ),
                         trailing: isSelected
-                            ? Icon(Icons.check_circle,
-                                color: catColor)
+                            ? Icon(Icons.check_circle, color: catColor)
                             : null,
                         onTap: () {
                           Navigator.pop(sheetContext);
@@ -1348,11 +1558,17 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 const Divider(color: Color(0xFF2E2E2E), height: 8),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.label_off_outlined,
-                      color: Colors.red),
-                  title: const Text('Mevcut Kategoriyi Kaldır',
-                      style: TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.w500)),
+                  leading: const Icon(
+                    Icons.label_off_outlined,
+                    color: Colors.red,
+                  ),
+                  title: const Text(
+                    'Mevcut Kategoriyi Kaldır',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                   onTap: () {
                     Navigator.pop(sheetContext);
                     assignCategory(null);
@@ -1404,35 +1620,73 @@ class _NoteListScreenState extends State<NoteListScreen> {
           children: const [
             Icon(Icons.info_outline, color: Colors.lightBlueAccent, size: 22),
             SizedBox(width: 10),
-            Text('Ayrıntılar', style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold)),
+            Text(
+              'Ayrıntılar',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _detailRow(Icons.calendar_today_outlined, Colors.amber, 'Oluşturulma', createdStr),
+              _detailRow(
+                Icons.calendar_today_outlined,
+                Colors.amber,
+                'Oluşturulma',
+                createdStr,
+              ),
               const SizedBox(height: 14),
-              _detailRow(Icons.edit_calendar_outlined, Colors.greenAccent, 'Son Düzenleme', modifiedStr),
+              _detailRow(
+                Icons.edit_calendar_outlined,
+                Colors.greenAccent,
+                'Son Düzenleme',
+                modifiedStr,
+              ),
               const SizedBox(height: 14),
-              _detailRow(Icons.abc_outlined, Colors.purpleAccent, 'Karakter Sayısı', '$charCount karakter'),
+              _detailRow(
+                Icons.abc_outlined,
+                Colors.purpleAccent,
+                'Karakter Sayısı',
+                '$charCount karakter',
+              ),
               const SizedBox(height: 14),
-              _detailRow(Icons.text_fields_outlined, Colors.cyanAccent, 'Kelime Sayısı', '$wordCount kelime'),
+              _detailRow(
+                Icons.text_fields_outlined,
+                Colors.cyanAccent,
+                'Kelime Sayısı',
+                '$wordCount kelime',
+              ),
             ],
           ),
         ),
         actions: [
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.amber, foregroundColor: Colors.black),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.amber,
+              foregroundColor: Colors.black,
+            ),
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Tamam', style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text(
+              'Tamam',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _detailRow(IconData icon, Color iconColor, String label, String value) {
+  Widget _detailRow(
+    IconData icon,
+    Color iconColor,
+    String label,
+    String value,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1450,9 +1704,19 @@ class _NoteListScreenState extends State<NoteListScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(color: Colors.grey, fontSize: 11)),
+              Text(
+                label,
+                style: const TextStyle(color: Colors.grey, fontSize: 11),
+              ),
               const SizedBox(height: 2),
-              Text(value, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+              Text(
+                value,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ],
           ),
         ),
@@ -1472,48 +1736,73 @@ class _NoteListScreenState extends State<NoteListScreen> {
         'icon': isFavorite ? Icons.star : Icons.star_outline,
         'label': isFavorite ? 'Favoriden Çıkar' : 'Favori',
         'color': Colors.amber,
-        'key': 'favorite'
+        'key': 'favorite',
       },
       {
         'icon': isLocked ? Icons.lock_open : Icons.lock_outline,
         'label': isLocked ? 'Kilidi Kaldır' : 'Kilitle',
         'color': Colors.blueGrey,
-        'key': 'lock'
+        'key': 'lock',
       },
       {
         'icon': isArchived ? Icons.unarchive_outlined : Icons.archive_outlined,
         'label': isArchived ? 'Arşivden Çıkar' : 'Arşiv',
         'color': Colors.teal,
-        'key': 'archive'
+        'key': 'archive',
       },
-      {'icon': Icons.label_outline, 'label': 'Sınıflandır', 'color': Colors.purple, 'key': 'classify'},
-      {'icon': Icons.delete_outline, 'label': 'Sil', 'color': Colors.red, 'key': 'delete'},
-      {'icon': Icons.share_outlined, 'label': 'Paylaş', 'color': Colors.blue, 'key': 'share'},
-      {'icon': Icons.attach_file, 'label': 'Dosya Ekle', 'color': Colors.orange, 'key': 'file'},
+      {
+        'icon': Icons.label_outline,
+        'label': 'Sınıflandır',
+        'color': Colors.purple,
+        'key': 'classify',
+      },
+      {
+        'icon': Icons.delete_outline,
+        'label': 'Sil',
+        'color': Colors.red,
+        'key': 'delete',
+      },
+      {
+        'icon': Icons.share_outlined,
+        'label': 'Paylaş',
+        'color': Colors.blue,
+        'key': 'share',
+      },
+      {
+        'icon': Icons.attach_file,
+        'label': 'Dosya Ekle',
+        'color': Colors.orange,
+        'key': 'file',
+      },
       {
         'icon': Icons.copy_all_outlined,
         'label': 'Kopya Oluştur',
         'color': Colors.green,
-        'key': 'duplicate'
+        'key': 'duplicate',
       },
       {
         'icon': Icons.content_paste,
         'label': 'İçeriği Kopyala',
         'color': Colors.cyan,
-        'key': 'copy_text'
+        'key': 'copy_text',
       },
-      {'icon': Icons.text_fields, 'label': 'Metin Boyutu', 'color': Colors.pink, 'key': 'text_size'},
+      {
+        'icon': Icons.text_fields,
+        'label': 'Metin Boyutu',
+        'color': Colors.pink,
+        'key': 'text_size',
+      },
       {
         'icon': Icons.shortcut_outlined,
         'label': 'Kısayol Ata',
         'color': Colors.lime,
-        'key': 'shortcut'
+        'key': 'shortcut',
       },
       {
         'icon': Icons.info_outline,
         'label': 'Ayrıntılar',
         'color': Colors.lightBlueAccent,
-        'key': 'details'
+        'key': 'details',
       },
     ];
 
@@ -1535,11 +1824,20 @@ class _NoteListScreenState extends State<NoteListScreen> {
               Container(
                 width: 40,
                 height: 4,
-                decoration: BoxDecoration(color: Colors.grey[700], borderRadius: BorderRadius.circular(2)),
+                decoration: BoxDecoration(
+                  color: Colors.grey[700],
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
               const SizedBox(height: 10),
-              const Text('Eylem Seç',
-                  style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold)),
+              const Text(
+                'Eylem Seç',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 8),
               GridView.builder(
                 shrinkWrap: true,
@@ -1561,12 +1859,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
 
                       if (key == 'favorite') {
                         setState(() {
-                          _notes[noteIndex]['isFavorite'] = !(_notes[noteIndex]['isFavorite'] == true);
+                          _notes[noteIndex]['isFavorite'] =
+                              !(_notes[noteIndex]['isFavorite'] == true);
                         });
                         _saveData();
                       } else if (key == 'archive') {
                         setState(() {
-                          _notes[noteIndex]['isArchived'] = !(_notes[noteIndex]['isArchived'] == true);
+                          _notes[noteIndex]['isArchived'] =
+                              !(_notes[noteIndex]['isArchived'] == true);
                         });
                         _saveData();
                       } else if (key == 'delete') {
@@ -1578,17 +1878,25 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       } else if (key == 'share') {
                         final note = _notes[noteIndex];
                         final title = (note['title'] ?? '').toString().trim();
-                        final content = (note['content'] ?? '').toString().trim();
-                        final text = [if (title.isNotEmpty) title, if (content.isNotEmpty) content].join('\n\n');
+                        final content = (note['content'] ?? '')
+                            .toString()
+                            .trim();
+                        final text = [
+                          if (title.isNotEmpty) title,
+                          if (content.isNotEmpty) content,
+                        ].join('\n\n');
                         if (text.isNotEmpty) {
-                          await SharePlus.instance.share(ShareParams(text: text));
+                          await SharePlus.instance.share(
+                            ShareParams(text: text),
+                          );
                         }
                       } else if (key == 'copy_text') {
                         _copyNoteContent(noteIndex);
                       } else if (key == 'text_size') {
                         _showTextSizeSlider(noteIndex);
                       } else if (key == 'lock') {
-                        final currentlyLocked = _notes[noteIndex]['isLocked'] == true;
+                        final currentlyLocked =
+                            _notes[noteIndex]['isLocked'] == true;
                         if (currentlyLocked) {
                           setState(() => _notes[noteIndex]['isLocked'] = false);
                           _saveData();
@@ -1597,7 +1905,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           if (!_notePasswordEnabled) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Önce Ayarlar > Not Şifresi ile parola belirleyin.'),
+                                content: Text(
+                                  'Önce Ayarlar > Not Şifresi ile parola belirleyin.',
+                                ),
                                 backgroundColor: Colors.red,
                               ),
                             );
@@ -1621,15 +1931,21 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             color: const Color(0xFF2A2A2A),
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          child: Icon(action['icon'] as IconData,
-                              color: action['color'] as Color, size: 30),
+                          child: Icon(
+                            action['icon'] as IconData,
+                            color: action['color'] as Color,
+                            size: 30,
+                          ),
                         ),
                         const SizedBox(height: 5),
                         Text(
                           action['label'] as String,
                           textAlign: TextAlign.center,
                           maxLines: 2,
-                          style: const TextStyle(color: Colors.white, fontSize: 12),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
@@ -1643,7 +1959,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
     );
   }
 
-  bool _saveNoteIfValid(int? index, String noteType, List<Map<String, dynamic>> checkItems) {
+  bool _saveNoteIfValid(
+    int? index,
+    String noteType,
+    List<Map<String, dynamic>> checkItems,
+  ) {
     final isValid = noteType == 'text'
         ? _contentController.text.trim().isNotEmpty
         : checkItems.any((e) => (e['text'] as String).trim().isNotEmpty);
@@ -1656,7 +1976,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
         // düzenleme" sıralamasında haksız yere başa taşınır.
         final newTitle = _capitalizeFirstLetterTr(_titleController.text.trim());
         final newContent = noteType == 'text' ? _contentController.text : '';
-        final newCheckItems = noteType == 'checklist' ? checkItems : <Map<String, dynamic>>[];
+        final newCheckItems = noteType == 'checklist'
+            ? checkItems
+            : <Map<String, dynamic>>[];
 
         final oldTitle = (_notes[index]['title'] ?? '').toString();
         final oldContent = (_notes[index]['content'] ?? '').toString();
@@ -1664,17 +1986,20 @@ class _NoteListScreenState extends State<NoteListScreen> {
         final oldCheckItemsRaw = _notes[index]['checkItems'];
         final oldCheckItems = oldCheckItemsRaw is List
             ? List<Map<String, dynamic>>.from(
-                oldCheckItemsRaw.map((e) => Map<String, dynamic>.from(e)))
+                oldCheckItemsRaw.map((e) => Map<String, dynamic>.from(e)),
+              )
             : <Map<String, dynamic>>[];
 
-        final checkItemsChanged = newCheckItems.length != oldCheckItems.length ||
+        final checkItemsChanged =
+            newCheckItems.length != oldCheckItems.length ||
             List.generate(newCheckItems.length, (i) {
               final a = newCheckItems[i];
               final b = oldCheckItems[i];
               return a['text'] != b['text'] || a['checked'] != b['checked'];
             }).any((changed) => changed);
 
-        final hasChanges = newTitle != oldTitle ||
+        final hasChanges =
+            newTitle != oldTitle ||
             newContent != oldContent ||
             noteType != oldType ||
             checkItemsChanged;
@@ -1705,7 +2030,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
             'date': _getFormattedDate(),
             'createdDate': currentRawTime,
             'modifiedDate': currentRawTime,
-            'category': (_activeCategory == 'Tümü' ||
+            'category':
+                (_activeCategory == 'Tümü' ||
                     _activeCategory == '__favorites__' ||
                     _activeCategory == '__locked__' ||
                     _activeCategory == '__archive__' ||
@@ -1735,7 +2061,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Çıkmak için tekrar geri tuşuna basın', style: TextStyle(color: Colors.white)),
+            content: Text(
+              'Çıkmak için tekrar geri tuşuna basın',
+              style: TextStyle(color: Colors.white),
+            ),
             duration: Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
             backgroundColor: Color(0xFF424242),
@@ -1761,7 +2090,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
       // controller ve focusnode sayısını checkItems ile eşitle
       while (checkControllers.length < checkItems.length) {
         final idx = checkControllers.length;
-        checkControllers.add(TextEditingController(text: checkItems[idx]['text'] as String? ?? ''));
+        checkControllers.add(
+          TextEditingController(text: checkItems[idx]['text'] as String? ?? ''),
+        );
         checkFocusNodes.add(FocusNode());
       }
       while (checkControllers.length > checkItems.length) {
@@ -1788,7 +2119,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
       _titleController.clear();
       _contentController.clear();
       if (noteType == 'checklist') {
-        checkItems = [{'text': '', 'checked': false}];
+        checkItems = [
+          {'text': '', 'checked': false},
+        ];
         newlyAddedIndex = 0;
       }
     }
@@ -1802,314 +2135,460 @@ class _NoteListScreenState extends State<NoteListScreen> {
           return StatefulBuilder(
             builder: (context, setModalState) {
               final catColor = _getCategoryColor(noteCategory);
-              final isDark = ThemeData.estimateBrightnessForColor(catColor) == Brightness.dark;
-              SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-                statusBarColor: catColor,
-                statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-                statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
-              ));
+              final isDark =
+                  ThemeData.estimateBrightnessForColor(catColor) ==
+                  Brightness.dark;
+              SystemChrome.setSystemUIOverlayStyle(
+                SystemUiOverlayStyle(
+                  statusBarColor: catColor,
+                  statusBarIconBrightness: isDark
+                      ? Brightness.light
+                      : Brightness.dark,
+                  statusBarBrightness: isDark
+                      ? Brightness.dark
+                      : Brightness.light,
+                ),
+              );
               return PopScope(
                 canPop: false,
                 onPopInvokedWithResult: (didPop, result) {
                   if (didPop) return;
                   final saved = _saveNoteIfValid(index, noteType, checkItems);
-                  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-                    statusBarColor: Colors.transparent,
-                    statusBarIconBrightness: Brightness.light,
-                    statusBarBrightness: Brightness.dark,
-                  ));
+                  SystemChrome.setSystemUIOverlayStyle(
+                    const SystemUiOverlayStyle(
+                      statusBarColor: Colors.transparent,
+                      statusBarIconBrightness: Brightness.light,
+                      statusBarBrightness: Brightness.dark,
+                    ),
+                  );
                   if (saved) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: const Text('Not kaydedildi ✓', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
+                        content: const Text(
+                          'Not kaydedildi ✓',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                         backgroundColor: const Color(0xFF3D3D3D),
                         duration: const Duration(seconds: 2),
                         behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.04, left: 60, right: 60),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        margin: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height * 0.04,
+                          left: 60,
+                          right: 60,
+                        ),
                       ),
                     );
                   }
                   Navigator.pop(context);
                 },
                 child: Scaffold(
-                backgroundColor: const Color(0xFF1E1E1E),
-                resizeToAvoidBottomInset: true,
-                appBar: AppBar(
-                  backgroundColor: const Color(0xFF161616),
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                    onPressed: () {
-                      final saved = _saveNoteIfValid(index, noteType, checkItems);
-                      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-                        statusBarColor: Colors.transparent,
-                        statusBarIconBrightness: Brightness.light,
-                        statusBarBrightness: Brightness.dark,
-                      ));
-                      if (saved) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Not kaydedildi ✓', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
-                            backgroundColor: const Color(0xFF3D3D3D),
-                            duration: const Duration(seconds: 2),
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.04, left: 60, right: 60),
+                  backgroundColor: const Color(0xFF1E1E1E),
+                  resizeToAvoidBottomInset: true,
+                  appBar: AppBar(
+                    backgroundColor: const Color(0xFF161616),
+                    leading: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        final saved = _saveNoteIfValid(
+                          index,
+                          noteType,
+                          checkItems,
+                        );
+                        SystemChrome.setSystemUIOverlayStyle(
+                          const SystemUiOverlayStyle(
+                            statusBarColor: Colors.transparent,
+                            statusBarIconBrightness: Brightness.light,
+                            statusBarBrightness: Brightness.dark,
                           ),
                         );
-                      }
-                      Navigator.pop(context);
-                    },
+                        if (saved) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text(
+                                'Not kaydedildi ✓',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              backgroundColor: const Color(0xFF3D3D3D),
+                              duration: const Duration(seconds: 2),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              margin: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).size.height * 0.04,
+                                left: 60,
+                                right: 60,
+                              ),
+                            ),
+                          );
+                        }
+                        Navigator.pop(context);
+                      },
+                    ),
+                    actions: const [SizedBox(width: 8)],
                   ),
-                  actions: const [SizedBox(width: 8)],
-                ),
-                bottomNavigationBar: SafeArea(
-                  child: Builder(builder: (context) {
-                    final Color barColor;
-                    if (_colorfulNotes && index != null && index! >= 0) {
-                      barColor = _categoryPalette[index! % _categoryPalette.length].withValues(alpha: 0.75);
-                    } else {
-                      barColor = _getCategoryColor(noteCategory);
-                    }
-                    return Container(
-                      height: 52,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF161616),
-                        border: Border(
-                          top: BorderSide(color: barColor, width: 3),
+                  bottomNavigationBar: SafeArea(
+                    child: Builder(
+                      builder: (context) {
+                        final Color barColor;
+                        if (_colorfulNotes && index != null && index! >= 0) {
+                          barColor =
+                              _categoryPalette[index! % _categoryPalette.length]
+                                  .withValues(alpha: 0.75);
+                        } else {
+                          barColor = _getCategoryColor(noteCategory);
+                        }
+                        return Container(
+                          height: 52,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF161616),
+                            border: Border(
+                              top: BorderSide(color: barColor, width: 3),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              PopupMenuButton<String>(
+                                icon: const Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                ),
+                                color: const Color(0xFF2A2A2A),
+                                onSelected: (value) {
+                                  if (value == 'classify') {
+                                    if (index != null) {
+                                      _showClassifyDialog(
+                                        index!,
+                                        onChanged: (cat) {
+                                          setModalState(() {
+                                            noteCategory = cat;
+                                          });
+                                        },
+                                      );
+                                    } else {
+                                      _saveNoteIfValid(
+                                        index,
+                                        noteType,
+                                        checkItems,
+                                      );
+                                      if (_notes.isNotEmpty) {
+                                        final newIndex = _notes.length - 1;
+                                        _showClassifyDialog(
+                                          newIndex,
+                                          onChanged: (cat) {
+                                            setModalState(() {
+                                              noteCategory = cat;
+                                              index = newIndex;
+                                            });
+                                          },
+                                        );
+                                      }
+                                    }
+                                  }
+                                },
+                                itemBuilder: (_) => [
+                                  const PopupMenuItem(
+                                    value: 'file',
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.attach_file,
+                                          color: Colors.orange,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          'Dosya Ekle',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const PopupMenuItem(
+                                    value: 'shortcut',
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.shortcut_outlined,
+                                          color: Colors.lime,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          'Kısayol',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const PopupMenuItem(
+                                    value: 'classify',
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.label_outline,
+                                          color: Colors.purple,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          'Sınıflandır',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Expanded(
+                                child: Text(
+                                  index != null
+                                      ? (noteDate.isNotEmpty
+                                            ? noteDate
+                                            : _getFormattedDate())
+                                      : _getFormattedDate(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: barColor,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.more_vert,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () => _showNoteActions(
+                                  context,
+                                  index ?? -1,
+                                  false,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  body: SingleChildScrollView(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextField(
+                          selectionWidthStyle: ui.BoxWidthStyle.tight,
+                          contextMenuBuilder: buildCustomContextMenu,
+                          selectionHeightStyle: ui.BoxHeightStyle.max,
+                          controller: _titleController,
+                          textCapitalization: TextCapitalization.sentences,
+                          decoration: const InputDecoration(
+                            hintText: 'Başlık',
+                            hintStyle: TextStyle(color: Colors.grey),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xFF333333)),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.amber),
+                            ),
+                          ),
+                          style: TextStyle(
+                            color: _textColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      child: Row(
-                        children: [
-                          PopupMenuButton<String>(
-                            icon: const Icon(Icons.add, color: Colors.white),
-                            color: const Color(0xFF2A2A2A),
-                            onSelected: (value) {
-                              if (value == 'classify') {
-                                if (index != null) {
-                                  _showClassifyDialog(index!, onChanged: (cat) {
+                        const SizedBox(height: 20),
+                        if (noteType == 'text')
+                          TextField(
+                            selectionWidthStyle: ui.BoxWidthStyle.tight,
+                            contextMenuBuilder: buildCustomContextMenu,
+                            selectionHeightStyle: ui.BoxHeightStyle.max,
+                            controller: _contentController,
+                            autofocus: true,
+                            textCapitalization: TextCapitalization.sentences,
+                            maxLines: null,
+                            keyboardType: TextInputType.multiline,
+                            decoration: const InputDecoration(
+                              hintText: 'Notunuzu buraya yazın...',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              border: InputBorder.none,
+                            ),
+                            style: TextStyle(
+                              color: _textColor,
+                              fontSize: index != null
+                                  ? ((_notes[index!]['fontSize'] as num?)
+                                            ?.toDouble() ??
+                                        _globalFontSize)
+                                  : _globalFontSize,
+                              height: 1.6,
+                            ),
+                          )
+                        else ...[
+                          ...checkItems.asMap().entries.map((entry) {
+                            final i = entry.key;
+                            final item = entry.value;
+                            return Row(
+                              children: [
+                                Checkbox(
+                                  value: item['checked'] as bool,
+                                  activeColor: Colors.amber,
+                                  onChanged: (val) {
                                     setModalState(() {
-                                      noteCategory = cat;
+                                      checkItems[i]['checked'] = val ?? false;
                                     });
-                                  });
+                                  },
+                                ),
+                                Expanded(
+                                  child: TextField(
+                                    selectionWidthStyle: ui.BoxWidthStyle.tight,
+                                    controller: checkControllers[i],
+                                    focusNode: checkFocusNodes[i],
+                                    autofocus: newlyAddedIndex == i,
+                                    textCapitalization:
+                                        TextCapitalization.sentences,
+                                    contextMenuBuilder: buildCustomContextMenu,
+                                    selectionHeightStyle: ui.BoxHeightStyle.max,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                    decoration: const InputDecoration(
+                                      hintText: 'Madde...',
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      border: InputBorder.none,
+                                    ),
+                                    onChanged: (val) {
+                                      checkItems[i]['text'] = val;
+                                    },
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.grey,
+                                    size: 18,
+                                  ),
+                                  onPressed: () {
+                                    setModalState(() {
+                                      checkItems.removeAt(i);
+                                      checkControllers.removeAt(i).dispose();
+                                      checkFocusNodes.removeAt(i).dispose();
+                                      newlyAddedIndex = null;
+                                    });
+                                  },
+                                ),
+                              ],
+                            );
+                          }),
+                          TextButton.icon(
+                            onPressed: () {
+                              setModalState(() {
+                                checkItems.add({'text': '', 'checked': false});
+                                checkControllers.add(TextEditingController());
+                                checkFocusNodes.add(FocusNode());
+                                newlyAddedIndex = checkItems.length - 1;
+                              });
+                              // Kısa gecikmeyle focus ver (widget build olduktan sonra)
+                              Future.microtask(() {
+                                checkFocusNodes.last.requestFocus();
+                              });
+                            },
+                            icon: const Icon(Icons.add, color: Colors.amber),
+                            label: const Text(
+                              'Madde Ekle',
+                              style: TextStyle(color: Colors.amber),
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 20),
+                        Builder(
+                          builder: (context) {
+                            final hasCategory =
+                                noteCategory != null &&
+                                noteCategory!.isNotEmpty;
+                            if (!hasCategory) return const SizedBox.shrink();
+                            return OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: _textColor,
+                                side: const BorderSide(
+                                  color: Color(0xFF3A3A3A),
+                                  width: 1,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 8,
+                                ),
+                              ),
+                              child: Text(noteCategory!),
+                              onPressed: () {
+                                if (index != null) {
+                                  _showClassifyDialog(
+                                    index!,
+                                    onChanged: (cat) {
+                                      setModalState(() {
+                                        noteCategory = cat;
+                                      });
+                                    },
+                                  );
                                 } else {
                                   _saveNoteIfValid(index, noteType, checkItems);
                                   if (_notes.isNotEmpty) {
                                     final newIndex = _notes.length - 1;
-                                    _showClassifyDialog(newIndex, onChanged: (cat) {
-                                      setModalState(() {
-                                        noteCategory = cat;
-                                        index = newIndex;
-                                      });
-                                    });
+                                    _showClassifyDialog(
+                                      newIndex,
+                                      onChanged: (cat) {
+                                        setModalState(() {
+                                          noteCategory = cat;
+                                          index = newIndex;
+                                        });
+                                      },
+                                    );
                                   }
                                 }
-                              }
-                            },
-                            itemBuilder: (_) => [
-                              const PopupMenuItem(
-                                  value: 'file',
-                                  child: Row(children: [
-                                    Icon(Icons.attach_file, color: Colors.orange, size: 20),
-                                    SizedBox(width: 10),
-                                    Text('Dosya Ekle', style: TextStyle(color: Colors.white))
-                                  ])),
-                              const PopupMenuItem(
-                                  value: 'shortcut',
-                                  child: Row(children: [
-                                    Icon(Icons.shortcut_outlined, color: Colors.lime, size: 20),
-                                    SizedBox(width: 10),
-                                    Text('Kısayol', style: TextStyle(color: Colors.white))
-                                  ])),
-                              const PopupMenuItem(
-                                  value: 'classify',
-                                  child: Row(children: [
-                                    Icon(Icons.label_outline, color: Colors.purple, size: 20),
-                                    SizedBox(width: 10),
-                                    Text('Sınıflandır', style: TextStyle(color: Colors.white))
-                                  ])),
-                            ],
-                          ),
-                          Expanded(
-                            child: Text(
-                              index != null
-                                  ? (noteDate.isNotEmpty ? noteDate : _getFormattedDate())
-                                  : _getFormattedDate(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: barColor, fontSize: 11, fontWeight: FontWeight.w600),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.more_vert, color: Colors.white),
-                            onPressed: () => _showNoteActions(context, index ?? -1, false),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                ),
-                body: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextField(
-                        selectionWidthStyle: ui.BoxWidthStyle.tight,
-                        contextMenuBuilder: buildCustomContextMenu,
-                  selectionHeightStyle: ui.BoxHeightStyle.max,
-                        controller: _titleController,
-                        textCapitalization: TextCapitalization.sentences,
-                        decoration: const InputDecoration(
-                          hintText: 'Başlık',
-                          hintStyle: TextStyle(color: Colors.grey),
-                          enabledBorder:
-                              UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF333333))),
-                          focusedBorder:
-                              UnderlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
-                        ),
-                        style: TextStyle(
-                            color: _textColor, fontSize: 20, fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(height: 20),
-                      if (noteType == 'text')
-                        TextField(
-                          selectionWidthStyle: ui.BoxWidthStyle.tight,
-                          contextMenuBuilder: buildCustomContextMenu,
-                  selectionHeightStyle: ui.BoxHeightStyle.max,
-                          controller: _contentController,
-                          autofocus: true,
-                          textCapitalization: TextCapitalization.sentences,
-                          maxLines: null,
-                          keyboardType: TextInputType.multiline,
-                          decoration: const InputDecoration(
-                            hintText: 'Notunuzu buraya yazın...',
-                            hintStyle: TextStyle(color: Colors.grey),
-                            border: InputBorder.none,
-                          ),
-                          style: TextStyle(
-                              color: _textColor,
-                              fontSize: index != null
-                                  ? ((_notes[index!]['fontSize'] as num?)?.toDouble() ?? _globalFontSize)
-                                  : _globalFontSize,
-                              height: 1.6),
-                        )
-                      else ...[
-                        ...checkItems.asMap().entries.map((entry) {
-                          final i = entry.key;
-                          final item = entry.value;
-                          return Row(
-                            children: [
-                              Checkbox(
-                                value: item['checked'] as bool,
-                                activeColor: Colors.amber,
-                                onChanged: (val) {
-                                  setModalState(() {
-                                    checkItems[i]['checked'] = val ?? false;
-                                  });
-                                },
-                              ),
-                              Expanded(
-                                child: TextField(
-                                  selectionWidthStyle: ui.BoxWidthStyle.tight,
-                                  controller: checkControllers[i],
-                                  focusNode: checkFocusNodes[i],
-                                  autofocus: newlyAddedIndex == i,
-                                  textCapitalization: TextCapitalization.sentences,
-                                  contextMenuBuilder: buildCustomContextMenu,
-                  selectionHeightStyle: ui.BoxHeightStyle.max,
-                                  style: const TextStyle(color: Colors.white, fontSize: 16),
-                                  decoration: const InputDecoration(
-                                    hintText: 'Madde...',
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    border: InputBorder.none,
-                                  ),
-                                  onChanged: (val) {
-                                    checkItems[i]['text'] = val;
-                                  },
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.close, color: Colors.grey, size: 18),
-                                onPressed: () {
-                                  setModalState(() {
-                                    checkItems.removeAt(i);
-                                    checkControllers.removeAt(i).dispose();
-                                    checkFocusNodes.removeAt(i).dispose();
-                                    newlyAddedIndex = null;
-                                  });
-                                },
-                              ),
-                            ],
-                          );
-                        }),
-                        TextButton.icon(
-                          onPressed: () {
-                            setModalState(() {
-                              checkItems.add({'text': '', 'checked': false});
-                              checkControllers.add(TextEditingController());
-                              checkFocusNodes.add(FocusNode());
-                              newlyAddedIndex = checkItems.length - 1;
-                            });
-                            // Kısa gecikmeyle focus ver (widget build olduktan sonra)
-                            Future.microtask(() {
-                              checkFocusNodes.last.requestFocus();
-                            });
+                              },
+                            );
                           },
-                          icon: const Icon(Icons.add, color: Colors.amber),
-                          label: const Text('Madde Ekle', style: TextStyle(color: Colors.amber)),
                         ),
                       ],
-                      const SizedBox(height: 20),
-                      Builder(builder: (context) {
-                        final hasCategory =
-                            noteCategory != null && noteCategory!.isNotEmpty;
-                        if (!hasCategory) return const SizedBox.shrink();
-                        return OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: _textColor,
-                            side: const BorderSide(color: Color(0xFF3A3A3A), width: 1),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                          ),
-                          child: Text(noteCategory!),
-                          onPressed: () {
-                            if (index != null) {
-                              _showClassifyDialog(index!, onChanged: (cat) {
-                                setModalState(() {
-                                  noteCategory = cat;
-                                });
-                              });
-                            } else {
-                              _saveNoteIfValid(index, noteType, checkItems);
-                              if (_notes.isNotEmpty) {
-                                final newIndex = _notes.length - 1;
-                                _showClassifyDialog(newIndex, onChanged: (cat) {
-                                  setModalState(() {
-                                    noteCategory = cat;
-                                    index = newIndex;
-                                  });
-                                });
-                              }
-                            }
-                          },
-                        );
-                      }),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        );
-      },
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              );
+            },
+          );
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(1.0, 0.0);
           const end = Offset.zero;
-          final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: Curves.easeInOut));
-          return SlideTransition(position: animation.drive(tween), child: child);
+          final tween = Tween(
+            begin: begin,
+            end: end,
+          ).chain(CurveTween(curve: Curves.easeInOut));
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
         },
       ),
     );
@@ -2118,11 +2597,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> filteredNotes;
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-      statusBarBrightness: Brightness.dark,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
+    );
     bool isTrash = _activeCategory == '__trash__';
 
     if (isTrash) {
@@ -2151,7 +2632,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
         } else if (_activeCategory == '__archive__') {
           return matchesSearch && isArchived && !isLocked;
         } else {
-          return matchesSearch && !isArchived && !isLocked && note['category'] == _activeCategory;
+          return matchesSearch &&
+              !isArchived &&
+              !isLocked &&
+              note['category'] == _activeCategory;
         }
       }).toList();
     }
@@ -2160,25 +2644,30 @@ class _NoteListScreenState extends State<NoteListScreen> {
       int compareResult = 0;
       switch (_sortCriteria) {
         case "Başlık":
-          compareResult = (a['title'] ?? '').toString().compareTo((b['title'] ?? '').toString());
+          compareResult = (a['title'] ?? '').toString().compareTo(
+            (b['title'] ?? '').toString(),
+          );
           break;
         case "Kategori":
-          compareResult =
-              (a['category'] ?? '').toString().compareTo((b['category'] ?? '').toString());
+          compareResult = (a['category'] ?? '').toString().compareTo(
+            (b['category'] ?? '').toString(),
+          );
           break;
         case "Renk":
-          compareResult = (a['color'] ?? '').toString().compareTo((b['color'] ?? '').toString());
+          compareResult = (a['color'] ?? '').toString().compareTo(
+            (b['color'] ?? '').toString(),
+          );
           break;
         case "Son Düzenleme":
-          compareResult = (a['modifiedDate'] ?? '')
-              .toString()
-              .compareTo((b['modifiedDate'] ?? '').toString());
+          compareResult = (a['modifiedDate'] ?? '').toString().compareTo(
+            (b['modifiedDate'] ?? '').toString(),
+          );
           break;
         case "Oluşturulma":
         default:
-          compareResult = (a['createdDate'] ?? '')
-              .toString()
-              .compareTo((b['createdDate'] ?? '').toString());
+          compareResult = (a['createdDate'] ?? '').toString().compareTo(
+            (b['createdDate'] ?? '').toString(),
+          );
           break;
       }
       return _isAscending ? compareResult : -compareResult;
@@ -2213,487 +2702,690 @@ class _NoteListScreenState extends State<NoteListScreen> {
         await _handleBackPress();
       },
       child: Scaffold(
-      key: _scaffoldKey,
-      resizeToAvoidBottomInset: true,
-      drawerEdgeDragWidth: MediaQuery.of(context).size.width,
-      appBar: AppBar(
-        title: _isSearching
-            ? TextField(
-              selectionWidthStyle: ui.BoxWidthStyle.tight,
-                controller: _searchController,
-                autofocus: true,
-                contextMenuBuilder: buildCustomContextMenu,
+        key: _scaffoldKey,
+        resizeToAvoidBottomInset: true,
+        drawerEdgeDragWidth: MediaQuery.of(context).size.width,
+        appBar: AppBar(
+          title: _isSearching
+              ? TextField(
+                  selectionWidthStyle: ui.BoxWidthStyle.tight,
+                  controller: _searchController,
+                  autofocus: true,
+                  contextMenuBuilder: buildCustomContextMenu,
                   selectionHeightStyle: ui.BoxHeightStyle.max,
-                decoration: const InputDecoration(
-                  hintText: 'Notlarda ara...',
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(color: Colors.grey),
+                  decoration: const InputDecoration(
+                    hintText: 'Notlarda ara...',
+                    border: InputBorder.none,
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                  },
+                )
+              : Text(
+                  _getCategoryDisplayName(_activeCategory),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.amber,
+                    fontSize: 18,
+                  ),
                 ),
-                style: const TextStyle(color: Colors.white, fontSize: 18),
-                onChanged: (value) {
-                  setState(() {
-                    _searchQuery = value;
-                  });
+          backgroundColor: const Color(0xFF1E1E1E),
+          elevation: 0,
+          centerTitle: false,
+          titleSpacing: 0,
+          iconTheme: const IconThemeData(color: Colors.amber),
+          actions: [
+            IconButton(
+              icon: Icon(
+                _isSearching ? Icons.close : Icons.search,
+                color: Colors.amber,
+              ),
+              onPressed: () {
+                setState(() {
+                  _isSearching = !_isSearching;
+                  if (!_isSearching) {
+                    _searchQuery = "";
+                    _searchController.clear();
+                  }
+                });
+              },
+            ),
+            if (isTrash)
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert, color: Colors.amber),
+                onSelected: (String choice) {
+                  if (choice == 'empty') {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        backgroundColor: const Color(0xFF1E1E1E),
+                        title: const Text(
+                          'Çöpü Boşalt',
+                          style: TextStyle(color: Colors.amber),
+                        ),
+                        content: const Text(
+                          'Tüm silinen notlar kalıcı olarak silinecek. Emin misiniz?',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text(
+                              'İptal',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _deletedNotes.clear();
+                              });
+                              _saveData();
+                              Navigator.pop(context);
+                            },
+                            child: const Text(
+                              'Sil',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (choice == 'restore_all') {
+                    setState(() {
+                      for (var n in _deletedNotes) {
+                        n['createdDate'] = DateTime.now().toString();
+                        n['modifiedDate'] = DateTime.now().toString();
+                      }
+                      _notes.insertAll(0, _deletedNotes);
+                      _deletedNotes.clear();
+                    });
+                    _saveData();
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return [
+                    const PopupMenuItem(
+                      value: 'empty',
+                      child: Text(
+                        'Çöpü Boşalt',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'restore_all',
+                      child: Text(
+                        'Hepsini Geri Yükle',
+                        style: TextStyle(color: Colors.amber),
+                      ),
+                    ),
+                  ];
                 },
               )
-            : Text(
-                _getCategoryDisplayName(_activeCategory),
-                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.amber, fontSize: 18),
-              ),
-        backgroundColor: const Color(0xFF1E1E1E),
-        elevation: 0,
-        centerTitle: false,
-        titleSpacing: 0,
-        iconTheme: const IconThemeData(color: Colors.amber),
-        actions: [
-          IconButton(
-            icon: Icon(_isSearching ? Icons.close : Icons.search, color: Colors.amber),
-            onPressed: () {
-              setState(() {
-                _isSearching = !_isSearching;
-                if (!_isSearching) {
-                  _searchQuery = "";
-                  _searchController.clear();
-                }
-              });
-            },
-          ),
-          if (isTrash)
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.more_vert, color: Colors.amber),
-              onSelected: (String choice) {
-                if (choice == 'empty') {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      backgroundColor: const Color(0xFF1E1E1E),
-                      title: const Text('Çöpü Boşalt', style: TextStyle(color: Colors.amber)),
-                      content: const Text('Tüm silinen notlar kalıcı olarak silinecek. Emin misiniz?',
-                          style: TextStyle(color: Colors.white)),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('İptal', style: TextStyle(color: Colors.grey)),
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                          onPressed: () {
-                            setState(() {
-                              _deletedNotes.clear();
-                            });
-                            _saveData();
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Sil', style: TextStyle(color: Colors.white)),
-                        ),
-                      ],
-                    ),
-                  );
-                } else if (choice == 'restore_all') {
+            else
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.sort, color: Colors.amber),
+                tooltip: 'Notları Sırala',
+                onSelected: (String choice) {
                   setState(() {
-                    for (var n in _deletedNotes) { n['createdDate']=DateTime.now().toString(); n['modifiedDate']=DateTime.now().toString(); }
-                    _notes.insertAll(0, _deletedNotes);
-                    _deletedNotes.clear();
+                    if (choice == "Artan") {
+                      _isAscending = true;
+                    } else if (choice == "Azalan") {
+                      _isAscending = false;
+                    } else {
+                      _sortCriteria = choice;
+                    }
                   });
                   _saveData();
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                return [
-                  const PopupMenuItem(
-                    value: 'empty',
-                    child: Text('Çöpü Boşalt', style: TextStyle(color: Colors.red)),
-                  ),
-                  const PopupMenuItem(
-                    value: 'restore_all',
-                    child: Text('Hepsini Geri Yükle', style: TextStyle(color: Colors.amber)),
-                  ),
-                ];
-              },
-            )
-          else
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.sort, color: Colors.amber),
-              tooltip: 'Notları Sırala',
-              onSelected: (String choice) {
+                },
+                itemBuilder: (BuildContext context) {
+                  return [
+                    CheckedPopupMenuItem<String>(
+                      value: 'Artan',
+                      checked: _isAscending,
+                      child: const Text('Düzen: Artan (A-Z)'),
+                    ),
+                    CheckedPopupMenuItem<String>(
+                      value: 'Azalan',
+                      checked: !_isAscending,
+                      child: const Text('Düzen: Azalan (Z-A)'),
+                    ),
+                    const PopupMenuDivider(),
+                    CheckedPopupMenuItem<String>(
+                      value: 'Başlık',
+                      checked: _sortCriteria == 'Başlık',
+                      child: const Text('Sırala: Başlık'),
+                    ),
+                    CheckedPopupMenuItem<String>(
+                      value: 'Son Düzenleme',
+                      checked: _sortCriteria == 'Son Düzenleme',
+                      child: const Text('Sırala: Son Düzenleme'),
+                    ),
+                    CheckedPopupMenuItem<String>(
+                      value: 'Oluşturulma',
+                      checked: _sortCriteria == 'Oluşturulma',
+                      child: const Text('Sırala: Oluşturulma'),
+                    ),
+                    CheckedPopupMenuItem<String>(
+                      value: 'Kategori',
+                      checked: _sortCriteria == 'Kategori',
+                      child: const Text('Sırala: Kategori'),
+                    ),
+                  ];
+                },
+              ),
+            IconButton(
+              icon: Icon(
+                _isListView ? Icons.grid_view : Icons.view_list,
+                color: Colors.amber,
+              ),
+              tooltip: _isListView ? 'Izgara Görünümü' : 'Liste Görünümü',
+              onPressed: () {
                 setState(() {
-                  if (choice == "Artan") {
-                    _isAscending = true;
-                  } else if (choice == "Azalan") {
-                    _isAscending = false;
-                  } else {
-                    _sortCriteria = choice;
-                  }
+                  _isListView = !_isListView;
                 });
                 _saveData();
               },
-              itemBuilder: (BuildContext context) {
-                return [
-                  CheckedPopupMenuItem<String>(
-                    value: 'Artan',
-                    checked: _isAscending,
-                    child: const Text('Düzen: Artan (A-Z)'),
-                  ),
-                  CheckedPopupMenuItem<String>(
-                    value: 'Azalan',
-                    checked: !_isAscending,
-                    child: const Text('Düzen: Azalan (Z-A)'),
-                  ),
-                  const PopupMenuDivider(),
-                  CheckedPopupMenuItem<String>(
-                    value: 'Başlık',
-                    checked: _sortCriteria == 'Başlık',
-                    child: const Text('Sırala: Başlık'),
-                  ),
-                  CheckedPopupMenuItem<String>(
-                    value: 'Son Düzenleme',
-                    checked: _sortCriteria == 'Son Düzenleme',
-                    child: const Text('Sırala: Son Düzenleme'),
-                  ),
-                  CheckedPopupMenuItem<String>(
-                    value: 'Oluşturulma',
-                    checked: _sortCriteria == 'Oluşturulma',
-                    child: const Text('Sırala: Oluşturulma'),
-                  ),
-                  CheckedPopupMenuItem<String>(
-                    value: 'Kategori',
-                    checked: _sortCriteria == 'Kategori',
-                    child: const Text('Sırala: Kategori'),
-                  ),
-                ];
-              },
             ),
-          IconButton(
-            icon: Icon(
-              _isListView ? Icons.grid_view : Icons.view_list,
-              color: Colors.amber,
-            ),
-            tooltip: _isListView ? 'Izgara Görünümü' : 'Liste Görünümü',
-            onPressed: () {
-              setState(() {
-                _isListView = !_isListView;
-              });
-              _saveData();
-            },
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        child: SafeArea(
-          top: false,
-          child: Container(
-            color: const Color(0xFF1E1E1E),
-            child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              const DrawerHeader(
-                decoration: BoxDecoration(color: Color(0xFF161616)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('DNote',
-                        style: TextStyle(
-                            color: Colors.amber, fontSize: 26, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 6),
-                    Text('Kişisel Not Defteriniz',
-                        style: TextStyle(color: Colors.grey, fontSize: 13)),
-                  ],
-                ),
-              ),
-
-              const Padding(
-                padding: EdgeInsets.only(left: 16, top: 8, bottom: 4),
-                child: Text('NOTLAR',
-                    style: TextStyle(
-                        color: Colors.grey, fontSize: 11, letterSpacing: 1.2)),
-              ),
-              Container(
-                color: (_activeCategory == 'Tümü' || _activeCategory == 'Notlar')
-                    ? Colors.white.withValues(alpha: 0.08)
-                    : Colors.transparent,
-                child: ListTile(
-                  leading: const Icon(Icons.notes, color: Colors.amber),
-                  title: const Text('Notlar', style: TextStyle(color: Colors.white)),
-                  trailing: Text(
-                    _getCountForCategory('Tümü').toString(),
-                    style: const TextStyle(color: Colors.grey, fontSize: 16),
-                  ),
-                  onTap: () {
-                    setState(() => _activeCategory = 'Tümü');
-                    _saveData();
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-              Container(
-                color: _activeCategory == '__favorites__'
-                    ? Colors.white.withValues(alpha: 0.08)
-                    : Colors.transparent,
-                child: ListTile(
-                  leading: const Icon(Icons.star_outline, color: Colors.amber),
-                  title: const Text('Favoriler', style: TextStyle(color: Colors.white)),
-                  trailing: Text(
-                    _getCountForCategory('__favorites__').toString(),
-                    style: const TextStyle(color: Colors.grey, fontSize: 16),
-                  ),
-                  onTap: () {
-                    setState(() => _activeCategory = '__favorites__');
-                    _saveData();
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-              Container(
-                color: _activeCategory == '__locked__'
-                    ? Colors.white.withValues(alpha: 0.08)
-                    : Colors.transparent,
-                child: ListTile(
-                  leading: const Icon(Icons.lock_outline, color: Colors.amber),
-                  title: const Text('Kilitli', style: TextStyle(color: Colors.white)),
-                  trailing: Text(
-                    _getCountForCategory('__locked__').toString(),
-                    style: const TextStyle(color: Colors.grey, fontSize: 16),
-                  ),
-                  onTap: () => _openLockedFolder(),
-                ),
-              ),
-              Container(
-                color: _activeCategory == '__archive__'
-                    ? Colors.white.withValues(alpha: 0.08)
-                    : Colors.transparent,
-                child: ListTile(
-                  leading: const Icon(Icons.archive_outlined, color: Colors.amber),
-                  title: const Text('Arşiv', style: TextStyle(color: Colors.white)),
-                  trailing: Text(
-                    _getCountForCategory('__archive__').toString(),
-                    style: const TextStyle(color: Colors.grey, fontSize: 16),
-                  ),
-                  onTap: () {
-                    setState(() => _activeCategory = '__archive__');
-                    _saveData();
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-              Container(
-                color: _activeCategory == '__trash__'
-                    ? Colors.white.withValues(alpha: 0.08)
-                    : Colors.transparent,
-                child: ListTile(
-                  leading: const Icon(Icons.delete_outline, color: Colors.amber),
-                  title: const Text('Çöp Kutusu', style: TextStyle(color: Colors.white)),
-                  trailing: Text(
-                    _deletedNotes.length.toString(),
-                    style: const TextStyle(color: Colors.grey, fontSize: 16),
-                  ),
-                  onTap: () {
-                    setState(() => _activeCategory = '__trash__');
-                    _saveData();
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-
-              const Divider(color: Color(0xFF2E2E2E), thickness: 1, height: 24),
-              const Padding(
-                padding: EdgeInsets.only(left: 16, top: 4, bottom: 4),
-                child: Text('KATEGORİLER',
-                    style: TextStyle(
-                        color: Colors.grey, fontSize: 11, letterSpacing: 1.2)),
-              ),
-              ..._categories.map((cat) {
-                final catColor = _getCategoryColor(cat);
-                final isCatLocked = _lockedCategories.contains(cat);
-                return Container(
-                  color: _activeCategory == cat
-                      ? Colors.white.withValues(alpha: 0.08)
-                      : Colors.transparent,
-                  child: ListTile(
-                    leading: Stack(
-                      clipBehavior: Clip.none,
+          ],
+        ),
+        drawer: Drawer(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: SafeArea(
+            top: false,
+            child: Container(
+              color: const Color(0xFF1E1E1E),
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  const DrawerHeader(
+                    decoration: BoxDecoration(color: Color(0xFF161616)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.folder_outlined, color: catColor),
-                        if (isCatLocked)
-                          Positioned(
-                            right: -4,
-                            bottom: -4,
-                            child: Icon(Icons.lock, color: Colors.blueGrey[300], size: 12),
+                        Text(
+                          'DNote',
+                          style: TextStyle(
+                            color: Colors.amber,
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
                           ),
+                        ),
+                        SizedBox(height: 6),
+                        Text(
+                          'Kişisel Not Defteriniz',
+                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                        ),
                       ],
                     ),
-                    title: Text(cat,
-                        style: TextStyle(
-                            color: _activeCategory == cat ? catColor : Colors.white)),
-                    trailing: Text(
-                      _getCountForCategory(cat).toString(),
-                      style: const TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+
+                  const Padding(
+                    padding: EdgeInsets.only(left: 16, top: 8, bottom: 4),
+                    child: Text(
+                      'NOTLAR',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 11,
+                        letterSpacing: 1.2,
+                      ),
                     ),
-                    onTap: () async {
-                      if (isCatLocked) {
-                        Navigator.pop(context); // drawer'ı kapat
-                        await Future.delayed(const Duration(milliseconds: 350));
-                        if (!mounted) return;
-                        if (!_notePasswordEnabled) {
-                          showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              backgroundColor: const Color(0xFF1E1E1E),
-                              title: const Text('Parola Gerekiyor', style: TextStyle(color: Colors.amber)),
-                              content: const Text(
-                                'Kilitli kategoriye girebilmek için önce Ayarlar > Not Şifresi bölümünden bir parola belirlemeniz gerekiyor.',
-                                style: TextStyle(color: Colors.white70),
-                              ),
-                              actions: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-                                  onPressed: () => Navigator.pop(ctx),
-                                  child: const Text('Tamam', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-                                ),
-                              ],
-                            ),
-                          );
-                          return;
-                        }
-                        final ok = await _checkPasswordPrompt();
-                        if (!mounted) return;
-                        if (ok) {
-                          setState(() => _activeCategory = cat);
-                          _saveData();
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              backgroundColor: const Color(0xFF1E1E1E),
-                              title: const Text('Hatalı Parola', style: TextStyle(color: Colors.red)),
-                              content: const Text('Girdiğiniz parola yanlış.', style: TextStyle(color: Colors.white70)),
-                              actions: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-                                  onPressed: () => Navigator.pop(ctx),
-                                  child: const Text('Tamam', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      } else {
-                        setState(() => _activeCategory = cat);
+                  ),
+                  Container(
+                    color:
+                        (_activeCategory == 'Tümü' ||
+                            _activeCategory == 'Notlar')
+                        ? Colors.white.withValues(alpha: 0.08)
+                        : Colors.transparent,
+                    child: ListTile(
+                      leading: const Icon(Icons.notes, color: Colors.amber),
+                      title: const Text(
+                        'Notlar',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      trailing: Text(
+                        _getCountForCategory('Tümü').toString(),
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onTap: () {
+                        setState(() => _activeCategory = 'Tümü');
                         _saveData();
                         Navigator.pop(context);
-                      }
-                    },
-                    onLongPress: () => _showCategoryOptions(cat),
+                      },
+                    ),
                   ),
-                );
-              }),
-              ListTile(
-                leading: const Icon(Icons.add_circle_outline, color: Colors.white),
-                title: const Text('Kategori Ekle',
-                    style: TextStyle(color: Colors.white)),
-                onTap: () {
-                  Navigator.pop(context);
-                  _showAddCategoryDialog();
-                },
-              ),
+                  Container(
+                    color: _activeCategory == '__favorites__'
+                        ? Colors.white.withValues(alpha: 0.08)
+                        : Colors.transparent,
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.star_outline,
+                        color: Colors.amber,
+                      ),
+                      title: const Text(
+                        'Favoriler',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      trailing: Text(
+                        _getCountForCategory('__favorites__').toString(),
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onTap: () {
+                        setState(() => _activeCategory = '__favorites__');
+                        _saveData();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  Container(
+                    color: _activeCategory == '__locked__'
+                        ? Colors.white.withValues(alpha: 0.08)
+                        : Colors.transparent,
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.lock_outline,
+                        color: Colors.amber,
+                      ),
+                      title: const Text(
+                        'Kilitli',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      trailing: Text(
+                        _getCountForCategory('__locked__').toString(),
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onTap: () => _openLockedFolder(),
+                    ),
+                  ),
+                  Container(
+                    color: _activeCategory == '__archive__'
+                        ? Colors.white.withValues(alpha: 0.08)
+                        : Colors.transparent,
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.archive_outlined,
+                        color: Colors.amber,
+                      ),
+                      title: const Text(
+                        'Arşiv',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      trailing: Text(
+                        _getCountForCategory('__archive__').toString(),
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onTap: () {
+                        setState(() => _activeCategory = '__archive__');
+                        _saveData();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  Container(
+                    color: _activeCategory == '__trash__'
+                        ? Colors.white.withValues(alpha: 0.08)
+                        : Colors.transparent,
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.amber,
+                      ),
+                      title: const Text(
+                        'Çöp Kutusu',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      trailing: Text(
+                        _deletedNotes.length.toString(),
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onTap: () {
+                        setState(() => _activeCategory = '__trash__');
+                        _saveData();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
 
-              const Divider(color: Color(0xFF2A2A2A), thickness: 1, height: 24),
-              const Padding(
-                padding: EdgeInsets.only(left: 16, top: 4, bottom: 4),
-                child: Text('UYGULAMA',
-                    style: TextStyle(
-                        color: Colors.grey, fontSize: 11, letterSpacing: 1.2)),
-              ),
-              ListTile(
-                leading: const Icon(Icons.settings_outlined, color: Colors.amber),
-                title: const Text('Ayarlar', style: TextStyle(color: Colors.white)),
-                onTap: _openSettings,
-              ),
-              ListTile(
-                leading: const Icon(Icons.backup_outlined, color: Colors.amber),
-                title: const Text('Yedekle & Geri Yükle', style: TextStyle(color: Colors.white)),
-                onTap: () => Navigator.pop(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.workspace_premium_outlined, color: Colors.amber),
-                title: const Text('Pro\'ya Yükselt', style: TextStyle(color: Colors.white)),
-                trailing: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.circular(10),
+                  const Divider(
+                    color: Color(0xFF2E2E2E),
+                    thickness: 1,
+                    height: 24,
                   ),
-                  child: const Text('PRO',
+                  const Padding(
+                    padding: EdgeInsets.only(left: 16, top: 4, bottom: 4),
+                    child: Text(
+                      'KATEGORİLER',
                       style: TextStyle(
-                          color: Colors.black, fontSize: 10, fontWeight: FontWeight.bold)),
-                ),
-                onTap: () => Navigator.pop(context),
+                        color: Colors.grey,
+                        fontSize: 11,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                  ..._categories.map((cat) {
+                    final catColor = _getCategoryColor(cat);
+                    final isCatLocked = _lockedCategories.contains(cat);
+                    return Container(
+                      color: _activeCategory == cat
+                          ? Colors.white.withValues(alpha: 0.08)
+                          : Colors.transparent,
+                      child: ListTile(
+                        leading: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Icon(Icons.folder_outlined, color: catColor),
+                            if (isCatLocked)
+                              Positioned(
+                                right: -4,
+                                bottom: -4,
+                                child: Icon(
+                                  Icons.lock,
+                                  color: Colors.blueGrey[300],
+                                  size: 12,
+                                ),
+                              ),
+                          ],
+                        ),
+                        title: Text(
+                          cat,
+                          style: TextStyle(
+                            color: _activeCategory == cat
+                                ? catColor
+                                : Colors.white,
+                          ),
+                        ),
+                        trailing: Text(
+                          _getCountForCategory(cat).toString(),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
+                        ),
+                        onTap: () async {
+                          if (isCatLocked) {
+                            Navigator.pop(context); // drawer'ı kapat
+                            await Future.delayed(
+                              const Duration(milliseconds: 350),
+                            );
+                            if (!mounted) return;
+                            if (!_notePasswordEnabled) {
+                              showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  backgroundColor: const Color(0xFF1E1E1E),
+                                  title: const Text(
+                                    'Parola Gerekiyor',
+                                    style: TextStyle(color: Colors.amber),
+                                  ),
+                                  content: const Text(
+                                    'Kilitli kategoriye girebilmek için önce Ayarlar > Not Şifresi bölümünden bir parola belirlemeniz gerekiyor.',
+                                    style: TextStyle(color: Colors.white70),
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.amber,
+                                      ),
+                                      onPressed: () => Navigator.pop(ctx),
+                                      child: const Text(
+                                        'Tamam',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              return;
+                            }
+                            final ok = await _checkPasswordPrompt();
+                            if (!mounted) return;
+                            if (ok) {
+                              setState(() => _activeCategory = cat);
+                              _saveData();
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  backgroundColor: const Color(0xFF1E1E1E),
+                                  title: const Text(
+                                    'Hatalı Parola',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                  content: const Text(
+                                    'Girdiğiniz parola yanlış.',
+                                    style: TextStyle(color: Colors.white70),
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.amber,
+                                      ),
+                                      onPressed: () => Navigator.pop(ctx),
+                                      child: const Text(
+                                        'Tamam',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                          } else {
+                            setState(() => _activeCategory = cat);
+                            _saveData();
+                            Navigator.pop(context);
+                          }
+                        },
+                        onLongPress: () => _showCategoryOptions(cat),
+                      ),
+                    );
+                  }),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.add_circle_outline,
+                      color: Colors.white,
+                    ),
+                    title: const Text(
+                      'Kategori Ekle',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _showAddCategoryDialog();
+                    },
+                  ),
+
+                  const Divider(
+                    color: Color(0xFF2A2A2A),
+                    thickness: 1,
+                    height: 24,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 16, top: 4, bottom: 4),
+                    child: Text(
+                      'UYGULAMA',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 11,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.settings_outlined,
+                      color: Colors.amber,
+                    ),
+                    title: const Text(
+                      'Ayarlar',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onTap: _openSettings,
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.backup_outlined,
+                      color: Colors.amber,
+                    ),
+                    title: const Text(
+                      'Yedekle & Geri Yükle',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.workspace_premium_outlined,
+                      color: Colors.amber,
+                    ),
+                    title: const Text(
+                      'Pro\'ya Yükselt',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    trailing: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.amber,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Text(
+                        'PRO',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.volunteer_activism_outlined,
+                      color: Colors.amber,
+                    ),
+                    title: const Text(
+                      'Geliştirme Desteği',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.rate_review_outlined,
+                      color: Colors.amber,
+                    ),
+                    title: const Text(
+                      'Geri Bildirim',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.info_outline,
+                      color: Colors.amber,
+                    ),
+                    title: const Text(
+                      'Hakkında',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                ],
               ),
-              ListTile(
-                leading: const Icon(Icons.volunteer_activism_outlined, color: Colors.amber),
-                title: const Text('Geliştirme Desteği', style: TextStyle(color: Colors.white)),
-                onTap: () => Navigator.pop(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.rate_review_outlined, color: Colors.amber),
-                title: const Text('Geri Bildirim', style: TextStyle(color: Colors.white)),
-                onTap: () => Navigator.pop(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.info_outline, color: Colors.amber),
-                title: const Text('Hakkında', style: TextStyle(color: Colors.white)),
-                onTap: () => Navigator.pop(context),
-              ),
-            ],
             ),
           ),
         ),
-      ),
-      body: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () {
-          if (_isSearching) {
-            setState(() {
-              _isSearching = false;
-              _searchQuery = "";
-              _searchController.clear();
-            });
-            FocusScope.of(context).unfocus();
-          } else {
-            FocusScope.of(context).unfocus();
-          }
-        },
-        child: Padding(
-        padding: EdgeInsets.only(
-          left: 8.0,
-          right: 8.0,
-          bottom: MediaQuery.of(context).padding.bottom,
-        ),
-        child: filteredNotes.isEmpty
-            ? const Center(
-                child: Text('Not bulunamadı.',
-                    style: TextStyle(color: Colors.grey, fontSize: 16)),
-              )
-            : _isListView
+        body: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            if (_isSearching) {
+              setState(() {
+                _isSearching = false;
+                _searchQuery = "";
+                _searchController.clear();
+              });
+              FocusScope.of(context).unfocus();
+            } else {
+              FocusScope.of(context).unfocus();
+            }
+          },
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 8.0,
+              right: 8.0,
+              bottom: MediaQuery.of(context).padding.bottom,
+            ),
+            child: filteredNotes.isEmpty
+                ? const Center(
+                    child: Text(
+                      'Not bulunamadı.',
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
+                    ),
+                  )
+                : _isListView
                 ? ListView.builder(
                     padding: const EdgeInsets.only(top: 12.0),
                     itemCount: filteredNotes.length,
                     itemBuilder: (context, index) {
                       final note = filteredNotes[index];
                       final originalIndex = isTrash
-                          ? _deletedNotes.indexWhere((n) =>
-                              n['id'] == note['id'] &&
-                              n['createdDate'] == note['createdDate'])
-                          : _notes.indexWhere((n) =>
-                              n['id'] == note['id'] &&
-                              n['createdDate'] == note['createdDate']);
-                      final hasTitle = (note['title'] ?? '').toString().isNotEmpty;
+                          ? _deletedNotes.indexWhere(
+                              (n) =>
+                                  n['id'] == note['id'] &&
+                                  n['createdDate'] == note['createdDate'],
+                            )
+                          : _notes.indexWhere(
+                              (n) =>
+                                  n['id'] == note['id'] &&
+                                  n['createdDate'] == note['createdDate'],
+                            );
+                      final hasTitle = (note['title'] ?? '')
+                          .toString()
+                          .isNotEmpty;
                       final isChecklist = note['type'] == 'checklist';
                       final isFavorite = note['isFavorite'] == true;
                       final noteCardColor = _colorfulNotes
-                          ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) % _categoryPalette.length].withValues(alpha: 0.75)
+                          ? _categoryPalette[(originalIndex < 0
+                                        ? 0
+                                        : originalIndex) %
+                                    _categoryPalette.length]
+                                .withValues(alpha: 0.75)
                           : const Color(0xFF2D2D2D);
                       final fontScale = _previewFontScale(note);
 
@@ -2705,7 +3397,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                   backgroundColor: const Color(0xFF1E1E1E),
                                   shape: const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20)),
+                                      top: Radius.circular(20),
+                                    ),
                                   ),
                                   builder: (_) => SafeArea(
                                     child: Padding(
@@ -2716,19 +3409,27 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         children: [
                                           ElevatedButton.icon(
                                             style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.amber),
+                                              backgroundColor: Colors.amber,
+                                            ),
                                             icon: const Icon(
-                                                Icons.restore_outlined,
-                                                color: Colors.black),
-                                            label: const Text('Geri Yükle',
-                                                style: TextStyle(
-                                                    color: Colors.black)),
+                                              Icons.restore_outlined,
+                                              color: Colors.black,
+                                            ),
+                                            label: const Text(
+                                              'Geri Yükle',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                            ),
                                             onPressed: () {
                                               setState(() {
-                                                _notes.insert(0,
-                                                    _deletedNotes[originalIndex]);
-                                                _deletedNotes
-                                                    .removeAt(originalIndex);
+                                                _notes.insert(
+                                                  0,
+                                                  _deletedNotes[originalIndex],
+                                                );
+                                                _deletedNotes.removeAt(
+                                                  originalIndex,
+                                                );
                                               });
                                               _saveData();
                                               Navigator.pop(context);
@@ -2736,17 +3437,23 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                           ),
                                           ElevatedButton.icon(
                                             style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.red),
+                                              backgroundColor: Colors.red,
+                                            ),
                                             icon: const Icon(
-                                                Icons.delete_forever,
-                                                color: Colors.white),
-                                            label: const Text('Kalıcı Sil',
-                                                style: TextStyle(
-                                                    color: Colors.white)),
+                                              Icons.delete_forever,
+                                              color: Colors.white,
+                                            ),
+                                            label: const Text(
+                                              'Kalıcı Sil',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
                                             onPressed: () {
                                               setState(() {
-                                                _deletedNotes
-                                                    .removeAt(originalIndex);
+                                                _deletedNotes.removeAt(
+                                                  originalIndex,
+                                                );
                                               });
                                               _saveData();
                                               Navigator.pop(context);
@@ -2758,104 +3465,167 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                   ),
                                 );
                               }
-                            : () => _showNoteActions(context, originalIndex, false),
+                            : () => _showNoteActions(
+                                context,
+                                originalIndex,
+                                false,
+                              ),
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: Card(
-                          margin: EdgeInsets.zero,
-                          color: noteCardColor,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          child: InkWell(
-                            onTap: isTrash
-                                ? () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      backgroundColor: const Color(0xFF1E1E1E),
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                                      ),
-                                      builder: (_) => SafeArea(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              ElevatedButton.icon(
-                                                style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-                                                icon: const Icon(Icons.restore_outlined, color: Colors.black),
-                                                label: const Text('Geri Yükle', style: TextStyle(color: Colors.black)),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _deletedNotes[originalIndex]['createdDate'] = DateTime.now().toString();
-                                  _deletedNotes[originalIndex]['modifiedDate'] = DateTime.now().toString();
-                                  _notes.insert(0, _deletedNotes[originalIndex]);
-                                                    _deletedNotes.removeAt(originalIndex);
-                                                  });
-                                                  _saveData();
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                              ElevatedButton.icon(
-                                                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                                                icon: const Icon(Icons.delete_forever, color: Colors.white),
-                                                label: const Text('Kalıcı Sil', style: TextStyle(color: Colors.white)),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _deletedNotes.removeAt(originalIndex);
-                                                  });
-                                                  _saveData();
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            ],
+                            margin: EdgeInsets.zero,
+                            color: noteCardColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: InkWell(
+                              onTap: isTrash
+                                  ? () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        backgroundColor: const Color(
+                                          0xFF1E1E1E,
+                                        ),
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(20),
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  }
-                                : () => _openNoteWithPasswordCheck(originalIndex),
-                            borderRadius: BorderRadius.circular(12),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (hasTitle) ...[
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            _capitalizeFirstLetterTr((note['title'] ?? '').toString()),
-                                            style: TextStyle(
+                                        builder: (_) => SafeArea(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                ElevatedButton.icon(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                        backgroundColor:
+                                                            Colors.amber,
+                                                      ),
+                                                  icon: const Icon(
+                                                    Icons.restore_outlined,
+                                                    color: Colors.black,
+                                                  ),
+                                                  label: const Text(
+                                                    'Geri Yükle',
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _deletedNotes[originalIndex]['createdDate'] =
+                                                          DateTime.now()
+                                                              .toString();
+                                                      _deletedNotes[originalIndex]['modifiedDate'] =
+                                                          DateTime.now()
+                                                              .toString();
+                                                      _notes.insert(
+                                                        0,
+                                                        _deletedNotes[originalIndex],
+                                                      );
+                                                      _deletedNotes.removeAt(
+                                                        originalIndex,
+                                                      );
+                                                    });
+                                                    _saveData();
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                                ElevatedButton.icon(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                        backgroundColor:
+                                                            Colors.red,
+                                                      ),
+                                                  icon: const Icon(
+                                                    Icons.delete_forever,
+                                                    color: Colors.white,
+                                                  ),
+                                                  label: const Text(
+                                                    'Kalıcı Sil',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _deletedNotes.removeAt(
+                                                        originalIndex,
+                                                      );
+                                                    });
+                                                    _saveData();
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  : () => _openNoteWithPasswordCheck(
+                                      originalIndex,
+                                    ),
+                              borderRadius: BorderRadius.circular(12),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (hasTitle) ...[
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              _capitalizeFirstLetterTr(
+                                                (note['title'] ?? '')
+                                                    .toString(),
+                                              ),
+                                              style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18 * fontScale,
-                                                color: _textColor),
+                                                color: _textColor,
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                        if (isFavorite)
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 6),
-                                            child: Icon(Icons.star, color: Colors.amber, size: 18),
-                                          ),
-                                        if (note['isLocked'] == true)
-                                          const Padding(
-                                            padding: EdgeInsets.only(left: 6),
-                                            child: Icon(Icons.lock, color: Colors.grey, size: 14),
-                                          ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                  ],
-                                  if (isChecklist)
-                                    ...((note['checkItems'] as List? ?? [])
-                                        .take(_previewLines)
-                                        .map<Widget>((item) => Row(
+                                          if (isFavorite)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 6,
+                                              ),
+                                              child: Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                                size: 18,
+                                              ),
+                                            ),
+                                          if (note['isLocked'] == true)
+                                            const Padding(
+                                              padding: EdgeInsets.only(left: 6),
+                                              child: Icon(
+                                                Icons.lock,
+                                                color: Colors.grey,
+                                                size: 14,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 8),
+                                    ],
+                                    if (isChecklist)
+                                      ...((note['checkItems'] as List? ?? [])
+                                          .take(_previewLines)
+                                          .map<Widget>(
+                                            (item) => Row(
                                               children: [
                                                 Icon(
                                                   item['checked'] == true
                                                       ? Icons.check_box
-                                                      : Icons.check_box_outline_blank,
+                                                      : Icons
+                                                            .check_box_outline_blank,
                                                   color: Colors.amber,
                                                   size: 16,
                                                 ),
@@ -2864,64 +3634,91 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                   child: Text(
                                                     item['text'] ?? '',
                                                     style: TextStyle(
-                                                      color: item['checked'] == true
+                                                      color:
+                                                          item['checked'] ==
+                                                              true
                                                           ? Colors.grey
                                                           : _textColor,
                                                       decoration:
-                                                          item['checked'] == true
-                                                              ? TextDecoration.lineThrough
-                                                              : null,
-                                                      fontSize: (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize,
+                                                          item['checked'] ==
+                                                              true
+                                                          ? TextDecoration
+                                                                .lineThrough
+                                                          : null,
+                                                      fontSize:
+                                                          (note['fontSize']
+                                                                  as num?)
+                                                              ?.toDouble() ??
+                                                          _globalFontSize,
                                                     ),
                                                     maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                 ),
                                               ],
-                                            )).toList())
-                                  else
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            note['content'] ?? '',
-                                            style: TextStyle(
+                                            ),
+                                          )
+                                          .toList())
+                                    else
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              note['content'] ?? '',
+                                              style: TextStyle(
                                                 color: _textColor,
-                                                fontSize: (note['fontSize'] as num?)?.toDouble() ??
-                                                    _globalFontSize),
-                                            maxLines: _previewLines,
-                                            overflow: TextOverflow.ellipsis,
+                                                fontSize:
+                                                    (note['fontSize'] as num?)
+                                                        ?.toDouble() ??
+                                                    _globalFontSize,
+                                              ),
+                                              maxLines: _previewLines,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
-                                        ),
-                                        if (isFavorite)
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 6),
-                                            child: Icon(Icons.star, color: Colors.amber, size: 18),
-                                          ),
-                                      ],
-                                    ),
-                                  if ((note['category'] ?? '').toString().isNotEmpty) ...[
-                                    const SizedBox(height: 8),
-                                    Align(
-                                      alignment: Alignment.bottomLeft,
-                                      child: Text(
-                                        note['category'],
-                                        style: TextStyle(
-                                          color: _textColor.withValues(alpha: 0.7),
-                                          fontSize: (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize,
-                                          fontStyle: FontStyle.italic,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                          if (isFavorite)
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 6,
+                                              ),
+                                              child: Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                                size: 18,
+                                              ),
+                                            ),
+                                        ],
                                       ),
-                                    ),
+                                    if ((note['category'] ?? '')
+                                        .toString()
+                                        .isNotEmpty) ...[
+                                      const SizedBox(height: 8),
+                                      Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Text(
+                                          note['category'],
+                                          style: TextStyle(
+                                            color: _textColor.withValues(
+                                              alpha: 0.7,
+                                            ),
+                                            fontSize:
+                                                (note['fontSize'] as num?)
+                                                    ?.toDouble() ??
+                                                _globalFontSize,
+                                            fontStyle: FontStyle.italic,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
                                   ],
-                                ],
+                                ),
                               ),
                             ),
-                          ),
                           ),
                         ),
                       );
@@ -2934,13 +3731,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       isTrash: isTrash,
                     ),
                   ),
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddMenu,
-        backgroundColor: Colors.amber,
-        child: const Icon(Icons.add, color: Colors.black, size: 30),
-      ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _showAddMenu,
+          backgroundColor: Colors.amber,
+          child: const Icon(Icons.add, color: Colors.black, size: 30),
+        ),
       ),
     );
   }
@@ -2956,7 +3753,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
     const int crossAxisCount = 2;
     const double spacing = 10;
     const double outerPadding = 0.0; // dış konteyner zaten 16px padding veriyor
-    const double cardInnerPadding = 16.0; // _buildGridNoteCard içindeki Padding değeri
+    const double cardInnerPadding =
+        16.0; // _buildGridNoteCard içindeki Padding değeri
 
     // Her sütunun gerçek genişliğini hesapla: ekran genişliğinden dış
     // padding'leri ve sütunlar arası boşluğu çıkar, crossAxisCount'a böl.
@@ -2964,19 +3762,30 @@ class _NoteListScreenState extends State<NoteListScreen> {
     final totalSpacing = (outerPadding * 2) + (spacing * (crossAxisCount - 1));
     final columnWidth = (screenWidth - totalSpacing) / crossAxisCount;
     // Kartın iç padding'ini çıkararak metnin gerçekte sarabileceği genişliği bul.
-    final cardContentWidth = (columnWidth - (cardInnerPadding * 2)).clamp(0.0, columnWidth);
+    final cardContentWidth = (columnWidth - (cardInnerPadding * 2)).clamp(
+      0.0,
+      columnWidth,
+    );
 
-    final List<List<Widget>> columnChildren =
-        List.generate(crossAxisCount, (_) => <Widget>[]);
+    final List<List<Widget>> columnChildren = List.generate(
+      crossAxisCount,
+      (_) => <Widget>[],
+    );
     final List<double> columnHeights = List.filled(crossAxisCount, 0.0);
 
     for (int index = 0; index < filteredNotes.length; index++) {
       final note = filteredNotes[index];
       final originalIndex = isTrash
-          ? _deletedNotes.indexWhere((n) =>
-              n['id'] == note['id'] && n['createdDate'] == note['createdDate'])
-          : _notes.indexWhere((n) =>
-              n['id'] == note['id'] && n['createdDate'] == note['createdDate']);
+          ? _deletedNotes.indexWhere(
+              (n) =>
+                  n['id'] == note['id'] &&
+                  n['createdDate'] == note['createdDate'],
+            )
+          : _notes.indexWhere(
+              (n) =>
+                  n['id'] == note['id'] &&
+                  n['createdDate'] == note['createdDate'],
+            );
 
       // Kartı, şu anda en kısa olan sütuna ekle (sütun yüksekliklerini dengeler).
       int shortestColumn = 0;
@@ -3033,7 +3842,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
   // hesaplanır; bu sayede mevcut tüm fontSize değerleri (başlık, içerik,
   // checklist) orantılı şekilde büyür/küçülür.
   double _previewFontScale(Map<String, dynamic> note) {
-    final noteFontSize = (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize;
+    final noteFontSize =
+        (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize;
     return noteFontSize / 16.0;
   }
 
@@ -3061,7 +3871,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
   // _buildGridNoteCard içindeki gerçek yapısıyla (16px iç padding, başlık
   // sonrası 12px boşluk, kategori öncesi 8px boşluk, checklist öğeleri
   // arası 4px boşluk) bire bir eşleşecek şekilde hesaplanır.
-  double _estimateNoteHeight(Map<String, dynamic> note, double cardContentWidth) {
+  double _estimateNoteHeight(
+    Map<String, dynamic> note,
+    double cardContentWidth,
+  ) {
     final hasTitle = (note['title'] ?? '').toString().isNotEmpty;
     final isChecklist = note['type'] == 'checklist';
     final fontScale = _previewFontScale(note);
@@ -3080,12 +3893,16 @@ class _NoteListScreenState extends State<NoteListScreen> {
     } else {
       final content = (note['content'] ?? '').toString();
       if (content.isNotEmpty) {
-        final noteFontSize = (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize;
+        final noteFontSize =
+            (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize;
         final style = TextStyle(fontSize: noteFontSize, height: 1.3);
         int wrapped = 0;
         for (final paragraph in content.split('\n')) {
-          wrapped += _measureWrappedLineCount(paragraph, cardContentWidth, style)
-              .clamp(0, 999);
+          wrapped += _measureWrappedLineCount(
+            paragraph,
+            cardContentWidth,
+            style,
+          ).clamp(0, 999);
           if (paragraph.isEmpty) wrapped += 1; // boş satır da yer kaplar
         }
         final cappedLines = wrapped.clamp(0, _previewLines);
@@ -3101,7 +3918,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
     return height < 1 ? 1 : height;
   }
 
-
   // Izgara görünümündeki tek bir not kartı. Yüksekliği içeriğe göre belirlenir;
   // başlık + içerik metni doğal yüksekliğini alır (Expanded YOK), maksimum
   // satır sayısı ayarlardaki _previewLines değeriyle sınırlandırılır.
@@ -3114,8 +3930,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
     final isChecklist = note['type'] == 'checklist';
     final isFavorite = note['isFavorite'] == true;
     final gridCardColor = _colorfulNotes
-        ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) % _categoryPalette.length]
-            .withValues(alpha: 0.75)
+        ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) %
+                  _categoryPalette.length]
+              .withValues(alpha: 0.75)
         : const Color(0xFF2D2D2D);
     final fontScale = _previewFontScale(note);
 
@@ -3135,14 +3952,24 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-                          icon: const Icon(Icons.restore_outlined, color: Colors.black),
-                          label: const Text('Geri Yükle', style: TextStyle(color: Colors.black)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.amber,
+                          ),
+                          icon: const Icon(
+                            Icons.restore_outlined,
+                            color: Colors.black,
+                          ),
+                          label: const Text(
+                            'Geri Yükle',
+                            style: TextStyle(color: Colors.black),
+                          ),
                           onPressed: () {
                             setState(() {
-                              _deletedNotes[originalIndex]['createdDate'] = DateTime.now().toString();
-                                  _deletedNotes[originalIndex]['modifiedDate'] = DateTime.now().toString();
-                                  _notes.insert(0, _deletedNotes[originalIndex]);
+                              _deletedNotes[originalIndex]['createdDate'] =
+                                  DateTime.now().toString();
+                              _deletedNotes[originalIndex]['modifiedDate'] =
+                                  DateTime.now().toString();
+                              _notes.insert(0, _deletedNotes[originalIndex]);
                               _deletedNotes.removeAt(originalIndex);
                             });
                             _saveData();
@@ -3150,9 +3977,17 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           },
                         ),
                         ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                          icon: const Icon(Icons.delete_forever, color: Colors.white),
-                          label: const Text('Kalıcı Sil', style: TextStyle(color: Colors.white)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          icon: const Icon(
+                            Icons.delete_forever,
+                            color: Colors.white,
+                          ),
+                          label: const Text(
+                            'Kalıcı Sil',
+                            style: TextStyle(color: Colors.white),
+                          ),
                           onPressed: () {
                             setState(() {
                               _deletedNotes.removeAt(originalIndex);
@@ -3179,7 +4014,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     context: context,
                     backgroundColor: const Color(0xFF1E1E1E),
                     shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
                     ),
                     builder: (_) => SafeArea(
                       child: Padding(
@@ -3188,14 +4025,27 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-                              icon: const Icon(Icons.restore_outlined, color: Colors.black),
-                              label: const Text('Geri Yükle', style: TextStyle(color: Colors.black)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.amber,
+                              ),
+                              icon: const Icon(
+                                Icons.restore_outlined,
+                                color: Colors.black,
+                              ),
+                              label: const Text(
+                                'Geri Yükle',
+                                style: TextStyle(color: Colors.black),
+                              ),
                               onPressed: () {
                                 setState(() {
-                                  _deletedNotes[originalIndex]['createdDate'] = DateTime.now().toString();
-                                  _deletedNotes[originalIndex]['modifiedDate'] = DateTime.now().toString();
-                                  _notes.insert(0, _deletedNotes[originalIndex]);
+                                  _deletedNotes[originalIndex]['createdDate'] =
+                                      DateTime.now().toString();
+                                  _deletedNotes[originalIndex]['modifiedDate'] =
+                                      DateTime.now().toString();
+                                  _notes.insert(
+                                    0,
+                                    _deletedNotes[originalIndex],
+                                  );
                                   _deletedNotes.removeAt(originalIndex);
                                 });
                                 _saveData();
@@ -3203,9 +4053,17 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               },
                             ),
                             ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                              icon: const Icon(Icons.delete_forever, color: Colors.white),
-                              label: const Text('Kalıcı Sil', style: TextStyle(color: Colors.white)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                              ),
+                              icon: const Icon(
+                                Icons.delete_forever,
+                                color: Colors.white,
+                              ),
+                              label: const Text(
+                                'Kalıcı Sil',
+                                style: TextStyle(color: Colors.white),
+                              ),
                               onPressed: () {
                                 setState(() {
                                   _deletedNotes.removeAt(originalIndex);
@@ -3232,11 +4090,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   children: [
                     if (hasTitle)
                       Text(
-                        _capitalizeFirstLetterTr((note['title'] ?? '').toString()),
+                        _capitalizeFirstLetterTr(
+                          (note['title'] ?? '').toString(),
+                        ),
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18 * fontScale,
-                            color: _textColor),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18 * fontScale,
+                          color: _textColor,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.start,
@@ -3249,48 +4110,56 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: (note['checkItems'] as List? ?? [])
                                 .take(_previewLines)
-                                .map<Widget>((item) => Padding(
-                                      padding: const EdgeInsets.only(bottom: 4),
-                                      child: Row(
-                                        textDirection: TextDirection.ltr,
-                                        children: [
-                                          Icon(
-                                            item['checked'] == true
-                                                ? Icons.check_box
-                                                : Icons.check_box_outline_blank,
-                                            color: Colors.amber,
-                                            size: 14,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Expanded(
-                                            child: Text(
-                                              item['text'] ?? '',
-                                              style: TextStyle(
-                                                color: item['checked'] == true
-                                                    ? Colors.grey
-                                                    : _textColor,
-                                                decoration: item['checked'] == true
-                                                    ? TextDecoration.lineThrough
-                                                    : null,
-                                                fontSize: (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize,
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.start,
-                                              textDirection: TextDirection.ltr,
+                                .map<Widget>(
+                                  (item) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 4),
+                                    child: Row(
+                                      textDirection: TextDirection.ltr,
+                                      children: [
+                                        Icon(
+                                          item['checked'] == true
+                                              ? Icons.check_box
+                                              : Icons.check_box_outline_blank,
+                                          color: Colors.amber,
+                                          size: 14,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            item['text'] ?? '',
+                                            style: TextStyle(
+                                              color: item['checked'] == true
+                                                  ? Colors.grey
+                                                  : _textColor,
+                                              decoration:
+                                                  item['checked'] == true
+                                                  ? TextDecoration.lineThrough
+                                                  : null,
+                                              fontSize:
+                                                  (note['fontSize'] as num?)
+                                                      ?.toDouble() ??
+                                                  _globalFontSize,
                                             ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.start,
+                                            textDirection: TextDirection.ltr,
                                           ),
-                                        ],
-                                      ),
-                                    ))
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
                                 .toList(),
                           )
                         : Text(
                             note['content'] ?? '',
                             style: TextStyle(
-                                color: _textColor,
-                                fontSize: (note['fontSize'] as num?)?.toDouble() ??
-                                    _globalFontSize),
+                              color: _textColor,
+                              fontSize:
+                                  (note['fontSize'] as num?)?.toDouble() ??
+                                  _globalFontSize,
+                            ),
                             maxLines: _previewLines,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.start,
@@ -3302,7 +4171,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         note['category'],
                         style: TextStyle(
                           color: _textColor.withValues(alpha: 0.7),
-                          fontSize: (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize,
+                          fontSize:
+                              (note['fontSize'] as num?)?.toDouble() ??
+                              _globalFontSize,
                           fontStyle: FontStyle.italic,
                         ),
                         maxLines: 1,
@@ -3362,8 +4233,9 @@ class _SettingsPageState extends State<_SettingsPage> {
 
   // ── Güvenlik sorusu düzenleme diyaloğu ──────────────────────────────
   void _showHintQuestionDialog() {
-    String? selectedQuestion =
-        s._passwordHintQuestion.isNotEmpty ? s._passwordHintQuestion : null;
+    String? selectedQuestion = s._passwordHintQuestion.isNotEmpty
+        ? s._passwordHintQuestion
+        : null;
     final answerCtrl = TextEditingController(text: s._passwordHintAnswer);
 
     showDialog(
@@ -3371,7 +4243,10 @@ class _SettingsPageState extends State<_SettingsPage> {
       builder: (_) => StatefulBuilder(
         builder: (ctx, setDlg) => AlertDialog(
           backgroundColor: const Color(0xFF1E1E1E),
-          title: const Text('Güvenlik Sorusu', style: TextStyle(color: Colors.amber)),
+          title: const Text(
+            'Güvenlik Sorusu',
+            style: TextStyle(color: Colors.amber),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -3388,11 +4263,20 @@ class _SettingsPageState extends State<_SettingsPage> {
                 decoration: const InputDecoration(
                   hintText: 'Güvenlik sorusu seçin',
                   hintStyle: TextStyle(color: Colors.grey),
-                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF444444))),
-                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFF444444)),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber),
+                  ),
                 ),
                 items: _hintQuestions
-                    .map((q) => DropdownMenuItem(value: q, child: Text(q, overflow: TextOverflow.ellipsis)))
+                    .map(
+                      (q) => DropdownMenuItem(
+                        value: q,
+                        child: Text(q, overflow: TextOverflow.ellipsis),
+                      ),
+                    )
                     .toList(),
                 onChanged: (val) => setDlg(() => selectedQuestion = val),
               ),
@@ -3400,26 +4284,37 @@ class _SettingsPageState extends State<_SettingsPage> {
               TextField(
                 selectionWidthStyle: ui.BoxWidthStyle.tight,
                 contextMenuBuilder: buildCustomContextMenu,
-                  selectionHeightStyle: ui.BoxHeightStyle.max,
+                selectionHeightStyle: ui.BoxHeightStyle.max,
                 controller: answerCtrl,
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
                   hintText: 'Cevabınız',
                   hintStyle: TextStyle(color: Colors.grey),
-                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF444444))),
-                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Color(0xFF444444)),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber),
+                  ),
                 ),
               ),
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('İptal', style: TextStyle(color: Colors.grey))),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('İptal', style: TextStyle(color: Colors.grey)),
+            ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
               onPressed: () {
-                if (selectedQuestion == null || answerCtrl.text.trim().isEmpty) {
+                if (selectedQuestion == null ||
+                    answerCtrl.text.trim().isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Soru ve cevap boş olamaz!'), backgroundColor: Colors.red),
+                    const SnackBar(
+                      content: Text('Soru ve cevap boş olamaz!'),
+                      backgroundColor: Colors.red,
+                    ),
                   );
                   return;
                 }
@@ -3431,7 +4326,13 @@ class _SettingsPageState extends State<_SettingsPage> {
                 Navigator.pop(ctx);
                 setState(() {});
               },
-              child: const Text('Kaydet', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              child: const Text(
+                'Kaydet',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),
@@ -3446,8 +4347,9 @@ class _SettingsPageState extends State<_SettingsPage> {
     final hintAnswerCtrl = TextEditingController();
     bool obscure1 = true;
     bool obscure2 = true;
-    String? selectedHintQuestion =
-        s._passwordHintQuestion.isNotEmpty ? s._passwordHintQuestion : null;
+    String? selectedHintQuestion = s._passwordHintQuestion.isNotEmpty
+        ? s._passwordHintQuestion
+        : null;
 
     showDialog(
       context: context,
@@ -3467,17 +4369,25 @@ class _SettingsPageState extends State<_SettingsPage> {
                   TextField(
                     selectionWidthStyle: ui.BoxWidthStyle.tight,
                     contextMenuBuilder: buildCustomContextMenu,
-                  selectionHeightStyle: ui.BoxHeightStyle.max,
+                    selectionHeightStyle: ui.BoxHeightStyle.max,
                     controller: ctrl1,
                     obscureText: obscure1,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       hintText: 'Mevcut şifre',
                       hintStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF444444))),
-                      focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF444444)),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.amber),
+                      ),
                       suffixIcon: IconButton(
-                        icon: Icon(obscure1 ? Icons.visibility_off : Icons.visibility, color: Colors.grey, size: 20),
+                        icon: Icon(
+                          obscure1 ? Icons.visibility_off : Icons.visibility,
+                          color: Colors.grey,
+                          size: 20,
+                        ),
                         onPressed: () => setDlg(() => obscure1 = !obscure1),
                       ),
                     ),
@@ -3486,17 +4396,25 @@ class _SettingsPageState extends State<_SettingsPage> {
                   TextField(
                     selectionWidthStyle: ui.BoxWidthStyle.tight,
                     contextMenuBuilder: buildCustomContextMenu,
-                  selectionHeightStyle: ui.BoxHeightStyle.max,
+                    selectionHeightStyle: ui.BoxHeightStyle.max,
                     controller: ctrl1,
                     obscureText: obscure1,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       hintText: 'Yeni şifre',
                       hintStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF444444))),
-                      focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF444444)),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.amber),
+                      ),
                       suffixIcon: IconButton(
-                        icon: Icon(obscure1 ? Icons.visibility_off : Icons.visibility, color: Colors.grey, size: 20),
+                        icon: Icon(
+                          obscure1 ? Icons.visibility_off : Icons.visibility,
+                          color: Colors.grey,
+                          size: 20,
+                        ),
                         onPressed: () => setDlg(() => obscure1 = !obscure1),
                       ),
                     ),
@@ -3505,17 +4423,25 @@ class _SettingsPageState extends State<_SettingsPage> {
                   TextField(
                     selectionWidthStyle: ui.BoxWidthStyle.tight,
                     contextMenuBuilder: buildCustomContextMenu,
-                  selectionHeightStyle: ui.BoxHeightStyle.max,
+                    selectionHeightStyle: ui.BoxHeightStyle.max,
                     controller: ctrl2,
                     obscureText: obscure2,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       hintText: 'Şifreyi tekrar gir',
                       hintStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF444444))),
-                      focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+                      enabledBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF444444)),
+                      ),
+                      focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.amber),
+                      ),
                       suffixIcon: IconButton(
-                        icon: Icon(obscure2 ? Icons.visibility_off : Icons.visibility, color: Colors.grey, size: 20),
+                        icon: Icon(
+                          obscure2 ? Icons.visibility_off : Icons.visibility,
+                          color: Colors.grey,
+                          size: 20,
+                        ),
                         onPressed: () => setDlg(() => obscure2 = !obscure2),
                       ),
                     ),
@@ -3533,26 +4459,40 @@ class _SettingsPageState extends State<_SettingsPage> {
                     decoration: const InputDecoration(
                       hintText: 'Güvenlik sorusu seçin',
                       hintStyle: TextStyle(color: Colors.grey),
-                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF444444))),
-                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF444444)),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.amber),
+                      ),
                     ),
                     items: _hintQuestions
-                        .map((q) => DropdownMenuItem(value: q, child: Text(q, overflow: TextOverflow.ellipsis)))
+                        .map(
+                          (q) => DropdownMenuItem(
+                            value: q,
+                            child: Text(q, overflow: TextOverflow.ellipsis),
+                          ),
+                        )
                         .toList(),
-                    onChanged: (val) => setDlg(() => selectedHintQuestion = val),
+                    onChanged: (val) =>
+                        setDlg(() => selectedHintQuestion = val),
                   ),
                   const SizedBox(height: 12),
                   TextField(
                     selectionWidthStyle: ui.BoxWidthStyle.tight,
                     contextMenuBuilder: buildCustomContextMenu,
-                  selectionHeightStyle: ui.BoxHeightStyle.max,
+                    selectionHeightStyle: ui.BoxHeightStyle.max,
                     controller: hintAnswerCtrl,
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
                       hintText: 'Cevabınız',
                       hintStyle: TextStyle(color: Colors.grey),
-                      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Color(0xFF444444))),
-                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.amber)),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF444444)),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.amber),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -3565,7 +4505,10 @@ class _SettingsPageState extends State<_SettingsPage> {
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('İptal', style: TextStyle(color: Colors.grey))),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('İptal', style: TextStyle(color: Colors.grey)),
+            ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
               onPressed: () {
@@ -3573,7 +4516,10 @@ class _SettingsPageState extends State<_SettingsPage> {
                   if (ctrl1.text.isEmpty) return;
                   if (ctrl1.text != ctrl2.text) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Şifreler eşleşmiyor!'), backgroundColor: Colors.red),
+                      const SnackBar(
+                        content: Text('Şifreler eşleşmiyor!'),
+                        backgroundColor: Colors.red,
+                      ),
                     );
                     return;
                   }
@@ -3600,12 +4546,21 @@ class _SettingsPageState extends State<_SettingsPage> {
                     setState(() {});
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Yanlış şifre!'), backgroundColor: Colors.red),
+                      const SnackBar(
+                        content: Text('Yanlış şifre!'),
+                        backgroundColor: Colors.red,
+                      ),
                     );
                   }
                 }
               },
-              child: Text(isNew ? 'Kaydet' : 'Kaldır', style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+              child: Text(
+                isNew ? 'Kaydet' : 'Kaldır',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),
@@ -3615,30 +4570,45 @@ class _SettingsPageState extends State<_SettingsPage> {
 
   // ── Yazı tipi seçici ──────────────────────────────────────────────
   static const List<String> _fonts = [
-    'Varsayılan', 'Monospace', 'Serif', 'Cursive',
+    'Varsayılan',
+    'Monospace',
+    'Serif',
+    'Cursive',
   ];
 
   static String? _fontFamilyValue(String name) {
     switch (name) {
-      case 'Monospace': return 'monospace';
-      case 'Serif': return 'serif';
-      case 'Cursive': return 'cursive';
-      default: return null;
+      case 'Monospace':
+        return 'monospace';
+      case 'Serif':
+        return 'serif';
+      case 'Cursive':
+        return 'cursive';
+      default:
+        return null;
     }
   }
 
   // ── Metin rengi seçici ────────────────────────────────────────────
   static const List<Color> _textPalette = [
-    Colors.white, Color(0xFFE0E0E0), Color(0xFFBDBDBD),
-    Colors.amber, Colors.cyanAccent, Colors.greenAccent,
-    Colors.pinkAccent, Colors.lightBlueAccent, Colors.orangeAccent,
+    Colors.white,
+    Color(0xFFE0E0E0),
+    Color(0xFFBDBDBD),
+    Colors.amber,
+    Colors.cyanAccent,
+    Colors.greenAccent,
+    Colors.pinkAccent,
+    Colors.lightBlueAccent,
+    Colors.orangeAccent,
   ];
 
   void _showTextColorPicker() {
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xFF1E1E1E),
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (_) => StatefulBuilder(
         builder: (ctx, setSheet) => SafeArea(
           child: Padding(
@@ -3647,11 +4617,32 @@ class _SettingsPageState extends State<_SettingsPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(width: 40, height: 4, margin: const EdgeInsets.only(bottom: 16, left: 120, right: 120),
-                  decoration: BoxDecoration(color: Colors.grey[700], borderRadius: BorderRadius.circular(2))),
-                const Text('Metin Rengi', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(
+                    bottom: 16,
+                    left: 120,
+                    right: 120,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[700],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const Text(
+                  'Metin Rengi',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                const Text('Not içerik metninin rengini belirler.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                const Text(
+                  'Not içerik metninin rengini belirler.',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
                 const SizedBox(height: 20),
                 Wrap(
                   spacing: 12,
@@ -3665,13 +4656,25 @@ class _SettingsPageState extends State<_SettingsPage> {
                         s._saveData();
                       },
                       child: Container(
-                        width: 48, height: 48,
+                        width: 48,
+                        height: 48,
                         decoration: BoxDecoration(
                           color: c,
-                          border: Border.all(color: selected ? Colors.amber : Colors.grey[700]!, width: selected ? 2.5 : 1),
+                          border: Border.all(
+                            color: selected ? Colors.amber : Colors.grey[700]!,
+                            width: selected ? 2.5 : 1,
+                          ),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: selected ? Icon(Icons.check, color: c == Colors.white ? Colors.black : Colors.black87, size: 20) : null,
+                        child: selected
+                            ? Icon(
+                                Icons.check,
+                                color: c == Colors.white
+                                    ? Colors.black
+                                    : Colors.black87,
+                                size: 20,
+                              )
+                            : null,
                       ),
                     );
                   }).toList(),
@@ -3680,9 +4683,17 @@ class _SettingsPageState extends State<_SettingsPage> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.amber,
+                    ),
                     onPressed: () => Navigator.pop(ctx),
-                    child: const Text('Tamam', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                    child: const Text(
+                      'Tamam',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -3696,8 +4707,15 @@ class _SettingsPageState extends State<_SettingsPage> {
   // ─────────────────────────────────────────────────────────────────
   Widget _sectionHeader(String title) => Padding(
     padding: const EdgeInsets.fromLTRB(16, 24, 16, 6),
-    child: Text(title.toUpperCase(),
-      style: const TextStyle(color: Colors.amber, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.4)),
+    child: Text(
+      title.toUpperCase(),
+      style: const TextStyle(
+        color: Colors.amber,
+        fontSize: 11,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 1.4,
+      ),
+    ),
   );
 
   Widget _settingTile({
@@ -3709,13 +4727,23 @@ class _SettingsPageState extends State<_SettingsPage> {
     VoidCallback? onTap,
   }) => ListTile(
     leading: Container(
-      width: 36, height: 36,
-      decoration: BoxDecoration(color: iconColor.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        color: iconColor.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Icon(icon, color: iconColor, size: 20),
     ),
-    title: Text(title, style: const TextStyle(color: Colors.white, fontSize: 14)),
+    title: Text(
+      title,
+      style: const TextStyle(color: Colors.white, fontSize: 14),
+    ),
     subtitle: subtitle != null
-        ? Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 11))
+        ? Text(
+            subtitle,
+            style: const TextStyle(color: Colors.grey, fontSize: 11),
+          )
         : null,
     trailing: trailing,
     onTap: onTap,
@@ -3734,429 +4762,670 @@ class _SettingsPageState extends State<_SettingsPage> {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Ayarlar', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text(
+          'Ayarlar',
+          style: TextStyle(
+            color: Colors.amber,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
       ),
       body: SafeArea(
         child: ListView(
-        children: [
-
-          // ── 1. GÜVENLİK ─────────────────────────────────────────────
-          _sectionHeader('Güvenlik'),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(color: const Color(0xFF1E1E1E), borderRadius: BorderRadius.circular(14)),
-            child: Column(
-              children: [
-                _settingTile(
-                  icon: Icons.lock_outline,
-                  iconColor: Colors.blueAccent,
-                  title: 'Not Şifresi',
-                  subtitle: s._notePasswordEnabled ? 'Şifre ayarlandı ✓' : 'Şifre ayarlanmadı',
-                  trailing: Switch(
-                    value: s._notePasswordEnabled,
-                    activeThumbColor: Colors.amber,
-                    onChanged: (val) {
-                      if (val) {
-                        _showPasswordDialog(isNew: true);
-                      } else {
-                        if (s._notePassword.isEmpty) {
-                          s.setState(() => s._notePasswordEnabled = false);
-                          s._saveData();
-                          setState(() {});
-                        } else {
-                          _showPasswordDialog(isNew: false);
-                        }
-                      }
-                    },
-                  ),
-                ),
-                if (s._notePasswordEnabled) ...[
-                  const Divider(color: Color(0xFF2A2A2A), height: 1, indent: 56),
+          children: [
+            // ── 1. GÜVENLİK ─────────────────────────────────────────────
+            _sectionHeader('Güvenlik'),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E1E1E),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Column(
+                children: [
                   _settingTile(
-                    icon: Icons.help_outline,
+                    icon: Icons.lock_outline,
+                    iconColor: Colors.blueAccent,
+                    title: 'Not Şifresi',
+                    subtitle: s._notePasswordEnabled
+                        ? 'Şifre ayarlandı ✓'
+                        : 'Şifre ayarlanmadı',
+                    trailing: Switch(
+                      value: s._notePasswordEnabled,
+                      activeThumbColor: Colors.amber,
+                      onChanged: (val) {
+                        if (val) {
+                          _showPasswordDialog(isNew: true);
+                        } else {
+                          if (s._notePassword.isEmpty) {
+                            s.setState(() => s._notePasswordEnabled = false);
+                            s._saveData();
+                            setState(() {});
+                          } else {
+                            _showPasswordDialog(isNew: false);
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                  if (s._notePasswordEnabled) ...[
+                    const Divider(
+                      color: Color(0xFF2A2A2A),
+                      height: 1,
+                      indent: 56,
+                    ),
+                    _settingTile(
+                      icon: Icons.help_outline,
+                      iconColor: Colors.orangeAccent,
+                      title: 'Güvenlik Sorusu',
+                      subtitle: s._passwordHintQuestion.isNotEmpty
+                          ? 'Belirlendi ✓ — şifreyi unutursanız kullanılır'
+                          : 'Belirlenmedi — şifrenizi kaybederseniz kurtaramazsınız',
+                      trailing: const Icon(
+                        Icons.chevron_right,
+                        color: Colors.grey,
+                      ),
+                      onTap: () => _showHintQuestionDialog(),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+
+            // ── 2. TEMA ──────────────────────────────────────────────────
+            _sectionHeader('Tema'),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E1E1E),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Column(
+                children: [
+                  _settingTile(
+                    icon: Icons.dark_mode_outlined,
+                    iconColor: Colors.indigoAccent,
+                    title: 'Koyu Tema',
+                    subtitle: 'Karanlık arayüz modunu etkinleştirir.',
+                    trailing: Switch(
+                      value: s._darkTheme,
+                      activeThumbColor: Colors.amber,
+                      onChanged: (val) {
+                        s.setState(() => s._darkTheme = val);
+                        setState(() {});
+                        s._saveData();
+                      },
+                    ),
+                  ),
+                  const Divider(
+                    color: Color(0xFF2A2A2A),
+                    height: 1,
+                    indent: 56,
+                  ),
+                  _settingTile(
+                    icon: Icons.palette_outlined,
                     iconColor: Colors.orangeAccent,
-                    title: 'Güvenlik Sorusu',
-                    subtitle: s._passwordHintQuestion.isNotEmpty
-                        ? 'Belirlendi ✓ — şifreyi unutursanız kullanılır'
-                        : 'Belirlenmedi — şifrenizi kaybederseniz kurtaramazsınız',
-                    trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-                    onTap: () => _showHintQuestionDialog(),
+                    title: 'Değişken Not Renkleri',
+                    subtitle: 'Her not kartı farklı renk tonu alır.',
+                    trailing: Switch(
+                      value: s._colorfulNotes,
+                      activeThumbColor: Colors.amber,
+                      onChanged: (val) {
+                        s.setState(() => s._colorfulNotes = val);
+                        setState(() {});
+                        s._saveData();
+                      },
+                    ),
                   ),
                 ],
-              ],
+              ),
             ),
-          ),
 
-          // ── 2. TEMA ──────────────────────────────────────────────────
-          _sectionHeader('Tema'),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(color: const Color(0xFF1E1E1E), borderRadius: BorderRadius.circular(14)),
-            child: Column(
-              children: [
-                _settingTile(
-                  icon: Icons.dark_mode_outlined,
-                  iconColor: Colors.indigoAccent,
-                  title: 'Koyu Tema',
-                  subtitle: 'Karanlık arayüz modunu etkinleştirir.',
-                  trailing: Switch(
-                    value: s._darkTheme,
-                    activeThumbColor: Colors.amber,
-                    onChanged: (val) {
-                      s.setState(() => s._darkTheme = val);
-                      setState(() {});
-                      s._saveData();
-                    },
-                  ),
-                ),
-                const Divider(color: Color(0xFF2A2A2A), height: 1, indent: 56),
-                _settingTile(
-                  icon: Icons.palette_outlined,
-                  iconColor: Colors.orangeAccent,
-                  title: 'Değişken Not Renkleri',
-                  subtitle: 'Her not kartı farklı renk tonu alır.',
-                  trailing: Switch(
-                    value: s._colorfulNotes,
-                    activeThumbColor: Colors.amber,
-                    onChanged: (val) {
-                      s.setState(() => s._colorfulNotes = val);
-                      setState(() {});
-                      s._saveData();
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // ── 3. KİŞİSELLEŞTİRME ──────────────────────────────────────
-          _sectionHeader('Kişiselleştirme'),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(color: const Color(0xFF1E1E1E), borderRadius: BorderRadius.circular(14)),
-            child: Column(
-              children: [
-                // Yazı tipi
-                _settingTile(
-                  icon: Icons.font_download_outlined,
-                  iconColor: Colors.tealAccent,
-                  title: 'Yazı Tipi',
-                  subtitle: s._fontFamily,
-                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      backgroundColor: const Color(0xFF1E1E1E),
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-                      builder: (_) => SafeArea(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('Yazı Tipi', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 8),
-                              ..._fonts.map((f) => ListTile(
-                                contentPadding: EdgeInsets.zero,
-                                title: Text(f,
+            // ── 3. KİŞİSELLEŞTİRME ──────────────────────────────────────
+            _sectionHeader('Kişiselleştirme'),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E1E1E),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Column(
+                children: [
+                  // Yazı tipi
+                  _settingTile(
+                    icon: Icons.font_download_outlined,
+                    iconColor: Colors.tealAccent,
+                    title: 'Yazı Tipi',
+                    subtitle: s._fontFamily,
+                    trailing: const Icon(
+                      Icons.chevron_right,
+                      color: Colors.grey,
+                    ),
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: const Color(0xFF1E1E1E),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                        builder: (_) => SafeArea(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Yazı Tipi',
                                   style: TextStyle(
-                                    color: s._fontFamily == f ? Colors.amber : Colors.white,
-                                    fontFamily: _fontFamilyValue(f),
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                trailing: s._fontFamily == f ? const Icon(Icons.check_circle, color: Colors.amber) : null,
-                                onTap: () {
-                                  s.setState(() => s._fontFamily = f);
-                                  setState(() {});
-                                  s._saveData();
-                                  Navigator.pop(context);
-                                },
-                              )),
-                            ],
+                                const SizedBox(height: 8),
+                                ..._fonts.map(
+                                  (f) => ListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    title: Text(
+                                      f,
+                                      style: TextStyle(
+                                        color: s._fontFamily == f
+                                            ? Colors.amber
+                                            : Colors.white,
+                                        fontFamily: _fontFamilyValue(f),
+                                      ),
+                                    ),
+                                    trailing: s._fontFamily == f
+                                        ? const Icon(
+                                            Icons.check_circle,
+                                            color: Colors.amber,
+                                          )
+                                        : null,
+                                    onTap: () {
+                                      s.setState(() => s._fontFamily = f);
+                                      setState(() {});
+                                      s._saveData();
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-                const Divider(color: Color(0xFF2A2A2A), height: 1, indent: 56),
-                // Metin boyutu
-                _settingTile(
-                  icon: Icons.text_fields,
-                  iconColor: Colors.pinkAccent,
-                  title: 'Metin Boyutu',
-                  subtitle: '${s._globalFontSize.round()} pt — tüm notlara uygulanır.',
-                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-                  onTap: () {
-                    double tempSize = s._globalFontSize;
-                    bool applyToAll = false;
-                    showModalBottomSheet(
-                      context: context,
-                      backgroundColor: const Color(0xFF1E1E1E),
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-                      isScrollControlled: true,
-                      builder: (_) => StatefulBuilder(
-                        builder: (ctx, setSheet) => SafeArea(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[700], borderRadius: BorderRadius.circular(2))),
-                                const SizedBox(height: 16),
-                                const Text('Metin Boyutu', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-                                const SizedBox(height: 20),
-                                Row(
-                                  children: [
-                                    const Icon(Icons.text_fields, color: Colors.grey, size: 16),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: SliderTheme(
-                                        data: SliderTheme.of(context).copyWith(
-                                          activeTrackColor: Colors.amber, inactiveTrackColor: const Color(0xFF3A3A3A),
-                                          thumbColor: Colors.amber, overlayColor: Colors.amber.withValues(alpha: 0.2),
-                                          valueIndicatorColor: Colors.amber,
-                                          valueIndicatorTextStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                      );
+                    },
+                  ),
+                  const Divider(
+                    color: Color(0xFF2A2A2A),
+                    height: 1,
+                    indent: 56,
+                  ),
+                  // Metin boyutu
+                  _settingTile(
+                    icon: Icons.text_fields,
+                    iconColor: Colors.pinkAccent,
+                    title: 'Metin Boyutu',
+                    subtitle:
+                        '${s._globalFontSize.round()} pt — tüm notlara uygulanır.',
+                    trailing: const Icon(
+                      Icons.chevron_right,
+                      color: Colors.grey,
+                    ),
+                    onTap: () {
+                      double tempSize = s._globalFontSize;
+                      bool applyToAll = false;
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: const Color(0xFF1E1E1E),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                        isScrollControlled: true,
+                        builder: (_) => StatefulBuilder(
+                          builder: (ctx, setSheet) => SafeArea(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                24,
+                                16,
+                                24,
+                                24,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 4,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[700],
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'Metin Boyutu',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.text_fields,
+                                        color: Colors.grey,
+                                        size: 16,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: SliderTheme(
+                                          data: SliderTheme.of(context)
+                                              .copyWith(
+                                                activeTrackColor: Colors.amber,
+                                                inactiveTrackColor: const Color(
+                                                  0xFF3A3A3A,
+                                                ),
+                                                thumbColor: Colors.amber,
+                                                overlayColor: Colors.amber
+                                                    .withValues(alpha: 0.2),
+                                                valueIndicatorColor:
+                                                    Colors.amber,
+                                                valueIndicatorTextStyle:
+                                                    const TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                              ),
+                                          child: Slider(
+                                            value: tempSize,
+                                            min: 10,
+                                            max: 30,
+                                            divisions: 20,
+                                            label: '${tempSize.round()}',
+                                            onChanged: (v) =>
+                                                setSheet(() => tempSize = v),
+                                          ),
                                         ),
-                                        child: Slider(value: tempSize, min: 10, max: 30, divisions: 20, label: '${tempSize.round()}',
-                                          onChanged: (v) => setSheet(() => tempSize = v)),
                                       ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    const Icon(Icons.text_fields, color: Colors.grey, size: 26),
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
-                                Text('Örnek metin - ${tempSize.round()} pt', style: TextStyle(color: Colors.white70, fontSize: tempSize)),
-                                const SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Checkbox(
-                                      value: applyToAll,
-                                      activeColor: Colors.amber,
-                                      onChanged: (v) => setSheet(() => applyToAll = v ?? false),
-                                    ),
-                                    const Expanded(
-                                      child: Text(
-                                        'Mevcut notlara uygula',
-                                        style: TextStyle(color: Colors.white70, fontSize: 13),
+                                      const SizedBox(width: 8),
+                                      const Icon(
+                                        Icons.text_fields,
+                                        color: Colors.grey,
+                                        size: 26,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 12, bottom: 16),
-                                  child: Text(
-                                    'Bireysel not boyutu ayarı varsa bu ayar o notları etkilemez.',
-                                    style: TextStyle(color: Colors.grey, fontSize: 11),
+                                    ],
                                   ),
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(child: TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('İptal', style: TextStyle(color: Colors.grey)))),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-                                        onPressed: () {
-                                          s.setState(() {
-                                            s._globalFontSize = tempSize;
-                                            if (applyToAll) {
-                                              for (final note in s._notes) {
-                                                note['fontSize'] = tempSize;
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    'Örnek metin - ${tempSize.round()} pt',
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: tempSize,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                        value: applyToAll,
+                                        activeColor: Colors.amber,
+                                        onChanged: (v) => setSheet(
+                                          () => applyToAll = v ?? false,
+                                        ),
+                                      ),
+                                      const Expanded(
+                                        child: Text(
+                                          'Mevcut notlara uygula',
+                                          style: TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 12,
+                                      bottom: 16,
+                                    ),
+                                    child: Text(
+                                      'Bireysel not boyutu ayarı varsa bu ayar o notları etkilemez.',
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextButton(
+                                          onPressed: () => Navigator.pop(ctx),
+                                          child: const Text(
+                                            'İptal',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.amber,
+                                          ),
+                                          onPressed: () {
+                                            s.setState(() {
+                                              s._globalFontSize = tempSize;
+                                              if (applyToAll) {
+                                                for (final note in s._notes) {
+                                                  note['fontSize'] = tempSize;
+                                                }
                                               }
-                                            }
-                                          });
-                                          setState(() {});
-                                          s._saveData();
-                                          Navigator.pop(ctx);
-                                        },
-                                        child: const Text('Uygula', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                                            });
+                                            setState(() {});
+                                            s._saveData();
+                                            Navigator.pop(ctx);
+                                          },
+                                          child: const Text(
+                                            'Uygula',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-                const Divider(color: Color(0xFF2A2A2A), height: 1, indent: 56),
-                // Metin rengi
-                _settingTile(
-                  icon: Icons.format_color_text,
-                  iconColor: Colors.lightBlueAccent,
-                  title: 'Metin Rengi',
-                  subtitle: 'Not içerik metni için renk.',
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 22, height: 22,
-                        decoration: BoxDecoration(
-                          color: s._textColor,
-                          border: Border.all(color: Colors.grey[600]!),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.chevron_right, color: Colors.grey),
-                    ],
+                      );
+                    },
                   ),
-                  onTap: _showTextColorPicker,
-                ),
-                const Divider(color: Color(0xFF2A2A2A), height: 1, indent: 56),
-                // Not önizleme satırı
-                _settingTile(
-                  icon: Icons.wrap_text,
-                  iconColor: Colors.amberAccent,
-                  title: 'Not Önizleme Satırı',
-                  subtitle: 'En fazla ${s._previewLines} satır göster. Not daha kısaysa gerçek satır sayısı görünür.',
-                  trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-                  onTap: () {
-                    int tempLines = s._previewLines;
-                    showModalBottomSheet(
-                      context: context,
-                      backgroundColor: const Color(0xFF1E1E1E),
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-                      builder: (_) => StatefulBuilder(
-                        builder: (ctx, setSheet) => SafeArea(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[700], borderRadius: BorderRadius.circular(2))),
-                                const SizedBox(height: 16),
-                                const Text('Not Önizleme Satırı', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-                                const SizedBox(height: 6),
-                                Text('Şu an: $tempLines satır', style: const TextStyle(color: Colors.amber, fontSize: 13)),
-                                const SizedBox(height: 12),
-                                SliderTheme(
-                                  data: SliderTheme.of(context).copyWith(
-                                    activeTrackColor: Colors.amber, inactiveTrackColor: const Color(0xFF3A3A3A),
-                                    thumbColor: Colors.amber, overlayColor: Colors.amber.withValues(alpha: 0.2),
-                                    valueIndicatorColor: Colors.amber,
-                                    valueIndicatorTextStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  const Divider(
+                    color: Color(0xFF2A2A2A),
+                    height: 1,
+                    indent: 56,
+                  ),
+                  // Metin rengi
+                  _settingTile(
+                    icon: Icons.format_color_text,
+                    iconColor: Colors.lightBlueAccent,
+                    title: 'Metin Rengi',
+                    subtitle: 'Not içerik metni için renk.',
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 22,
+                          height: 22,
+                          decoration: BoxDecoration(
+                            color: s._textColor,
+                            border: Border.all(color: Colors.grey[600]!),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.chevron_right, color: Colors.grey),
+                      ],
+                    ),
+                    onTap: _showTextColorPicker,
+                  ),
+                  const Divider(
+                    color: Color(0xFF2A2A2A),
+                    height: 1,
+                    indent: 56,
+                  ),
+                  // Not önizleme satırı
+                  _settingTile(
+                    icon: Icons.wrap_text,
+                    iconColor: Colors.amberAccent,
+                    title: 'Not Önizleme Satırı',
+                    subtitle:
+                        'En fazla ${s._previewLines} satır göster. Not daha kısaysa gerçek satır sayısı görünür.',
+                    trailing: const Icon(
+                      Icons.chevron_right,
+                      color: Colors.grey,
+                    ),
+                    onTap: () {
+                      int tempLines = s._previewLines;
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: const Color(0xFF1E1E1E),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                        builder: (_) => StatefulBuilder(
+                          builder: (ctx, setSheet) => SafeArea(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                24,
+                                16,
+                                24,
+                                24,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 4,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[700],
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
                                   ),
-                                  child: Slider(
-                                    value: tempLines.toDouble(), min: 1, max: 10, divisions: 9,
-                                    label: '$tempLines',
-                                    onChanged: (v) => setSheet(() => tempLines = v.round()),
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'Not Önizleme Satırı',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.only(bottom: 16),
-                                  child: Text(
-                                    'Maksimum önizlenecek satır sayısını belirler. Not daha az satıra sahipse gerçek satır sayısı gösterilir.',
-                                    style: TextStyle(color: Colors.grey, fontSize: 11),
-                                    textAlign: TextAlign.center,
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    'Şu an: $tempLines satır',
+                                    style: const TextStyle(
+                                      color: Colors.amber,
+                                      fontSize: 13,
+                                    ),
                                   ),
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(child: TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('İptal', style: TextStyle(color: Colors.grey)))),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-                                        onPressed: () {
-                                          s.setState(() => s._previewLines = tempLines);
-                                          setState(() {});
-                                          s._saveData();
-                                          Navigator.pop(ctx);
-                                        },
-                                        child: const Text('Uygula', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 12),
+                                  SliderTheme(
+                                    data: SliderTheme.of(context).copyWith(
+                                      activeTrackColor: Colors.amber,
+                                      inactiveTrackColor: const Color(
+                                        0xFF3A3A3A,
+                                      ),
+                                      thumbColor: Colors.amber,
+                                      overlayColor: Colors.amber.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                      valueIndicatorColor: Colors.amber,
+                                      valueIndicatorTextStyle: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ],
+                                    child: Slider(
+                                      value: tempLines.toDouble(),
+                                      min: 1,
+                                      max: 10,
+                                      divisions: 9,
+                                      label: '$tempLines',
+                                      onChanged: (v) =>
+                                          setSheet(() => tempLines = v.round()),
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.only(bottom: 16),
+                                    child: Text(
+                                      'Maksimum önizlenecek satır sayısını belirler. Not daha az satıra sahipse gerçek satır sayısı gösterilir.',
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 11,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextButton(
+                                          onPressed: () => Navigator.pop(ctx),
+                                          child: const Text(
+                                            'İptal',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.amber,
+                                          ),
+                                          onPressed: () {
+                                            s.setState(
+                                              () => s._previewLines = tempLines,
+                                            );
+                                            setState(() {});
+                                            s._saveData();
+                                            Navigator.pop(ctx);
+                                          },
+                                          child: const Text(
+                                            'Uygula',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          // ── 4. WİDGET ────────────────────────────────────────────────
-          _sectionHeader('Widget'),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(color: const Color(0xFF1E1E1E), borderRadius: BorderRadius.circular(14)),
-            child: Column(
-              children: [
-                // Bilgi kutusu
-                Container(
-                  margin: const EdgeInsets.all(12),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.amber.withValues(alpha: 0.08),
-                    border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.info_outline, color: Colors.amber, size: 18),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          'Widget ayarları yakında aktif olacak.',
-                          style: TextStyle(color: Colors.amber, fontSize: 12),
+            // ── 4. WİDGET ────────────────────────────────────────────────
+            _sectionHeader('Widget'),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E1E1E),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Column(
+                children: [
+                  // Bilgi kutusu
+                  Container(
+                    margin: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withValues(alpha: 0.08),
+                      border: Border.all(
+                        color: Colors.amber.withValues(alpha: 0.3),
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.info_outline, color: Colors.amber, size: 18),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Widget ayarları yakında aktif olacak.',
+                            style: TextStyle(color: Colors.amber, fontSize: 12),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Opacity(
-                  opacity: 0.45,
-                  child: Column(
-                    children: [
-                      _settingTile(
-                        icon: Icons.text_fields,
-                        iconColor: Colors.cyanAccent,
-                        title: 'Widget Metin Boyutu',
-                        subtitle: '${s._widgetFontSize.round()} pt',
-                        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-                      ),
-                      const Divider(color: Color(0xFF2A2A2A), height: 1, indent: 56),
-                      _settingTile(
-                        icon: Icons.opacity,
-                        iconColor: Colors.lightBlueAccent,
-                        title: 'Arka Plan Saydamlığı',
-                        subtitle: '%${(s._widgetBgOpacity * 100).round()}',
-                        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-                      ),
-                      const Divider(color: Color(0xFF2A2A2A), height: 1, indent: 56),
-                      _settingTile(
-                        icon: Icons.dark_mode_outlined,
-                        iconColor: Colors.deepPurpleAccent,
-                        title: 'Koyu Widget',
-                        subtitle: 'Widget için koyu renk şeması.',
-                        trailing: Switch(
-                          value: s._widgetDark,
-                          activeThumbColor: Colors.amber,
-                          onChanged: null,
+                  Opacity(
+                    opacity: 0.45,
+                    child: Column(
+                      children: [
+                        _settingTile(
+                          icon: Icons.text_fields,
+                          iconColor: Colors.cyanAccent,
+                          title: 'Widget Metin Boyutu',
+                          subtitle: '${s._widgetFontSize.round()} pt',
+                          trailing: const Icon(
+                            Icons.chevron_right,
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
-                    ],
+                        const Divider(
+                          color: Color(0xFF2A2A2A),
+                          height: 1,
+                          indent: 56,
+                        ),
+                        _settingTile(
+                          icon: Icons.opacity,
+                          iconColor: Colors.lightBlueAccent,
+                          title: 'Arka Plan Saydamlığı',
+                          subtitle: '%${(s._widgetBgOpacity * 100).round()}',
+                          trailing: const Icon(
+                            Icons.chevron_right,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        const Divider(
+                          color: Color(0xFF2A2A2A),
+                          height: 1,
+                          indent: 56,
+                        ),
+                        _settingTile(
+                          icon: Icons.dark_mode_outlined,
+                          iconColor: Colors.deepPurpleAccent,
+                          title: 'Koyu Widget',
+                          subtitle: 'Widget için koyu renk şeması.',
+                          trailing: Switch(
+                            value: s._widgetDark,
+                            activeThumbColor: Colors.amber,
+                            onChanged: null,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-
-        ],
+          ],
         ),
       ),
     );
   }
-} 
+}
