@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +10,10 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
+import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:open_file/open_file.dart';
+import 'package:pdfx/pdfx.dart';
 
 // ════════════════════════════════════════════════════════════════════════
 // SQLITE VERİ TABANI KATMANI
@@ -34,7 +40,16 @@ class DBHelper {
     final path = p.join(dbDir, 'dnote.db');
     return openDatabase(
       path,
-      version: 1,
+      version: 2,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          // v1 -> v2: dosya/görsel ekleme özelliği için attachments sütunu.
+          await db.execute('ALTER TABLE notes ADD COLUMN attachments TEXT');
+          await db.execute(
+            'ALTER TABLE deleted_notes ADD COLUMN attachments TEXT',
+          );
+        }
+      },
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE notes (
@@ -49,6 +64,7 @@ class DBHelper {
             type TEXT,
             fontSize REAL,
             checkItems TEXT,
+            attachments TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0
@@ -67,6 +83,7 @@ class DBHelper {
             type TEXT,
             fontSize REAL,
             checkItems TEXT,
+            attachments TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0
@@ -106,6 +123,9 @@ class DBHelper {
       'checkItems': note['checkItems'] != null
           ? jsonEncode(note['checkItems'])
           : null,
+      'attachments': (note['attachments'] != null && (note['attachments'] as List).isNotEmpty)
+          ? jsonEncode(note['attachments'])
+          : null,
       'isLocked': (note['isLocked'] == true) ? 1 : 0,
       'isArchived': (note['isArchived'] == true) ? 1 : 0,
       'isFavorite': (note['isFavorite'] == true) ? 1 : 0,
@@ -126,6 +146,8 @@ class DBHelper {
       if (row['fontSize'] != null) 'fontSize': row['fontSize'],
       if (row['checkItems'] != null)
         'checkItems': jsonDecode(row['checkItems'] as String),
+      if (row['attachments'] != null)
+        'attachments': jsonDecode(row['attachments'] as String),
       'isLocked': row['isLocked'] == 1,
       'isArchived': row['isArchived'] == 1,
       'isFavorite': row['isFavorite'] == 1,
@@ -232,6 +254,153 @@ class DBHelper {
     final db = await database;
     final rows = await db.query('settings');
     return {for (final r in rows) r['key'] as String: r['value'] as String};
+  }
+
+  // ── Ek dosyalar (attachments) - fiziksel dosya yönetimi ─────────────────
+  // Dosyalar, veritabanıyla aynı uygulama verisi dizini altında "attachments"
+  // klasöründe saklanır (ör: .../app_flutter/attachments/<storedName>).
+  Future<Directory> attachmentsDir() async {
+    final dbDir = await getDatabasesPath();
+    final baseDir = p.dirname(dbDir);
+    final dir = Directory(p.join(baseDir, 'attachments'));
+    if (!await dir.exists()) {
+      await dir.create(recursive: true);
+    }
+    return dir;
+  }
+
+  Future<void> deleteAttachmentFile(String storedName) async {
+    try {
+      final dir = await attachmentsDir();
+      final file = File(p.join(dir.path, storedName));
+      if (await file.exists()) {
+        await file.delete();
+      }
+    } catch (_) {
+      // Dosya zaten yoksa veya silinemiyorsa sessizce geç; not verisi
+      // her durumda kaldırılmış olacak.
+    }
+  }
+
+  // Bir notu kopyalarken (Kopya Oluştur) ekli dosyaların ikisi de AYNI
+  // fiziksel dosyayı göstermesin diye, her ek dosya diskte de kopyalanır ve
+  // kopyaya yeni bir storedName atanır.
+  Future<List<Map<String, dynamic>>> duplicateAttachmentFiles(
+    List<Map<String, dynamic>> attachments,
+  ) async {
+    final dir = await attachmentsDir();
+    final result = <Map<String, dynamic>>[];
+    var counter = 0;
+    for (final a in attachments) {
+      final oldStored = a['storedName']?.toString();
+      if (oldStored == null) continue;
+      final oldFile = File(p.join(dir.path, oldStored));
+      if (!await oldFile.exists()) continue;
+      final ext = p.extension(oldStored);
+      final newStored =
+          '${DateTime.now().microsecondsSinceEpoch}_${counter++}$ext';
+      await oldFile.copy(p.join(dir.path, newStored));
+      result.add({...a, 'id': '${a['id']}_copy', 'storedName': newStored});
+    }
+    return result;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// İÇERİK BLOKLARI (ContentBlocks)
+// Not içeriği artık düz metin yerine, sırayla dizilmiş "bloklar"dan oluşur:
+//   {"type": "text", "text": "..."}
+//   {"type": "attachments", "ids": ["att1", "att2", ...]}
+// Böylece kullanıcı imlecin olduğu yere fotoğraf/belge ekleyebilir, ekin
+// altına/üstüne yazı yazabilir. Eski (düz metin) notlarla geriye dönük
+// uyumluluk korunur: içerik JSON blok listesi olarak çözümlenemezse, tüm
+// içerik tek bir metin bloğu olarak kabul edilir.
+// ════════════════════════════════════════════════════════════════════════
+class ContentBlocks {
+  static List<Map<String, dynamic>> parse(String? raw) {
+    if (raw == null || raw.trim().isEmpty) {
+      return [
+        {'type': 'text', 'text': ''},
+      ];
+    }
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is List &&
+          decoded.isNotEmpty &&
+          decoded.every(
+            (e) => e is Map && (e['type'] == 'text' || e['type'] == 'attachments'),
+          )) {
+        return List<Map<String, dynamic>>.from(
+          decoded.map((e) => Map<String, dynamic>.from(e as Map)),
+        );
+      }
+    } catch (_) {
+      // JSON değil -> eski düz metin not.
+    }
+    return [
+      {'type': 'text', 'text': raw},
+    ];
+  }
+
+  static String serialize(List<Map<String, dynamic>> blocks) {
+    final cleaned = blocks.where((b) {
+      if (b['type'] == 'attachments') {
+        return (b['ids'] as List?)?.isNotEmpty == true;
+      }
+      return true;
+    }).toList();
+    if (cleaned.isEmpty) {
+      cleaned.add({'type': 'text', 'text': ''});
+    }
+    return jsonEncode(cleaned);
+  }
+
+  // Aramada, kopyalamada, paylaşmada ve önizlemede kullanılacak düz metin.
+  static String plainText(String? raw) {
+    final blocks = parse(raw);
+    return blocks
+        .where((b) => b['type'] == 'text')
+        .map((b) => (b['text'] ?? '').toString())
+        .join('\n')
+        .trim();
+  }
+
+  static bool hasAnyContent(List<Map<String, dynamic>> blocks) {
+    for (final b in blocks) {
+      if (b['type'] == 'text' &&
+          ((b['text'] ?? '').toString().trim().isNotEmpty)) {
+        return true;
+      }
+      if (b['type'] == 'attachments' &&
+          ((b['ids'] as List?)?.isNotEmpty ?? false)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  static bool equalsStoredContent(
+    List<Map<String, dynamic>> blocks,
+    String? rawOldContent,
+  ) {
+    final oldBlocks = parse(rawOldContent);
+    if (oldBlocks.length != blocks.length) return false;
+    for (int i = 0; i < blocks.length; i++) {
+      final a = oldBlocks[i];
+      final b = blocks[i];
+      if (a['type'] != b['type']) return false;
+      if (a['type'] == 'text') {
+        if ((a['text'] ?? '') != (b['text'] ?? '')) return false;
+      } else {
+        final ai = List.from(a['ids'] ?? const []);
+        final bi = List.from(b['ids'] ?? const []);
+        if (ai.length != bi.length) return false;
+        for (int j = 0; j < ai.length; j++) {
+          if (ai[j] != bi[j]) return false;
+        }
+      }
+    }
+    return true;
   }
 }
 
@@ -515,15 +684,20 @@ class _NoteListScreenState extends State<NoteListScreen> {
 
   OverlayEntry? _snackOverlay;
   Timer? _snackTimer;
+  // Not kartlarında görsel önizleme gösterebilmek için eklerin fiziksel
+  // klasör yolu; uygulama açılışında bir kez okunup önbelleğe alınır.
+  String? _attachmentsDirPath;
 
   final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _contentController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _loadData();
+    DBHelper.instance.attachmentsDir().then((d) {
+      if (mounted) setState(() => _attachmentsDirPath = d.path);
+    });
   }
 
   Future<void> _loadData() async {
@@ -911,7 +1085,21 @@ class _NoteListScreenState extends State<NoteListScreen> {
     _showDeletedBar(deletedNote);
   }
 
-  void _duplicateNote(int index) {
+  // Bir notun ekli dosyalarını diskten siler (not kalıcı olarak silinirken
+  // çağrılır). Not verisinin kendisine dokunmaz.
+  void _cleanupAttachmentFiles(Map<String, dynamic> note) {
+    final atts = note['attachments'];
+    if (atts is List) {
+      for (final a in atts) {
+        final storedName = (a as Map)['storedName']?.toString();
+        if (storedName != null) {
+          DBHelper.instance.deleteAttachmentFile(storedName);
+        }
+      }
+    }
+  }
+
+  Future<void> _duplicateNote(int index) async {
     final original = _notes[index];
     final now = DateTime.now();
     final newRawTime = now.toString();
@@ -925,6 +1113,29 @@ class _NoteListScreenState extends State<NoteListScreen> {
     duplicate['createdDate'] = newRawTime;
     duplicate['modifiedDate'] = newRawTime;
     duplicate['date'] = formattedDate;
+
+    // checkItems ve attachments listeleri orijinalle AYNI referansı
+    // paylaşmasın diye derin kopya alınır.
+    final origCheckItems = original['checkItems'];
+    if (origCheckItems is List) {
+      duplicate['checkItems'] = origCheckItems
+          .map((e) => Map<String, dynamic>.from(e as Map))
+          .toList();
+    }
+
+    final origAttachments = original['attachments'];
+    if (origAttachments is List && origAttachments.isNotEmpty) {
+      // Ekli dosyaların kendisi de diskte fiziksel olarak kopyalanır; aksi
+      // halde iki not aynı dosyayı paylaşır ve biri kalıcı silinince
+      // diğerinin eki de kaybolur.
+      duplicate['attachments'] = await DBHelper.instance
+          .duplicateAttachmentFiles(
+            List<Map<String, dynamic>>.from(
+              origAttachments.map((e) => Map<String, dynamic>.from(e as Map)),
+            ),
+          );
+    }
+
     setState(() => _notes.insert(index + 1, duplicate));
     _saveData();
     _showInfoBar('Kopya oluşturuldu');
@@ -933,7 +1144,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
   Future<void> _copyNoteContent(int index) async {
     final note = _notes[index];
     final title = (note['title'] ?? '').toString().trim();
-    final content = (note['content'] ?? '').toString().trim();
+    final content = ContentBlocks.plainText(note['content'] as String?);
     final text = [
       if (title.isNotEmpty) title,
       if (content.isNotEmpty) content,
@@ -1807,7 +2018,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
       }
     }
 
-    final content = (note['content'] as String? ?? '').trim();
+    final content = ContentBlocks.plainText(note['content'] as String?);
     final charCount = content.length;
     final wordCount = content.isEmpty
         ? 0
@@ -1975,12 +2186,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
         'key': 'share',
       },
       {
-        'icon': Icons.attach_file,
-        'label': 'Dosya Ekle',
-        'color': Colors.orange,
-        'key': 'file',
-      },
-      {
         'icon': Icons.copy_all_outlined,
         'label': 'Kopya Oluştur',
         'color': Colors.green,
@@ -1997,12 +2202,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
         'label': 'Metin Boyutu',
         'color': Colors.pink,
         'key': 'text_size',
-      },
-      {
-        'icon': Icons.shortcut_outlined,
-        'label': 'Kısayol Ata',
-        'color': Colors.lime,
-        'key': 'shortcut',
       },
       {
         'icon': Icons.info_outline,
@@ -2080,13 +2279,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       } else if (key == 'classify') {
                         _showClassifyDialog(noteIndex);
                       } else if (key == 'duplicate') {
-                        _duplicateNote(noteIndex);
+                        await _duplicateNote(noteIndex);
                       } else if (key == 'share') {
                         final note = _notes[noteIndex];
                         final title = (note['title'] ?? '').toString().trim();
-                        final content = (note['content'] ?? '')
-                            .toString()
-                            .trim();
+                        final content = ContentBlocks.plainText(
+                          note['content'] as String?,
+                        );
                         final text = [
                           if (title.isNotEmpty) title,
                           if (content.isNotEmpty) content,
@@ -2168,11 +2367,15 @@ class _NoteListScreenState extends State<NoteListScreen> {
   bool _saveNoteIfValid(
     int? index,
     String noteType,
-    List<Map<String, dynamic>> checkItems,
-  ) {
-    final isValid = noteType == 'text'
-        ? _contentController.text.trim().isNotEmpty
-        : checkItems.any((e) => (e['text'] as String).trim().isNotEmpty);
+    List<Map<String, dynamic>> checkItems, [
+    List<Map<String, dynamic>> attachments = const [],
+    List<Map<String, dynamic>> blocks = const [],
+  ]) {
+    final isValid =
+        (noteType == 'text'
+            ? ContentBlocks.hasAnyContent(blocks)
+            : checkItems.any((e) => (e['text'] as String).trim().isNotEmpty)) ||
+        attachments.isNotEmpty;
 
     if (isValid) {
       if (index != null) {
@@ -2181,7 +2384,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
         // kapatıldıysa) modifiedDate güncellenmemeli, yoksa not "son
         // düzenleme" sıralamasında haksız yere başa taşınır.
         final newTitle = _capitalizeFirstLetterTr(_titleController.text.trim());
-        final newContent = noteType == 'text' ? _contentController.text : '';
+        final newContent = noteType == 'text'
+            ? ContentBlocks.serialize(blocks)
+            : '';
         final newCheckItems = noteType == 'checklist'
             ? checkItems
             : <Map<String, dynamic>>[];
@@ -2204,11 +2409,28 @@ class _NoteListScreenState extends State<NoteListScreen> {
               return a['text'] != b['text'] || a['checked'] != b['checked'];
             }).any((changed) => changed);
 
+        final oldAttachmentsRaw = _notes[index]['attachments'];
+        final oldAttachmentIds = oldAttachmentsRaw is List
+            ? oldAttachmentsRaw.map((e) => (e as Map)['id']).toList()
+            : <dynamic>[];
+        final newAttachmentIds = attachments.map((e) => e['id']).toList();
+        final attachmentsChanged =
+            oldAttachmentIds.length != newAttachmentIds.length ||
+            !List.generate(
+              newAttachmentIds.length,
+              (i) => oldAttachmentIds[i] == newAttachmentIds[i],
+            ).every((same) => same);
+
+        final contentChanged = noteType == 'text'
+            ? !ContentBlocks.equalsStoredContent(blocks, oldContent)
+            : newContent != oldContent;
+
         final hasChanges =
             newTitle != oldTitle ||
-            newContent != oldContent ||
+            contentChanged ||
             noteType != oldType ||
-            checkItemsChanged;
+            checkItemsChanged ||
+            attachmentsChanged;
 
         if (!hasChanges) return false;
 
@@ -2219,6 +2441,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
             'title': newTitle,
             'content': newContent,
             'checkItems': newCheckItems,
+            'attachments': attachments,
             'modifiedDate': currentRawTime,
             'type': noteType,
           };
@@ -2231,8 +2454,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
           _notes.add({
             'id': currentRawTime,
             'title': _capitalizeFirstLetterTr(_titleController.text.trim()),
-            'content': noteType == 'text' ? _contentController.text : '',
+            'content': noteType == 'text'
+                ? ContentBlocks.serialize(blocks)
+                : '',
             'checkItems': noteType == 'checklist' ? checkItems : [],
+            'attachments': attachments,
             'date': _getFormattedDate(),
             'createdDate': currentRawTime,
             'modifiedDate': currentRawTime,
@@ -2283,14 +2509,231 @@ class _NoteListScreenState extends State<NoteListScreen> {
     return true;
   }
 
+  // ── Ek (fotoğraf/belge) IZGARASI ────────────────────────────────────────
+  // Tek ek varsa tam genişlikte, 2+ ek varsa 2 sütunlu ızgara (grid) olarak
+  // gösterilir. Aralarında çok az boşluk bırakılır. Hem not düzenleme
+  // ekranındaki metin içi eklerde, hem de kontrol listesi (checklist)
+  // eklerinde kullanılır.
+  // ── PDF ilk sayfa küçük resmi (thumbnail) ──────────────────────────────
+  // Aynı dosya için tekrar tekrar render etmemek için sonuçlar bellekte
+  // (uygulama açıkken) önbelleğe alınır.
+  static final Map<String, Uint8List> _pdfThumbCache = {};
+
+  Future<Uint8List?> _getPdfThumbnail(String filePath) async {
+    if (_pdfThumbCache.containsKey(filePath)) {
+      return _pdfThumbCache[filePath];
+    }
+    PdfDocument? doc;
+    PdfPage? page;
+    try {
+      doc = await PdfDocument.openFile(filePath);
+      page = await doc.getPage(1);
+      final image = await page.render(
+        width: page.width * 1.6,
+        height: page.height * 1.6,
+        format: PdfPageImageFormat.jpeg,
+        backgroundColor: '#FFFFFF',
+      );
+      if (image != null) {
+        _pdfThumbCache[filePath] = image.bytes;
+        return image.bytes;
+      }
+    } catch (_) {
+      // PDF açılamadı/bozuk -> yedek (fallback) ikon gösterilecek.
+    } finally {
+      await page?.close();
+      await doc?.close();
+    }
+    return null;
+  }
+
+  // Görsel olmayan eklerin türüne göre önizlemesi: PDF için gerçek ilk
+  // sayfa küçük resmi, XLSX/XLS için belirgin yeşil tablo ikonu, diğer
+  // dosya türleri için genel amber belge ikonu.
+  Widget _buildDocPreview(Map<String, dynamic> att, String filePath) {
+    final fileName = (att['fileName'] ?? '').toString();
+    final ext = p.extension(fileName).toLowerCase();
+
+    if (ext == '.pdf') {
+      return FutureBuilder<Uint8List?>(
+        future: _getPdfThumbnail(filePath),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.data != null) {
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.memory(snapshot.data!, fit: BoxFit.cover),
+                Positioned(
+                  left: 4,
+                  bottom: 4,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade700,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      'PDF',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+          return _docFallback(fileName, Icons.picture_as_pdf, Colors.red.shade400);
+        },
+      );
+    }
+
+    if (ext == '.xlsx' || ext == '.xls') {
+      return _docFallback(fileName, Icons.table_chart, Colors.green.shade400);
+    }
+
+    return _docFallback(fileName, Icons.insert_drive_file_outlined, Colors.amber);
+  }
+
+  Widget _docFallback(String fileName, IconData icon, Color color) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: 28),
+          const SizedBox(height: 6),
+          Text(
+            fileName,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(color: Colors.white70, fontSize: 11),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAttachmentGrid({
+    required List<String> ids,
+    required List<Map<String, dynamic>> attachmentsList,
+    required void Function(String id) onRemove,
+    required void Function(Map<String, dynamic> att) onOpen,
+    required String? deletingId,
+    required void Function(String? id) onDeletingIdChanged,
+  }) {
+    final items = ids
+        .map(
+          (id) => attachmentsList.firstWhere(
+            (a) => a['id'] == id,
+            orElse: () => <String, dynamic>{},
+          ),
+        )
+        .where((a) => a.isNotEmpty)
+        .toList();
+    if (items.isEmpty) return const SizedBox.shrink();
+
+    return FutureBuilder<String>(
+      future: DBHelper.instance.attachmentsDir().then((d) => d.path),
+      builder: (context, snapshot) {
+        final dirPath = snapshot.data;
+        if (dirPath == null) return const SizedBox.shrink();
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            const spacing = 4.0;
+            final singleFull = items.length == 1;
+            final itemWidth = singleFull
+                ? constraints.maxWidth
+                : (constraints.maxWidth - spacing) / 2;
+            return Wrap(
+              spacing: spacing,
+              runSpacing: spacing,
+              children: items.map((att) {
+                final isImage = att['isImage'] == true;
+                final filePath = p.join(dirPath, att['storedName'].toString());
+                final preview = isImage
+                    ? Image.file(
+                        File(filePath),
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const Icon(
+                          Icons.broken_image_outlined,
+                          color: Colors.grey,
+                        ),
+                      )
+                    : _buildDocPreview(att, filePath);
+                return _AttachmentTile(
+                  width: itemWidth,
+                  height: singleFull ? 220 : itemWidth,
+                  preview: preview,
+                  showDelete: deletingId == att['id'].toString(),
+                  onOpen: () => onOpen(att),
+                  onRemove: () => onRemove(att['id'].toString()),
+                  onLongPress: () => onDeletingIdChanged(att['id'].toString()),
+                  onDismissDelete: () => onDeletingIdChanged(null),
+                );
+              }).toList(),
+            );
+          },
+        );
+      },
+    );
+  }
+
   void _showNoteDialog({int? index, String type = 'text'}) {
     String noteDate = "";
     String noteType = type;
     List<Map<String, dynamic>> checkItems = [];
     List<TextEditingController> checkControllers = [];
     List<FocusNode> checkFocusNodes = [];
+    List<Map<String, dynamic>> attachments = [];
     int? newlyAddedIndex; // hangi maddeye autofocus verilecek
     String? noteCategory;
+    // Basılı tutulunca sil ikonu gösterilen ekin id'si (aynı anda tek ek).
+    String? deletingAttachmentId;
+
+    // ── İçerik blokları (metin + araya eklenen fotoğraf/belge grupları) ──
+    List<Map<String, dynamic>> blocks = [];
+    List<TextEditingController?> blockControllers = [];
+    List<FocusNode?> blockFocusNodes = [];
+    int focusedBlockIndex = 0;
+
+    // Blok listesi değiştiğinde (ekleme/silme/birleştirme) controller ve
+    // focus node'ları tamamen yeniden kurar. Metin bloğu olmayan (ek)
+    // konumlar için null tutulur.
+    void rebuildBlockControllers() {
+      for (final c in blockControllers) {
+        c?.dispose();
+      }
+      for (final f in blockFocusNodes) {
+        f?.dispose();
+      }
+      blockControllers = [];
+      blockFocusNodes = [];
+      for (int i = 0; i < blocks.length; i++) {
+        if (blocks[i]['type'] == 'text') {
+          final ctrl = TextEditingController(
+            text: (blocks[i]['text'] ?? '').toString(),
+          );
+          final fn = FocusNode();
+          final capturedIndex = i;
+          fn.addListener(() {
+            if (fn.hasFocus) focusedBlockIndex = capturedIndex;
+          });
+          blockControllers.add(ctrl);
+          blockFocusNodes.add(fn);
+        } else {
+          blockControllers.add(null);
+          blockFocusNodes.add(null);
+        }
+      }
+    }
 
     void syncControllersAndFocusNodes() {
       // controller ve focusnode sayısını checkItems ile eşitle
@@ -2309,7 +2752,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
 
     if (index != null) {
       _titleController.text = _notes[index]['title'] ?? '';
-      _contentController.text = _notes[index]['content'] ?? '';
       noteDate = _notes[index]['date'] ?? "";
       noteType = _notes[index]['type'] ?? 'text';
       noteCategory = _notes[index]['category'] as String?;
@@ -2321,9 +2763,18 @@ class _NoteListScreenState extends State<NoteListScreen> {
           );
         }
       }
+      final rawAttachments = _notes[index]['attachments'];
+      if (rawAttachments != null) {
+        attachments = List<Map<String, dynamic>>.from(
+          (rawAttachments as List).map((e) => Map<String, dynamic>.from(e)),
+        );
+      }
+      blocks = ContentBlocks.parse(_notes[index]['content'] as String?);
     } else {
       _titleController.clear();
-      _contentController.clear();
+      blocks = [
+        {'type': 'text', 'text': ''},
+      ];
       if (noteType == 'checklist') {
         checkItems = [
           {'text': '', 'checked': false},
@@ -2332,6 +2783,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
       }
     }
     syncControllersAndFocusNodes();
+    rebuildBlockControllers();
 
     Navigator.of(context).push(
       PageRouteBuilder(
@@ -2340,6 +2792,259 @@ class _NoteListScreenState extends State<NoteListScreen> {
         pageBuilder: (context, animation, secondaryAnimation) {
           return StatefulBuilder(
             builder: (context, setModalState) {
+              // Verilen dosya yollarını (path) ekler klasörüne kopyalar,
+              // attachments listesine ekler ve (metin notuysa) imlecin
+              // bulunduğu yere gömer. pickAttachments / galeri / kamera
+              // akışlarının ortak son adımıdır.
+              Future<void> addFilesAsAttachments(
+                List<Map<String, String>> files,
+              ) async {
+                if (files.isEmpty) return;
+                final dir = await DBHelper.instance.attachmentsDir();
+                final newOnes = <Map<String, dynamic>>[];
+                for (final f in files) {
+                  final srcPath = f['path'];
+                  if (srcPath == null || srcPath.isEmpty) continue;
+                  final srcFile = File(srcPath);
+                  final name = (f['name'] != null && f['name']!.isNotEmpty)
+                      ? f['name']!
+                      : p.basename(srcPath);
+                  final ext = p.extension(name);
+                  final uniqueId =
+                      '${DateTime.now().microsecondsSinceEpoch}_${newOnes.length}';
+                  final storedName = '$uniqueId$ext';
+                  int sizeBytes = 0;
+                  try {
+                    await srcFile.copy(p.join(dir.path, storedName));
+                    sizeBytes = await srcFile.length();
+                  } catch (_) {
+                    continue;
+                  }
+                  final isImage = const [
+                    '.jpg',
+                    '.jpeg',
+                    '.png',
+                    '.gif',
+                    '.webp',
+                    '.bmp',
+                  ].contains(ext.toLowerCase());
+                  newOnes.add({
+                    'id': uniqueId,
+                    'fileName': name,
+                    'storedName': storedName,
+                    'sizeBytes': sizeBytes,
+                    'isImage': isImage,
+                  });
+                }
+                if (newOnes.isNotEmpty) {
+                  final newIds = newOnes
+                      .map((e) => e['id'].toString())
+                      .toList();
+                  setModalState(() {
+                    attachments.addAll(newOnes);
+                    if (noteType == 'text') {
+                      // İmlecin bulunduğu metin bloğunu bul; imleç orada
+                      // yoksa son metin bloğuna eklenir.
+                      int idx = focusedBlockIndex;
+                      if (idx < 0 ||
+                          idx >= blocks.length ||
+                          blocks[idx]['type'] != 'text') {
+                        idx = blocks.lastIndexWhere(
+                          (b) => b['type'] == 'text',
+                        );
+                        if (idx == -1) {
+                          blocks.add({'type': 'text', 'text': ''});
+                          idx = blocks.length - 1;
+                        }
+                      }
+                      final controller = blockControllers[idx];
+                      final text =
+                          controller?.text ??
+                          (blocks[idx]['text'] ?? '').toString();
+                      int offset = controller?.selection.baseOffset ?? -1;
+                      if (offset < 0 || offset > text.length) {
+                        offset = text.length;
+                      }
+                      final leftText = text.substring(0, offset);
+                      final rightText = text.substring(offset);
+
+                      if (leftText.trim().isEmpty &&
+                          idx > 0 &&
+                          blocks[idx - 1]['type'] == 'attachments') {
+                        // Önceki blok zaten bir ek grubu: yeni ekleri oraya
+                        // ekle, bu metin bloğunu (sağ kalan) koru.
+                        (blocks[idx - 1]['ids'] as List).addAll(newIds);
+                        blocks[idx]['text'] = rightText;
+                      } else if (rightText.trim().isEmpty &&
+                          idx < blocks.length - 1 &&
+                          blocks[idx + 1]['type'] == 'attachments') {
+                        // Sonraki blok zaten bir ek grubu: yeni ekleri oraya
+                        // ekle, bu metin bloğunu (sol kalan) koru.
+                        (blocks[idx + 1]['ids'] as List).addAll(newIds);
+                        blocks[idx]['text'] = leftText;
+                      } else {
+                        blocks[idx]['text'] = leftText;
+                        blocks.insert(idx + 1, {
+                          'type': 'attachments',
+                          'ids': newIds,
+                        });
+                        blocks.insert(idx + 2, {
+                          'type': 'text',
+                          'text': rightText,
+                        });
+                        focusedBlockIndex = idx + 2;
+                      }
+                      rebuildBlockControllers();
+                      // Yeni imleç konumunu (sağ kalan metnin başına) ayarla.
+                      final newFocusIdx = focusedBlockIndex.clamp(
+                        0,
+                        blockControllers.length - 1,
+                      );
+                      final newCtrl = blockControllers[newFocusIdx];
+                      if (newCtrl != null) {
+                        newCtrl.selection = TextSelection.collapsed(
+                          offset: 0,
+                        );
+                      }
+                    }
+                  });
+                }
+              }
+
+              Future<void> pickAttachments() async {
+                final result = await FilePicker.platform.pickFiles(
+                  allowMultiple: true,
+                  type: FileType.any,
+                );
+                if (result == null) return;
+                final files = result.files
+                    .where((f) => f.path != null)
+                    .map((f) => {'path': f.path!, 'name': f.name})
+                    .toList();
+                await addFilesAsAttachments(files);
+              }
+
+              // Telefondaki fotoğraflar arasından (sadece görseller, temel
+              // albümler görünümü) birden fazla görsel seçilmesini sağlar.
+              Future<void> pickImagesFromGallery() async {
+                final picker = ImagePicker();
+                final images = await picker.pickMultiImage();
+                if (images.isEmpty) return;
+                final files = images
+                    .map((x) => {'path': x.path, 'name': x.name})
+                    .toList();
+                await addFilesAsAttachments(files);
+              }
+
+              // Telefonun kamerasını açıp çekilen fotoğrafı eklere ekler.
+              Future<void> pickImageFromCamera() async {
+                final picker = ImagePicker();
+                final photo = await picker.pickImage(
+                  source: ImageSource.camera,
+                );
+                if (photo == null) return;
+                await addFilesAsAttachments([
+                  {'path': photo.path, 'name': photo.name},
+                ]);
+              }
+
+              // Kontrol listesi (checklist) notlarında, ekler ayrı bir
+              // liste halinde altta gösterilir; index'e göre kaldırılır.
+              void removeAttachment(int i) {
+                final att = attachments[i];
+                final storedName = att['storedName']?.toString();
+                if (storedName != null) {
+                  DBHelper.instance.deleteAttachmentFile(storedName);
+                }
+                setModalState(() {
+                  attachments.removeAt(i);
+                  deletingAttachmentId = null;
+                });
+              }
+
+              // Serbest metin notlarında, imlecin bulunduğu yere gömülü
+              // eklerden birini kaldırır; ek grubu boşalırsa komşu metin
+              // blokları birleştirilir.
+              void removeAttachmentById(String id) {
+                final gi = attachments.indexWhere((a) => a['id'] == id);
+                if (gi != -1) {
+                  final storedName = attachments[gi]['storedName']
+                      ?.toString();
+                  if (storedName != null) {
+                    DBHelper.instance.deleteAttachmentFile(storedName);
+                  }
+                }
+                setModalState(() {
+                  deletingAttachmentId = null;
+                  if (gi != -1) attachments.removeAt(gi);
+                  for (int i = 0; i < blocks.length; i++) {
+                    if (blocks[i]['type'] != 'attachments') continue;
+                    final ids = List<String>.from(blocks[i]['ids'] ?? const []);
+                    if (!ids.remove(id)) continue;
+                    if (ids.isEmpty) {
+                      final prevIsText =
+                          i > 0 && blocks[i - 1]['type'] == 'text';
+                      final nextIsText =
+                          i < blocks.length - 1 &&
+                          blocks[i + 1]['type'] == 'text';
+                      if (prevIsText && nextIsText) {
+                        final mergedText =
+                            ((blocks[i - 1]['text'] ?? '').toString()) +
+                            ((blocks[i + 1]['text'] ?? '').toString());
+                        blocks[i - 1]['text'] = mergedText;
+                        blocks.removeAt(i + 1);
+                        blocks.removeAt(i);
+                      } else {
+                        blocks.removeAt(i);
+                      }
+                    } else {
+                      blocks[i]['ids'] = ids;
+                    }
+                    break;
+                  }
+                  if (blocks.isEmpty) {
+                    blocks.add({'type': 'text', 'text': ''});
+                  }
+                  rebuildBlockControllers();
+                });
+              }
+
+              Future<void> openAttachment(Map<String, dynamic> att) async {
+                final dir = await DBHelper.instance.attachmentsDir();
+                final path = p.join(dir.path, att['storedName'].toString());
+                if (att['isImage'] == true) {
+                  if (!context.mounted) return;
+                  showDialog(
+                    context: context,
+                    barrierColor: Colors.black.withValues(alpha: 0.9),
+                    builder: (dialogCtx) => Dialog(
+                      backgroundColor: Colors.transparent,
+                      insetPadding: const EdgeInsets.all(8),
+                      child: Stack(
+                        children: [
+                          InteractiveViewer(
+                            child: Image.file(File(path), fit: BoxFit.contain),
+                          ),
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              ),
+                              onPressed: () => Navigator.pop(dialogCtx),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else {
+                  await OpenFile.open(path);
+                }
+              }
+
               final catColor = _getCategoryColor(noteCategory);
               final isDark =
                   ThemeData.estimateBrightnessForColor(catColor) ==
@@ -2359,7 +3064,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 canPop: false,
                 onPopInvokedWithResult: (didPop, result) {
                   if (didPop) return;
-                  final saved = _saveNoteIfValid(index, noteType, checkItems);
+                  if (deletingAttachmentId != null) {
+                    setModalState(() => deletingAttachmentId = null);
+                    return;
+                  }
+                  final saved = _saveNoteIfValid(index, noteType, checkItems, attachments, blocks);
                   SystemChrome.setSystemUIOverlayStyle(
                     const SystemUiOverlayStyle(
                       statusBarColor: Colors.transparent,
@@ -2405,10 +3114,16 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         color: Colors.white,
                       ),
                       onPressed: () {
+                        if (deletingAttachmentId != null) {
+                          setModalState(() => deletingAttachmentId = null);
+                          return;
+                        }
                         final saved = _saveNoteIfValid(
                           index,
                           noteType,
                           checkItems,
+                          attachments,
+                          blocks,
                         );
                         SystemChrome.setSystemUIOverlayStyle(
                           const SystemUiOverlayStyle(
@@ -2476,38 +3191,49 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 ),
                                 color: const Color(0xFF2A2A2A),
                                 onSelected: (value) {
-                                  if (value == 'classify') {
-                                    if (index != null) {
-                                      _showClassifyDialog(
-                                        index!,
-                                        onChanged: (cat) {
-                                          setModalState(() {
-                                            noteCategory = cat;
-                                          });
-                                        },
-                                      );
-                                    } else {
-                                      _saveNoteIfValid(
-                                        index,
-                                        noteType,
-                                        checkItems,
-                                      );
-                                      if (_notes.isNotEmpty) {
-                                        final newIndex = _notes.length - 1;
-                                        _showClassifyDialog(
-                                          newIndex,
-                                          onChanged: (cat) {
-                                            setModalState(() {
-                                              noteCategory = cat;
-                                              index = newIndex;
-                                            });
-                                          },
-                                        );
-                                      }
-                                    }
+                                  if (value == 'file') {
+                                    pickAttachments();
+                                  } else if (value == 'image') {
+                                    pickImagesFromGallery();
+                                  } else if (value == 'camera') {
+                                    pickImageFromCamera();
                                   }
                                 },
                                 itemBuilder: (_) => [
+                                  const PopupMenuItem(
+                                    value: 'image',
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.image_outlined,
+                                          color: Colors.blueAccent,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          'Görsel Ekle',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const PopupMenuItem(
+                                    value: 'camera',
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.camera_alt_outlined,
+                                          color: Colors.tealAccent,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          'Kamera',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   const PopupMenuItem(
                                     value: 'file',
                                     child: Row(
@@ -2520,40 +3246,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         SizedBox(width: 10),
                                         Text(
                                           'Dosya Ekle',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const PopupMenuItem(
-                                    value: 'shortcut',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.shortcut_outlined,
-                                          color: Colors.lime,
-                                          size: 20,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          'Kısayol',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const PopupMenuItem(
-                                    value: 'classify',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.label_outline,
-                                          color: Colors.purple,
-                                          size: 20,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          'Sınıflandır',
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       ],
@@ -2594,7 +3286,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       },
                     ),
                   ),
-                  body: SingleChildScrollView(
+                  body: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      if (deletingAttachmentId != null) {
+                        setModalState(() => deletingAttachmentId = null);
+                      }
+                    },
+                    child: SingleChildScrollView(
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -2623,30 +3322,60 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         ),
                         const SizedBox(height: 20),
                         if (noteType == 'text')
-                          TextField(
-                            selectionWidthStyle: ui.BoxWidthStyle.tight,
-                            contextMenuBuilder: buildCustomContextMenu,
-                            selectionHeightStyle: ui.BoxHeightStyle.max,
-                            controller: _contentController,
-                            autofocus: true,
-                            textCapitalization: TextCapitalization.sentences,
-                            maxLines: null,
-                            keyboardType: TextInputType.multiline,
-                            decoration: const InputDecoration(
-                              hintText: 'Notunuzu buraya yazın...',
-                              hintStyle: TextStyle(color: Colors.grey),
-                              border: InputBorder.none,
-                            ),
-                            style: TextStyle(
-                              color: _textColor,
-                              fontSize: index != null
-                                  ? ((_notes[index!]['fontSize'] as num?)
-                                            ?.toDouble() ??
-                                        _globalFontSize)
-                                  : _globalFontSize,
-                              height: 1.6,
-                            ),
-                          )
+                          ...List.generate(blocks.length, (i) {
+                            final block = blocks[i];
+                            if (block['type'] == 'attachments') {
+                              final ids = List<String>.from(
+                                block['ids'] ?? const [],
+                              );
+                              return Padding(
+                                key: ValueKey('blk_att_$i'),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                ),
+                                child: _buildAttachmentGrid(
+                                  ids: ids,
+                                  attachmentsList: attachments,
+                                  onRemove: removeAttachmentById,
+                                  onOpen: openAttachment,
+                                  deletingId: deletingAttachmentId,
+                                  onDeletingIdChanged: (id) => setModalState(
+                                    () => deletingAttachmentId = id,
+                                  ),
+                                ),
+                              );
+                            }
+                            return TextField(
+                              key: ValueKey('blk_text_$i'),
+                              selectionWidthStyle: ui.BoxWidthStyle.tight,
+                              contextMenuBuilder: buildCustomContextMenu,
+                              selectionHeightStyle: ui.BoxHeightStyle.max,
+                              controller: blockControllers[i],
+                              focusNode: blockFocusNodes[i],
+                              autofocus: i == 0 && index == null,
+                              textCapitalization: TextCapitalization.sentences,
+                              maxLines: null,
+                              keyboardType: TextInputType.multiline,
+                              decoration: InputDecoration(
+                                hintText: i == 0
+                                    ? 'Notunuzu buraya yazın...'
+                                    : null,
+                                hintStyle: const TextStyle(color: Colors.grey),
+                                border: InputBorder.none,
+                              ),
+                              style: TextStyle(
+                                color: _textColor,
+                                fontSize: index != null
+                                    ? ((_notes[index!]['fontSize'] as num?)
+                                              ?.toDouble() ??
+                                          _globalFontSize)
+                                    : _globalFontSize,
+                                height: 1.6,
+                              ),
+                              onChanged: (val) => block['text'] = val,
+                              onTap: () => focusedBlockIndex = i,
+                            );
+                          })
                         else ...[
                           ...checkItems.asMap().entries.map((entry) {
                             final i = entry.key;
@@ -2724,6 +3453,88 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             ),
                           ),
                         ],
+                        if (noteType != 'text' && attachments.isNotEmpty) ...[
+                          const SizedBox(height: 20),
+                          FutureBuilder<String>(
+                            future: DBHelper.instance.attachmentsDir().then(
+                              (d) => d.path,
+                            ),
+                            builder: (context, snapshot) {
+                              final dirPath = snapshot.data;
+                              if (dirPath == null) {
+                                return const SizedBox.shrink();
+                              }
+                              return Wrap(
+                                spacing: 10,
+                                runSpacing: 10,
+                                children: List.generate(attachments.length, (
+                                  i,
+                                ) {
+                                  final att = attachments[i];
+                                  final isImage = att['isImage'] == true;
+                                  final filePath = p.join(
+                                    dirPath,
+                                    att['storedName'].toString(),
+                                  );
+                                  final preview = isImage
+                                      ? Image.file(
+                                          File(filePath),
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, __, ___) =>
+                                              const Icon(
+                                                Icons.broken_image_outlined,
+                                                color: Colors.grey,
+                                              ),
+                                        )
+                                      : Padding(
+                                          padding: const EdgeInsets.all(8),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const Icon(
+                                                Icons
+                                                    .insert_drive_file_outlined,
+                                                color: Colors.amber,
+                                                size: 28,
+                                              ),
+                                              const SizedBox(height: 6),
+                                              Text(
+                                                (att['fileName'] ?? '')
+                                                    .toString(),
+                                                textAlign: TextAlign.center,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  color: Colors.white70,
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                  return _AttachmentTile(
+                                    width: isImage ? 84 : 130,
+                                    height: 84,
+                                    preview: preview,
+                                    showDelete:
+                                        deletingAttachmentId ==
+                                        att['id'].toString(),
+                                    onOpen: () => openAttachment(att),
+                                    onRemove: () => removeAttachment(i),
+                                    onLongPress: () => setModalState(
+                                      () => deletingAttachmentId =
+                                          att['id'].toString(),
+                                    ),
+                                    onDismissDelete: () => setModalState(
+                                      () => deletingAttachmentId = null,
+                                    ),
+                                  );
+                                }),
+                              );
+                            },
+                          ),
+                        ],
                         const SizedBox(height: 20),
                         Builder(
                           builder: (context) {
@@ -2758,7 +3569,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                     },
                                   );
                                 } else {
-                                  _saveNoteIfValid(index, noteType, checkItems);
+                                  _saveNoteIfValid(index, noteType, checkItems, attachments, blocks);
                                   if (_notes.isNotEmpty) {
                                     final newIndex = _notes.length - 1;
                                     _showClassifyDialog(
@@ -2778,6 +3589,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         ),
                       ],
                     ),
+                  ),
                   ),
                 ),
               );
@@ -2815,14 +3627,18 @@ class _NoteListScreenState extends State<NoteListScreen> {
     if (isTrash) {
       filteredNotes = _deletedNotes.where((note) {
         final title = (note['title'] ?? '').toString().toLowerCase();
-        final content = (note['content'] ?? '').toString().toLowerCase();
+        final content = ContentBlocks.plainText(
+          note['content'] as String?,
+        ).toLowerCase();
         final query = _searchQuery.toLowerCase();
         return title.contains(query) || content.contains(query);
       }).toList();
     } else {
       filteredNotes = _notes.where((note) {
         final title = (note['title'] ?? '').toString().toLowerCase();
-        final content = (note['content'] ?? '').toString().toLowerCase();
+        final content = ContentBlocks.plainText(
+          note['content'] as String?,
+        ).toLowerCase();
         final query = _searchQuery.toLowerCase();
         final matchesSearch = title.contains(query) || content.contains(query);
         final isArchived = note['isArchived'] == true;
@@ -2990,6 +3806,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               backgroundColor: Colors.red,
                             ),
                             onPressed: () {
+                              for (final n in _deletedNotes) {
+                                _cleanupAttachmentFiles(n);
+                              }
                               setState(() {
                                 _deletedNotes.clear();
                               });
@@ -3594,6 +4413,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 .withValues(alpha: 0.75)
                           : const Color(0xFF2D2D2D);
                       final fontScale = _previewFontScale(note);
+                      final previewImage = _firstImageAttachment(note);
 
                       return GestureDetector(
                         onLongPress: isTrash
@@ -3656,11 +4476,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                               ),
                                             ),
                                             onPressed: () {
-                                              setState(() {
-                                                _deletedNotes.removeAt(
-                                                  originalIndex,
-                                                );
-                                              });
+                                              _cleanupAttachmentFiles(_deletedNotes[originalIndex]);
+                                            setState(() {
+                                              _deletedNotes.removeAt(originalIndex);
+                                            });
                                               _saveData();
                                               Navigator.pop(context);
                                             },
@@ -3757,11 +4576,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                     ),
                                                   ),
                                                   onPressed: () {
-                                                    setState(() {
-                                                      _deletedNotes.removeAt(
-                                                        originalIndex,
-                                                      );
-                                                    });
+                                                    _cleanupAttachmentFiles(_deletedNotes[originalIndex]);
+                                            setState(() {
+                                              _deletedNotes.removeAt(originalIndex);
+                                            });
                                                     _saveData();
                                                     Navigator.pop(context);
                                                   },
@@ -3778,7 +4596,44 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               borderRadius: BorderRadius.circular(12),
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
-                                child: Column(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (previewImage != null &&
+                                        _attachmentsDirPath != null) ...[
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: SizedBox(
+                                          width: 56,
+                                          height: 56,
+                                          child: Image.file(
+                                            File(
+                                              p.join(
+                                                _attachmentsDirPath!,
+                                                previewImage['storedName']
+                                                    .toString(),
+                                              ),
+                                            ),
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (_, __, ___) =>
+                                                Container(
+                                                  color: const Color(
+                                                    0xFF3A3A3A,
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons
+                                                        .broken_image_outlined,
+                                                    color: Colors.grey,
+                                                    size: 20,
+                                                  ),
+                                                ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                    ],
+                                    Expanded(
+                                      child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     if (hasTitle) ...[
@@ -3873,7 +4728,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              note['content'] ?? '',
+                                              ContentBlocks.plainText(
+                                                note['content'] as String?,
+                                              ),
                                               style: TextStyle(
                                                 color: _textColor,
                                                 fontSize:
@@ -3921,6 +4778,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         ),
                                       ),
                                     ],
+                                  ],
+                                ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -4053,6 +4913,21 @@ class _NoteListScreenState extends State<NoteListScreen> {
     return noteFontSize / 16.0;
   }
 
+  // Kart önizlemesinde göstermek üzere, notun eklerinden ilk görseli bulur.
+  Map<String, dynamic>? _firstImageAttachment(Map<String, dynamic> note) {
+    final atts = note['attachments'];
+    if (atts is List) {
+      for (final a in atts) {
+        if (a is Map &&
+            a['isImage'] == true &&
+            (a['storedName'] ?? '').toString().isNotEmpty) {
+          return Map<String, dynamic>.from(a);
+        }
+      }
+    }
+    return null;
+  }
+
   // Verilen metnin, belirtilen genişlik ve yazı stiliyle gerçekte kaç satıra
   // SARACAĞINI ölçer (TextPainter ile). Basit "\n sayısı" tahmini, satır
   // kendiliğinden sardığında (özellikle metin boyutu büyütüldüğünde) yanlış
@@ -4086,6 +4961,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
     final fontScale = _previewFontScale(note);
     double height = 32.0; // kartın iç padding'i: 16 üst + 16 alt
 
+    if (_firstImageAttachment(note) != null) {
+      height += 120.0; // üstteki görsel önizleme yüksekliği
+    }
+
     if (hasTitle) {
       height += (18 * fontScale) * 1.2; // başlık satırı (tek satır, maxLines:1)
       height += 12.0; // başlık sonrası SizedBox
@@ -4097,7 +4976,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
       // Her checklist öğesi tek satır + altında 4px boşluk.
       height += itemCount * ((12 * fontScale) * 1.3 + 4.0);
     } else {
-      final content = (note['content'] ?? '').toString();
+      final content = ContentBlocks.plainText(note['content'] as String?);
       if (content.isNotEmpty) {
         final noteFontSize =
             (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize;
@@ -4141,6 +5020,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
               .withValues(alpha: 0.75)
         : const Color(0xFF2D2D2D);
     final fontScale = _previewFontScale(note);
+    final previewImage = _firstImageAttachment(note);
 
     return GestureDetector(
       onLongPress: isTrash
@@ -4195,9 +5075,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             style: TextStyle(color: Colors.white),
                           ),
                           onPressed: () {
-                            setState(() {
-                              _deletedNotes.removeAt(originalIndex);
-                            });
+                            _cleanupAttachmentFiles(_deletedNotes[originalIndex]);
+                                            setState(() {
+                                              _deletedNotes.removeAt(originalIndex);
+                                            });
                             _saveData();
                             Navigator.pop(context);
                           },
@@ -4271,9 +5152,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 style: TextStyle(color: Colors.white),
                               ),
                               onPressed: () {
-                                setState(() {
-                                  _deletedNotes.removeAt(originalIndex);
-                                });
+                                _cleanupAttachmentFiles(_deletedNotes[originalIndex]);
+                                            setState(() {
+                                              _deletedNotes.removeAt(originalIndex);
+                                            });
                                 _saveData();
                                 Navigator.pop(context);
                               },
@@ -4288,108 +5170,150 @@ class _NoteListScreenState extends State<NoteListScreen> {
           borderRadius: BorderRadius.circular(12),
           child: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (hasTitle)
-                      Text(
-                        _capitalizeFirstLetterTr(
-                          (note['title'] ?? '').toString(),
-                        ),
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18 * fontScale,
-                          color: _textColor,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.start,
-                        textDirection: TextDirection.ltr,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (previewImage != null && _attachmentsDirPath != null)
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(12),
                       ),
-                    if (hasTitle) const SizedBox(height: 12),
-                    isChecklist
-                        ? Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: (note['checkItems'] as List? ?? [])
-                                .take(_previewLines)
-                                .map<Widget>(
-                                  (item) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 4),
-                                    child: Row(
-                                      textDirection: TextDirection.ltr,
-                                      children: [
-                                        Icon(
-                                          item['checked'] == true
-                                              ? Icons.check_box
-                                              : Icons.check_box_outline_blank,
-                                          color: Colors.amber,
-                                          size: 14,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Expanded(
-                                          child: Text(
-                                            item['text'] ?? '',
-                                            style: TextStyle(
-                                              color: item['checked'] == true
-                                                  ? Colors.grey
-                                                  : _textColor,
-                                              decoration:
-                                                  item['checked'] == true
-                                                  ? TextDecoration.lineThrough
-                                                  : null,
-                                              fontSize:
-                                                  (note['fontSize'] as num?)
-                                                      ?.toDouble() ??
-                                                  _globalFontSize,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            textAlign: TextAlign.start,
-                                            textDirection: TextDirection.ltr,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                          )
-                        : Text(
-                            note['content'] ?? '',
-                            style: TextStyle(
-                              color: _textColor,
-                              fontSize:
-                                  (note['fontSize'] as num?)?.toDouble() ??
-                                  _globalFontSize,
+                      child: SizedBox(
+                        height: 120,
+                        width: double.infinity,
+                        child: Image.file(
+                          File(
+                            p.join(
+                              _attachmentsDirPath!,
+                              previewImage['storedName'].toString(),
                             ),
-                            maxLines: _previewLines,
+                          ),
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: const Color(0xFF3A3A3A),
+                            child: const Icon(
+                              Icons.broken_image_outlined,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (hasTitle)
+                          Text(
+                            _capitalizeFirstLetterTr(
+                              (note['title'] ?? '').toString(),
+                            ),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18 * fontScale,
+                              color: _textColor,
+                            ),
+                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.start,
                             textDirection: TextDirection.ltr,
                           ),
-                    if ((note['category'] ?? '').toString().isNotEmpty) ...[
-                      const SizedBox(height: 8),
-                      Text(
-                        note['category'],
-                        style: TextStyle(
-                          color: _textColor.withValues(alpha: 0.7),
-                          fontSize:
-                              (note['fontSize'] as num?)?.toDouble() ??
-                              _globalFontSize,
-                          fontStyle: FontStyle.italic,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.start,
-                        textDirection: TextDirection.ltr,
-                      ),
-                    ],
-                  ],
-                ),
+                        if (hasTitle) const SizedBox(height: 12),
+                        isChecklist
+                            ? Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: (note['checkItems'] as List? ?? [])
+                                    .take(_previewLines)
+                                    .map<Widget>(
+                                      (item) => Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 4,
+                                        ),
+                                        child: Row(
+                                          textDirection: TextDirection.ltr,
+                                          children: [
+                                            Icon(
+                                              item['checked'] == true
+                                                  ? Icons.check_box
+                                                  : Icons
+                                                        .check_box_outline_blank,
+                                              color: Colors.amber,
+                                              size: 14,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Expanded(
+                                              child: Text(
+                                                item['text'] ?? '',
+                                                style: TextStyle(
+                                                  color:
+                                                      item['checked'] == true
+                                                      ? Colors.grey
+                                                      : _textColor,
+                                                  decoration:
+                                                      item['checked'] == true
+                                                      ? TextDecoration
+                                                            .lineThrough
+                                                      : null,
+                                                  fontSize:
+                                                      (note['fontSize']
+                                                              as num?)
+                                                          ?.toDouble() ??
+                                                      _globalFontSize,
+                                                ),
+                                                maxLines: 1,
+                                                overflow:
+                                                    TextOverflow.ellipsis,
+                                                textAlign: TextAlign.start,
+                                                textDirection:
+                                                    TextDirection.ltr,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                              )
+                            : Text(
+                                ContentBlocks.plainText(
+                                  note['content'] as String?,
+                                ),
+                                style: TextStyle(
+                                  color: _textColor,
+                                  fontSize:
+                                      (note['fontSize'] as num?)?.toDouble() ??
+                                      _globalFontSize,
+                                ),
+                                maxLines: _previewLines,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.start,
+                                textDirection: TextDirection.ltr,
+                              ),
+                        if ((note['category'] ?? '').toString().isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            note['category'],
+                            style: TextStyle(
+                              color: _textColor.withValues(alpha: 0.7),
+                              fontSize:
+                                  (note['fontSize'] as num?)?.toDouble() ??
+                                  _globalFontSize,
+                              fontStyle: FontStyle.italic,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
+                            textDirection: TextDirection.ltr,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
               ),
               if (isFavorite)
                 Positioned(
@@ -5629,6 +6553,77 @@ class _SettingsPageState extends State<_SettingsPage> {
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Ek dosya kutucuğu: basılı tutunca sil ikonu gösterir ────────────────
+// Sil ikonunun görünürlüğü dışarıdan (showDelete) kontrol edilir; böylece
+// liste içindeki bir öğe silindiğinde, kalan öğelerin durumu widget'ların
+// yeniden kullanılmasından (state reuse) etkilenmez.
+class _AttachmentTile extends StatelessWidget {
+  final Widget preview;
+  final double width;
+  final double height;
+  final bool showDelete;
+  final VoidCallback onOpen;
+  final VoidCallback onRemove;
+  final VoidCallback onLongPress;
+  final VoidCallback onDismissDelete;
+
+  const _AttachmentTile({
+    required this.preview,
+    required this.width,
+    required this.height,
+    required this.showDelete,
+    required this.onOpen,
+    required this.onRemove,
+    required this.onLongPress,
+    required this.onDismissDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: showDelete ? onDismissDelete : onOpen,
+      onLongPress: showDelete ? null : onLongPress,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: const Color(0xFF2A2A2A),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFF3A3A3A)),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Stack(
+          children: [
+            Positioned.fill(child: preview),
+            if (showDelete)
+              Positioned.fill(
+                child: Container(color: Colors.black54),
+              ),
+            if (showDelete)
+              Center(
+                child: GestureDetector(
+                  onTap: onRemove,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: const BoxDecoration(
+                      color: Colors.redAccent,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.delete,
+                      size: 22,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),
