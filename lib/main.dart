@@ -565,18 +565,210 @@ Widget buildCustomContextMenu(
   );
 }
 
-void main() {
+// ════════════════════════════════════════════════════════════════════════
+// TEMA (Açık / Koyu / Sistem)
+// Uygulama genelinde tema modu bu global ValueNotifier üzerinden yönetilir.
+// Ayarlar ekranındaki seçim değiştiğinde appThemeMode.value güncellenir;
+// bunu dinleyen DNoteApp, MaterialApp'i otomatik olarak yeniden kurar.
+// ════════════════════════════════════════════════════════════════════════
+final ValueNotifier<ThemeMode> appThemeMode = ValueNotifier<ThemeMode>(
+  ThemeMode.dark,
+);
+
+ThemeMode themeModeFromSettingValue(String? value) {
+  switch (value) {
+    case 'light':
+      return ThemeMode.light;
+    case 'system':
+      return ThemeMode.system;
+    case 'dark':
+      return ThemeMode.dark;
+    default:
+      return ThemeMode.dark; // ayar hiç kaydedilmemişse eski davranış korunur
+  }
+}
+
+String themeModeToSettingValue(ThemeMode mode) {
+  switch (mode) {
+    case ThemeMode.light:
+      return 'light';
+    case ThemeMode.system:
+      return 'system';
+    case ThemeMode.dark:
+      return 'dark';
+  }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Uygulama ilk kez çizilmeden önce kayıtlı tema tercihini oku; böylece
+  // açılışta koyu tema bir an için yanıp sönmez.
+  final settings = await DBHelper.instance.getAllSettings();
+  final storedThemeMode = settings['theme_mode'];
+  if (storedThemeMode != null) {
+    appThemeMode.value = themeModeFromSettingValue(storedThemeMode);
+  } else {
+    // Eski sürümden geliyorsa (theme_mode hiç yoksa) 'dark_theme' anahtarına
+    // bakarak geri uyumlu bir geçiş yap.
+    final legacyDark = settings['dark_theme'];
+    if (legacyDark != null) {
+      appThemeMode.value = legacyDark == 'true'
+          ? ThemeMode.dark
+          : ThemeMode.light;
+    }
+  }
+
   SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      systemNavigationBarColor: Color(0xFF121212),
-      systemNavigationBarIconBrightness: Brightness.light,
-      systemNavigationBarDividerColor: Colors.transparent,
-      systemNavigationBarContrastEnforced: false,
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ),
+    dNoteSystemBarsStyleForMode(appThemeMode.value),
   );
   runApp(const DNoteApp());
+}
+
+final ThemeData _dNoteDarkTheme = ThemeData(
+  brightness: Brightness.dark,
+  primaryColor: Colors.amber,
+  scaffoldBackgroundColor: const Color(0xFF121212),
+  cardTheme: const CardThemeData(color: Color(0xFF1E1E1E)),
+  dividerColor: const Color(0xFF2A2A2A),
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Color(0xFF1E1E1E),
+    // Liste kaydırıldığında AppBar'ın rengi otomatik koyulaşmasın diye
+    // Material 3'ün scroll-altı tint/elevation efektini kapatıyoruz.
+    surfaceTintColor: Colors.transparent,
+    scrolledUnderElevation: 0,
+  ),
+  dialogTheme: const DialogThemeData(backgroundColor: Color(0xFF1E1E1E)),
+  popupMenuTheme: const PopupMenuThemeData(color: Color(0xFF2A2A2A)),
+);
+
+final ThemeData _dNoteLightTheme = ThemeData(
+  brightness: Brightness.light,
+  primaryColor: Colors.amber,
+  scaffoldBackgroundColor: const Color(0xFFF5F5F5),
+  cardTheme: const CardThemeData(color: Colors.white),
+  dividerColor: const Color(0xFFE0E0E0),
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Colors.white,
+    surfaceTintColor: Colors.transparent,
+    scrolledUnderElevation: 0,
+  ),
+  dialogTheme: const DialogThemeData(backgroundColor: Colors.white),
+  popupMenuTheme: const PopupMenuThemeData(color: Colors.white),
+);
+
+// ── Ekranlar genelinde kullanılan, temaya duyarlı yardımcı renkler ──────
+// ThemeData'nın doğrudan karşılamadığı özel yüzey tonları (ör. çekmece
+// başlığı, ikincil yüzey, kenarlık) için kullanılır. Aşama aşama tüm
+// ekranlar bu yardımcılarla (veya doğrudan Theme.of(context) ile) güncellenir.
+bool dNoteIsDark(BuildContext context) =>
+    Theme.of(context).brightness == Brightness.dark;
+
+Color dNoteSurfaceVariant(BuildContext context) =>
+    dNoteIsDark(context) ? const Color(0xFF2A2A2A) : const Color(0xFFEDEDED);
+
+Color dNoteBorderColor(BuildContext context) =>
+    dNoteIsDark(context) ? const Color(0xFF3A3A3A) : const Color(0xFFDADADA);
+
+Color dNoteHeaderColor(BuildContext context) =>
+    dNoteIsDark(context) ? const Color(0xFF161616) : const Color(0xFFEDEDED);
+
+// Seçili/vurgulanmış öğe arka planı: koyu temada hafif beyaz, açık temada
+// hafif siyah — her iki temada da göz alıcı olmayan tutarlı bir vurgu verir.
+Color dNoteHighlight(BuildContext context) =>
+    Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08);
+
+// Kart / panel yüzeyi: _dNoteDarkTheme ve _dNoteLightTheme içindeki
+// cardTheme ile birebir aynı tonlar. Ayarlar ekranı gibi elle Container
+// çizen yerlerde ThemeData.cardTheme yerine bu kullanılır.
+Color dNoteCardColor(BuildContext context) =>
+    dNoteIsDark(context) ? const Color(0xFF1E1E1E) : Colors.white;
+
+// Birincil metin rengi: koyu temada beyaz, açık temada neredeyse siyah.
+// Sabit "Colors.white" kullanan eski kodun açık temada okunmaz hale
+// gelmesini önlemek için eklendi.
+Color dNoteTextColor(BuildContext context) =>
+    dNoteIsDark(context) ? Colors.white : const Color(0xFF1A1A1A);
+
+// Kullanıcı, uygulama henüz açık tema desteklemezken (veya "Beyaz" rengini
+// bilerek) Kişiselleştirme > Metin Rengi'nden saf beyazı seçmiş olabilir.
+// Açık temada bu seçim doğrudan uygulanırsa metin, beyaz kart zemininde
+// tamamen okunmaz hale gelir. Bu yüzden: açık temadayken saf beyaz özel
+// renk varsa otomatik (temaya duyarlı) renge düşülür; kullanıcının seçtiği
+// diğer tüm renkler (ve koyu temadaki beyaz seçimi) olduğu gibi korunur.
+Color dNoteEffectiveTextColor(BuildContext context, Color? customColor) {
+  if (customColor == null) return dNoteTextColor(context);
+  if (!dNoteIsDark(context) && customColor.toARGB32() == Colors.white.toARGB32()) {
+    return dNoteTextColor(context);
+  }
+  return customColor;
+}
+
+// ── Sistem çubukları (durum çubuğu + gezinme çubuğu) ────────────────────
+// ÖNEMLİ: SystemUiOverlayStyle çağrılırken yalnızca durum çubuğu alanları
+// verilip gezinme çubuğu (systemNavigationBar*) alanları boş bırakılırsa,
+// platform gezinme çubuğunu kendi varsayılanına (genelde açık/beyaz bir
+// görünüme) sıfırlayabiliyor. Bu yüzden HER çağrıda ikisi birlikte ve o
+// anki temaya göre ayarlanır; ayrı ayrı, birbirini unutan çağrılar
+// yazılmamalıdır.
+SystemUiOverlayStyle dNoteSystemBarsStyle(
+  BuildContext context, {
+  Color? statusBarColor,
+  Brightness? statusBarIconBrightnessOverride,
+}) {
+  final isDark = dNoteIsDark(context);
+  return SystemUiOverlayStyle(
+    statusBarColor: statusBarColor ?? Colors.transparent,
+    statusBarIconBrightness:
+        statusBarIconBrightnessOverride ??
+        (isDark ? Brightness.light : Brightness.dark),
+    statusBarBrightness:
+        statusBarIconBrightnessOverride == null
+            ? (isDark ? Brightness.dark : Brightness.light)
+            : (statusBarIconBrightnessOverride == Brightness.light
+                  ? Brightness.dark
+                  : Brightness.light),
+    systemNavigationBarColor: isDark
+        ? const Color(0xFF121212)
+        : const Color(0xFFF5F5F5),
+    systemNavigationBarIconBrightness: isDark
+        ? Brightness.light
+        : Brightness.dark,
+    systemNavigationBarDividerColor: Colors.transparent,
+    systemNavigationBarContrastEnforced: false,
+  );
+}
+
+// main() içinde uygulama ilk açılırken henüz bir BuildContext yok; bu
+// yüzden appThemeMode.value ve (Sistem seçiliyse) platform parlaklığına
+// bakarak aynı stili context'siz üretir.
+bool dNoteResolveIsDark(ThemeMode mode) {
+  switch (mode) {
+    case ThemeMode.dark:
+      return true;
+    case ThemeMode.light:
+      return false;
+    case ThemeMode.system:
+      return WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+          Brightness.dark;
+  }
+}
+
+SystemUiOverlayStyle dNoteSystemBarsStyleForMode(ThemeMode mode) {
+  final isDark = dNoteResolveIsDark(mode);
+  return SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+    statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+    systemNavigationBarColor: isDark
+        ? const Color(0xFF121212)
+        : const Color(0xFFF5F5F5),
+    systemNavigationBarIconBrightness: isDark
+        ? Brightness.light
+        : Brightness.dark,
+    systemNavigationBarDividerColor: Colors.transparent,
+    systemNavigationBarContrastEnforced: false,
+  );
 }
 
 class DNoteApp extends StatelessWidget {
@@ -584,29 +776,33 @@ class DNoteApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DNote',
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [Locale('tr', 'TR'), Locale('en', 'US')],
-      locale: const Locale('tr', 'TR'),
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.amber,
-        scaffoldBackgroundColor: const Color(0xFF121212),
-        cardTheme: const CardThemeData(color: Color(0xFF1E1E1E)),
-        appBarTheme: const AppBarTheme(
-          // Liste kaydırıldığında AppBar'ın rengi otomatik koyulaşmasın diye
-          // Material 3'ün scroll-altı tint/elevation efektini kapatıyoruz.
-          surfaceTintColor: Colors.transparent,
-          scrolledUnderElevation: 0,
-        ),
-      ),
-      home: const NoteListScreen(),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: appThemeMode,
+      builder: (context, mode, _) {
+        // Tema (Açık/Koyu/Sistem) her değiştiğinde durum ve gezinme
+        // çubuklarını hemen yeni temaya göre günceller; aksi halde bir
+        // sonraki ekran geçişine kadar eski (yanlış) stil görünür kalır.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          SystemChrome.setSystemUIOverlayStyle(
+            dNoteSystemBarsStyleForMode(mode),
+          );
+        });
+        return MaterialApp(
+          title: 'DNote',
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [Locale('tr', 'TR'), Locale('en', 'US')],
+          locale: const Locale('tr', 'TR'),
+          themeMode: mode,
+          theme: _dNoteLightTheme,
+          darkTheme: _dNoteDarkTheme,
+          home: const NoteListScreen(),
+        );
+      },
     );
   }
 }
@@ -666,14 +862,18 @@ class _NoteListScreenState extends State<NoteListScreen> {
   String _passwordHintQuestion = '';
   String _passwordHintAnswer = '';
 
-  // Tema
-  bool _darkTheme = true;
+  // Tema (Açık / Koyu / Sistem) — gerçek kaynak appThemeMode notifier'ıdır,
+  // burada sadece Ayarlar ekranındaki seçili seçeneği göstermek için tutulur.
+  ThemeMode _themeMode = ThemeMode.dark;
   bool _colorfulNotes = false;
 
   // Kişiselleştirme
   String _fontFamily = 'Varsayılan';
   double _globalFontSize = 16.0;
-  Color _textColor = Colors.white;
+  // null == "Varsayılan": temaya göre otomatik (koyu temada beyaz, açık
+  // temada koyu gri). Kullanıcı Metin Rengi seçiciden bir renk seçerse bu
+  // alan o rengi tutar ve tema değişse bile sabit kalır.
+  Color? _textColor;
   int _previewLines = 3;
 
   // Widget
@@ -755,13 +955,23 @@ class _NoteListScreenState extends State<NoteListScreen> {
       _notePassword = settings['note_password'] ?? '';
       _passwordHintQuestion = settings['password_hint_question'] ?? '';
       _passwordHintAnswer = settings['password_hint_answer'] ?? '';
-      _darkTheme = (settings['dark_theme'] ?? 'true') == 'true';
+      if (settings.containsKey('theme_mode')) {
+        _themeMode = themeModeFromSettingValue(settings['theme_mode']);
+      } else {
+        // Eski sürümden gelen 'dark_theme' (true/false) ayarını göç ettir.
+        _themeMode = (settings['dark_theme'] ?? 'true') == 'true'
+            ? ThemeMode.dark
+            : ThemeMode.light;
+      }
+      // Uygulama genelindeki temayı da senkronize et (açılışta main() zaten
+      // ayarlamıştı, ama eski 'dark_theme' göçü burada da tutarlı olsun).
+      appThemeMode.value = _themeMode;
       _colorfulNotes = (settings['colorful_notes'] ?? 'false') == 'true';
       _fontFamily = settings['font_family'] ?? 'Varsayılan';
       _globalFontSize =
           double.tryParse(settings['global_font_size'] ?? '') ?? 16.0;
       final textColorVal = int.tryParse(settings['text_color'] ?? '');
-      if (textColorVal != null) _textColor = Color(textColorVal);
+      _textColor = textColorVal != null ? Color(textColorVal) : null;
       _previewLines = int.tryParse(settings['preview_lines'] ?? '') ?? 3;
       _widgetFontSize =
           double.tryParse(settings['widget_font_size'] ?? '') ?? 14.0;
@@ -798,11 +1008,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
     await db.setSetting('note_password', _notePassword);
     await db.setSetting('password_hint_question', _passwordHintQuestion);
     await db.setSetting('password_hint_answer', _passwordHintAnswer);
-    await db.setSetting('dark_theme', _darkTheme.toString());
+    await db.setSetting('theme_mode', themeModeToSettingValue(_themeMode));
     await db.setSetting('colorful_notes', _colorfulNotes.toString());
     await db.setSetting('font_family', _fontFamily);
     await db.setSetting('global_font_size', _globalFontSize.toString());
-    await db.setSetting('text_color', _textColor.toARGB32().toString());
+    await db.setSetting('text_color', _textColor?.toARGB32().toString());
     await db.setSetting('preview_lines', _previewLines.toString());
     await db.setSetting('widget_font_size', _widgetFontSize.toString());
     await db.setSetting('widget_bg_opacity', _widgetBgOpacity.toString());
@@ -880,7 +1090,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     final isLocked = _lockedCategories.contains(category);
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: dNoteCardColor(context),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -896,7 +1106,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey[700],
+                    color: dNoteIsDark(sheetContext)
+                        ? Colors.grey[700]
+                        : Colors.grey[400],
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -906,8 +1118,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 padding: const EdgeInsets.only(bottom: 4),
                 child: Text(
                   category,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: dNoteTextColor(sheetContext),
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -916,10 +1128,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
               const SizedBox(height: 8),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.edit_outlined, color: Colors.white),
-                title: const Text(
+                leading: Icon(
+                  Icons.edit_outlined,
+                  color: dNoteTextColor(sheetContext),
+                ),
+                title: Text(
                   'Adını Düzenle / Renk',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: dNoteTextColor(sheetContext)),
                 ),
                 onTap: () {
                   Navigator.pop(sheetContext);
@@ -934,7 +1149,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 ),
                 title: Text(
                   isLocked ? 'Kilidi Kaldır' : 'Kilitle',
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: dNoteTextColor(sheetContext)),
                 ),
                 onTap: () async {
                   Navigator.pop(sheetContext);
@@ -942,14 +1157,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     showDialog(
                       context: context,
                       builder: (ctx) => AlertDialog(
-                        backgroundColor: const Color(0xFF1E1E1E),
+                        backgroundColor: dNoteCardColor(ctx),
                         title: const Text(
                           'Parola Gerekiyor',
                           style: TextStyle(color: Colors.amber),
                         ),
-                        content: const Text(
+                        content: Text(
                           'Kategoriyi kilitleyebilmek için önce Ayarlar > Not Şifresi bölümünden bir parola belirlemeniz gerekiyor.',
-                          style: TextStyle(color: Colors.white70),
+                          style: TextStyle(color: dNoteTextColor(ctx)),
                         ),
                         actions: [
                           ElevatedButton(
@@ -991,14 +1206,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     showDialog(
                       context: context,
                       builder: (ctx) => AlertDialog(
-                        backgroundColor: const Color(0xFF1E1E1E),
+                        backgroundColor: dNoteCardColor(ctx),
                         title: const Text(
                           'Hatalı Parola',
                           style: TextStyle(color: Colors.red),
                         ),
-                        content: const Text(
+                        content: Text(
                           'Girdiğiniz parola yanlış.',
-                          style: TextStyle(color: Colors.white70),
+                          style: TextStyle(color: dNoteTextColor(ctx)),
                         ),
                         actions: [
                           ElevatedButton(
@@ -1032,14 +1247,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   showDialog(
                     context: context,
                     builder: (confirmContext) => AlertDialog(
-                      backgroundColor: const Color(0xFF1E1E1E),
+                      backgroundColor: dNoteCardColor(confirmContext),
                       title: const Text(
                         'Kategoriyi Sil',
                         style: TextStyle(color: Colors.amber),
                       ),
                       content: Text(
                         '"$category" kategorisini silmek istediğinize emin misiniz? Bu kategorideki notlar kategorisiz kalacak.',
-                        style: const TextStyle(color: Colors.white70),
+                        style: TextStyle(color: dNoteTextColor(confirmContext)),
                       ),
                       actions: [
                         TextButton(
@@ -1165,7 +1380,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFF1E1E1E),
+              color: dNoteCardColor(context),
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
@@ -1179,7 +1394,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
               children: [
                 const Icon(Icons.check_circle, color: Colors.amber, size: 18),
                 const SizedBox(width: 10),
-                Text(message, style: const TextStyle(color: Colors.white)),
+                Text(message, style: TextStyle(color: dNoteTextColor(context))),
               ],
             ),
           ),
@@ -1196,7 +1411,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     double tempSize = currentSize;
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: dNoteCardColor(context),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -1211,15 +1426,17 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey[700],
+                    color: dNoteIsDark(context)
+                        ? Colors.grey[700]
+                        : Colors.grey[400],
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
+                Text(
                   'Metin Boyutu',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: dNoteTextColor(context),
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -1233,7 +1450,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       child: SliderTheme(
                         data: SliderTheme.of(context).copyWith(
                           activeTrackColor: Colors.amber,
-                          inactiveTrackColor: const Color(0xFF3A3A3A),
+                          inactiveTrackColor: dNoteBorderColor(context),
                           thumbColor: Colors.amber,
                           overlayColor: Colors.amber.withValues(alpha: 0.2),
                           valueIndicatorColor: Colors.amber,
@@ -1259,7 +1476,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 const SizedBox(height: 8),
                 Text(
                   'Örnek metin',
-                  style: TextStyle(color: Colors.white70, fontSize: tempSize),
+                  style: TextStyle(
+                    color: dNoteTextColor(context).withValues(alpha: 0.7),
+                    fontSize: tempSize,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -1316,7 +1536,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
       barrierDismissible: false,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx2, setDlg) => AlertDialog(
-          backgroundColor: const Color(0xFF1E1E1E),
+          backgroundColor: dNoteCardColor(ctx2),
           title: const Text(
             'Parola Gerekiyor',
             style: TextStyle(color: Colors.amber),
@@ -1331,14 +1551,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 selectionHeightStyle: ui.BoxHeightStyle.max,
                 controller: ctrl,
                 obscureText: true,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
+                style: TextStyle(color: dNoteTextColor(ctx2)),
+                decoration: InputDecoration(
                   hintText: 'Parolayı girin',
-                  hintStyle: TextStyle(color: Colors.grey),
+                  hintStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF444444)),
+                    borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
                   ),
-                  focusedBorder: UnderlineInputBorder(
+                  focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.amber),
                   ),
                 ),
@@ -1400,7 +1620,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx2, setDlg) => AlertDialog(
-          backgroundColor: const Color(0xFF1E1E1E),
+          backgroundColor: dNoteCardColor(ctx2),
           title: const Text(
             'Güvenlik Sorusu',
             style: TextStyle(color: Colors.amber),
@@ -1411,8 +1631,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
             children: [
               Text(
                 _passwordHintQuestion,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: dNoteTextColor(ctx2),
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -1422,12 +1642,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 contextMenuBuilder: buildCustomContextMenu,
                 selectionHeightStyle: ui.BoxHeightStyle.max,
                 controller: answerCtrl,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: dNoteTextColor(ctx2)),
                 decoration: InputDecoration(
                   hintText: 'Cevabınız',
                   hintStyle: const TextStyle(color: Colors.grey),
-                  enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF444444)),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
                   ),
                   focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.amber),
@@ -1472,7 +1692,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: dNoteCardColor(ctx),
         title: const Text('Şifreniz', style: TextStyle(color: Colors.amber)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -1487,7 +1707,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: const Color(0xFF2A2A2A),
+                color: dNoteSurfaceVariant(ctx),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: SelectableText(
@@ -1587,7 +1807,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFF1E1E1E),
+              color: dNoteCardColor(context),
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
@@ -1600,9 +1820,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Not silindi',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: dNoteTextColor(context)),
                 ),
                 TextButton(
                   onPressed: () {
@@ -1636,7 +1856,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
       context: context,
       useSafeArea: true,
       isScrollControlled: true,
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: Theme.of(context).cardColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -1657,7 +1877,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
               ),
               title: const Text(
                 'Metin Notu',
-                style: TextStyle(color: Colors.white),
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -1668,7 +1887,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
               leading: const Icon(Icons.checklist, color: Colors.amber),
               title: const Text(
                 'Kontrol Listesi',
-                style: TextStyle(color: Colors.white),
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -1679,7 +1897,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
               leading: const Icon(Icons.folder_outlined, color: Colors.amber),
               title: const Text(
                 'Kategori',
-                style: TextStyle(color: Colors.white),
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -1728,7 +1945,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          backgroundColor: const Color(0xFF1E1E1E),
+          backgroundColor: dNoteCardColor(context),
           title: Text(
             isEditing ? 'Kategoriyi Düzenle' : 'Yeni Kategori',
             style: const TextStyle(color: Colors.amber),
@@ -1744,17 +1961,17 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 controller: controller,
                 autofocus: true,
                 textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Kategori adı',
-                  labelStyle: TextStyle(color: Colors.grey),
+                  labelStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
+                    borderSide: BorderSide(color: dNoteBorderColor(context)),
                   ),
-                  focusedBorder: UnderlineInputBorder(
+                  focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.amber),
                   ),
                 ),
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: dNoteTextColor(context)),
               ),
               const SizedBox(height: 18),
               const Align(
@@ -1882,7 +2099,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: dNoteCardColor(context),
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -1899,16 +2116,18 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey[700],
+                    color: dNoteIsDark(sheetContext)
+                        ? Colors.grey[700]
+                        : Colors.grey[400],
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
               ),
               const SizedBox(height: 14),
-              const Text(
+              Text(
                 'Sınıflandır',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: dNoteTextColor(sheetContext),
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -1916,14 +2135,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
               const SizedBox(height: 12),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: const Icon(
+                leading: Icon(
                   Icons.add_circle_outline,
-                  color: Colors.white,
+                  color: dNoteTextColor(sheetContext),
                 ),
-                title: const Text(
+                title: Text(
                   'Kategori Ekle',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: dNoteTextColor(sheetContext),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -1937,7 +2156,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 },
               ),
               if (_categories.isNotEmpty) ...[
-                const Divider(color: Color(0xFF2E2E2E), height: 8),
+                Divider(color: Theme.of(sheetContext).dividerColor, height: 8),
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 280),
                   child: ListView(
@@ -1956,7 +2175,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         title: Text(
                           cat,
                           style: TextStyle(
-                            color: isSelected ? catColor : Colors.white,
+                            color: isSelected
+                                ? catColor
+                                : dNoteTextColor(sheetContext),
                           ),
                         ),
                         trailing: isSelected
@@ -1972,7 +2193,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 ),
               ],
               if (currentCategory != null && currentCategory.isNotEmpty) ...[
-                const Divider(color: Color(0xFF2E2E2E), height: 8),
+                Divider(color: Theme.of(sheetContext).dividerColor, height: 8),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: const Icon(
@@ -2030,17 +2251,17 @@ class _NoteListScreenState extends State<NoteListScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: dNoteCardColor(ctx),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
         title: Row(
-          children: const [
-            Icon(Icons.info_outline, color: Colors.lightBlueAccent, size: 22),
-            SizedBox(width: 10),
+          children: [
+            const Icon(Icons.info_outline, color: Colors.lightBlueAccent, size: 22),
+            const SizedBox(width: 10),
             Text(
               'Ayrıntılar',
               style: TextStyle(
-                color: Colors.white,
+                color: dNoteTextColor(ctx),
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
               ),
@@ -2128,8 +2349,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
               const SizedBox(height: 2),
               Text(
                 value,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: dNoteTextColor(context),
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
@@ -2213,7 +2434,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
 
     showModalBottomSheet(
       context: ctx,
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: Theme.of(context).cardColor,
       barrierColor: Colors.black.withValues(alpha: 0.55),
       isScrollControlled: true,
       clipBehavior: Clip.antiAlias,
@@ -2238,7 +2459,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
               const Text(
                 'Eylem Seç',
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                 ),
@@ -2333,7 +2553,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           width: 64,
                           height: 64,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2A2A2A),
+                            color: dNoteSurfaceVariant(context),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Icon(
@@ -2348,7 +2568,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           textAlign: TextAlign.center,
                           maxLines: 2,
                           style: const TextStyle(
-                            color: Colors.white,
                             fontSize: 12,
                           ),
                         ),
@@ -3050,14 +3269,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   ThemeData.estimateBrightnessForColor(catColor) ==
                   Brightness.dark;
               SystemChrome.setSystemUIOverlayStyle(
-                SystemUiOverlayStyle(
+                dNoteSystemBarsStyle(
+                  context,
                   statusBarColor: catColor,
-                  statusBarIconBrightness: isDark
+                  statusBarIconBrightnessOverride: isDark
                       ? Brightness.light
                       : Brightness.dark,
-                  statusBarBrightness: isDark
-                      ? Brightness.dark
-                      : Brightness.light,
                 ),
               );
               return PopScope(
@@ -3070,11 +3287,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   }
                   final saved = _saveNoteIfValid(index, noteType, checkItems, attachments, blocks);
                   SystemChrome.setSystemUIOverlayStyle(
-                    const SystemUiOverlayStyle(
-                      statusBarColor: Colors.transparent,
-                      statusBarIconBrightness: Brightness.light,
-                      statusBarBrightness: Brightness.dark,
-                    ),
+                    dNoteSystemBarsStyle(context),
                   );
                   if (saved) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -3104,14 +3317,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   Navigator.pop(context);
                 },
                 child: Scaffold(
-                  backgroundColor: const Color(0xFF1E1E1E),
+                  backgroundColor: Theme.of(context).cardColor,
                   resizeToAvoidBottomInset: true,
                   appBar: AppBar(
-                    backgroundColor: const Color(0xFF161616),
+                    backgroundColor: dNoteHeaderColor(context),
                     leading: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_back_ios,
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                       onPressed: () {
                         if (deletingAttachmentId != null) {
@@ -3126,11 +3339,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           blocks,
                         );
                         SystemChrome.setSystemUIOverlayStyle(
-                          const SystemUiOverlayStyle(
-                            statusBarColor: Colors.transparent,
-                            statusBarIconBrightness: Brightness.light,
-                            statusBarBrightness: Brightness.dark,
-                          ),
+                          dNoteSystemBarsStyle(context),
                         );
                         if (saved) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -3177,7 +3386,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         return Container(
                           height: 52,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF161616),
+                            color: dNoteHeaderColor(context),
                             border: Border(
                               top: BorderSide(color: barColor, width: 3),
                             ),
@@ -3185,11 +3394,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           child: Row(
                             children: [
                               PopupMenuButton<String>(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.add,
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.onSurface,
                                 ),
-                                color: const Color(0xFF2A2A2A),
                                 onSelected: (value) {
                                   if (value == 'file') {
                                     pickAttachments();
@@ -3212,7 +3420,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         SizedBox(width: 10),
                                         Text(
                                           'Görsel Ekle',
-                                          style: TextStyle(color: Colors.white),
                                         ),
                                       ],
                                     ),
@@ -3229,7 +3436,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         SizedBox(width: 10),
                                         Text(
                                           'Kamera',
-                                          style: TextStyle(color: Colors.white),
                                         ),
                                       ],
                                     ),
@@ -3246,7 +3452,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         SizedBox(width: 10),
                                         Text(
                                           'Dosya Ekle',
-                                          style: TextStyle(color: Colors.white),
                                         ),
                                       ],
                                     ),
@@ -3270,9 +3475,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 ),
                               ),
                               IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.more_vert,
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.onSurface,
                                 ),
                                 onPressed: () => _showNoteActions(
                                   context,
@@ -3304,18 +3509,20 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           selectionHeightStyle: ui.BoxHeightStyle.max,
                           controller: _titleController,
                           textCapitalization: TextCapitalization.sentences,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             hintText: 'Başlık',
-                            hintStyle: TextStyle(color: Colors.grey),
+                            hintStyle: const TextStyle(color: Colors.grey),
                             enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color(0xFF333333)),
+                              borderSide: BorderSide(
+                                color: dNoteBorderColor(context),
+                              ),
                             ),
-                            focusedBorder: UnderlineInputBorder(
+                            focusedBorder: const UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.amber),
                             ),
                           ),
                           style: TextStyle(
-                            color: _textColor,
+                            color: dNoteEffectiveTextColor(context, _textColor),
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
                           ),
@@ -3364,7 +3571,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 border: InputBorder.none,
                               ),
                               style: TextStyle(
-                                color: _textColor,
+                                color: dNoteEffectiveTextColor(context, _textColor),
                                 fontSize: index != null
                                     ? ((_notes[index!]['fontSize'] as num?)
                                               ?.toDouble() ??
@@ -3401,8 +3608,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         TextCapitalization.sentences,
                                     contextMenuBuilder: buildCustomContextMenu,
                                     selectionHeightStyle: ui.BoxHeightStyle.max,
-                                    style: const TextStyle(
-                                      color: Colors.white,
+                                    style: TextStyle(
+                                      color: dNoteEffectiveTextColor(context, _textColor),
                                       fontSize: 16,
                                     ),
                                     decoration: const InputDecoration(
@@ -3544,9 +3751,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             if (!hasCategory) return const SizedBox.shrink();
                             return OutlinedButton(
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: _textColor,
-                                side: const BorderSide(
-                                  color: Color(0xFF3A3A3A),
+                                foregroundColor:
+                                    dNoteEffectiveTextColor(context, _textColor),
+                                side: BorderSide(
+                                  color: dNoteBorderColor(context),
                                   width: 1,
                                 ),
                                 shape: RoundedRectangleBorder(
@@ -3615,13 +3823,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> filteredNotes;
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark,
-      ),
-    );
+    SystemChrome.setSystemUIOverlayStyle(dNoteSystemBarsStyle(context));
     bool isTrash = _activeCategory == '__trash__';
 
     if (isTrash) {
@@ -3727,6 +3929,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
         drawerEdgeDragWidth: MediaQuery.of(context).size.width,
+        // Menü (Drawer) açıldığında Flutter'ın varsayılan siyah yarı saydam
+        // scrim'i arka planı koyulaştırıyor. Koyu temada zaten koyu bir zemin
+        // üzerine bindiği için fark edilmiyordu; açık temada ise FAB gibi alt
+        // bar öğelerini soluklaştırıyordu. Scrim'i kaldırarak her iki temada
+        // da tutarlı, koyu temadaki gibi "silikleşmeyen" bir görünüm sağlanır.
+        drawerScrimColor: Colors.transparent,
         appBar: AppBar(
           title: _isSearching
               ? TextField(
@@ -3740,7 +3948,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     border: InputBorder.none,
                     hintStyle: TextStyle(color: Colors.grey),
                   ),
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                  style: const TextStyle(fontSize: 18),
                   onChanged: (value) {
                     setState(() {
                       _searchQuery = value;
@@ -3755,7 +3963,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     fontSize: 18,
                   ),
                 ),
-          backgroundColor: const Color(0xFF1E1E1E),
           elevation: 0,
           centerTitle: false,
           titleSpacing: 0,
@@ -3784,14 +3991,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        backgroundColor: const Color(0xFF1E1E1E),
                         title: const Text(
                           'Çöpü Boşalt',
                           style: TextStyle(color: Colors.amber),
                         ),
                         content: const Text(
                           'Tüm silinen notlar kalıcı olarak silinecek. Emin misiniz?',
-                          style: TextStyle(color: Colors.white),
                         ),
                         actions: [
                           TextButton(
@@ -3927,13 +4132,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
           child: SafeArea(
             top: false,
             child: Container(
-              color: const Color(0xFF1E1E1E),
+              color: Theme.of(context).cardColor,
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: [
-                  const DrawerHeader(
-                    decoration: BoxDecoration(color: Color(0xFF161616)),
-                    child: Column(
+                  DrawerHeader(
+                    decoration: BoxDecoration(color: dNoteHeaderColor(context)),
+                    child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -3969,14 +4174,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     color:
                         (_activeCategory == 'Tümü' ||
                             _activeCategory == 'Notlar')
-                        ? Colors.white.withValues(alpha: 0.08)
+                        ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
                       leading: const Icon(Icons.notes, color: Colors.amber),
-                      title: const Text(
-                        'Notlar',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      title: const Text('Notlar'),
                       trailing: Text(
                         _getCountForCategory('Tümü').toString(),
                         style: const TextStyle(
@@ -3993,7 +4195,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   ),
                   Container(
                     color: _activeCategory == '__favorites__'
-                        ? Colors.white.withValues(alpha: 0.08)
+                        ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
                       leading: const Icon(
@@ -4002,7 +4204,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       ),
                       title: const Text(
                         'Favoriler',
-                        style: TextStyle(color: Colors.white),
                       ),
                       trailing: Text(
                         _getCountForCategory('__favorites__').toString(),
@@ -4020,7 +4221,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   ),
                   Container(
                     color: _activeCategory == '__locked__'
-                        ? Colors.white.withValues(alpha: 0.08)
+                        ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
                       leading: const Icon(
@@ -4029,7 +4230,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       ),
                       title: const Text(
                         'Kilitli',
-                        style: TextStyle(color: Colors.white),
                       ),
                       trailing: Text(
                         _getCountForCategory('__locked__').toString(),
@@ -4043,7 +4243,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   ),
                   Container(
                     color: _activeCategory == '__archive__'
-                        ? Colors.white.withValues(alpha: 0.08)
+                        ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
                       leading: const Icon(
@@ -4052,7 +4252,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       ),
                       title: const Text(
                         'Arşiv',
-                        style: TextStyle(color: Colors.white),
                       ),
                       trailing: Text(
                         _getCountForCategory('__archive__').toString(),
@@ -4070,7 +4269,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   ),
                   Container(
                     color: _activeCategory == '__trash__'
-                        ? Colors.white.withValues(alpha: 0.08)
+                        ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
                       leading: const Icon(
@@ -4079,7 +4278,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       ),
                       title: const Text(
                         'Çöp Kutusu',
-                        style: TextStyle(color: Colors.white),
                       ),
                       trailing: Text(
                         _deletedNotes.length.toString(),
@@ -4096,8 +4294,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     ),
                   ),
 
-                  const Divider(
-                    color: Color(0xFF2E2E2E),
+                  Divider(
+                    color: Theme.of(context).dividerColor,
                     thickness: 1,
                     height: 24,
                   ),
@@ -4117,7 +4315,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     final isCatLocked = _lockedCategories.contains(cat);
                     return Container(
                       color: _activeCategory == cat
-                          ? Colors.white.withValues(alpha: 0.08)
+                          ? dNoteHighlight(context)
                           : Colors.transparent,
                       child: ListTile(
                         leading: Stack(
@@ -4141,7 +4339,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           style: TextStyle(
                             color: _activeCategory == cat
                                 ? catColor
-                                : Colors.white,
+                                : Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         trailing: Text(
@@ -4162,14 +4360,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               showDialog(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
-                                  backgroundColor: const Color(0xFF1E1E1E),
                                   title: const Text(
                                     'Parola Gerekiyor',
                                     style: TextStyle(color: Colors.amber),
                                   ),
                                   content: const Text(
                                     'Kilitli kategoriye girebilmek için önce Ayarlar > Not Şifresi bölümünden bir parola belirlemeniz gerekiyor.',
-                                    style: TextStyle(color: Colors.white70),
                                   ),
                                   actions: [
                                     ElevatedButton(
@@ -4199,14 +4395,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               showDialog(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
-                                  backgroundColor: const Color(0xFF1E1E1E),
                                   title: const Text(
                                     'Hatalı Parola',
                                     style: TextStyle(color: Colors.red),
                                   ),
                                   content: const Text(
                                     'Girdiğiniz parola yanlış.',
-                                    style: TextStyle(color: Colors.white70),
                                   ),
                                   actions: [
                                     ElevatedButton(
@@ -4237,13 +4431,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     );
                   }),
                   ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.add_circle_outline,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                     title: const Text(
                       'Kategori Ekle',
-                      style: TextStyle(color: Colors.white),
                     ),
                     onTap: () {
                       Navigator.pop(context);
@@ -4252,7 +4445,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   ),
 
                   const Divider(
-                    color: Color(0xFF2A2A2A),
                     thickness: 1,
                     height: 24,
                   ),
@@ -4274,7 +4466,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Ayarlar',
-                      style: TextStyle(color: Colors.white),
                     ),
                     onTap: _openSettings,
                   ),
@@ -4285,7 +4476,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Yedekle & Geri Yükle',
-                      style: TextStyle(color: Colors.white),
                     ),
                     onTap: () => Navigator.pop(context),
                   ),
@@ -4296,7 +4486,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Pro\'ya Yükselt',
-                      style: TextStyle(color: Colors.white),
                     ),
                     trailing: Container(
                       padding: const EdgeInsets.symmetric(
@@ -4325,7 +4514,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Geliştirme Desteği',
-                      style: TextStyle(color: Colors.white),
                     ),
                     onTap: () => Navigator.pop(context),
                   ),
@@ -4336,7 +4524,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Geri Bildirim',
-                      style: TextStyle(color: Colors.white),
                     ),
                     onTap: () => Navigator.pop(context),
                   ),
@@ -4347,7 +4534,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Hakkında',
-                      style: TextStyle(color: Colors.white),
                     ),
                     onTap: () => Navigator.pop(context),
                   ),
@@ -4411,7 +4597,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         : originalIndex) %
                                     _categoryPalette.length]
                                 .withValues(alpha: 0.75)
-                          : const Color(0xFF2D2D2D);
+                          : (dNoteIsDark(context)
+                                ? const Color(0xFF2D2D2D)
+                                : Theme.of(context).cardColor);
                       final fontScale = _previewFontScale(note);
                       final previewImage = _firstImageAttachment(note);
 
@@ -4420,7 +4608,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             ? () {
                                 showModalBottomSheet(
                                   context: context,
-                                  backgroundColor: const Color(0xFF1E1E1E),
+                                  backgroundColor: Theme.of(context).cardColor,
                                   shape: const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.vertical(
                                       top: Radius.circular(20),
@@ -4508,9 +4696,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                   ? () {
                                       showModalBottomSheet(
                                         context: context,
-                                        backgroundColor: const Color(
-                                          0xFF1E1E1E,
-                                        ),
+                                        backgroundColor: Theme.of(context).cardColor,
                                         shape: const RoundedRectangleBorder(
                                           borderRadius: BorderRadius.vertical(
                                             top: Radius.circular(20),
@@ -4617,8 +4803,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                             fit: BoxFit.cover,
                                             errorBuilder: (_, __, ___) =>
                                                 Container(
-                                                  color: const Color(
-                                                    0xFF3A3A3A,
+                                                  color: dNoteSurfaceVariant(
+                                                    context,
                                                   ),
                                                   child: const Icon(
                                                     Icons
@@ -4648,7 +4834,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18 * fontScale,
-                                                color: _textColor,
+                                                color: dNoteEffectiveTextColor(context, _textColor),
                                               ),
                                             ),
                                           ),
@@ -4699,7 +4885,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                           item['checked'] ==
                                                               true
                                                           ? Colors.grey
-                                                          : _textColor,
+                                                          : (dNoteEffectiveTextColor(context, _textColor)),
                                                       decoration:
                                                           item['checked'] ==
                                                               true
@@ -4732,7 +4918,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                 note['content'] as String?,
                                               ),
                                               style: TextStyle(
-                                                color: _textColor,
+                                                color: dNoteEffectiveTextColor(context, _textColor),
                                                 fontSize:
                                                     (note['fontSize'] as num?)
                                                         ?.toDouble() ??
@@ -4764,9 +4950,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         child: Text(
                                           note['category'],
                                           style: TextStyle(
-                                            color: _textColor.withValues(
-                                              alpha: 0.7,
-                                            ),
+                                            color:
+                                                (dNoteEffectiveTextColor(context, _textColor))
+                                                    .withValues(alpha: 0.7),
                                             fontSize:
                                                 (note['fontSize'] as num?)
                                                     ?.toDouble() ??
@@ -5018,7 +5204,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
         ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) %
                   _categoryPalette.length]
               .withValues(alpha: 0.75)
-        : const Color(0xFF2D2D2D);
+        : (dNoteIsDark(context)
+              ? const Color(0xFF2D2D2D)
+              : Theme.of(context).cardColor);
     final fontScale = _previewFontScale(note);
     final previewImage = _firstImageAttachment(note);
 
@@ -5027,7 +5215,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
           ? () {
               showModalBottomSheet(
                 context: context,
-                backgroundColor: const Color(0xFF1E1E1E),
+                backgroundColor: Theme.of(context).cardColor,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 ),
@@ -5099,7 +5287,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
               ? () {
                   showModalBottomSheet(
                     context: context,
-                    backgroundColor: const Color(0xFF1E1E1E),
+                    backgroundColor: Theme.of(context).cardColor,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(20),
@@ -5191,7 +5379,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           ),
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) => Container(
-                            color: const Color(0xFF3A3A3A),
+                            color: dNoteSurfaceVariant(context),
                             child: const Icon(
                               Icons.broken_image_outlined,
                               color: Colors.grey,
@@ -5214,7 +5402,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18 * fontScale,
-                              color: _textColor,
+                              color: dNoteEffectiveTextColor(context, _textColor),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -5252,7 +5440,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                   color:
                                                       item['checked'] == true
                                                       ? Colors.grey
-                                                      : _textColor,
+                                                      : (dNoteEffectiveTextColor(context, _textColor)),
                                                   decoration:
                                                       item['checked'] == true
                                                       ? TextDecoration
@@ -5283,7 +5471,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                   note['content'] as String?,
                                 ),
                                 style: TextStyle(
-                                  color: _textColor,
+                                  color: dNoteEffectiveTextColor(context, _textColor),
                                   fontSize:
                                       (note['fontSize'] as num?)?.toDouble() ??
                                       _globalFontSize,
@@ -5298,7 +5486,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           Text(
                             note['category'],
                             style: TextStyle(
-                              color: _textColor.withValues(alpha: 0.7),
+                              color: (dNoteEffectiveTextColor(context, _textColor))
+                                  .withValues(alpha: 0.7),
                               fontSize:
                                   (note['fontSize'] as num?)?.toDouble() ??
                                   _globalFontSize,
@@ -5361,6 +5550,61 @@ class _SettingsPageState extends State<_SettingsPage> {
     'En sevdiğiniz renk nedir?',
   ];
 
+  // ── Görünüm (Açık/Koyu/Sistem) seçim diyaloğu ────────────────────────
+  void _showThemeModeDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => StatefulBuilder(
+        builder: (ctx, setDlg) {
+          Widget option(ThemeMode mode, String label, IconData icon) {
+            final selected = s._themeMode == mode;
+            return ListTile(
+              leading: Icon(
+                icon,
+                color: selected ? Colors.amber : Colors.grey,
+              ),
+              title: Text(
+                label,
+                style: TextStyle(
+                  color: selected ? Colors.amber : dNoteTextColor(ctx),
+                  fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+              trailing: selected
+                  ? const Icon(Icons.check, color: Colors.amber)
+                  : null,
+              onTap: () {
+                s.setState(() => s._themeMode = mode);
+                appThemeMode.value = mode;
+                setState(() {});
+                s._saveData();
+                Navigator.pop(ctx);
+              },
+            );
+          }
+
+          return AlertDialog(
+            backgroundColor: dNoteCardColor(ctx),
+            title: const Text('Görünüm', style: TextStyle(color: Colors.amber)),
+            contentPadding: const EdgeInsets.symmetric(vertical: 8),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                option(ThemeMode.light, 'Açık', Icons.light_mode_outlined),
+                option(ThemeMode.dark, 'Koyu', Icons.dark_mode_outlined),
+                option(
+                  ThemeMode.system,
+                  'Sistem Varsayılanı',
+                  Icons.smartphone_outlined,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   // ── Güvenlik sorusu düzenleme diyaloğu ──────────────────────────────
   void _showHintQuestionDialog() {
     String? selectedQuestion = s._passwordHintQuestion.isNotEmpty
@@ -5372,7 +5616,7 @@ class _SettingsPageState extends State<_SettingsPage> {
       context: context,
       builder: (_) => StatefulBuilder(
         builder: (ctx, setDlg) => AlertDialog(
-          backgroundColor: const Color(0xFF1E1E1E),
+          backgroundColor: dNoteCardColor(ctx),
           title: const Text(
             'Güvenlik Sorusu',
             style: TextStyle(color: Colors.amber),
@@ -5388,15 +5632,15 @@ class _SettingsPageState extends State<_SettingsPage> {
               const SizedBox(height: 14),
               DropdownButtonFormField<String>(
                 initialValue: selectedQuestion,
-                dropdownColor: const Color(0xFF2A2A2A),
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-                decoration: const InputDecoration(
+                dropdownColor: dNoteSurfaceVariant(ctx),
+                style: TextStyle(color: dNoteTextColor(ctx), fontSize: 14),
+                decoration: InputDecoration(
                   hintText: 'Güvenlik sorusu seçin',
-                  hintStyle: TextStyle(color: Colors.grey),
+                  hintStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF444444)),
+                    borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                   ),
-                  focusedBorder: UnderlineInputBorder(
+                  focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.amber),
                   ),
                 ),
@@ -5416,14 +5660,14 @@ class _SettingsPageState extends State<_SettingsPage> {
                 contextMenuBuilder: buildCustomContextMenu,
                 selectionHeightStyle: ui.BoxHeightStyle.max,
                 controller: answerCtrl,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
+                style: TextStyle(color: dNoteTextColor(ctx)),
+                decoration: InputDecoration(
                   hintText: 'Cevabınız',
-                  hintStyle: TextStyle(color: Colors.grey),
+                  hintStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF444444)),
+                    borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                   ),
-                  focusedBorder: UnderlineInputBorder(
+                  focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.amber),
                   ),
                 ),
@@ -5485,7 +5729,7 @@ class _SettingsPageState extends State<_SettingsPage> {
       context: context,
       builder: (_) => StatefulBuilder(
         builder: (ctx, setDlg) => AlertDialog(
-          backgroundColor: const Color(0xFF1E1E1E),
+          backgroundColor: dNoteCardColor(ctx),
           title: Text(
             isNew ? 'Şifre Oluştur' : 'Mevcut Şifreyi Gir',
             style: const TextStyle(color: Colors.amber),
@@ -5502,12 +5746,12 @@ class _SettingsPageState extends State<_SettingsPage> {
                     selectionHeightStyle: ui.BoxHeightStyle.max,
                     controller: ctrl1,
                     obscureText: obscure1,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: dNoteTextColor(ctx)),
                     decoration: InputDecoration(
                       hintText: 'Mevcut şifre',
                       hintStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF444444)),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                       ),
                       focusedBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.amber),
@@ -5529,12 +5773,12 @@ class _SettingsPageState extends State<_SettingsPage> {
                     selectionHeightStyle: ui.BoxHeightStyle.max,
                     controller: ctrl1,
                     obscureText: obscure1,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: dNoteTextColor(ctx)),
                     decoration: InputDecoration(
                       hintText: 'Yeni şifre',
                       hintStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF444444)),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                       ),
                       focusedBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.amber),
@@ -5556,12 +5800,12 @@ class _SettingsPageState extends State<_SettingsPage> {
                     selectionHeightStyle: ui.BoxHeightStyle.max,
                     controller: ctrl2,
                     obscureText: obscure2,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: dNoteTextColor(ctx)),
                     decoration: InputDecoration(
                       hintText: 'Şifreyi tekrar gir',
                       hintStyle: const TextStyle(color: Colors.grey),
-                      enabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF444444)),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                       ),
                       focusedBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.amber),
@@ -5576,7 +5820,7 @@ class _SettingsPageState extends State<_SettingsPage> {
                       ),
                     ),
                   ),
-                  const Divider(color: Color(0xFF2A2A2A), height: 28),
+                  Divider(color: Theme.of(ctx).dividerColor, height: 28),
                   const Text(
                     'Şifrenizi unutursanız diye bir güvenlik sorusu belirleyin.',
                     style: TextStyle(color: Colors.grey, fontSize: 12),
@@ -5584,15 +5828,15 @@ class _SettingsPageState extends State<_SettingsPage> {
                   const SizedBox(height: 10),
                   DropdownButtonFormField<String>(
                     initialValue: selectedHintQuestion,
-                    dropdownColor: const Color(0xFF2A2A2A),
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
-                    decoration: const InputDecoration(
+                    dropdownColor: dNoteSurfaceVariant(ctx),
+                    style: TextStyle(color: dNoteTextColor(ctx), fontSize: 14),
+                    decoration: InputDecoration(
                       hintText: 'Güvenlik sorusu seçin',
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: const TextStyle(color: Colors.grey),
                       enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF444444)),
+                        borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                       ),
-                      focusedBorder: UnderlineInputBorder(
+                      focusedBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.amber),
                       ),
                     ),
@@ -5613,14 +5857,14 @@ class _SettingsPageState extends State<_SettingsPage> {
                     contextMenuBuilder: buildCustomContextMenu,
                     selectionHeightStyle: ui.BoxHeightStyle.max,
                     controller: hintAnswerCtrl,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: const InputDecoration(
+                    style: TextStyle(color: dNoteTextColor(ctx)),
+                    decoration: InputDecoration(
                       hintText: 'Cevabınız',
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle: const TextStyle(color: Colors.grey),
                       enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF444444)),
+                        borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                       ),
-                      focusedBorder: UnderlineInputBorder(
+                      focusedBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.amber),
                       ),
                     ),
@@ -5735,7 +5979,7 @@ class _SettingsPageState extends State<_SettingsPage> {
   void _showTextColorPicker() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: dNoteCardColor(context),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -5756,14 +6000,14 @@ class _SettingsPageState extends State<_SettingsPage> {
                     right: 120,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.grey[700],
+                    color: Colors.grey[500],
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                const Text(
+                Text(
                   'Metin Rengi',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: dNoteTextColor(ctx),
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -5777,25 +6021,50 @@ class _SettingsPageState extends State<_SettingsPage> {
                 Wrap(
                   spacing: 12,
                   runSpacing: 12,
-                  children: _textPalette.map((c) {
-                    final selected = s._textColor == c;
-                    return GestureDetector(
+                  children: [
+                    // "Varsayılan": özel bir renk seçilmemiş, metin rengi
+                    // temaya göre otomatik belirlenir (koyu temada beyaz,
+                    // açık temada koyu gri).
+                    _TextColorSwatch(
+                      selected: s._textColor == null,
                       onTap: () {
-                        s.setState(() => s._textColor = c);
-                        setState(() {});
+                        s.setState(() => s._textColor = null);
+                        setSheet(() {});
                         s._saveData();
                       },
                       child: Container(
-                        width: 48,
-                        height: 48,
                         decoration: BoxDecoration(
-                          color: c,
-                          border: Border.all(
-                            color: selected ? Colors.amber : Colors.grey[700]!,
-                            width: selected ? 2.5 : 1,
+                          borderRadius: BorderRadius.circular(9),
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Colors.white, Colors.black87],
+                            stops: [0.5, 0.5],
                           ),
-                          borderRadius: BorderRadius.circular(10),
                         ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'A',
+                          style: TextStyle(
+                            color: s._textColor == null
+                                ? Colors.amber
+                                : Colors.grey[500],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                    ..._textPalette.map((c) {
+                      final selected = s._textColor == c;
+                      return _TextColorSwatch(
+                        selected: selected,
+                        color: c,
+                        onTap: () {
+                          s.setState(() => s._textColor = c);
+                          setSheet(() {});
+                          s._saveData();
+                        },
                         child: selected
                             ? Icon(
                                 Icons.check,
@@ -5805,9 +6074,9 @@ class _SettingsPageState extends State<_SettingsPage> {
                                 size: 20,
                               )
                             : null,
-                      ),
-                    );
-                  }).toList(),
+                      );
+                    }),
+                  ],
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
@@ -5867,12 +6136,12 @@ class _SettingsPageState extends State<_SettingsPage> {
     ),
     title: Text(
       title,
-      style: const TextStyle(color: Colors.white, fontSize: 14),
+      style: TextStyle(color: dNoteTextColor(context), fontSize: 14),
     ),
     subtitle: subtitle != null
         ? Text(
             subtitle,
-            style: const TextStyle(color: Colors.grey, fontSize: 11),
+            style: TextStyle(color: Colors.grey[500], fontSize: 11),
           )
         : null,
     trailing: trailing,
@@ -5883,13 +6152,13 @@ class _SettingsPageState extends State<_SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
+        backgroundColor: dNoteCardColor(context),
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          icon: Icon(Icons.arrow_back_ios, color: dNoteTextColor(context)),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -5909,7 +6178,7 @@ class _SettingsPageState extends State<_SettingsPage> {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                color: const Color(0xFF1E1E1E),
+                color: dNoteCardColor(context),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Column(
@@ -5940,8 +6209,8 @@ class _SettingsPageState extends State<_SettingsPage> {
                     ),
                   ),
                   if (s._notePasswordEnabled) ...[
-                    const Divider(
-                      color: Color(0xFF2A2A2A),
+                    Divider(
+                      color: Theme.of(context).dividerColor,
                       height: 1,
                       indent: 56,
                     ),
@@ -5968,7 +6237,7 @@ class _SettingsPageState extends State<_SettingsPage> {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                color: const Color(0xFF1E1E1E),
+                color: dNoteCardColor(context),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Column(
@@ -5976,20 +6245,20 @@ class _SettingsPageState extends State<_SettingsPage> {
                   _settingTile(
                     icon: Icons.dark_mode_outlined,
                     iconColor: Colors.indigoAccent,
-                    title: 'Koyu Tema',
-                    subtitle: 'Karanlık arayüz modunu etkinleştirir.',
-                    trailing: Switch(
-                      value: s._darkTheme,
-                      activeThumbColor: Colors.amber,
-                      onChanged: (val) {
-                        s.setState(() => s._darkTheme = val);
-                        setState(() {});
-                        s._saveData();
-                      },
+                    title: 'Görünüm',
+                    subtitle: switch (s._themeMode) {
+                      ThemeMode.light => 'Açık',
+                      ThemeMode.dark => 'Koyu',
+                      ThemeMode.system => 'Sistem Varsayılanı',
+                    },
+                    trailing: const Icon(
+                      Icons.chevron_right,
+                      color: Colors.grey,
                     ),
+                    onTap: () => _showThemeModeDialog(),
                   ),
-                  const Divider(
-                    color: Color(0xFF2A2A2A),
+                  Divider(
+                    color: Theme.of(context).dividerColor,
                     height: 1,
                     indent: 56,
                   ),
@@ -6017,7 +6286,7 @@ class _SettingsPageState extends State<_SettingsPage> {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                color: const Color(0xFF1E1E1E),
+                color: dNoteCardColor(context),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Column(
@@ -6035,7 +6304,7 @@ class _SettingsPageState extends State<_SettingsPage> {
                     onTap: () {
                       showModalBottomSheet(
                         context: context,
-                        backgroundColor: const Color(0xFF1E1E1E),
+                        backgroundColor: dNoteCardColor(context),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.vertical(
                             top: Radius.circular(20),
@@ -6048,10 +6317,10 @@ class _SettingsPageState extends State<_SettingsPage> {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'Yazı Tipi',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: dNoteTextColor(context),
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -6065,7 +6334,7 @@ class _SettingsPageState extends State<_SettingsPage> {
                                       style: TextStyle(
                                         color: s._fontFamily == f
                                             ? Colors.amber
-                                            : Colors.white,
+                                            : dNoteTextColor(context),
                                         fontFamily: _fontFamilyValue(f),
                                       ),
                                     ),
@@ -6090,8 +6359,8 @@ class _SettingsPageState extends State<_SettingsPage> {
                       );
                     },
                   ),
-                  const Divider(
-                    color: Color(0xFF2A2A2A),
+                  Divider(
+                    color: Theme.of(context).dividerColor,
                     height: 1,
                     indent: 56,
                   ),
@@ -6111,7 +6380,7 @@ class _SettingsPageState extends State<_SettingsPage> {
                       bool applyToAll = false;
                       showModalBottomSheet(
                         context: context,
-                        backgroundColor: const Color(0xFF1E1E1E),
+                        backgroundColor: dNoteCardColor(context),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.vertical(
                             top: Radius.circular(20),
@@ -6134,15 +6403,15 @@ class _SettingsPageState extends State<_SettingsPage> {
                                     width: 40,
                                     height: 4,
                                     decoration: BoxDecoration(
-                                      color: Colors.grey[700],
+                                      color: Colors.grey[500],
                                       borderRadius: BorderRadius.circular(2),
                                     ),
                                   ),
                                   const SizedBox(height: 16),
-                                  const Text(
+                                  Text(
                                     'Metin Boyutu',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: dNoteTextColor(ctx),
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -6161,9 +6430,8 @@ class _SettingsPageState extends State<_SettingsPage> {
                                           data: SliderTheme.of(context)
                                               .copyWith(
                                                 activeTrackColor: Colors.amber,
-                                                inactiveTrackColor: const Color(
-                                                  0xFF3A3A3A,
-                                                ),
+                                                inactiveTrackColor:
+                                                    dNoteSurfaceVariant(ctx),
                                                 thumbColor: Colors.amber,
                                                 overlayColor: Colors.amber
                                                     .withValues(alpha: 0.2),
@@ -6199,7 +6467,9 @@ class _SettingsPageState extends State<_SettingsPage> {
                                   Text(
                                     'Örnek metin - ${tempSize.round()} pt',
                                     style: TextStyle(
-                                      color: Colors.white70,
+                                      color: dNoteTextColor(
+                                        ctx,
+                                      ).withValues(alpha: 0.7),
                                       fontSize: tempSize,
                                     ),
                                   ),
@@ -6213,11 +6483,13 @@ class _SettingsPageState extends State<_SettingsPage> {
                                           () => applyToAll = v ?? false,
                                         ),
                                       ),
-                                      const Expanded(
+                                      Expanded(
                                         child: Text(
                                           'Mevcut notlara uygula',
                                           style: TextStyle(
-                                            color: Colors.white70,
+                                            color: dNoteTextColor(
+                                              ctx,
+                                            ).withValues(alpha: 0.7),
                                             fontSize: 13,
                                           ),
                                         ),
@@ -6288,8 +6560,8 @@ class _SettingsPageState extends State<_SettingsPage> {
                       );
                     },
                   ),
-                  const Divider(
-                    color: Color(0xFF2A2A2A),
+                  Divider(
+                    color: Theme.of(context).dividerColor,
                     height: 1,
                     indent: 56,
                   ),
@@ -6306,7 +6578,7 @@ class _SettingsPageState extends State<_SettingsPage> {
                           width: 22,
                           height: 22,
                           decoration: BoxDecoration(
-                            color: s._textColor,
+                            color: dNoteEffectiveTextColor(context, s._textColor),
                             border: Border.all(color: Colors.grey[600]!),
                             borderRadius: BorderRadius.circular(5),
                           ),
@@ -6317,8 +6589,8 @@ class _SettingsPageState extends State<_SettingsPage> {
                     ),
                     onTap: _showTextColorPicker,
                   ),
-                  const Divider(
-                    color: Color(0xFF2A2A2A),
+                  Divider(
+                    color: Theme.of(context).dividerColor,
                     height: 1,
                     indent: 56,
                   ),
@@ -6337,7 +6609,7 @@ class _SettingsPageState extends State<_SettingsPage> {
                       int tempLines = s._previewLines;
                       showModalBottomSheet(
                         context: context,
-                        backgroundColor: const Color(0xFF1E1E1E),
+                        backgroundColor: dNoteCardColor(context),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.vertical(
                             top: Radius.circular(20),
@@ -6359,15 +6631,15 @@ class _SettingsPageState extends State<_SettingsPage> {
                                     width: 40,
                                     height: 4,
                                     decoration: BoxDecoration(
-                                      color: Colors.grey[700],
+                                      color: Colors.grey[500],
                                       borderRadius: BorderRadius.circular(2),
                                     ),
                                   ),
                                   const SizedBox(height: 16),
-                                  const Text(
+                                  Text(
                                     'Not Önizleme Satırı',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: dNoteTextColor(ctx),
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -6384,8 +6656,8 @@ class _SettingsPageState extends State<_SettingsPage> {
                                   SliderTheme(
                                     data: SliderTheme.of(context).copyWith(
                                       activeTrackColor: Colors.amber,
-                                      inactiveTrackColor: const Color(
-                                        0xFF3A3A3A,
+                                      inactiveTrackColor: dNoteSurfaceVariant(
+                                        ctx,
                                       ),
                                       thumbColor: Colors.amber,
                                       overlayColor: Colors.amber.withValues(
@@ -6407,12 +6679,14 @@ class _SettingsPageState extends State<_SettingsPage> {
                                           setSheet(() => tempLines = v.round()),
                                     ),
                                   ),
-                                  const Padding(
-                                    padding: EdgeInsets.only(bottom: 16),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      bottom: 16,
+                                    ),
                                     child: Text(
                                       'Maksimum önizlenecek satır sayısını belirler. Not daha az satıra sahipse gerçek satır sayısı gösterilir.',
                                       style: TextStyle(
-                                        color: Colors.grey,
+                                        color: Colors.grey[500],
                                         fontSize: 11,
                                       ),
                                       textAlign: TextAlign.center,
@@ -6473,7 +6747,7 @@ class _SettingsPageState extends State<_SettingsPage> {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                color: const Color(0xFF1E1E1E),
+                color: dNoteCardColor(context),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Column(
@@ -6516,8 +6790,8 @@ class _SettingsPageState extends State<_SettingsPage> {
                             color: Colors.grey,
                           ),
                         ),
-                        const Divider(
-                          color: Color(0xFF2A2A2A),
+                        Divider(
+                          color: Theme.of(context).dividerColor,
                           height: 1,
                           indent: 56,
                         ),
@@ -6531,8 +6805,8 @@ class _SettingsPageState extends State<_SettingsPage> {
                             color: Colors.grey,
                           ),
                         ),
-                        const Divider(
-                          color: Color(0xFF2A2A2A),
+                        Divider(
+                          color: Theme.of(context).dividerColor,
                           height: 1,
                           indent: 56,
                         ),
@@ -6564,6 +6838,44 @@ class _SettingsPageState extends State<_SettingsPage> {
 // Sil ikonunun görünürlüğü dışarıdan (showDelete) kontrol edilir; böylece
 // liste içindeki bir öğe silindiğinde, kalan öğelerin durumu widget'ların
 // yeniden kullanılmasından (state reuse) etkilenmez.
+// ── Metin Rengi seçicideki tek bir renk karesi ───────────────────────────
+// `color` verilmezse (Varsayılan seçeneği) kare tamamen `child` tarafından
+// çizilir; verilirse düz bir renk karesi olur.
+class _TextColorSwatch extends StatelessWidget {
+  final Color? color;
+  final bool selected;
+  final VoidCallback onTap;
+  final Widget? child;
+
+  const _TextColorSwatch({
+    this.color,
+    required this.selected,
+    required this.onTap,
+    this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 48,
+        height: 48,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: color,
+          border: Border.all(
+            color: selected ? Colors.amber : Colors.grey[500]!,
+            width: selected ? 2.5 : 1,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: child,
+      ),
+    );
+  }
+}
+
 class _AttachmentTile extends StatelessWidget {
   final Widget preview;
   final double width;
@@ -6594,9 +6906,9 @@ class _AttachmentTile extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: const Color(0xFF2A2A2A),
+          color: dNoteSurfaceVariant(context),
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: const Color(0xFF3A3A3A)),
+          border: Border.all(color: dNoteBorderColor(context)),
         ),
         clipBehavior: Clip.antiAlias,
         child: Stack(
