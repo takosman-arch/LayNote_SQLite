@@ -14,6 +14,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:pdfx/pdfx.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tzdata;
 
 // ════════════════════════════════════════════════════════════════════════
 // SQLITE VERİ TABANI KATMANI
@@ -40,13 +43,20 @@ class DBHelper {
     final path = p.join(dbDir, 'dnote.db');
     return openDatabase(
       path,
-      version: 2,
+      version: 3,
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           // v1 -> v2: dosya/görsel ekleme özelliği için attachments sütunu.
           await db.execute('ALTER TABLE notes ADD COLUMN attachments TEXT');
           await db.execute(
             'ALTER TABLE deleted_notes ADD COLUMN attachments TEXT',
+          );
+        }
+        if (oldVersion < 3) {
+          // v2 -> v3: hatırlatıcı özelliği için reminderDate sütunu.
+          await db.execute('ALTER TABLE notes ADD COLUMN reminderDate TEXT');
+          await db.execute(
+            'ALTER TABLE deleted_notes ADD COLUMN reminderDate TEXT',
           );
         }
       },
@@ -65,6 +75,7 @@ class DBHelper {
             fontSize REAL,
             checkItems TEXT,
             attachments TEXT,
+            reminderDate TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0
@@ -84,6 +95,7 @@ class DBHelper {
             fontSize REAL,
             checkItems TEXT,
             attachments TEXT,
+            reminderDate TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0
@@ -126,6 +138,7 @@ class DBHelper {
       'attachments': (note['attachments'] != null && (note['attachments'] as List).isNotEmpty)
           ? jsonEncode(note['attachments'])
           : null,
+      'reminderDate': note['reminderDate']?.toString(),
       'isLocked': (note['isLocked'] == true) ? 1 : 0,
       'isArchived': (note['isArchived'] == true) ? 1 : 0,
       'isFavorite': (note['isFavorite'] == true) ? 1 : 0,
@@ -148,6 +161,7 @@ class DBHelper {
         'checkItems': jsonDecode(row['checkItems'] as String),
       if (row['attachments'] != null)
         'attachments': jsonDecode(row['attachments'] as String),
+      if (row['reminderDate'] != null) 'reminderDate': row['reminderDate'],
       'isLocked': row['isLocked'] == 1,
       'isArchived': row['isArchived'] == 1,
       'isFavorite': row['isFavorite'] == 1,
@@ -303,6 +317,126 @@ class DBHelper {
       result.add({...a, 'id': '${a['id']}_copy', 'storedName': newStored});
     }
     return result;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// HATIRLATICI SERVİSİ (ReminderService)
+// Notlara eklenen hatırlatıcıları yerel bildirim (local notification) olarak
+// planlar/iptal eder. Her not, id'sinin hash'inden türetilen sabit bir
+// bildirim numarasına sahiptir; böylece aynı not için tekrar planlama
+// yapıldığında eski bildirim otomatik olarak günceller/iptal eder.
+// ════════════════════════════════════════════════════════════════════════
+class ReminderService {
+  ReminderService._internal();
+  static final ReminderService instance = ReminderService._internal();
+
+  final FlutterLocalNotificationsPlugin _plugin =
+      FlutterLocalNotificationsPlugin();
+  bool _initialized = false;
+
+  Future<void> init() async {
+    if (_initialized) return;
+    tzdata.initializeTimeZones();
+    try {
+      tz.setLocalLocation(tz.local);
+    } catch (_) {
+      // Yerel zaman dilimi belirlenemezse varsayılan (UTC benzeri) kalır.
+    }
+
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
+    const iosSettings = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+    const initSettings = InitializationSettings(
+      android: androidSettings,
+      iOS: iosSettings,
+    );
+    await _plugin.initialize(initSettings);
+
+    final androidImpl = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    await androidImpl?.requestNotificationsPermission();
+    await androidImpl?.requestExactAlarmsPermission();
+
+    _initialized = true;
+  }
+
+  // Not id'si (createdDate string'i) her zaman aynı 31-bit bildirim
+  // numarasına dönüşsün diye kullanılır.
+  int _notificationIdFor(String noteId) => noteId.hashCode & 0x7fffffff;
+
+  Future<void> schedule({
+    required String noteId,
+    required String title,
+    required String body,
+    required DateTime dateTime,
+  }) async {
+    if (!_initialized) await init();
+    final id = _notificationIdFor(noteId);
+    await _plugin.cancel(id);
+    if (dateTime.isBefore(DateTime.now())) return;
+
+    final scheduledDate = tz.TZDateTime.from(dateTime, tz.local);
+    try {
+      await _plugin.zonedSchedule(
+        id,
+        title.isEmpty ? 'Hatırlatıcı' : title,
+        body,
+        scheduledDate,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'dnote_reminders',
+            'Not Hatırlatıcıları',
+            channelDescription: 'DNote uygulamasındaki not hatırlatıcıları',
+            importance: Importance.max,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(),
+        ),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+      );
+    } catch (_) {
+      // Kesin alarm izni verilmemiş olabilir; en yakın zamanda (inexact)
+      // planlamayı dene ki hatırlatıcı tamamen sessizce kaybolmasın.
+      try {
+        await _plugin.zonedSchedule(
+          id,
+          title.isEmpty ? 'Hatırlatıcı' : title,
+          body,
+          scheduledDate,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'dnote_reminders',
+              'Not Hatırlatıcıları',
+              channelDescription:
+                  'DNote uygulamasındaki not hatırlatıcıları',
+              importance: Importance.max,
+              priority: Priority.high,
+            ),
+            iOS: DarwinNotificationDetails(),
+          ),
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+        );
+      } catch (_) {
+        // Planlama başarısız oldu; sessizce yut, uygulama çökmesin.
+      }
+    }
+  }
+
+  Future<void> cancel(String noteId) async {
+    if (!_initialized) await init();
+    await _plugin.cancel(_notificationIdFor(noteId));
   }
 }
 
@@ -602,6 +736,10 @@ String themeModeToSettingValue(ThemeMode mode) {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Hatırlatıcı bildirimleri için bildirim eklentisini ve zaman dilimi
+  // verisini uygulama açılışında bir kez hazırla.
+  await ReminderService.instance.init();
+
   // Uygulama ilk kez çizilmeden önce kayıtlı tema tercihini oku; böylece
   // açılışta koyu tema bir an için yanıp sönmez.
   final settings = await DBHelper.instance.getAllSettings();
@@ -683,6 +821,17 @@ Color dNoteHighlight(BuildContext context) =>
 // çizen yerlerde ThemeData.cardTheme yerine bu kullanılır.
 Color dNoteCardColor(BuildContext context) =>
     dNoteIsDark(context) ? const Color(0xFF1E1E1E) : Colors.white;
+
+// Bir tarihi "gg.aa.yyyy ss:dd" biçiminde döndürür. Hatırlatıcı tarihini hem
+// not düzenleyicide hem de önizleme kartlarında tutarlı biçimde göstermek
+// için kullanılır.
+String _formatDateTimeTr(DateTime dt) {
+  final day = dt.day.toString().padLeft(2, '0');
+  final month = dt.month.toString().padLeft(2, '0');
+  final hour = dt.hour.toString().padLeft(2, '0');
+  final minute = dt.minute.toString().padLeft(2, '0');
+  return '$day.$month.${dt.year} $hour:$minute';
+}
 
 // Birincil metin rengi: koyu temada beyaz, açık temada neredeyse siyah.
 // Sabit "Colors.white" kullanan eski kodun açık temada okunmaz hale
@@ -1042,6 +1191,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
         return isLocked && !isArchived;
       } else if (category == '__archive__') {
         return isArchived && !isLocked;
+      } else if (category == '__reminders__') {
+        return _hasActiveReminder(note) && !isArchived && !isLocked;
       } else {
         return !isArchived && !isLocked && note['category'] == category;
       }
@@ -1059,6 +1210,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
       return 'Arşiv';
     } else if (category == '__trash__') {
       return 'Çöp Kutusu';
+    } else if (category == '__reminders__') {
+      return 'Hatırlatmalar';
     } else {
       return category;
     }
@@ -1291,6 +1444,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
 
   void _deleteNote(int index) {
     final deletedNote = _notes[index];
+    final noteId = deletedNote['id']?.toString();
+    if (noteId != null) {
+      ReminderService.instance.cancel(noteId);
+    }
     setState(() {
       _notes.removeAt(index);
       _deletedNotes.add(deletedNote);
@@ -1300,9 +1457,33 @@ class _NoteListScreenState extends State<NoteListScreen> {
     _showDeletedBar(deletedNote);
   }
 
+  // Bir not çöp kutusundan geri yüklendiğinde veya kopyalandığında, hâlâ
+  // gelecekte olan bir hatırlatıcısı varsa bildirimini yeniden planlar.
+  void _rescheduleNoteReminder(Map<String, dynamic> note) {
+    final noteId = note['id']?.toString();
+    final rawReminder = note['reminderDate']?.toString();
+    if (noteId == null || rawReminder == null || rawReminder.isEmpty) return;
+    final reminder = DateTime.tryParse(rawReminder);
+    if (reminder == null || reminder.isBefore(DateTime.now())) return;
+    final title = (note['title'] ?? '').toString();
+    final preview = ContentBlocks.plainText(note['content']?.toString());
+    ReminderService.instance.schedule(
+      noteId: noteId,
+      title: title.isEmpty ? 'Hatırlatıcı' : title,
+      body: (note['type'] == 'checklist')
+          ? 'Kontrol listeni kontrol etmeyi unutma'
+          : (preview.isEmpty ? 'Notunu kontrol etmeyi unutma' : preview),
+      dateTime: reminder,
+    );
+  }
+
   // Bir notun ekli dosyalarını diskten siler (not kalıcı olarak silinirken
   // çağrılır). Not verisinin kendisine dokunmaz.
   void _cleanupAttachmentFiles(Map<String, dynamic> note) {
+    final noteId = note['id']?.toString();
+    if (noteId != null) {
+      ReminderService.instance.cancel(noteId);
+    }
     final atts = note['attachments'];
     if (atts is List) {
       for (final a in atts) {
@@ -1353,6 +1534,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
 
     setState(() => _notes.insert(index + 1, duplicate));
     _saveData();
+    _rescheduleNoteReminder(duplicate);
     _showInfoBar('Kopya oluşturuldu');
   }
 
@@ -2589,6 +2771,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     List<Map<String, dynamic>> checkItems, [
     List<Map<String, dynamic>> attachments = const [],
     List<Map<String, dynamic>> blocks = const [],
+    DateTime? reminder,
   ]) {
     final isValid =
         (noteType == 'text'
@@ -2644,16 +2827,22 @@ class _NoteListScreenState extends State<NoteListScreen> {
             ? !ContentBlocks.equalsStoredContent(blocks, oldContent)
             : newContent != oldContent;
 
+        final oldReminderRaw = _notes[index]['reminderDate']?.toString();
+        final newReminderRaw = reminder?.toIso8601String();
+        final reminderChanged = oldReminderRaw != newReminderRaw;
+
         final hasChanges =
             newTitle != oldTitle ||
             contentChanged ||
             noteType != oldType ||
             checkItemsChanged ||
-            attachmentsChanged;
+            attachmentsChanged ||
+            reminderChanged;
 
         if (!hasChanges) return false;
 
         final currentRawTime = DateTime.now().toString();
+        final noteId = (_notes[index]['id'] ?? currentRawTime).toString();
         setState(() {
           _notes[index] = {
             ..._notes[index],
@@ -2663,16 +2852,33 @@ class _NoteListScreenState extends State<NoteListScreen> {
             'attachments': attachments,
             'modifiedDate': currentRawTime,
             'type': noteType,
+            'reminderDate': newReminderRaw,
           };
         });
         _saveData();
+        if (reminderChanged) {
+          if (reminder != null) {
+            final preview = ContentBlocks.plainText(newContent);
+            ReminderService.instance.schedule(
+              noteId: noteId,
+              title: newTitle.isEmpty ? 'Hatırlatıcı' : newTitle,
+              body: noteType == 'checklist'
+                  ? 'Kontrol listeni kontrol etmeyi unutma'
+                  : (preview.isEmpty ? 'Notunu kontrol etmeyi unutma' : preview),
+              dateTime: reminder,
+            );
+          } else {
+            ReminderService.instance.cancel(noteId);
+          }
+        }
         return true;
       } else {
         final currentRawTime = DateTime.now().toString();
+        final newTitle = _capitalizeFirstLetterTr(_titleController.text.trim());
         setState(() {
           _notes.add({
             'id': currentRawTime,
-            'title': _capitalizeFirstLetterTr(_titleController.text.trim()),
+            'title': newTitle,
             'content': noteType == 'text'
                 ? ContentBlocks.serialize(blocks)
                 : '',
@@ -2686,7 +2892,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     _activeCategory == '__favorites__' ||
                     _activeCategory == '__locked__' ||
                     _activeCategory == '__archive__' ||
-                    _activeCategory == '__trash__')
+                    _activeCategory == '__trash__' ||
+                    _activeCategory == '__reminders__')
                 ? null
                 : _activeCategory,
             'color': 'Amber',
@@ -2694,9 +2901,23 @@ class _NoteListScreenState extends State<NoteListScreen> {
             'isFavorite': _activeCategory == '__favorites__',
             'isLocked': _activeCategory == '__locked__',
             'isArchived': _activeCategory == '__archive__',
+            'reminderDate': reminder?.toIso8601String(),
           });
         });
         _saveData();
+        if (reminder != null) {
+          final preview = ContentBlocks.plainText(
+            noteType == 'text' ? ContentBlocks.serialize(blocks) : '',
+          );
+          ReminderService.instance.schedule(
+            noteId: currentRawTime,
+            title: newTitle.isEmpty ? 'Hatırlatıcı' : newTitle,
+            body: noteType == 'checklist'
+                ? 'Kontrol listeni kontrol etmeyi unutma'
+                : (preview.isEmpty ? 'Notunu kontrol etmeyi unutma' : preview),
+            dateTime: reminder,
+          );
+        }
         return true;
       }
     }
@@ -2916,6 +3137,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
     String? noteCategory;
     // Basılı tutulunca sil ikonu gösterilen ekin id'si (aynı anda tek ek).
     String? deletingAttachmentId;
+    // Hatırlatıcı: notun bildirim ile hatırlatılacağı tarih/saat (yoksa null).
+    DateTime? noteReminder;
 
     // ── İçerik blokları (metin + araya eklenen fotoğraf/belge grupları) ──
     List<Map<String, dynamic>> blocks = [];
@@ -2974,6 +3197,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
       noteDate = _notes[index]['date'] ?? "";
       noteType = _notes[index]['type'] ?? 'text';
       noteCategory = _notes[index]['category'] as String?;
+      final rawReminder = _notes[index]['reminderDate'];
+      if (rawReminder != null && rawReminder.toString().isNotEmpty) {
+        noteReminder = DateTime.tryParse(rawReminder.toString());
+      }
       if (noteType == 'checklist') {
         final raw = _notes[index]['checkItems'];
         if (raw != null) {
@@ -3285,7 +3512,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     setModalState(() => deletingAttachmentId = null);
                     return;
                   }
-                  final saved = _saveNoteIfValid(index, noteType, checkItems, attachments, blocks);
+                  final saved = _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder);
                   SystemChrome.setSystemUIOverlayStyle(
                     dNoteSystemBarsStyle(context),
                   );
@@ -3337,6 +3564,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           checkItems,
                           attachments,
                           blocks,
+                          noteReminder,
                         );
                         SystemChrome.setSystemUIOverlayStyle(
                           dNoteSystemBarsStyle(context),
@@ -3370,7 +3598,103 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         Navigator.pop(context);
                       },
                     ),
-                    actions: const [SizedBox(width: 8)],
+                    actions: [
+                      IconButton(
+                        icon: Icon(
+                          noteReminder != null
+                              ? Icons.notifications_active
+                              : Icons.notifications_none,
+                          color: noteReminder != null
+                              ? Colors.amber
+                              : Theme.of(context).colorScheme.onSurface,
+                        ),
+                        tooltip: 'Hatırlatıcı',
+                        onPressed: () async {
+                          final now = DateTime.now();
+                          final initialDate = noteReminder ?? now.add(
+                            const Duration(hours: 1),
+                          );
+                          if (noteReminder != null) {
+                            final action = await showModalBottomSheet<String>(
+                              context: context,
+                              backgroundColor: dNoteCardColor(context),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(16),
+                                ),
+                              ),
+                              builder: (sheetCtx) => SafeArea(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      leading: const Icon(
+                                        Icons.edit_calendar,
+                                        color: Colors.amber,
+                                      ),
+                                      title: const Text('Hatırlatıcıyı değiştir'),
+                                      onTap: () =>
+                                          Navigator.pop(sheetCtx, 'edit'),
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(
+                                        Icons.notifications_off,
+                                        color: Colors.redAccent,
+                                      ),
+                                      title: const Text('Hatırlatıcıyı kaldır'),
+                                      onTap: () =>
+                                          Navigator.pop(sheetCtx, 'remove'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                            if (action == 'remove') {
+                              setModalState(() => noteReminder = null);
+                              return;
+                            } else if (action != 'edit') {
+                              return;
+                            }
+                          }
+
+                          final pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: initialDate.isBefore(now)
+                                ? now
+                                : initialDate,
+                            firstDate: now,
+                            lastDate: now.add(const Duration(days: 3650)),
+                          );
+                          if (pickedDate == null) return;
+                          if (!context.mounted) return;
+                          final pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.fromDateTime(initialDate),
+                          );
+                          if (pickedTime == null) return;
+                          final combined = DateTime(
+                            pickedDate.year,
+                            pickedDate.month,
+                            pickedDate.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          );
+                          if (combined.isBefore(DateTime.now())) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Geçmiş bir zaman seçilemez',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+                          setModalState(() => noteReminder = combined);
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                    ],
                   ),
                   bottomNavigationBar: SafeArea(
                     child: Builder(
@@ -3459,19 +3783,50 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 ],
                               ),
                               Expanded(
-                                child: Text(
-                                  index != null
-                                      ? (noteDate.isNotEmpty
-                                            ? noteDate
-                                            : _getFormattedDate())
-                                      : _getFormattedDate(),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: barColor,
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      index != null
+                                          ? (noteDate.isNotEmpty
+                                                ? noteDate
+                                                : _getFormattedDate())
+                                          : _getFormattedDate(),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: barColor,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    if (noteReminder != null)
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.access_time,
+                                            color: Colors.amber,
+                                            size: 12,
+                                          ),
+                                          const SizedBox(width: 3),
+                                          Flexible(
+                                            child: Text(
+                                              _formatDateTimeTr(noteReminder!),
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                color: Colors.amber,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                  ],
                                 ),
                               ),
                               IconButton(
@@ -3777,7 +4132,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                     },
                                   );
                                 } else {
-                                  _saveNoteIfValid(index, noteType, checkItems, attachments, blocks);
+                                  _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder);
                                   if (_notes.isNotEmpty) {
                                     final newIndex = _notes.length - 1;
                                     _showClassifyDialog(
@@ -3855,6 +4210,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
           return matchesSearch && isLocked && !isArchived;
         } else if (_activeCategory == '__archive__') {
           return matchesSearch && isArchived && !isLocked;
+        } else if (_activeCategory == '__reminders__') {
+          return matchesSearch &&
+              _hasActiveReminder(note) &&
+              !isArchived &&
+              !isLocked;
         } else {
           return matchesSearch &&
               !isArchived &&
@@ -3864,38 +4224,50 @@ class _NoteListScreenState extends State<NoteListScreen> {
       }).toList();
     }
 
-    filteredNotes.sort((a, b) {
-      int compareResult = 0;
-      switch (_sortCriteria) {
-        case "Başlık":
-          compareResult = (a['title'] ?? '').toString().compareTo(
-            (b['title'] ?? '').toString(),
-          );
-          break;
-        case "Kategori":
-          compareResult = (a['category'] ?? '').toString().compareTo(
-            (b['category'] ?? '').toString(),
-          );
-          break;
-        case "Renk":
-          compareResult = (a['color'] ?? '').toString().compareTo(
-            (b['color'] ?? '').toString(),
-          );
-          break;
-        case "Son Düzenleme":
-          compareResult = (a['modifiedDate'] ?? '').toString().compareTo(
-            (b['modifiedDate'] ?? '').toString(),
-          );
-          break;
-        case "Oluşturulma":
-        default:
-          compareResult = (a['createdDate'] ?? '').toString().compareTo(
-            (b['createdDate'] ?? '').toString(),
-          );
-          break;
-      }
-      return _isAscending ? compareResult : -compareResult;
-    });
+    if (_activeCategory == '__reminders__') {
+      filteredNotes.sort((a, b) {
+        final aDate =
+            DateTime.tryParse((a['reminderDate'] ?? '').toString()) ??
+            DateTime(9999);
+        final bDate =
+            DateTime.tryParse((b['reminderDate'] ?? '').toString()) ??
+            DateTime(9999);
+        return aDate.compareTo(bDate);
+      });
+    } else {
+      filteredNotes.sort((a, b) {
+        int compareResult = 0;
+        switch (_sortCriteria) {
+          case "Başlık":
+            compareResult = (a['title'] ?? '').toString().compareTo(
+              (b['title'] ?? '').toString(),
+            );
+            break;
+          case "Kategori":
+            compareResult = (a['category'] ?? '').toString().compareTo(
+              (b['category'] ?? '').toString(),
+            );
+            break;
+          case "Renk":
+            compareResult = (a['color'] ?? '').toString().compareTo(
+              (b['color'] ?? '').toString(),
+            );
+            break;
+          case "Son Düzenleme":
+            compareResult = (a['modifiedDate'] ?? '').toString().compareTo(
+              (b['modifiedDate'] ?? '').toString(),
+            );
+            break;
+          case "Oluşturulma":
+          default:
+            compareResult = (a['createdDate'] ?? '').toString().compareTo(
+              (b['createdDate'] ?? '').toString(),
+            );
+            break;
+        }
+        return _isAscending ? compareResult : -compareResult;
+      });
+    }
 
     return PopScope(
       canPop: false,
@@ -4029,6 +4401,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       ),
                     );
                   } else if (choice == 'restore_all') {
+                    final restored = List<Map<String, dynamic>>.from(
+                      _deletedNotes,
+                    );
                     setState(() {
                       for (var n in _deletedNotes) {
                         n['createdDate'] = DateTime.now().toString();
@@ -4038,6 +4413,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       _deletedNotes.clear();
                     });
                     _saveData();
+                    for (final n in restored) {
+                      _rescheduleNoteReminder(n);
+                    }
                   }
                 },
                 itemBuilder: (BuildContext context) {
@@ -4214,6 +4592,30 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       ),
                       onTap: () {
                         setState(() => _activeCategory = '__favorites__');
+                        _saveData();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  Container(
+                    color: _activeCategory == '__reminders__'
+                        ? dNoteHighlight(context)
+                        : Colors.transparent,
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.notifications_active_outlined,
+                        color: Colors.amber,
+                      ),
+                      title: const Text('Hatırlatmalar'),
+                      trailing: Text(
+                        _getCountForCategory('__reminders__').toString(),
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onTap: () {
+                        setState(() => _activeCategory = '__reminders__');
                         _saveData();
                         Navigator.pop(context);
                       },
@@ -4636,6 +5038,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                               ),
                                             ),
                                             onPressed: () {
+                                              final restoredNote =
+                                                  _deletedNotes[originalIndex];
                                               setState(() {
                                                 _notes.insert(
                                                   0,
@@ -4646,6 +5050,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                 );
                                               });
                                               _saveData();
+                                              _rescheduleNoteReminder(
+                                                restoredNote,
+                                              );
                                               Navigator.pop(context);
                                             },
                                           ),
@@ -4726,6 +5133,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                     ),
                                                   ),
                                                   onPressed: () {
+                                                    final restoredNote =
+                                                        _deletedNotes[originalIndex];
                                                     setState(() {
                                                       _deletedNotes[originalIndex]['createdDate'] =
                                                           DateTime.now()
@@ -4742,6 +5151,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                       );
                                                     });
                                                     _saveData();
+                                                    _rescheduleNoteReminder(
+                                                      restoredNote,
+                                                    );
                                                     Navigator.pop(context);
                                                   },
                                                 ),
@@ -4858,6 +5270,15 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                 size: 14,
                                               ),
                                             ),
+                                          if (_hasActiveReminder(note))
+                                            const Padding(
+                                              padding: EdgeInsets.only(left: 6),
+                                              child: Icon(
+                                                Icons.notifications_active,
+                                                color: Colors.amber,
+                                                size: 14,
+                                              ),
+                                            ),
                                         ],
                                       ),
                                       const SizedBox(height: 8),
@@ -4962,6 +5383,37 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
+                                      ),
+                                    ],
+                                    if (_formattedReminderText(note) !=
+                                        null) ...[
+                                      const SizedBox(height: 6),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.access_time,
+                                            color: Colors.amber,
+                                            size: 13,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Flexible(
+                                            child: Text(
+                                              _formattedReminderText(note)!,
+                                              style: TextStyle(
+                                                color: Colors.amber
+                                                    .withValues(alpha: 0.9),
+                                                fontSize:
+                                                    ((note['fontSize'] as num?)
+                                                                ?.toDouble() ??
+                                                            _globalFontSize) -
+                                                    2,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ],
@@ -5238,6 +5690,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             style: TextStyle(color: Colors.black),
                           ),
                           onPressed: () {
+                            final restoredNote = _deletedNotes[originalIndex];
                             setState(() {
                               _deletedNotes[originalIndex]['createdDate'] =
                                   DateTime.now().toString();
@@ -5247,6 +5700,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               _deletedNotes.removeAt(originalIndex);
                             });
                             _saveData();
+                            _rescheduleNoteReminder(restoredNote);
                             Navigator.pop(context);
                           },
                         ),
@@ -5312,6 +5766,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 style: TextStyle(color: Colors.black),
                               ),
                               onPressed: () {
+                                final restoredNote =
+                                    _deletedNotes[originalIndex];
                                 setState(() {
                                   _deletedNotes[originalIndex]['createdDate'] =
                                       DateTime.now().toString();
@@ -5324,6 +5780,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                   _deletedNotes.removeAt(originalIndex);
                                 });
                                 _saveData();
+                                _rescheduleNoteReminder(restoredNote);
                                 Navigator.pop(context);
                               },
                             ),
@@ -5499,6 +5956,35 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             textDirection: TextDirection.ltr,
                           ),
                         ],
+                        if (_formattedReminderText(note) != null) ...[
+                          const SizedBox(height: 6),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.access_time,
+                                color: Colors.amber,
+                                size: 13,
+                              ),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  _formattedReminderText(note)!,
+                                  style: TextStyle(
+                                    color: Colors.amber.withValues(alpha: 0.9),
+                                    fontSize:
+                                        ((note['fontSize'] as num?)
+                                                    ?.toDouble() ??
+                                                _globalFontSize) -
+                                        2,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -5516,11 +6002,40 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   right: 8,
                   child: Icon(Icons.lock, color: Colors.grey, size: 16),
                 ),
+              if (_hasActiveReminder(note))
+                Positioned(
+                  top: 8,
+                  right:
+                      8 +
+                      (note['isLocked'] == true ? 28 : 0) +
+                      (isFavorite ? 28 : 0),
+                  child: const Icon(
+                    Icons.notifications_active,
+                    color: Colors.amber,
+                    size: 16,
+                  ),
+                ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  // Notun gelecekte planlanmış bir hatırlatıcısı var mı?
+  bool _hasActiveReminder(Map<String, dynamic> note) {
+    final raw = note['reminderDate']?.toString();
+    if (raw == null || raw.isEmpty) return false;
+    final dt = DateTime.tryParse(raw);
+    return dt != null && dt.isAfter(DateTime.now());
+  }
+
+  // Hatırlatıcı tarihini "gg.aa.yyyy ss:dd" biçiminde döndürür (kartlarda ve
+  // not içinde gösterilir); yoksa null döner.
+  String? _formattedReminderText(Map<String, dynamic> note) {
+    if (!_hasActiveReminder(note)) return null;
+    final dt = DateTime.parse(note['reminderDate'].toString());
+    return _formatDateTimeTr(dt);
   }
 }
 
