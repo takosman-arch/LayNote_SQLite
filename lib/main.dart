@@ -43,7 +43,7 @@ class DBHelper {
     final path = p.join(dbDir, 'dnote.db');
     return openDatabase(
       path,
-      version: 3,
+      version: 5,
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           // v1 -> v2: dosya/görsel ekleme özelliği için attachments sütunu.
@@ -57,6 +57,25 @@ class DBHelper {
           await db.execute('ALTER TABLE notes ADD COLUMN reminderDate TEXT');
           await db.execute(
             'ALTER TABLE deleted_notes ADD COLUMN reminderDate TEXT',
+          );
+        }
+        if (oldVersion < 4) {
+          // v3 -> v4: takvimde notu istenen güne atayabilmek için
+          // assignedDate sütunu (boşsa createdDate esas alınır).
+          await db.execute('ALTER TABLE notes ADD COLUMN assignedDate TEXT');
+          await db.execute(
+            'ALTER TABLE deleted_notes ADD COLUMN assignedDate TEXT',
+          );
+        }
+        if (oldVersion < 5) {
+          // v4 -> v5: hatırlatıcının her gün/her hafta tekrarlaması için
+          // reminderRepeat sütunu ('hourly' / 'daily' / 'weekly' / 'monthly'
+          // / 'yearly' / null).
+          await db.execute(
+            'ALTER TABLE notes ADD COLUMN reminderRepeat TEXT',
+          );
+          await db.execute(
+            'ALTER TABLE deleted_notes ADD COLUMN reminderRepeat TEXT',
           );
         }
       },
@@ -76,6 +95,8 @@ class DBHelper {
             checkItems TEXT,
             attachments TEXT,
             reminderDate TEXT,
+            assignedDate TEXT,
+            reminderRepeat TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0
@@ -96,6 +117,8 @@ class DBHelper {
             checkItems TEXT,
             attachments TEXT,
             reminderDate TEXT,
+            assignedDate TEXT,
+            reminderRepeat TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0
@@ -139,6 +162,8 @@ class DBHelper {
           ? jsonEncode(note['attachments'])
           : null,
       'reminderDate': note['reminderDate']?.toString(),
+      'assignedDate': note['assignedDate']?.toString(),
+      'reminderRepeat': note['reminderRepeat']?.toString(),
       'isLocked': (note['isLocked'] == true) ? 1 : 0,
       'isArchived': (note['isArchived'] == true) ? 1 : 0,
       'isFavorite': (note['isFavorite'] == true) ? 1 : 0,
@@ -162,6 +187,9 @@ class DBHelper {
       if (row['attachments'] != null)
         'attachments': jsonDecode(row['attachments'] as String),
       if (row['reminderDate'] != null) 'reminderDate': row['reminderDate'],
+      if (row['assignedDate'] != null) 'assignedDate': row['assignedDate'],
+      if (row['reminderRepeat'] != null)
+        'reminderRepeat': row['reminderRepeat'],
       'isLocked': row['isLocked'] == 1,
       'isArchived': row['isArchived'] == 1,
       'isFavorite': row['isFavorite'] == 1,
@@ -377,11 +405,64 @@ class ReminderService {
     required String title,
     required String body,
     required DateTime dateTime,
+    // null/'none': tek seferlik, 'hourly': her saat, 'daily': her gün aynı
+    // saatte, 'weekly': her hafta aynı gün/saatte, 'monthly': her ay aynı
+    // günde/saatte, 'yearly': her yıl aynı ay/gün/saatte tekrarlar.
+    String? repeat,
   }) async {
     if (!_initialized) await init();
     final id = _notificationIdFor(noteId);
     await _plugin.cancel(id);
-    if (dateTime.isBefore(DateTime.now())) return;
+
+    // 'hourly' seçeneğinde eklentinin matchDateTimeComponents mekanizması
+    // (yalnızca saat/gün/ay eşleştirir) kullanılamaz; bunun yerine sabit
+    // aralıklı tekrar API'si kullanılır.
+    if (repeat == 'hourly') {
+      const details = NotificationDetails(
+        android: AndroidNotificationDetails(
+          'dnote_reminders',
+          'Not Hatırlatıcıları',
+          channelDescription: 'DNote uygulamasındaki not hatırlatıcıları',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+        iOS: DarwinNotificationDetails(),
+      );
+      try {
+        await _plugin.periodicallyShow(
+          id,
+          title.isEmpty ? 'Hatırlatıcı' : title,
+          body,
+          RepeatInterval.hourly,
+          details,
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        );
+      } catch (_) {
+        // Planlama başarısız oldu; sessizce yut, uygulama çökmesin.
+      }
+      return;
+    }
+
+    final isRepeating = repeat == 'daily' ||
+        repeat == 'weekly' ||
+        repeat == 'monthly' ||
+        repeat == 'yearly';
+    // Tekrarsız hatırlatıcılarda geçmiş bir zaman kurulamaz. Tekrarlı
+    // olanlarda ise verilen tarih sadece saat (ve haftalık/aylık/yıllık
+    // olanlarda gün/ay) bilgisini belirlemek için kullanılır; eklenti bir
+    // sonraki uygun zamanı otomatik bulduğu için geçmişte olması sorun
+    // değildir.
+    if (!isRepeating && dateTime.isBefore(DateTime.now())) return;
+
+    final DateTimeComponents? matchComponents = repeat == 'daily'
+        ? DateTimeComponents.time
+        : repeat == 'weekly'
+        ? DateTimeComponents.dayOfWeekAndTime
+        : repeat == 'monthly'
+        ? DateTimeComponents.dayOfMonthAndTime
+        : repeat == 'yearly'
+        ? DateTimeComponents.dateAndTime
+        : null;
 
     final scheduledDate = tz.TZDateTime.from(dateTime, tz.local);
     try {
@@ -403,6 +484,7 @@ class ReminderService {
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: matchComponents,
       );
     } catch (_) {
       // Kesin alarm izni verilmemiş olabilir; en yakın zamanda (inexact)
@@ -427,6 +509,7 @@ class ReminderService {
           androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
           uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime,
+          matchDateTimeComponents: matchComponents,
         );
       } catch (_) {
         // Planlama başarısız oldu; sessizce yut, uygulama çökmesin.
@@ -833,6 +916,51 @@ String _formatDateTimeTr(DateTime dt) {
   return '$day.$month.${dt.year} $hour:$minute';
 }
 
+// Hatırlatıcı tekrar seçeneğinin Türkçe etiketi. Hem yeni hatırlatıcı
+// dialogunda hem de not kartlarındaki hatırlatıcı rozetinde ortak kullanılır.
+String _reminderRepeatLabelTr(String? repeat) {
+  switch (repeat) {
+    case 'hourly':
+      return 'Her saat';
+    case 'daily':
+      return 'Her gün';
+    case 'weekly':
+      return 'Her hafta';
+    case 'monthly':
+      return 'Her ay';
+    case 'yearly':
+      return 'Her yıl';
+    default:
+      return 'Tekrar yok';
+  }
+}
+
+const List<String> _dNoteMonthNamesTr = [
+  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
+];
+
+// Hatırlatıcı dialogundaki tarih satırının etiketi: bugünse "Bugün",
+// yarınsa "Yarın", değilse "16 Temmuz" gibi gün + ay adı biçimi.
+String _reminderDateLabelTr(DateTime date) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final tomorrow = today.add(const Duration(days: 1));
+  final target = DateTime(date.year, date.month, date.day);
+  if (target == today) return 'Bugün';
+  if (target == tomorrow) return 'Yarın';
+  return '${date.day} ${_dNoteMonthNamesTr[date.month - 1]}';
+}
+
+// _showReminderPickerDialog'un sonucu: seçilen tarih/saat ve tekrar sıklığı.
+class _ReminderPickResult {
+  final DateTime dateTime;
+  // null: tekrarsız. Diğerleri: 'hourly' | 'daily' | 'weekly' | 'monthly' |
+  // 'yearly'.
+  final String? repeat;
+  const _ReminderPickResult(this.dateTime, this.repeat);
+}
+
 // Birincil metin rengi: koyu temada beyaz, açık temada neredeyse siyah.
 // Sabit "Colors.white" kullanan eski kodun açık temada okunmaz hale
 // gelmesini önlemek için eklendi.
@@ -1168,8 +1296,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
     await db.setSetting('widget_dark', _widgetDark.toString());
   }
 
-  String _getFormattedDate() {
-    final now = DateTime.now();
+  String _getFormattedDate([DateTime? date]) {
+    final now = date ?? DateTime.now();
     final day = now.day.toString().padLeft(2, '0');
     final month = now.month.toString().padLeft(2, '0');
     final hour = now.hour.toString().padLeft(2, '0');
@@ -1458,13 +1586,21 @@ class _NoteListScreenState extends State<NoteListScreen> {
   }
 
   // Bir not çöp kutusundan geri yüklendiğinde veya kopyalandığında, hâlâ
-  // gelecekte olan bir hatırlatıcısı varsa bildirimini yeniden planlar.
+  // gelecekte olan bir hatırlatıcısı varsa (ya da tekrarlıysa) bildirimini
+  // yeniden planlar.
   void _rescheduleNoteReminder(Map<String, dynamic> note) {
     final noteId = note['id']?.toString();
     final rawReminder = note['reminderDate']?.toString();
     if (noteId == null || rawReminder == null || rawReminder.isEmpty) return;
     final reminder = DateTime.tryParse(rawReminder);
-    if (reminder == null || reminder.isBefore(DateTime.now())) return;
+    if (reminder == null) return;
+    final repeat = note['reminderRepeat']?.toString();
+    final isRepeating = repeat == 'hourly' ||
+        repeat == 'daily' ||
+        repeat == 'weekly' ||
+        repeat == 'monthly' ||
+        repeat == 'yearly';
+    if (!isRepeating && reminder.isBefore(DateTime.now())) return;
     final title = (note['title'] ?? '').toString();
     final preview = ContentBlocks.plainText(note['content']?.toString());
     ReminderService.instance.schedule(
@@ -1474,6 +1610,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
           ? 'Kontrol listeni kontrol etmeyi unutma'
           : (preview.isEmpty ? 'Notunu kontrol etmeyi unutma' : preview),
       dateTime: reminder,
+      repeat: repeat,
     );
   }
 
@@ -1509,6 +1646,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     duplicate['createdDate'] = newRawTime;
     duplicate['modifiedDate'] = newRawTime;
     duplicate['date'] = formattedDate;
+    duplicate['assignedDate'] = newRawTime;
 
     // checkItems ve attachments listeleri orijinalle AYNI referansı
     // paylaşmasın diye derin kopya alınır.
@@ -2545,13 +2683,37 @@ class _NoteListScreenState extends State<NoteListScreen> {
   }
 
   // Güncellenmiş: not eylemleri (kilitle/kilidi kaldır dahil)
-  void _showNoteActions(BuildContext ctx, int noteIndex, bool isTrash) {
-    if (noteIndex < 0 || noteIndex >= _notes.length) return;
-    final isFavorite = _notes[noteIndex]['isFavorite'] == true;
-    final isArchived = _notes[noteIndex]['isArchived'] == true;
-    final isLocked = _notes[noteIndex]['isLocked'] == true;
+  void _showNoteActions(
+    BuildContext ctx,
+    int noteIndex,
+    bool isTrash, {
+    // Bu üç parametre yalnızca not düzenleyicisinden çağrıldığında verilir.
+    // Henüz kaydedilmemiş (yeni) bir not için de "Hatırlatıcı" eylemi
+    // gösterilebilsin diye, hatırlatıcı durumu _notes listesinden değil
+    // doğrudan düzenleyicinin yerel state'inden okunur/güncellenir.
+    DateTime? editorReminder,
+    String? editorReminderRepeat,
+    void Function(DateTime? reminder, String? repeat)? onReminderChanged,
+  }) {
+    final hasValidNote = noteIndex >= 0 && noteIndex < _notes.length;
+    if (!hasValidNote && onReminderChanged == null) return;
+    final isFavorite = hasValidNote && _notes[noteIndex]['isFavorite'] == true;
+    final isArchived = hasValidNote && _notes[noteIndex]['isArchived'] == true;
+    final isLocked = hasValidNote && _notes[noteIndex]['isLocked'] == true;
 
     final actions = [
+      if (onReminderChanged != null)
+        {
+          'icon': editorReminder != null
+              ? Icons.notifications_active
+              : Icons.notifications_none,
+          'label': editorReminder != null
+              ? 'Hatırlatıcıyı Düzenle'
+              : 'Hatırlatıcı',
+          'color': Colors.amber,
+          'key': 'reminder',
+        },
+      if (hasValidNote) ...[
       {
         'icon': isFavorite ? Icons.star : Icons.star_outline,
         'label': isFavorite ? 'Favoriden Çıkar' : 'Favori',
@@ -2612,6 +2774,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
         'color': Colors.lightBlueAccent,
         'key': 'details',
       },
+      ],
     ];
 
     showModalBottomSheet(
@@ -2662,6 +2825,67 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     onTap: () async {
                       final key = action['key'] as String;
                       Navigator.pop(ctx);
+
+                      if (key == 'reminder') {
+                        if (onReminderChanged == null) return;
+                        final now = DateTime.now();
+                        final initialDate =
+                            editorReminder ?? now.add(const Duration(hours: 1));
+                        if (editorReminder != null) {
+                          final sheetAction = await showModalBottomSheet<String>(
+                            context: context,
+                            backgroundColor: dNoteCardColor(context),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(16),
+                              ),
+                            ),
+                            builder: (sheetCtx) => SafeArea(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    leading: const Icon(
+                                      Icons.edit_calendar,
+                                      color: Colors.amber,
+                                    ),
+                                    title: const Text('Hatırlatıcıyı değiştir'),
+                                    onTap: () =>
+                                        Navigator.pop(sheetCtx, 'edit'),
+                                  ),
+                                  ListTile(
+                                    leading: const Icon(
+                                      Icons.notifications_off,
+                                      color: Colors.redAccent,
+                                    ),
+                                    title: const Text('Hatırlatıcıyı kaldır'),
+                                    onTap: () =>
+                                        Navigator.pop(sheetCtx, 'remove'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                          if (sheetAction == 'remove') {
+                            onReminderChanged(null, null);
+                            return;
+                          } else if (sheetAction != 'edit') {
+                            return;
+                          }
+                        }
+                        if (!context.mounted) return;
+                        final result = await _showReminderPickerDialog(
+                          context: context,
+                          initialDateTime: initialDate.isBefore(now)
+                              ? now
+                              : initialDate,
+                          initialRepeat: editorReminderRepeat,
+                        );
+                        if (result == null) return;
+                        onReminderChanged(result.dateTime, result.repeat);
+                        return;
+                      }
+
                       if (noteIndex < 0) return;
 
                       if (key == 'favorite') {
@@ -2772,6 +2996,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
     List<Map<String, dynamic>> attachments = const [],
     List<Map<String, dynamic>> blocks = const [],
     DateTime? reminder,
+    DateTime? assignedDate,
+    String? reminderRepeat,
   ]) {
     final isValid =
         (noteType == 'text'
@@ -2829,7 +3055,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
 
         final oldReminderRaw = _notes[index]['reminderDate']?.toString();
         final newReminderRaw = reminder?.toIso8601String();
-        final reminderChanged = oldReminderRaw != newReminderRaw;
+        final oldRepeatRaw = _notes[index]['reminderRepeat']?.toString();
+        final newRepeatRaw = reminder != null ? reminderRepeat : null;
+        final reminderChanged =
+            oldReminderRaw != newReminderRaw || oldRepeatRaw != newRepeatRaw;
+
+        final oldAssignedRaw = _notes[index]['assignedDate']?.toString();
+        final newAssignedRaw = assignedDate?.toIso8601String();
+        final assignedDateChanged = oldAssignedRaw != newAssignedRaw;
 
         final hasChanges =
             newTitle != oldTitle ||
@@ -2837,7 +3070,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
             noteType != oldType ||
             checkItemsChanged ||
             attachmentsChanged ||
-            reminderChanged;
+            reminderChanged ||
+            assignedDateChanged;
 
         if (!hasChanges) return false;
 
@@ -2853,6 +3087,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
             'modifiedDate': currentRawTime,
             'type': noteType,
             'reminderDate': newReminderRaw,
+            'reminderRepeat': newRepeatRaw,
+            'assignedDate': newAssignedRaw,
           };
         });
         _saveData();
@@ -2866,6 +3102,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   ? 'Kontrol listeni kontrol etmeyi unutma'
                   : (preview.isEmpty ? 'Notunu kontrol etmeyi unutma' : preview),
               dateTime: reminder,
+              repeat: newRepeatRaw,
             );
           } else {
             ReminderService.instance.cancel(noteId);
@@ -2875,6 +3112,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
       } else {
         final currentRawTime = DateTime.now().toString();
         final newTitle = _capitalizeFirstLetterTr(_titleController.text.trim());
+        final savedRepeat = reminder != null ? reminderRepeat : null;
         setState(() {
           _notes.add({
             'id': currentRawTime,
@@ -2884,9 +3122,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 : '',
             'checkItems': noteType == 'checklist' ? checkItems : [],
             'attachments': attachments,
-            'date': _getFormattedDate(),
+            'date': _getFormattedDate(assignedDate),
             'createdDate': currentRawTime,
             'modifiedDate': currentRawTime,
+            'assignedDate': (assignedDate ?? DateTime.now()).toIso8601String(),
             'category':
                 (_activeCategory == 'Tümü' ||
                     _activeCategory == '__favorites__' ||
@@ -2902,6 +3141,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
             'isLocked': _activeCategory == '__locked__',
             'isArchived': _activeCategory == '__archive__',
             'reminderDate': reminder?.toIso8601String(),
+            'reminderRepeat': savedRepeat,
           });
         });
         _saveData();
@@ -2916,6 +3156,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 ? 'Kontrol listeni kontrol etmeyi unutma'
                 : (preview.isEmpty ? 'Notunu kontrol etmeyi unutma' : preview),
             dateTime: reminder,
+            repeat: savedRepeat,
           );
         }
         return true;
@@ -3126,6 +3367,268 @@ class _NoteListScreenState extends State<NoteListScreen> {
     );
   }
 
+  // Uygulama genelinde tek tip görünen takvim popup'ı (buton yazıları ve
+  // başlık her yerde aynı olsun diye ortaklaştırıldı). Yalnızca seçilebilir
+  // tarih aralığı (firstDate/lastDate) ve başlık (helpText) çağıran yere
+  // göre değişir; alarm için "bugünden sonrası", not atama için "her tarih"
+  // gibi farklı kısıtlar dışarıdan verilir.
+  Future<DateTime?> _pickCalendarDate({
+    required BuildContext context,
+    required DateTime initialDate,
+    required DateTime firstDate,
+    required DateTime lastDate,
+    required String helpText,
+  }) {
+    return showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+      helpText: helpText,
+      cancelText: 'Vazgeç',
+      confirmText: 'Seç',
+    );
+  }
+
+  // Hatırlatıcı ekleme/düzenleme dialogu. Sistemin "Hatırlatıcı ekle"
+  // penceresiyle aynı düzeni kullanır: üstte tarih satırı (dokununca
+  // Bugün / Yarın / Tarih seç açılır menüsü), altında saat satırı
+  // (dokununca doğrudan saat seçici açılır), en altta tekrar satırı
+  // (Tekrar yok / Her saat / Her gün / Her hafta / Her ay / Her yıl).
+  // Tüm seçimler tek bir dialog içinde yapılır, İPTAL/KAYDET ile kapanır.
+  Future<_ReminderPickResult?> _showReminderPickerDialog({
+    required BuildContext context,
+    required DateTime initialDateTime,
+    String? initialRepeat,
+  }) {
+    DateTime selectedDate = DateTime(
+      initialDateTime.year,
+      initialDateTime.month,
+      initialDateTime.day,
+    );
+    TimeOfDay selectedTime = TimeOfDay.fromDateTime(initialDateTime);
+    String? selectedRepeat = initialRepeat;
+
+    return showDialog<_ReminderPickResult>(
+      context: context,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setDlgState) {
+            final subtleColor = dNoteTextColor(context).withValues(alpha: 0.65);
+            final dividerColor = dNoteTextColor(context).withValues(alpha: 0.12);
+
+            Widget dropdownRow({
+              required IconData icon,
+              required String label,
+              required List<PopupMenuEntry<String>> items,
+              required void Function(String value) onSelected,
+            }) {
+              return PopupMenuButton<String>(
+                padding: EdgeInsets.zero,
+                position: PopupMenuPosition.under,
+                color: dNoteCardColor(context),
+                onSelected: onSelected,
+                itemBuilder: (_) => items,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  child: Row(
+                    children: [
+                      Icon(icon, size: 22, color: subtleColor),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: Text(
+                          label,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: dNoteTextColor(context),
+                          ),
+                        ),
+                      ),
+                      Icon(Icons.arrow_drop_down, color: subtleColor),
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            return Dialog(
+              backgroundColor: dNoteCardColor(context),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Hatırlatıcı ekle',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: dNoteTextColor(context),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    // Tarih satırı: Bugün / Yarın / Tarih seç.
+                    dropdownRow(
+                      icon: Icons.calendar_today_outlined,
+                      label: _reminderDateLabelTr(selectedDate),
+                      items: const [
+                        PopupMenuItem(value: 'today', child: Text('Bugün')),
+                        PopupMenuItem(value: 'tomorrow', child: Text('Yarın')),
+                        PopupMenuItem(value: 'pick', child: Text('Tarih seç')),
+                      ],
+                      onSelected: (value) async {
+                        final now = DateTime.now();
+                        final today = DateTime(now.year, now.month, now.day);
+                        if (value == 'today') {
+                          setDlgState(() => selectedDate = today);
+                        } else if (value == 'tomorrow') {
+                          setDlgState(
+                            () => selectedDate =
+                                today.add(const Duration(days: 1)),
+                          );
+                        } else if (value == 'pick') {
+                          final picked = await _pickCalendarDate(
+                            context: context,
+                            initialDate: selectedDate.isBefore(today)
+                                ? today
+                                : selectedDate,
+                            firstDate: today,
+                            lastDate: now.add(const Duration(days: 3650)),
+                            helpText: 'Hatırlatma tarihi seç',
+                          );
+                          if (picked != null) {
+                            setDlgState(
+                              () => selectedDate = DateTime(
+                                picked.year,
+                                picked.month,
+                                picked.day,
+                              ),
+                            );
+                          }
+                        }
+                      },
+                    ),
+                    Divider(height: 1, color: dividerColor),
+                    // Saat satırı: dokununca doğrudan saat seçici açılır.
+                    InkWell(
+                      onTap: () async {
+                        final picked = await showTimePicker(
+                          context: context,
+                          initialTime: selectedTime,
+                        );
+                        if (picked != null) {
+                          setDlgState(() => selectedTime = picked);
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.access_time,
+                              size: 22,
+                              color: subtleColor,
+                            ),
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: Text(
+                                selectedTime.format(context),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: dNoteTextColor(context),
+                                ),
+                              ),
+                            ),
+                            Icon(Icons.arrow_drop_down, color: subtleColor),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Divider(height: 1, color: dividerColor),
+                    // Tekrar satırı: Tekrar yok / Her saat / Her gün /
+                    // Her hafta / Her ay / Her yıl.
+                    dropdownRow(
+                      icon: Icons.repeat,
+                      label: _reminderRepeatLabelTr(selectedRepeat),
+                      items: const [
+                        PopupMenuItem(
+                          value: 'none',
+                          child: Text('Tekrar yok'),
+                        ),
+                        PopupMenuItem(
+                          value: 'hourly',
+                          child: Text('Her saat'),
+                        ),
+                        PopupMenuItem(value: 'daily', child: Text('Her gün')),
+                        PopupMenuItem(
+                          value: 'weekly',
+                          child: Text('Her hafta'),
+                        ),
+                        PopupMenuItem(value: 'monthly', child: Text('Her ay')),
+                        PopupMenuItem(value: 'yearly', child: Text('Her yıl')),
+                      ],
+                      onSelected: (value) {
+                        setDlgState(
+                          () => selectedRepeat = value == 'none'
+                              ? null
+                              : value,
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(dialogContext),
+                          child: const Text('İPTAL'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            final combined = DateTime(
+                              selectedDate.year,
+                              selectedDate.month,
+                              selectedDate.day,
+                              selectedTime.hour,
+                              selectedTime.minute,
+                            );
+                            if (selectedRepeat == null &&
+                                combined.isBefore(DateTime.now())) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Geçmiş bir zaman seçilemez',
+                                  ),
+                                ),
+                              );
+                              return;
+                            }
+                            Navigator.pop(
+                              dialogContext,
+                              _ReminderPickResult(combined, selectedRepeat),
+                            );
+                          },
+                          child: const Text(
+                            'KAYDET',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   void _showNoteDialog({int? index, String type = 'text'}) {
     String noteDate = "";
     String noteType = type;
@@ -3139,6 +3642,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
     String? deletingAttachmentId;
     // Hatırlatıcı: notun bildirim ile hatırlatılacağı tarih/saat (yoksa null).
     DateTime? noteReminder;
+    // Hatırlatıcının tekrar sıklığı: null (tek seferlik), 'hourly' (her
+    // saat), 'daily' (her gün), 'weekly' (her hafta aynı gün/saat),
+    // 'monthly' (her ay aynı gün/saat), 'yearly' (her yıl aynı ay/gün/saat).
+    String? noteReminderRepeat;
+    // Notun takvimde hangi güne ait sayılacağı (kullanıcı isterse takvimden
+    // farklı bir gün seçebilir; seçmezse oluşturulma/mevcut tarih kullanılır).
+    DateTime noteAssignedDate = DateTime.now();
 
     // ── İçerik blokları (metin + araya eklenen fotoğraf/belge grupları) ──
     List<Map<String, dynamic>> blocks = [];
@@ -3200,7 +3710,15 @@ class _NoteListScreenState extends State<NoteListScreen> {
       final rawReminder = _notes[index]['reminderDate'];
       if (rawReminder != null && rawReminder.toString().isNotEmpty) {
         noteReminder = DateTime.tryParse(rawReminder.toString());
+        noteReminderRepeat = _notes[index]['reminderRepeat']?.toString();
       }
+      final rawAssigned = _notes[index]['assignedDate']?.toString();
+      final rawCreated = _notes[index]['createdDate']?.toString();
+      noteAssignedDate =
+          DateTime.tryParse((rawAssigned != null && rawAssigned.isNotEmpty)
+                  ? rawAssigned
+                  : (rawCreated ?? '')) ??
+              DateTime.now();
       if (noteType == 'checklist') {
         final raw = _notes[index]['checkItems'];
         if (raw != null) {
@@ -3512,7 +4030,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     setModalState(() => deletingAttachmentId = null);
                     return;
                   }
-                  final saved = _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder);
+                  final saved = _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDate, noteReminderRepeat);
                   SystemChrome.setSystemUIOverlayStyle(
                     dNoteSystemBarsStyle(context),
                   );
@@ -3565,6 +4083,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           attachments,
                           blocks,
                           noteReminder,
+                          noteAssignedDate,
+                          noteReminderRepeat,
                         );
                         SystemChrome.setSystemUIOverlayStyle(
                           dNoteSystemBarsStyle(context),
@@ -3598,103 +4118,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         Navigator.pop(context);
                       },
                     ),
-                    actions: [
-                      IconButton(
-                        icon: Icon(
-                          noteReminder != null
-                              ? Icons.notifications_active
-                              : Icons.notifications_none,
-                          color: noteReminder != null
-                              ? Colors.amber
-                              : Theme.of(context).colorScheme.onSurface,
-                        ),
-                        tooltip: 'Hatırlatıcı',
-                        onPressed: () async {
-                          final now = DateTime.now();
-                          final initialDate = noteReminder ?? now.add(
-                            const Duration(hours: 1),
-                          );
-                          if (noteReminder != null) {
-                            final action = await showModalBottomSheet<String>(
-                              context: context,
-                              backgroundColor: dNoteCardColor(context),
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(16),
-                                ),
-                              ),
-                              builder: (sheetCtx) => SafeArea(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ListTile(
-                                      leading: const Icon(
-                                        Icons.edit_calendar,
-                                        color: Colors.amber,
-                                      ),
-                                      title: const Text('Hatırlatıcıyı değiştir'),
-                                      onTap: () =>
-                                          Navigator.pop(sheetCtx, 'edit'),
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(
-                                        Icons.notifications_off,
-                                        color: Colors.redAccent,
-                                      ),
-                                      title: const Text('Hatırlatıcıyı kaldır'),
-                                      onTap: () =>
-                                          Navigator.pop(sheetCtx, 'remove'),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                            if (action == 'remove') {
-                              setModalState(() => noteReminder = null);
-                              return;
-                            } else if (action != 'edit') {
-                              return;
-                            }
-                          }
-
-                          final pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: initialDate.isBefore(now)
-                                ? now
-                                : initialDate,
-                            firstDate: now,
-                            lastDate: now.add(const Duration(days: 3650)),
-                          );
-                          if (pickedDate == null) return;
-                          if (!context.mounted) return;
-                          final pickedTime = await showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.fromDateTime(initialDate),
-                          );
-                          if (pickedTime == null) return;
-                          final combined = DateTime(
-                            pickedDate.year,
-                            pickedDate.month,
-                            pickedDate.day,
-                            pickedTime.hour,
-                            pickedTime.minute,
-                          );
-                          if (combined.isBefore(DateTime.now())) {
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Geçmiş bir zaman seçilemez',
-                                ),
-                              ),
-                            );
-                            return;
-                          }
-                          setModalState(() => noteReminder = combined);
-                        },
-                      ),
-                      const SizedBox(width: 8),
-                    ],
+                    actions: const [],
                   ),
                   bottomNavigationBar: SafeArea(
                     child: Builder(
@@ -3786,46 +4210,68 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      index != null
-                                          ? (noteDate.isNotEmpty
-                                                ? noteDate
-                                                : _getFormattedDate())
-                                          : _getFormattedDate(),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: barColor,
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    if (noteReminder != null)
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const Icon(
-                                            Icons.access_time,
-                                            color: Colors.amber,
-                                            size: 12,
+                                    InkWell(
+                                      borderRadius: BorderRadius.circular(8),
+                                      onTap: () async {
+                                        final now = DateTime.now();
+                                        final picked = await _pickCalendarDate(
+                                          context: context,
+                                          initialDate: noteAssignedDate,
+                                          firstDate: DateTime(2000, 1, 1),
+                                          lastDate: now.add(
+                                            const Duration(days: 3650),
                                           ),
-                                          const SizedBox(width: 3),
-                                          Flexible(
-                                            child: Text(
-                                              _formatDateTimeTr(noteReminder!),
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                color: Colors.amber,
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
+                                          helpText: 'Notu bir güne ata',
+                                        );
+                                        if (picked == null) return;
+                                        setModalState(() {
+                                          noteAssignedDate = DateTime(
+                                            picked.year,
+                                            picked.month,
+                                            picked.day,
+                                            noteAssignedDate.hour,
+                                            noteAssignedDate.minute,
+                                          );
+                                          noteDate = _getFormattedDate(
+                                            noteAssignedDate,
+                                          );
+                                        });
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 2,
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.event,
+                                              size: 12,
+                                              color: barColor,
                                             ),
-                                          ),
-                                        ],
+                                            const SizedBox(width: 3),
+                                            Flexible(
+                                              child: Text(
+                                                noteDate.isNotEmpty
+                                                    ? noteDate
+                                                    : _getFormattedDate(
+                                                        noteAssignedDate,
+                                                      ),
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: barColor,
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                                overflow:
+                                                    TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -3838,6 +4284,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                   context,
                                   index ?? -1,
                                   false,
+                                  editorReminder: noteReminder,
+                                  editorReminderRepeat: noteReminderRepeat,
+                                  onReminderChanged: (reminder, repeat) {
+                                    setModalState(() {
+                                      noteReminder = reminder;
+                                      noteReminderRepeat = repeat;
+                                    });
+                                  },
                                 ),
                               ),
                             ],
@@ -4098,6 +4552,37 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           ),
                         ],
                         const SizedBox(height: 20),
+                        if (noteReminder != null)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  noteReminderRepeat == null
+                                      ? Icons.access_time
+                                      : Icons.repeat,
+                                  size: 16,
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(width: 6),
+                                Flexible(
+                                  child: Text(
+                                    noteReminderRepeat == null
+                                        ? _formatDateTimeTr(noteReminder!)
+                                        : '${_formatDateTimeTr(noteReminder!)} · ${_reminderRepeatLabelTr(noteReminderRepeat)}',
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontStyle: FontStyle.italic,
+                                      fontSize: 13,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         Builder(
                           builder: (context) {
                             final hasCategory =
@@ -4132,7 +4617,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                     },
                                   );
                                 } else {
-                                  _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder);
+                                  _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDate, noteReminderRepeat);
                                   if (_notes.isNotEmpty) {
                                     final newIndex = _notes.length - 1;
                                     _showClassifyDialog(
@@ -4521,7 +5006,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'DNote',
+                          'LayNote',
                           style: TextStyle(
                             color: Colors.amber,
                             fontSize: 26,
@@ -4596,6 +5081,31 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         Navigator.pop(context);
                       },
                     ),
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.calendar_month,
+                      color: Colors.amber,
+                    ),
+                    title: const Text('Takvim'),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      final tappedNoteId = await Navigator.push<String>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CalendarScreen(
+                            notes: List<Map<String, dynamic>>.from(_notes),
+                          ),
+                        ),
+                      );
+                      if (!mounted || tappedNoteId == null) return;
+                      final index = _notes.indexWhere(
+                        (n) => n['id']?.toString() == tappedNoteId,
+                      );
+                      if (index != -1) {
+                        _openNoteWithPasswordCheck(index);
+                      }
+                    },
                   ),
                   Container(
                     color: _activeCategory == '__reminders__'
@@ -5270,15 +5780,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                 size: 14,
                                               ),
                                             ),
-                                          if (_hasActiveReminder(note))
-                                            const Padding(
-                                              padding: EdgeInsets.only(left: 6),
-                                              child: Icon(
-                                                Icons.notifications_active,
-                                                color: Colors.amber,
-                                                size: 14,
-                                              ),
-                                            ),
                                         ],
                                       ),
                                       const SizedBox(height: 8),
@@ -5393,21 +5894,21 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         children: [
                                           const Icon(
                                             Icons.access_time,
-                                            color: Colors.amber,
-                                            size: 13,
+                                            color: Colors.grey,
+                                            size: 16,
                                           ),
                                           const SizedBox(width: 4),
                                           Flexible(
                                             child: Text(
                                               _formattedReminderText(note)!,
                                               style: TextStyle(
-                                                color: Colors.amber
-                                                    .withValues(alpha: 0.9),
+                                                color: Colors.grey,
+                                                fontStyle: FontStyle.italic,
                                                 fontSize:
                                                     ((note['fontSize'] as num?)
                                                                 ?.toDouble() ??
                                                             _globalFontSize) -
-                                                    2,
+                                                    3,
                                               ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -5963,20 +6464,21 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             children: [
                               const Icon(
                                 Icons.access_time,
-                                color: Colors.amber,
-                                size: 13,
+                                color: Colors.grey,
+                                size: 16,
                               ),
                               const SizedBox(width: 4),
                               Flexible(
                                 child: Text(
                                   _formattedReminderText(note)!,
                                   style: TextStyle(
-                                    color: Colors.amber.withValues(alpha: 0.9),
+                                    color: Colors.grey,
+                                    fontStyle: FontStyle.italic,
                                     fontSize:
                                         ((note['fontSize'] as num?)
                                                     ?.toDouble() ??
                                                 _globalFontSize) -
-                                        2,
+                                        3,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -6001,19 +6503,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   top: 8,
                   right: 8,
                   child: Icon(Icons.lock, color: Colors.grey, size: 16),
-                ),
-              if (_hasActiveReminder(note))
-                Positioned(
-                  top: 8,
-                  right:
-                      8 +
-                      (note['isLocked'] == true ? 28 : 0) +
-                      (isFavorite ? 28 : 0),
-                  child: const Icon(
-                    Icons.notifications_active,
-                    color: Colors.amber,
-                    size: 16,
-                  ),
                 ),
             ],
           ),
@@ -7454,6 +7943,788 @@ class _AttachmentTile extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// TAKVİM EKRANI (Aşama 1: Yalnızca takvimin kendisi)
+// Aylar arasında sağa/sola kaydırarak (PageView) gezinilebilen, "bugün"ü ve
+// seçili günü vurgulayan, modern görünümlü bir aylık takvim. Not/hatırlatıcı
+// entegrasyonu bir sonraki aşamalarda bu ekranın üzerine eklenecek.
+// ════════════════════════════════════════════════════════════════════════
+class CalendarScreen extends StatefulWidget {
+  final List<Map<String, dynamic>> notes;
+
+  const CalendarScreen({super.key, required this.notes});
+
+  @override
+  State<CalendarScreen> createState() => _CalendarScreenState();
+}
+
+// Bir günde not ve/veya hatırlatıcı bulunup bulunmadığını taşıyan basit
+// bir işaretleyici. Takvim hücrelerinin altında küçük noktalar olarak
+// gösterilir.
+class _DayMarker {
+  final bool hasNote;
+  final bool hasReminder;
+  const _DayMarker({this.hasNote = false, this.hasReminder = false});
+
+  _DayMarker copyWith({bool? hasNote, bool? hasReminder}) => _DayMarker(
+        hasNote: hasNote ?? this.hasNote,
+        hasReminder: hasReminder ?? this.hasReminder,
+      );
+}
+
+class _CalendarScreenState extends State<CalendarScreen> {
+  static const List<String> _monthNamesTr = [
+    'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+    'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
+  ];
+  static const List<String> _weekDayShortTr = [
+    'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz',
+  ];
+  static const List<String> _weekDayFullTr = [
+    'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar',
+  ];
+
+  // Ay sayfaları bu merkez indeksten itibaren (bugünün ayı = merkez) hem
+  // ileriye hem geriye doğru üretilir; PageView.builder sonsuz gibi davranır.
+  static const int _centerIndex = 6000;
+
+  late final PageController _pageController;
+  late DateTime _focusedMonth; // o an ekranda görünen ayın 1. günü
+  DateTime _selectedDay = DateTime.now();
+  final DateTime _today = DateTime.now();
+
+  // 'yyyy-M-d' -> o güne ait not/hatırlatıcı işaretleri.
+  Map<String, _DayMarker> _markers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _focusedMonth = DateTime(now.year, now.month, 1);
+    _pageController = PageController(initialPage: _centerIndex);
+    _buildMarkers();
+  }
+
+  static String _dayKey(DateTime d) => '${d.year}-${d.month}-${d.day}';
+
+  // Notun ait olduğu günü belirler: kullanıcı not eklerken/düzenlerken
+  // takvimden bir tarih seçmişse (assignedDate) o esas alınır; aksi halde
+  // notun "oluşturulma" tarihine (createdDate) düşülür.
+  DateTime? _noteDay(Map<String, dynamic> note) {
+    final rawAssigned = note['assignedDate']?.toString();
+    final raw = (rawAssigned != null && rawAssigned.isNotEmpty)
+        ? rawAssigned
+        : note['createdDate']?.toString();
+    if (raw == null || raw.isEmpty) return null;
+    final dt = DateTime.tryParse(raw);
+    if (dt == null) return null;
+    return DateTime(dt.year, dt.month, dt.day);
+  }
+
+  // Notun hatırlatıcısının kurulu olduğu gün (varsa).
+  DateTime? _reminderDay(Map<String, dynamic> note) {
+    final raw = note['reminderDate']?.toString();
+    if (raw == null || raw.isEmpty) return null;
+    final dt = DateTime.tryParse(raw);
+    if (dt == null) return null;
+    return DateTime(dt.year, dt.month, dt.day);
+  }
+
+  void _buildMarkers() {
+    final map = <String, _DayMarker>{};
+    for (final note in widget.notes) {
+      if (note['isLocked'] == true) continue;
+      final noteDay = _noteDay(note);
+      if (noteDay != null) {
+        final key = _dayKey(noteDay);
+        map[key] = (map[key] ?? const _DayMarker()).copyWith(hasNote: true);
+      }
+      final remDay = _reminderDay(note);
+      if (remDay != null) {
+        final key = _dayKey(remDay);
+        map[key] =
+            (map[key] ?? const _DayMarker()).copyWith(hasReminder: true);
+      }
+    }
+    _markers = map;
+  }
+
+  @override
+  void didUpdateWidget(covariant CalendarScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.notes, widget.notes)) {
+      _buildMarkers();
+    }
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  DateTime _monthForIndex(int index) {
+    final diff = index - _centerIndex;
+    final now = DateTime.now();
+    return DateTime(now.year, now.month + diff, 1);
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
+
+  void _goToToday() {
+    setState(() {
+      _selectedDay = DateTime.now();
+    });
+    _pageController.animateToPage(
+      _centerIndex,
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: false,
+        titleSpacing: 0,
+        iconTheme: const IconThemeData(color: Colors.amber),
+        title: const Text(
+          'Takvim',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.amber,
+            fontSize: 18,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: _goToToday,
+            child: const Text(
+              'Bugün',
+              style: TextStyle(color: Colors.amber, fontWeight: FontWeight.w600),
+            ),
+          ),
+          const SizedBox(width: 4),
+        ],
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildMonthHeader(),
+            _buildLegend(context),
+            const SizedBox(height: 4),
+            _buildWeekDayHeader(context),
+            const SizedBox(height: 4),
+            Expanded(
+              flex: 6,
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _focusedMonth = _monthForIndex(index);
+                  });
+                },
+                itemBuilder: (context, index) {
+                  final month = _monthForIndex(index);
+                  return _MonthGrid(
+                    month: month,
+                    today: _today,
+                    selectedDay: _selectedDay,
+                    markers: _markers,
+                    onDaySelected: (day) {
+                      setState(() {
+                        _selectedDay = day;
+                      });
+                    },
+                  );
+                },
+              ),
+            ),
+            Expanded(
+              flex: 5,
+              child: _buildSelectedDayNotesPanel(context),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMonthHeader() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.chevron_left, color: Colors.amber),
+            onPressed: () {
+              _pageController.previousPage(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            },
+          ),
+          Expanded(
+            child: Center(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                transitionBuilder: (child, anim) => FadeTransition(
+                  opacity: anim,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0, 0.2),
+                      end: Offset.zero,
+                    ).animate(anim),
+                    child: child,
+                  ),
+                ),
+                child: Text(
+                  '${_monthNamesTr[_focusedMonth.month - 1]} ${_focusedMonth.year}',
+                  key: ValueKey('${_focusedMonth.year}-${_focusedMonth.month}'),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.amber,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.chevron_right, color: Colors.amber),
+            onPressed: () {
+              _pageController.nextPage(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLegend(BuildContext context) {
+    final subtleColor = dNoteTextColor(context).withValues(alpha: 0.55);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 4, 8, 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const _MarkerDot(color: Colors.amber),
+          const SizedBox(width: 5),
+          Text('Not', style: TextStyle(fontSize: 11, color: subtleColor)),
+          const SizedBox(width: 14),
+          const _MarkerDot(color: Colors.lightBlueAccent),
+          const SizedBox(width: 5),
+          Text(
+            'Hatırlatıcı',
+            style: TextStyle(fontSize: 11, color: subtleColor),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWeekDayHeader(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: List.generate(7, (i) {
+          final isSunday = i == 6;
+          return Expanded(
+            child: Center(
+              child: Text(
+                _weekDayShortTr[i],
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: isSunday
+                      ? Colors.redAccent.withValues(alpha: 0.85)
+                      : dNoteTextColor(context).withValues(alpha: 0.55),
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
+  // Seçili güne ait notları döndürür: o gün oluşturulmuş notlar VE/VEYA
+  // o gün için hatırlatıcısı kurulmuş notlar. Kilitli notlar, uygulamanın
+  // geri kalanında olduğu gibi burada da gösterilmez (gizlilik).
+  List<Map<String, dynamic>> _notesForSelectedDay() {
+    final result = <Map<String, dynamic>>[];
+    for (final note in widget.notes) {
+      if (note['isLocked'] == true) continue;
+      final noteDay = _noteDay(note);
+      final remDay = _reminderDay(note);
+      final matchesNote = noteDay != null && _isSameDay(noteDay, _selectedDay);
+      final matchesReminder =
+          remDay != null && _isSameDay(remDay, _selectedDay);
+      if (matchesNote || matchesReminder) {
+        result.add(note);
+      }
+    }
+    result.sort((a, b) {
+      DateTime? timeOf(Map<String, dynamic> n) =>
+          DateTime.tryParse((n['reminderDate'] ?? n['createdDate'] ?? '').toString());
+      final ad = timeOf(a);
+      final bd = timeOf(b);
+      if (ad == null || bd == null) return 0;
+      return ad.compareTo(bd);
+    });
+    return result;
+  }
+
+  Widget _buildSelectedDayNotesPanel(BuildContext context) {
+    final label =
+        '${_selectedDay.day} ${_monthNamesTr[_selectedDay.month - 1]} ${_selectedDay.year}, '
+        '${_weekDayFullTr[_selectedDay.weekday - 1]}';
+    final isToday = _isSameDay(_selectedDay, _today);
+    final dayNotes = _notesForSelectedDay();
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+      decoration: BoxDecoration(
+        color: dNoteCardColor(context),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: dNoteBorderColor(context)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 12, 10),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.event_note,
+                    color: Colors.amber,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: dNoteTextColor(context),
+                        ),
+                      ),
+                      if (isToday)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 2),
+                          child: Text(
+                            'Bugün',
+                            style: TextStyle(
+                              color: Colors.amber,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                if (dayNotes.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 9,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: dNoteSurfaceVariant(context),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      '${dayNotes.length}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: dNoteTextColor(context),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Divider(height: 1, color: dNoteBorderColor(context)),
+          Expanded(
+            child: dayNotes.isEmpty
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        'Bu güne ait not veya hatırlatıcı yok.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: dNoteTextColor(context).withValues(alpha: 0.5),
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    itemCount: dayNotes.length,
+                    separatorBuilder: (_, __) => Divider(
+                      height: 1,
+                      indent: 16,
+                      endIndent: 16,
+                      color: dNoteBorderColor(context),
+                    ),
+                    itemBuilder: (context, i) {
+                      final note = dayNotes[i];
+                      return _DayNoteTile(
+                        note: note,
+                        day: _selectedDay,
+                        onTap: () =>
+                            Navigator.pop(context, note['id']?.toString()),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Seçili günün not/hatırlatıcı listesindeki tek bir satır ─────────────
+class _DayNoteTile extends StatelessWidget {
+  final Map<String, dynamic> note;
+  final DateTime day;
+  final VoidCallback onTap;
+
+  const _DayNoteTile({
+    required this.note,
+    required this.day,
+    required this.onTap,
+  });
+
+  bool _isSameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
+
+  @override
+  Widget build(BuildContext context) {
+    final rawTitle = note['title']?.toString().trim() ?? '';
+    final title = rawTitle.isNotEmpty ? rawTitle : 'Başlıksız Not';
+    final content = (note['content']?.toString() ?? '')
+        .replaceAll('\n', ' ')
+        .trim();
+
+    String? reminderLabel;
+    final remRaw = note['reminderDate']?.toString();
+    if (remRaw != null && remRaw.isNotEmpty) {
+      final remDt = DateTime.tryParse(remRaw);
+      if (remDt != null && _isSameDay(remDt, day)) {
+        final hh = remDt.hour.toString().padLeft(2, '0');
+        final mm = remDt.minute.toString().padLeft(2, '0');
+        reminderLabel = '$hh:$mm';
+      }
+    }
+
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 4,
+              height: 34,
+              margin: const EdgeInsets.only(top: 2),
+              decoration: BoxDecoration(
+                color: reminderLabel != null
+                    ? Colors.lightBlueAccent
+                    : Colors.amber,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: dNoteTextColor(context),
+                    ),
+                  ),
+                  if (content.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text(
+                        content,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: dNoteTextColor(context).withValues(alpha: 0.55),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            if (reminderLabel != null) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.lightBlueAccent.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.notifications,
+                      size: 12,
+                      color: Colors.lightBlueAccent,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      reminderLabel,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.lightBlueAccent,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Bir ayın takvim ızgarası (önceki/sonraki aydan taşan günler soluk) ──
+class _MonthGrid extends StatelessWidget {
+  final DateTime month; // ayın 1. günü
+  final DateTime today;
+  final DateTime selectedDay;
+  final Map<String, _DayMarker> markers;
+  final ValueChanged<DateTime> onDaySelected;
+
+  const _MonthGrid({
+    required this.month,
+    required this.today,
+    required this.selectedDay,
+    required this.markers,
+    required this.onDaySelected,
+  });
+
+  bool _isSameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
+
+  @override
+  Widget build(BuildContext context) {
+    final firstWeekday = month.weekday; // Pazartesi=1 ... Pazar=7
+    final daysInMonth = DateTime(month.year, month.month + 1, 0).day;
+    final prevMonthLastDay = DateTime(month.year, month.month, 0).day;
+
+    final leading = firstWeekday - 1; // hafta Pazartesi ile başlar
+    final totalCells = ((leading + daysInMonth) / 7).ceil() * 7;
+
+    final cellDates = <_CalDay>[];
+    for (int i = 0; i < totalCells; i++) {
+      final dayNum = i - leading + 1;
+      if (dayNum < 1) {
+        final prevMonth = month.month == 1 ? 12 : month.month - 1;
+        final prevYear = month.month == 1 ? month.year - 1 : month.year;
+        cellDates.add(
+          _CalDay(
+            DateTime(prevYear, prevMonth, prevMonthLastDay + dayNum),
+            false,
+          ),
+        );
+      } else if (dayNum > daysInMonth) {
+        final nextMonth = month.month == 12 ? 1 : month.month + 1;
+        final nextYear = month.month == 12 ? month.year + 1 : month.year;
+        cellDates.add(
+          _CalDay(DateTime(nextYear, nextMonth, dayNum - daysInMonth), false),
+        );
+      } else {
+        cellDates.add(_CalDay(DateTime(month.year, month.month, dayNum), true));
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      child: GridView.builder(
+        physics: const BouncingScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 7,
+          childAspectRatio: 0.82,
+        ),
+        itemCount: cellDates.length,
+        itemBuilder: (context, index) {
+          final cell = cellDates[index];
+          final marker =
+              markers[_CalendarScreenState._dayKey(cell.date)] ??
+                  const _DayMarker();
+          return _DayCellWidget(
+            date: cell.date,
+            inCurrentMonth: cell.inCurrentMonth,
+            isToday: _isSameDay(cell.date, today),
+            isSelected: _isSameDay(cell.date, selectedDay),
+            hasNote: marker.hasNote,
+            hasReminder: marker.hasReminder,
+            onTap: () => onDaySelected(cell.date),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _CalDay {
+  final DateTime date;
+  final bool inCurrentMonth;
+  const _CalDay(this.date, this.inCurrentMonth);
+}
+
+// ── Takvimdeki tek bir gün hücresi ───────────────────────────────────────
+class _DayCellWidget extends StatelessWidget {
+  final DateTime date;
+  final bool inCurrentMonth;
+  final bool isToday;
+  final bool isSelected;
+  final bool hasNote;
+  final bool hasReminder;
+  final VoidCallback onTap;
+
+  const _DayCellWidget({
+    required this.date,
+    required this.inCurrentMonth,
+    required this.isToday,
+    required this.isSelected,
+    required this.hasNote,
+    required this.hasReminder,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isSunday = date.weekday == DateTime.sunday;
+
+    Color textColor;
+    if (isSelected) {
+      textColor = Colors.black;
+    } else if (!inCurrentMonth) {
+      textColor = dNoteTextColor(context).withValues(alpha: 0.25);
+    } else if (isSunday) {
+      textColor = Colors.redAccent.withValues(alpha: 0.85);
+    } else {
+      textColor = dNoteTextColor(context);
+    }
+
+    // İşaretleyici noktaları: amber = not var, açık mavi = hatırlatıcı var.
+    // Seçili günde daire zaten amber olduğu için nokta rengi kontrastlı
+    // (koyu) tutulur; diğer durumlarda normal renkler kullanılır.
+    final dots = <Widget>[];
+    if (hasNote) {
+      dots.add(_MarkerDot(color: isSelected ? Colors.black87 : Colors.amber));
+    }
+    if (hasReminder) {
+      if (dots.isNotEmpty) dots.add(const SizedBox(width: 3));
+      dots.add(
+        _MarkerDot(
+          color: isSelected ? Colors.black54 : Colors.lightBlueAccent,
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(3),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.amber : Colors.transparent,
+                shape: BoxShape.circle,
+                border: (isToday && !isSelected)
+                    ? Border.all(color: Colors.amber, width: 1.6)
+                    : null,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                '${date.day}',
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 14,
+                  fontWeight: (isToday || isSelected)
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                ),
+              ),
+            ),
+            const SizedBox(height: 3),
+            SizedBox(
+              height: 5,
+              child: dots.isEmpty
+                  ? null
+                  : Row(mainAxisSize: MainAxisSize.min, children: dots),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Gün hücresinin altında görünen küçük renkli işaretleyici nokta ──────
+class _MarkerDot extends StatelessWidget {
+  final Color color;
+  const _MarkerDot({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 5,
+      height: 5,
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
 }
