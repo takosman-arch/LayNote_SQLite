@@ -31,6 +31,16 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+
+            // Google Sign-In / Drive API reflection kullandığı için R8 bu sınıfları
+            // silebiliyor ve uygulama release modda açılışta çöküyor.
+            // proguard-rules.pro dosyasındaki keep kuralları bunu engeller.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 }
