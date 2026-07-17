@@ -1,12 +1,9 @@
 part of 'main.dart';
 
 // ════════════════════════════════════════════════════════════════════════
-// SQLITE VERİ TABANI KATMANI
-// Notlar, çöp kutusu, kategoriler ve ayarlar artık SharedPreferences yerine
-// yerel bir SQLite veritabanında (dnote.db) tutulur.
-// Üst katmandaki (_NoteListScreenState) _notes / _deletedNotes / _categories
-// gibi değişkenler AYNI ŞEKİLDE bellekte List/Map olarak kullanılmaya devam
-// eder; sadece _loadData()/_saveData() artık DBHelper üzerinden çalışır.
+// SQLITE VERİ TABANI KATMANI - AŞAMA 7 (ÇÖP KUTUSU SİSTEMİ ENTEGRASYONU)
+// Notlar, çöp kutusu, kategoriler ve ayarlar SQLite veritabanında (dnote.db) tutulur.
+// v6 ile çöp kutusundaki notların silinme tarihini takip eden 'deletedDate' eklenmiştir.
 // ════════════════════════════════════════════════════════════════════════
 class DBHelper {
   DBHelper._internal();
@@ -25,40 +22,28 @@ class DBHelper {
     final path = p.join(dbDir, 'dnote.db');
     return openDatabase(
       path,
-      version: 5,
+      version: 6, // Aşama 7.1: Sürüm 5'ten 6'ya yükseltildi
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
-          // v1 -> v2: dosya/görsel ekleme özelliği için attachments sütunu.
           await db.execute('ALTER TABLE notes ADD COLUMN attachments TEXT');
-          await db.execute(
-            'ALTER TABLE deleted_notes ADD COLUMN attachments TEXT',
-          );
+          await db.execute('ALTER TABLE deleted_notes ADD COLUMN attachments TEXT');
         }
         if (oldVersion < 3) {
-          // v2 -> v3: hatırlatıcı özelliği için reminderDate sütunu.
           await db.execute('ALTER TABLE notes ADD COLUMN reminderDate TEXT');
-          await db.execute(
-            'ALTER TABLE deleted_notes ADD COLUMN reminderDate TEXT',
-          );
+          await db.execute('ALTER TABLE deleted_notes ADD COLUMN reminderDate TEXT');
         }
         if (oldVersion < 4) {
-          // v3 -> v4: takvimde notu istenen güne atayabilmek için
-          // assignedDate sütunu (boşsa createdDate esas alınır).
           await db.execute('ALTER TABLE notes ADD COLUMN assignedDate TEXT');
-          await db.execute(
-            'ALTER TABLE deleted_notes ADD COLUMN assignedDate TEXT',
-          );
+          await db.execute('ALTER TABLE deleted_notes ADD COLUMN assignedDate TEXT');
         }
         if (oldVersion < 5) {
-          // v4 -> v5: hatırlatıcının her gün/her hafta tekrarlaması için
-          // reminderRepeat sütunu ('hourly' / 'daily' / 'weekly' / 'monthly'
-          // / 'yearly' / null).
-          await db.execute(
-            'ALTER TABLE notes ADD COLUMN reminderRepeat TEXT',
-          );
-          await db.execute(
-            'ALTER TABLE deleted_notes ADD COLUMN reminderRepeat TEXT',
-          );
+          await db.execute('ALTER TABLE notes ADD COLUMN reminderRepeat TEXT');
+          await db.execute('ALTER TABLE deleted_notes ADD COLUMN reminderRepeat TEXT');
+        }
+        if (oldVersion < 6) {
+          // Aşama 7.1: 30 günlük otomatik silme takibi için silinme tarihi sütunu ekleniyor
+          await db.execute('ALTER TABLE notes ADD COLUMN deletedDate TEXT');
+          await db.execute('ALTER TABLE deleted_notes ADD COLUMN deletedDate TEXT');
         }
       },
       onCreate: (db, version) async {
@@ -79,6 +64,7 @@ class DBHelper {
             reminderDate TEXT,
             assignedDate TEXT,
             reminderRepeat TEXT,
+            deletedDate TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0
@@ -101,6 +87,7 @@ class DBHelper {
             reminderDate TEXT,
             assignedDate TEXT,
             reminderRepeat TEXT,
+            deletedDate TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0
@@ -137,15 +124,14 @@ class DBHelper {
       'color': note['color']?.toString(),
       'type': note['type']?.toString(),
       'fontSize': (note['fontSize'] as num?)?.toDouble(),
-      'checkItems': note['checkItems'] != null
-          ? jsonEncode(note['checkItems'])
-          : null,
+      'checkItems': note['checkItems'] != null ? jsonEncode(note['checkItems']) : null,
       'attachments': (note['attachments'] != null && (note['attachments'] as List).isNotEmpty)
           ? jsonEncode(note['attachments'])
           : null,
       'reminderDate': note['reminderDate']?.toString(),
       'assignedDate': note['assignedDate']?.toString(),
       'reminderRepeat': note['reminderRepeat']?.toString(),
+      'deletedDate': note['deletedDate']?.toString(), // Aşama 7.1
       'isLocked': (note['isLocked'] == true) ? 1 : 0,
       'isArchived': (note['isArchived'] == true) ? 1 : 0,
       'isFavorite': (note['isFavorite'] == true) ? 1 : 0,
@@ -164,21 +150,19 @@ class DBHelper {
       'color': row['color'],
       'type': row['type'],
       if (row['fontSize'] != null) 'fontSize': row['fontSize'],
-      if (row['checkItems'] != null)
-        'checkItems': jsonDecode(row['checkItems'] as String),
-      if (row['attachments'] != null)
-        'attachments': jsonDecode(row['attachments'] as String),
+      if (row['checkItems'] != null) 'checkItems': jsonDecode(row['checkItems'] as String),
+      if (row['attachments'] != null) 'attachments': jsonDecode(row['attachments'] as String),
       if (row['reminderDate'] != null) 'reminderDate': row['reminderDate'],
       if (row['assignedDate'] != null) 'assignedDate': row['assignedDate'],
-      if (row['reminderRepeat'] != null)
-        'reminderRepeat': row['reminderRepeat'],
+      if (row['reminderRepeat'] != null) 'reminderRepeat': row['reminderRepeat'],
+      if (row['deletedDate'] != null) 'deletedDate': row['deletedDate'], // Aşama 7.1
       'isLocked': row['isLocked'] == 1,
       'isArchived': row['isArchived'] == 1,
       'isFavorite': row['isFavorite'] == 1,
     };
   }
 
-  // ── Notlar ─────────────────────────────────────────────────────────────
+  // ── Notlar (Aktif ve Silinmiş İşlemleri) ───────────────────────────────
   Future<List<Map<String, dynamic>>> getNotes() async {
     final db = await database;
     final rows = await db.query('notes');
@@ -197,11 +181,7 @@ class DBHelper {
       await txn.delete('notes');
       final batch = txn.batch();
       for (final n in notes) {
-        batch.insert(
-          'notes',
-          _noteToRow(n),
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
+        batch.insert('notes', _noteToRow(n), conflictAlgorithm: ConflictAlgorithm.replace);
       }
       await batch.commit(noResult: true);
     });
@@ -213,14 +193,80 @@ class DBHelper {
       await txn.delete('deleted_notes');
       final batch = txn.batch();
       for (final n in notes) {
-        batch.insert(
-          'deleted_notes',
-          _noteToRow(n),
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
+        batch.insert('deleted_notes', _noteToRow(n), conflictAlgorithm: ConflictAlgorithm.replace);
       }
       await batch.commit(noResult: true);
     });
+  }
+
+  // ── Aşama 7.1: Yeni Çöp Kutusu Yönetim Metotları ───────────────────────
+  
+  /// Bir notu aktif notlardan silip çöp kutusu tablosuna taşır ve silinme tarihini işler.
+  Future<void> moveToTrash(Map<String, dynamic> note) async {
+    final db = await database;
+    final updatedNote = Map<String, dynamic>.from(note);
+    updatedNote['deletedDate'] = DateTime.now().toIso8601String();
+
+    await db.transaction((txn) async {
+      await txn.delete('notes', where: 'id = ?', whereArgs: [note['id']]);
+      await txn.insert(
+        'deleted_notes', 
+        _noteToRow(updatedNote), 
+        conflictAlgorithm: ConflictAlgorithm.replace
+      );
+    });
+  }
+
+  /// Bir notu çöp kutusundan çıkartıp tekrar aktif notlar tablosuna geri yükler.
+  Future<void> restoreFromTrash(Map<String, dynamic> note) async {
+    final db = await database;
+    final updatedNote = Map<String, dynamic>.from(note);
+    updatedNote['deletedDate'] = null;
+
+    await db.transaction((txn) async {
+      await txn.delete('deleted_notes', where: 'id = ?', whereArgs: [note['id']]);
+      await txn.insert(
+        'notes', 
+        _noteToRow(updatedNote), 
+        conflictAlgorithm: ConflictAlgorithm.replace
+      );
+    });
+  }
+
+  /// Bir veya birden fazla notu çöp kutusundan kalıcı olarak diskten ve veri tabanından siler.
+  Future<void> permanentlyDeleteNote(String noteId, List<dynamic>? attachments) async {
+    final db = await database;
+    
+    // Varsa nota ait fiziksel ek dosyaları temizle
+    if (attachments != null) {
+      for (final att in attachments) {
+        if (att is Map && att['storedName'] != null) {
+          await deleteAttachmentFile(att['storedName'].toString());
+        }
+      }
+    }
+    await db.delete('deleted_notes', where: 'id = ?', whereArgs: [noteId]);
+  }
+
+  /// Çöp kutusundaki 30 günü geçmiş notları otomatik olarak kalıcı olarak siler.
+  Future<void> autoCleanOldDeletedNotes() async {
+    final db = await database;
+    final rows = await db.query('deleted_notes');
+    final now = DateTime.now();
+
+    for (final row in rows) {
+      final note = _rowToNote(row);
+      final deletedDateStr = note['deletedDate'];
+      if (deletedDateStr != null) {
+        final deletedDate = DateTime.tryParse(deletedDateStr.toString());
+        if (deletedDate != null) {
+          final difference = now.difference(deletedDate).inDays;
+          if (difference >= 30) {
+            await permanentlyDeleteNote(note['id'].toString(), note['attachments'] as List?);
+          }
+        }
+      }
+    }
   }
 
   // ── Kategoriler ──────────────────────────────────────────────────────
@@ -281,8 +327,6 @@ class DBHelper {
   }
 
   // ── Ek dosyalar (attachments) - fiziksel dosya yönetimi ─────────────────
-  // Dosyalar, veritabanıyla aynı uygulama verisi dizini altında "attachments"
-  // klasöründe saklanır (ör: .../app_flutter/attachments/<storedName>).
   Future<Directory> attachmentsDir() async {
     final dbDir = await getDatabasesPath();
     final baseDir = p.dirname(dbDir);
@@ -300,15 +344,9 @@ class DBHelper {
       if (await file.exists()) {
         await file.delete();
       }
-    } catch (_) {
-      // Dosya zaten yoksa veya silinemiyorsa sessizce geç; not verisi
-      // her durumda kaldırılmış olacak.
-    }
+    } catch (_) {}
   }
 
-  // Bir notu kopyalarken (Kopya Oluştur) ekli dosyaların ikisi de AYNI
-  // fiziksel dosyayı göstermesin diye, her ek dosya diskte de kopyalanır ve
-  // kopyaya yeni bir storedName atanır.
   Future<List<Map<String, dynamic>>> duplicateAttachmentFiles(
     List<Map<String, dynamic>> attachments,
   ) async {
@@ -321,12 +359,10 @@ class DBHelper {
       final oldFile = File(p.join(dir.path, oldStored));
       if (!await oldFile.exists()) continue;
       final ext = p.extension(oldStored);
-      final newStored =
-          '${DateTime.now().microsecondsSinceEpoch}_${counter++}$ext';
+      final newStored = '${DateTime.now().microsecondsSinceEpoch}_${counter++}$ext';
       await oldFile.copy(p.join(dir.path, newStored));
       result.add({...a, 'id': '${a['id']}_copy', 'storedName': newStored});
     }
     return result;
   }
 }
-

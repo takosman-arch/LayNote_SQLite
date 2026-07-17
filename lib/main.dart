@@ -26,6 +26,11 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:path_provider/path_provider.dart';
 import 'package:archive/archive.dart';
+import 'package:workmanager/workmanager.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:googleapis/drive/v3.dart' as drive;
+import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
+
 
 
 part 'db_helper.dart';
@@ -40,9 +45,21 @@ part 'settings_page.dart';
 part 'calendar_screen.dart';
 part 'backup_history_screen.dart';
 part 'backup_last_info_widget.dart';
+part 'google_drive_helper.dart';
+part 'auto_backup_service.dart';
+part 'auto_backup_settings_screen.dart';
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Otomatik yedekleme: WorkManager'ı başlat ve kayıtlı ayarlara göre
+  // periyodik görevi yeniden zamanla (bkz. auto_backup_service.dart
+  // başındaki açıklama — bazı OEM'lerde görev kaydı silinebildiğinden
+  // her açılışta tekrar çağrılması güvenli ve gereklidir).
+  await AutoBackupService.instance.initializeWorkmanager();
+  await AutoBackupService.instance.rescheduleFromSavedSettings();
 
   // Hatırlatıcı bildirimleri için bildirim eklentisini ve zaman dilimi
   // verisini uygulama açılışında bir kez hazırla.

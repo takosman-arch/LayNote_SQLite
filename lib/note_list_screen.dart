@@ -987,7 +987,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     Navigator.pop(context); // drawer'ı kapat
     Navigator.of(
       context,
-    ).push(MaterialPageRoute(builder: (_) => _SettingsPage(state: this)));
+    ).push(MaterialPageRoute(builder: (_) => const SettingsPage()));
   }
 
   // Yeni: "Kilitli" klasörüne girmeden önce parola sorar.
@@ -5449,6 +5449,69 @@ class _NoteListScreenState extends State<NoteListScreen> {
     if (!_hasActiveReminder(note)) return null;
     final dt = DateTime.parse(note['reminderDate'].toString());
     return _formatDateTimeTr(dt);
+  }
+}
+
+// ── Ek Dosya Kutucuğu ────────────────────────────────────────────────
+// Not içeriğindeki resim/dosya eklerini gösteren ortak kutucuk widget'ı.
+// Uzun basınca (onLongPress) silme ikonu belirir (showDelete); silme
+// ikonuna basılırsa onRemove, kutucuğun kendisine basılırsa onOpen,
+// silme modundayken başka bir yere dokunulursa onDismissDelete çağrılır.
+class _AttachmentTile extends StatelessWidget {
+  final double width;
+  final double height;
+  final Widget preview;
+  final bool showDelete;
+  final VoidCallback onOpen;
+  final VoidCallback onRemove;
+  final VoidCallback onLongPress;
+  final VoidCallback onDismissDelete;
+
+  const _AttachmentTile({
+    required this.width,
+    required this.height,
+    required this.preview,
+    required this.showDelete,
+    required this.onOpen,
+    required this.onRemove,
+    required this.onLongPress,
+    required this.onDismissDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: showDelete ? onDismissDelete : onOpen,
+      onLongPress: onLongPress,
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: preview,
+            ),
+            if (showDelete)
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.45),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.white),
+                      onPressed: onRemove,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

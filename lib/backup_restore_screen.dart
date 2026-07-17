@@ -52,9 +52,37 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   String? _busyLabel;
   double? _progress;
 
+  // AŞAMA 6.6: Google Drive bağlantı durumu. `_driveSignedIn` ve
+  // `_driveAccountEmail`, ekran her açıldığında GoogleDriveHelper'daki
+  // sessiz girişle senkronize edilir (bkz. initState/_refreshDriveStatus).
+  // Bu sayede kullanıcı daha önce bağlandıysa, ekrana her girdiğinde
+  // yeniden bağlanmasına gerek kalmaz.
+  bool _driveSignedIn = false;
+  String? _driveAccountEmail;
+
   // AŞAMA 5.2: LastBackupInfoTile'ı yeni bir yedek oluşturulduktan sonra
   // ekrandan çıkıp geri girmeye gerek kalmadan yenilemek için kullanılır.
   final GlobalKey<_LastBackupInfoTileState> _lastBackupKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    // AŞAMA 6.6: ekran açılır açılmaz Google Drive oturumunun sessizce
+    // (kullanıcıya herhangi bir diyalog göstermeden) geri yüklenip
+    // yüklenemeyeceği kontrol edilir.
+    _refreshDriveStatus();
+  }
+
+  // AŞAMA 6.6: Google Drive bağlantı durumunu tazeler. Hem initState'te
+  // hem de bağlan/bağlantıyı kes işlemlerinden sonra çağrılır.
+  Future<void> _refreshDriveStatus() async {
+    final signedIn = await GoogleDriveHelper.instance.trySilentSignIn();
+    if (!mounted) return;
+    setState(() {
+      _driveSignedIn = signedIn;
+      _driveAccountEmail = GoogleDriveHelper.instance.accountEmail;
+    });
+  }
 
   void _setBusy(bool value, {String? label}) {
     if (!mounted) return;
@@ -165,6 +193,346 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     // Kalıcı reddetme değilse sistem izin diyaloğunu bir kez daha
     // deneyebiliriz.
     return BackupHelper.instance.ensureStoragePermissionIfNeeded();
+  }
+
+  // ── AŞAMA 6.6: GOOGLE DRIVE BAĞLANTI YÖNETİMİ ───────────────────────
+
+  // Kullanıcıya Google'ın standart hesap seçme ekranını gösterir. Başarılı
+  // olursa bağlantı durumu tazelenir ve kullanıcıya bilgi verilir.
+  Future<void> _connectGoogleDrive() async {
+    if (_busy) return;
+    _setBusy(true, label: 'Google hesabına bağlanılıyor...');
+    final ok = await GoogleDriveHelper.instance.signIn();
+    _setBusy(false);
+    if (!mounted) return;
+    if (ok) {
+      setState(() {
+        _driveSignedIn = true;
+        _driveAccountEmail = GoogleDriveHelper.instance.accountEmail;
+      });
+      _showSnack(
+        'Google Drive hesabına bağlanıldı'
+        '${_driveAccountEmail != null ? ': $_driveAccountEmail' : '.'}',
+      );
+    } else {
+      _showSnack(
+        'Google hesabına bağlanılamadı veya işlem iptal edildi.',
+        isError: true,
+      );
+    }
+  }
+
+  // Bağlantıyı kesmeden önce kullanıcıdan onay alır — yanlışlıkla
+  // bağlantının kesilip otomatik yedeklemenin durmasını önlemek için.
+  Future<void> _disconnectGoogleDrive() async {
+    if (_busy) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: dNoteCardColor(ctx),
+        title: const Text(
+          'Google Drive Bağlantısını Kes',
+          style: TextStyle(color: Colors.amber),
+        ),
+        content: Text(
+          'Bağlantı kesilirse Drive\'a manuel veya otomatik yedekleme '
+          'yapılamaz. Drive\'da halihazırda duran yedekleriniz silinmez, '
+          'yalnızca bu cihazdan erişim kaldırılır.',
+          style: TextStyle(color: dNoteTextColor(ctx)),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Vazgeç'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Bağlantıyı Kes'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    await GoogleDriveHelper.instance.signOut();
+    if (!mounted) return;
+    setState(() {
+      _driveSignedIn = false;
+      _driveAccountEmail = null;
+    });
+    _showSnack('Google Drive bağlantısı kesildi.');
+  }
+
+  // Henüz Google'a bağlı değilken "Drive'a Yedekle" / "Drive'dan Geri
+  // Yükle" denendiğinde önce kullanıcıya bağlanmak isteyip istemediği
+  // sorulur — aksi halde işlem sessizce başarısız olur ve kullanıcı
+  // neden çalışmadığını anlayamaz.
+  Future<bool> _confirmConnectDriveFirst() async {
+    final proceed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: dNoteCardColor(ctx),
+        title: const Text(
+          'Google Hesabı Gerekli',
+          style: TextStyle(color: Colors.amber),
+        ),
+        content: Text(
+          'Bu işlem için Google hesabınızla bağlanmanız gerekiyor. Şimdi '
+          'bağlanmak ister misiniz?',
+          style: TextStyle(color: dNoteTextColor(ctx)),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Vazgeç'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.amber,
+              foregroundColor: Colors.black,
+            ),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Bağlan'),
+          ),
+        ],
+      ),
+    );
+    return proceed == true;
+  }
+
+  // ── GOOGLE DRIVE'A YEDEKLE — AŞAMA 6.6 ───────────────────────────────
+  //
+  // Akış: izin kontrolü → (gerekiyorsa) Google'a bağlanma → büyük yedek
+  // uyarısı (mevcut _confirmLargeOperation ile aynı) → yerel yedek
+  // oluşturma (BackupHelper.createBackup — Aşama 1'den beri değişmedi) →
+  // Drive'a yükleme (Aşama 6.2) → eski Drive yedeklerini temizleme
+  // (Aşama 6.5). Yerel yedek oluşturma adımı, bu ekrandaki normal "Yedek
+  // Oluştur" ile BİREBİR aynı fonksiyonu kullanır — iki ayrı yedekleme
+  // mantığı yoktur, sadece oluşan dosyanın gideceği yer farklıdır.
+  Future<void> _backupToDrive() async {
+    if (_busy) return;
+
+    if (!await _ensurePermission()) return;
+
+    if (!_driveSignedIn) {
+      if (!await _confirmConnectDriveFirst()) return;
+      await _connectGoogleDrive();
+      if (!_driveSignedIn) return;
+    }
+
+    final estimatedSize = await BackupHelper.instance.estimateAttachmentsSize();
+    if (estimatedSize >= BackupHelper.largeBackupWarningBytes) {
+      if (!mounted) return;
+      final proceed = await _confirmLargeOperation(
+        sizeText: BackupHelper.instance.formatFileSize(estimatedSize),
+        actionLabel: 'Drive\'a yedekleme',
+      );
+      if (proceed != true) return;
+    }
+
+    _setBusy(true, label: 'Yedek oluşturuluyor...');
+    File localFile;
+    try {
+      localFile = await BackupHelper.instance.createBackup(
+        onProgress: (progress, step) {
+          if (mounted) {
+            // Yerel oluşturma adımına toplam ilerlemenin ilk yarısı
+            // (0.0–0.5) ayrılır; Drive'a yükleme ikinci yarıyı (0.5–1.0)
+            // kullanır. Böylece kullanıcı tek bir sürekli ilerleme çubuğu
+            // görür, iki ayrı işlem olduğunu fark etmesine gerek kalmaz.
+            setState(() {
+              _progress = progress * 0.5;
+              _busyLabel = step;
+            });
+          }
+        },
+      );
+    } catch (e) {
+      _setBusy(false);
+      final ex = BackupOperationException.fromError(e);
+      _showErrorSnack(
+        'Yedek oluşturulamadı: ${ex.message}',
+        retryable: ex.retryable,
+        onRetry: _backupToDrive,
+      );
+      return;
+    }
+
+    try {
+      await GoogleDriveHelper.instance.uploadBackup(
+        localFile,
+        onProgress: (progress, step) {
+          if (mounted) {
+            setState(() {
+              _progress = 0.5 + progress * 0.5;
+              _busyLabel = step;
+            });
+          }
+        },
+      );
+    } catch (e) {
+      _setBusy(false);
+      final ex = GoogleDriveException.fromError(e);
+      _showErrorSnack(
+        'Google Drive\'a yükleme başarısız: ${ex.message}',
+        retryable: ex.retryable,
+        onRetry: _backupToDrive,
+      );
+      return;
+    }
+
+    // AŞAMA 6.5: yükleme başarılı olduktan sonra eski Drive yedekleri
+    // sessizce temizlenir. Bu adım başarısız olsa bile (örn. anlık ağ
+    // kopması) kullanıcının asıl istediği işlem (yedekleme) zaten
+    // tamamlanmış olduğundan hata gösterilmez — sessizce yutulur.
+    try {
+      await GoogleDriveHelper.instance.enforceRetention();
+    } catch (_) {
+      // Sessizce geç; bir sonraki Drive yedeklemesinde tekrar denenecek.
+    }
+
+    _setBusy(false);
+    if (!mounted) return;
+    _showSnack('Yedek Google Drive\'a başarıyla yüklendi.');
+    // AŞAMA 5.2 ile aynı mantık: son yedekleme bilgisini anında yenile.
+    _lastBackupKey.currentState?.refresh();
+  }
+
+  // ── GOOGLE DRIVE'DAN GERİ YÜKLE — AŞAMA 6.6 ─────────────────────────
+  //
+  // Akış: izin kontrolü → (gerekiyorsa) Google'a bağlanma → Drive
+  // yedeklerini listeleme (Aşama 6.3) → kullanıcının bir yedek seçmesi →
+  // indirme (Aşama 6.4) → MEVCUT _restoreFromFile() akışı (Aşama 4).
+  // Not: burada basit bir seçim diyaloğu kullanılır; Aşama 6.7'de bu
+  // seçim, cihaz yedekleriyle aynı ekranda (Yedek Geçmişi) sekmeli/
+  // birleşik bir listeye taşınacak — bu fonksiyonun kendisi değişmeyecek,
+  // sadece listeyi kimin gösterdiği değişecek.
+  Future<void> _restoreFromDrive() async {
+    if (_busy) return;
+
+    if (!await _ensurePermission()) return;
+
+    if (!_driveSignedIn) {
+      if (!await _confirmConnectDriveFirst()) return;
+      await _connectGoogleDrive();
+      if (!_driveSignedIn) return;
+    }
+
+    _setBusy(true, label: 'Drive yedekleri listeleniyor...');
+    List<GoogleDriveBackupFile> backups;
+    try {
+      backups = await GoogleDriveHelper.instance.listBackups();
+    } catch (e) {
+      _setBusy(false);
+      final ex = GoogleDriveException.fromError(e);
+      _showErrorSnack(
+        'Yedekler listelenemedi: ${ex.message}',
+        retryable: ex.retryable,
+        onRetry: _restoreFromDrive,
+      );
+      return;
+    }
+    _setBusy(false);
+
+    if (backups.isEmpty) {
+      _showSnack('Google Drive\'da henüz bir yedek bulunmuyor.');
+      return;
+    }
+
+    if (!mounted) return;
+    final selected = await showDialog<GoogleDriveBackupFile>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: dNoteCardColor(ctx),
+        title: const Text(
+          'Drive\'dan Yedek Seç',
+          style: TextStyle(color: Colors.amber),
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemCount: backups.length,
+            separatorBuilder: (_, __) => Divider(
+              color: dNoteBorderColor(ctx),
+              height: 1,
+            ),
+            itemBuilder: (_, i) {
+              final b = backups[i];
+              return ListTile(
+                leading: const Icon(
+                  Icons.cloud_outlined,
+                  color: Colors.amber,
+                ),
+                title: Text(
+                  b.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: dNoteTextColor(ctx), fontSize: 13),
+                ),
+                subtitle: Text(
+                  '${_formatDriveDate(b.modifiedTime)} · '
+                  '${BackupHelper.instance.formatFileSize(b.sizeBytes)}',
+                  style: TextStyle(
+                    color: dNoteTextColor(ctx).withValues(alpha: 0.65),
+                    fontSize: 12,
+                  ),
+                ),
+                onTap: () => Navigator.pop(ctx, b),
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Vazgeç'),
+          ),
+        ],
+      ),
+    );
+    if (selected == null) return;
+
+    _setBusy(true, label: 'Yedek Drive\'dan indiriliyor...');
+    File localFile;
+    try {
+      localFile = await GoogleDriveHelper.instance.downloadBackup(
+        selected,
+        onProgress: (progress, step) {
+          if (mounted) {
+            setState(() {
+              _progress = progress;
+              _busyLabel = step;
+            });
+          }
+        },
+      );
+    } catch (e) {
+      _setBusy(false);
+      final ex = GoogleDriveException.fromError(e);
+      _showErrorSnack(
+        'İndirme başarısız: ${ex.message}',
+        retryable: ex.retryable,
+        onRetry: _restoreFromDrive,
+      );
+      return;
+    }
+    _setBusy(false);
+
+    // AŞAMA 6.4'te açıklandığı gibi: indirilen dosya artık normal bir
+    // cihaz yedeğidir; kod tekrarı olmadan mevcut önizleme/onay/geri
+    // yükleme akışına (Aşama 4) doğrudan verilir.
+    await _restoreFromFile(localFile);
+  }
+
+  // Drive'dan gelen değiştirilme tarihini (DateTime?) ekrandaki diğer
+  // tarih formatlarıyla (bkz. _formatPreviewDate) tutarlı biçimde yazar.
+  String _formatDriveDate(DateTime? dt) {
+    if (dt == null) return 'Bilinmiyor';
+    String two(int n) => n.toString().padLeft(2, '0');
+    return '${two(dt.day)}.${two(dt.month)}.${dt.year} '
+        '${two(dt.hour)}:${two(dt.minute)}';
   }
 
   // ── Yedek oluştur ────────────────────────────────────────────────────
@@ -759,6 +1127,10 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                 children: [
                   // AŞAMA 5.2: son yedekleme tarihi bilgisi.
                   LastBackupInfoTile(key: _lastBackupKey),
+                  // AŞAMA 6.6: Google Drive bağlantı durumu — bağlıysa
+                  // hesap e-postası ve "Bağlantıyı Kes", bağlı değilse
+                  // "Bağlan" butonu gösterilir.
+                  _driveStatusCard(context),
                   Text(
                     'Notlarınızı, kategorilerinizi, ayarlarınızı ve eklerinizi '
                     'tek bir .zip dosyası olarak yedekleyebilir veya daha '
@@ -802,6 +1174,49 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                         'yükleyebilir veya silebilirsiniz.',
                     buttonLabel: 'Geçmişi Görüntüle',
                     onPressed: _openHistory,
+                  ),
+                  const SizedBox(height: 28),
+                  Text(
+                    'Google Drive (Bulut Yedekleme)',
+                    style: TextStyle(
+                      color: dNoteTextColor(context),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Yedeklerinizi Google Drive\'ınızdaki gizli, sadece bu '
+                    'uygulamanın erişebildiği bir alanda saklayın — normal '
+                    'Drive dosyalarınızda görünmez.',
+                    style: TextStyle(
+                      color: dNoteTextColor(context).withValues(alpha: 0.7),
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  // AŞAMA 6.6: Google Drive'a manuel yedekleme.
+                  _actionCard(
+                    context,
+                    icon: Icons.cloud_upload_outlined,
+                    title: 'Google Drive\'a Yedekle',
+                    subtitle:
+                        'Yeni bir yedek oluşturup doğrudan Google Drive\'ınızın '
+                        'gizli alanına yükleyin.',
+                    buttonLabel: 'Drive\'a Yükle',
+                    onPressed: _backupToDrive,
+                  ),
+                  const SizedBox(height: 16),
+                  // AŞAMA 6.6: Google Drive'dan geri yükleme.
+                  _actionCard(
+                    context,
+                    icon: Icons.cloud_download_outlined,
+                    title: 'Google Drive\'dan Geri Yükle',
+                    subtitle:
+                        'Drive\'a yüklediğiniz bir yedeği seçip bu cihaza '
+                        'geri yükleyin.',
+                    buttonLabel: 'Drive\'dan Seç',
+                    onPressed: _restoreFromDrive,
                   ),
                 ],
               ),
@@ -873,6 +1288,58 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // AŞAMA 6.6: Google hesabına bağlı olup olunmadığını gösteren, bağlan/
+  // bağlantıyı kes aksiyonu içeren küçük durum kartı. LastBackupInfoTile
+  // ile aynı görsel dilde ama bu ekranla sınırlı (bağımsız bir dosyaya
+  // çıkarılmadı, çünkü sadece burada ve — Aşama 6.9'da — Ayarlar'da
+  // kullanılacak; ihtiyaç doğarsa o aşamada ayrı bir widget'a taşınabilir).
+  Widget _driveStatusCard(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: dNoteCardColor(context),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: dNoteBorderColor(context)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            _driveSignedIn ? Icons.cloud_done_outlined : Icons.cloud_off_outlined,
+            color: _driveSignedIn ? Colors.green : Colors.amber,
+            size: 20,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              _driveSignedIn
+                  ? 'Google Drive: bağlı'
+                      '${_driveAccountEmail != null ? ' ($_driveAccountEmail)' : ''}'
+                  : 'Google Drive: bağlı değil',
+              style: TextStyle(
+                color: dNoteTextColor(context).withValues(alpha: 0.85),
+                fontSize: 13,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          TextButton(
+            onPressed:
+                _driveSignedIn ? _disconnectGoogleDrive : _connectGoogleDrive,
+            child: Text(
+              _driveSignedIn ? 'Bağlantıyı Kes' : 'Bağlan',
+              style: TextStyle(
+                color: _driveSignedIn ? Colors.red : Colors.amber,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
