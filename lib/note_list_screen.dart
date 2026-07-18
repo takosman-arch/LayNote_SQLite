@@ -987,7 +987,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     Navigator.pop(context); // drawer'ı kapat
     Navigator.of(
       context,
-    ).push(MaterialPageRoute(builder: (_) => const SettingsPage()));
+    ).push(MaterialPageRoute(builder: (_) => SettingsPage(state: this)));
   }
 
   // Yeni: "Kilitli" klasörüne girmeden önce parola sorar.

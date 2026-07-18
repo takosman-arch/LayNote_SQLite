@@ -25,25 +25,25 @@ class DBHelper {
       version: 6, // Aşama 7.1: Sürüm 5'ten 6'ya yükseltildi
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
-          await db.execute('ALTER TABLE notes ADD COLUMN attachments TEXT');
-          await db.execute('ALTER TABLE deleted_notes ADD COLUMN attachments TEXT');
+          await _addColumnIfMissing(db, 'notes', 'attachments', 'TEXT');
+          await _addColumnIfMissing(db, 'deleted_notes', 'attachments', 'TEXT');
         }
         if (oldVersion < 3) {
-          await db.execute('ALTER TABLE notes ADD COLUMN reminderDate TEXT');
-          await db.execute('ALTER TABLE deleted_notes ADD COLUMN reminderDate TEXT');
+          await _addColumnIfMissing(db, 'notes', 'reminderDate', 'TEXT');
+          await _addColumnIfMissing(db, 'deleted_notes', 'reminderDate', 'TEXT');
         }
         if (oldVersion < 4) {
-          await db.execute('ALTER TABLE notes ADD COLUMN assignedDate TEXT');
-          await db.execute('ALTER TABLE deleted_notes ADD COLUMN assignedDate TEXT');
+          await _addColumnIfMissing(db, 'notes', 'assignedDate', 'TEXT');
+          await _addColumnIfMissing(db, 'deleted_notes', 'assignedDate', 'TEXT');
         }
         if (oldVersion < 5) {
-          await db.execute('ALTER TABLE notes ADD COLUMN reminderRepeat TEXT');
-          await db.execute('ALTER TABLE deleted_notes ADD COLUMN reminderRepeat TEXT');
+          await _addColumnIfMissing(db, 'notes', 'reminderRepeat', 'TEXT');
+          await _addColumnIfMissing(db, 'deleted_notes', 'reminderRepeat', 'TEXT');
         }
         if (oldVersion < 6) {
           // Aşama 7.1: 30 günlük otomatik silme takibi için silinme tarihi sütunu ekleniyor
-          await db.execute('ALTER TABLE notes ADD COLUMN deletedDate TEXT');
-          await db.execute('ALTER TABLE deleted_notes ADD COLUMN deletedDate TEXT');
+          await _addColumnIfMissing(db, 'notes', 'deletedDate', 'TEXT');
+          await _addColumnIfMissing(db, 'deleted_notes', 'deletedDate', 'TEXT');
         }
       },
       onCreate: (db, version) async {
@@ -109,6 +109,22 @@ class DBHelper {
         ''');
       },
     );
+  }
+
+  /// Bir tabloda belirtilen sütun yoksa güvenli şekilde ekler.
+  /// Sütun zaten varsa (örn. yarım kalmış bir önceki migration yüzünden)
+  /// "duplicate column name" hatası fırlatmadan sessizce atlar.
+  Future<void> _addColumnIfMissing(
+    Database db,
+    String table,
+    String column,
+    String type,
+  ) async {
+    final result = await db.rawQuery('PRAGMA table_info($table)');
+    final exists = result.any((row) => row['name'] == column);
+    if (!exists) {
+      await db.execute('ALTER TABLE $table ADD COLUMN $column $type');
+    }
   }
 
   // ── Not <-> satır dönüşümleri ─────────────────────────────────────────
