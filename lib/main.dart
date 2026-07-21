@@ -48,6 +48,7 @@ part 'backup_last_info_widget.dart';
 part 'google_drive_helper.dart';
 part 'auto_backup_service.dart';
 part 'auto_backup_settings_screen.dart';
+part 'undo_redo_stack.dart';
 
 
 

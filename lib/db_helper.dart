@@ -363,6 +363,12 @@ class DBHelper {
     } catch (_) {}
   }
 
+  // Not: her sonuç öğesi 'oldId' alanını da taşır (yeni 'id' değeriyle
+  // birlikte). Bu, çağıran tarafın (not kopyalama akışı) not içeriğindeki
+  // ('content' JSON'ındaki 'attachments'/'layout' blokları gibi) eski id
+  // referanslarını yeni id'lere eşleyebilmesi için gereklidir; aksi halde
+  // kopyalanan nota gömülü resimler eski (artık var olmayan) id'lere işaret
+  // ederek görünmez hale gelir.
   Future<List<Map<String, dynamic>>> duplicateAttachmentFiles(
     List<Map<String, dynamic>> attachments,
   ) async {
@@ -377,7 +383,12 @@ class DBHelper {
       final ext = p.extension(oldStored);
       final newStored = '${DateTime.now().microsecondsSinceEpoch}_${counter++}$ext';
       await oldFile.copy(p.join(dir.path, newStored));
-      result.add({...a, 'id': '${a['id']}_copy', 'storedName': newStored});
+      result.add({
+        ...a,
+        'oldId': a['id'],
+        'id': '${a['id']}_copy',
+        'storedName': newStored,
+      });
     }
     return result;
   }

@@ -484,10 +484,11 @@ class _DayNoteTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rawTitle = note['title']?.toString().trim() ?? '';
-    final title = rawTitle.isNotEmpty ? rawTitle : 'Başlıksız Not';
-    final content = (note['content']?.toString() ?? '')
+    final hasTitle = rawTitle.isNotEmpty;
+    final content = ContentBlocks.plainText(note['content'] as String?)
         .replaceAll('\n', ' ')
         .trim();
+    final primaryText = hasTitle ? rawTitle : content;
 
     String? reminderLabel;
     final remRaw = note['reminderDate']?.toString();
@@ -524,7 +525,7 @@ class _DayNoteTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    primaryText,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -533,7 +534,7 @@ class _DayNoteTile extends StatelessWidget {
                       color: dNoteTextColor(context),
                     ),
                   ),
-                  if (content.isNotEmpty)
+                  if (hasTitle && content.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(top: 2),
                       child: Text(
