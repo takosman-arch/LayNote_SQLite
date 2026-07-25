@@ -52,6 +52,13 @@ class ReminderService {
   // numarasına dönüşsün diye kullanılır.
   int _notificationIdFor(String noteId) => noteId.hashCode & 0x7fffffff;
 
+  // Bildirim paneline sabitleme, hatırlatıcıdan tamamen ayrı bir bildirim
+  // numarası kullanır ('pin_' önekiyle farklı bir hash üretilir); böylece
+  // aynı notun hem hatırlatıcısı hem de sabitlenmiş bildirimi aynı anda var
+  // olabilir, biri diğerini iptal etmez.
+  int _pinNotificationIdFor(String noteId) =>
+      'pin_$noteId'.hashCode & 0x7fffffff;
+
   Future<void> schedule({
     required String noteId,
     required String title,
@@ -172,6 +179,74 @@ class ReminderService {
   Future<void> cancel(String noteId) async {
     if (!_initialized) await init();
     await _plugin.cancel(_notificationIdFor(noteId));
+  }
+
+  // ── Bildirim Paneline Sabitleme ────────────────────────────────────────
+  // Notu, kullanıcı kaydırarak kapatana kadar (veya "Sabitlemeyi Kaldır"
+  // seçilene kadar) bildirim panelinde kalıcı olarak gösterir. Sessiz ve
+  // düşük öncelikli ayrı bir kanal ('dnote_pinned') kullanılır ki normal
+  // hatırlatıcı bildirimleri gibi ses/titreşimle rahatsız etmesin; sadece
+  // panelde sabit bir simge/özet olarak kalır.
+  Future<void> pinToNotificationPanel({
+    required String noteId,
+    required String title,
+    required String body,
+  }) async {
+    if (!_initialized) await init();
+    final id = _pinNotificationIdFor(noteId);
+    final details = NotificationDetails(
+      android: AndroidNotificationDetails(
+        'dnote_pinned',
+        'Sabitlenmiş Notlar',
+        channelDescription:
+            'Bildirim paneline sabitlenen DNote notları',
+        importance: Importance.low,
+        priority: Priority.low,
+        ongoing: true,
+        autoCancel: false,
+        showWhen: false,
+        playSound: false,
+        enableVibration: false,
+        icon: '@mipmap/ic_launcher',
+        styleInformation: BigTextStyleInformation(body),
+      ),
+      iOS: const DarwinNotificationDetails(presentSound: false),
+    );
+    try {
+      await _plugin.show(
+        id,
+        title.isEmpty ? 'Not' : title,
+        body,
+        details,
+      );
+    } catch (_) {
+      // Bildirim izni verilmemiş olabilir; sessizce yut.
+    }
+  }
+
+  Future<void> unpinFromNotificationPanel(String noteId) async {
+    if (!_initialized) await init();
+    await _plugin.cancel(_pinNotificationIdFor(noteId));
+  }
+
+  // Uygulama açılışında, cihaz yeniden başlatıldığında veya uygulama tamamen
+  // kapatılıp açıldığında sistem tarafından temizlenmiş olabilecek sabitlenmiş
+  // bildirimleri, veritabanındaki 'isPinnedToNotification' işaretine bakarak
+  // yeniden gösterir.
+  Future<void> restorePinnedNotes(List<Map<String, dynamic>> notes) async {
+    if (!_initialized) await init();
+    for (final note in notes) {
+      if (note['isPinnedToNotification'] != true) continue;
+      final noteId = note['id']?.toString();
+      if (noteId == null) continue;
+      final title = (note['title'] ?? '').toString().trim();
+      final content = ContentBlocks.plainText(note['content'] as String?);
+      await pinToNotificationPanel(
+        noteId: noteId,
+        title: title.isEmpty ? 'Not' : title,
+        body: content,
+      );
+    }
   }
 }
 

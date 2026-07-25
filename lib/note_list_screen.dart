@@ -108,6 +108,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
   // Not kartlarında görsel önizleme gösterebilmek için eklerin fiziksel
   // klasör yolu; uygulama açılışında bir kez okunup önbelleğe alınır.
   String? _attachmentsDirPath;
+  // Başka bir uygulamadan "Paylaş" ile gönderilen metin/bağlantıları
+  // yakalamak için kullanılan akış aboneliği (bkz. _initShareListener).
+  StreamSubscription<List<SharedMediaFile>>? _shareIntentSub;
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
@@ -119,6 +122,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
     DBHelper.instance.attachmentsDir().then((d) {
       if (mounted) setState(() => _attachmentsDirPath = d.path);
     });
+    _initShareListener();
   }
 
   @override
@@ -129,9 +133,58 @@ class _NoteListScreenState extends State<NoteListScreen> {
     // _titleController ve _searchController da hiç dispose edilmiyordu.
     _snackTimer?.cancel();
     _snackOverlay?.remove();
+    _shareIntentSub?.cancel();
     _titleController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  // ── Başka uygulamalardan paylaşılan link/metni yakalama ───────────────
+  // Kullanıcı bir tarayıcıdan veya başka bir uygulamadan "Paylaş" menüsünden
+  // DNote'u seçtiğinde, gelen metin (genellikle bir link) burada yakalanır
+  // ve yeni not oluşturma ekranı bu metinle önceden doldurulmuş olarak
+  // açılır. İki senaryo ele alınır:
+  //   1) Uygulama zaten açıkken paylaşım yapılırsa -> getMediaStream()
+  //   2) Uygulama paylaşımla birlikte ilk kez (kapalıyken) açılırsa
+  //      -> getInitialMedia()
+  void _initShareListener() {
+    _shareIntentSub = ReceiveSharingIntent.instance.getMediaStream().listen(
+      (files) {
+        _handleSharedMedia(files);
+        ReceiveSharingIntent.instance.reset();
+      },
+      onError: (Object _) {},
+    );
+    ReceiveSharingIntent.instance.getInitialMedia().then((files) {
+      if (files.isNotEmpty) {
+        _handleSharedMedia(files);
+        ReceiveSharingIntent.instance.reset();
+      }
+    });
+  }
+
+  // Paylaşılan dosya listesinden metin/bağlantı içeriğini çıkarır ve yeni
+  // not oluşturma dialogunu bu içerikle açar. Şimdilik yalnızca metin/URL
+  // türü ele alınıyor; resim/dosya paylaşımı ileride attachments listesine
+  // eklenerek genişletilebilir.
+  void _handleSharedMedia(List<SharedMediaFile> files) {
+    if (files.isEmpty) return;
+    final textFile = files.firstWhere(
+      (f) => f.type == SharedMediaType.text || f.type == SharedMediaType.url,
+      orElse: () => files.first,
+    );
+    if (textFile.type != SharedMediaType.text &&
+        textFile.type != SharedMediaType.url) {
+      return;
+    }
+    final sharedText = textFile.path.trim();
+    if (sharedText.isEmpty) return;
+    // Widget ağacı henüz tam çizilmemiş olabileceğinden bir sonraki
+    // frame'e ertelenir (özellikle soğuk başlangıçta önemlidir).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _showNoteDialog(type: 'text', initialText: sharedText);
+    });
   }
 
   Future<void> _loadData() async {
@@ -220,6 +273,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
       await db.replaceNotes(_notes);
       await db.setSetting('_initialized', 'true');
     }
+
+    // Sistem tarafından temizlenmiş olabilecek "bildirim paneline
+    // sabitlenmiş" not bildirimlerini yeniden göster (bkz. ReminderService
+    // .restorePinnedNotes). Ekranı bloklamaması için bekletilmez.
+    ReminderService.instance.restorePinnedNotes(_notes);
   }
 
   Future<void> _saveData() async {
@@ -543,6 +601,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
     final noteId = deletedNote['id']?.toString();
     if (noteId != null) {
       ReminderService.instance.cancel(noteId);
+      if (deletedNote['isPinnedToNotification'] == true) {
+        ReminderService.instance.unpinFromNotificationPanel(noteId);
+      }
     }
     setState(() {
       _notes.removeAt(index);
@@ -725,6 +786,46 @@ class _NoteListScreenState extends State<NoteListScreen> {
     return ContentBlocks.serialize(blocks);
   }
 
+  // "Sesi Yazıya Çevir" eylemi, not düzenleyicisi açık DEĞİLKEN (kart üzerinde
+  // uzun basılarak) seçildiğinde çağrılır: düzenleyicideki imleç konumu gibi
+  // bir bağlam olmadığından, çevrilen metin doğrudan notun sonuna eklenir
+  // (kontrol listesinde yeni bir madde, serbest metin notunda ise son metin
+  // bloğunun sonuna).
+  Future<void> _appendSpeechTranscriptToNote(int noteIndex, String text) async {
+    if (noteIndex < 0 || noteIndex >= _notes.length) return;
+    final note = _notes[noteIndex];
+    if (note['type'] == 'checklist') {
+      final items = List<Map<String, dynamic>>.from(
+        note['checkItems'] ?? const [],
+      );
+      items.add({'text': text, 'checked': false});
+      setState(() {
+        note['checkItems'] = items;
+        note['modifiedDate'] = DateTime.now().toString();
+      });
+    } else {
+      final blocks = ContentBlocks.parse(note['content']?.toString());
+      final lastTextIdx = blocks.lastIndexWhere((b) => b['type'] == 'text');
+      if (lastTextIdx == -1) {
+        blocks.add({'type': 'text', 'text': text});
+      } else {
+        final current = (blocks[lastTextIdx]['text'] ?? '').toString();
+        final needsNewline =
+            current.isNotEmpty && !current.endsWith('\n');
+        blocks[lastTextIdx]['text'] =
+            current + (needsNewline ? '\n' : '') + text;
+      }
+      setState(() {
+        note['content'] = ContentBlocks.serialize(blocks);
+        note['modifiedDate'] = DateTime.now().toString();
+      });
+    }
+    await _saveData();
+    if (mounted) {
+      _showInfoBar('Metin nota eklendi', icon: Icons.graphic_eq);
+    }
+  }
+
   Future<void> _copyNoteContent(int index) async {
     final note = _notes[index];
     final title = (note['title'] ?? '').toString().trim();
@@ -784,6 +885,35 @@ class _NoteListScreenState extends State<NoteListScreen> {
     );
     Overlay.of(context).insert(_snackOverlay!);
     _snackTimer = Timer(const Duration(seconds: 2), _hideDeletedBar);
+  }
+
+  // Not düzenleyicideki üç nokta menüsünden çağrılır: notu PDF'e dönüştürür
+  // ve cihazın paylaşım sayfasını (kaydet/gönder) açar. Hem metin notları
+  // (bloklar) hem de kontrol listesi notları desteklenir.
+  Future<void> _exportNoteAsPdf({
+    required String title,
+    required String noteType,
+    required List<Map<String, dynamic>> blocks,
+    required List<Map<String, dynamic>> checkItems,
+    required List<Map<String, dynamic>> attachments,
+  }) async {
+    _showInfoBar('PDF hazırlanıyor…', icon: Icons.picture_as_pdf);
+    try {
+      final file = await PdfExportService.exportNoteToPdf(
+        title: title,
+        noteType: noteType,
+        blocks: blocks,
+        checkItems: checkItems,
+        attachments: attachments,
+      );
+      await SharePlus.instance.share(
+        ShareParams(files: [XFile(file.path)]),
+      );
+    } catch (_) {
+      if (mounted) {
+        _showInfoBar('PDF oluşturulamadı', icon: Icons.error_outline);
+      }
+    }
   }
 
   void _showTextSizeSlider(int noteIndex) {
@@ -1712,6 +1842,18 @@ class _NoteListScreenState extends State<NoteListScreen> {
         'color': Colors.orange,
         'key': 'file',
       },
+      {
+        'icon': Icons.mic,
+        'label': 'Ses Kaydı',
+        'color': Colors.deepPurpleAccent,
+        'key': 'record',
+      },
+      {
+        'icon': Icons.videocam_outlined,
+        'label': 'Video Çek',
+        'color': Colors.redAccent,
+        'key': 'video',
+      },
     ];
 
     showModalBottomSheet(
@@ -1811,12 +1953,24 @@ class _NoteListScreenState extends State<NoteListScreen> {
     DateTime? editorReminder,
     String? editorReminderRepeat,
     void Function(DateTime? reminder, String? repeat)? onReminderChanged,
+    // Yalnızca not düzenleyicisinden çağrıldığında verilir: dolu olduğunda
+    // menüye "Değişiklikleri Yok Say" eylemi eklenir ve seçildiğinde bu
+    // callback tetiklenir (düzenleyici, kaydetmeden kapanır).
+    VoidCallback? onDiscard,
+    // Yalnızca not düzenleyicisinden çağrıldığında verilir: dolu olduğunda
+    // menüye "Sesi Yazıya Çevir" eylemi eklenir; konuşma tanıma sonucu bu
+    // callback ile düzenleyicinin imleç konumundaki metin bloğuna eklenir.
+    void Function(String text)? onInsertText,
   }) {
     final hasValidNote = noteIndex >= 0 && noteIndex < _notes.length;
-    if (!hasValidNote && onReminderChanged == null) return;
+    if (!hasValidNote && onReminderChanged == null && onInsertText == null) {
+      return;
+    }
     final isFavorite = hasValidNote && _notes[noteIndex]['isFavorite'] == true;
     final isArchived = hasValidNote && _notes[noteIndex]['isArchived'] == true;
     final isLocked = hasValidNote && _notes[noteIndex]['isLocked'] == true;
+    final isPinnedToNotification =
+        hasValidNote && _notes[noteIndex]['isPinnedToNotification'] == true;
 
     // Düzenleyiciden çağrıldıysa editorReminder kullanılır; not listesinden
     // (uzun basma) çağrıldıysa mevcut hatırlatıcı doğrudan nottan okunur.
@@ -1841,8 +1995,16 @@ class _NoteListScreenState extends State<NoteListScreen> {
       'key': 'reminder',
     };
 
+    final speechToTextAction = {
+      'icon': Icons.graphic_eq,
+      'label': 'Sesi Yazıya Çevir',
+      'color': Colors.deepPurpleAccent,
+      'key': 'speech_to_text',
+    };
+
     final actions = [
       if (!hasValidNote && onReminderChanged != null) reminderAction,
+      if (!hasValidNote && onInsertText != null) speechToTextAction,
       if (hasValidNote) ...[
       {
         'icon': isFavorite ? Icons.star : Icons.star_outline,
@@ -1869,12 +2031,23 @@ class _NoteListScreenState extends State<NoteListScreen> {
         'key': 'classify',
       },
       {
+        'icon': isPinnedToNotification
+            ? Icons.push_pin
+            : Icons.push_pin_outlined,
+        'label': isPinnedToNotification
+            ? 'Sabitlemeyi Kaldır'
+            : 'Bildirim Paneline Sabitle',
+        'color': Colors.indigo,
+        'key': 'pin_notification',
+      },
+      {
         'icon': Icons.delete_outline,
         'label': 'Sil',
         'color': Colors.red,
         'key': 'delete',
       },
       reminderAction,
+      if (onInsertText != null) speechToTextAction,
       {
         'icon': Icons.share_outlined,
         'label': 'Paylaş',
@@ -1894,6 +2067,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
         'key': 'copy_text',
       },
       {
+        'icon': Icons.volume_up,
+        'label': 'Yüksek Sesle Oku',
+        'color': Colors.orange,
+        'key': 'tts',
+      },
+      {
         'icon': Icons.text_fields,
         'label': 'Metin Boyutu',
         'color': Colors.pink,
@@ -1906,6 +2085,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
         'key': 'details',
       },
       ],
+      if (onDiscard != null)
+        {
+          'icon': Icons.close,
+          'label': 'Değişiklikleri Yok Say',
+          'color': Colors.red,
+          'key': 'discard',
+        },
     ];
 
     showModalBottomSheet(
@@ -2029,6 +2215,59 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         return;
                       }
 
+                      if (key == 'discard') {
+                        if (onDiscard == null) return;
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (dialogCtx) => AlertDialog(
+                            title: const Text('Değişiklikleri Yok Say'),
+                            content: const Text(
+                              'Bu nottaki kaydedilmemiş değişiklikler kaybolacak. Yok saymak istediğinize emin misiniz?',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(dialogCtx, false),
+                                child: const Text('Vazgeç'),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(dialogCtx, true),
+                                child: const Text(
+                                  'Yok Say',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirmed == true) onDiscard();
+                        return;
+                      }
+
+                      if (key == 'speech_to_text') {
+                        if (onInsertText == null) return;
+                        if (!context.mounted) return;
+                        final transcript = await showModalBottomSheet<String>(
+                          context: context,
+                          backgroundColor: dNoteCardColor(context),
+                          barrierColor: Colors.black.withValues(alpha: 0.55),
+                          isScrollControlled: true,
+                          isDismissible: false,
+                          clipBehavior: Clip.antiAlias,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(24),
+                            ),
+                          ),
+                          builder: (_) => const _SpeechToTextSheet(),
+                        );
+                        if (transcript != null && transcript.trim().isNotEmpty) {
+                          onInsertText(transcript.trim());
+                        }
+                        return;
+                      }
+
                       if (noteIndex < 0) return;
 
                       if (key == 'favorite') {
@@ -2066,6 +2305,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         }
                       } else if (key == 'copy_text') {
                         _copyNoteContent(noteIndex);
+                      } else if (key == 'tts') {
+                        _showTextToSpeechSheet(context, noteIndex);
                       } else if (key == 'text_size') {
                         _showTextSizeSlider(noteIndex);
                       } else if (key == 'lock') {
@@ -2093,6 +2334,53 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         }
                       } else if (key == 'details') {
                         _showNoteDetails(noteIndex);
+                      } else if (key == 'pin_notification') {
+                        final note = _notes[noteIndex];
+                        final currentlyPinned =
+                            note['isPinnedToNotification'] == true;
+                        final noteId = note['id'].toString();
+                        if (currentlyPinned) {
+                          setState(
+                            () => _notes[noteIndex]['isPinnedToNotification'] =
+                                false,
+                          );
+                          _saveData();
+                          await ReminderService.instance
+                              .unpinFromNotificationPanel(noteId);
+                          _showInfoBar(
+                            'Sabitleme kaldırıldı',
+                            icon: Icons.push_pin_outlined,
+                          );
+                        } else {
+                          final title = (note['title'] ?? '').toString().trim();
+                          final content = ContentBlocks.plainText(
+                            note['content'] as String?,
+                          );
+                          if (title.isEmpty && content.isEmpty) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Boş not sabitlenemez.'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            return;
+                          }
+                          setState(
+                            () => _notes[noteIndex]['isPinnedToNotification'] =
+                                true,
+                          );
+                          _saveData();
+                          await ReminderService.instance.pinToNotificationPanel(
+                            noteId: noteId,
+                            title: title.isEmpty ? 'Not' : title,
+                            body: content,
+                          );
+                          _showInfoBar(
+                            'Bildirim paneline sabitlendi',
+                            icon: Icons.push_pin,
+                          );
+                        }
                       }
                     },
                     child: Column(
@@ -2129,6 +2417,32 @@ class _NoteListScreenState extends State<NoteListScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  // "Eylem Seç" panelinden "Yüksek Sesle Oku" seçilince çağrılır. Notun
+  // başlığı ve düz metin içeriği (ContentBlocks.plainText — checklist ve
+  // hesap tablosu blokları da okunabilir metne çevrilerek dahil edilir)
+  // birleştirilip _TextToSpeechSheet'e verilir.
+  void _showTextToSpeechSheet(BuildContext context, int noteIndex) {
+    if (noteIndex < 0 || noteIndex >= _notes.length) return;
+    final note = _notes[noteIndex];
+    final title = (note['title'] ?? '').toString().trim();
+    final content = ContentBlocks.plainText(note['content'] as String?);
+    if (title.isEmpty && content.isEmpty) {
+      _showInfoBar('Okunacak bir içerik yok', icon: Icons.info_outline);
+      return;
+    }
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: dNoteCardColor(context),
+      barrierColor: Colors.black.withValues(alpha: 0.55),
+      isScrollControlled: true,
+      clipBehavior: Clip.antiAlias,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => _TextToSpeechSheet(title: title, content: content),
     );
   }
 
@@ -2420,6 +2734,30 @@ class _NoteListScreenState extends State<NoteListScreen> {
 
     if (ext == '.xlsx' || ext == '.xls') {
       return _docFallback(fileName, Icons.table_chart, Colors.green.shade400);
+    }
+
+    if (att['isVideo'] == true) {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(color: Colors.black87),
+          const Center(
+            child: Icon(
+              Icons.play_circle_fill,
+              color: Colors.white,
+              size: 34,
+            ),
+          ),
+        ],
+      );
+    }
+
+    if (att['isAudio'] == true) {
+      return _docFallback(
+        fileName,
+        Icons.mic,
+        Colors.deepPurpleAccent,
+      );
     }
 
     return _docFallback(fileName, Icons.insert_drive_file_outlined, Colors.amber);
@@ -2829,7 +3167,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
     );
   }
 
-  void _showNoteDialog({int? index, String type = 'text'}) {
+  void _showNoteDialog({
+    int? index,
+    String type = 'text',
+    // Başka bir uygulamadan paylaşılan link/metin buraya gelir; yalnızca
+    // yeni not oluştururken (index == null) kullanılır.
+    String? initialText,
+  }) {
     String noteDate = "";
     String noteType = type;
     // Not: TextField'ın onChanged'i tetiklendiğinde Flutter, controller'ın
@@ -3039,9 +3383,16 @@ class _NoteListScreenState extends State<NoteListScreen> {
     // ondan dolaylı olarak rebuild tetikler.
     void Function(VoidCallback)? requestEditorRebuild;
     // Serbest metin girişleri (başlık/blok/madde metni) tuş vuruşu başına
-    // değil, ~900ms'lik yazma molalarında tek bir checkpoint oluşturur;
-    // aksi halde her harf undo geçmişini doldururdu.
+    // değil, kelime sınırlarında (boşluk/noktalama) tek bir checkpoint
+    // oluşturur; aksi halde her harf undo geçmişini doldururdu.
     bool pendingTextCheckpoint = false;
+    // Açık oturumun hangi alana (başlık, hangi blok/madde/hücre) ait
+    // olduğunu tutar. Kullanıcı bir alandan diğerine geçtiğinde (ör.
+    // başlıktan gövdeye, ya da bir kontrol listesi maddesinden diğerine)
+    // eski oturum "zaman aşımı" beklenmeden hemen kapatılır; aksi halde
+    // iki farklı alandaki değişiklikler tek bir "geri al" adımında
+    // birleşir ya da ikinci alandaki ilk harf hiç checkpoint açmaz.
+    String? pendingTextCheckpointKey;
     Timer? textCheckpointTimer;
 
     Map<String, dynamic> captureSnapshot() {
@@ -3114,22 +3465,49 @@ class _NoteListScreenState extends State<NoteListScreen> {
           ch == ':';
     }
 
-    void noteTextEdited([String? newText]) {
-      if (!pendingTextCheckpoint) {
+    void noteTextEdited(String sessionKey, TextEditingController controller) {
+      // DÜZELTME: Kelime sınırı kontrolü eskiden metnin EN SONUNDAKİ
+      // karaktere bakıyordu (newText[newText.length - 1]). Bu, yalnızca
+      // imleç metnin sonundayken (satırın sonuna yazarken/silerken) doğru
+      // sonuç veriyordu. İmleç metnin ortasındaysa — ör. not içeriği bir
+      // "." ile bitiyor ve kullanıcı araya girip bir kelimeyi düzeltiyorsa
+      // — kontrol hep o sondaki noktayı buluyor, her tuş vuruşunda "kelime
+      // bitti" sanıp oturumu hemen kapatıyordu. Bu da her harfin ayrı bir
+      // checkpoint olmasına ve "Geri Al"ın tüm kelime yerine tek harf
+      // silmesine yol açıyordu. Artık imlecin O AN bulunduğu yerin hemen
+      // solundaki karaktere bakıyoruz; bu, gerçekte yazılan/silinen
+      // karakterdir.
+      final String text = controller.text;
+      int cursor = controller.selection.end;
+      if (cursor < 0 || cursor > text.length) cursor = text.length;
+      final String? editedChar = cursor > 0 ? text[cursor - 1] : null;
+
+      if (!pendingTextCheckpoint || pendingTextCheckpointKey != sessionKey) {
+        // Ya hiç açık oturum yok, ya da kullanıcı başka bir alana geçti:
+        // önceki oturumu (varsa) kapatıp bu alan için yeni bir kontrol
+        // noktası aç.
         pushUndoCheckpoint();
         pendingTextCheckpoint = true;
+        pendingTextCheckpointKey = sessionKey;
       }
       textCheckpointTimer?.cancel();
-      if (newText != null &&
-          newText.isNotEmpty &&
-          _isWordBoundaryChar(newText[newText.length - 1])) {
+      if (editedChar != null && _isWordBoundaryChar(editedChar)) {
         // Kelime tamamlandı (boşluk/noktalama yazıldı): oturumu hemen kapat,
         // bir sonraki karakter yeni bir "geri al" kontrol noktası açsın.
         pendingTextCheckpoint = false;
+        pendingTextCheckpointKey = null;
         return;
       }
-      textCheckpointTimer = Timer(const Duration(milliseconds: 900), () {
+      // Zaman aşımı burada kelime sınırı belirlemek için DEĞİL, yalnızca bir
+      // emniyet supabı olarak kullanılıyor: kullanıcı yazmayı gerçekten
+      // bırakırsa (örn. alanı terk edip not defterinden çıkarsa) oturum
+      // açık kalmasın. Süre kasıtlı olarak uzun tutuluyor; kısa bir yazma
+      // molası (düşünme, otomatik düzeltme önerisi vb.) kelimenin ortasında
+      // yanlışlıkla yeni bir kontrol noktası açıp o kelimeyi harf harf geri
+      // alınabilir hale getirmemeli.
+      textCheckpointTimer = Timer(const Duration(milliseconds: 4000), () {
         pendingTextCheckpoint = false;
+        pendingTextCheckpointKey = null;
       });
     }
 
@@ -3170,7 +3548,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
       _titleController.clear();
       titleModel = '';
       blocks = [
-        {'type': 'text', 'text': ''},
+        {'type': 'text', 'text': initialText ?? ''},
       ];
       if (noteType == 'checklist') {
         checkItems = [
@@ -3231,12 +3609,31 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     '.webp',
                     '.bmp',
                   ].contains(ext.toLowerCase());
+                  final isAudio = const [
+                    '.m4a',
+                    '.aac',
+                    '.mp3',
+                    '.wav',
+                    '.3gp',
+                    '.ogg',
+                  ].contains(ext.toLowerCase());
+                  final isVideo = const [
+                    '.mp4',
+                    '.mov',
+                    '.m4v',
+                    '.3gp',
+                    '.mkv',
+                    '.webm',
+                    '.avi',
+                  ].contains(ext.toLowerCase());
                   newOnes.add({
                     'id': uniqueId,
                     'fileName': name,
                     'storedName': storedName,
                     'sizeBytes': sizeBytes,
                     'isImage': isImage,
+                    'isAudio': isAudio,
+                    'isVideo': isVideo,
                   });
                 }
                 if (newOnes.isNotEmpty) {
@@ -3357,6 +3754,78 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 ]);
               }
 
+              // Telefonun kamerasını açıp video çeker; çekilen video diğer
+              // ekler gibi ekler klasörüne kopyalanıp nota eklenir.
+              Future<void> pickVideoFromCamera() async {
+                if (!await Permission.camera.request().isGranted) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Video çekmek için kamera izni gerekiyor.',
+                        ),
+                      ),
+                    );
+                  }
+                  return;
+                }
+                final picker = ImagePicker();
+                final video = await picker.pickVideo(
+                  source: ImageSource.camera,
+                  maxDuration: const Duration(minutes: 5),
+                );
+                if (video == null) return;
+                await addFilesAsAttachments([
+                  {'path': video.path, 'name': video.name},
+                ]);
+              }
+
+              // Mikrofonla ses kaydı alıp notun eklerine ekler. Kayıt
+              // sırasında ayrı bir bottom sheet açılır (süre sayacı +
+              // durdur/iptal); kayıt bittiğinde dosya, diğer ekler gibi
+              // addFilesAsAttachments üzerinden ekler klasörüne kopyalanır.
+              Future<void> recordVoiceNote() async {
+                if (!await Permission.microphone.request().isGranted) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Ses kaydı için mikrofon izni gerekiyor.',
+                        ),
+                      ),
+                    );
+                  }
+                  return;
+                }
+                if (!context.mounted) return;
+                final recordedPath = await showModalBottomSheet<String?>(
+                  context: context,
+                  backgroundColor: Theme.of(context).cardColor,
+                  barrierColor: Colors.black.withValues(alpha: 0.55),
+                  isDismissible: false,
+                  enableDrag: false,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(24),
+                    ),
+                  ),
+                  builder: (_) => const _VoiceRecorderSheet(),
+                );
+                if (recordedPath == null || recordedPath.isEmpty) return;
+                final now = DateTime.now();
+                final label =
+                    'Ses Kaydı ${now.hour.toString().padLeft(2, '0')}.'
+                    '${now.minute.toString().padLeft(2, '0')}.m4a';
+                await addFilesAsAttachments([
+                  {'path': recordedPath, 'name': label},
+                ]);
+                // Geçici kayıt dosyası ekler klasörüne kopyalandı; artık
+                // orijinaline gerek yok.
+                try {
+                  await File(recordedPath).delete();
+                } catch (_) {}
+              }
+
               // Kontrol listesi (checklist) notlarında, ekler ayrı bir
               // liste halinde altta gösterilir; index'e göre kaldırılır.
               void removeAttachment(int i) {
@@ -3451,6 +3920,28 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       ),
                     ),
                   );
+                } else if (att['isVideo'] == true) {
+                  if (!context.mounted) return;
+                  showDialog(
+                    context: context,
+                    barrierColor: Colors.black,
+                    builder: (dialogCtx) => _VideoPlayerDialog(path: path),
+                  );
+                } else if (att['isAudio'] == true) {
+                  if (!context.mounted) return;
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: Theme.of(context).cardColor,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(24),
+                      ),
+                    ),
+                    builder: (_) => _VoicePlayerSheet(
+                      path: path,
+                      title: (att['fileName'] ?? 'Ses Kaydı').toString(),
+                    ),
+                  );
                 } else {
                   await OpenFile.open(path);
                 }
@@ -3485,7 +3976,18 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     _showInfoBar('Not kaydedildi', icon: Icons.save);
                   }
                   isEditorOpen = false;
-                  Navigator.pop(context);
+                  // Sayfa kapatılırken hâlâ odaklı bir TextField (ör. hesap
+                  // tablosu tutar hücresi) varsa, önce odağı kaldırıp bir
+                  // sonraki frame'e kadar bekliyoruz. Aksi halde o alanın
+                  // metin seçim araç çubuğu/tanıtıcıları (Overlay girişi)
+                  // sayfa Element'leriyle birlikte söküldüğünde hâlâ
+                  // bağımlı InheritedWidget referansı taşıyabiliyor ve
+                  // "'_dependents.isEmpty': is not true" hatasına yol
+                  // açıyordu.
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (context.mounted) Navigator.pop(context);
+                  });
                 },
                 child: Scaffold(
                   backgroundColor: Theme.of(context).cardColor,
@@ -3495,7 +3997,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     leading: IconButton(
                       icon: Icon(
                         Icons.arrow_back_ios,
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: dNoteEditorAppBarColor(context),
                       ),
                       onPressed: () {
                         if (deletingAttachmentId != null) {
@@ -3519,7 +4021,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           _showInfoBar('Not kaydedildi', icon: Icons.save);
                         }
                         isEditorOpen = false;
-                        Navigator.pop(context);
+                        // Bkz. PopScope'taki aynı isimli not: odaklı bir
+                        // alan varken hemen pop etmek dependents hatasına
+                        // yol açabiliyordu.
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (context.mounted) Navigator.pop(context);
+                        });
                       },
                     ),
                     actions: [
@@ -3528,13 +4036,20 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         icon: Icon(
                           Icons.undo,
                           color: editHistory.canUndo
-                              ? Theme.of(context).colorScheme.onSurface
-                              : Theme.of(
+                              ? dNoteEditorAppBarColor(context)
+                              : dNoteEditorAppBarColor(
                                   context,
-                                ).colorScheme.onSurface.withValues(alpha: 0.3),
+                                ).withValues(alpha: 0.3),
                         ),
                         onPressed: editHistory.canUndo
                             ? () {
+                                // Açık bir yazma oturumu varsa kapat: aksi
+                                // halde bayrak açık kalır ve undo sonrası
+                                // aynı alanda yazılan bir sonraki kelime
+                                // için hiç checkpoint açılmaz.
+                                pendingTextCheckpoint = false;
+                                pendingTextCheckpointKey = null;
+                                textCheckpointTimer?.cancel();
                                 final restored = editHistory.undo(
                                   captureSnapshot(),
                                 );
@@ -3551,13 +4066,16 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         icon: Icon(
                           Icons.redo,
                           color: editHistory.canRedo
-                              ? Theme.of(context).colorScheme.onSurface
-                              : Theme.of(
+                              ? dNoteEditorAppBarColor(context)
+                              : dNoteEditorAppBarColor(
                                   context,
-                                ).colorScheme.onSurface.withValues(alpha: 0.3),
+                                ).withValues(alpha: 0.3),
                         ),
                         onPressed: editHistory.canRedo
                             ? () {
+                                pendingTextCheckpoint = false;
+                                pendingTextCheckpointKey = null;
+                                textCheckpointTimer?.cancel();
                                 final restored = editHistory.redo(
                                   captureSnapshot(),
                                 );
@@ -3575,7 +4093,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       PopupMenuButton<String>(
                         icon: Icon(
                           Icons.more_vert,
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: dNoteEditorAppBarColor(context),
                         ),
                         onSelected: (value) {
                           if (value == 'checklist') {
@@ -3684,6 +4202,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 );
                               }
                             });
+                          } else if (value == 'export_pdf') {
+                            _exportNoteAsPdf(
+                              title: _titleController.text,
+                              noteType: noteType,
+                              blocks: blocks,
+                              checkItems: checkItems,
+                              attachments: attachments,
+                            );
                           }
                         },
                         itemBuilder: (_) => [
@@ -3717,931 +4243,1388 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 ],
                               ),
                             ),
+                          if (noteType == 'text') const PopupMenuDivider(),
+                          const PopupMenuItem(
+                            value: 'export_pdf',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.picture_as_pdf,
+                                  color: Colors.redAccent,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 10),
+                                Text('PDF olarak dışa aktar'),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ],
                   ),
-                  bottomNavigationBar: SafeArea(
-                    child: Builder(
-                      builder: (context) {
-                        final Color barColor;
-                        if (_colorfulNotes && index != null && index! >= 0) {
-                          barColor =
-                              _categoryPalette[index! % _categoryPalette.length]
-                                  .withValues(alpha: 0.75);
-                        } else {
-                          barColor = _getCategoryColor(noteCategory);
+                  body: Column(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        if (deletingAttachmentId != null) {
+                          setModalState(() => deletingAttachmentId = null);
                         }
-                        return Container(
-                          height: 52,
-                          decoration: BoxDecoration(
-                            color: dNoteHeaderColor(context),
-                            border: Border(
-                              top: BorderSide(color: barColor, width: 3),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              IconButton(
-                                icon: Icon(
-                                  Icons.add,
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                ),
-                                onPressed: () => _showAddAttachmentSheet(
-                                  context,
-                                  onSelected: (value) {
-                                    if (value == 'file') {
-                                      pickAttachments();
-                                    } else if (value == 'image') {
-                                      pickImagesFromGallery();
-                                    } else if (value == 'camera') {
-                                      pickImageFromCamera();
-                                    }
-                                  },
+                      },
+                      child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextField(
+                            selectionWidthStyle: ui.BoxWidthStyle.tight,
+                            contextMenuBuilder: buildCustomContextMenu,
+                            selectionHeightStyle: ui.BoxHeightStyle.max,
+                            controller: _titleController,
+                            textCapitalization: TextCapitalization.sentences,
+                            onChanged: (v) {
+                              noteTextEdited('title', _titleController);
+                              titleModel = v;
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'Başlık',
+                              hintStyle: const TextStyle(color: Colors.grey),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: dNoteBorderColor(context),
                                 ),
                               ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    InkWell(
-                                      borderRadius: BorderRadius.circular(8),
-                                      onTap: () async {
-                                        final now = DateTime.now();
-                                        final picked = await _pickCalendarDate(
-                                          context: context,
-                                          initialDate: noteAssignedDate,
-                                          firstDate: DateTime(2000, 1, 1),
-                                          lastDate: now.add(
-                                            const Duration(days: 3650),
-                                          ),
-                                          helpText: 'Notu bir güne ata',
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: dNoteBorderColor(context),
+                                ),
+                              ),
+                            ),
+                            style: TextStyle(
+                              color: dNoteEffectiveTextColor(context, _textColor),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          if (noteType == 'text')
+                            ...(() {
+                              // İpucu metni ("Notunuzu buraya yazın...") eskiden
+                              // sadece 0. bloğun KENDİ metninin boş olmasına
+                              // bakıyordu. Kullanıcı ilk blok olarak boş bir
+                              // metin bırakıp asıl yazıyı sonraki bir blokta
+                              // (ör. bir ek/checklist/hesap tablosundan sonra
+                              // gelen metin bloğunda) yazdığında, notta gerçekte
+                              // içerik olduğu halde 0. blok hâlâ boş olduğu için
+                              // ipucu ekranda takılı kalıyordu. Artık ipucu,
+                              // notun TAMAMINDA (tüm bloklarda) hiç içerik
+                              // yoksa gösteriliyor. Diğer bloklardaki onChanged
+                              // her tuş vuruşunda setModalState çağırmadığı
+                              // için (performans amacıyla), buradaki kontrolü
+                              // her tuş vuruşunda GERÇEK ZAMANLI güncellemek
+                              // amacıyla mevcut tüm controller'ları birleştirip
+                              // AnimatedBuilder ile dinliyoruz — böylece ipucu,
+                              // notun herhangi bir yerine yazı yazılır yazılmaz
+                              // (tam modal yeniden kurulmasını beklemeden)
+                              // kalkıyor.
+                              bool noteHasContent() {
+                                return blocks.any((b) {
+                                  switch (b['type']) {
+                                    case 'checklist':
+                                      final items =
+                                          List<Map<String, dynamic>>.from(
+                                            b['items'] ?? const [],
+                                          );
+                                      return items.any(
+                                        (it) =>
+                                            (it['text'] ?? '')
+                                                .toString()
+                                                .isNotEmpty,
+                                      );
+                                    case 'calc_table':
+                                      final rows =
+                                          List<Map<String, dynamic>>.from(
+                                            b['rows'] ?? const [],
+                                          );
+                                      return rows.any(
+                                        (r) =>
+                                            (r['label'] ?? '')
+                                                .toString()
+                                                .isNotEmpty ||
+                                            (r['value'] ?? '')
+                                                .toString()
+                                                .isNotEmpty,
+                                      );
+                                    case 'attachments':
+                                      final ids = List<String>.from(
+                                        b['ids'] ?? const [],
+                                      );
+                                      return ids.isNotEmpty;
+                                    default:
+                                      return (b['text'] ?? '')
+                                          .toString()
+                                          .isNotEmpty;
+                                  }
+                                });
+                              }
+
+                              final List<Listenable> contentListenables = [
+                                ...blockControllers.whereType<TextEditingController>(),
+                                for (final list in blockItemControllers)
+                                  if (list != null) ...list,
+                                for (final list in blockTableLabelControllers)
+                                  if (list != null) ...list,
+                                for (final list in blockTableValueControllers)
+                                  if (list != null) ...list,
+                              ];
+                              final Listenable contentListenable =
+                                  Listenable.merge(contentListenables);
+
+                              return List.generate(blocks.length, (i) {
+                              final block = blocks[i];
+                              if (block['type'] == 'attachments') {
+                                final ids = List<String>.from(
+                                  block['ids'] ?? const [],
+                                );
+                                return Padding(
+                                  key: ValueKey('blk_att_$i'),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                  child: _buildAttachmentGrid(
+                                    ids: ids,
+                                    attachmentsList: attachments,
+                                    onRemove: removeAttachmentById,
+                                    onOpen: openAttachment,
+                                    deletingId: deletingAttachmentId,
+                                    onDeletingIdChanged: (id) => setModalState(
+                                      () => deletingAttachmentId = id,
+                                    ),
+                                  ),
+                                );
+                              }
+                              if (block['type'] == 'checklist') {
+                                final items = List<Map<String, dynamic>>.from(
+                                  block['items'] ?? const [],
+                                );
+                                final itemCtrls =
+                                    blockItemControllers[i] ??
+                                    <TextEditingController>[];
+                                final itemFns =
+                                    blockItemFocusNodes[i] ?? <FocusNode>[];
+                                return Padding(
+                                  key: ValueKey('blk_checklist_$i'),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                  child: ReorderableListView(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    buildDefaultDragHandles: false,
+                                    onReorder: (oldIndex, newIndex) {
+                                      pushUndoCheckpoint();
+                                      setModalState(() {
+                                        if (newIndex > oldIndex) newIndex -= 1;
+                                        final movedItem = items.removeAt(
+                                          oldIndex,
                                         );
-                                        if (picked == null) return;
-                                        pushUndoCheckpoint();
-                                        setModalState(() {
-                                          noteAssignedDate = DateTime(
-                                            picked.year,
-                                            picked.month,
-                                            picked.day,
-                                            noteAssignedDate.hour,
-                                            noteAssignedDate.minute,
+                                        items.insert(newIndex, movedItem);
+                                        block['items'] = items;
+                                        if (oldIndex < itemCtrls.length) {
+                                          final movedCtrl = itemCtrls.removeAt(
+                                            oldIndex,
                                           );
-                                          noteDate = _getFormattedDate(
-                                            noteAssignedDate,
+                                          itemCtrls.insert(newIndex, movedCtrl);
+                                        }
+                                        if (oldIndex < itemFns.length) {
+                                          final movedFn = itemFns.removeAt(
+                                            oldIndex,
                                           );
-                                        });
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6,
-                                          vertical: 2,
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
+                                          itemFns.insert(newIndex, movedFn);
+                                        }
+                                      });
+                                    },
+                                    children: [
+                                      for (int j = 0; j < items.length; j++)
+                                        Row(
+                                          key: ValueKey(items[j]),
                                           children: [
-                                            Icon(
-                                              Icons.event,
-                                              size: 12,
-                                              color: barColor,
-                                            ),
-                                            const SizedBox(width: 3),
-                                            Flexible(
-                                              child: Text(
-                                                _getFormattedDate(
-                                                  noteAssignedDate,
+                                            ReorderableDragStartListener(
+                                              index: j,
+                                              child: const Padding(
+                                                padding: EdgeInsets.only(
+                                                  right: 4,
                                                 ),
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: barColor,
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.w600,
+                                                child: Icon(
+                                                  Icons.drag_indicator,
+                                                  color: Colors.grey,
+                                                  size: 20,
                                                 ),
-                                                overflow:
-                                                    TextOverflow.ellipsis,
                                               ),
+                                            ),
+                                            Checkbox(
+                                              value:
+                                                  items[j]['checked']
+                                                      as bool? ??
+                                                  false,
+                                              activeColor: Colors.amber,
+                                              onChanged: (val) {
+                                                pushUndoCheckpoint();
+                                                setModalState(() {
+                                                  items[j]['checked'] =
+                                                      val ?? false;
+                                                  block['items'] = items;
+                                                });
+                                              },
+                                            ),
+                                            Expanded(
+                                              child: TextField(
+                                                selectionWidthStyle:
+                                                    ui.BoxWidthStyle.tight,
+                                                controller: j < itemCtrls.length
+                                                    ? itemCtrls[j]
+                                                    : null,
+                                                focusNode: j < itemFns.length
+                                                    ? itemFns[j]
+                                                    : null,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                // Enter'a basınca Flutter'ın
+                                                // TextInputAction.next için
+                                                // uyguladığı VARSAYILAN odak
+                                                // değiştirme davranışını devre
+                                                // dışı bırakıyoruz; odak
+                                                // yönetimini zaten onSubmitted
+                                                // içinde biz yapıyoruz. Aksi
+                                                // halde klavye önce (yanlış bir
+                                                // widget'a odaklanıldığı için)
+                                                // kapanıp hemen ardından bizim
+                                                // requestFocus() çağrımızla
+                                                // tekrar açılıyordu (aşağı
+                                                // inip tekrar yukarı çıkma).
+                                                onEditingComplete: () {},
+                                                textCapitalization:
+                                                    TextCapitalization.sentences,
+                                                contextMenuBuilder:
+                                                    buildCustomContextMenu,
+                                                selectionHeightStyle:
+                                                    ui.BoxHeightStyle.max,
+                                                style: TextStyle(
+                                                  color:
+                                                      items[j]['checked'] ==
+                                                          true
+                                                      ? Colors.grey
+                                                      : dNoteEffectiveTextColor(
+                                                          context,
+                                                          _textColor,
+                                                        ),
+                                                  decoration:
+                                                      items[j]['checked'] ==
+                                                          true
+                                                      ? TextDecoration
+                                                            .lineThrough
+                                                      : null,
+                                                  fontSize: index != null
+                                                      ? ((_notes[index!]['fontSize']
+                                                                    as num?)
+                                                                ?.toDouble() ??
+                                                            _globalFontSize)
+                                                      : _globalFontSize,
+                                                ),
+                                                decoration: const InputDecoration(
+                                                  hintText: 'Madde...',
+                                                  hintStyle: TextStyle(
+                                                    color: Colors.grey,
+                                                  ),
+                                                  border: InputBorder.none,
+                                                ),
+                                                onChanged: (val) {
+                                                  noteTextEdited(
+                                                    'blk_checklist_${i}_$j',
+                                                    itemCtrls[j],
+                                                  );
+                                                  items[j]['text'] = val;
+                                                  block['items'] = items;
+                                                },
+                                                onSubmitted: (_) {
+                                                  pushUndoCheckpoint();
+                                                  setModalState(() {
+                                                    final newIndex = j + 1;
+                                                    items.insert(newIndex, {
+                                                      'text': '',
+                                                      'checked': false,
+                                                    });
+                                                    block['items'] = items;
+                                                    itemCtrls.insert(
+                                                      newIndex,
+                                                      TextEditingController(),
+                                                    );
+                                                    itemFns.insert(
+                                                      newIndex,
+                                                      FocusNode(),
+                                                    );
+                                                  });
+                                                  // Not: requestFocus'u
+                                                  // Future.microtask yerine
+                                                  // addPostFrameCallback ile
+                                                  // çağırıyoruz. Microtask, yeni
+                                                  // eklenen alanın widget
+                                                  // ağacına henüz oturmadığı bir
+                                                  // anda çalışabiliyor; bu da
+                                                  // klavyenin bir an için
+                                                  // odaksız kalıp kapanmasına ve
+                                                  // hemen ardından tekrar
+                                                  // açılmasına (aşağı inip
+                                                  // tekrar yukarı kalkmasına)
+                                                  // yol açıyordu.
+                                                  WidgetsBinding.instance
+                                                      .addPostFrameCallback((_) {
+                                                    itemFns[j + 1].requestFocus();
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.close,
+                                                color: Colors.grey,
+                                                size: 18,
+                                              ),
+                                              onPressed: () {
+                                                pushUndoCheckpoint();
+                                                // Aynı beyaz ekran sorunu:
+                                                // odaklı bir FocusNode'u
+                                                // önce odaktan çıkarmadan
+                                                // dispose etmeyelim.
+                                                FocusNode? removedFocusNode;
+                                                if (j < itemFns.length) {
+                                                  removedFocusNode = itemFns[j];
+                                                  if (removedFocusNode
+                                                      .hasFocus) {
+                                                    removedFocusNode.unfocus();
+                                                  }
+                                                }
+                                                setModalState(() {
+                                                  items.removeAt(j);
+                                                  block['items'] = items;
+                                                  if (j < itemCtrls.length) {
+                                                    itemCtrls
+                                                        .removeAt(j)
+                                                        .dispose();
+                                                  }
+                                                  if (j < itemFns.length) {
+                                                    itemFns.removeAt(j);
+                                                  }
+                                                });
+                                                if (removedFocusNode != null) {
+                                                  WidgetsBinding.instance
+                                                      .addPostFrameCallback((_) {
+                                                    removedFocusNode!.dispose();
+                                                  });
+                                                }
+                                              },
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.more_horiz,
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                ),
-                                onPressed: () => _showNoteActions(
-                                  context,
-                                  index ?? -1,
-                                  false,
-                                  editorReminder: noteReminder,
-                                  editorReminderRepeat: noteReminderRepeat,
-                                  onReminderChanged: (reminder, repeat) {
-                                    pushUndoCheckpoint();
-                                    setModalState(() {
-                                      noteReminder = reminder;
-                                      noteReminderRepeat = repeat;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  body: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      if (deletingAttachmentId != null) {
-                        setModalState(() => deletingAttachmentId = null);
-                      }
-                    },
-                    child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextField(
-                          selectionWidthStyle: ui.BoxWidthStyle.tight,
-                          contextMenuBuilder: buildCustomContextMenu,
-                          selectionHeightStyle: ui.BoxHeightStyle.max,
-                          controller: _titleController,
-                          textCapitalization: TextCapitalization.sentences,
-                          onChanged: (v) {
-                            noteTextEdited(v);
-                            titleModel = v;
-                          },
-                          decoration: InputDecoration(
-                            hintText: 'Başlık',
-                            hintStyle: const TextStyle(color: Colors.grey),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: dNoteBorderColor(context),
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: dNoteBorderColor(context),
-                              ),
-                            ),
-                          ),
-                          style: TextStyle(
-                            color: dNoteEffectiveTextColor(context, _textColor),
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        if (noteType == 'text')
-                          ...List.generate(blocks.length, (i) {
-                            final block = blocks[i];
-                            if (block['type'] == 'attachments') {
-                              final ids = List<String>.from(
-                                block['ids'] ?? const [],
-                              );
-                              return Padding(
-                                key: ValueKey('blk_att_$i'),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                ),
-                                child: _buildAttachmentGrid(
-                                  ids: ids,
-                                  attachmentsList: attachments,
-                                  onRemove: removeAttachmentById,
-                                  onOpen: openAttachment,
-                                  deletingId: deletingAttachmentId,
-                                  onDeletingIdChanged: (id) => setModalState(
-                                    () => deletingAttachmentId = id,
+                                    ],
                                   ),
-                                ),
-                              );
-                            }
-                            if (block['type'] == 'checklist') {
-                              final items = List<Map<String, dynamic>>.from(
-                                block['items'] ?? const [],
-                              );
-                              final itemCtrls =
-                                  blockItemControllers[i] ??
-                                  <TextEditingController>[];
-                              final itemFns =
-                                  blockItemFocusNodes[i] ?? <FocusNode>[];
-                              return Padding(
-                                key: ValueKey('blk_checklist_$i'),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ...List.generate(items.length, (j) {
-                                      return Row(
-                                        children: [
-                                          Checkbox(
-                                            value:
-                                                items[j]['checked']
-                                                    as bool? ??
-                                                false,
-                                            activeColor: Colors.amber,
-                                            onChanged: (val) {
-                                              pushUndoCheckpoint();
-                                              setModalState(() {
-                                                items[j]['checked'] =
-                                                    val ?? false;
-                                                block['items'] = items;
-                                              });
-                                            },
-                                          ),
-                                          Expanded(
-                                            child: TextField(
-                                              selectionWidthStyle:
-                                                  ui.BoxWidthStyle.tight,
-                                              controller: j < itemCtrls.length
-                                                  ? itemCtrls[j]
-                                                  : null,
-                                              focusNode: j < itemFns.length
-                                                  ? itemFns[j]
-                                                  : null,
-                                              textInputAction:
-                                                  TextInputAction.next,
-                                              textCapitalization:
-                                                  TextCapitalization.sentences,
-                                              contextMenuBuilder:
-                                                  buildCustomContextMenu,
-                                              selectionHeightStyle:
-                                                  ui.BoxHeightStyle.max,
-                                              style: TextStyle(
-                                                color:
-                                                    items[j]['checked'] ==
-                                                        true
-                                                    ? Colors.grey
-                                                    : dNoteEffectiveTextColor(
-                                                        context,
-                                                        _textColor,
-                                                      ),
-                                                decoration:
-                                                    items[j]['checked'] ==
-                                                        true
-                                                    ? TextDecoration
-                                                          .lineThrough
-                                                    : null,
-                                                fontSize: index != null
-                                                    ? ((_notes[index!]['fontSize']
-                                                                  as num?)
-                                                              ?.toDouble() ??
-                                                          _globalFontSize)
-                                                    : _globalFontSize,
-                                              ),
-                                              decoration: const InputDecoration(
-                                                hintText: 'Madde...',
-                                                hintStyle: TextStyle(
-                                                  color: Colors.grey,
-                                                ),
-                                                border: InputBorder.none,
-                                              ),
-                                              onChanged: (val) {
-                                                noteTextEdited(val);
-                                                items[j]['text'] = val;
-                                                block['items'] = items;
-                                              },
-                                              onSubmitted: (_) {
-                                                pushUndoCheckpoint();
-                                                setModalState(() {
-                                                  final newIndex = j + 1;
-                                                  items.insert(newIndex, {
-                                                    'text': '',
-                                                    'checked': false,
-                                                  });
-                                                  block['items'] = items;
-                                                  itemCtrls.insert(
-                                                    newIndex,
-                                                    TextEditingController(),
-                                                  );
-                                                  itemFns.insert(
-                                                    newIndex,
-                                                    FocusNode(),
-                                                  );
-                                                });
-                                                Future.microtask(() {
-                                                  itemFns[j + 1].requestFocus();
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(
-                                              Icons.close,
-                                              color: Colors.grey,
-                                              size: 18,
-                                            ),
-                                            onPressed: () {
-                                              pushUndoCheckpoint();
-                                              // Aynı beyaz ekran sorunu:
-                                              // odaklı bir FocusNode'u
-                                              // önce odaktan çıkarmadan
-                                              // dispose etmeyelim.
-                                              FocusNode? removedFocusNode;
-                                              if (j < itemFns.length) {
-                                                removedFocusNode = itemFns[j];
-                                                if (removedFocusNode
-                                                    .hasFocus) {
-                                                  removedFocusNode.unfocus();
-                                                }
-                                              }
-                                              setModalState(() {
-                                                items.removeAt(j);
-                                                block['items'] = items;
-                                                if (j < itemCtrls.length) {
-                                                  itemCtrls
-                                                      .removeAt(j)
-                                                      .dispose();
-                                                }
-                                                if (j < itemFns.length) {
-                                                  itemFns.removeAt(j);
-                                                }
-                                              });
-                                              if (removedFocusNode != null) {
-                                                WidgetsBinding.instance
-                                                    .addPostFrameCallback((_) {
-                                                  removedFocusNode!.dispose();
-                                                });
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    }),
-                                  ],
-                                ),
-                              );
-                            }
-                            if (block['type'] == 'calc_table') {
-                              final rows = List<Map<String, dynamic>>.from(
-                                block['rows'] ?? const [],
-                              );
-                              final labelCtrls =
-                                  blockTableLabelControllers[i] ??
-                                  <TextEditingController>[];
-                              final valueCtrls =
-                                  blockTableValueControllers[i] ??
-                                  <TextEditingController>[];
-                              final labelFns =
-                                  blockTableLabelFocusNodes[i] ??
-                                  <FocusNode>[];
-                              final fontSize = index != null
-                                  ? ((_notes[index!]['fontSize'] as num?)
-                                            ?.toDouble() ??
-                                        _globalFontSize)
-                                  : _globalFontSize;
-                              double total = 0;
-                              for (final r in rows) {
-                                total += ContentBlocks.parseCalcValue(
-                                  r['value'],
                                 );
                               }
-                              return Padding(
-                                key: ValueKey('blk_calctable_$i'),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ...List.generate(rows.length, (j) {
-                                      return Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                              if (block['type'] == 'calc_table') {
+                                final rows = List<Map<String, dynamic>>.from(
+                                  block['rows'] ?? const [],
+                                );
+                                final labelCtrls =
+                                    blockTableLabelControllers[i] ??
+                                    <TextEditingController>[];
+                                final valueCtrls =
+                                    blockTableValueControllers[i] ??
+                                    <TextEditingController>[];
+                                final labelFns =
+                                    blockTableLabelFocusNodes[i] ??
+                                    <FocusNode>[];
+                                final fontSize = index != null
+                                    ? ((_notes[index!]['fontSize'] as num?)
+                                              ?.toDouble() ??
+                                          _globalFontSize)
+                                    : _globalFontSize;
+                                double total = 0;
+                                for (final r in rows) {
+                                  total += ContentBlocks.parseCalcValue(
+                                    r['value'],
+                                  );
+                                }
+                                return Padding(
+                                  key: ValueKey('blk_calctable_$i'),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          for (int j = 0; j < rows.length; j++)
+                                            Row(
+                                              key: ValueKey(rows[j]),
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                            Expanded(
+                                              flex: 3,
+                                              child: TextField(
+                                                selectionWidthStyle:
+                                                    ui.BoxWidthStyle.tight,
+                                                controller:
+                                                    j < labelCtrls.length
+                                                    ? labelCtrls[j]
+                                                    : null,
+                                                focusNode: j < labelFns.length
+                                                    ? labelFns[j]
+                                                    : null,
+                                                textCapitalization:
+                                                    TextCapitalization.sentences,
+                                                contextMenuBuilder:
+                                                    buildCustomContextMenu,
+                                                selectionHeightStyle:
+                                                    ui.BoxHeightStyle.max,
+                                                style: TextStyle(
+                                                  color: dNoteEffectiveTextColor(
+                                                    context,
+                                                    _textColor,
+                                                  ),
+                                                  fontSize: fontSize,
+                                                ),
+                                                decoration:
+                                                    const InputDecoration(
+                                                  hintText: 'Kalem...',
+                                                  hintStyle: TextStyle(
+                                                    color: Colors.grey,
+                                                  ),
+                                                  border: InputBorder.none,
+                                                ),
+                                                onChanged: (val) {
+                                                  noteTextEdited(
+                                                    'calc_label_${i}_$j',
+                                                    labelCtrls[j],
+                                                  );
+                                                  rows[j]['label'] = val;
+                                                  block['rows'] = rows;
+                                                },
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              flex: 2,
+                                              child: TextField(
+                                                selectionWidthStyle:
+                                                    ui.BoxWidthStyle.tight,
+                                                controller:
+                                                    j < valueCtrls.length
+                                                    ? valueCtrls[j]
+                                                    : null,
+                                                contextMenuBuilder:
+                                                    buildCustomContextMenu,
+                                                selectionHeightStyle:
+                                                    ui.BoxHeightStyle.max,
+                                                textAlign: TextAlign.right,
+                                                inputFormatters: [
+                                                  CalcTableInputFormatter(),
+                                                ],
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                // Bkz. yukarıdaki madde alanı
+                                                // için açıklama: Flutter'ın
+                                                // TextInputAction.next
+                                                // varsayılan odak değiştirme
+                                                // davranışı devre dışı
+                                                // bırakılıyor, aksi halde
+                                                // Enter'a basınca klavye önce
+                                                // kapanıp hemen ardından tekrar
+                                                // açılıyordu.
+                                                onEditingComplete: () {},
+                                                keyboardType:
+                                                    const TextInputType
+                                                        .numberWithOptions(
+                                                  decimal: true,
+                                                  signed: true,
+                                                ),
+                                                style: TextStyle(
+                                                  color: dNoteEffectiveTextColor(
+                                                    context,
+                                                    _textColor,
+                                                  ),
+                                                  fontSize: fontSize,
+                                                ),
+                                                decoration:
+                                                    const InputDecoration(
+                                                  hintText: '0',
+                                                  hintStyle: TextStyle(
+                                                    color: Colors.grey,
+                                                  ),
+                                                  border: InputBorder.none,
+                                                ),
+                                                onChanged: (val) {
+                                                  noteTextEdited(
+                                                    'calc_value_${i}_$j',
+                                                    valueCtrls[j],
+                                                  );
+                                                  setModalState(() {
+                                                    rows[j]['value'] = val;
+                                                    block['rows'] = rows;
+                                                  });
+                                                },
+                                                onSubmitted: (_) {
+                                                  pushUndoCheckpoint();
+                                                  setModalState(() {
+                                                    final newIndex = j + 1;
+                                                    rows.insert(newIndex, {
+                                                      'label': '',
+                                                      'value': '',
+                                                    });
+                                                    block['rows'] = rows;
+                                                    labelCtrls.insert(
+                                                      newIndex,
+                                                      TextEditingController(),
+                                                    );
+                                                    valueCtrls.insert(
+                                                      newIndex,
+                                                      TextEditingController(),
+                                                    );
+                                                    labelFns.insert(
+                                                      newIndex,
+                                                      FocusNode(),
+                                                    );
+                                                  });
+                                                  WidgetsBinding.instance
+                                                      .addPostFrameCallback((_) {
+                                                    labelFns[j + 1]
+                                                        .requestFocus();
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.close,
+                                                color: Colors.grey,
+                                                size: 18,
+                                              ),
+                                              onPressed: () {
+                                                pushUndoCheckpoint();
+                                                FocusNode? removedFocusNode;
+                                                if (j < labelFns.length) {
+                                                  removedFocusNode = labelFns[j];
+                                                  if (removedFocusNode
+                                                      .hasFocus) {
+                                                    removedFocusNode.unfocus();
+                                                  }
+                                                }
+                                                bool tableRemoved = false;
+                                                setModalState(() {
+                                                  rows.removeAt(j);
+                                                  block['rows'] = rows;
+                                                  if (rows.isEmpty) {
+                                                    // Son satır da silindi:
+                                                    // "Toplam" satırıyla
+                                                    // birlikte boş bir tablo
+                                                    // ekranda asılı kalmasın
+                                                    // diye hesap tablosu
+                                                    // bloğunun tamamını
+                                                    // kaldırıyoruz. Ek/checklist
+                                                    // bloğu silinirken
+                                                    // kullanılanla aynı desen:
+                                                    // komşu metin blokları
+                                                    // varsa birleştir, yoksa
+                                                    // sadece bloğu çıkar; blok
+                                                    // listesi tamamen boş
+                                                    // kalırsa boş bir metin
+                                                    // bloğu ekle. Controller/
+                                                    // focus node dispose'u
+                                                    // rebuildBlockControllers()
+                                                    // güvenli şekilde kendisi
+                                                    // yapar; burada ayrıca
+                                                    // dispose ETMİYORUZ (çift
+                                                    // dispose çökmeye yol
+                                                    // açar).
+                                                    tableRemoved = true;
+                                                    final prevIsText =
+                                                        i > 0 &&
+                                                        blocks[i - 1]['type'] ==
+                                                            'text';
+                                                    final nextIsText =
+                                                        i < blocks.length - 1 &&
+                                                        blocks[i + 1]['type'] ==
+                                                            'text';
+                                                    if (prevIsText &&
+                                                        nextIsText) {
+                                                      final mergedText =
+                                                          ((blocks[i - 1]['text'] ??
+                                                                  '')
+                                                              .toString()) +
+                                                          ((blocks[i + 1]['text'] ??
+                                                                  '')
+                                                              .toString());
+                                                      blocks[i - 1]['text'] =
+                                                          mergedText;
+                                                      blocks.removeAt(i + 1);
+                                                      blocks.removeAt(i);
+                                                    } else {
+                                                      blocks.removeAt(i);
+                                                    }
+                                                    if (blocks.isEmpty) {
+                                                      blocks.add({
+                                                        'type': 'text',
+                                                        'text': '',
+                                                      });
+                                                    }
+                                                    rebuildBlockControllers();
+                                                  } else {
+                                                    if (j < labelCtrls.length) {
+                                                      labelCtrls
+                                                          .removeAt(j)
+                                                          .dispose();
+                                                    }
+                                                    if (j < valueCtrls.length) {
+                                                      valueCtrls
+                                                          .removeAt(j)
+                                                          .dispose();
+                                                    }
+                                                    if (j < labelFns.length) {
+                                                      labelFns.removeAt(j);
+                                                    }
+                                                  }
+                                                });
+                                                if (!tableRemoved &&
+                                                    removedFocusNode != null) {
+                                                  WidgetsBinding.instance
+                                                      .addPostFrameCallback((_) {
+                                                    removedFocusNode!.dispose();
+                                                  });
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                    ],
+                                  ),
+                                  Divider(color: dNoteBorderColor(context)),
+                                      Row(
                                         children: [
                                           Expanded(
                                             flex: 3,
-                                            child: TextField(
-                                              selectionWidthStyle:
-                                                  ui.BoxWidthStyle.tight,
-                                              controller:
-                                                  j < labelCtrls.length
-                                                  ? labelCtrls[j]
-                                                  : null,
-                                              focusNode: j < labelFns.length
-                                                  ? labelFns[j]
-                                                  : null,
-                                              textCapitalization:
-                                                  TextCapitalization.sentences,
-                                              contextMenuBuilder:
-                                                  buildCustomContextMenu,
-                                              selectionHeightStyle:
-                                                  ui.BoxHeightStyle.max,
+                                            child: Text(
+                                              'Toplam',
                                               style: TextStyle(
+                                                fontWeight: FontWeight.bold,
                                                 color: dNoteEffectiveTextColor(
                                                   context,
                                                   _textColor,
                                                 ),
                                                 fontSize: fontSize,
                                               ),
-                                              decoration:
-                                                  const InputDecoration(
-                                                hintText: 'Kalem...',
-                                                hintStyle: TextStyle(
-                                                  color: Colors.grey,
-                                                ),
-                                                border: InputBorder.none,
-                                              ),
-                                              onChanged: (val) {
-                                                noteTextEdited(val);
-                                                rows[j]['label'] = val;
-                                                block['rows'] = rows;
-                                              },
                                             ),
                                           ),
                                           const SizedBox(width: 8),
                                           Expanded(
-                                            flex: 1,
-                                            child: TextField(
-                                              selectionWidthStyle:
-                                                  ui.BoxWidthStyle.tight,
-                                              controller:
-                                                  j < valueCtrls.length
-                                                  ? valueCtrls[j]
-                                                  : null,
-                                              contextMenuBuilder:
-                                                  buildCustomContextMenu,
-                                              selectionHeightStyle:
-                                                  ui.BoxHeightStyle.max,
-                                              textAlign: TextAlign.right,
-                                              textInputAction:
-                                                  TextInputAction.next,
-                                              keyboardType:
-                                                  const TextInputType
-                                                      .numberWithOptions(
-                                                decimal: true,
-                                                signed: true,
+                                            flex: 2,
+                                            child: Text(
+                                              ContentBlocks.formatCalcNumber(
+                                                total,
                                               ),
+                                              textAlign: TextAlign.right,
                                               style: TextStyle(
+                                                fontWeight: FontWeight.bold,
                                                 color: dNoteEffectiveTextColor(
                                                   context,
                                                   _textColor,
                                                 ),
                                                 fontSize: fontSize,
                                               ),
-                                              decoration:
-                                                  const InputDecoration(
-                                                hintText: '0',
-                                                hintStyle: TextStyle(
+                                            ),
+                                          ),
+                                          const SizedBox(width: 48),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                              Widget buildTextBlockField(bool showHint) {
+                                return TextField(
+                                  key: ValueKey('blk_text_$i'),
+                                  selectionWidthStyle: ui.BoxWidthStyle.tight,
+                                  contextMenuBuilder: buildCustomContextMenu,
+                                  selectionHeightStyle: ui.BoxHeightStyle.max,
+                                  controller: blockControllers[i],
+                                  focusNode: blockFocusNodes[i],
+                                  autofocus: i == 0 && index == null,
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
+                                  maxLines: null,
+                                  keyboardType: TextInputType.multiline,
+                                  decoration: InputDecoration(
+                                    hintText: showHint
+                                        ? 'Notunuzu buraya yazın...'
+                                        : null,
+                                    hintStyle: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                    border: InputBorder.none,
+                                  ),
+                                  style: TextStyle(
+                                    color: dNoteEffectiveTextColor(
+                                      context,
+                                      _textColor,
+                                    ),
+                                    fontSize: index != null
+                                        ? ((_notes[index!]['fontSize'] as num?)
+                                                  ?.toDouble() ??
+                                              _globalFontSize)
+                                        : _globalFontSize,
+                                    height: 1.6,
+                                  ),
+                                  onChanged: (val) {
+                                    // NOT: blockControllers, 'checklist'/'calc'
+                                    // gibi metin dışı bloklar için null tutar
+                                    // (List<TextEditingController?>); ama bu
+                                    // dal yalnızca 'text' tipi bloklar için
+                                    // çalışıyor ve orada her zaman gerçek bir
+                                    // controller oluşturulmuş olur. Bu yüzden
+                                    // burada null-olmayan onay (!) güvenlidir.
+                                    noteTextEdited(
+                                      'block_$i',
+                                      blockControllers[i]!,
+                                    );
+                                    block['text'] = val;
+                                  },
+                                  onTap: () => focusedBlockIndex = i,
+                                );
+                              }
+
+                              if (i == 0) {
+                                return AnimatedBuilder(
+                                  animation: contentListenable,
+                                  builder: (context, _) => buildTextBlockField(
+                                    !noteHasContent(),
+                                  ),
+                                );
+                              }
+                              return buildTextBlockField(false);
+                            });
+                          })()
+                          else ...[
+                            ReorderableListView(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              buildDefaultDragHandles: false,
+                              onReorder: (oldIndex, newIndex) {
+                                pushUndoCheckpoint();
+                                setModalState(() {
+                                  if (newIndex > oldIndex) newIndex -= 1;
+                                  final movedItem = checkItems.removeAt(
+                                    oldIndex,
+                                  );
+                                  checkItems.insert(newIndex, movedItem);
+                                  final movedCtrl = checkControllers.removeAt(
+                                    oldIndex,
+                                  );
+                                  checkControllers.insert(newIndex, movedCtrl);
+                                  final movedFn = checkFocusNodes.removeAt(
+                                    oldIndex,
+                                  );
+                                  checkFocusNodes.insert(newIndex, movedFn);
+                                  if (newlyAddedIndex == oldIndex) {
+                                    newlyAddedIndex = newIndex;
+                                  }
+                                });
+                              },
+                              children: [
+                                for (int i = 0; i < checkItems.length; i++)
+                                  Row(
+                                    key: ValueKey(checkItems[i]),
+                                    children: [
+                                      ReorderableDragStartListener(
+                                        index: i,
+                                        child: const Padding(
+                                          padding: EdgeInsets.only(right: 4),
+                                          child: Icon(
+                                            Icons.drag_indicator,
+                                            color: Colors.grey,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
+                                      Checkbox(
+                                        value:
+                                            checkItems[i]['checked']
+                                                as bool? ??
+                                            false,
+                                        activeColor: Colors.amber,
+                                        onChanged: (val) {
+                                          pushUndoCheckpoint();
+                                          setModalState(() {
+                                            checkItems[i]['checked'] =
+                                                val ?? false;
+                                          });
+                                        },
+                                      ),
+                                  Expanded(
+                                    child: TextField(
+                                      selectionWidthStyle: ui.BoxWidthStyle.tight,
+                                      controller: checkControllers[i],
+                                      focusNode: checkFocusNodes[i],
+                                      autofocus: newlyAddedIndex == i,
+                                      textInputAction: TextInputAction.next,
+                                      // Bkz. yukarıdaki alanlarla aynı sebep:
+                                      // varsayılan "next" odak davranışını
+                                      // devre dışı bırakıyoruz.
+                                      onEditingComplete: () {},
+                                      textCapitalization:
+                                          TextCapitalization.sentences,
+                                      contextMenuBuilder: buildCustomContextMenu,
+                                      selectionHeightStyle: ui.BoxHeightStyle.max,
+                                      style: TextStyle(
+                                        color: dNoteEffectiveTextColor(context, _textColor),
+                                        fontSize: 16,
+                                      ),
+                                      decoration: const InputDecoration(
+                                        hintText: 'Madde...',
+                                        hintStyle: TextStyle(color: Colors.grey),
+                                        border: InputBorder.none,
+                                      ),
+                                      onChanged: (val) {
+                                        noteTextEdited('checkitem_$i', checkControllers[i]);
+                                        checkItems[i]['text'] = val;
+                                      },
+                                      onSubmitted: (_) {
+                                        pushUndoCheckpoint();
+                                        setModalState(() {
+                                          final newIndex = i + 1;
+                                          checkItems.insert(newIndex, {
+                                            'text': '',
+                                            'checked': false,
+                                          });
+                                          checkControllers.insert(
+                                            newIndex,
+                                            TextEditingController(),
+                                          );
+                                          checkFocusNodes.insert(
+                                            newIndex,
+                                            FocusNode(),
+                                          );
+                                          newlyAddedIndex = newIndex;
+                                        });
+                                        WidgetsBinding.instance
+                                            .addPostFrameCallback((_) {
+                                          checkFocusNodes[i + 1].requestFocus();
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.close,
+                                      color: Colors.grey,
+                                      size: 18,
+                                    ),
+                                    onPressed: () {
+                                      pushUndoCheckpoint();
+                                      // Silinecek madde o an odaklıysa (klavye
+                                      // ona yazıyorsa), FocusNode'u odaktan
+                                      // çıkarmadan hemen dispose etmek Flutter'ın
+                                      // bir sonraki frame'de o node'a erişmeye
+                                      // çalışmasına ve "kullanılan FocusNode
+                                      // dispose edildi" hatasıyla ekranın
+                                      // bembeyaz kalmasına yol açabiliyordu.
+                                      // Önce odaktan çıkar, dispose'u da bir
+                                      // sonraki frame'e ertele.
+                                      final removedFocusNode = checkFocusNodes[i];
+                                      if (removedFocusNode.hasFocus) {
+                                        removedFocusNode.unfocus();
+                                      }
+                                      setModalState(() {
+                                        checkItems.removeAt(i);
+                                        checkControllers.removeAt(i).dispose();
+                                        checkFocusNodes.removeAt(i);
+                                        newlyAddedIndex = null;
+                                      });
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) {
+                                        removedFocusNode.dispose();
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          ],
+                          if (noteType != 'text' && attachments.isNotEmpty) ...[
+                            const SizedBox(height: 20),
+                            FutureBuilder<String>(
+                              future: DBHelper.instance.attachmentsDir().then(
+                                (d) => d.path,
+                              ),
+                              builder: (context, snapshot) {
+                                final dirPath = snapshot.data;
+                                if (dirPath == null) {
+                                  return const SizedBox.shrink();
+                                }
+                                return Wrap(
+                                  spacing: 10,
+                                  runSpacing: 10,
+                                  children: List.generate(attachments.length, (
+                                    i,
+                                  ) {
+                                    final att = attachments[i];
+                                    final isImage = att['isImage'] == true;
+                                    final filePath = p.join(
+                                      dirPath,
+                                      att['storedName'].toString(),
+                                    );
+                                    final preview = isImage
+                                        ? Image.file(
+                                            File(filePath),
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (_, __, ___) =>
+                                                const Icon(
+                                                  Icons.broken_image_outlined,
                                                   color: Colors.grey,
                                                 ),
-                                                border: InputBorder.none,
-                                              ),
-                                              onChanged: (val) {
-                                                noteTextEdited(val);
-                                                setModalState(() {
-                                                  rows[j]['value'] = val;
-                                                  block['rows'] = rows;
-                                                });
-                                              },
-                                              onSubmitted: (_) {
-                                                pushUndoCheckpoint();
-                                                setModalState(() {
-                                                  final newIndex = j + 1;
-                                                  rows.insert(newIndex, {
-                                                    'label': '',
-                                                    'value': '',
-                                                  });
-                                                  block['rows'] = rows;
-                                                  labelCtrls.insert(
-                                                    newIndex,
-                                                    TextEditingController(),
-                                                  );
-                                                  valueCtrls.insert(
-                                                    newIndex,
-                                                    TextEditingController(),
-                                                  );
-                                                  labelFns.insert(
-                                                    newIndex,
-                                                    FocusNode(),
-                                                  );
-                                                });
-                                                Future.microtask(() {
-                                                  labelFns[j + 1]
-                                                      .requestFocus();
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(
-                                              Icons.close,
-                                              color: Colors.grey,
-                                              size: 18,
-                                            ),
-                                            onPressed: () {
-                                              pushUndoCheckpoint();
-                                              FocusNode? removedFocusNode;
-                                              if (j < labelFns.length) {
-                                                removedFocusNode = labelFns[j];
-                                                if (removedFocusNode
-                                                    .hasFocus) {
-                                                  removedFocusNode.unfocus();
-                                                }
-                                              }
-                                              setModalState(() {
-                                                rows.removeAt(j);
-                                                block['rows'] = rows;
-                                                if (j < labelCtrls.length) {
-                                                  labelCtrls
-                                                      .removeAt(j)
-                                                      .dispose();
-                                                }
-                                                if (j < valueCtrls.length) {
-                                                  valueCtrls
-                                                      .removeAt(j)
-                                                      .dispose();
-                                                }
-                                                if (j < labelFns.length) {
-                                                  labelFns.removeAt(j);
-                                                }
-                                              });
-                                              if (removedFocusNode != null) {
-                                                WidgetsBinding.instance
-                                                    .addPostFrameCallback((_) {
-                                                  removedFocusNode!.dispose();
-                                                });
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    }),
-                                    Divider(color: dNoteBorderColor(context)),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: Text(
-                                            'Toplam',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: dNoteEffectiveTextColor(
-                                                context,
-                                                _textColor,
-                                              ),
-                                              fontSize: fontSize,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Text(
-                                            ContentBlocks.formatCalcNumber(
-                                              total,
-                                            ),
-                                            textAlign: TextAlign.right,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: dNoteEffectiveTextColor(
-                                                context,
-                                                _textColor,
-                                              ),
-                                              fontSize: fontSize,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 48),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-                            return TextField(
-                              key: ValueKey('blk_text_$i'),
-                              selectionWidthStyle: ui.BoxWidthStyle.tight,
-                              contextMenuBuilder: buildCustomContextMenu,
-                              selectionHeightStyle: ui.BoxHeightStyle.max,
-                              controller: blockControllers[i],
-                              focusNode: blockFocusNodes[i],
-                              autofocus: i == 0 && index == null,
-                              textCapitalization: TextCapitalization.sentences,
-                              maxLines: null,
-                              keyboardType: TextInputType.multiline,
-                              decoration: InputDecoration(
-                                hintText: i == 0
-                                    ? 'Notunuzu buraya yazın...'
-                                    : null,
-                                hintStyle: const TextStyle(color: Colors.grey),
-                                border: InputBorder.none,
-                              ),
-                              style: TextStyle(
+                                          )
+                                        : _buildDocPreview(att, filePath);
+                                    return _AttachmentTile(
+                                      width: isImage ? 84 : 130,
+                                      height: 84,
+                                      preview: preview,
+                                      showDelete:
+                                          deletingAttachmentId ==
+                                          att['id'].toString(),
+                                      onOpen: () => openAttachment(att),
+                                      onRemove: () => removeAttachment(i),
+                                      onLongPress: () => setModalState(
+                                        () => deletingAttachmentId =
+                                            att['id'].toString(),
+                                      ),
+                                      onDismissDelete: () => setModalState(
+                                        () => deletingAttachmentId = null,
+                                      ),
+                                    );
+                                  }),
+                                );
+                              },
+                            ),
+                          ],
+                          const SizedBox(height: 20),
+                          Builder(
+                            builder: (context) {
+                              final hasReminder = noteReminder != null;
+                              final hasCategory =
+                                  noteCategory != null &&
+                                  noteCategory!.isNotEmpty;
+                              if (!hasReminder && !hasCategory) {
+                                return const SizedBox.shrink();
+                              }
+                              // Alarm yazısı ve kategori etiketi aynı renk,
+                              // boyut ve stili paylaşır; yan yana dururlar
+                              // (önce alarm, sonra etiket). Renk: koyu temada
+                              // beyaz, açık temada koyu (temanın etkin metin
+                              // rengi). İtalik değil.
+                              final tagTextStyle = TextStyle(
                                 color: dNoteEffectiveTextColor(context, _textColor),
                                 fontSize: index != null
                                     ? ((_notes[index!]['fontSize'] as num?)
                                               ?.toDouble() ??
                                           _globalFontSize)
                                     : _globalFontSize,
-                                height: 1.6,
-                              ),
-                              onChanged: (val) {
-                                noteTextEdited(val);
-                                block['text'] = val;
-                              },
-                              onTap: () => focusedBlockIndex = i,
-                            );
-                          })
-                        else ...[
-                          ...checkItems.asMap().entries.map((entry) {
-                            final i = entry.key;
-                            final item = entry.value;
-                            return Row(
-                              children: [
-                                Checkbox(
-                                  value: item['checked'] as bool? ?? false,
-                                  activeColor: Colors.amber,
-                                  onChanged: (val) {
-                                    pushUndoCheckpoint();
-                                    setModalState(() {
-                                      checkItems[i]['checked'] = val ?? false;
-                                    });
-                                  },
-                                ),
-                                Expanded(
-                                  child: TextField(
-                                    selectionWidthStyle: ui.BoxWidthStyle.tight,
-                                    controller: checkControllers[i],
-                                    focusNode: checkFocusNodes[i],
-                                    autofocus: newlyAddedIndex == i,
-                                    textInputAction: TextInputAction.next,
-                                    textCapitalization:
-                                        TextCapitalization.sentences,
-                                    contextMenuBuilder: buildCustomContextMenu,
-                                    selectionHeightStyle: ui.BoxHeightStyle.max,
-                                    style: TextStyle(
-                                      color: dNoteEffectiveTextColor(context, _textColor),
-                                      fontSize: 16,
-                                    ),
-                                    decoration: const InputDecoration(
-                                      hintText: 'Madde...',
-                                      hintStyle: TextStyle(color: Colors.grey),
-                                      border: InputBorder.none,
-                                    ),
-                                    onChanged: (val) {
-                                      noteTextEdited(val);
-                                      checkItems[i]['text'] = val;
-                                    },
-                                    onSubmitted: (_) {
-                                      pushUndoCheckpoint();
-                                      setModalState(() {
-                                        final newIndex = i + 1;
-                                        checkItems.insert(newIndex, {
-                                          'text': '',
-                                          'checked': false,
-                                        });
-                                        checkControllers.insert(
-                                          newIndex,
-                                          TextEditingController(),
-                                        );
-                                        checkFocusNodes.insert(
-                                          newIndex,
-                                          FocusNode(),
-                                        );
-                                        newlyAddedIndex = newIndex;
-                                      });
-                                      Future.microtask(() {
-                                        checkFocusNodes[i + 1].requestFocus();
-                                      });
-                                    },
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.close,
-                                    color: Colors.grey,
-                                    size: 18,
-                                  ),
-                                  onPressed: () {
-                                    pushUndoCheckpoint();
-                                    // Silinecek madde o an odaklıysa (klavye
-                                    // ona yazıyorsa), FocusNode'u odaktan
-                                    // çıkarmadan hemen dispose etmek Flutter'ın
-                                    // bir sonraki frame'de o node'a erişmeye
-                                    // çalışmasına ve "kullanılan FocusNode
-                                    // dispose edildi" hatasıyla ekranın
-                                    // bembeyaz kalmasına yol açabiliyordu.
-                                    // Önce odaktan çıkar, dispose'u da bir
-                                    // sonraki frame'e ertele.
-                                    final removedFocusNode = checkFocusNodes[i];
-                                    if (removedFocusNode.hasFocus) {
-                                      removedFocusNode.unfocus();
-                                    }
-                                    setModalState(() {
-                                      checkItems.removeAt(i);
-                                      checkControllers.removeAt(i).dispose();
-                                      checkFocusNodes.removeAt(i);
-                                      newlyAddedIndex = null;
-                                    });
-                                    WidgetsBinding.instance
-                                        .addPostFrameCallback((_) {
-                                      removedFocusNode.dispose();
-                                    });
-                                  },
-                                ),
-                              ],
-                            );
-                          }),
-                        ],
-                        if (noteType != 'text' && attachments.isNotEmpty) ...[
-                          const SizedBox(height: 20),
-                          FutureBuilder<String>(
-                            future: DBHelper.instance.attachmentsDir().then(
-                              (d) => d.path,
-                            ),
-                            builder: (context, snapshot) {
-                              final dirPath = snapshot.data;
-                              if (dirPath == null) {
-                                return const SizedBox.shrink();
-                              }
-                              return Wrap(
-                                spacing: 10,
-                                runSpacing: 10,
-                                children: List.generate(attachments.length, (
-                                  i,
-                                ) {
-                                  final att = attachments[i];
-                                  final isImage = att['isImage'] == true;
-                                  final filePath = p.join(
-                                    dirPath,
-                                    att['storedName'].toString(),
-                                  );
-                                  final preview = isImage
-                                      ? Image.file(
-                                          File(filePath),
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) =>
-                                              const Icon(
-                                                Icons.broken_image_outlined,
+                              );
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: Wrap(
+                                  spacing: 12,
+                                  runSpacing: 8,
+                                  crossAxisAlignment: WrapCrossAlignment.center,
+                                  children: [
+                                    if (hasReminder)
+                                      GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: () => _handleReminderRowTap(
+                                          context: context,
+                                          currentReminder: noteReminder,
+                                          currentRepeat: noteReminderRepeat,
+                                          onChanged: (reminder, repeat) {
+                                            pushUndoCheckpoint();
+                                            setModalState(() {
+                                              noteReminder = reminder;
+                                              noteReminderRepeat = repeat;
+                                            });
+                                          },
+                                        ),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 14,
+                                            vertical: 8,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: dNoteBorderColor(context),
+                                              width: 1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                noteReminderRepeat == null
+                                                    ? Icons.access_time
+                                                    : Icons.repeat,
+                                                size: 16,
                                                 color: Colors.grey,
                                               ),
-                                        )
-                                      : Padding(
-                                          padding: const EdgeInsets.all(8),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              const Icon(
-                                                Icons
-                                                    .insert_drive_file_outlined,
-                                                color: Colors.amber,
-                                                size: 28,
-                                              ),
-                                              const SizedBox(height: 6),
-                                              Text(
-                                                (att['fileName'] ?? '')
-                                                    .toString(),
-                                                textAlign: TextAlign.center,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  color: Colors.white70,
-                                                  fontSize: 11,
+                                              const SizedBox(width: 6),
+                                              Flexible(
+                                                child: Text(
+                                                  noteReminderRepeat == null
+                                                      ? _formatDateTimeShortTr(
+                                                          noteReminder!,
+                                                        )
+                                                      : '${_formatDateTimeShortTr(noteReminder!)} · ${_reminderRepeatLabelTr(noteReminderRepeat)}',
+                                                  style: tagTextStyle,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
                                                 ),
                                               ),
                                             ],
                                           ),
-                                        );
-                                  return _AttachmentTile(
-                                    width: isImage ? 84 : 130,
-                                    height: 84,
-                                    preview: preview,
-                                    showDelete:
-                                        deletingAttachmentId ==
-                                        att['id'].toString(),
-                                    onOpen: () => openAttachment(att),
-                                    onRemove: () => removeAttachment(i),
-                                    onLongPress: () => setModalState(
-                                      () => deletingAttachmentId =
-                                          att['id'].toString(),
-                                    ),
-                                    onDismissDelete: () => setModalState(
-                                      () => deletingAttachmentId = null,
-                                    ),
-                                  );
-                                }),
+                                        ),
+                                      ),
+                                    if (hasCategory)
+                                      OutlinedButton(
+                                        style: OutlinedButton.styleFrom(
+                                          foregroundColor:
+                                              dNoteEffectiveTextColor(
+                                            context,
+                                            _textColor,
+                                          ),
+                                          side: BorderSide(
+                                            color: dNoteBorderColor(context),
+                                            width: 1,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 14,
+                                            vertical: 8,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Icon(
+                                              Icons.folder_outlined,
+                                              size: 16,
+                                              color: Colors.grey,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Flexible(
+                                              child: Text(
+                                                noteCategory!,
+                                                style: tagTextStyle,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        onPressed: () {
+                                          if (index != null) {
+                                            _showClassifyDialog(
+                                              index!,
+                                              onChanged: (cat) {
+                                                pushUndoCheckpoint();
+                                                setModalState(() {
+                                                  noteCategory = cat;
+                                                });
+                                              },
+                                            );
+                                          } else {
+                                            _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDate, noteReminderRepeat);
+                                            if (_notes.isNotEmpty) {
+                                              final newIndex =
+                                                  _notes.length - 1;
+                                              _showClassifyDialog(
+                                                newIndex,
+                                                onChanged: (cat) {
+                                                  pushUndoCheckpoint();
+                                                  setModalState(() {
+                                                    noteCategory = cat;
+                                                    index = newIndex;
+                                                  });
+                                                },
+                                              );
+                                            }
+                                          }
+                                        },
+                                      ),
+                                  ],
+                                ),
                               );
                             },
                           ),
                         ],
-                        const SizedBox(height: 20),
-                        if (noteReminder != null)
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () => _handleReminderRowTap(
-                                context: context,
-                                currentReminder: noteReminder,
-                                currentRepeat: noteReminderRepeat,
-                                onChanged: (reminder, repeat) {
-                                  pushUndoCheckpoint();
-                                  setModalState(() {
-                                    noteReminder = reminder;
-                                    noteReminderRepeat = repeat;
-                                  });
-                                },
+                      ),
+                    ),
+                    ),
+                      ),
+                      SafeArea(
+                      child: Builder(
+                        builder: (context) {
+                          final Color barColor;
+                          if (_colorfulNotes && index != null && index! >= 0) {
+                            barColor =
+                                _categoryPalette[index! % _categoryPalette.length]
+                                    .withValues(alpha: 0.75);
+                          } else {
+                            barColor = _getCategoryColor(noteCategory);
+                          }
+                          return Container(
+                            height: 52,
+                            decoration: BoxDecoration(
+                              color: dNoteHeaderColor(context),
+                              border: Border(
+                                top: BorderSide(color: barColor, width: 1.5),
                               ),
-                              child: Row(
-                              mainAxisSize: MainAxisSize.min,
+                            ),
+                            child: Row(
                               children: [
-                                Icon(
-                                  noteReminderRepeat == null
-                                      ? Icons.access_time
-                                      : Icons.repeat,
-                                  size: 16,
-                                  color: Colors.grey,
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.add,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                  onPressed: () => _showAddAttachmentSheet(
+                                    context,
+                                    onSelected: (value) {
+                                      if (value == 'file') {
+                                        pickAttachments();
+                                      } else if (value == 'image') {
+                                        pickImagesFromGallery();
+                                      } else if (value == 'camera') {
+                                        pickImageFromCamera();
+                                      } else if (value == 'record') {
+                                        recordVoiceNote();
+                                      } else if (value == 'video') {
+                                        pickVideoFromCamera();
+                                      }
+                                    },
+                                  ),
                                 ),
-                                const SizedBox(width: 6),
-                                Flexible(
-                                  child: Text(
-                                    noteReminderRepeat == null
-                                        ? _formatDateTimeShortTr(noteReminder!)
-                                        : '${_formatDateTimeShortTr(noteReminder!)} · ${_reminderRepeatLabelTr(noteReminderRepeat)}',
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: index != null
-                                          ? ((_notes[index!]['fontSize']
-                                                        as num?)
-                                                    ?.toDouble() ??
-                                                _globalFontSize)
-                                          : _globalFontSize,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      InkWell(
+                                        borderRadius: BorderRadius.circular(8),
+                                        onTap: () async {
+                                          final now = DateTime.now();
+                                          final picked = await _pickCalendarDate(
+                                            context: context,
+                                            initialDate: noteAssignedDate,
+                                            firstDate: DateTime(2000, 1, 1),
+                                            lastDate: now.add(
+                                              const Duration(days: 3650),
+                                            ),
+                                            helpText: 'Notu bir güne ata',
+                                          );
+                                          if (picked == null) return;
+                                          pushUndoCheckpoint();
+                                          setModalState(() {
+                                            noteAssignedDate = DateTime(
+                                              picked.year,
+                                              picked.month,
+                                              picked.day,
+                                              noteAssignedDate.hour,
+                                              noteAssignedDate.minute,
+                                            );
+                                            noteDate = _getFormattedDate(
+                                              noteAssignedDate,
+                                            );
+                                          });
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 6,
+                                            vertical: 2,
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.event,
+                                                size: 12,
+                                                color: barColor,
+                                              ),
+                                              const SizedBox(width: 3),
+                                              Flexible(
+                                                child: Text(
+                                                  _getFormattedDate(
+                                                    noteAssignedDate,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: barColor,
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.normal,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.more_horiz,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                  onPressed: () => _showNoteActions(
+                                    context,
+                                    index ?? -1,
+                                    false,
+                                    editorReminder: noteReminder,
+                                    editorReminderRepeat: noteReminderRepeat,
+                                    onReminderChanged: (reminder, repeat) {
+                                      pushUndoCheckpoint();
+                                      setModalState(() {
+                                        noteReminder = reminder;
+                                        noteReminderRepeat = repeat;
+                                      });
+                                    },
+                                    onDiscard: () {
+                                      if (deletingAttachmentId != null) {
+                                        setModalState(
+                                          () => deletingAttachmentId = null,
+                                        );
+                                        return;
+                                      }
+                                      SystemChrome.setSystemUIOverlayStyle(
+                                        dNoteSystemBarsStyle(context),
+                                      );
+                                      isEditorOpen = false;
+                                      FocusManager.instance.primaryFocus
+                                          ?.unfocus();
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) {
+                                        if (context.mounted) {
+                                          Navigator.pop(context);
+                                        }
+                                      });
+                                    },
+                                    onInsertText: (text) {
+                                      if (noteType != 'text') {
+                                        _showInfoBar(
+                                          'Sesi yazıya çevirme yalnızca metin notlarında kullanılabilir',
+                                          icon: Icons.info_outline,
+                                        );
+                                        return;
+                                      }
+                                      if (!isEditorOpen) return;
+                                      pushUndoCheckpoint();
+                                      setModalState(() {
+                                        // İmlecin bulunduğu metin bloğunu bul;
+                                        // imleç orada yoksa son metin
+                                        // bloğuna, o da yoksa yeni bir metin
+                                        // bloğuna eklenir (bkz. dosya/görsel
+                                        // ekleme akışındaki aynı desen).
+                                        int idx = focusedBlockIndex;
+                                        if (idx < 0 ||
+                                            idx >= blocks.length ||
+                                            blocks[idx]['type'] != 'text') {
+                                          idx = blocks.lastIndexWhere(
+                                            (b) => b['type'] == 'text',
+                                          );
+                                          if (idx == -1) {
+                                            blocks.add({
+                                              'type': 'text',
+                                              'text': '',
+                                            });
+                                            idx = blocks.length - 1;
+                                          }
+                                        }
+                                        final controller =
+                                            blockControllers[idx];
+                                        final current =
+                                            controller?.text ??
+                                            (blocks[idx]['text'] ?? '')
+                                                .toString();
+                                        int offset =
+                                            controller?.selection.baseOffset ??
+                                            -1;
+                                        if (offset < 0 ||
+                                            offset > current.length) {
+                                          offset = current.length;
+                                        }
+                                        final leftText = current.substring(
+                                          0,
+                                          offset,
+                                        );
+                                        final rightText = current.substring(
+                                          offset,
+                                        );
+                                        // Sol tarafta metin varsa ve bir
+                                        // boşluk/satır sonuyla bitmiyorsa,
+                                        // eklenen metinle birleşmesin diye
+                                        // araya boşluk konur.
+                                        final needsLeadingSpace =
+                                            leftText.isNotEmpty &&
+                                            !leftText.endsWith('\n') &&
+                                            !leftText.endsWith(' ');
+                                        final insertion =
+                                            (needsLeadingSpace ? ' ' : '') +
+                                            text;
+                                        final newLeft = leftText + insertion;
+                                        blocks[idx]['text'] = newLeft + rightText;
+                                        focusedBlockIndex = idx;
+                                        rebuildBlockControllers();
+                                        final newCaretOffset = newLeft.length;
+                                        WidgetsBinding.instance
+                                            .addPostFrameCallback((_) {
+                                          final newCtrl =
+                                              blockControllers[idx];
+                                          if (newCtrl != null) {
+                                            newCtrl.selection =
+                                                TextSelection.collapsed(
+                                                  offset: newCaretOffset,
+                                                );
+                                            blockFocusNodes[idx]
+                                                ?.requestFocus();
+                                          }
+                                        });
+                                      });
+                                    },
                                   ),
                                 ),
                               ],
-                              ),
                             ),
-                          ),
-                        Builder(
-                          builder: (context) {
-                            final hasCategory =
-                                noteCategory != null &&
-                                noteCategory!.isNotEmpty;
-                            if (!hasCategory) return const SizedBox.shrink();
-                            return OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor:
-                                    dNoteEffectiveTextColor(context, _textColor),
-                                side: BorderSide(
-                                  color: dNoteBorderColor(context),
-                                  width: 1,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 8,
-                                ),
-                              ),
-                              child: Text(noteCategory!),
-                              onPressed: () {
-                                if (index != null) {
-                                  _showClassifyDialog(
-                                    index!,
-                                    onChanged: (cat) {
-                                      pushUndoCheckpoint();
-                                      setModalState(() {
-                                        noteCategory = cat;
-                                      });
-                                    },
-                                  );
-                                } else {
-                                  _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDate, noteReminderRepeat);
-                                  if (_notes.isNotEmpty) {
-                                    final newIndex = _notes.length - 1;
-                                    _showClassifyDialog(
-                                      newIndex,
-                                      onChanged: (cat) {
-                                        pushUndoCheckpoint();
-                                        setModalState(() {
-                                          noteCategory = cat;
-                                          index = newIndex;
-                                        });
-                                      },
-                                    );
-                                  }
-                                }
-                              },
-                            );
-                          },
-                        ),
-                      ],
+                          );
+                        },
+                      ),
                     ),
-                  ),
+                    ],
                   ),
                 ),
               );
@@ -5601,6 +6584,32 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 : Theme.of(context).cardColor);
                       final fontScale = _previewFontScale(note);
                       final previewImage = _firstImageAttachment(note);
+                      final previewContentText = isChecklist
+                          ? ''
+                          : ContentBlocks.plainText(
+                              note['content'] as String?,
+                            );
+                      final previewChecklistItems = isChecklist
+                          ? (note['checkItems'] as List? ?? [])
+                          : const [];
+                      final previewReminderText = _formattedReminderText(
+                        note,
+                      );
+                      final previewCategoryText = (note['category'] ?? '')
+                          .toString();
+                      // Not sadece bir görselden oluşuyorsa (başlık, metin,
+                      // kontrol listesi öğesi, hatırlatıcı, kategori veya
+                      // yıldız rozeti yoksa) altta boş bir satır bırakmamak
+                      // için gövde bölümü (Padding) hiç çizilmez.
+                      final previewShowFavoriteAlone =
+                          isFavorite && !hasTitle && !isChecklist &&
+                          previewContentText.isEmpty;
+                      final previewHasBody = hasTitle ||
+                          previewChecklistItems.isNotEmpty ||
+                          previewContentText.isNotEmpty ||
+                          previewReminderText != null ||
+                          previewCategoryText.isNotEmpty ||
+                          previewShowFavoriteAlone;
 
                       return GestureDetector(
                         onLongPress: isTrash
@@ -5686,6 +6695,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 context,
                                 originalIndex,
                                 false,
+                                onInsertText: (text) =>
+                                    _appendSpeechTranscriptToNote(
+                                      originalIndex,
+                                      text,
+                                    ),
                               ),
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 10),
@@ -5789,45 +6803,45 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                       originalIndex,
                                     ),
                               borderRadius: BorderRadius.circular(12),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (previewImage != null &&
-                                        _attachmentsDirPath != null) ...[
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: SizedBox(
-                                          width: 56,
-                                          height: 56,
-                                          child: Image.file(
-                                            File(
-                                              p.join(
-                                                _attachmentsDirPath!,
-                                                previewImage['storedName']
-                                                    .toString(),
-                                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (previewImage != null &&
+                                      _attachmentsDirPath != null)
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(12),
+                                      ),
+                                      child: AspectRatio(
+                                        aspectRatio: _kGridPreviewAspectRatio,
+                                        child: Image.file(
+                                          File(
+                                            p.join(
+                                              _attachmentsDirPath!,
+                                              previewImage['storedName']
+                                                  .toString(),
                                             ),
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (_, __, ___) =>
-                                                Container(
-                                                  color: dNoteSurfaceVariant(
-                                                    context,
-                                                  ),
-                                                  child: const Icon(
-                                                    Icons
-                                                        .broken_image_outlined,
-                                                    color: Colors.grey,
-                                                    size: 20,
-                                                  ),
-                                                ),
                                           ),
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, __, ___) =>
+                                              Container(
+                                                color: dNoteSurfaceVariant(
+                                                  context,
+                                                ),
+                                                child: const Icon(
+                                                  Icons
+                                                      .broken_image_outlined,
+                                                  color: Colors.grey,
+                                                  size: 20,
+                                                ),
+                                              ),
                                         ),
                                       ),
-                                      const SizedBox(width: 12),
-                                    ],
-                                    Expanded(
+                                    ),
+                                  if (previewHasBody)
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
                                       child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -5871,7 +6885,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                       ),
                                       const SizedBox(height: 8),
                                     ],
-                                    if (isChecklist)
+                                    if (previewChecklistItems.isNotEmpty)
                                       ...((note['checkItems'] as List? ?? [])
                                           .take(_previewLines)
                                           .map<Widget>(
@@ -5916,16 +6930,15 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                             ),
                                           )
                                           .toList())
-                                    else
+                                    else if (previewContentText.isNotEmpty ||
+                                        previewShowFavoriteAlone)
                                       Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              ContentBlocks.plainText(
-                                                note['content'] as String?,
-                                              ),
+                                              previewContentText,
                                               style: TextStyle(
                                                 color: dNoteEffectiveTextColor(context, _textColor),
                                                 fontSize:
@@ -5950,40 +6963,17 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                             ),
                                         ],
                                       ),
-                                    if ((note['category'] ?? '')
-                                        .toString()
-                                        .isNotEmpty) ...[
-                                      const SizedBox(height: 8),
-                                      Align(
-                                        alignment: Alignment.bottomLeft,
-                                        child: Text(
-                                          note['category'],
-                                          style: TextStyle(
-                                            color:
-                                                (dNoteEffectiveTextColor(context, _textColor))
-                                                    .withValues(alpha: 0.7),
-                                            fontSize:
-                                                (note['fontSize'] as num?)
-                                                    ?.toDouble() ??
-                                                _globalFontSize,
-                                            fontStyle: FontStyle.italic,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
                                     if (_formattedReminderText(note) !=
                                         null) ...[
-                                      const SizedBox(height: 6),
+                                      const SizedBox(height: 8),
                                       Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Icon(
-                                            Icons.access_time,
-                                            color:
-                                                (dNoteEffectiveTextColor(context, _textColor))
-                                                    .withValues(alpha: 0.7),
+                                            note['reminderRepeat'] == null
+                                                ? Icons.access_time
+                                                : Icons.repeat,
+                                            color: Colors.grey,
                                             size: 16,
                                           ),
                                           const SizedBox(width: 4),
@@ -5991,15 +6981,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                             child: Text(
                                               _formattedReminderText(note)!,
                                               style: TextStyle(
-                                                color:
-                                                    (dNoteEffectiveTextColor(context, _textColor))
-                                                        .withValues(alpha: 0.7),
-                                                fontStyle: FontStyle.italic,
+                                                color: dNoteEffectiveTextColor(
+                                                  context,
+                                                  _textColor,
+                                                ),
                                                 fontSize:
-                                                    ((note['fontSize'] as num?)
-                                                                ?.toDouble() ??
-                                                            _globalFontSize) -
-                                                    3,
+                                                    (note['fontSize'] as num?)
+                                                        ?.toDouble() ??
+                                                    _globalFontSize,
                                               ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -6008,11 +6997,51 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         ],
                                       ),
                                     ],
+                                    if ((note['category'] ?? '')
+                                        .toString()
+                                        .isNotEmpty) ...[
+                                      const SizedBox(height: 6),
+                                      Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.folder_outlined,
+                                              color: _getCategoryColor(
+                                                note['category'] as String?,
+                                              ),
+                                              size: 16,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Flexible(
+                                              child: Text(
+                                                note['category'],
+                                                style: TextStyle(
+                                                  color:
+                                                      dNoteEffectiveTextColor(
+                                                    context,
+                                                    _textColor,
+                                                  ),
+                                                  fontSize:
+                                                      (note['fontSize']
+                                                              as num?)
+                                                          ?.toDouble() ??
+                                                      _globalFontSize,
+                                                ),
+                                                maxLines: 1,
+                                                overflow:
+                                                    TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ],
                                 ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -6158,6 +7187,49 @@ class _NoteListScreenState extends State<NoteListScreen> {
     return null;
   }
 
+  // Kart önizlemesinde göstermek üzere, notun eklerinden ilk `max` görseli
+  // sırayla toplar. Birden fazla foto olsa bile önizlemede her zaman tek
+  // foto gösterilsin diye varsayılan `max` değeri 1'dir (yan yana iki foto
+  // gösterimi kaldırıldı; alttaki "images.length >= 2" dallarına artık hiç
+  // girilmez, tek foto dalı her zaman kullanılır).
+  List<Map<String, dynamic>> _previewImages(
+    Map<String, dynamic> note, {
+    int max = 1,
+  }) {
+    final atts = note['attachments'];
+    final result = <Map<String, dynamic>>[];
+    if (atts is List) {
+      for (final a in atts) {
+        if (a is Map &&
+            a['isImage'] == true &&
+            (a['storedName'] ?? '').toString().isNotEmpty) {
+          result.add(Map<String, dynamic>.from(a));
+          if (result.length >= max) break;
+        }
+      }
+    }
+    return result;
+  }
+
+  // Kart önizleme fotoğrafının en/boy oranı: 16:9 (geniş ekran oranı).
+  // Kart/satır genişliği ne olursa olsun bu oran sabit kalır.
+  static const double _kGridPreviewAspectRatio = 16 / 9;
+
+  // Bir ek görselini kart önizlemesinde (BoxFit.cover) çizen ortak widget.
+  Widget _gridPreviewImageTile(Map<String, dynamic> image) {
+    if (_attachmentsDirPath == null) {
+      return Container(color: dNoteSurfaceVariant(context));
+    }
+    return Image.file(
+      File(p.join(_attachmentsDirPath!, image['storedName'].toString())),
+      fit: BoxFit.cover,
+      errorBuilder: (_, __, ___) => Container(
+        color: dNoteSurfaceVariant(context),
+        child: const Icon(Icons.broken_image_outlined, color: Colors.grey),
+      ),
+    );
+  }
+
   // Verilen metnin, belirtilen genişlik ve yazı stiliyle gerçekte kaç satıra
   // SARACAĞINI ölçer (TextPainter ile). Basit "\n sayısı" tahmini, satır
   // kendiliğinden sardığında (özellikle metin boyutu büyütüldüğünde) yanlış
@@ -6189,10 +7261,36 @@ class _NoteListScreenState extends State<NoteListScreen> {
     final hasTitle = (note['title'] ?? '').toString().isNotEmpty;
     final isChecklist = note['type'] == 'checklist';
     final fontScale = _previewFontScale(note);
+    // Kartın gerçek (padding'siz) genişliği; _buildGridView içindeki
+    // cardInnerPadding (16.0) değeriyle bire bir eşleşmeli.
+    const double cardInnerPadding = 16.0;
+    final double columnWidth = cardContentWidth + (cardInnerPadding * 2);
+    final images = _previewImages(note);
+    // Yazısız (sadece foto) notlarda kart tamamen foto(lar)dan ibarettir;
+    // checklist notlarda bu özel mod uygulanmaz (checklist her zaman
+    // "yazılı" kabul edilir, mevcut davranış korunur).
+    final bool hasText = isChecklist
+        ? true
+        : ContentBlocks.plainText(note['content'] as String?).isNotEmpty;
+    final bool photoOnlyMode = !isChecklist && images.isNotEmpty && !hasText;
+
+    if (photoOnlyMode) {
+      // Kart sadece foto(lar)dan ibaret: iç/dış boşluk, başlık, kategori,
+      // hatırlatıcı — hiçbiri yok. Tek foto -> 16:9 kart. İki foto -> yan
+      // yana iki foto (kart oranı 32:9).
+      return images.length >= 2
+          ? (columnWidth / (_kGridPreviewAspectRatio * 2))
+          : (columnWidth / _kGridPreviewAspectRatio);
+    }
+
     double height = 32.0; // kartın iç padding'i: 16 üst + 16 alt
 
-    if (_firstImageAttachment(note) != null) {
-      height += 120.0; // üstteki görsel önizleme yüksekliği
+    if (images.isNotEmpty) {
+      // Tek foto: 16:9 şerit. İki (veya daha fazla) foto: yan yana iki foto
+      // (kart genişliği / (16:9 * 2) yükseklik).
+      height += images.length >= 2
+          ? (columnWidth / (_kGridPreviewAspectRatio * 2))
+          : (columnWidth / _kGridPreviewAspectRatio);
     }
 
     if (hasTitle) {
@@ -6252,7 +7350,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
               ? const Color(0xFF2D2D2D)
               : Theme.of(context).cardColor);
     final fontScale = _previewFontScale(note);
-    final previewImage = _firstImageAttachment(note);
+    final images = _previewImages(note);
+    // Yazısız (sadece foto) notlarda kart tamamen foto(lar)dan ibarettir;
+    // checklist notlar bu özel modun dışında tutulur.
+    final bool hasText = isChecklist
+        ? true
+        : ContentBlocks.plainText(note['content'] as String?).isNotEmpty;
+    final bool photoOnlyMode = !isChecklist && images.isNotEmpty && !hasText;
 
     return GestureDetector(
       onLongPress: isTrash
@@ -6323,7 +7427,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 ),
               );
             }
-          : () => _showNoteActions(context, originalIndex, false),
+          : () => _showNoteActions(
+              context,
+              originalIndex,
+              false,
+              onInsertText: (text) =>
+                  _appendSpeechTranscriptToNote(originalIndex, text),
+            ),
       child: Card(
         margin: EdgeInsets.zero,
         color: gridCardColor,
@@ -6407,35 +7517,62 @@ class _NoteListScreenState extends State<NoteListScreen> {
           borderRadius: BorderRadius.circular(12),
           child: Stack(
             children: [
-              Column(
+              if (photoOnlyMode)
+                // ── Yazısız (sadece foto) not ──────────────────────────
+                // Kart tamamen foto(lar)dan ibaret: başlık/kategori/
+                // hatırlatıcı yok, dış/iç boşluk yok. Tek foto -> 16:9. İki
+                // foto -> yan yana iki foto (kart oranı 32:9).
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: AspectRatio(
+                    aspectRatio: images.length >= 2
+                        ? (_kGridPreviewAspectRatio * 2)
+                        : _kGridPreviewAspectRatio,
+                    child: images.length >= 2
+                        ? Row(
+                            children: [
+                              Expanded(
+                                child: _gridPreviewImageTile(images[0]),
+                              ),
+                              const SizedBox(width: 2),
+                              Expanded(
+                                child: _gridPreviewImageTile(images[1]),
+                              ),
+                            ],
+                          )
+                        : _gridPreviewImageTile(images[0]),
+                  ),
+                )
+              else
+                Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (previewImage != null && _attachmentsDirPath != null)
+                  if (images.isNotEmpty && _attachmentsDirPath != null)
                     ClipRRect(
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(12),
                       ),
-                      child: SizedBox(
-                        height: 120,
-                        width: double.infinity,
-                        child: Image.file(
-                          File(
-                            p.join(
-                              _attachmentsDirPath!,
-                              previewImage['storedName'].toString(),
+                      child: images.length >= 2
+                          ? AspectRatio(
+                              // İki foto yan yana -> toplam şerit oranı 32:9.
+                              aspectRatio: _kGridPreviewAspectRatio * 2,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: _gridPreviewImageTile(images[0]),
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Expanded(
+                                    child: _gridPreviewImageTile(images[1]),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : AspectRatio(
+                              aspectRatio: _kGridPreviewAspectRatio,
+                              child: _gridPreviewImageTile(images[0]),
                             ),
-                          ),
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
-                            color: dNoteSurfaceVariant(context),
-                            child: const Icon(
-                              Icons.broken_image_outlined,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
                     ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -6530,34 +7667,16 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 textAlign: TextAlign.start,
                                 textDirection: TextDirection.ltr,
                               ),
-                        if ((note['category'] ?? '').toString().isNotEmpty) ...[
-                          const SizedBox(height: 8),
-                          Text(
-                            note['category'],
-                            style: TextStyle(
-                              color: (dNoteEffectiveTextColor(context, _textColor))
-                                  .withValues(alpha: 0.7),
-                              fontSize:
-                                  (note['fontSize'] as num?)?.toDouble() ??
-                                  _globalFontSize,
-                              fontStyle: FontStyle.italic,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.start,
-                            textDirection: TextDirection.ltr,
-                          ),
-                        ],
                         if (_formattedReminderText(note) != null) ...[
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 8),
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                Icons.access_time,
-                                color:
-                                    (dNoteEffectiveTextColor(context, _textColor))
-                                        .withValues(alpha: 0.7),
+                                note['reminderRepeat'] == null
+                                    ? Icons.access_time
+                                    : Icons.repeat,
+                                color: Colors.grey,
                                 size: 16,
                               ),
                               const SizedBox(width: 4),
@@ -6565,18 +7684,52 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 child: Text(
                                   _formattedReminderText(note)!,
                                   style: TextStyle(
-                                    color:
-                                        (dNoteEffectiveTextColor(context, _textColor))
-                                            .withValues(alpha: 0.7),
-                                    fontStyle: FontStyle.italic,
+                                    color: dNoteEffectiveTextColor(
+                                      context,
+                                      _textColor,
+                                    ),
                                     fontSize:
-                                        ((note['fontSize'] as num?)
-                                                    ?.toDouble() ??
-                                                _globalFontSize) -
-                                        3,
+                                        (note['fontSize'] as num?)
+                                            ?.toDouble() ??
+                                        _globalFontSize,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                        if ((note['category'] ?? '').toString().isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.folder_outlined,
+                                color: _getCategoryColor(
+                                  note['category'] as String?,
+                                ),
+                                size: 16,
+                              ),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  note['category'],
+                                  style: TextStyle(
+                                    color: dNoteEffectiveTextColor(
+                                      context,
+                                      _textColor,
+                                    ),
+                                    fontSize:
+                                        (note['fontSize'] as num?)
+                                            ?.toDouble() ??
+                                        _globalFontSize,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.start,
+                                  textDirection: TextDirection.ltr,
                                 ),
                               ),
                             ],
@@ -6686,3 +7839,976 @@ class _AttachmentTile extends StatelessWidget {
   }
 }
 
+
+// ── Ses Kaydı Sheet'i ────────────────────────────────────────────────
+// "+" menüsünden "Ses Kaydı" seçilince açılır. Sheet açılır açılmaz kayda
+// otomatik başlar; ortada geçen süreyi ve kırmızı nabız animasyonunu
+// gösterir. "Durdur" kaydı bitirip dosya yolunu Navigator.pop ile geri
+// döndürür (recordVoiceNote bu yolu attachments'a ekler); "İptal" kaydı
+// atıp yarım kalan dosyayı silerek null döner.
+class _VoiceRecorderSheet extends StatefulWidget {
+  const _VoiceRecorderSheet();
+
+  @override
+  State<_VoiceRecorderSheet> createState() => _VoiceRecorderSheetState();
+}
+
+class _VoiceRecorderSheetState extends State<_VoiceRecorderSheet> {
+  final AudioRecorder _recorder = AudioRecorder();
+  Timer? _timer;
+  Duration _elapsed = Duration.zero;
+  bool _starting = true;
+  bool _stopping = false;
+  String? _path;
+
+  @override
+  void initState() {
+    super.initState();
+    _start();
+  }
+
+  Future<void> _start() async {
+    try {
+      final dir = await getTemporaryDirectory();
+      final path = p.join(
+        dir.path,
+        'ses_kaydi_${DateTime.now().microsecondsSinceEpoch}.m4a',
+      );
+      await _recorder.start(
+        const RecordConfig(encoder: AudioEncoder.aacLc),
+        path: path,
+      );
+      _path = path;
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        if (!mounted) return;
+        setState(() => _elapsed += const Duration(seconds: 1));
+      });
+    } catch (_) {
+      if (mounted) Navigator.pop(context, null);
+      return;
+    }
+    if (mounted) setState(() => _starting = false);
+  }
+
+  Future<void> _stop({required bool save}) async {
+    if (_stopping) return;
+    _stopping = true;
+    _timer?.cancel();
+    final path = await _recorder.stop();
+    if (!mounted) return;
+    if (save && path != null) {
+      Navigator.pop(context, path);
+    } else {
+      if (path != null) {
+        try {
+          await File(path).delete();
+        } catch (_) {}
+      }
+      Navigator.pop(context, null);
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _recorder.dispose();
+    super.dispose();
+  }
+
+  String _formatElapsed(Duration d) {
+    final m = d.inMinutes.toString().padLeft(2, '0');
+    final s = (d.inSeconds % 60).toString().padLeft(2, '0');
+    return '$m:$s';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, __) {
+        if (!didPop) _stop(save: false);
+      },
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[700],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.85, end: 1.0),
+                duration: const Duration(milliseconds: 700),
+                curve: Curves.easeInOut,
+                builder: (context, scale, child) => Transform.scale(
+                  scale: _starting ? 1.0 : scale,
+                  child: child,
+                ),
+                onEnd: () {},
+                child: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: const BoxDecoration(
+                    color: Colors.redAccent,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.mic, color: Colors.white, size: 34),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                _starting ? 'Hazırlanıyor…' : _formatElapsed(_elapsed),
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  fontFeatures: [FontFeature.tabularFigures()],
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton.icon(
+                    onPressed: _starting ? null : () => _stop(save: false),
+                    icon: const Icon(Icons.close, color: Colors.grey),
+                    label: const Text(
+                      'İptal',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  FilledButton.icon(
+                    onPressed: _starting ? null : () => _stop(save: true),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.amber,
+                      foregroundColor: Colors.black,
+                    ),
+                    icon: const Icon(Icons.stop),
+                    label: const Text('Durdur ve Ekle'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Sesi Yazıya Çevir Sheet'i ────────────────────────────────────────────
+// "Eylem Seç" panelinden "Sesi Yazıya Çevir" seçilince açılır. Sheet
+// açılır açılmaz cihazın konuşma tanıma servisini dinlemeye başlar ve
+// tanınan kelimeleri anlık olarak ekranda gösterir.
+//
+// Android'in konuşma tanıyıcısı, konuşmacı birkaç saniye sessiz kaldığında
+// kendiliğinden durur (bu, işletim sisteminin bir davranışıdır ve
+// speech_to_text paketi bunu değiştiremez). Kullanıcı elle "Durdur ve
+// Ekle"/"İptal" demediği sürece, bu durum algılanınca dinleme otomatik
+// olarak yeniden başlatılır; böylece uzun cümleler kesilmeden tüm
+// konuşma tek bir metinde birikir.
+//
+// "Durdur ve Ekle" o ana kadar tanınan metni Navigator.pop ile geri
+// döndürür (_showNoteActions'daki 'speech_to_text' işleyicisi bu metni
+// onInsertText callback'i ile not içeriğine ekler); "İptal" null döner.
+class _SpeechToTextSheet extends StatefulWidget {
+  const _SpeechToTextSheet();
+
+  @override
+  State<_SpeechToTextSheet> createState() => _SpeechToTextSheetState();
+}
+
+class _SpeechToTextSheetState extends State<_SpeechToTextSheet> {
+  final stt.SpeechToText _speech = stt.SpeechToText();
+  String _finalText = '';
+  String _partialText = '';
+  bool _starting = true;
+  bool _stopping = false;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _start();
+  }
+
+  Future<void> _start() async {
+    final micStatus = await Permission.microphone.request();
+    if (!mounted) return;
+    if (!micStatus.isGranted) {
+      setState(() {
+        _starting = false;
+        _errorMessage = 'Mikrofon izni verilmedi.';
+      });
+      return;
+    }
+    bool available = false;
+    try {
+      available = await _speech.initialize(onStatus: _onStatus);
+    } catch (_) {
+      available = false;
+    }
+    if (!mounted) return;
+    if (!available) {
+      setState(() {
+        _starting = false;
+        _errorMessage = 'Bu cihazda ses tanıma özelliği kullanılamıyor.';
+      });
+      return;
+    }
+    setState(() => _starting = false);
+    _listen();
+  }
+
+  // Tanıyıcı sessizlik sonrası kendiliğinden 'notListening'/'done' durumuna
+  // geçtiğinde, kullanıcı elle durdurmadıysa dinlemeyi sessizce yeniden
+  // başlatır. Geçici hata durumları (ör. kısa bir sessizlik zaman aşımı)
+  // burada da aynı yoldan toparlanır; bu yüzden ayrı bir onError
+  // dinleyicisi eklemiyoruz.
+  void _onStatus(String status) {
+    if (!mounted || _stopping || _starting) return;
+    if (status == 'done' || status == 'notListening') {
+      _listen();
+    }
+  }
+
+  void _listen() {
+    if (_stopping) return;
+    _speech.listen(
+      onResult: (result) {
+        if (!mounted) return;
+        setState(() {
+          if (result.finalResult) {
+            final piece = result.recognizedWords.trim();
+            if (piece.isNotEmpty) {
+              _finalText = _finalText.isEmpty
+                  ? piece
+                  : '$_finalText $piece';
+            }
+            _partialText = '';
+          } else {
+            _partialText = result.recognizedWords;
+          }
+        });
+      },
+      localeId: 'tr_TR',
+      listenFor: const Duration(minutes: 5),
+      pauseFor: const Duration(seconds: 10),
+      listenOptions: stt.SpeechListenOptions(
+        partialResults: true,
+        cancelOnError: false,
+        listenMode: stt.ListenMode.dictation,
+      ),
+    );
+  }
+
+  String get _combinedText => [
+    _finalText,
+    _partialText,
+  ].map((s) => s.trim()).where((s) => s.isNotEmpty).join(' ');
+
+  Future<void> _stop({required bool save}) async {
+    if (_stopping) return;
+    _stopping = true;
+    try {
+      await _speech.stop();
+    } catch (_) {}
+    if (!mounted) return;
+    if (save) {
+      final combined = _combinedText;
+      Navigator.pop(context, combined.isEmpty ? null : combined);
+    } else {
+      Navigator.pop(context, null);
+    }
+  }
+
+  @override
+  void dispose() {
+    _speech.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final displayText = _combinedText;
+    final hasError = _errorMessage != null;
+    final isListening = !_starting && !hasError;
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, __) {
+        if (!didPop) _stop(save: false);
+      },
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[700],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 18),
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.85, end: 1.0),
+                duration: const Duration(milliseconds: 700),
+                curve: Curves.easeInOut,
+                builder: (context, scale, child) => Transform.scale(
+                  scale: isListening ? scale : 1.0,
+                  child: child,
+                ),
+                child: Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: hasError ? Colors.grey : Colors.deepPurpleAccent,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    hasError ? Icons.mic_off : Icons.mic,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                _errorMessage ??
+                    (_starting ? 'Hazırlanıyor…' : 'Dinleniyor…'),
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: hasError ? Colors.redAccent : null,
+                ),
+              ),
+              const SizedBox(height: 14),
+              Container(
+                width: double.infinity,
+                constraints: const BoxConstraints(
+                  minHeight: 90,
+                  maxHeight: 180,
+                ),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: dNoteSurfaceVariant(context),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: SingleChildScrollView(
+                    reverse: true,
+                    child: Text(
+                      displayText.isEmpty
+                          ? 'Konuşmaya başlayın…'
+                          : displayText,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: displayText.isEmpty
+                            ? Colors.grey
+                            : dNoteTextColor(context),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton.icon(
+                    onPressed: () => _stop(save: false),
+                    icon: const Icon(Icons.close, color: Colors.grey),
+                    label: const Text(
+                      'İptal',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  FilledButton.icon(
+                    onPressed: displayText.trim().isEmpty
+                        ? null
+                        : () => _stop(save: true),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.amber,
+                      foregroundColor: Colors.black,
+                    ),
+                    icon: const Icon(Icons.check),
+                    label: const Text('Durdur ve Ekle'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Yüksek Sesle Oku Sheet'i ─────────────────────────────────────────────
+// "Eylem Seç" panelinden "Yüksek Sesle Oku" seçilince açılır. Sheet açılır
+// açılmaz notun başlığı + düz metin içeriği cihazın metinden sese (TTS)
+// motoruyla okunmaya başlar. Oynat/Duraklat, Durdur ve okuma hızı (Yavaş/
+// Normal/Hızlı) kontrolleri sunulur.
+//
+// Not: Android'in TTS motoru duraklatmayı native olarak desteklemez;
+// flutter_tts paketi bunu, duraklatılan noktanın kelime indeksini izleyip
+// bir sonraki speak() çağrısında kalan metinden devam ederek çözer — bu
+// yüzden "Devam Et" de aynı tam metinle speak() çağırır.
+enum _TtsPlaybackState { preparing, playing, paused, finished, error }
+
+class _TextToSpeechSheet extends StatefulWidget {
+  final String title;
+  final String content;
+  const _TextToSpeechSheet({required this.title, required this.content});
+
+  @override
+  State<_TextToSpeechSheet> createState() => _TextToSpeechSheetState();
+}
+
+class _TextToSpeechSheetState extends State<_TextToSpeechSheet> {
+  final FlutterTts _tts = FlutterTts();
+  _TtsPlaybackState _state = _TtsPlaybackState.preparing;
+  // flutter_tts konuşma hızı 0.0-1.0 aralığında; 0.5 platformun normal
+  // okuma hızına karşılık gelir.
+  double _speechRate = 0.5;
+  String? _errorMessage;
+
+  String get _fullText => [
+    widget.title.trim(),
+    widget.content.trim(),
+  ].where((s) => s.isNotEmpty).join('. ');
+
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  Future<void> _init() async {
+    if (_fullText.trim().isEmpty) {
+      setState(() {
+        _state = _TtsPlaybackState.error;
+        _errorMessage = 'Okunacak bir içerik yok.';
+      });
+      return;
+    }
+    _tts.setCompletionHandler(() {
+      if (!mounted) return;
+      setState(() => _state = _TtsPlaybackState.finished);
+    });
+    _tts.setCancelHandler(() {
+      if (!mounted || _state == _TtsPlaybackState.paused) return;
+      setState(() => _state = _TtsPlaybackState.finished);
+    });
+    _tts.setErrorHandler((msg) {
+      if (!mounted) return;
+      setState(() {
+        _state = _TtsPlaybackState.error;
+        _errorMessage = 'Okuma sırasında bir hata oluştu.';
+      });
+    });
+    try {
+      await _tts.setLanguage('tr-TR');
+      await _tts.setSpeechRate(_speechRate);
+      await _tts.setPitch(1.0);
+      await _tts.setVolume(1.0);
+    } catch (_) {
+      // Türkçe dil paketi kurulu değilse cihaz varsayılan dille okumaya
+      // devam eder; bu durumda ayrıca hata gösterilmez.
+    }
+    _play();
+  }
+
+  Future<void> _play() async {
+    if (!mounted) return;
+    setState(() => _state = _TtsPlaybackState.playing);
+    try {
+      final result = await _tts.speak(_fullText);
+      if (result != 1 && mounted) {
+        setState(() {
+          _state = _TtsPlaybackState.error;
+          _errorMessage = 'Bu cihazda sesli okuma özelliği kullanılamıyor.';
+        });
+      }
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _state = _TtsPlaybackState.error;
+        _errorMessage = 'Bu cihazda sesli okuma özelliği kullanılamıyor.';
+      });
+    }
+  }
+
+  Future<void> _pause() async {
+    setState(() => _state = _TtsPlaybackState.paused);
+    try {
+      await _tts.pause();
+    } catch (_) {}
+  }
+
+  Future<void> _resume() async {
+    setState(() => _state = _TtsPlaybackState.playing);
+    try {
+      await _tts.speak(_fullText);
+    } catch (_) {}
+  }
+
+  Future<void> _setRate(double rate) async {
+    if (_speechRate == rate) return;
+    setState(() => _speechRate = rate);
+    try {
+      await _tts.setSpeechRate(rate);
+    } catch (_) {}
+  }
+
+  Future<void> _close() async {
+    try {
+      await _tts.stop();
+    } catch (_) {}
+    if (mounted) Navigator.pop(context);
+  }
+
+  @override
+  void dispose() {
+    _tts.stop();
+    super.dispose();
+  }
+
+  Widget _rateChip(String label, double rate) {
+    final selected = _speechRate == rate;
+    return ChoiceChip(
+      label: Text(label),
+      selected: selected,
+      onSelected: (_) => _setRate(rate),
+    );
+  }
+
+  Widget _buildButtons() {
+    if (_state == _TtsPlaybackState.error) {
+      return SizedBox(
+        width: double.infinity,
+        child: FilledButton(onPressed: _close, child: const Text('Kapat')),
+      );
+    }
+    if (_state == _TtsPlaybackState.finished) {
+      return Row(
+        children: [
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: _play,
+              icon: const Icon(Icons.replay),
+              label: const Text('Tekrar Oku'),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: FilledButton.icon(
+              onPressed: _close,
+              icon: const Icon(Icons.check),
+              label: const Text('Kapat'),
+            ),
+          ),
+        ],
+      );
+    }
+    if (_state == _TtsPlaybackState.preparing) {
+      return const SizedBox(height: 48);
+    }
+    final isPlaying = _state == _TtsPlaybackState.playing;
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: isPlaying ? _pause : _resume,
+            icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
+            label: Text(isPlaying ? 'Duraklat' : 'Devam Et'),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: FilledButton.icon(
+            onPressed: _close,
+            icon: const Icon(Icons.stop),
+            label: const Text('Durdur'),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hasError = _state == _TtsPlaybackState.error;
+    final isPlaying = _state == _TtsPlaybackState.playing;
+    final isPaused = _state == _TtsPlaybackState.paused;
+    final isPreparing = _state == _TtsPlaybackState.preparing;
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, __) {
+        if (!didPop) _close();
+      },
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[700],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 18),
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.85, end: 1.0),
+                duration: const Duration(milliseconds: 700),
+                curve: Curves.easeInOut,
+                builder: (context, scale, child) => Transform.scale(
+                  scale: isPlaying ? scale : 1.0,
+                  child: child,
+                ),
+                child: Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: hasError ? Colors.grey : Colors.orange,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    hasError ? Icons.volume_off : Icons.volume_up,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                _errorMessage ??
+                    (isPreparing
+                        ? 'Hazırlanıyor…'
+                        : isPaused
+                        ? 'Duraklatıldı'
+                        : _state == _TtsPlaybackState.finished
+                        ? 'Okuma tamamlandı'
+                        : 'Okunuyor…'),
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: hasError ? Colors.redAccent : null,
+                ),
+              ),
+              if (!hasError && !isPreparing) ...[
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _rateChip('Yavaş', 0.35),
+                    const SizedBox(width: 8),
+                    _rateChip('Normal', 0.5),
+                    const SizedBox(width: 8),
+                    _rateChip('Hızlı', 0.75),
+                  ],
+                ),
+              ],
+              const SizedBox(height: 18),
+              _buildButtons(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Ses Kaydı Oynatıcı Sheet'i ──────────────────────────────────────────
+// Ek listesinde bir ses kaydına dokununca açılır. Uygulama içinde (harici
+// bir oynatıcıya çıkmadan) oynat/duraklat + ilerleme çubuğu sunar.
+class _VoicePlayerSheet extends StatefulWidget {
+  final String path;
+  final String title;
+  const _VoicePlayerSheet({required this.path, required this.title});
+
+  @override
+  State<_VoicePlayerSheet> createState() => _VoicePlayerSheetState();
+}
+
+class _VoicePlayerSheetState extends State<_VoicePlayerSheet> {
+  final AudioPlayer _player = AudioPlayer();
+  Duration _duration = Duration.zero;
+  Duration _position = Duration.zero;
+  bool _isPlaying = false;
+  StreamSubscription<Duration>? _durSub;
+  StreamSubscription<Duration>? _posSub;
+  StreamSubscription<PlayerState>? _stateSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _durSub = _player.onDurationChanged.listen((d) {
+      if (mounted) setState(() => _duration = d);
+    });
+    _posSub = _player.onPositionChanged.listen((p) {
+      if (mounted) setState(() => _position = p);
+    });
+    _stateSub = _player.onPlayerStateChanged.listen((s) {
+      if (mounted) setState(() => _isPlaying = s == PlayerState.playing);
+    });
+    _player.setSourceDeviceFile(widget.path);
+  }
+
+  @override
+  void dispose() {
+    _durSub?.cancel();
+    _posSub?.cancel();
+    _stateSub?.cancel();
+    _player.dispose();
+    super.dispose();
+  }
+
+  Future<void> _togglePlay() async {
+    if (_isPlaying) {
+      await _player.pause();
+    } else {
+      await _player.resume();
+    }
+  }
+
+  String _formatDuration(Duration d) {
+    final m = d.inMinutes.toString().padLeft(2, '0');
+    final s = (d.inSeconds % 60).toString().padLeft(2, '0');
+    return '$m:$s';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final total = _duration.inMilliseconds > 0
+        ? _duration.inMilliseconds.toDouble()
+        : 1.0;
+    final current = _position.inMilliseconds
+        .clamp(0, total.toInt())
+        .toDouble();
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[700],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                const Icon(Icons.mic, color: Colors.deepPurpleAccent),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    widget.title,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Slider(
+              value: current,
+              max: total,
+              activeColor: Colors.amber,
+              onChanged: (v) {
+                setState(() => _position = Duration(milliseconds: v.toInt()));
+              },
+              onChangeEnd: (v) {
+                _player.seek(Duration(milliseconds: v.toInt()));
+              },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  _formatDuration(_position),
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                Text(
+                  _formatDuration(_duration),
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            IconButton(
+              iconSize: 56,
+              icon: Icon(
+                _isPlaying
+                    ? Icons.pause_circle_filled
+                    : Icons.play_circle_filled,
+                color: Colors.amber,
+              ),
+              onPressed: _togglePlay,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Video Oynatıcı Diyaloğu ──────────────────────────────────────────────
+// Ek listesinde bir videoya dokununca açılır: tam ekran, siyah zeminde
+// oynat/duraklat (video üzerine dokunarak) ve ilerleme çubuğu sunar.
+class _VideoPlayerDialog extends StatefulWidget {
+  final String path;
+  const _VideoPlayerDialog({required this.path});
+
+  @override
+  State<_VideoPlayerDialog> createState() => _VideoPlayerDialogState();
+}
+
+class _VideoPlayerDialogState extends State<_VideoPlayerDialog> {
+  late final VideoPlayerController _controller;
+  bool _ready = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.file(File(widget.path))
+      ..initialize().then((_) {
+        if (!mounted) return;
+        setState(() => _ready = true);
+        _controller.play();
+      });
+    _controller.addListener(() {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _togglePlay() {
+    if (_controller.value.isPlaying) {
+      _controller.pause();
+    } else {
+      _controller.play();
+    }
+  }
+
+  String _formatDuration(Duration d) {
+    final m = d.inMinutes.toString().padLeft(2, '0');
+    final s = (d.inSeconds % 60).toString().padLeft(2, '0');
+    return '$m:$s';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.black,
+      insetPadding: const EdgeInsets.all(8),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          if (_ready)
+            GestureDetector(
+              onTap: _togglePlay,
+              child: AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              ),
+            )
+          else
+            const SizedBox(
+              height: 120,
+              child: Center(
+                child: CircularProgressIndicator(color: Colors.amber),
+              ),
+            ),
+          if (_ready && !_controller.value.isPlaying)
+            IconButton(
+              iconSize: 64,
+              icon: const Icon(
+                Icons.play_circle_fill,
+                color: Colors.white70,
+              ),
+              onPressed: _togglePlay,
+            ),
+          if (_ready)
+            Positioned(
+              left: 12,
+              right: 12,
+              bottom: 10,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  VideoProgressIndicator(
+                    _controller,
+                    allowScrubbing: true,
+                    colors: const VideoProgressColors(
+                      playedColor: Colors.amber,
+                      bufferedColor: Colors.white30,
+                      backgroundColor: Colors.white12,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        _formatDuration(_controller.value.position),
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 11,
+                        ),
+                      ),
+                      Text(
+                        _formatDuration(_controller.value.duration),
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          Positioned(
+            top: 8,
+            right: 8,
+            child: IconButton(
+              icon: const Icon(Icons.close, color: Colors.white),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

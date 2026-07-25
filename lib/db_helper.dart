@@ -22,7 +22,7 @@ class DBHelper {
     final path = p.join(dbDir, 'dnote.db');
     return openDatabase(
       path,
-      version: 6, // Aşama 7.1: Sürüm 5'ten 6'ya yükseltildi
+      version: 7, // Bildirim paneline sabitleme: Sürüm 6'dan 7'ye yükseltildi
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           await _addColumnIfMissing(db, 'notes', 'attachments', 'TEXT');
@@ -44,6 +44,21 @@ class DBHelper {
           // Aşama 7.1: 30 günlük otomatik silme takibi için silinme tarihi sütunu ekleniyor
           await _addColumnIfMissing(db, 'notes', 'deletedDate', 'TEXT');
           await _addColumnIfMissing(db, 'deleted_notes', 'deletedDate', 'TEXT');
+        }
+        if (oldVersion < 7) {
+          // Bildirim paneline sabitleme durumunu tutan sütun ekleniyor.
+          await _addColumnIfMissing(
+            db,
+            'notes',
+            'isPinnedToNotification',
+            'INTEGER NOT NULL DEFAULT 0',
+          );
+          await _addColumnIfMissing(
+            db,
+            'deleted_notes',
+            'isPinnedToNotification',
+            'INTEGER NOT NULL DEFAULT 0',
+          );
         }
       },
       onCreate: (db, version) async {
@@ -67,7 +82,8 @@ class DBHelper {
             deletedDate TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
-            isFavorite INTEGER NOT NULL DEFAULT 0
+            isFavorite INTEGER NOT NULL DEFAULT 0,
+            isPinnedToNotification INTEGER NOT NULL DEFAULT 0
           )
         ''');
         await db.execute('''
@@ -90,7 +106,8 @@ class DBHelper {
             deletedDate TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
-            isFavorite INTEGER NOT NULL DEFAULT 0
+            isFavorite INTEGER NOT NULL DEFAULT 0,
+            isPinnedToNotification INTEGER NOT NULL DEFAULT 0
           )
         ''');
         await db.execute('''
@@ -151,6 +168,7 @@ class DBHelper {
       'isLocked': (note['isLocked'] == true) ? 1 : 0,
       'isArchived': (note['isArchived'] == true) ? 1 : 0,
       'isFavorite': (note['isFavorite'] == true) ? 1 : 0,
+      'isPinnedToNotification': (note['isPinnedToNotification'] == true) ? 1 : 0,
     };
   }
 
@@ -175,6 +193,7 @@ class DBHelper {
       'isLocked': row['isLocked'] == 1,
       'isArchived': row['isArchived'] == 1,
       'isFavorite': row['isFavorite'] == 1,
+      'isPinnedToNotification': row['isPinnedToNotification'] == 1,
     };
   }
 

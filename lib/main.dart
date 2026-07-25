@@ -30,6 +30,14 @@ import 'package:workmanager/workmanager.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:record/record.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:pdf/pdf.dart' hide PdfDocument, PdfPage;
+import 'package:pdf/widgets.dart' as pw;
+import 'package:video_player/video_player.dart';
 
 
 
@@ -49,6 +57,7 @@ part 'google_drive_helper.dart';
 part 'auto_backup_service.dart';
 part 'auto_backup_settings_screen.dart';
 part 'undo_redo_stack.dart';
+part 'pdf_export_service.dart';
 
 
 
@@ -209,6 +218,13 @@ class _ReminderPickResult {
 // gelmesini önlemek için eklendi.
 Color dNoteTextColor(BuildContext context) =>
     dNoteIsDark(context) ? Colors.white : const Color(0xFF1A1A1A);
+
+// Not düzenleyicinin üst çubuğundaki (geri, geri al/ileri al, menü) ikon ve
+// yazı rengi: koyu temada saf beyaz yerine beyaza yakın bir gri, açık
+// temada saf siyah yerine siyaha yakın bir gri kullanılır. Böylece üst bar
+// göz alıcı tam kontrast yerine daha yumuşak bir görünüme sahip olur.
+Color dNoteEditorAppBarColor(BuildContext context) =>
+    dNoteIsDark(context) ? const Color(0xFFE0E0E0) : const Color(0xFF3A3A3A);
 
 // Kullanıcı, uygulama henüz açık tema desteklemezken (veya "Beyaz" rengini
 // bilerek) Kişiselleştirme > Metin Rengi'nden saf beyazı seçmiş olabilir.

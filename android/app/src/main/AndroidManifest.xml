@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <!-- Not içine ses kaydı ekleyebilmek için mikrofon izni -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <application
         android:label="flutter_application_1"
         android:name="${applicationName}"
@@ -30,6 +32,19 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+            <!-- Başka bir uygulamadan "Paylaş" ile link/metin gönderilmesini
+                 yakalamak için (receive_sharing_intent paketi). -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/*"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/*"/>
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
@@ -72,6 +87,17 @@
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="https" />
+        </intent>
+        <!-- speech_to_text paketinin (Sesi Yazıya Çevir özelliği) konuşma
+             tanıma servisine bağlanabilmesi için (Android 11+ paket
+             görünürlüğü kısıtlaması olmadan "bind to recognition service
+             failed" hatası alınabiliyor). -->
+        <package android:name="com.google.android.googlequicksearchbox" />
+        <!-- flutter_tts paketinin (Yüksek Sesle Oku özelliği) cihazdaki
+             metinden sese motorlarını bulabilmesi için (Android 11+ paket
+             görünürlüğü kısıtlaması). -->
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
         </intent>
     </queries>
 </manifest>

@@ -22,18 +22,65 @@ class ContentBlocks {
   ];
 
   // Sayıyı toplam satırında gösterirken tam sayıysa ondalık kısmı at,
-  // değilse en fazla 2 ondalık basamak göster.
+  // değilse en fazla 2 ondalık basamak göster. Binlik basamaklar nokta
+  // ile ayrılır, ondalık kısım virgülle gösterilir (ör. 1.234.567,5).
   static String formatCalcNumber(double value) {
-    if (value == value.roundToDouble()) return value.toInt().toString();
-    return value.toStringAsFixed(2);
+    final isNegative = value < 0;
+    final absValue = value.abs();
+    String intPart;
+    String? fracPart;
+    if (absValue == absValue.roundToDouble()) {
+      intPart = absValue.toInt().toString();
+    } else {
+      final fixed = absValue.toStringAsFixed(2);
+      final dotIndex = fixed.indexOf('.');
+      intPart = fixed.substring(0, dotIndex);
+      fracPart = fixed.substring(dotIndex + 1);
+    }
+    final buffer = StringBuffer();
+    for (int i = 0; i < intPart.length; i++) {
+      if (i > 0 && (intPart.length - i) % 3 == 0) buffer.write('.');
+      buffer.write(intPart[i]);
+    }
+    var result = buffer.toString();
+    if (fracPart != null) result += ',$fracPart';
+    return isNegative ? '-$result' : result;
   }
 
   // Bir hesap tablosu hücresindeki serbest metni sayıya çevirir; boş veya
   // geçersiz girişler toplama 0 olarak katılır (yok sayılır).
+  //
+  // Hem yeni (binlik ayracı noktalı, ondalık virgüllü, ör. "1.234,5") hem
+  // de eski, ayraçsız veriyi ("1234.5" ya da "1234,5") doğru ayrıştırır:
+  // - Hem virgül hem nokta varsa: nokta binlik ayracıdır, silinir; virgül
+  //   ondalık ayracına çevrilir.
+  // - Sadece virgül varsa: ondalık ayracıdır, noktaya çevrilir.
+  // - Sadece nokta varsa: noktadan sonraki her grup tam olarak 3 haneyse
+  //   (ör. "1.234" veya "12.345.678") binlik ayracı kabul edilip silinir;
+  //   aksi halde (ör. eski veride "12.5") ondalık nokta olarak bırakılır.
   static double parseCalcValue(dynamic raw) {
-    final text = (raw ?? '').toString().trim().replaceAll(',', '.');
+    var text = (raw ?? '').toString().trim();
     if (text.isEmpty) return 0;
-    return double.tryParse(text) ?? 0;
+    final isNegative = text.startsWith('-');
+    if (isNegative) text = text.substring(1);
+
+    final hasComma = text.contains(',');
+    final hasDot = text.contains('.');
+    if (hasComma && hasDot) {
+      text = text.replaceAll('.', '').replaceAll(',', '.');
+    } else if (hasComma) {
+      text = text.replaceAll(',', '.');
+    } else if (hasDot) {
+      final parts = text.split('.');
+      final looksGrouped = parts.length > 1 &&
+          parts.first.isNotEmpty &&
+          parts.sublist(1).every((p) => p.length == 3);
+      if (looksGrouped) {
+        text = text.replaceAll('.', '');
+      }
+    }
+    final value = double.tryParse(text) ?? 0;
+    return isNegative ? -value : value;
   }
 
   static List<Map<String, dynamic>> parse(String? raw) {
@@ -199,6 +246,67 @@ class ContentBlocks {
       }
     }
     return true;
+  }
+}
+
+// Hesap tablosu tutar hücrelerinde yazarken canlı olarak binlik ayracı
+// (nokta) ekleyen TextInputFormatter. Ondalık kısım için virgül kullanılır
+// (ör. "1234" yazılınca "1.234" olur, "1234,5" -> "1.234,5"). İmleç her
+// zaman metnin sonuna taşınır; hesap tablosu hücreleri kısa metinler
+// içerdiğinden bu basit yaklaşım yeterli ve öngörülebilir bir davranış
+// sağlıyor.
+class CalcTableInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    var text = newValue.text;
+    if (text.isEmpty) return newValue;
+
+    final isNegative = text.startsWith('-');
+    if (isNegative) text = text.substring(1);
+
+    // Bazı klavyelerde ondalık tuşu nokta ('.') gönderir. Kullanıcı henüz
+    // virgül girmemişse ve az önce eklenen karakter nokta ise bunu ondalık
+    // ayracı (virgül) kabul ediyoruz; böylece hem nokta hem virgül tuşuyla
+    // ondalık girilebiliyor ve sonuç her zaman virgülle gösteriliyor.
+    if (!text.contains(',') &&
+        text.endsWith('.') &&
+        text.length == oldValue.text.length + 1) {
+      text = '${text.substring(0, text.length - 1)},';
+    }
+
+    // Sadece rakamlar ve tek bir virgül (ondalık ayracı) korunur; eski
+    // binlik noktaları ve fazladan virgüller temizlenir.
+    final commaIndex = text.indexOf(',');
+    String intDigits;
+    String? fracDigits;
+    if (commaIndex >= 0) {
+      intDigits = text
+          .substring(0, commaIndex)
+          .replaceAll(RegExp(r'[^0-9]'), '');
+      fracDigits = text
+          .substring(commaIndex + 1)
+          .replaceAll(RegExp(r'[^0-9]'), '');
+    } else {
+      intDigits = text.replaceAll(RegExp(r'[^0-9]'), '');
+    }
+
+    final buffer = StringBuffer();
+    for (int i = 0; i < intDigits.length; i++) {
+      if (i > 0 && (intDigits.length - i) % 3 == 0) buffer.write('.');
+      buffer.write(intDigits[i]);
+    }
+    var result = buffer.toString();
+    if (fracDigits != null) result += ',$fracDigits';
+    if (result.isEmpty && !isNegative) return const TextEditingValue();
+    if (isNegative) result = '-$result';
+
+    return TextEditingValue(
+      text: result,
+      selection: TextSelection.collapsed(offset: result.length),
+    );
   }
 }
 
