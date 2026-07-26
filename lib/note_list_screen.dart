@@ -1203,7 +1203,21 @@ class _NoteListScreenState extends State<NoteListScreen> {
     } catch (e, st) {
       debugPrint('[PDF] genel hata: $e\n$st');
       if (mounted) {
-        _showInfoBar('PDF oluşturulamadı', icon: Icons.error_outline);
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('PDF hatası (debug)'),
+            content: SingleChildScrollView(
+              child: SelectableText('$e\n\n$st'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Kapat'),
+              ),
+            ],
+          ),
+        );
       }
     }
   }

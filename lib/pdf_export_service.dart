@@ -15,6 +15,27 @@ class PdfExportService {
   static pw.Font? _regularFont;
   static pw.Font? _boldFont;
 
+  // Uzun bir paragrafı, yaklaşık `maxChars` karakteri geçmeyecek şekilde
+  // (kelime ortasından KIRMADAN) parçalara böler. pw.Text'in bu pakette
+  // sayfalar arası kendi kendine bölünmesi güvenilir çalışmadığı için,
+  // her parça tek başına bir sayfaya sığacak kadar kısa tutulup ayrı bir
+  // widget olarak eklenir (bkz. exportNoteToPdf içindeki kullanım).
+  static List<String> _chunkPlainText(String text, int maxChars) {
+    if (text.length <= maxChars) return [text];
+    final words = text.split(RegExp(r'(?<=\s)'));
+    final chunks = <String>[];
+    final buffer = StringBuffer();
+    for (final word in words) {
+      if (buffer.length + word.length > maxChars && buffer.isNotEmpty) {
+        chunks.add(buffer.toString());
+        buffer.clear();
+      }
+      buffer.write(word);
+    }
+    if (buffer.isNotEmpty) chunks.add(buffer.toString());
+    return chunks;
+  }
+
   static Future<void> _ensureFonts() async {
     if (_regularFont != null && _boldFont != null) return;
     final regularData = await rootBundle.load(
@@ -187,6 +208,25 @@ class PdfExportService {
     final dateFontSize = 9.0 * scale;
     final placeholderFontSize = 9.0 * scale;
 
+    // Bir sayfaya (üst/alt margin düşülünce) sığabilecek en büyük yükseklik.
+    // Çizim (drawing) ve uzun metin bölme mantığı bunu paylaşır.
+    final maxSinglePageHeight = PdfPageFormat.a4.height - 64 - 16;
+    // pw.Text'in bu pakette (pdf: 3.12.x) sayfalar arası kendi kendine
+    // bölünmesi (spanning) güvenilir çalışmıyor: tek bir Text widget'ı bir
+    // sayfadan uzunsa "Widget won't fit into the page..." hatasıyla TÜM
+    // PDF başarısız oluyordu — kısa metinlerde sorun çıkmıyordu çünkü zaten
+    // tek sayfaya sığıyorlardı. Bunu kalıcı çözmek için uzun metinleri
+    // kendimiz kelime sınırlarından, kabaca bir sayfaya sığacak parçalara
+    // bölüp her parçayı ayrı bir widget olarak ekliyoruz (bkz.
+    // _chunkPlainText). Karakter/satır tahminleri kaba (font'un gerçek
+    // glyph genişlikleri değil, fontSize'a dayalı bir yaklaşım) ama güvenlik
+    // payı bırakıldığı için pratikte yeterli.
+    final _approxCharWidth = effectiveFontSize * 0.5;
+    final _charsPerLine = (pdfContentWidth / _approxCharWidth).floor().clamp(10, 300);
+    final _lineHeight = effectiveFontSize * 1.3;
+    final _maxLinesPerChunk = (maxSinglePageHeight / _lineHeight).floor().clamp(1, 2000);
+    final maxCharsPerTextChunk = ((_charsPerLine * _maxLinesPerChunk) * 0.8).floor().clamp(20, 100000);
+
     // Not içindeki resim eklerini önceden pw.MemoryImage'a çevir (dosya
     // okuma asenkron olduğundan widget ağacı kurulmadan önce yapılmalı).
     final attachmentsDir = await DBHelper.instance.attachmentsDir();
@@ -248,17 +288,27 @@ class PdfExportService {
       );
     }
 
+    // Not sadece TEK bir çizim bloğundan oluşuyorsa (başka metin, kontrol
+    // listesi, hesap tablosu ya da ek yoksa) başlık/tarih başlığı hiç
+    // gösterilmiyor; böylece çizim sayfanın tamamını kullanabiliyor. Diğer
+    // tüm not türlerinde başlık/tarih eskisi gibi gösterilmeye devam eder.
+    final isDrawingOnlyNote = noteType != 'checklist' &&
+        blocks.length == 1 &&
+        blocks.first['type'] == 'drawing';
+
     final content = <pw.Widget>[
-      pw.Text(
-        title.trim().isEmpty ? 'Başlıksız Not' : title.trim(),
-        style: pw.TextStyle(font: bold, fontSize: titleFontSize),
-      ),
-      pw.SizedBox(height: 4),
-      pw.Text(
-        _formatDateTimeTr(DateTime.now()),
-        style: pw.TextStyle(font: regular, fontSize: dateFontSize, color: PdfColors.grey600),
-      ),
-      pw.SizedBox(height: 16),
+      if (!isDrawingOnlyNote) ...[
+        pw.Text(
+          title.trim().isEmpty ? 'Başlıksız Not' : title.trim(),
+          style: pw.TextStyle(font: bold, fontSize: titleFontSize),
+        ),
+        pw.SizedBox(height: 4),
+        pw.Text(
+          _formatDateTimeTr(DateTime.now()),
+          style: pw.TextStyle(font: regular, fontSize: dateFontSize, color: PdfColors.grey600),
+        ),
+        pw.SizedBox(height: 16),
+      ],
     ];
 
     if (noteType == 'checklist') {
@@ -273,31 +323,43 @@ class PdfExportService {
         if (type == 'text') {
           final text = (block['text'] ?? '').toString();
           if (text.trim().isEmpty) continue;
-          content.add(
-            pw.Padding(
-              padding: const pw.EdgeInsets.only(bottom: 8),
-              child: pw.Text(
-                text,
-                style: pw.TextStyle(font: regular, fontSize: effectiveFontSize),
-              ),
-            ),
-          );
+          final paragraphs = text.split('\n');
+          for (final para in paragraphs) {
+            if (para.trim().isEmpty) {
+              content.add(pw.SizedBox(height: effectiveFontSize * 0.6));
+              continue;
+            }
+            for (final chunk in _chunkPlainText(para, maxCharsPerTextChunk)) {
+              content.add(
+                pw.Text(
+                  chunk,
+                  style: pw.TextStyle(font: regular, fontSize: effectiveFontSize),
+                ),
+              );
+            }
+          }
+          content.add(pw.SizedBox(height: 8));
         } else if (type == 'checklist') {
           final items = List<Map>.from(block['items'] ?? const []);
-          final rows = <pw.Widget>[];
-          for (final item in items) {
+          final validItems = items.where(
+            (item) => (item['text'] ?? '').toString().trim().isNotEmpty,
+          ).toList();
+          // Not: tüm maddeler TEK bir pw.Column içine paketlenmiyor —
+          // paketlenirse (uzun kontrol listelerinde) tek widget bir
+          // sayfadan uzun olabiliyor ve MultiPage bunu hiçbir şekilde
+          // bölemeyip "Widget won't fit into the page..." hatasıyla tüm
+          // PDF'i başarısız kılıyordu (bkz. drawing bloğundaki aynı sorun).
+          // Bunun yerine her madde ayrı bir üst seviye widget olarak
+          // eklenir, böylece MultiPage gerektiğinde maddeler arasından
+          // sayfa bölebilir.
+          for (var i = 0; i < validItems.length; i++) {
+            final item = validItems[i];
             final text = (item['text'] ?? '').toString();
-            if (text.trim().isEmpty) continue;
-            rows.add(checklistRow(text, item['checked'] == true));
-          }
-          if (rows.isNotEmpty) {
+            final isLast = i == validItems.length - 1;
             content.add(
               pw.Padding(
-                padding: const pw.EdgeInsets.only(bottom: 8),
-                child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: rows,
-                ),
+                padding: pw.EdgeInsets.only(bottom: isLast ? 8 : 0),
+                child: checklistRow(text, item['checked'] == true),
               ),
             );
           }
@@ -420,29 +482,52 @@ class PdfExportService {
               );
               if (pngBytes != null) {
                 final drawingHeight = canvasHeight * scale;
+                // Eskiden sayfaya sığmayan (uzun) çizimler PNG üzerinde
+                // yatay şeritlere bölünüp ayrı sayfalara dağıtılıyordu; bu
+                // hem çizimi ortadan ikiye bölüyor hem de son şeridin (çoğu
+                // zaman neredeyse boş bir sayfaya denk gelen) bomboş bir
+                // sayfa gibi görünmesine yol açıyordu. Artık HİÇBİR şekilde
+                // bölünmüyor: sayfaya sığmayan çizimler, en boy oranı
+                // KORUNARAK tek sayfaya sığacak şekilde küçültülüyor (tıpkı
+                // bir fotoğrafı "sayfaya sığdır" ile küçültmek gibi).
+                // ÖNEMLİ: çizim, sayfanın TAMAMINA (üst/alt margin dışındaki
+                // tüm alana) göre ölçekleniyor. Ama not başlık/tarih de
+                // gösteriyorsa (yani not sadece çizimden ibaret DEĞİLSE),
+                // bunlar sayfanın üstünde zaten yer kaplar; bu durumda o
+                // yükseklik de hesaptan düşülüyor ki çizim başlığın altına,
+                // hâlâ 1. sayfaya sığsın. Not sadece çizimden ibaretse
+                // (başlık/tarih hiç gösterilmiyorsa) tüm sayfa çizime ait
+                // olur.
+                final headerHeight = isDrawingOnlyNote
+                    ? 0.0
+                    : (titleFontSize * 1.3) + 4 + (dateFontSize * 1.3) + 16;
+                final availableHeight =
+                    maxSinglePageHeight - 4 - headerHeight;
+                double boxWidth = pdfContentWidth;
+                double boxHeight = drawingHeight;
+                if (drawingHeight > availableHeight) {
+                  final fitScale = availableHeight / drawingHeight;
+                  boxWidth = pdfContentWidth * fitScale;
+                  boxHeight = availableHeight;
+                }
+                pw.Widget drawingBox(pw.MemoryImage image, double width, double height) {
+                  return pw.Container(
+                    margin: const pw.EdgeInsets.only(bottom: 4),
+                    width: width,
+                    height: height,
+                    // Zemin de kenarlık da kaldırıldı; çizim artık sayfaya
+                    // doğrudan (çerçevesiz) gömülüyor.
+                    // fit: contain DEĞİL fill kullanılıyor çünkü width/height
+                    // zaten yukarıda aynı en/boy oranıyla hesaplandı; fill
+                    // burada güvenlidir ve gereksiz iç boşluk bırakmaz.
+                    child: pw.Image(image, width: width, height: height, fit: pw.BoxFit.fill),
+                  );
+                }
+
                 content.add(
-                  pw.Container(
-                    margin: const pw.EdgeInsets.only(bottom: 8),
-                    width: pdfContentWidth,
-                    height: drawingHeight,
-                    decoration: pw.BoxDecoration(
-                      border: pw.Border.all(color: PdfColors.grey400, width: 0.5),
-                      // Düzenleyicideki koyu tuval zemininin aksine PDF
-                      // sayfası her zaman beyazdır; bu yüzden beyaz kalemle
-                      // çizilen izler artık PNG'ye gömülmeden ÖNCE siyaha
-                      // çevriliyor (bkz. renderStrokesToPng'deki
-                      // mapWhiteToBlack). Yine de hafif gri zemin, diğer
-                      // renkli izlerin kenarlarını biraz daha belirgin
-                      // kılmak için korunuyor.
-                      color: PdfColors.grey100,
-                    ),
-                    child: pw.Image(
-                      pw.MemoryImage(pngBytes),
-                      width: pdfContentWidth,
-                      height: drawingHeight,
-                      fit: pw.BoxFit.fill,
-                    ),
-                  ),
+                  boxWidth < pdfContentWidth
+                      ? pw.Center(child: drawingBox(pw.MemoryImage(pngBytes), boxWidth, boxHeight))
+                      : drawingBox(pw.MemoryImage(pngBytes), boxWidth, boxHeight),
                 );
               }
             } catch (e, st) {

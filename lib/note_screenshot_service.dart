@@ -234,22 +234,31 @@ class _NoteScreenshotContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // PDF dışa aktarmadaki aynı kural: not sadece TEK bir çizim bloğundan
+    // ibaretse (başka metin/kontrol listesi/hesap tablosu/ek yoksa)
+    // başlık/tarih hiç gösterilmiyor; çizim görselin tamamını kullanır.
+    final isDrawingOnlyNote = noteType != 'checklist' &&
+        blocks.length == 1 &&
+        blocks.first['type'] == 'drawing';
+
     final children = <Widget>[
-      Text(
-        title.trim().isEmpty ? 'Başlıksız Not' : title.trim(),
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          color: textColor,
+      if (!isDrawingOnlyNote) ...[
+        Text(
+          title.trim().isEmpty ? 'Başlıksız Not' : title.trim(),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: textColor,
+          ),
         ),
-      ),
-      const SizedBox(height: 4),
-      Text(
-        _formatDateTimeTr(DateTime.now()),
-        style: const TextStyle(fontSize: 11, color: Colors.grey),
-      ),
-      SizedBox(height: 16, child: Divider(color: borderColor, height: 1)),
-      const SizedBox(height: 12),
+        const SizedBox(height: 4),
+        Text(
+          _formatDateTimeTr(DateTime.now()),
+          style: const TextStyle(fontSize: 11, color: Colors.grey),
+        ),
+        SizedBox(height: 16, child: Divider(color: borderColor, height: 1)),
+        const SizedBox(height: 12),
+      ],
     ];
 
     if (noteType == 'checklist') {
@@ -374,22 +383,15 @@ class _NoteScreenshotContent extends StatelessWidget {
             children.add(
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: borderColor),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: SizedBox(
-                    width: contentWidth,
-                    height: canvasHeight,
-                    child: CustomPaint(
-                      painter: _DrawingPainter(
-                        strokes: strokes,
-                        livePoints: null,
-                        liveColor: Colors.transparent,
-                        liveWidth: 0,
-                      ),
+                child: SizedBox(
+                  width: contentWidth,
+                  height: canvasHeight,
+                  child: CustomPaint(
+                    painter: _DrawingPainter(
+                      strokes: strokes,
+                      livePoints: null,
+                      liveColor: Colors.transparent,
+                      liveWidth: 0,
                     ),
                   ),
                 ),
