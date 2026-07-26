@@ -8,9 +8,11 @@ import 'package:permission_handler/permission_handler.dart'; // Permission, open
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:share_plus/share_plus.dart';
@@ -37,7 +39,10 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:pdf/pdf.dart' hide PdfDocument, PdfPage;
 import 'package:pdf/widgets.dart' as pw;
+import 'package:image/image.dart' as img;
 import 'package:video_player/video_player.dart';
+import 'package:cunning_document_scanner/cunning_document_scanner.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 
 
@@ -58,6 +63,8 @@ part 'auto_backup_service.dart';
 part 'auto_backup_settings_screen.dart';
 part 'undo_redo_stack.dart';
 part 'pdf_export_service.dart';
+part 'note_screenshot_service.dart';
+part 'note_drawing_block.dart';
 
 
 
@@ -202,6 +209,283 @@ String _reminderDateLabelTr(DateTime date) {
   if (target == today) return 'Bugün';
   if (target == tomorrow) return 'Yarın';
   return '${date.day} ${_dNoteMonthNamesTr[date.month - 1]}';
+}
+
+// ── Not içi otomatik matematik hesaplayıcı ──────────────────────────────
+// Kullanıcı bir not satırına dört işlem (+ - * /) ve üs alma içeren bir
+// ifade yazıp satırın SONUNA "=" karakterini eklediğinde, ifadeyi anında
+// hesaplayıp sonucu "=" işaretinden hemen sonra otomatik olarak yazar.
+// Örn: "(2+4)+5*4+2^2-4/2=" yazılınca satır
+//      "(2+4)+5*4+2^2-4/2=28" haline gelir. İfade satırın tamamı olmak
+// zorunda değildir; "Toplam: 2+4=" gibi öncesinde düz metin bulunan
+// satırlarda da yalnızca "=" işaretine kadar geriye doğru geçerli olan
+// en uzun matematik ifadesi ("2+4") hesaplanır.
+// Üs (kuvvet) işareti için hem "^" hem de "'" kabul edilir; bazı
+// klavyelerde "^" yazmak zahmetli olduğundan kullanıcı tırnak işaretiyle
+// de (ör. "2'2") üs alabilir.
+//
+// Not: Bu yalnızca sözdizimsel olarak geçerli bir matematik ifadesiyse
+// devreye girer (yalnızca rakam, boşluk, ondalık ayırıcı ve + - * / ^ '
+// ( ) karakterleri). Harf içeren normal cümlelerde ("Toplam=" gibi) veya
+// "=" satırın ortasına eklendiğinde hiçbir şey yapmaz; kullanıcının
+// yazdığı "=" olduğu gibi kalır.
+
+class _MathExprSyntaxError implements Exception {}
+
+class _MathExpressionEvaluator {
+  final String _src;
+  int _pos = 0;
+  _MathExpressionEvaluator._(this._src);
+
+  /// [raw] geçerli bir matematik ifadesiyse sonucu döndürür; değilse
+  /// (harf içeriyorsa, dengesiz parantez varsa, sıfıra bölme vb.) null
+  /// döner — bu durumda çağıran taraf hiçbir şey yapmamalıdır.
+  static double? tryEvaluate(String raw) {
+    final trimmed = raw.trim();
+    if (trimmed.isEmpty) return null;
+    // Sadece rakam / boşluk / ondalık ayırıcı (. veya ,) / dört işlem /
+    // üs (^ veya ') / parantez içeriyorsa bir hesap ifadesi say.
+    if (!RegExp(r"^[0-9\s.,+\-*/^'()]+$").hasMatch(trimmed)) return null;
+    if (!RegExp(r'[0-9]').hasMatch(trimmed)) return null;
+    try {
+      final evaluator = _MathExpressionEvaluator._(
+        trimmed.replaceAll("'", '^'),
+      );
+      final value = evaluator._parseExpression();
+      evaluator._skipSpaces();
+      if (evaluator._pos != evaluator._src.length) {
+        // İfadenin tamamı tüketilmedi (ör. "2+2)" gibi fazlalık kaldı).
+        return null;
+      }
+      if (value.isNaN || value.isInfinite) return null;
+      return value;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  void _skipSpaces() {
+    while (_pos < _src.length && _src[_pos] == ' ') {
+      _pos++;
+    }
+  }
+
+  bool _isDigit(String ch) => ch.codeUnitAt(0) >= 48 && ch.codeUnitAt(0) <= 57;
+
+  // Toplama / çıkarma (en düşük öncelik).
+  double _parseExpression() {
+    _skipSpaces();
+    double value = _parseTerm();
+    _skipSpaces();
+    while (_pos < _src.length && (_src[_pos] == '+' || _src[_pos] == '-')) {
+      final op = _src[_pos];
+      _pos++;
+      final rhs = _parseTerm();
+      value = op == '+' ? value + rhs : value - rhs;
+      _skipSpaces();
+    }
+    return value;
+  }
+
+  // Çarpma / bölme.
+  double _parseTerm() {
+    _skipSpaces();
+    double value = _parsePower();
+    _skipSpaces();
+    while (_pos < _src.length && (_src[_pos] == '*' || _src[_pos] == '/')) {
+      final op = _src[_pos];
+      _pos++;
+      final rhs = _parsePower();
+      if (op == '*') {
+        value = value * rhs;
+      } else {
+        if (rhs == 0) throw _MathExprSyntaxError();
+        value = value / rhs;
+      }
+      _skipSpaces();
+    }
+    return value;
+  }
+
+  // Üs alma (sağdan sola birleşimli): 2^3^2 = 2^(3^2).
+  double _parsePower() {
+    _skipSpaces();
+    final base = _parseUnary();
+    _skipSpaces();
+    if (_pos < _src.length && _src[_pos] == '^') {
+      _pos++;
+      final exponent = _parsePower();
+      final result = math.pow(base, exponent);
+      if (result is int) return result.toDouble();
+      return result as double;
+    }
+    return base;
+  }
+
+  // Tekli artı/eksi: -5, +(2+3) gibi.
+  double _parseUnary() {
+    _skipSpaces();
+    if (_pos < _src.length && (_src[_pos] == '+' || _src[_pos] == '-')) {
+      final op = _src[_pos];
+      _pos++;
+      final value = _parseUnary();
+      return op == '-' ? -value : value;
+    }
+    return _parseAtom();
+  }
+
+  // Parantezli alt ifade ya da tek bir sayı.
+  double _parseAtom() {
+    _skipSpaces();
+    if (_pos >= _src.length) throw _MathExprSyntaxError();
+    if (_src[_pos] == '(') {
+      _pos++;
+      final value = _parseExpression();
+      _skipSpaces();
+      if (_pos >= _src.length || _src[_pos] != ')') {
+        throw _MathExprSyntaxError();
+      }
+      _pos++;
+      return value;
+    }
+    return _parseNumber();
+  }
+
+  double _parseNumber() {
+    final start = _pos;
+    while (_pos < _src.length &&
+        (_isDigit(_src[_pos]) || _src[_pos] == '.' || _src[_pos] == ',')) {
+      _pos++;
+    }
+    if (_pos == start) throw _MathExprSyntaxError();
+    final numStr = _src.substring(start, _pos).replaceAll(',', '.');
+    if ('.'.allMatches(numStr).length > 1) throw _MathExprSyntaxError();
+    final value = double.tryParse(numStr);
+    if (value == null) throw _MathExprSyntaxError();
+    return value;
+  }
+}
+
+// Hesap sonucunu Türkçe ondalık ayırıcıyla (virgül), gereksiz sıfırlar
+// olmadan biçimlendirir: 28 -> "28", 4.5 -> "4,5", 3.3333... -> "3,333333"
+// (en fazla 6 ondalık basamak, sondaki sıfırlar kırpılır).
+String _formatMathResult(double value) {
+  if (value == value.roundToDouble() && value.abs() < 1e15) {
+    return value.toInt().toString();
+  }
+  String s = value.toStringAsFixed(6);
+  s = s.replaceFirst(RegExp(r'0+$'), '');
+  s = s.replaceFirst(RegExp(r'\.$'), '');
+  return s.replaceAll('.', ',');
+}
+
+// Her TextEditingController için bir önceki onChanged çağrısında görülen
+// metni saklar. dNoteMaybeAutoCalculate'in "kullanıcı '=' işaretini ŞİMDİ mi
+// yazdı, yoksa var olan bir sonucu SİLERKEN mi imleç '='in hemen ardına
+// geldi" ayrımını yapabilmesi için gerekir (bkz. fonksiyon içindeki not).
+// Expando kullanılıyor: controller çöpe gidince kayıt da otomatik silinir.
+final Expando<String> _dNoteAutoCalcLastText = Expando<String>(
+  'dNoteAutoCalcLastText',
+);
+
+// Bir not metni alanında kullanıcı tam olarak satırın SONUNA "=" yazdığında
+// çağrılır. O satırdaki "=" öncesi ifadeyi hesaplamayı dener; başarılıysa
+// controller'ın metnine sonucu ekler ve imleci sonucun ardına taşır, ardından
+// (varsa) [onTextChanged] callback'ini güncel metinle çağırır — böylece
+// çağıran taraf kendi state'ini (ör. blocks[i]['text']) senkron tutabilir.
+// İfade geçersizse (normal metin, örn. "Toplam=") hiçbir şey yapmadan döner.
+void dNoteMaybeAutoCalculate(
+  TextEditingController controller, {
+  void Function(String newText)? onTextChanged,
+}) {
+  final text = controller.text;
+  final previousText = _dNoteAutoCalcLastText[controller];
+  // Bu çağrı nasıl sonuçlanırsa sonuçlansın, "son görülen metni" hemen
+  // güncelle; böylece bir sonraki çağrı her zaman doğru referansla kıyaslar.
+  _dNoteAutoCalcLastText[controller] = text;
+
+  final selection = controller.selection;
+  if (!selection.isValid || !selection.isCollapsed) return;
+  final cursor = selection.end;
+  if (cursor <= 0 || cursor > text.length) return;
+  if (text[cursor - 1] != '=') return;
+
+  // ÖNEMLİ (silme sırasında sonucun geri gelmesini önler): "imleçten önceki
+  // karakter '=' ve satır sonunda" koşulu, kullanıcı "=79" gibi bir sonucu
+  // SİLERKEN de (rakamlar tek tek silinip sıra "="e geldiğinde) sağlanır.
+  // Bu, gerçek bir yazma değil bir silme (metin KISALMASI) olduğu için,
+  // metin bir önceki bilinen haline göre UZAMAMIŞSA hiçbir şey yapma.
+  if (previousText != null && text.length <= previousText.length) return;
+
+  // Yalnızca satırın sonunda ("=" işaretinden sonra o satırda başka
+  // karakter yoksa) devreye gir; "=" metnin ortasına eklenmişse dokunma.
+  final isEndOfLine = cursor == text.length || text[cursor] == '\n';
+  if (!isEndOfLine) return;
+
+  // "=" işaretinden geriye doğru, satırın neresinde olursa olsun geçerli
+  // bir matematik ifadesi oluşturan en uzun kuyruğu bul. Böylece
+  // "Toplam: 2+4=" gibi ifadeden önce düz metin bulunan satırlarda da
+  // (yalnızca satırın en başından başlayan ifadelerde değil) yalnızca
+  // "2+4" kısmı ifade olarak değerlendirilir. Satır sınırını aşmamak
+  // için '\n' karakterinde her zaman durulur.
+  bool isExprChar(String ch) =>
+      ch != '\n' && RegExp(r"[0-9.,+\-*/^'()\s]").hasMatch(ch);
+  int exprStart = cursor - 1;
+  while (exprStart > 0 && isExprChar(text[exprStart - 1])) {
+    exprStart--;
+  }
+
+  // ÖNEMLİ (aynı satırda ikinci bir hesabın çalışmamasını önler): Yukarıdaki
+  // geriye tarama, aynı satırda daha önce hesaplanmış bir sonucu da (ör.
+  // "36+43=79   36+12=" içindeki "79") ifadenin parçası sanıp içine alabilir.
+  // O zaman bulunan "79   36+12" aslında aralarında işlem olmayan iki ayrı
+  // sayı olduğundan GEÇERSİZ olur ve tüm hesap sessizce iptal edilirdi. Bunun
+  // yerine tam ifade geçersizse pes etmek yerine, soldan tek tek daraltarak
+  // (en uzundan en kısaya) geçerli bir alt ifade bulana kadar tekrar deniyoruz;
+  // böylece önceki sonucun hemen ardından aynı satıra yeni bir hesap daha
+  // yazılabiliyor.
+  double? result;
+  for (int start = exprStart; start < cursor - 1; start++) {
+    final candidate = text.substring(start, cursor - 1);
+    final value = _MathExpressionEvaluator.tryEvaluate(candidate);
+    if (value != null) {
+      result = value;
+      break;
+    }
+  }
+  if (result == null) return;
+
+  final resultText = _formatMathResult(result);
+  // Kullanıcı isteği: "=" ile sonuç arasına boşluk konmasın, sonuç
+  // doğrudan "=" işaretinin ardına eklensin (ör. "2+4=6").
+  final newText =
+      text.substring(0, cursor) + resultText + text.substring(cursor);
+  final newCursor = cursor + resultText.length;
+
+  // ÖNEMLİ: controller.value'yu bu onChanged geri çağrısı içinde SENKRON
+  // olarak değiştirmek, platform klavyesinin (özellikle Gboard) o an
+  // sürmekte olan "composing" (oluşum) bölgesiyle Flutter tarafının
+  // senkronunu bozabiliyor: bu yüzden sonuç eklendikten sonra yazılan bir
+  // sonraki karakter, IME tarafından hâlâ eski composing bölgesinin
+  // devamıymış gibi algılanıp altı çizili gösteriliyordu. Bunu önlemek
+  // için asıl metin güncellemesini mevcut kare (frame) tamamlandıktan
+  // SONRA uyguluyoruz ve composing aralığını açıkça boşaltıyoruz.
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    // Callback tetiklenene kadar kullanıcı yazmaya devam ettiyse (metin
+    // değiştiyse) artık geçersiz bir hesaplamayı uygulama.
+    if (controller.text != text) return;
+    controller.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newCursor),
+      composing: TextRange.empty,
+    );
+    // Programatik olarak eklediğimiz bu metni de "son görülen metin" olarak
+    // işaretle; aksi halde bir sonraki onChanged (kullanıcının ekli sonucu
+    // silmeye başlaması) bunu hâlâ eski (sonuçsuz) "text" ile kıyaslar ve
+    // yanlışlıkla "uzama" sanabilir.
+    _dNoteAutoCalcLastText[controller] = newText;
+    onTextChanged?.call(newText);
+  });
 }
 
 // _showReminderPickerDialog'un sonucu: seçilen tarih/saat ve tekrar sıklığı.

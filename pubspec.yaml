@@ -46,6 +46,9 @@ dependencies:
   pdfx: ^2.9.2
   # ── Not içeriğini PDF olarak dışa aktarma özelliği için ──
   pdf: ^3.11.1
+  # ── Notu ekran görüntüsü tarzında JPG olarak dışa aktarma özelliği
+  # için (PNG çıktısını gerçek JPEG'e çevirmede kullanılıyor) ──
+  image: ^4.2.0
   record: ^7.1.1
   audioplayers: ^6.1.0
   # ── Not içine eklenen videoları uygulama içinde oynatmak için ──
@@ -73,6 +76,11 @@ dependencies:
 
   # ── Başka uygulamalardan "Paylaş" ile link/metin alabilmek için ──
   receive_sharing_intent: ^1.8.1
+
+  # ── Not içine "Belge Tara" özelliği: kenar tespitli belge tarama +
+  # taranan sayfayı yazıya çevirme (OCR) için ──
+  cunning_document_scanner: ^1.2.5
+  google_mlkit_text_recognition: ^0.15.0
 
 dev_dependencies:
   flutter_test:

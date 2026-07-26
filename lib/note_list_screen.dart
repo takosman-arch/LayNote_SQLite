@@ -17,6 +17,231 @@ class _NoteListScreenState extends State<NoteListScreen> {
   String _activeCategory = 'Tümü';
   DateTime? _lastBackPressTime;
 
+  // ── Çoklu seçim modu ─────────────────────────────────────────────
+  // Bir nota basılı tutup açılan eylem panelinden "Seç" seçilince aktif
+  // olur. Aktifken notlara dokunmak açmak yerine seçimi açar/kapatır ve
+  // üst panelde arama/sıralama/görünüm butonları yerine toplu eylem
+  // butonları (sil, arşiv, kategori) gösterilir.
+  bool _isSelectionMode = false;
+  Set<String> _selectedNoteKeys = {};
+
+  // Bir notu tekil biçimde tanımlamak için id + oluşturulma tarihi
+  // birleşimi kullanılır (liste içinde id tek başına benzersiz olmayabilir).
+  String _noteKey(Map<String, dynamic> note) =>
+      '${note['id']}_${note['createdDate']}';
+
+  void _enterSelectionMode(Map<String, dynamic> note) {
+    setState(() {
+      _isSelectionMode = true;
+      _selectedNoteKeys = {_noteKey(note)};
+    });
+  }
+
+  void _toggleNoteSelection(Map<String, dynamic> note) {
+    final key = _noteKey(note);
+    setState(() {
+      if (_selectedNoteKeys.contains(key)) {
+        _selectedNoteKeys.remove(key);
+        if (_selectedNoteKeys.isEmpty) _isSelectionMode = false;
+      } else {
+        _selectedNoteKeys.add(key);
+      }
+    });
+  }
+
+  void _exitSelectionMode() {
+    setState(() {
+      _isSelectionMode = false;
+      _selectedNoteKeys.clear();
+    });
+  }
+
+  // Seçili notları çöp kutusuna taşır (tekil silme ile aynı mantık,
+  // toplu olarak uygulanır).
+  void _deleteSelectedNotes() {
+    final selected = _notes
+        .where((n) => _selectedNoteKeys.contains(_noteKey(n)))
+        .toList();
+    if (selected.isEmpty) {
+      _exitSelectionMode();
+      return;
+    }
+    for (final note in selected) {
+      final noteId = note['id']?.toString();
+      if (noteId != null) {
+        ReminderService.instance.cancel(noteId);
+        if (note['isPinnedToNotification'] == true) {
+          ReminderService.instance.unpinFromNotificationPanel(noteId);
+        }
+      }
+    }
+    setState(() {
+      _notes.removeWhere((n) => _selectedNoteKeys.contains(_noteKey(n)));
+      _deletedNotes.addAll(selected);
+      _isSelectionMode = false;
+      _selectedNoteKeys.clear();
+    });
+    _saveData();
+    _showInfoBar('${selected.length} not silindi', icon: Icons.delete_outline);
+  }
+
+  // Seçili notların tümü zaten arşivliyse arşivden çıkarır, aksi halde
+  // hepsini arşivler.
+  void _archiveSelectedNotes() {
+    final selected = _notes
+        .where((n) => _selectedNoteKeys.contains(_noteKey(n)))
+        .toList();
+    if (selected.isEmpty) {
+      _exitSelectionMode();
+      return;
+    }
+    final allArchived = selected.every((n) => n['isArchived'] == true);
+    setState(() {
+      for (final n in selected) {
+        n['isArchived'] = !allArchived;
+      }
+      _isSelectionMode = false;
+      _selectedNoteKeys.clear();
+    });
+    _saveData();
+    _showInfoBar(
+      allArchived ? 'Arşivden çıkarıldı' : 'Arşivlendi',
+      icon: allArchived ? Icons.unarchive_outlined : Icons.archive_outlined,
+    );
+  }
+
+  // Seçili notların tümüne aynı kategoriyi atar.
+  void _showClassifyDialogForSelection() {
+    final selectedKeys = Set<String>.from(_selectedNoteKeys);
+    if (selectedKeys.isEmpty) {
+      _exitSelectionMode();
+      return;
+    }
+
+    void assignCategory(String? category) {
+      setState(() {
+        for (final n in _notes) {
+          if (selectedKeys.contains(_noteKey(n))) {
+            n['category'] = category;
+          }
+        }
+        _isSelectionMode = false;
+        _selectedNoteKeys.clear();
+      });
+      _saveData();
+    }
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: dNoteCardColor(context),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: dNoteIsDark(sheetContext)
+                        ? Colors.grey[700]
+                        : Colors.grey[400],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+              Text(
+                '${selectedKeys.length} not için kategori seç',
+                style: TextStyle(
+                  color: dNoteTextColor(sheetContext),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(
+                  Icons.add_circle_outline,
+                  color: dNoteTextColor(sheetContext),
+                ),
+                title: Text(
+                  'Kategori Ekle',
+                  style: TextStyle(
+                    color: dNoteTextColor(sheetContext),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  _showAddCategoryDialog(
+                    onAdded: (name) {
+                      assignCategory(name);
+                    },
+                  );
+                },
+              ),
+              if (_categories.isNotEmpty) ...[
+                Divider(color: Theme.of(sheetContext).dividerColor, height: 8),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 280),
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: _categories.map((cat) {
+                      final catColor = _getCategoryColor(cat);
+                      return ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: Icon(
+                          Icons.folder_outlined,
+                          color: catColor,
+                        ),
+                        title: Text(
+                          cat,
+                          style: TextStyle(color: dNoteTextColor(sheetContext)),
+                        ),
+                        onTap: () {
+                          Navigator.pop(sheetContext);
+                          assignCategory(cat);
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+              Divider(color: Theme.of(sheetContext).dividerColor, height: 8),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(
+                  Icons.label_off_outlined,
+                  color: Colors.red,
+                ),
+                title: const Text(
+                  'Kategoriyi Kaldır',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  assignCategory(null);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   static const List<Color> _categoryPalette = [
     Color(0xFFFFD600), // Canlı sarı
     Color(0xFFFF6D00), // Turuncu
@@ -460,34 +685,26 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 onTap: () async {
                   Navigator.pop(sheetContext);
                   if (!_notePasswordEnabled) {
-                    showDialog(
-                      context: context,
-                      builder: (ctx) => AlertDialog(
-                        backgroundColor: dNoteCardColor(ctx),
-                        title: const Text(
-                          'Parola Gerekiyor',
-                          style: TextStyle(color: Colors.amber),
-                        ),
-                        content: Text(
-                          'Kategoriyi kilitleyebilmek için önce Ayarlar > Not Şifresi bölümünden bir parola belirlemeniz gerekiyor.',
-                          style: TextStyle(color: dNoteTextColor(ctx)),
-                        ),
-                        actions: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.amber,
-                            ),
-                            onPressed: () => Navigator.pop(ctx),
-                            child: const Text(
-                              'Tamam',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    // Parola belirlenmemişse artık "Parola Gerekiyor"
+                    // uyarı dialogu yerine doğrudan "Yeni Parola Oluştur"
+                    // ekranı açılır; parola belirlenince kategori aynı
+                    // işlem içinde kilitlenir.
+                    final created = await _showCreatePasswordDialog();
+                    if (!mounted || !created) return;
+                    setState(() {
+                      if (isLocked) {
+                        _lockedCategories.remove(category);
+                      } else {
+                        _lockedCategories.add(category);
+                        if (_activeCategory == category) {
+                          _activeCategory = 'Tümü';
+                        }
+                      }
+                    });
+                    _saveData();
+                    _showInfoBar(
+                      isLocked ? 'Kilit kaldırıldı' : 'Kategori kilitlendi',
+                      icon: isLocked ? Icons.lock_open : Icons.lock,
                     );
                     return;
                   }
@@ -845,8 +1062,18 @@ class _NoteListScreenState extends State<NoteListScreen> {
   // daralan bir "toast" kapsülü olarak gösterilir (Android'in kendi sistem
   // bildirimleriyle tutarlı bir görünüm için). `icon`, bildirimi tetikleyen
   // eyleme uygun seçilmelidir (kopyalama, kilit, hatırlatıcı, kaydetme vb.).
-  void _showInfoBar(String message, {IconData icon = Icons.check_circle}) {
+  // actionLabel + onAction verilirse (ör. "Aç"), mesajın yanına küçük,
+  // vurgulu bir metin düğmesi eklenir; dokununca onAction çalışır ve bar
+  // hemen kapanır. Aksiyonlu barlar, kullanıcının dokunmaya vakti olsun
+  // diye normalden biraz daha uzun (4 sn) açık kalır.
+  void _showInfoBar(
+    String message, {
+    IconData icon = Icons.check_circle,
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
     _hideDeletedBar();
+    final hasAction = actionLabel != null && onAction != null;
     _snackOverlay = OverlayEntry(
       builder: (ctx) => Positioned(
         bottom: MediaQuery.of(ctx).padding.bottom + 24,
@@ -871,12 +1098,34 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   ),
                 ],
               ),
-              child: Text(
-                message,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    message,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  if (hasAction) ...[
+                    const SizedBox(width: 14),
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        _hideDeletedBar();
+                        onAction();
+                      },
+                      child: Text(
+                        actionLabel,
+                        style: const TextStyle(
+                          color: Colors.amber,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
           ),
@@ -884,34 +1133,451 @@ class _NoteListScreenState extends State<NoteListScreen> {
       ),
     );
     Overlay.of(context).insert(_snackOverlay!);
-    _snackTimer = Timer(const Duration(seconds: 2), _hideDeletedBar);
+    _snackTimer = Timer(
+      Duration(seconds: hasAction ? 4 : 2),
+      _hideDeletedBar,
+    );
   }
 
   // Not düzenleyicideki üç nokta menüsünden çağrılır: notu PDF'e dönüştürür
-  // ve cihazın paylaşım sayfasını (kaydet/gönder) açar. Hem metin notları
-  // (bloklar) hem de kontrol listesi notları desteklenir.
+  // ve kullanıcının native "Farklı Kaydet" diyaloğuyla seçtiği konuma
+  // doğrudan kaydeder (paylaşım/uygulama seçim ekranı açılmaz). Hem metin
+  // notları (bloklar) hem de kontrol listesi notları desteklenir.
   Future<void> _exportNoteAsPdf({
     required String title,
     required String noteType,
     required List<Map<String, dynamic>> blocks,
     required List<Map<String, dynamic>> checkItems,
     required List<Map<String, dynamic>> attachments,
+    double fontSize = 16.0,
   }) async {
+    debugPrint('[PDF] export başladı, attachments: ${attachments.length}');
     _showInfoBar('PDF hazırlanıyor…', icon: Icons.picture_as_pdf);
     try {
+      // Not editöründeki satır kırılmalarıyla (ve görünen yazı boyutuyla)
+      // PDF'in birebir aynı görünmesi için, PDF servisine telefonun gerçek
+      // ekran genişliğini de veriyoruz. PDF sayfası (A4) telefon ekranından
+      // çok daha geniş olduğundan, aynı sayısal fontSize değeri PDF'te
+      // hem çok daha küçük görünüyor hem de satır başına çok daha fazla
+      // kelime sığdığı için kelime bölünmeleri (word-wrap) editördekiyle
+      // uyuşmuyordu.
+      final phoneScreenWidth = MediaQuery.of(context).size.width;
       final file = await PdfExportService.exportNoteToPdf(
         title: title,
         noteType: noteType,
         blocks: blocks,
         checkItems: checkItems,
         attachments: attachments,
+        fontSize: fontSize,
+        phoneScreenWidth: phoneScreenWidth,
       );
-      await SharePlus.instance.share(
-        ShareParams(files: [XFile(file.path)]),
+      debugPrint('[PDF] dosya oluştu: ${file.path}');
+
+      final bytes = await file.readAsBytes();
+      final safeTitle = title.trim().isEmpty ? 'not' : title.trim();
+
+      // bytes: verildiğinde file_picker, Android'de SAF (Storage Access
+      // Framework) üzerinden seçilen konuma dosyayı kendisi yazar; bu
+      // yüzden savedPath bazı cihazlarda gerçek bir dosya yolu değil,
+      // açılamayan bir content URI olabilir. "Aç" aksiyonu bu yüzden
+      // savedPath yerine, uygulamanın kendi oluşturduğu ve her zaman
+      // doğrudan açılabilen geçici dosyayı (file.path) kullanır.
+      final savedPath = await FilePicker.platform.saveFile(
+        dialogTitle: 'PDF olarak kaydet',
+        fileName: '$safeTitle.pdf',
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+        bytes: bytes,
       );
-    } catch (_) {
+
+      if (mounted && savedPath != null) {
+        _showInfoBar(
+          'PDF kaydedildi',
+          icon: Icons.check_circle_outline,
+          actionLabel: 'Aç',
+          onAction: () => OpenFile.open(file.path),
+        );
+      }
+      // savedPath null ise kullanıcı diyaloğu iptal etmiştir; hata değil,
+      // bu yüzden herhangi bir bildirim gösterilmez.
+    } catch (e, st) {
+      debugPrint('[PDF] genel hata: $e\n$st');
       if (mounted) {
         _showInfoBar('PDF oluşturulamadı', icon: Icons.error_outline);
+      }
+    }
+  }
+
+  // Not düzenleyicideki üç nokta menüsünde "Dışa Aktar" öğesine basılınca
+  // açılan alt menü. Şimdilik tek seçenek (PDF) içeriyor; ileride yeni dışa
+  // aktarma biçimleri eklenirse buraya eklenmesi yeterli olur. Alt menü,
+  // anchorKey ile verilen düğmenin (üç nokta ikonunun) hemen altında açılır.
+  Future<void> _showExportSubmenu({
+    required BuildContext context,
+    required GlobalKey anchorKey,
+    required String title,
+    required String noteType,
+    required List<Map<String, dynamic>> blocks,
+    required List<Map<String, dynamic>> checkItems,
+    required List<Map<String, dynamic>> attachments,
+    double fontSize = 16.0,
+  }) async {
+    final overlayBox =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    final anchorBox =
+        anchorKey.currentContext?.findRenderObject() as RenderBox?;
+
+    RelativeRect position;
+    if (anchorBox != null) {
+      final topLeft = anchorBox.localToGlobal(
+        Offset(0, anchorBox.size.height),
+        ancestor: overlayBox,
+      );
+      final bottomRight = anchorBox.localToGlobal(
+        anchorBox.size.bottomRight(Offset.zero),
+        ancestor: overlayBox,
+      );
+      position = RelativeRect.fromLTRB(
+        topLeft.dx,
+        topLeft.dy,
+        overlayBox.size.width - bottomRight.dx,
+        0,
+      );
+    } else {
+      // Düğmenin konumu (ör. sayfa henüz tam çizilmediyse) alınamazsa
+      // ekranın sağ üst köşesine yakın makul bir varsayılana düş.
+      position = RelativeRect.fromLTRB(
+        overlayBox.size.width - 220,
+        kToolbarHeight,
+        16,
+        0,
+      );
+    }
+
+    final selected = await showMenu<String>(
+      context: context,
+      position: position,
+      items: const [
+        PopupMenuItem(
+          value: 'export_pdf',
+          child: Row(
+            children: [
+              Icon(Icons.picture_as_pdf, color: Colors.redAccent, size: 20),
+              SizedBox(width: 10),
+              Text('PDF'),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'export_jpg',
+          child: Row(
+            children: [
+              Icon(Icons.image_outlined, color: Colors.blueAccent, size: 20),
+              SizedBox(width: 10),
+              Text('JPG'),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'export_txt',
+          child: Row(
+            children: [
+              Icon(
+                Icons.description_outlined,
+                color: Colors.greenAccent,
+                size: 20,
+              ),
+              SizedBox(width: 10),
+              Text('TXT'),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'export_md',
+          child: Row(
+            children: [
+              Icon(
+                Icons.article_outlined,
+                color: Colors.deepPurpleAccent,
+                size: 20,
+              ),
+              SizedBox(width: 10),
+              Text('MD'),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    if (selected == 'export_pdf') {
+      _exportNoteAsPdf(
+        title: title,
+        noteType: noteType,
+        blocks: blocks,
+        checkItems: checkItems,
+        attachments: attachments,
+        fontSize: fontSize,
+      );
+    } else if (selected == 'export_jpg') {
+      _exportNoteAsJpg(
+        context: context,
+        title: title,
+        noteType: noteType,
+        blocks: blocks,
+        checkItems: checkItems,
+        attachments: attachments,
+        fontSize: fontSize,
+      );
+    } else if (selected == 'export_txt') {
+      _exportNoteAsTxt(
+        title: title,
+        noteType: noteType,
+        blocks: blocks,
+        checkItems: checkItems,
+      );
+    } else if (selected == 'export_md') {
+      _exportNoteAsMarkdown(
+        title: title,
+        noteType: noteType,
+        blocks: blocks,
+        checkItems: checkItems,
+      );
+    }
+  }
+
+  // Not düzenleyicideki üç nokta > Dışa Aktar menüsünden çağrılır. Notu
+  // önce mevcut PDF motoruyla sayfalara döker, ardından her sayfayı yüksek
+  // çözünürlüklü bir JPG'e render eder ve kullanıcının native "Farklı
+  // Kaydet" diyaloğuyla seçtiği konuma doğrudan kaydeder. Not tek sayfaya
+  // sığıyorsa tek kaydetme diyaloğu açılır; birden fazla sayfaya
+  // yayılıyorsa (nadir durum) her sayfa için ayrı bir kaydetme diyaloğu
+  // sırayla açılır — file_picker tek seferde yalnızca bir dosya kaydını
+  // güvenilir şekilde yazabildiğinden bu, çoklu dosyayı toplu biçimde
+  // (ör. bir klasöre) yazmaktan daha az kırılgandır.
+  // Not düzenleyicideki üç nokta > Dışa Aktar menüsünden çağrılır.
+  // ESKİ YÖNTEM PDF üzerinden gidiyordu (PDF oluştur → sayfayı fotoğrafla);
+  // bu yüzden JPG hep "kağıda basılmış" gibi görünüyordu (beyaz zemin, A4
+  // oranı). Artık NoteScreenshotService ile notu doğrudan uygulamanın kendi
+  // görünümüyle (koyu/açık tema, gerçek checkbox, telefon genişliği) statik
+  // bir widget olarak çizip resme çeviriyoruz — yani gerçek bir ekran
+  // görüntüsü almış gibi.
+  Future<void> _exportNoteAsJpg({
+    required BuildContext context,
+    required String title,
+    required String noteType,
+    required List<Map<String, dynamic>> blocks,
+    required List<Map<String, dynamic>> checkItems,
+    required List<Map<String, dynamic>> attachments,
+    double fontSize = 16.0,
+  }) async {
+    _showInfoBar('JPG hazırlanıyor…', icon: Icons.image_outlined);
+    try {
+      final jpgFile = await NoteScreenshotService.exportNoteAsScreenshotJpg(
+        context: context,
+        title: title,
+        noteType: noteType,
+        blocks: blocks,
+        checkItems: checkItems,
+        attachments: attachments,
+        fontSize: fontSize,
+        textColor: dNoteEffectiveTextColor(context, _textColor),
+        borderColor: dNoteBorderColor(context),
+        backgroundColor: Theme.of(context).cardColor,
+      );
+
+      final bytes = await jpgFile.readAsBytes();
+      final savedPath = await FilePicker.platform.saveFile(
+        dialogTitle: 'JPG olarak kaydet',
+        fileName: p.basename(jpgFile.path),
+        type: FileType.custom,
+        allowedExtensions: ['jpg'],
+        bytes: bytes,
+      );
+
+      if (mounted && savedPath != null) {
+        _showInfoBar(
+          'JPG kaydedildi',
+          icon: Icons.check_circle_outline,
+          actionLabel: 'Aç',
+          onAction: () => OpenFile.open(jpgFile.path),
+        );
+      }
+      // savedPath null ise kullanıcı diyaloğu iptal etmiştir; hata değil.
+    } catch (e, st) {
+      debugPrint('[JPG] genel hata: $e\n$st');
+      if (mounted) {
+        _showInfoBar('JPG oluşturulamadı', icon: Icons.error_outline);
+      }
+    }
+  }
+
+  // Not düzenleyicideki üç nokta > Dışa Aktar menüsünden çağrılır. Metin
+  // notlarında bloklar düz metne çevrilir (ContentBlocks.plainText, hesap
+  // tablosu bloklarını da okunabilir satırlara döker); kontrol listesi
+  // notlarında her öğe "[x]"/"[ ]" işaretiyle satır satır yazılır. Başlık
+  // (varsa) ilk satıra eklenir.
+  Future<void> _exportNoteAsTxt({
+    required String title,
+    required String noteType,
+    required List<Map<String, dynamic>> blocks,
+    required List<Map<String, dynamic>> checkItems,
+  }) async {
+    _showInfoBar('TXT hazırlanıyor…', icon: Icons.description_outlined);
+    try {
+      final String body;
+      if (noteType == 'checklist') {
+        body = checkItems
+            .map((item) {
+              final checked = item['checked'] == true;
+              final text = (item['text'] ?? '').toString();
+              return '${checked ? '[x]' : '[ ]'} $text';
+            })
+            .join('\n');
+      } else {
+        body = ContentBlocks.plainText(ContentBlocks.serialize(blocks));
+      }
+
+      final buffer = StringBuffer();
+      final trimmedTitle = title.trim();
+      if (trimmedTitle.isNotEmpty) {
+        buffer.writeln(trimmedTitle);
+        buffer.writeln();
+      }
+      buffer.write(body);
+
+      final tempDir = await getTemporaryDirectory();
+      final safeName = trimmedTitle.isEmpty
+          ? 'not_${DateTime.now().microsecondsSinceEpoch}'
+          : trimmedTitle.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
+      final outFile = File(p.join(tempDir.path, '$safeName.txt'));
+      await outFile.writeAsString(buffer.toString());
+
+      final bytes = await outFile.readAsBytes();
+      final savedPath = await FilePicker.platform.saveFile(
+        dialogTitle: 'TXT olarak kaydet',
+        fileName: '$safeName.txt',
+        type: FileType.custom,
+        allowedExtensions: ['txt'],
+        bytes: bytes,
+      );
+
+      if (mounted && savedPath != null) {
+        _showInfoBar(
+          'TXT kaydedildi',
+          icon: Icons.check_circle_outline,
+          actionLabel: 'Aç',
+          onAction: () => OpenFile.open(outFile.path),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        _showInfoBar('TXT oluşturulamadı', icon: Icons.error_outline);
+      }
+    }
+  }
+
+  // _exportNoteAsMarkdown içinde metin notlarının bloklarını (serbest metin,
+  // kontrol listesi ve hesap tablosu blokları) Markdown sözdizimine çevirir:
+  // kontrol listesi blokları "- [ ]"/"- [x]" satırlarına, hesap tablosu
+  // blokları ise iki sütunlu bir Markdown tablosuna dönüşür.
+  String _blocksToMarkdown(List<Map<String, dynamic>> blocks) {
+    final buffer = StringBuffer();
+    for (final block in blocks) {
+      final type = block['type'];
+      if (type == 'text') {
+        final text = (block['text'] ?? '').toString();
+        if (text.trim().isEmpty) continue;
+        buffer.writeln(text);
+        buffer.writeln();
+      } else if (type == 'checklist') {
+        final items = (block['items'] as List?) ?? [];
+        for (final item in items) {
+          final map = item as Map;
+          final checked = map['checked'] == true;
+          final itemText = (map['text'] ?? '').toString();
+          buffer.writeln('- [${checked ? 'x' : ' '}] $itemText');
+        }
+        buffer.writeln();
+      } else if (type == 'calc_table') {
+        final rows = (block['rows'] as List?) ?? [];
+        if (rows.isNotEmpty) {
+          buffer.writeln('| Etiket | Değer |');
+          buffer.writeln('|---|---|');
+          for (final row in rows) {
+            final map = row as Map;
+            final label = (map['label'] ?? '').toString();
+            final value = (map['value'] ?? '').toString();
+            buffer.writeln('| $label | $value |');
+          }
+          buffer.writeln();
+        }
+      }
+    }
+    return buffer.toString().trim();
+  }
+
+  // Not düzenleyicideki üç nokta > Dışa Aktar menüsünden çağrılır. Metin
+  // notlarında bloklar _blocksToMarkdown ile Markdown'a çevrilir (kontrol
+  // listesi blokları "- [ ]" satırlarına, hesap tablosu blokları gerçek bir
+  // Markdown tablosuna dönüşür). Kontrol listesi notlarında her öğe aynı
+  // "- [x]"/"- [ ]" biçiminde yazılır. Başlık varsa # başlık satırı olarak
+  // eklenir.
+  Future<void> _exportNoteAsMarkdown({
+    required String title,
+    required String noteType,
+    required List<Map<String, dynamic>> blocks,
+    required List<Map<String, dynamic>> checkItems,
+  }) async {
+    _showInfoBar('Markdown hazırlanıyor…', icon: Icons.article_outlined);
+    try {
+      final String body;
+      if (noteType == 'checklist') {
+        body = checkItems
+            .map((item) {
+              final checked = item['checked'] == true;
+              final text = (item['text'] ?? '').toString();
+              return '- [${checked ? 'x' : ' '}] $text';
+            })
+            .join('\n');
+      } else {
+        body = _blocksToMarkdown(blocks);
+      }
+
+      final buffer = StringBuffer();
+      final trimmedTitle = title.trim();
+      if (trimmedTitle.isNotEmpty) {
+        buffer.writeln('# $trimmedTitle');
+        buffer.writeln();
+      }
+      buffer.write(body);
+
+      final tempDir = await getTemporaryDirectory();
+      final safeName = trimmedTitle.isEmpty
+          ? 'not_${DateTime.now().microsecondsSinceEpoch}'
+          : trimmedTitle.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
+      final outFile = File(p.join(tempDir.path, '$safeName.md'));
+      await outFile.writeAsString(buffer.toString());
+
+      final bytes = await outFile.readAsBytes();
+      final savedPath = await FilePicker.platform.saveFile(
+        dialogTitle: 'Markdown olarak kaydet',
+        fileName: '$safeName.md',
+        type: FileType.custom,
+        allowedExtensions: ['md'],
+        bytes: bytes,
+      );
+
+      if (mounted && savedPath != null) {
+        _showInfoBar(
+          'Markdown kaydedildi',
+          icon: Icons.check_circle_outline,
+          actionLabel: 'Aç',
+          onAction: () => OpenFile.open(outFile.path),
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        _showInfoBar('Markdown oluşturulamadı', icon: Icons.error_outline);
       }
     }
   }
@@ -1034,6 +1700,118 @@ class _NoteListScreenState extends State<NoteListScreen> {
         ),
       ),
     );
+  }
+
+  // Yeni: kilitleme (not kilitleme / kilitli klasöre girme) için henüz
+  // parola belirlenmemişse, alttaki kırmızı uyarı yerine doğrudan burada
+  // gösterilen "Yeni Parola Oluştur" ekranıyla kullanıcı parolasını hemen
+  // belirleyebilir. true dönerse parola başarıyla oluşturulup kaydedilmiştir
+  // (_notePasswordEnabled otomatik olarak açılır).
+  Future<bool> _showCreatePasswordDialog() async {
+    final passCtrl = TextEditingController();
+    final confirmCtrl = TextEditingController();
+    final completer = Completer<bool>();
+    String? errorText;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx2, setDlg) => AlertDialog(
+          backgroundColor: dNoteCardColor(ctx2),
+          title: const Text(
+            'Yeni Parola Oluştur',
+            style: TextStyle(color: Colors.amber),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Kilitleme özelliğini kullanabilmek için önce bir not parolası belirlemeniz gerekiyor.',
+                style: TextStyle(color: dNoteTextColor(ctx2), fontSize: 13),
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                selectionWidthStyle: ui.BoxWidthStyle.tight,
+                contextMenuBuilder: buildCustomContextMenu,
+                selectionHeightStyle: ui.BoxHeightStyle.max,
+                controller: passCtrl,
+                obscureText: true,
+                autofocus: true,
+                style: TextStyle(color: dNoteTextColor(ctx2)),
+                decoration: InputDecoration(
+                  hintText: 'Yeni parola',
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                selectionWidthStyle: ui.BoxWidthStyle.tight,
+                contextMenuBuilder: buildCustomContextMenu,
+                selectionHeightStyle: ui.BoxHeightStyle.max,
+                controller: confirmCtrl,
+                obscureText: true,
+                style: TextStyle(color: dNoteTextColor(ctx2)),
+                decoration: InputDecoration(
+                  hintText: 'Parolayı doğrula',
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  errorText: errorText,
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.amber),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+                completer.complete(false);
+              },
+              child: const Text('İptal', style: TextStyle(color: Colors.grey)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+              onPressed: () {
+                final pass = passCtrl.text;
+                if (pass.trim().isEmpty) {
+                  setDlg(() => errorText = 'Parola boş olamaz');
+                  return;
+                }
+                if (pass != confirmCtrl.text) {
+                  setDlg(() => errorText = 'Parolalar eşleşmiyor');
+                  return;
+                }
+                setState(() {
+                  _notePasswordEnabled = true;
+                  _notePassword = pass;
+                });
+                _saveData();
+                Navigator.pop(ctx);
+                completer.complete(true);
+              },
+              child: const Text(
+                'Kaydet',
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return completer.future;
   }
 
   // Yeni: parola doğrulama dialogu (true dönerse doğru parola girildi)
@@ -1270,14 +2048,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
     Navigator.pop(context); // drawer'ı önce kapat
 
     if (!_notePasswordEnabled) {
-      // Parola kapalıyken kilitli klasöre girişte parola sorulmaz,
-      // ama kullanıcı parola belirlemediği için uyarılır.
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Önce Ayarlar > Not Şifresi ile parola belirleyin.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      // Parola belirlenmemişse artık alttan kırmızı uyarı göstermek yerine
+      // doğrudan "Yeni Parola Oluştur" ekranı açılır. Parola az önce
+      // oluşturulduğu için ayrıca tekrar doğrulama istemeye gerek yok;
+      // kullanıcı doğrudan kilitli klasöre girer.
+      final created = await _showCreatePasswordDialog();
+      if (!mounted || !created) return;
       setState(() => _activeCategory = '__locked__');
       _saveData();
       return;
@@ -1854,6 +2630,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
         'color': Colors.redAccent,
         'key': 'video',
       },
+      {
+        'icon': Icons.document_scanner_outlined,
+        'label': 'Belge Tara',
+        'color': Colors.lightGreenAccent,
+        'key': 'scan',
+      },
     ];
 
     showModalBottomSheet(
@@ -1961,6 +2743,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
     // menüye "Sesi Yazıya Çevir" eylemi eklenir; konuşma tanıma sonucu bu
     // callback ile düzenleyicinin imleç konumundaki metin bloğuna eklenir.
     void Function(String text)? onInsertText,
+    // Yalnızca not listesinden (uzun basma) çağrıldığında true verilir:
+    // panele en sona "Seç" eylemi eklenir ve seçilince çoklu seçim modu
+    // açılır. Not düzenleyicisinden çağrıldığında gösterilmez.
+    bool showSelectAction = false,
   }) {
     final hasValidNote = noteIndex >= 0 && noteIndex < _notes.length;
     if (!hasValidNote && onReminderChanged == null && onInsertText == null) {
@@ -2025,7 +2811,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
         'key': 'archive',
       },
       {
-        'icon': Icons.label_outline,
+        'icon': Icons.folder_outlined,
         'label': 'Sınıflandır',
         'color': Colors.purple,
         'key': 'classify',
@@ -2091,6 +2877,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
           'label': 'Değişiklikleri Yok Say',
           'color': Colors.red,
           'key': 'discard',
+        },
+      if (showSelectAction && hasValidNote)
+        {
+          'icon': Icons.check_circle_outline,
+          'label': 'Seç',
+          'color': Colors.amber,
+          'key': 'select',
         },
     ];
 
@@ -2270,7 +3063,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
 
                       if (noteIndex < 0) return;
 
-                      if (key == 'favorite') {
+                      if (key == 'select') {
+                        _enterSelectionMode(_notes[noteIndex]);
+                      } else if (key == 'favorite') {
                         setState(() {
                           _notes[noteIndex]['isFavorite'] =
                               !(_notes[noteIndex]['isFavorite'] == true);
@@ -2318,15 +3113,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           _showInfoBar('Kilidi kaldırıldı', icon: Icons.lock_open);
                         } else {
                           if (!_notePasswordEnabled) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Önce Ayarlar > Not Şifresi ile parola belirleyin.',
-                                ),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                            return;
+                            // Parola belirlenmemişse artık alttan kırmızı
+                            // uyarı göstermek yerine doğrudan "Yeni Parola
+                            // Oluştur" ekranı açılır; parola belirlenince
+                            // not aynı işlem içinde kilitlenir.
+                            final created = await _showCreatePasswordDialog();
+                            if (!mounted || !created) return;
                           }
                           setState(() => _notes[noteIndex]['isLocked'] = true);
                           _saveData();
@@ -3570,6 +4362,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
           // gibi uzun sürebilen işlemler) tamamlandığında artık var olmayan
           // bir setModalState çağırıp çökmesini engeller.
           bool isEditorOpen = true;
+          // Sağ üstteki üç nokta menüsündeki "Dışa Aktar" öğesine basılınca
+          // açılan alt menüyü, düğmenin tam altında konumlandırabilmek için
+          // düğmenin RenderBox'ına erişmeye yarayan sabit anahtar.
+          final GlobalKey moreMenuButtonKey = GlobalKey();
           return StatefulBuilder(
             builder: (context, setModalState) {
               requestEditorRebuild = setModalState;
@@ -3757,13 +4553,28 @@ class _NoteListScreenState extends State<NoteListScreen> {
               // Telefonun kamerasını açıp video çeker; çekilen video diğer
               // ekler gibi ekler klasörüne kopyalanıp nota eklenir.
               Future<void> pickVideoFromCamera() async {
-                if (!await Permission.camera.request().isGranted) {
+                final status = await Permission.camera.request();
+                if (!status.isGranted) {
                   if (context.mounted) {
+                    // Kullanıcı izni "bir daha sorma" ile kalıcı olarak
+                    // reddetmişse, sistem izin diyaloğu bir daha çıkmaz;
+                    // bu durumda mesajı ayrım yaparak uygulama ayarlarına
+                    // yönlendiren bir eylem butonu gösteriyoruz.
+                    final permanentlyDenied = status.isPermanentlyDenied;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
+                      SnackBar(
                         content: Text(
-                          'Video çekmek için kamera izni gerekiyor.',
+                          permanentlyDenied
+                              ? 'Kamera izni reddedilmiş. Video çekmek için '
+                                  'ayarlardan izin vermen gerekiyor.'
+                              : 'Video çekmek için kamera izni gerekiyor.',
                         ),
+                        action: permanentlyDenied
+                            ? SnackBarAction(
+                                label: 'Ayarlar',
+                                onPressed: () => openAppSettings(),
+                              )
+                            : null,
                       ),
                     );
                   }
@@ -3780,18 +4591,235 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 ]);
               }
 
+              // "Belge Tara" akışı: kamerayla kenar tespitli belge taraması
+              // yapar (cunning_document_scanner), taranan her sayfa üzerinde
+              // ML Kit ile metin tanıma (OCR) çalıştırır ve tanınan metni
+              // kullanıcının seçimine göre nota ekler. Not türü checklist ise
+              // her satır ayrı bir checklist maddesi olur; metin notlarında
+              // imlecin bulunduğu yere gömülür (diğer ekleme akışlarıyla aynı
+              // desen). Kullanıcı ayrıca taranan görseli ek olarak saklamayı
+              // da seçebilir.
+              Future<void> scanDocumentToText() async {
+                List<String>? scannedPaths;
+                try {
+                  scannedPaths = await CunningDocumentScanner.getPictures(
+                    isGalleryImportAllowed: true,
+                  );
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Tarama başlatılamadı: $e')),
+                    );
+                  }
+                  return;
+                }
+                if (scannedPaths == null || scannedPaths.isEmpty) return;
+                if (!context.mounted) return;
+
+                // OCR işlemi sürerken kapatılamaz bir yükleniyor göstergesi.
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => const Center(
+                    child: CircularProgressIndicator(color: Colors.amber),
+                  ),
+                );
+
+                final recognizer = TextRecognizer(
+                  script: TextRecognitionScript.latin,
+                );
+                final pageTexts = <String>[];
+                try {
+                  for (final path in scannedPaths) {
+                    final result = await recognizer.processImage(
+                      InputImage.fromFilePath(path),
+                    );
+                    final pageText = result.text.trim();
+                    if (pageText.isNotEmpty) pageTexts.add(pageText);
+                  }
+                } catch (e) {
+                  await recognizer.close();
+                  if (context.mounted) {
+                    Navigator.of(context, rootNavigator: true).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Metin tanıma başarısız: $e')),
+                    );
+                  }
+                  return;
+                }
+                await recognizer.close();
+                if (context.mounted) {
+                  Navigator.of(context, rootNavigator: true).pop();
+                }
+
+                final recognizedText = pageTexts.join('\n\n');
+                if (recognizedText.trim().isEmpty) {
+                  _showInfoBar(
+                    'Belgede okunabilir metin bulunamadı',
+                    icon: Icons.info_outline,
+                  );
+                  return;
+                }
+                if (!context.mounted || !isEditorOpen) return;
+
+                // Kullanıcıya sor: sadece metin mi, metin + taranan görsel mi?
+                final choice = await showModalBottomSheet<String>(
+                  context: context,
+                  backgroundColor: Theme.of(context).cardColor,
+                  barrierColor: Colors.black.withValues(alpha: 0.55),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                  ),
+                  builder: (sheetCtx) => SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Container(
+                              width: 40,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[700],
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+                          const Text(
+                            'Taranan belge nasıl eklensin?',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: const Icon(Icons.text_snippet_outlined),
+                            title: const Text('Sadece metin olarak ekle'),
+                            onTap: () => Navigator.pop(sheetCtx, 'text_only'),
+                          ),
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: const Icon(Icons.image_outlined),
+                            title: const Text(
+                              'Metin + taranan görseli ekle',
+                            ),
+                            onTap: () =>
+                                Navigator.pop(sheetCtx, 'text_and_image'),
+                          ),
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: const Icon(Icons.close),
+                            title: const Text('Vazgeç'),
+                            onTap: () => Navigator.pop(sheetCtx, null),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+                if (choice == null) return;
+                if (!isEditorOpen) return;
+
+                if (noteType == 'checklist') {
+                  final lines = recognizedText
+                      .split('\n')
+                      .map((l) => l.trim())
+                      .where((l) => l.isNotEmpty)
+                      .toList();
+                  if (lines.isEmpty) return;
+                  pushUndoCheckpoint();
+                  setModalState(() {
+                    for (final line in lines) {
+                      checkItems.add({'text': line, 'checked': false});
+                    }
+                  });
+                } else {
+                  pushUndoCheckpoint();
+                  setModalState(() {
+                    // İmlecin bulunduğu metin bloğunu bul; imleç orada yoksa
+                    // son metin bloğuna, o da yoksa yeni bir metin bloğuna
+                    // eklenir (diğer ekleme akışlarındaki aynı desen).
+                    int idx = focusedBlockIndex;
+                    if (idx < 0 ||
+                        idx >= blocks.length ||
+                        blocks[idx]['type'] != 'text') {
+                      idx = blocks.lastIndexWhere((b) => b['type'] == 'text');
+                      if (idx == -1) {
+                        blocks.add({'type': 'text', 'text': ''});
+                        idx = blocks.length - 1;
+                      }
+                    }
+                    final controller = blockControllers[idx];
+                    final current =
+                        controller?.text ??
+                        (blocks[idx]['text'] ?? '').toString();
+                    int offset = controller?.selection.baseOffset ?? -1;
+                    if (offset < 0 || offset > current.length) {
+                      offset = current.length;
+                    }
+                    final leftText = current.substring(0, offset);
+                    final rightText = current.substring(offset);
+                    final needsLeadingNewline =
+                        leftText.isNotEmpty && !leftText.endsWith('\n');
+                    final insertion =
+                        (needsLeadingNewline ? '\n' : '') + recognizedText;
+                    final newLeft = leftText + insertion;
+                    blocks[idx]['text'] = newLeft + rightText;
+                    focusedBlockIndex = idx;
+                    rebuildBlockControllers();
+                    final newCaretOffset = newLeft.length;
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      final newIdx = focusedBlockIndex.clamp(
+                        0,
+                        blockControllers.length - 1,
+                      );
+                      final newCtrl = blockControllers[newIdx];
+                      if (newCtrl != null) {
+                        newCtrl.selection = TextSelection.collapsed(
+                          offset: newCaretOffset.clamp(0, newCtrl.text.length),
+                        );
+                      }
+                    });
+                  });
+                }
+
+                if (choice == 'text_and_image') {
+                  final files = scannedPaths
+                      .map((path) => {'path': path, 'name': p.basename(path)})
+                      .toList();
+                  await addFilesAsAttachments(files);
+                }
+              }
+
               // Mikrofonla ses kaydı alıp notun eklerine ekler. Kayıt
               // sırasında ayrı bir bottom sheet açılır (süre sayacı +
               // durdur/iptal); kayıt bittiğinde dosya, diğer ekler gibi
               // addFilesAsAttachments üzerinden ekler klasörüne kopyalanır.
               Future<void> recordVoiceNote() async {
-                if (!await Permission.microphone.request().isGranted) {
+                final micPermStatus = await Permission.microphone.request();
+                if (!micPermStatus.isGranted) {
                   if (context.mounted) {
+                    final permanentlyDenied =
+                        micPermStatus.isPermanentlyDenied;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
+                      SnackBar(
                         content: Text(
-                          'Ses kaydı için mikrofon izni gerekiyor.',
+                          permanentlyDenied
+                              ? 'Mikrofon izni reddedilmiş. Ses kaydı için '
+                                  'ayarlardan izin vermen gerekiyor.'
+                              : 'Ses kaydı için mikrofon izni gerekiyor.',
                         ),
+                        action: permanentlyDenied
+                            ? SnackBarAction(
+                                label: 'Ayarlar',
+                                onPressed: () => openAppSettings(),
+                              )
+                            : null,
                       ),
                     );
                   }
@@ -3881,6 +4909,39 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       blocks[i]['ids'] = ids;
                     }
                     break;
+                  }
+                  if (blocks.isEmpty) {
+                    blocks.add({'type': 'text', 'text': ''});
+                  }
+                  rebuildBlockControllers();
+                });
+              }
+
+              // Çizim bloğunun tamamını kaldırır (NoteDrawingBlock'ta uzun
+              // basınca çıkan çöp kutusu ikonuyla tetiklenir — ek/fotoğraf
+              // kutucuklarındaki "uzun bas -> sil" ile aynı davranış).
+              // Ek/hesap tablosu bloklarını kaldırırken kullanılan desenin
+              // birebir aynısı: komşu iki taraf da metin bloğuysa
+              // birleştirilir, değilse blok sadece çıkarılır; blok listesi
+              // tamamen boş kalırsa boş bir metin bloğu eklenir.
+              void removeDrawingBlockAt(int i) {
+                pushUndoCheckpoint();
+                setModalState(() {
+                  if (i < 0 || i >= blocks.length) return;
+                  final prevIsText =
+                      i > 0 && blocks[i - 1]['type'] == 'text';
+                  final nextIsText =
+                      i < blocks.length - 1 &&
+                      blocks[i + 1]['type'] == 'text';
+                  if (prevIsText && nextIsText) {
+                    final mergedText =
+                        ((blocks[i - 1]['text'] ?? '').toString()) +
+                        ((blocks[i + 1]['text'] ?? '').toString());
+                    blocks[i - 1]['text'] = mergedText;
+                    blocks.removeAt(i + 1);
+                    blocks.removeAt(i);
+                  } else {
+                    blocks.removeAt(i);
                   }
                   if (blocks.isEmpty) {
                     blocks.add({'type': 'text', 'text': ''});
@@ -4091,6 +5152,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       // Ekle" ve "Hesap Tablosu Ekle"; ileride aynı ikonun
                       // altına yeni seçenekler eklenebilir.
                       PopupMenuButton<String>(
+                        key: moreMenuButtonKey,
                         icon: Icon(
                           Icons.more_vert,
                           color: dNoteEditorAppBarColor(context),
@@ -4202,14 +5264,81 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 );
                               }
                             });
-                          } else if (value == 'export_pdf') {
-                            _exportNoteAsPdf(
-                              title: _titleController.text,
-                              noteType: noteType,
-                              blocks: blocks,
-                              checkItems: checkItems,
-                              attachments: attachments,
-                            );
+                          } else if (value == 'drawing') {
+                            if (noteType != 'text') return;
+                            pushUndoCheckpoint();
+                            setModalState(() {
+                              // İmlecin bulunduğu metin bloğunu bul; imleç
+                              // orada yoksa son metin bloğuna eklenir (bkz.
+                              // checklist/calc_table ekleme mantığı).
+                              int idx = focusedBlockIndex;
+                              if (idx < 0 ||
+                                  idx >= blocks.length ||
+                                  blocks[idx]['type'] != 'text') {
+                                idx = blocks.lastIndexWhere(
+                                  (b) => b['type'] == 'text',
+                                );
+                                if (idx == -1) {
+                                  blocks.add({'type': 'text', 'text': ''});
+                                  idx = blocks.length - 1;
+                                }
+                              }
+                              final controller = blockControllers[idx];
+                              final text =
+                                  controller?.text ??
+                                  (blocks[idx]['text'] ?? '').toString();
+                              int offset =
+                                  controller?.selection.baseOffset ?? -1;
+                              if (offset < 0 || offset > text.length) {
+                                offset = text.length;
+                              }
+                              final leftText = text.substring(0, offset);
+                              final rightText = text.substring(offset);
+
+                              blocks[idx]['text'] = leftText;
+                              blocks.insert(idx + 1, {
+                                'type': 'drawing',
+                                'strokes': [],
+                              });
+                              blocks.insert(idx + 2, {
+                                'type': 'text',
+                                'text': rightText,
+                              });
+
+                              rebuildBlockControllers();
+                              focusedBlockIndex = idx + 2;
+                              final newFocusNode = blockFocusNodes[idx + 2];
+                              if (newFocusNode != null) {
+                                Future.microtask(
+                                  () => newFocusNode.requestFocus(),
+                                );
+                              }
+                            });
+                          } else if (value == 'export_menu') {
+                            // Üstteki menü kapanma animasyonunu tamamlasın
+                            // diye alt menüyü bir sonraki mikro görevde
+                            // açıyoruz (aynı anda iki menü çakışmasın).
+                            Future.microtask(() {
+                              // Düzenleyicideki metin boyutuyla birebir
+                              // eşleşsin diye aynı hesaplama kullanılıyor:
+                              // not kendi fontSize'ını taşıyorsa o, yoksa
+                              // Ayarlar > Kişiselleştirme > Metin Boyutu.
+                              final effectiveFontSize = index != null
+                                  ? ((_notes[index!]['fontSize'] as num?)
+                                            ?.toDouble() ??
+                                        _globalFontSize)
+                                  : _globalFontSize;
+                              _showExportSubmenu(
+                                context: context,
+                                anchorKey: moreMenuButtonKey,
+                                title: _titleController.text,
+                                noteType: noteType,
+                                blocks: blocks,
+                                checkItems: checkItems,
+                                attachments: attachments,
+                                fontSize: effectiveFontSize,
+                              );
+                            });
                           }
                         },
                         itemBuilder: (_) => [
@@ -4243,18 +5372,38 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 ],
                               ),
                             ),
+                          if (noteType == 'text')
+                            const PopupMenuItem(
+                              value: 'drawing',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.draw,
+                                    color: Colors.amber,
+                                    size: 20,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text('Çizim Ekle'),
+                                ],
+                              ),
+                            ),
                           if (noteType == 'text') const PopupMenuDivider(),
                           const PopupMenuItem(
-                            value: 'export_pdf',
+                            value: 'export_menu',
                             child: Row(
                               children: [
                                 Icon(
-                                  Icons.picture_as_pdf,
-                                  color: Colors.redAccent,
+                                  Icons.ios_share,
+                                  color: Colors.amber,
                                   size: 20,
                                 ),
                                 SizedBox(width: 10),
-                                Text('PDF olarak dışa aktar'),
+                                Expanded(child: Text('Dışa Aktar')),
+                                Icon(
+                                  Icons.chevron_right,
+                                  size: 18,
+                                  color: Colors.grey,
+                                ),
                               ],
                             ),
                           ),
@@ -4361,6 +5510,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         b['ids'] ?? const [],
                                       );
                                       return ids.isNotEmpty;
+                                    case 'drawing':
+                                      final strokes = List.from(
+                                        b['strokes'] ?? const [],
+                                      );
+                                      return strokes.isNotEmpty;
                                     default:
                                       return (b['text'] ?? '')
                                           .toString()
@@ -4952,6 +6106,47 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                   ),
                                 );
                               }
+                              if (block['type'] == 'drawing') {
+                                final strokes =
+                                    List<Map<String, dynamic>>.from(
+                                  block['strokes'] ?? const [],
+                                );
+                                return Padding(
+                                  key: ValueKey('blk_drawing_$i'),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                  child: NoteDrawingBlock(
+                                    strokes: strokes,
+                                    borderColor: dNoteBorderColor(context),
+                                    onChanged: (newStrokes) {
+                                      // Tek tek stroke'lar notun genel
+                                      // geri al/ileri al yığınına GİRMEZ
+                                      // (bağımsız undo, bkz.
+                                      // NoteDrawingBlock); burada sadece
+                                      // güncel veriyi blok listesine
+                                      // yazıyoruz ki kaydetme sırasında
+                                      // (ContentBlocks.serialize) diske
+                                      // gitsin.
+                                      block['strokes'] = newStrokes;
+                                      // "Notunuzu buraya yazın..." ipucu
+                                      // metni tüm bloklara bakan
+                                      // noteHasContent()'e göre gizleniyor;
+                                      // controller'lara dayalı
+                                      // contentListenable çizim bloklarını
+                                      // dinlemediği için (bkz. yukarıdaki
+                                      // AnimatedBuilder), her tamamlanmış
+                                      // strok/silgi/temizle sonrası hafif
+                                      // bir yeniden çizim tetikliyoruz —
+                                      // checklist madde ekleme/kaldırma ile
+                                      // aynı granülerlikte (her tuş
+                                      // vuruşunda DEĞİL).
+                                      requestEditorRebuild?.call(() {});
+                                    },
+                                    onDelete: () => removeDrawingBlockAt(i),
+                                  ),
+                                );
+                              }
                               Widget buildTextBlockField(bool showHint) {
                                 return TextField(
                                   key: ValueKey('blk_text_$i'),
@@ -4999,6 +6194,15 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                       blockControllers[i]!,
                                     );
                                     block['text'] = val;
+                                    // Kullanıcı satırın sonuna "=" yazdıysa
+                                    // (ör. "(2+4)+5*4+2^2-4/2=") ifadeyi
+                                    // hesaplayıp sonucu otomatik ekler.
+                                    dNoteMaybeAutoCalculate(
+                                      blockControllers[i]!,
+                                      onTextChanged: (newText) {
+                                        block['text'] = newText;
+                                      },
+                                    );
                                   },
                                   onTap: () => focusedBlockIndex = i,
                                 );
@@ -5088,7 +6292,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                       selectionHeightStyle: ui.BoxHeightStyle.max,
                                       style: TextStyle(
                                         color: dNoteEffectiveTextColor(context, _textColor),
-                                        fontSize: 16,
+                                        fontSize: index != null
+                                            ? ((_notes[index!]['fontSize']
+                                                          as num?)
+                                                      ?.toDouble() ??
+                                                  _globalFontSize)
+                                            : _globalFontSize,
                                       ),
                                       decoration: const InputDecoration(
                                         hintText: 'Madde...',
@@ -5235,6 +6444,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               // rengi). İtalik değil.
                               final tagTextStyle = TextStyle(
                                 color: dNoteEffectiveTextColor(context, _textColor),
+                                fontWeight: FontWeight.normal,
                                 fontSize: index != null
                                     ? ((_notes[index!]['fontSize'] as num?)
                                               ?.toDouble() ??
@@ -5424,6 +6634,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         recordVoiceNote();
                                       } else if (value == 'video') {
                                         pickVideoFromCamera();
+                                      } else if (value == 'scan') {
+                                        scanDocumentToText();
                                       }
                                     },
                                   ),
@@ -5850,7 +7062,23 @@ class _NoteListScreenState extends State<NoteListScreen> {
         // da tutarlı, koyu temadaki gibi "silikleşmeyen" bir görünüm sağlanır.
         drawerScrimColor: Colors.transparent,
         appBar: AppBar(
-          title: _isSearching
+          leading: _isSelectionMode
+              ? IconButton(
+                  icon: const Icon(Icons.close, color: Colors.amber),
+                  tooltip: 'Seçimi İptal Et',
+                  onPressed: _exitSelectionMode,
+                )
+              : null,
+          title: _isSelectionMode
+              ? Text(
+                  '${_selectedNoteKeys.length} seçildi',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.amber,
+                    fontSize: 18,
+                  ),
+                )
+              : _isSearching
               ? TextField(
                   selectionWidthStyle: ui.BoxWidthStyle.tight,
                   controller: _searchController,
@@ -5881,7 +7109,25 @@ class _NoteListScreenState extends State<NoteListScreen> {
           centerTitle: false,
           titleSpacing: 0,
           iconTheme: const IconThemeData(color: Colors.amber),
-          actions: [
+          actions: _isSelectionMode
+              ? [
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline, color: Colors.amber),
+                    tooltip: 'Sil',
+                    onPressed: _deleteSelectedNotes,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.archive_outlined, color: Colors.amber),
+                    tooltip: 'Arşiv',
+                    onPressed: _archiveSelectedNotes,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.folder_outlined, color: Colors.amber),
+                    tooltip: 'Kategori',
+                    onPressed: _showClassifyDialogForSelection,
+                  ),
+                ]
+              : [
             IconButton(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               icon: Icon(
@@ -6304,33 +7550,15 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             );
                             if (!mounted) return;
                             if (!_notePasswordEnabled) {
-                              showDialog(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  title: const Text(
-                                    'Parola Gerekiyor',
-                                    style: TextStyle(color: Colors.amber),
-                                  ),
-                                  content: const Text(
-                                    'Kilitli kategoriye girebilmek için önce Ayarlar > Not Şifresi bölümünden bir parola belirlemeniz gerekiyor.',
-                                  ),
-                                  actions: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.amber,
-                                      ),
-                                      onPressed: () => Navigator.pop(ctx),
-                                      child: const Text(
-                                        'Tamam',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
+                              // Parola belirlenmemişse artık "Parola
+                              // Gerekiyor" uyarı dialogu yerine doğrudan
+                              // "Yeni Parola Oluştur" ekranı açılır; parola
+                              // belirlenince kullanıcı doğrudan kategoriye
+                              // girer.
+                              final created = await _showCreatePasswordDialog();
+                              if (!mounted || !created) return;
+                              setState(() => _activeCategory = cat);
+                              _saveData();
                               return;
                             }
                             final ok = await _checkPasswordPrompt();
@@ -6573,7 +7801,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           .isNotEmpty;
                       final isChecklist = note['type'] == 'checklist';
                       final isFavorite = note['isFavorite'] == true;
-                      final noteCardColor = _colorfulNotes
+                      final isSelected =
+                          _isSelectionMode &&
+                          _selectedNoteKeys.contains(_noteKey(note));
+                      final baseNoteCardColor = _colorfulNotes
                           ? _categoryPalette[(originalIndex < 0
                                         ? 0
                                         : originalIndex) %
@@ -6582,8 +7813,19 @@ class _NoteListScreenState extends State<NoteListScreen> {
                           : (dNoteIsDark(context)
                                 ? const Color(0xFF2D2D2D)
                                 : Theme.of(context).cardColor);
+                      // Seçili notlar, dokununca beliren parlaklık efektiyle
+                      // aynı tonda (amber) sürekli vurgulanır.
+                      final noteCardColor = isSelected
+                          ? Color.alphaBlend(
+                              Colors.amber.withValues(alpha: 0.30),
+                              baseNoteCardColor,
+                            )
+                          : baseNoteCardColor;
                       final fontScale = _previewFontScale(note);
                       final previewImage = _firstImageAttachment(note);
+                      final previewDrawingStrokes = previewImage == null
+                          ? _firstDrawingStrokes(note)
+                          : null;
                       final previewContentText = isChecklist
                           ? ''
                           : ContentBlocks.plainText(
@@ -6691,16 +7933,19 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                   ),
                                 );
                               }
-                            : () => _showNoteActions(
-                                context,
-                                originalIndex,
-                                false,
-                                onInsertText: (text) =>
-                                    _appendSpeechTranscriptToNote(
+                            : (_isSelectionMode
+                                  ? () => _toggleNoteSelection(note)
+                                  : () => _showNoteActions(
+                                      context,
                                       originalIndex,
-                                      text,
-                                    ),
-                              ),
+                                      false,
+                                      showSelectAction: true,
+                                      onInsertText: (text) =>
+                                          _appendSpeechTranscriptToNote(
+                                            originalIndex,
+                                            text,
+                                          ),
+                                    )),
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: Card(
@@ -6708,6 +7953,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             color: noteCardColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
+                              side: isSelected
+                                  ? const BorderSide(
+                                      color: Colors.amber,
+                                      width: 2,
+                                    )
+                                  : BorderSide.none,
                             ),
                             child: InkWell(
                               onTap: isTrash
@@ -6799,9 +8050,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         ),
                                       );
                                     }
-                                  : () => _openNoteWithPasswordCheck(
-                                      originalIndex,
-                                    ),
+                                  : (_isSelectionMode
+                                        ? () => _toggleNoteSelection(note)
+                                        : () => _openNoteWithPasswordCheck(
+                                            originalIndex,
+                                          )),
                               borderRadius: BorderRadius.circular(12),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -6836,6 +8089,18 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                   size: 20,
                                                 ),
                                               ),
+                                        ),
+                                      ),
+                                    )
+                                  else if (previewDrawingStrokes != null)
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(12),
+                                      ),
+                                      child: AspectRatio(
+                                        aspectRatio: _kGridPreviewAspectRatio,
+                                        child: _gridPreviewDrawingTile(
+                                          previewDrawingStrokes,
                                         ),
                                       ),
                                     ),
@@ -7008,9 +8273,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                           children: [
                                             Icon(
                                               Icons.folder_outlined,
-                                              color: _getCategoryColor(
-                                                note['category'] as String?,
-                                              ),
+                                              color: Colors.grey,
                                               size: 16,
                                             ),
                                             const SizedBox(width: 4),
@@ -7215,6 +8478,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
   // Kart/satır genişliği ne olursa olsun bu oran sabit kalır.
   static const double _kGridPreviewAspectRatio = 16 / 9;
 
+  // Yazısız (sadece foto/çizim) notlarda, IZGARA (kart) görünümündeki
+  // önizleme kare olarak gösterilir — sadece bu özel mod için. Metinli
+  // notlardaki üst şerit (16:9) ve liste görünümündeki önizlemeler bundan
+  // etkilenmez, aynı kalır.
+  static const double _kGridPreviewSquareAspectRatio = 1.0;
+
   // Bir ek görselini kart önizlemesinde (BoxFit.cover) çizen ortak widget.
   Widget _gridPreviewImageTile(Map<String, dynamic> image) {
     if (_attachmentsDirPath == null) {
@@ -7226,6 +8495,58 @@ class _NoteListScreenState extends State<NoteListScreen> {
       errorBuilder: (_, __, ___) => Container(
         color: dNoteSurfaceVariant(context),
         child: const Icon(Icons.broken_image_outlined, color: Colors.grey),
+      ),
+    );
+  }
+
+  // Kart önizlemesinde göstermek üzere, notun içeriğindeki ilk dolu çizim
+  // bloğunun stroke'larını bulur. Sadece görsel eki YOKSA çağrılır (bir not
+  // hem fotoğraf hem çizim içeriyorsa önizlemede fotoğraf önceliklidir,
+  // tıpkı _firstImageAttachment gibi). Kontrol listesi notlarında blok
+  // yapısı kullanılmadığından her zaman null döner.
+  List<Map<String, dynamic>>? _firstDrawingStrokes(Map<String, dynamic> note) {
+    if (note['type'] == 'checklist') return null;
+    final blocks = ContentBlocks.parse(note['content'] as String?);
+    for (final b in blocks) {
+      if (b['type'] == 'drawing') {
+        final strokes = List<Map<String, dynamic>>.from(
+          (b['strokes'] as List? ?? const []).map(
+            (s) => Map<String, dynamic>.from(s as Map),
+          ),
+        );
+        if (strokes.isNotEmpty) return strokes;
+      }
+    }
+    return null;
+  }
+
+  // Bir çizim bloğunu kart önizlemesinde (BoxFit.cover'a benzer şekilde,
+  // FittedBox ile) çizen ortak widget. Çizim, düzenleyicideki gerçek tuval
+  // boyutuyla (ekran genişliği - 40, kDrawingDefaultCanvasHeight) aynı
+  // sabit boyutta çizilip önizleme alanına ölçeklenir — _DrawingPainter,
+  // stroke noktalarını ham (ölçeksiz) piksel konumu olarak kullandığından
+  // bu, düzenleyicideki görünümle orantıyı koruyan tek yöntemdir (bkz.
+  // NoteScreenshotService'teki aynı yaklaşım).
+  Widget _gridPreviewDrawingTile(List<Map<String, dynamic>> strokes) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    const horizontalPadding = 20.0;
+    final originalWidth = screenWidth - (horizontalPadding * 2);
+    return Container(
+      color: dNoteIsDark(context) ? Colors.black : Colors.white,
+      child: FittedBox(
+        fit: BoxFit.cover,
+        child: SizedBox(
+          width: originalWidth,
+          height: kDrawingDefaultCanvasHeight,
+          child: CustomPaint(
+            painter: _DrawingPainter(
+              strokes: strokes,
+              livePoints: null,
+              liveColor: Colors.transparent,
+              liveWidth: 0,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -7272,15 +8593,19 @@ class _NoteListScreenState extends State<NoteListScreen> {
     final bool hasText = isChecklist
         ? true
         : ContentBlocks.plainText(note['content'] as String?).isNotEmpty;
-    final bool photoOnlyMode = !isChecklist && images.isNotEmpty && !hasText;
+    // Fotoğraf yoksa, notun ilk çizim bloğuna bakılır (bkz. _gridPreviewDrawingTile);
+    // bir not hem fotoğraf hem çizim içeriyorsa fotoğraf önceliklidir.
+    final drawingStrokes = images.isEmpty ? _firstDrawingStrokes(note) : null;
+    final bool hasVisual = images.isNotEmpty || drawingStrokes != null;
+    final bool photoOnlyMode = !isChecklist && hasVisual && !hasText;
 
     if (photoOnlyMode) {
-      // Kart sadece foto(lar)dan ibaret: iç/dış boşluk, başlık, kategori,
-      // hatırlatıcı — hiçbiri yok. Tek foto -> 16:9 kart. İki foto -> yan
-      // yana iki foto (kart oranı 32:9).
+      // Kart sadece foto(lar)/çizimden ibaret: iç/dış boşluk, başlık,
+      // kategori, hatırlatıcı — hiçbiri yok. Tek foto/çizim -> kare kart.
+      // İki foto -> yan yana iki kare (kart oranı 2:1).
       return images.length >= 2
-          ? (columnWidth / (_kGridPreviewAspectRatio * 2))
-          : (columnWidth / _kGridPreviewAspectRatio);
+          ? (columnWidth / (_kGridPreviewSquareAspectRatio * 2))
+          : (columnWidth / _kGridPreviewSquareAspectRatio);
     }
 
     double height = 32.0; // kartın iç padding'i: 16 üst + 16 alt
@@ -7291,6 +8616,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
       height += images.length >= 2
           ? (columnWidth / (_kGridPreviewAspectRatio * 2))
           : (columnWidth / _kGridPreviewAspectRatio);
+    } else if (drawingStrokes != null) {
+      // Fotoğraf yok ama çizim var: tek foto ile aynı 16:9 şerit yüksekliği.
+      height += columnWidth / _kGridPreviewAspectRatio;
     }
 
     if (hasTitle) {
@@ -7342,13 +8670,23 @@ class _NoteListScreenState extends State<NoteListScreen> {
     final hasTitle = (note['title'] ?? '').toString().isNotEmpty;
     final isChecklist = note['type'] == 'checklist';
     final isFavorite = note['isFavorite'] == true;
-    final gridCardColor = _colorfulNotes
+    final isSelected =
+        _isSelectionMode && _selectedNoteKeys.contains(_noteKey(note));
+    final baseGridCardColor = _colorfulNotes
         ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) %
                   _categoryPalette.length]
               .withValues(alpha: 0.75)
         : (dNoteIsDark(context)
               ? const Color(0xFF2D2D2D)
               : Theme.of(context).cardColor);
+    // Seçili notlar, dokununca beliren parlaklık efektiyle aynı tonda
+    // (amber) sürekli vurgulanır.
+    final gridCardColor = isSelected
+        ? Color.alphaBlend(
+            Colors.amber.withValues(alpha: 0.30),
+            baseGridCardColor,
+          )
+        : baseGridCardColor;
     final fontScale = _previewFontScale(note);
     final images = _previewImages(note);
     // Yazısız (sadece foto) notlarda kart tamamen foto(lar)dan ibarettir;
@@ -7356,7 +8694,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
     final bool hasText = isChecklist
         ? true
         : ContentBlocks.plainText(note['content'] as String?).isNotEmpty;
-    final bool photoOnlyMode = !isChecklist && images.isNotEmpty && !hasText;
+    // Fotoğraf yoksa notun ilk çizim bloğuna bakılır; fotoğraf her zaman
+    // önceliklidir (bkz. _gridPreviewDrawingTile).
+    final previewDrawingStrokes =
+        images.isEmpty ? _firstDrawingStrokes(note) : null;
+    final bool hasVisual = images.isNotEmpty || previewDrawingStrokes != null;
+    final bool photoOnlyMode = !isChecklist && hasVisual && !hasText;
 
     return GestureDetector(
       onLongPress: isTrash
@@ -7427,17 +8770,25 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 ),
               );
             }
-          : () => _showNoteActions(
-              context,
-              originalIndex,
-              false,
-              onInsertText: (text) =>
-                  _appendSpeechTranscriptToNote(originalIndex, text),
-            ),
+          : (_isSelectionMode
+                ? () => _toggleNoteSelection(note)
+                : () => _showNoteActions(
+                    context,
+                    originalIndex,
+                    false,
+                    showSelectAction: true,
+                    onInsertText: (text) =>
+                        _appendSpeechTranscriptToNote(originalIndex, text),
+                  )),
       child: Card(
         margin: EdgeInsets.zero,
         color: gridCardColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: isSelected
+              ? const BorderSide(color: Colors.amber, width: 2)
+              : BorderSide.none,
+        ),
         child: InkWell(
           onTap: isTrash
               ? () {
@@ -7513,21 +8864,25 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     ),
                   );
                 }
-              : () => _openNoteWithPasswordCheck(originalIndex),
+              : (_isSelectionMode
+                    ? () => _toggleNoteSelection(note)
+                    : () => _openNoteWithPasswordCheck(originalIndex)),
           borderRadius: BorderRadius.circular(12),
           child: Stack(
             children: [
               if (photoOnlyMode)
-                // ── Yazısız (sadece foto) not ──────────────────────────
-                // Kart tamamen foto(lar)dan ibaret: başlık/kategori/
-                // hatırlatıcı yok, dış/iç boşluk yok. Tek foto -> 16:9. İki
-                // foto -> yan yana iki foto (kart oranı 32:9).
+                // ── Yazısız (sadece foto/çizim) not ────────────────────
+                // Kart tamamen foto(lar)/çizimden ibaret: başlık/kategori/
+                // hatırlatıcı yok, dış/iç boşluk yok. Bu özel modda önizleme
+                // KARE gösterilir (yazılı notlardaki 16:9 şeritten farklı
+                // olarak, sadece ızgara/kart görünümünde). Tek foto/çizim ->
+                // kare kart. İki foto -> yan yana iki kare (kart oranı 2:1).
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: AspectRatio(
                     aspectRatio: images.length >= 2
-                        ? (_kGridPreviewAspectRatio * 2)
-                        : _kGridPreviewAspectRatio,
+                        ? (_kGridPreviewSquareAspectRatio * 2)
+                        : _kGridPreviewSquareAspectRatio,
                     child: images.length >= 2
                         ? Row(
                             children: [
@@ -7540,7 +8895,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               ),
                             ],
                           )
-                        : _gridPreviewImageTile(images[0]),
+                        : (images.isNotEmpty
+                              ? _gridPreviewImageTile(images[0])
+                              : _gridPreviewDrawingTile(
+                                  previewDrawingStrokes!,
+                                )),
                   ),
                 )
               else
@@ -7573,6 +8932,16 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               aspectRatio: _kGridPreviewAspectRatio,
                               child: _gridPreviewImageTile(images[0]),
                             ),
+                    )
+                  else if (previewDrawingStrokes != null)
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(12),
+                      ),
+                      child: AspectRatio(
+                        aspectRatio: _kGridPreviewAspectRatio,
+                        child: _gridPreviewDrawingTile(previewDrawingStrokes),
+                      ),
                     ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -7707,9 +9076,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             children: [
                               Icon(
                                 Icons.folder_outlined,
-                                color: _getCategoryColor(
-                                  note['category'] as String?,
-                                ),
+                                color: Colors.grey,
                                 size: 16,
                               ),
                               const SizedBox(width: 4),

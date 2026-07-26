@@ -7,6 +7,12 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <!-- Not içine ses kaydı ekleyebilmek için mikrofon izni -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- Not içine video çekip ekleyebilmek için kamera izni -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- Kamerası olmayan cihazlarda da (nadiren) uygulamanın Play Store'da
+         görünmeye devam etmesi için "zorunlu değil" olarak işaretlendi. -->
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
     <application
         android:label="flutter_application_1"
         android:name="${applicationName}"

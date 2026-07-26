@@ -39,3 +39,11 @@
 -keep class androidx.sqlite.** { *; }
 -dontwarn androidx.work.**
 -dontwarn androidx.room.**
+
+# ── "Belge Tara" özelliği: ML Kit metin tanıma (OCR) + Google Play
+# Services belge tarayıcı. com.google.android.gms.** kuralı yukarıda zaten
+# gms.internal.mlkit_vision_document_scanner gibi sınıfları kapsıyor;
+# burada ayrıca com.google.mlkit.** paketini de koruyoruz çünkü
+# google_mlkit_text_recognition bu paket altında (gms dışında) çalışıyor.
+-keep class com.google.mlkit.** { *; }
+-dontwarn com.google.mlkit.**

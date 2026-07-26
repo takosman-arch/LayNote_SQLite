@@ -7,6 +7,15 @@ part of 'main.dart';
 //   {"type": "attachments", "ids": ["att1", "att2", ...]}
 //   {"type": "checklist", "items": [{"text": "...", "checked": false}, ...]}
 //   {"type": "calc_table", "rows": [{"label": "...", "value": "..."}, ...]}
+//   {"type": "drawing", "strokes": [
+//       {"color": <int argb>, "width": <double>, "points": [[x, y], ...]},
+//       ...
+//   ]}
+// "drawing" bloğu vektör tabanlıdır: her el hareketi (stroke) renk, kalınlık
+// ve nokta listesi olarak saklanır; ekranda bir CustomPainter ile çizilir.
+// Böylece not tekrar açıldığında çizime kaldığı yerden devam edilebilir ve
+// farklı ekran boyutlarında/yakınlaştırmada kalite kaybı olmaz (bkz.
+// NoteDrawingCanvas, henüz eklenmedi — Stage 2).
 // Böylece kullanıcı imlecin olduğu yere fotoğraf/belge, bir kontrol listesi
 // veya toplamı otomatik hesaplanan bir hesap tablosu ekleyebilir, bunların
 // altına/üstüne yazı yazabilir. Eski (düz metin) notlarla geriye dönük
@@ -19,6 +28,7 @@ class ContentBlocks {
     'attachments',
     'checklist',
     'calc_table',
+    'drawing',
   ];
 
   // Sayıyı toplam satırında gösterirken tam sayıysa ondalık kısmı at,
@@ -107,6 +117,17 @@ class ContentBlocks {
                   .map((r) => Map<String, dynamic>.from(r as Map))
                   .toList();
             }
+            if (m['type'] == 'drawing') {
+              m['strokes'] = (m['strokes'] as List? ?? const [])
+                  .map((s) {
+                    final stroke = Map<String, dynamic>.from(s as Map);
+                    stroke['points'] = (stroke['points'] as List? ?? const [])
+                        .map((pt) => List<num>.from(pt as List))
+                        .toList();
+                    return stroke;
+                  })
+                  .toList();
+            }
             return m;
           }),
         );
@@ -129,6 +150,9 @@ class ContentBlocks {
       }
       if (b['type'] == 'calc_table') {
         return (b['rows'] as List?)?.isNotEmpty == true;
+      }
+      if (b['type'] == 'drawing') {
+        return (b['strokes'] as List?)?.isNotEmpty == true;
       }
       return true;
     }).toList();
@@ -200,6 +224,10 @@ class ContentBlocks {
           })) {
         return true;
       }
+      if (b['type'] == 'drawing' &&
+          (b['strokes'] as List?)?.isNotEmpty == true) {
+        return true;
+      }
     }
     return false;
   }
@@ -234,6 +262,28 @@ class ContentBlocks {
           if ((ar[j]['label'] ?? '') != (br[j]['label'] ?? '') ||
               (ar[j]['value'] ?? '') != (br[j]['value'] ?? '')) {
             return false;
+          }
+        }
+      } else if (a['type'] == 'drawing') {
+        final as_ = List<Map>.from(a['strokes'] ?? const []);
+        final bs = List<Map>.from(b['strokes'] ?? const []);
+        if (as_.length != bs.length) return false;
+        for (int j = 0; j < as_.length; j++) {
+          final sa = as_[j];
+          final sb = bs[j];
+          if ((sa['color'] ?? 0) != (sb['color'] ?? 0) ||
+              (sa['width'] ?? 0) != (sb['width'] ?? 0)) {
+            return false;
+          }
+          final pa = List<List>.from(
+            (sa['points'] as List? ?? const []).map((p) => List.from(p)),
+          );
+          final pb = List<List>.from(
+            (sb['points'] as List? ?? const []).map((p) => List.from(p)),
+          );
+          if (pa.length != pb.length) return false;
+          for (int k = 0; k < pa.length; k++) {
+            if (pa[k][0] != pb[k][0] || pa[k][1] != pb[k][1]) return false;
           }
         }
       } else {
