@@ -370,28 +370,53 @@ class _NoteScreenshotContent extends StatelessWidget {
         } else if (type == 'drawing') {
           // Düzenleyicideki NoteDrawingBlock ile birebir aynı görünüm için
           // aynı _DrawingPainter doğrudan kullanılıyor (etkileşimsiz,
-          // sadece render); tuval yüksekliği ise tam ekranda çizilmiş,
-          // önizlemeden (220) daha uzun içerik kırpılmasın diye gerçek
-          // kapsamına göre hesaplanıyor (bkz.
-          // NoteDrawingRenderer.requiredCanvasHeight).
+          // sadece render). ÖNEMLİ (kırpılma düzeltmesi): tuval eskiden
+          // sabit `contentWidth` (telefon ekranı genişliği) ile
+          // çiziliyordu; ama tam ekranda kenar boşluksuz çizilmiş, ekrandan
+          // daha geniş stroke'lar bu durumda RepaintBoundary'nin sağ
+          // kenarının dışında kalıp kırpılıyordu. PDF export'taki
+          // NoteDrawingRenderer.requiredCanvasWidth/Height ile BİREBİR
+          // aynı mantık burada da uygulanıyor: önce çizimin gerçek (tam,
+          // kırpılmamış) kapsamı hesaplanır, ardından bu doğal boyut
+          // en/boy oranı KORUNARAK `contentWidth`'e sığdırılır (yalnızca
+          // gerekiyorsa küçültülür, asla büyütülmez) ve FittedBox ile hem
+          // X hem Y ekseninde ortalanır.
           final strokes = List<Map<String, dynamic>>.from(
             block['strokes'] ?? const [],
           );
           if (strokes.isNotEmpty) {
+            final canvasWidth = NoteDrawingRenderer.requiredCanvasWidth(
+              strokes,
+              minWidth: contentWidth,
+            );
             final canvasHeight =
                 NoteDrawingRenderer.requiredCanvasHeight(strokes);
+            // Sadece küçültme yönünde ölçekle (fitScale asla 1.0'ı geçmez):
+            // çizim contentWidth'ten dar/eşitse hiç ölçeklenmez.
+            final fitScale = canvasWidth > contentWidth
+                ? contentWidth / canvasWidth
+                : 1.0;
+            final displayHeight = canvasHeight * fitScale;
             children.add(
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: SizedBox(
                   width: contentWidth,
-                  height: canvasHeight,
-                  child: CustomPaint(
-                    painter: _DrawingPainter(
-                      strokes: strokes,
-                      livePoints: null,
-                      liveColor: Colors.transparent,
-                      liveWidth: 0,
+                  height: displayHeight,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      width: canvasWidth,
+                      height: canvasHeight,
+                      child: CustomPaint(
+                        painter: _DrawingPainter(
+                          strokes: strokes,
+                          livePoints: null,
+                          liveColor: Colors.transparent,
+                          liveWidth: 0,
+                        ),
+                      ),
                     ),
                   ),
                 ),

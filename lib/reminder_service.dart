@@ -7,6 +7,43 @@ part of 'main.dart';
 // bildirim numarasına sahiptir; böylece aynı not için tekrar planlama
 // yapıldığında eski bildirim otomatik olarak günceller/iptal eder.
 // ════════════════════════════════════════════════════════════════════════
+// Bildirim paneline sabitlenmiş bir notun bildirimi üzerindeki "Kaldır"
+// aksiyon butonunun sabit kimliği. Hem aksiyonu tanımlarken hem de
+// dokunulduğunda hangi aksiyon olduğunu ayırt etmek için kullanılır.
+const String _dNoteUnpinActionId = 'dnote_unpin_action';
+
+// Uygulama TAMAMEN KAPALIYKEN (arka planda bile çalışmıyorken) bildirimdeki
+// "Kaldır" aksiyonuna dokunulursa çağrılır. Bu, ana uygulama isolate'ından
+// AYRI bir arka plan isolate'ında çalışır; bu yüzden State/UI'a hiç erişimi
+// yoktur — yalnızca notun 'isPinnedToNotification' bayrağını doğrudan
+// veritabanında kapatır. Bildirimin kendisi (AndroidNotificationAction'daki
+// cancelNotification: true sayesinde) sistem tarafından zaten otomatik
+// olarak kapatılır; burada ayrıca _plugin.cancel() çağırmaya gerek yoktur.
+//
+// ÖNEMLİ: @pragma('vm:entry-point') olmadan Android bu fonksiyonu tree
+// shaking sırasında silebilir ve arka plan çağrısı sessizce başarısız olur.
+// NOT: flutter_local_notifications, Android'de bu arka plan isolate'ı için
+// gereken plugin kayıtlarını (sqflite dahil) kendi içinde otomatik yapar;
+// bu yüzden ayrıca DartPluginRegistrant.ensureInitialized() çağrısına
+// gerek yoktur (ve bazı Flutter SDK sürümlerinde bu sınıf zaten mevcut
+// değildir).
+@pragma('vm:entry-point')
+void _dNoteOnBackgroundNotificationResponse(
+  NotificationResponse response,
+) async {
+  if (response.actionId != _dNoteUnpinActionId) return;
+  final noteId = response.payload;
+  if (noteId == null || noteId.isEmpty) return;
+  try {
+    await DBHelper.instance.setPinnedToNotification(noteId, false);
+  } catch (_) {
+    // Arka planda DB güncellemesi başarısız olursa sessizce yut; kullanıcı
+    // uygulamayı bir sonraki açışında bildirim zaten kapanmış olacağından
+    // görsel bir sorun yaşamaz (yalnızca bayrak eski kalmış olabilir, bu da
+    // notu tekrar açıp kapatmakla düzelir).
+  }
+}
+
 class ReminderService {
   ReminderService._internal();
   static final ReminderService instance = ReminderService._internal();
@@ -14,6 +51,21 @@ class ReminderService {
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
   bool _initialized = false;
+
+  // Bir bildirime (hatırlatıcı veya bildirim paneline sabitlenmiş not)
+  // dokunulduğunda çağrılır; parametre, o bildirimin ait olduğu notun id'si
+  // (payload) olur. Uygulama çalışırken bir bildirime dokunulduğunda
+  // tetiklenir; UI katmanı (NoteListScreen) bunu dinleyip ilgili notu açar.
+  void Function(String noteId)? onNotificationTapped;
+
+  // Bildirim paneline sabitlenmiş bir notun bildirimindeki "Kaldır"
+  // aksiyonuna, uygulama isolate'ı zaten çalışırken (ön planda veya arka
+  // planda ama süreç canlıyken) dokunulduğunda çağrılır. UI katmanı
+  // (NoteListScreen) bunu dinleyip notun sabitleme bayrağını kapatır ve
+  // veritabanına kaydeder. Süreç tamamen kapalıyken aynı aksiyona
+  // dokunulursa bunun yerine _dNoteOnBackgroundNotificationResponse
+  // devreye girer (bkz. yukarısı).
+  void Function(String noteId)? onUnpinRequested;
 
   Future<void> init() async {
     if (_initialized) return;
@@ -36,7 +88,30 @@ class ReminderService {
       android: androidSettings,
       iOS: iosSettings,
     );
-    await _plugin.initialize(initSettings);
+    await _plugin.initialize(
+      initSettings,
+      // Uygulama açıkken (ön planda veya arka planda ama süreç canlıyken)
+      // bir DNote bildirimine dokunulunca çağrılır. Soğuk başlangıçta
+      // (uygulama tamamen kapalıyken bildirime dokunulduğunda) bu geri
+      // çağrı ÇALIŞMAZ; o durum getLaunchNoteId() ile ele alınır.
+      onDidReceiveNotificationResponse: (details) {
+        final payload = details.payload;
+        if (payload == null || payload.isEmpty) return;
+        // Bildirimin kendisine değil de üzerindeki "Kaldır" aksiyon
+        // butonuna dokunulduysa notu AÇMA; sadece sabitlemeyi kaldır.
+        if (details.notificationResponseType ==
+                NotificationResponseType.selectedNotificationAction &&
+            details.actionId == _dNoteUnpinActionId) {
+          onUnpinRequested?.call(payload);
+          return;
+        }
+        onNotificationTapped?.call(payload);
+      },
+      // Uygulama süreci tamamen kapalıyken "Kaldır" aksiyonuna dokunulduğunda
+      // devreye giren, ayrı isolate'ta çalışan üst düzey (top-level) işleyici.
+      onDidReceiveBackgroundNotificationResponse:
+          _dNoteOnBackgroundNotificationResponse,
+    );
 
     final androidImpl = _plugin
         .resolvePlatformSpecificImplementation<
@@ -46,6 +121,19 @@ class ReminderService {
     await androidImpl?.requestExactAlarmsPermission();
 
     _initialized = true;
+  }
+
+  // Uygulama tamamen kapalıyken bir DNote bildirimine dokunularak açılmışsa,
+  // o bildirimin ait olduğu notun id'sini döndürür (aksi halde null).
+  // NoteListScreen, ilk veri yüklemesinin ardından bunu bir kez kontrol edip
+  // ilgili notu doğrudan açar.
+  Future<String?> getLaunchNoteId() async {
+    if (!_initialized) await init();
+    final details = await _plugin.getNotificationAppLaunchDetails();
+    if (details == null || !details.didNotificationLaunchApp) return null;
+    final payload = details.notificationResponse?.payload;
+    if (payload == null || payload.isEmpty) return null;
+    return payload;
   }
 
   // Not id'si (createdDate string'i) her zaman aynı 31-bit bildirim
@@ -95,6 +183,7 @@ class ReminderService {
           RepeatInterval.hourly,
           details,
           androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          payload: noteId,
         );
       } catch (_) {
         // Planlama başarısız oldu; sessizce yut, uygulama çökmesin.
@@ -144,6 +233,7 @@ class ReminderService {
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         matchDateTimeComponents: matchComponents,
+        payload: noteId,
       );
     } catch (_) {
       // Kesin alarm izni verilmemiş olabilir; en yakın zamanda (inexact)
@@ -169,6 +259,7 @@ class ReminderService {
           uiLocalNotificationDateInterpretation:
               UILocalNotificationDateInterpretation.absoluteTime,
           matchDateTimeComponents: matchComponents,
+          payload: noteId,
         );
       } catch (_) {
         // Planlama başarısız oldu; sessizce yut, uygulama çökmesin.
@@ -209,6 +300,21 @@ class ReminderService {
         enableVibration: false,
         icon: '@mipmap/ic_launcher',
         styleInformation: BigTextStyleInformation(body),
+        // Kullanıcı, uygulamayı hiç açmadan doğrudan bildirim üzerinden
+        // sabitlemeyi kaldırabilsin diye bir aksiyon butonu eklenir.
+        // showsUserInterface: false -> dokunulduğunda uygulama AÇILMAZ.
+        // cancelNotification: true -> bildirim, sistem tarafından anında
+        // (Dart kodu hiç çalışmasa bile) otomatik olarak kapatılır; Dart
+        // tarafındaki işleyiciler (bkz. yukarısı) yalnızca veritabanındaki
+        // 'isPinnedToNotification' bayrağını senkronize etmek için vardır.
+        actions: const [
+          AndroidNotificationAction(
+            _dNoteUnpinActionId,
+            'Kaldır',
+            showsUserInterface: false,
+            cancelNotification: true,
+          ),
+        ],
       ),
       iOS: const DarwinNotificationDetails(presentSound: false),
     );
@@ -218,6 +324,7 @@ class ReminderService {
         title.isEmpty ? 'Not' : title,
         body,
         details,
+        payload: noteId,
       );
     } catch (_) {
       // Bildirim izni verilmemiş olabilir; sessizce yut.

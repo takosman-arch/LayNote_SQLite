@@ -348,6 +348,45 @@ class _NoteListScreenState extends State<NoteListScreen> {
       if (mounted) setState(() => _attachmentsDirPath = d.path);
     });
     _initShareListener();
+    // Uygulama açıkken (arka planda veya ön planda) bir DNote bildirimine
+    // (hatırlatıcı veya bildirim paneline sabitlenmiş not) dokunulduğunda
+    // ilgili notu aç. Soğuk başlangıç durumu _loadData() içinde ayrıca ele
+    // alınıyor (bkz. ReminderService.getLaunchNoteId).
+    ReminderService.instance.onNotificationTapped = _openNoteByIdFromNotification;
+    // Bildirim paneline sabitlenmiş bir notun bildirimindeki "Kaldır"
+    // aksiyonuna, uygulama süreci canlıyken (ön planda veya arka planda)
+    // dokunulduğunda tetiklenir. Süreç tamamen kapalıyken aynı aksiyon
+    // doğrudan ReminderService içindeki arka plan işleyicisi tarafından ele
+    // alınır (bkz. reminder_service.dart).
+    ReminderService.instance.onUnpinRequested =
+        _handleUnpinRequestedFromNotification;
+  }
+
+  // Bildirimdeki "Kaldır" aksiyonuna dokunulunca çağrılır. Bildirimin
+  // kendisi zaten sistem tarafından otomatik kapatılmıştır; burada yalnızca
+  // notun sabitleme bayrağını kapatıp veritabanına yazarak listeyi
+  // senkronize ederiz. Not artık listede yoksa (ör. arada silinmişse)
+  // sessizce hiçbir şey yapılmaz.
+  void _handleUnpinRequestedFromNotification(String noteId) {
+    final index = _notes.indexWhere((n) => n['id']?.toString() == noteId);
+    if (index == -1 || _notes[index]['isPinnedToNotification'] != true) {
+      return;
+    }
+    setState(() => _notes[index]['isPinnedToNotification'] = false);
+    _saveData();
+  }
+
+  // Bir bildirime dokunularak (payload = notun id'si) ilgili notu açar.
+  // Not bulunamazsa (ör. o arada silinmişse) sessizce hiçbir şey yapmaz.
+  void _openNoteByIdFromNotification(String noteId) {
+    final index = _notes.indexWhere((n) => n['id']?.toString() == noteId);
+    if (index == -1) return;
+    // Widget ağacı henüz tam hazır olmayabilir (özellikle soğuk
+    // başlangıçta); bir sonraki frame'e ertelenir.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _openNoteWithPasswordCheck(index);
+    });
   }
 
   @override
@@ -503,6 +542,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
     // sabitlenmiş" not bildirimlerini yeniden göster (bkz. ReminderService
     // .restorePinnedNotes). Ekranı bloklamaması için bekletilmez.
     ReminderService.instance.restorePinnedNotes(_notes);
+
+    // Uygulama tamamen kapalıyken bir DNote bildirimine (hatırlatıcı veya
+    // bildirim paneline sabitlenmiş not) dokunularak açılmışsa, o notu
+    // doğrudan aç.
+    final launchNoteId = await ReminderService.instance.getLaunchNoteId();
+    if (launchNoteId != null) {
+      _openNoteByIdFromNotification(launchNoteId);
+    }
   }
 
   Future<void> _saveData() async {
@@ -553,6 +600,53 @@ class _NoteListScreenState extends State<NoteListScreen> {
   String _getFormattedDate([DateTime? date]) {
     final now = date ?? DateTime.now();
     return _formatDateTimeShortTr(now);
+  }
+
+  // Liste görünümünde not kartlarının üstünde gösterilen tarih grubu
+  // başlıkları (iOS Notlar uygulamasındaki gibi): "Bugün", "Dün",
+  // "Son 7 Gün", "Son 30 Gün", ardından ay adı (aynı yıl içinde) veya
+  // "Ay Yıl" (önceki yıllar için).
+  static const List<String> _fullMonthNamesTr = [
+    'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+    'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
+  ];
+
+  String _dateGroupLabel(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final target = DateTime(date.year, date.month, date.day);
+    final diff = today.difference(target).inDays;
+
+    if (diff <= 0) return 'Bugün';
+    if (diff == 1) return 'Dün';
+    if (diff < 7) return 'Son 7 Gün';
+    if (diff < 30) return 'Son 30 Gün';
+    if (date.year == now.year) return _fullMonthNamesTr[date.month - 1];
+    return '${_fullMonthNamesTr[date.month - 1]} ${date.year}';
+  }
+
+  // Not listesini, ekranda gösterildiği sırayla, aralarına tarih grubu
+  // başlıkları (String) serpiştirilmiş şekilde döndürür. Ardışık notlar
+  // aynı gruba düşüyorsa başlık yalnızca bir kez eklenir; bu yüzden bu
+  // yalnızca notlar tarihe göre sıralıyken (Son Düzenleme / Oluşturulma)
+  // anlamlıdır.
+  List<dynamic> _buildDateGroupedItems(List<Map<String, dynamic>> notes) {
+    final List<dynamic> result = [];
+    String? lastLabel;
+    for (final note in notes) {
+      final rawDate =
+          (note['modifiedDate'] ?? note['createdDate'] ?? '').toString();
+      final date = DateTime.tryParse(rawDate);
+      if (date != null) {
+        final label = _dateGroupLabel(date);
+        if (label != lastLabel) {
+          result.add(label);
+          lastLabel = label;
+        }
+      }
+      result.add(note);
+    }
+    return result;
   }
 
   int _getCountForCategory(String category) {
@@ -1306,20 +1400,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
             ],
           ),
         ),
-        PopupMenuItem(
-          value: 'export_md',
-          child: Row(
-            children: [
-              Icon(
-                Icons.article_outlined,
-                color: Colors.deepPurpleAccent,
-                size: 20,
-              ),
-              SizedBox(width: 10),
-              Text('MD'),
-            ],
-          ),
-        ),
       ],
     );
 
@@ -1344,13 +1424,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
       );
     } else if (selected == 'export_txt') {
       _exportNoteAsTxt(
-        title: title,
-        noteType: noteType,
-        blocks: blocks,
-        checkItems: checkItems,
-      );
-    } else if (selected == 'export_md') {
-      _exportNoteAsMarkdown(
         title: title,
         noteType: noteType,
         blocks: blocks,
@@ -1486,112 +1559,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
     } catch (_) {
       if (mounted) {
         _showInfoBar('TXT oluşturulamadı', icon: Icons.error_outline);
-      }
-    }
-  }
-
-  // _exportNoteAsMarkdown içinde metin notlarının bloklarını (serbest metin,
-  // kontrol listesi ve hesap tablosu blokları) Markdown sözdizimine çevirir:
-  // kontrol listesi blokları "- [ ]"/"- [x]" satırlarına, hesap tablosu
-  // blokları ise iki sütunlu bir Markdown tablosuna dönüşür.
-  String _blocksToMarkdown(List<Map<String, dynamic>> blocks) {
-    final buffer = StringBuffer();
-    for (final block in blocks) {
-      final type = block['type'];
-      if (type == 'text') {
-        final text = (block['text'] ?? '').toString();
-        if (text.trim().isEmpty) continue;
-        buffer.writeln(text);
-        buffer.writeln();
-      } else if (type == 'checklist') {
-        final items = (block['items'] as List?) ?? [];
-        for (final item in items) {
-          final map = item as Map;
-          final checked = map['checked'] == true;
-          final itemText = (map['text'] ?? '').toString();
-          buffer.writeln('- [${checked ? 'x' : ' '}] $itemText');
-        }
-        buffer.writeln();
-      } else if (type == 'calc_table') {
-        final rows = (block['rows'] as List?) ?? [];
-        if (rows.isNotEmpty) {
-          buffer.writeln('| Etiket | Değer |');
-          buffer.writeln('|---|---|');
-          for (final row in rows) {
-            final map = row as Map;
-            final label = (map['label'] ?? '').toString();
-            final value = (map['value'] ?? '').toString();
-            buffer.writeln('| $label | $value |');
-          }
-          buffer.writeln();
-        }
-      }
-    }
-    return buffer.toString().trim();
-  }
-
-  // Not düzenleyicideki üç nokta > Dışa Aktar menüsünden çağrılır. Metin
-  // notlarında bloklar _blocksToMarkdown ile Markdown'a çevrilir (kontrol
-  // listesi blokları "- [ ]" satırlarına, hesap tablosu blokları gerçek bir
-  // Markdown tablosuna dönüşür). Kontrol listesi notlarında her öğe aynı
-  // "- [x]"/"- [ ]" biçiminde yazılır. Başlık varsa # başlık satırı olarak
-  // eklenir.
-  Future<void> _exportNoteAsMarkdown({
-    required String title,
-    required String noteType,
-    required List<Map<String, dynamic>> blocks,
-    required List<Map<String, dynamic>> checkItems,
-  }) async {
-    _showInfoBar('Markdown hazırlanıyor…', icon: Icons.article_outlined);
-    try {
-      final String body;
-      if (noteType == 'checklist') {
-        body = checkItems
-            .map((item) {
-              final checked = item['checked'] == true;
-              final text = (item['text'] ?? '').toString();
-              return '- [${checked ? 'x' : ' '}] $text';
-            })
-            .join('\n');
-      } else {
-        body = _blocksToMarkdown(blocks);
-      }
-
-      final buffer = StringBuffer();
-      final trimmedTitle = title.trim();
-      if (trimmedTitle.isNotEmpty) {
-        buffer.writeln('# $trimmedTitle');
-        buffer.writeln();
-      }
-      buffer.write(body);
-
-      final tempDir = await getTemporaryDirectory();
-      final safeName = trimmedTitle.isEmpty
-          ? 'not_${DateTime.now().microsecondsSinceEpoch}'
-          : trimmedTitle.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
-      final outFile = File(p.join(tempDir.path, '$safeName.md'));
-      await outFile.writeAsString(buffer.toString());
-
-      final bytes = await outFile.readAsBytes();
-      final savedPath = await FilePicker.platform.saveFile(
-        dialogTitle: 'Markdown olarak kaydet',
-        fileName: '$safeName.md',
-        type: FileType.custom,
-        allowedExtensions: ['md'],
-        bytes: bytes,
-      );
-
-      if (mounted && savedPath != null) {
-        _showInfoBar(
-          'Markdown kaydedildi',
-          icon: Icons.check_circle_outline,
-          actionLabel: 'Aç',
-          onAction: () => OpenFile.open(outFile.path),
-        );
-      }
-    } catch (_) {
-      if (mounted) {
-        _showInfoBar('Markdown oluşturulamadı', icon: Icons.error_outline);
       }
     }
   }
@@ -2831,6 +2798,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
         'key': 'classify',
       },
       {
+        'icon': Icons.delete_outline,
+        'label': 'Sil',
+        'color': Colors.red,
+        'key': 'delete',
+      },
+      {
         'icon': isPinnedToNotification
             ? Icons.push_pin
             : Icons.push_pin_outlined,
@@ -2839,12 +2812,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
             : 'Bildirim Paneline Sabitle',
         'color': Colors.indigo,
         'key': 'pin_notification',
-      },
-      {
-        'icon': Icons.delete_outline,
-        'label': 'Sil',
-        'color': Colors.red,
-        'key': 'delete',
       },
       reminderAction,
       if (onInsertText != null) speechToTextAction,
@@ -2869,7 +2836,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
       {
         'icon': Icons.volume_up,
         'label': 'Yüksek Sesle Oku',
-        'color': Colors.orange,
+        'color': Colors.deepPurple,
         'key': 'tts',
       },
       {
@@ -4015,6 +3982,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
     List<TextEditingController?> blockControllers = [];
     List<FocusNode?> blockFocusNodes = [];
     int focusedBlockIndex = 0;
+    // "Çizim Ekle" ile yeni eklenen çizim bloğunun tam ekran çizim
+    // sayfasını otomatik açması gerektiğini işaretlemek için kullanılır
+    // (bkz. NoteDrawingBlock.autoOpenOnce). Yalnızca eklendiği anda bir
+    // sonraki widget kurulumunda bir kez tüketilir, sonra null'a döner.
+    int? autoOpenDrawingBlockIndex;
     // 'checklist' tipindeki bloklar için: her blok indeksine karşılık gelen
     // madde controller/focus node listesi (metin bloklarında null).
     List<List<TextEditingController>?> blockItemControllers = [];
@@ -4964,6 +4936,61 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 });
               }
 
+              // BOŞ bir metin bloğunda (ör. notun en başındaki boş satır)
+              // imleç konumu 0'dayken Geri (Backspace) tuşuna basılınca
+              // çağrılır. Normalde TextField'ın kendi silme davranışı bu
+              // durumda hiçbir şey yapmaz (silinecek karakter yok), bu yüzden
+              // böyle boş bloklar hiç kaldırılamıyordu. Bu fonksiyon o boş
+              // bloğu tamamen kaldırır ve imleci mantıklı bir yere taşır:
+              // - Önceki blok metinse, imleç onun sonuna gider (sanki o
+              //   satır gerçekten silinmiş gibi).
+              // - Önceki blok metin değilse (ek/liste/tablo/çizim) ama
+              //   silinen satırdan SONRA bir metin bloğu varsa, imleç onun
+              //   başına gider.
+              // - Notta bu tek blok kalıyorsa hiçbir şey yapılmaz (son blok
+              //   asla silinmez, aksi halde yazılacak alan kalmaz).
+              void removeEmptyTextBlockAndRefocus(int idx) {
+                if (blocks.length <= 1) return;
+                if (idx < 0 || idx >= blocks.length) return;
+                if (blocks[idx]['type'] != 'text') return;
+                pushUndoCheckpoint();
+                setModalState(() {
+                  blocks.removeAt(idx);
+                  int newFocusIdx;
+                  int caretOffset = 0;
+                  if (idx > 0 && blocks[idx - 1]['type'] == 'text') {
+                    newFocusIdx = idx - 1;
+                    caretOffset = (blocks[idx - 1]['text'] ?? '')
+                        .toString()
+                        .length;
+                  } else if (idx < blocks.length &&
+                      blocks[idx]['type'] == 'text') {
+                    newFocusIdx = idx;
+                    caretOffset = 0;
+                  } else {
+                    newFocusIdx = idx.clamp(0, blocks.length - 1);
+                    caretOffset = 0;
+                  }
+                  rebuildBlockControllers();
+                  focusedBlockIndex = newFocusIdx;
+                  final targetIdx = newFocusIdx;
+                  final targetOffset = caretOffset;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (targetIdx >= 0 &&
+                        targetIdx < blockControllers.length &&
+                        blockControllers[targetIdx] != null &&
+                        targetIdx < blockFocusNodes.length &&
+                        blockFocusNodes[targetIdx] != null) {
+                      blockFocusNodes[targetIdx]!.requestFocus();
+                      final c = blockControllers[targetIdx]!;
+                      c.selection = TextSelection.collapsed(
+                        offset: targetOffset.clamp(0, c.text.length),
+                      );
+                    }
+                  });
+                });
+              }
+
               Future<void> openAttachment(Map<String, dynamic> att) async {
                 final dir = await DBHelper.instance.attachmentsDir();
                 final path = p.join(dir.path, att['storedName'].toString());
@@ -5020,6 +5047,292 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 } else {
                   await OpenFile.open(path);
                 }
+              }
+
+              // ── Blokların sırasını değiştirme: sağ üstteki üç nokta
+              // menüsündeki "Blokları Sırala" seçeneğiyle açılan alt menü.
+              // Kullanıcı önce taşımak istediği bloğa dokunup seçer, sonra
+              // yukarı/aşağı ok düğmeleriyle o bloğu listede istediği yere
+              // kaydırır. Sürükle-bırak yerine bu yöntem seçildi çünkü
+              // bloklar (çizim, hesap tablosu, ek grubu gibi) kendi
+              // içlerinde de dokunma/sürükleme hareketleri barındırıyor;
+              // ayrı bir "seç -> taşı" alt menüsü bu çakışmayı önlüyor.
+              String blockPreviewText(Map<String, dynamic> b) {
+                switch (b['type']) {
+                  case 'checklist':
+                    final items = List<Map<String, dynamic>>.from(
+                      b['items'] ?? const [],
+                    );
+                    final texts = items
+                        .map((it) => (it['text'] ?? '').toString().trim())
+                        .where((t) => t.isNotEmpty)
+                        .toList();
+                    return texts.isEmpty ? 'Kontrol Listesi' : texts.join(', ');
+                  case 'calc_table':
+                    final rows = List<Map<String, dynamic>>.from(
+                      b['rows'] ?? const [],
+                    );
+                    return 'Hesap Tablosu (${rows.length} satır)';
+                  case 'drawing':
+                    return 'Çizim';
+                  case 'attachments':
+                    final ids = List.from(b['ids'] ?? const []);
+                    return '${ids.length} ek (fotoğraf/belge)';
+                  default:
+                    final t = (b['text'] ?? '').toString().trim();
+                    return t.isEmpty ? '(boş metin)' : t;
+                }
+              }
+
+              IconData blockPreviewIcon(String type) {
+                switch (type) {
+                  case 'checklist':
+                    return Icons.checklist;
+                  case 'calc_table':
+                    return Icons.calculate;
+                  case 'drawing':
+                    return Icons.draw;
+                  case 'attachments':
+                    return Icons.attach_file;
+                  default:
+                    return Icons.notes;
+                }
+              }
+
+              // Boş bir metin bloğu mu (ör. iki blok arasındaki boş satır)?
+              bool isEmptyTextBlock(Map<String, dynamic> b) =>
+                  b['type'] == 'text' &&
+                  (b['text'] ?? '').toString().trim().isEmpty;
+
+              // Blokları, aralarındaki boş satırları yutan gruplara ayırır:
+              // her grup, kendinden önce gelen ardışık boş satır(lar) +
+              // tam olarak bir "görünür" (boş olmayan) blok içerir. Sondaki
+              // boş satırlar (arkasında görünür blok yoksa) bir önceki gruba
+              // eklenir. Böylece "Blokları Sırala" listesinde boş satırlar
+              // ayrı satır olarak görünmez, ama bir blok taşınırken ona
+              // bitişik boş satır(lar) da onunla birlikte taşınır.
+              List<List<int>> computeBlockGroups() {
+                final groups = <List<int>>[];
+                var pending = <int>[];
+                for (int idx = 0; idx < blocks.length; idx++) {
+                  pending.add(idx);
+                  if (!isEmptyTextBlock(blocks[idx])) {
+                    groups.add(pending);
+                    pending = [];
+                  }
+                }
+                if (pending.isNotEmpty) {
+                  if (groups.isNotEmpty) {
+                    groups.last.addAll(pending);
+                  } else {
+                    groups.add(pending);
+                  }
+                }
+                return groups;
+              }
+
+              // ── Blokların sırasını değiştirme: sağ üstteki üç nokta
+              // menüsündeki "Blokları Sırala" seçeneğiyle açılan alt menü.
+              // Kullanıcı önce taşımak istediği bloğa dokunup seçer, sonra
+              // yukarı/aşağı ok düğmeleriyle o bloğu listede istediği yere
+              // kaydırır. Sürükle-bırak yerine bu yöntem seçildi çünkü
+              // bloklar (çizim, hesap tablosu, ek grubu gibi) kendi
+              // içlerinde de dokunma/sürükleme hareketleri barındırıyor;
+              // ayrı bir "seç -> taşı" alt menüsü bu çakışmayı önlüyor.
+              void showBlockReorderSheet() {
+                // Seçili GRUP indeksi (blocks listesindeki değil,
+                // computeBlockGroups() sonucundaki indeks). Ana
+                // düzenleyicinin `blocks` listesini doğrudan (referansla)
+                // kullanır, böylece taşıma anında ana ekran da güncel kalır.
+                int? selected;
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Theme.of(context).cardColor,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
+                  ),
+                  builder: (sheetCtx) {
+                    return StatefulBuilder(
+                      builder: (sheetCtx, setSheetState) {
+                        final groups = computeBlockGroups();
+
+                        // Bir grubun önizlemede gösterilecek "görünür"
+                        // bloğunu bulur (grup içindeki son boş-olmayan
+                        // blok); tüm grup boşsa (yalnızca not tamamen boş
+                        // satırlardan ibaretse görülebilir) son bloğa döner.
+                        int anchorIndexOf(List<int> group) {
+                          for (final idx in group.reversed) {
+                            if (!isEmptyTextBlock(blocks[idx])) return idx;
+                          }
+                          return group.last;
+                        }
+
+                        void moveSelected(int delta) {
+                          if (selected == null) return;
+                          final from = selected!;
+                          final to = from + delta;
+                          if (to < 0 || to >= groups.length) return;
+                          pushUndoCheckpoint();
+                          setModalState(() {
+                            final earlierGroup =
+                                groups[math.min(from, to)];
+                            final laterGroup = groups[math.max(from, to)];
+                            final start = earlierGroup.first;
+                            final earlierBlocks = earlierGroup
+                                .map((i) => blocks[i])
+                                .toList();
+                            final laterBlocks = laterGroup
+                                .map((i) => blocks[i])
+                                .toList();
+                            // İki bitişik grubun yerini değiştir; aralarında
+                            // (varsa) grubun kendi içindeki boş satırlar da
+                            // taşınan blokla birlikte gelir.
+                            final combined = [...laterBlocks, ...earlierBlocks];
+                            blocks.removeRange(
+                              start,
+                              start + earlierGroup.length + laterGroup.length,
+                            );
+                            blocks.insertAll(start, combined);
+                            rebuildBlockControllers();
+                          });
+                          setSheetState(() => selected = to);
+                        }
+
+                        return SafeArea(
+                          top: false,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxHeight:
+                                  MediaQuery.of(sheetCtx).size.height * 0.75,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    16,
+                                    16,
+                                    8,
+                                    8,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Expanded(
+                                        child: Text(
+                                          'Blokları Sırala',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                            color: Colors.amber,
+                                          ),
+                                        ),
+                                      ),
+                                      IconButton(
+                                        tooltip: 'Yukarı Taşı',
+                                        icon: Icon(
+                                          Icons.keyboard_arrow_up,
+                                          color:
+                                              selected != null && selected! > 0
+                                              ? Colors.amber
+                                              : Colors.grey,
+                                        ),
+                                        onPressed:
+                                            selected != null && selected! > 0
+                                            ? () => moveSelected(-1)
+                                            : null,
+                                      ),
+                                      IconButton(
+                                        tooltip: 'Aşağı Taşı',
+                                        icon: Icon(
+                                          Icons.keyboard_arrow_down,
+                                          color:
+                                              selected != null &&
+                                                  selected! <
+                                                      groups.length - 1
+                                              ? Colors.amber
+                                              : Colors.grey,
+                                        ),
+                                        onPressed:
+                                            selected != null &&
+                                                selected! < groups.length - 1
+                                            ? () => moveSelected(1)
+                                            : null,
+                                      ),
+                                      IconButton(
+                                        tooltip: 'Kapat',
+                                        icon: const Icon(Icons.close),
+                                        onPressed: () =>
+                                            Navigator.pop(sheetCtx),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+                                  child: Text(
+                                    'Taşımak istediğiniz bloğa dokunup seçin, '
+                                    'sonra yukarı/aşağı ok ile taşıyın.',
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                const Divider(height: 1),
+                                Flexible(
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 4,
+                                    ),
+                                    itemCount: groups.length,
+                                    itemBuilder: (context, i) {
+                                      final b = blocks[anchorIndexOf(groups[i])];
+                                      final isSelected = selected == i;
+                                      return Material(
+                                        color: isSelected
+                                            ? Colors.amber.withValues(
+                                                alpha: 0.15,
+                                              )
+                                            : Colors.transparent,
+                                        child: ListTile(
+                                          leading: Icon(
+                                            blockPreviewIcon(
+                                              (b['type'] ?? 'text').toString(),
+                                            ),
+                                            color: Colors.amber,
+                                          ),
+                                          title: Text(
+                                            blockPreviewText(b),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          trailing: isSelected
+                                              ? const Icon(
+                                                  Icons.check_circle,
+                                                  color: Colors.amber,
+                                                )
+                                              : null,
+                                          onTap: () => setSheetState(
+                                            () =>
+                                                selected = isSelected ? null : i,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
               }
 
               final catColor = _getCategoryColor(noteCategory);
@@ -5314,6 +5627,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 'type': 'drawing',
                                 'strokes': [],
                               });
+                              autoOpenDrawingBlockIndex = idx + 1;
                               blocks.insert(idx + 2, {
                                 'type': 'text',
                                 'text': rightText,
@@ -5325,6 +5639,152 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               if (newFocusNode != null) {
                                 Future.microtask(
                                   () => newFocusNode.requestFocus(),
+                                );
+                              }
+                            });
+                          } else if (value == 'reorder_blocks') {
+                            showBlockReorderSheet();
+                          } else if (value == 'import_txt') {
+                            // Üç nokta menüsünde "İçe Aktar (TXT)" öğesine
+                            // basılınca çağrılır. Kullanıcıya bir .txt
+                            // dosyası seçtirir; içeriği metin notlarında
+                            // imlecin bulunduğu bloğa (OCR "sadece metin
+                            // ekle" akışıyla birebir aynı desen), kontrol
+                            // listesi notlarında ise her satırı ayrı bir
+                            // öğe olarak ekler.
+                            Future.microtask(() async {
+                              String txtContent;
+                              try {
+                                final result = await FilePicker.platform
+                                    .pickFiles(
+                                      type: FileType.custom,
+                                      allowedExtensions: ['txt'],
+                                      dialogTitle:
+                                          'İçe aktarılacak TXT dosyasını seç',
+                                    );
+                                final pickedPath = result?.files.single.path;
+                                if (pickedPath == null) return;
+                                if (!isEditorOpen) return;
+
+                                final pickedFile = File(pickedPath);
+                                try {
+                                  txtContent = await pickedFile.readAsString();
+                                } catch (_) {
+                                  // UTF-8 olmayan (ör. Windows/ANSI) txt
+                                  // dosyalarında düşülecek yedek çözüm.
+                                  txtContent = latin1.decode(
+                                    await pickedFile.readAsBytes(),
+                                  );
+                                }
+                                txtContent = txtContent
+                                    .replaceAll('\r\n', '\n')
+                                    .trim();
+                              } catch (_) {
+                                if (mounted) {
+                                  _showInfoBar(
+                                    'TXT dosyası okunamadı',
+                                    icon: Icons.error_outline,
+                                  );
+                                }
+                                return;
+                              }
+
+                              if (txtContent.isEmpty) {
+                                if (mounted) {
+                                  _showInfoBar(
+                                    'TXT dosyası boş',
+                                    icon: Icons.error_outline,
+                                  );
+                                }
+                                return;
+                              }
+                              if (!isEditorOpen) return;
+
+                              if (noteType == 'checklist') {
+                                final lines = txtContent
+                                    .split('\n')
+                                    .map((l) => l.trim())
+                                    .where((l) => l.isNotEmpty)
+                                    .toList();
+                                if (lines.isEmpty) return;
+                                pushUndoCheckpoint();
+                                setModalState(() {
+                                  for (final line in lines) {
+                                    checkItems.add({
+                                      'text': line,
+                                      'checked': false,
+                                    });
+                                  }
+                                });
+                              } else {
+                                pushUndoCheckpoint();
+                                setModalState(() {
+                                  // İmlecin bulunduğu metin bloğunu bul;
+                                  // imleç orada yoksa son metin bloğuna, o da
+                                  // yoksa yeni bir metin bloğuna eklenir
+                                  // (diğer ekleme akışlarındaki aynı desen).
+                                  int idx = focusedBlockIndex;
+                                  if (idx < 0 ||
+                                      idx >= blocks.length ||
+                                      blocks[idx]['type'] != 'text') {
+                                    idx = blocks.lastIndexWhere(
+                                      (b) => b['type'] == 'text',
+                                    );
+                                    if (idx == -1) {
+                                      blocks.add({'type': 'text', 'text': ''});
+                                      idx = blocks.length - 1;
+                                    }
+                                  }
+                                  final controller = blockControllers[idx];
+                                  final current =
+                                      controller?.text ??
+                                      (blocks[idx]['text'] ?? '').toString();
+                                  int offset =
+                                      controller?.selection.baseOffset ?? -1;
+                                  if (offset < 0 || offset > current.length) {
+                                    offset = current.length;
+                                  }
+                                  final leftText = current.substring(
+                                    0,
+                                    offset,
+                                  );
+                                  final rightText = current.substring(offset);
+                                  final needsLeadingNewline =
+                                      leftText.isNotEmpty &&
+                                      !leftText.endsWith('\n');
+                                  final insertion =
+                                      (needsLeadingNewline ? '\n' : '') +
+                                      txtContent;
+                                  final newLeft = leftText + insertion;
+                                  blocks[idx]['text'] = newLeft + rightText;
+                                  focusedBlockIndex = idx;
+                                  rebuildBlockControllers();
+                                  final newCaretOffset = newLeft.length;
+                                  WidgetsBinding.instance.addPostFrameCallback((
+                                    _,
+                                  ) {
+                                    final newIdx = focusedBlockIndex.clamp(
+                                      0,
+                                      blockControllers.length - 1,
+                                    );
+                                    final newCtrl = blockControllers[newIdx];
+                                    if (newCtrl != null) {
+                                      newCtrl.selection =
+                                          TextSelection.collapsed(
+                                            offset: newCaretOffset.clamp(
+                                              0,
+                                              newCtrl.text.length,
+                                            ),
+                                          );
+                                    }
+                                  });
+                                });
+                              }
+
+                              if (mounted) {
+                                _showInfoBar(
+                                  'TXT içe aktarıldı',
+                                  icon: Icons.check_circle_outline,
                                 );
                               }
                             });
@@ -5401,7 +5861,36 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 ],
                               ),
                             ),
+                          if (noteType == 'text' && blocks.length > 1)
+                            const PopupMenuItem(
+                              value: 'reorder_blocks',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.swap_vert,
+                                    color: Colors.amber,
+                                    size: 20,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text('Blokları Sırala'),
+                                ],
+                              ),
+                            ),
                           if (noteType == 'text') const PopupMenuDivider(),
+                          const PopupMenuItem(
+                            value: 'import_txt',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.upload_file,
+                                  color: Colors.amber,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(child: Text('İçe Aktar (TXT)')),
+                              ],
+                            ),
+                          ),
                           const PopupMenuItem(
                             value: 'export_menu',
                             child: Row(
@@ -5642,6 +6131,64 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                 setModalState(() {
                                                   items[j]['checked'] =
                                                       val ?? false;
+                                                  if (val == true) {
+                                                    // Onaylanan madde en alta
+                                                    // (işaretli maddeler
+                                                    // bölümünün en üstüne)
+                                                    // taşınır; bir önceki
+                                                    // işaretli madde onun bir
+                                                    // altında kalmaya devam
+                                                    // eder.
+                                                    final movedItem = items
+                                                        .removeAt(j);
+                                                    TextEditingController?
+                                                    movedCtrl;
+                                                    FocusNode? movedFn;
+                                                    if (j < itemCtrls.length) {
+                                                      movedCtrl = itemCtrls
+                                                          .removeAt(j);
+                                                    }
+                                                    if (j < itemFns.length) {
+                                                      movedFn = itemFns
+                                                          .removeAt(j);
+                                                    }
+                                                    int targetIndex = items
+                                                        .indexWhere(
+                                                          (e) =>
+                                                              e['checked'] ==
+                                                              true,
+                                                        );
+                                                    if (targetIndex == -1) {
+                                                      targetIndex =
+                                                          items.length;
+                                                    }
+                                                    items.insert(
+                                                      targetIndex,
+                                                      movedItem,
+                                                    );
+                                                    if (movedCtrl != null) {
+                                                      final ctrlIndex =
+                                                          targetIndex <
+                                                              itemCtrls.length
+                                                          ? targetIndex
+                                                          : itemCtrls.length;
+                                                      itemCtrls.insert(
+                                                        ctrlIndex,
+                                                        movedCtrl,
+                                                      );
+                                                    }
+                                                    if (movedFn != null) {
+                                                      final fnIndex =
+                                                          targetIndex <
+                                                              itemFns.length
+                                                          ? targetIndex
+                                                          : itemFns.length;
+                                                      itemFns.insert(
+                                                        fnIndex,
+                                                        movedFn,
+                                                      );
+                                                    }
+                                                  }
                                                   block['items'] = items;
                                                 });
                                               },
@@ -6133,6 +6680,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                   child: NoteDrawingBlock(
                                     strokes: strokes,
                                     borderColor: dNoteBorderColor(context),
+                                    autoOpenOnce:
+                                        i == autoOpenDrawingBlockIndex,
+                                    onAutoOpened: () =>
+                                        autoOpenDrawingBlockIndex = null,
                                     onChanged: (newStrokes) {
                                       // Tek tek stroke'lar notun genel
                                       // geri al/ileri al yığınına GİRMEZ
@@ -6162,7 +6713,40 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 );
                               }
                               Widget buildTextBlockField(bool showHint) {
-                                return TextField(
+                                return Focus(
+                                  onKeyEvent: (node, event) {
+                                    // Yalnızca boş bir blokta, imleç en
+                                    // başındayken Backspace'e basılırsa
+                                    // devreye girer (bkz.
+                                    // removeEmptyTextBlockAndRefocus). Diğer
+                                    // tüm tuşlar/durumlar TextField'ın
+                                    // normal davranışına bırakılır.
+                                    if (event is! KeyDownEvent &&
+                                        event is! KeyRepeatEvent) {
+                                      return KeyEventResult.ignored;
+                                    }
+                                    if (event.logicalKey !=
+                                        LogicalKeyboardKey.backspace) {
+                                      return KeyEventResult.ignored;
+                                    }
+                                    final ctrl = blockControllers[i];
+                                    if (ctrl == null ||
+                                        ctrl.text.isNotEmpty) {
+                                      return KeyEventResult.ignored;
+                                    }
+                                    final sel = ctrl.selection;
+                                    if (!sel.isValid ||
+                                        !sel.isCollapsed ||
+                                        sel.baseOffset != 0) {
+                                      return KeyEventResult.ignored;
+                                    }
+                                    if (blocks.length <= 1) {
+                                      return KeyEventResult.ignored;
+                                    }
+                                    removeEmptyTextBlockAndRefocus(i);
+                                    return KeyEventResult.handled;
+                                  },
+                                  child: TextField(
                                   key: ValueKey('blk_text_$i'),
                                   selectionWidthStyle: ui.BoxWidthStyle.tight,
                                   contextMenuBuilder: buildCustomContextMenu,
@@ -6219,6 +6803,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                     );
                                   },
                                   onTap: () => focusedBlockIndex = i,
+                                  ),
                                 );
                               }
 
@@ -6286,6 +6871,48 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                           setModalState(() {
                                             checkItems[i]['checked'] =
                                                 val ?? false;
+                                            if (val == true) {
+                                              // Onaylanan madde, listenin en
+                                              // altına (işaretli maddeler
+                                              // bölümünün EN ÜSTÜNE, yani
+                                              // önceden işaretlenmiş
+                                              // maddelerin hemen üstüne)
+                                              // taşınır. Böylece her yeni
+                                              // işaretlenen madde en alta
+                                              // iner ve daha önce
+                                              // işaretlenmiş olan madde onun
+                                              // bir üstünde kalır.
+                                              final movedItem = checkItems
+                                                  .removeAt(i);
+                                              final movedCtrl =
+                                                  checkControllers.removeAt(i);
+                                              final movedFn = checkFocusNodes
+                                                  .removeAt(i);
+                                              int targetIndex = checkItems
+                                                  .indexWhere(
+                                                    (e) =>
+                                                        e['checked'] == true,
+                                                  );
+                                              if (targetIndex == -1) {
+                                                targetIndex =
+                                                    checkItems.length;
+                                              }
+                                              checkItems.insert(
+                                                targetIndex,
+                                                movedItem,
+                                              );
+                                              checkControllers.insert(
+                                                targetIndex,
+                                                movedCtrl,
+                                              );
+                                              checkFocusNodes.insert(
+                                                targetIndex,
+                                                movedFn,
+                                              );
+                                              if (newlyAddedIndex == i) {
+                                                newlyAddedIndex = targetIndex;
+                                              }
+                                            }
                                           });
                                         },
                                       ),
@@ -7036,6 +7663,15 @@ class _NoteListScreenState extends State<NoteListScreen> {
         return _isAscending ? compareResult : -compareResult;
       });
     }
+
+    final bool showDateGroups =
+        _isListView &&
+        !isTrash &&
+        _activeCategory != '__reminders__' &&
+        (_sortCriteria == 'Son Düzenleme' || _sortCriteria == 'Oluşturulma');
+    final List<dynamic> listItems = showDateGroups
+        ? _buildDateGroupedItems(filteredNotes)
+        : filteredNotes;
 
     return PopScope(
       canPop: false,
@@ -7796,9 +8432,25 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 : _isListView
                 ? ListView.builder(
                     padding: const EdgeInsets.only(top: 12.0),
-                    itemCount: filteredNotes.length,
+                    itemCount: listItems.length,
                     itemBuilder: (context, index) {
-                      final note = filteredNotes[index];
+                      final listItem = listItems[index];
+                      if (listItem is String) {
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(14, 18, 14, 6),
+                          child: Text(
+                            listItem,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: dNoteIsDark(context)
+                                  ? Colors.grey[400]
+                                  : Colors.grey[700],
+                            ),
+                          ),
+                        );
+                      }
+                      final note = listItem as Map<String, dynamic>;
                       final originalIndex = isTrash
                           ? _deletedNotes.indexWhere(
                               (n) =>

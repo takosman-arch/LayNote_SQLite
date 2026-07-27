@@ -304,6 +304,24 @@ class DBHelper {
     }
   }
 
+  /// Tek bir notun 'isPinnedToNotification' alanını, tüm not listesini
+  /// yeniden yazmadan (replaceNotes gibi) doğrudan veritabanında günceller.
+  /// Bildirim panelindeki "Kaldır" aksiyonuna uygulama tamamen kapalıyken
+  /// dokunulduğunda, ayrı bir arka plan isolate'ından (bkz.
+  /// reminder_service.dart -> _dNoteOnBackgroundNotificationResponse)
+  /// çağrılır; bu yüzden çalışan bir _notes listesine bağımlı olmayan,
+  /// bağımsız ve ucuz bir yazım olmalıdır. Not artık mevcut değilse (ör.
+  /// arada silinmişse) sessizce hiçbir şey yapmaz.
+  Future<void> setPinnedToNotification(String noteId, bool value) async {
+    final db = await database;
+    await db.update(
+      'notes',
+      {'isPinnedToNotification': value ? 1 : 0},
+      where: 'id = ?',
+      whereArgs: [noteId],
+    );
+  }
+
   // ── Kategoriler ──────────────────────────────────────────────────────
   Future<void> replaceCategories(
     List<String> categories,

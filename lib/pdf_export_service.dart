@@ -469,27 +469,36 @@ class PdfExportService {
           );
           if (strokes.isNotEmpty) {
             try {
-              // Tam ekranda çizilmiş, önizlemeden (220) daha uzun içerik
-              // kırpılmadan aktarılsın diye gerçek kapsamına göre yükseklik
-              // hesaplanıyor (bkz. NoteDrawingRenderer.requiredCanvasHeight).
+              // Tam ekranda çizilmiş, önizlemeden (220) daha uzun/geniş
+              // içerik kırpılmadan aktarılsın diye gerçek kapsamına göre
+              // genişlik VE yükseklik hesaplanıyor (bkz.
+              // NoteDrawingRenderer.requiredCanvasHeight/Width). Genişlik
+              // için minimum olarak phoneContentWidth veriliyor; tam ekran
+              // (kenar boşluksuz) modda çizilmiş, bu değerden daha geniş
+              // stroke'lar varsa gerçek kapsam kullanılır — aksi halde sağ
+              // taraftaki çizgiler PNG'nin dışında kalıp kaybolurdu.
+              final canvasWidth = NoteDrawingRenderer.requiredCanvasWidth(
+                strokes,
+                minWidth: phoneContentWidth,
+              );
               final canvasHeight =
                   NoteDrawingRenderer.requiredCanvasHeight(strokes);
               final pngBytes = await NoteDrawingRenderer.renderStrokesToPng(
                 strokes,
-                width: phoneContentWidth,
+                width: canvasWidth,
                 height: canvasHeight,
                 mapWhiteToBlack: true,
               );
               if (pngBytes != null) {
-                final drawingHeight = canvasHeight * scale;
                 // Eskiden sayfaya sığmayan (uzun) çizimler PNG üzerinde
                 // yatay şeritlere bölünüp ayrı sayfalara dağıtılıyordu; bu
                 // hem çizimi ortadan ikiye bölüyor hem de son şeridin (çoğu
                 // zaman neredeyse boş bir sayfaya denk gelen) bomboş bir
                 // sayfa gibi görünmesine yol açıyordu. Artık HİÇBİR şekilde
                 // bölünmüyor: sayfaya sığmayan çizimler, en boy oranı
-                // KORUNARAK tek sayfaya sığacak şekilde küçültülüyor (tıpkı
-                // bir fotoğrafı "sayfaya sığdır" ile küçültmek gibi).
+                // KORUNARAK (hem genişlik hem yükseklik yönünden) tek
+                // sayfaya sığacak şekilde küçültülüyor (tıpkı bir fotoğrafı
+                // "sayfaya sığdır" ile küçültmek gibi).
                 // ÖNEMLİ: çizim, sayfanın TAMAMINA (üst/alt margin dışındaki
                 // tüm alana) göre ölçekleniyor. Ama not başlık/tarih de
                 // gösteriyorsa (yani not sadece çizimden ibaret DEĞİLSE),
@@ -501,33 +510,50 @@ class PdfExportService {
                 final headerHeight = isDrawingOnlyNote
                     ? 0.0
                     : (titleFontSize * 1.3) + 4 + (dateFontSize * 1.3) + 16;
+                final availableWidth = pdfContentWidth;
                 final availableHeight =
                     maxSinglePageHeight - 4 - headerHeight;
-                double boxWidth = pdfContentWidth;
-                double boxHeight = drawingHeight;
-                if (drawingHeight > availableHeight) {
-                  final fitScale = availableHeight / drawingHeight;
-                  boxWidth = pdfContentWidth * fitScale;
-                  boxHeight = availableHeight;
-                }
+
+                // Aynı `scale` faktörüyle büyütülmüş "doğal" (kırpılmamış,
+                // orantılı) boyut. Bu, çizimin gerçek en/boy oranını
+                // (canvasWidth:canvasHeight) korur.
+                final naturalWidth = canvasWidth * scale;
+                final naturalHeight = canvasHeight * scale;
+
+                // Hem genişlik hem yükseklik yönünden sayfaya sığdırmak
+                // için gereken ölçeği (ikisinin en küçüğünü) al; sayfadan
+                // küçükse GEREKSİZ yere büyütme (yalnızca küçültme yönünde
+                // ölçekle, fitScale asla 1.0'ı geçmesin).
+                final fitScale = math.min(
+                  math.min(
+                    availableWidth / naturalWidth,
+                    availableHeight / naturalHeight,
+                  ),
+                  1.0,
+                );
+                final boxWidth = naturalWidth * fitScale;
+                final boxHeight = naturalHeight * fitScale;
+
                 pw.Widget drawingBox(pw.MemoryImage image, double width, double height) {
-                  return pw.Container(
-                    margin: const pw.EdgeInsets.only(bottom: 4),
-                    width: width,
-                    height: height,
-                    // Zemin de kenarlık da kaldırıldı; çizim artık sayfaya
-                    // doğrudan (çerçevesiz) gömülüyor.
-                    // fit: contain DEĞİL fill kullanılıyor çünkü width/height
-                    // zaten yukarıda aynı en/boy oranıyla hesaplandı; fill
-                    // burada güvenlidir ve gereksiz iç boşluk bırakmaz.
-                    child: pw.Image(image, width: width, height: height, fit: pw.BoxFit.fill),
-                  );
+                  // fit: contain DEĞİL fill kullanılıyor çünkü width/height
+                  // zaten yukarıda aynı en/boy oranıyla hesaplandı; fill
+                  // burada güvenlidir ve gereksiz iç boşluk bırakmaz.
+                  return pw.Image(image, width: width, height: height, fit: pw.BoxFit.fill);
                 }
 
+                // Dış kutuya (sayfada çizime ayrılan TÜM alan) açıkça
+                // genişlik/yükseklik verip alignment: center kullanmak,
+                // pdf paketindeki pw.Center'ın (üst widget'ların cross-axis
+                // davranışına bağlı) güvenilmez ortalamasından bağımsız
+                // olarak çizimi HEM X HEM Y ekseninde garanti ortalar.
                 content.add(
-                  boxWidth < pdfContentWidth
-                      ? pw.Center(child: drawingBox(pw.MemoryImage(pngBytes), boxWidth, boxHeight))
-                      : drawingBox(pw.MemoryImage(pngBytes), boxWidth, boxHeight),
+                  pw.Container(
+                    margin: const pw.EdgeInsets.only(bottom: 4),
+                    width: availableWidth,
+                    height: availableHeight,
+                    alignment: pw.Alignment.center,
+                    child: drawingBox(pw.MemoryImage(pngBytes), boxWidth, boxHeight),
+                  ),
                 );
               }
             } catch (e, st) {
