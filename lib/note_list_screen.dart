@@ -3996,11 +3996,32 @@ class _NoteListScreenState extends State<NoteListScreen> {
     List<List<TextEditingController>?> blockTableLabelControllers = [];
     List<List<TextEditingController>?> blockTableValueControllers = [];
     List<List<FocusNode>?> blockTableLabelFocusNodes = [];
+    List<List<FocusNode>?> blockTableValueFocusNodes = [];
+
+    // Boş bir metin bloğunun TextField'ında görünmeyen (sıfır genişlikli)
+    // bir "işaretçi" karakteri. Bazı klavyeler (özellikle Android'de bazı
+    // sanal klavyeler) alan TAMAMEN boşken Geri (Backspace) tuşuna
+    // basıldığında hiçbir olay/karakter değişikliği bildirmiyor (silinecek
+    // bir şey olmadığı için); bu yüzden "boş satırı sil" özelliği önceden
+    // bu klavyelerde hiç tetiklenmiyordu. Çözüm: mantıken boş olan metin
+    // bloklarının controller'ına görünmez bu tek karakteri koyuyoruz, böylece
+    // Backspace her zaman GERÇEK bir "1 karakter -> 0 karakter" silme olayı
+    // oluyor ve onChanged her klavyede güvenilir şekilde tetikleniyor (bkz.
+    // aşağıdaki metin bloğu onChanged'i).
+    const emptyTextSentinel = '\u200B';
 
     // Blok listesi değiştiğinde (ekleme/silme/birleştirme) controller ve
     // focus node'ları tamamen yeniden kurar. Metin bloğu olmayan (ek)
     // konumlar için null tutulur.
     void rebuildBlockControllers() {
+      // Not listesi her zaman bir metin bloğuyla bitmelidir: aksi halde
+      // (ör. "Blokları Sırala" ile bir blok en sona taşındığında ya da en
+      // sondaki boş satır Backspace ile silindiğinde) notun altına
+      // dokunup yazı ekleyebileceğimiz bir alan kalmaz. Böyle bir durum
+      // oluşmuşsa sona boş bir metin bloğu ekleriz.
+      if (blocks.isEmpty || blocks.last['type'] != 'text') {
+        blocks.add({'type': 'text', 'text': ''});
+      }
       // Beyaz ekran sorunu (bkz. çarpıya basınca madde/satır silme kodundaki
       // aynı isimli not): eski controller/focus node'lardan biri o an hâlâ
       // odaklıysa (kullanıcı klavyeyle o alana yazıyorsa), onu odaktan
@@ -4025,6 +4046,8 @@ class _NoteListScreenState extends State<NoteListScreen> {
           if (list != null) ...list,
         for (final list in blockTableLabelFocusNodes)
           if (list != null) ...list,
+        for (final list in blockTableValueFocusNodes)
+          if (list != null) ...list,
       ];
       for (final f in oldFocusNodes) {
         if (f.hasFocus) f.unfocus();
@@ -4044,10 +4067,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
       blockTableLabelControllers = [];
       blockTableValueControllers = [];
       blockTableLabelFocusNodes = [];
+      blockTableValueFocusNodes = [];
       for (int i = 0; i < blocks.length; i++) {
         if (blocks[i]['type'] == 'text') {
+          final rawText = (blocks[i]['text'] ?? '').toString();
           final ctrl = TextEditingController(
-            text: (blocks[i]['text'] ?? '').toString(),
+            text: (rawText.isEmpty && blocks.length > 1)
+                ? emptyTextSentinel
+                : rawText,
           );
           final fn = FocusNode();
           final capturedIndex = i;
@@ -4061,6 +4088,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
           blockTableLabelControllers.add(null);
           blockTableValueControllers.add(null);
           blockTableLabelFocusNodes.add(null);
+          blockTableValueFocusNodes.add(null);
         } else if (blocks[i]['type'] == 'checklist') {
           final items = List<Map<String, dynamic>>.from(
             blocks[i]['items'] ?? const [],
@@ -4080,6 +4108,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
           blockTableLabelControllers.add(null);
           blockTableValueControllers.add(null);
           blockTableLabelFocusNodes.add(null);
+          blockTableValueFocusNodes.add(null);
         } else if (blocks[i]['type'] == 'calc_table') {
           final rows = List<Map<String, dynamic>>.from(
             blocks[i]['rows'] ?? const [],
@@ -4103,6 +4132,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 .toList(),
           );
           blockTableLabelFocusNodes.add(rows.map((_) => FocusNode()).toList());
+          blockTableValueFocusNodes.add(rows.map((_) => FocusNode()).toList());
           blockControllers.add(null);
           blockFocusNodes.add(null);
           blockItemControllers.add(null);
@@ -4115,6 +4145,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
           blockTableLabelControllers.add(null);
           blockTableValueControllers.add(null);
           blockTableLabelFocusNodes.add(null);
+          blockTableValueFocusNodes.add(null);
         }
       }
     }
@@ -4447,7 +4478,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       }
                       final controller = blockControllers[idx];
                       final text =
-                          controller?.text ??
+                          controller?.text.replaceAll(emptyTextSentinel, '') ??
                           (blocks[idx]['text'] ?? '').toString();
                       int offset = controller?.selection.baseOffset ?? -1;
                       if (offset < 0 || offset > text.length) {
@@ -4742,7 +4773,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     }
                     final controller = blockControllers[idx];
                     final current =
-                        controller?.text ??
+                        controller?.text.replaceAll(emptyTextSentinel, '') ??
                         (blocks[idx]['text'] ?? '').toString();
                     int offset = controller?.selection.baseOffset ?? -1;
                     if (offset < 0 || offset > current.length) {
@@ -5505,7 +5536,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               }
                               final controller = blockControllers[idx];
                               final text =
-                                  controller?.text ??
+                                  controller?.text.replaceAll(emptyTextSentinel, '') ??
                                   (blocks[idx]['text'] ?? '').toString();
                               int offset =
                                   controller?.selection.baseOffset ?? -1;
@@ -5557,7 +5588,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               }
                               final controller = blockControllers[idx];
                               final text =
-                                  controller?.text ??
+                                  controller?.text.replaceAll(emptyTextSentinel, '') ??
                                   (blocks[idx]['text'] ?? '').toString();
                               int offset =
                                   controller?.selection.baseOffset ?? -1;
@@ -5571,7 +5602,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               blocks.insert(idx + 1, {
                                 'type': 'calc_table',
                                 'rows': [
-                                  {'label': '', 'value': ''},
                                   {'label': '', 'value': ''},
                                 ],
                               });
@@ -5612,7 +5642,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               }
                               final controller = blockControllers[idx];
                               final text =
-                                  controller?.text ??
+                                  controller?.text.replaceAll(emptyTextSentinel, '') ??
                                   (blocks[idx]['text'] ?? '').toString();
                               int offset =
                                   controller?.selection.baseOffset ?? -1;
@@ -5737,7 +5767,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                   }
                                   final controller = blockControllers[idx];
                                   final current =
-                                      controller?.text ??
+                                      controller?.text.replaceAll(emptyTextSentinel, '') ??
                                       (blocks[idx]['text'] ?? '').toString();
                                   int offset =
                                       controller?.selection.baseOffset ?? -1;
@@ -6131,64 +6161,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                 setModalState(() {
                                                   items[j]['checked'] =
                                                       val ?? false;
-                                                  if (val == true) {
-                                                    // Onaylanan madde en alta
-                                                    // (işaretli maddeler
-                                                    // bölümünün en üstüne)
-                                                    // taşınır; bir önceki
-                                                    // işaretli madde onun bir
-                                                    // altında kalmaya devam
-                                                    // eder.
-                                                    final movedItem = items
-                                                        .removeAt(j);
-                                                    TextEditingController?
-                                                    movedCtrl;
-                                                    FocusNode? movedFn;
-                                                    if (j < itemCtrls.length) {
-                                                      movedCtrl = itemCtrls
-                                                          .removeAt(j);
-                                                    }
-                                                    if (j < itemFns.length) {
-                                                      movedFn = itemFns
-                                                          .removeAt(j);
-                                                    }
-                                                    int targetIndex = items
-                                                        .indexWhere(
-                                                          (e) =>
-                                                              e['checked'] ==
-                                                              true,
-                                                        );
-                                                    if (targetIndex == -1) {
-                                                      targetIndex =
-                                                          items.length;
-                                                    }
-                                                    items.insert(
-                                                      targetIndex,
-                                                      movedItem,
-                                                    );
-                                                    if (movedCtrl != null) {
-                                                      final ctrlIndex =
-                                                          targetIndex <
-                                                              itemCtrls.length
-                                                          ? targetIndex
-                                                          : itemCtrls.length;
-                                                      itemCtrls.insert(
-                                                        ctrlIndex,
-                                                        movedCtrl,
-                                                      );
-                                                    }
-                                                    if (movedFn != null) {
-                                                      final fnIndex =
-                                                          targetIndex <
-                                                              itemFns.length
-                                                          ? targetIndex
-                                                          : itemFns.length;
-                                                      itemFns.insert(
-                                                        fnIndex,
-                                                        movedFn,
-                                                      );
-                                                    }
-                                                  }
                                                   block['items'] = items;
                                                 });
                                               },
@@ -6359,6 +6331,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                 final labelFns =
                                     blockTableLabelFocusNodes[i] ??
                                     <FocusNode>[];
+                                final valueFns =
+                                    blockTableValueFocusNodes[i] ??
+                                    <FocusNode>[];
                                 final fontSize = index != null
                                     ? ((_notes[index!]['fontSize'] as num?)
                                               ?.toDouble() ??
@@ -6405,6 +6380,18 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                     buildCustomContextMenu,
                                                 selectionHeightStyle:
                                                     ui.BoxHeightStyle.max,
+                                                textInputAction:
+                                                    TextInputAction.next,
+                                                // Bkz. aşağıdaki tutar alanı
+                                                // için açıklama: Flutter'ın
+                                                // TextInputAction.next
+                                                // varsayılan odak değiştirme
+                                                // davranışı devre dışı
+                                                // bırakılıyor, aksi halde
+                                                // Enter'a basınca klavye önce
+                                                // kapanıp hemen ardından tekrar
+                                                // açılıyordu.
+                                                onEditingComplete: () {},
                                                 style: TextStyle(
                                                   color: dNoteEffectiveTextColor(
                                                     context,
@@ -6428,6 +6415,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                   rows[j]['label'] = val;
                                                   block['rows'] = rows;
                                                 },
+                                                onSubmitted: (_) {
+                                                  if (j < valueFns.length) {
+                                                    valueFns[j]
+                                                        .requestFocus();
+                                                  }
+                                                },
                                               ),
                                             ),
                                             const SizedBox(width: 8),
@@ -6439,6 +6432,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                 controller:
                                                     j < valueCtrls.length
                                                     ? valueCtrls[j]
+                                                    : null,
+                                                focusNode: j < valueFns.length
+                                                    ? valueFns[j]
                                                     : null,
                                                 contextMenuBuilder:
                                                     buildCustomContextMenu,
@@ -6512,6 +6508,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                       newIndex,
                                                       FocusNode(),
                                                     );
+                                                    valueFns.insert(
+                                                      newIndex,
+                                                      FocusNode(),
+                                                    );
                                                   });
                                                   WidgetsBinding.instance
                                                       .addPostFrameCallback((_) {
@@ -6529,13 +6529,19 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                               ),
                                               onPressed: () {
                                                 pushUndoCheckpoint();
-                                                FocusNode? removedFocusNode;
+                                                final removedFocusNodes =
+                                                    <FocusNode>[];
                                                 if (j < labelFns.length) {
-                                                  removedFocusNode = labelFns[j];
-                                                  if (removedFocusNode
-                                                      .hasFocus) {
-                                                    removedFocusNode.unfocus();
-                                                  }
+                                                  removedFocusNodes
+                                                      .add(labelFns[j]);
+                                                }
+                                                if (j < valueFns.length) {
+                                                  removedFocusNodes
+                                                      .add(valueFns[j]);
+                                                }
+                                                for (final f
+                                                    in removedFocusNodes) {
+                                                  if (f.hasFocus) f.unfocus();
                                                 }
                                                 bool tableRemoved = false;
                                                 setModalState(() {
@@ -6610,13 +6616,20 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                     if (j < labelFns.length) {
                                                       labelFns.removeAt(j);
                                                     }
+                                                    if (j < valueFns.length) {
+                                                      valueFns.removeAt(j);
+                                                    }
                                                   }
                                                 });
                                                 if (!tableRemoved &&
-                                                    removedFocusNode != null) {
+                                                    removedFocusNodes
+                                                        .isNotEmpty) {
                                                   WidgetsBinding.instance
                                                       .addPostFrameCallback((_) {
-                                                    removedFocusNode!.dispose();
+                                                    for (final f
+                                                        in removedFocusNodes) {
+                                                      f.dispose();
+                                                    }
                                                   });
                                                 }
                                               },
@@ -6791,7 +6804,77 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                       'block_$i',
                                       blockControllers[i]!,
                                     );
-                                    block['text'] = val;
+                                    // Bu blok daha önce mantıken boş muydu
+                                    // (yalnızca görünmez işaretçi vardı)?
+                                    final wasLogicallyEmpty =
+                                        (block['text'] ?? '')
+                                            .toString()
+                                            .isEmpty;
+                                    if (val.isEmpty) {
+                                      if (wasLogicallyEmpty) {
+                                        // Kullanıcı, boş bloktaki görünmez
+                                        // işaretçiyi de sildi: bu artık
+                                        // gerçek bir "1 karakter -> 0
+                                        // karakter" silme olayı olduğundan
+                                        // (yukarıdaki emptyTextSentinel
+                                        // notuna bkz.) tüm klavyelerde
+                                        // güvenilir şekilde buraya düşer.
+                                        // Boş satırı sil isteği olarak ele
+                                        // al.
+                                        if (blocks.length > 1) {
+                                          removeEmptyTextBlockAndRefocus(i);
+                                        }
+                                        return;
+                                      }
+                                      // Kullanıcı gerçek metni (ör. tümünü
+                                      // seçip sildi) temizledi; blok kalsın,
+                                      // sadece boşalt. Görünmez işaretçiyi
+                                      // geri koyarak bir sonraki Backspace'in
+                                      // yine algılanabilir olmasını sağla.
+                                      block['text'] = '';
+                                      blockControllers[i]!.value =
+                                          const TextEditingValue(
+                                        text: emptyTextSentinel,
+                                        selection: TextSelection.collapsed(
+                                          offset: emptyTextSentinel.length,
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    final sentinelIndex =
+                                        val.indexOf(emptyTextSentinel);
+                                    if (sentinelIndex != -1) {
+                                      // Kullanıcı gerçek yazmaya başladı:
+                                      // görünmez işaretçiyi controller'ın
+                                      // GÜNCEL değerinden de temizle; aksi
+                                      // halde aşağıdaki otomatik hesaplama
+                                      // gibi ham metni okuyan özellikler
+                                      // görünmeyen karakteri de görür.
+                                      final cleaned = val.replaceRange(
+                                        sentinelIndex,
+                                        sentinelIndex + 1,
+                                        '',
+                                      );
+                                      final rawOffset = blockControllers[i]!
+                                          .selection
+                                          .baseOffset;
+                                      final newOffset = rawOffset > sentinelIndex
+                                          ? rawOffset - 1
+                                          : rawOffset;
+                                      blockControllers[i]!.value =
+                                          TextEditingValue(
+                                        text: cleaned,
+                                        selection: TextSelection.collapsed(
+                                          offset: newOffset.clamp(
+                                            0,
+                                            cleaned.length,
+                                          ),
+                                        ),
+                                      );
+                                      block['text'] = cleaned;
+                                    } else {
+                                      block['text'] = val;
+                                    }
                                     // Kullanıcı satırın sonuna "=" yazdıysa
                                     // (ör. "(2+4)+5*4+2^2-4/2=") ifadeyi
                                     // hesaplayıp sonucu otomatik ekler.
@@ -6871,48 +6954,6 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                           setModalState(() {
                                             checkItems[i]['checked'] =
                                                 val ?? false;
-                                            if (val == true) {
-                                              // Onaylanan madde, listenin en
-                                              // altına (işaretli maddeler
-                                              // bölümünün EN ÜSTÜNE, yani
-                                              // önceden işaretlenmiş
-                                              // maddelerin hemen üstüne)
-                                              // taşınır. Böylece her yeni
-                                              // işaretlenen madde en alta
-                                              // iner ve daha önce
-                                              // işaretlenmiş olan madde onun
-                                              // bir üstünde kalır.
-                                              final movedItem = checkItems
-                                                  .removeAt(i);
-                                              final movedCtrl =
-                                                  checkControllers.removeAt(i);
-                                              final movedFn = checkFocusNodes
-                                                  .removeAt(i);
-                                              int targetIndex = checkItems
-                                                  .indexWhere(
-                                                    (e) =>
-                                                        e['checked'] == true,
-                                                  );
-                                              if (targetIndex == -1) {
-                                                targetIndex =
-                                                    checkItems.length;
-                                              }
-                                              checkItems.insert(
-                                                targetIndex,
-                                                movedItem,
-                                              );
-                                              checkControllers.insert(
-                                                targetIndex,
-                                                movedCtrl,
-                                              );
-                                              checkFocusNodes.insert(
-                                                targetIndex,
-                                                movedFn,
-                                              );
-                                              if (newlyAddedIndex == i) {
-                                                newlyAddedIndex = targetIndex;
-                                              }
-                                            }
                                           });
                                         },
                                       ),
@@ -7421,7 +7462,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                         final controller =
                                             blockControllers[idx];
                                         final current =
-                                            controller?.text ??
+                                            controller?.text.replaceAll(emptyTextSentinel, '') ??
                                             (blocks[idx]['text'] ?? '')
                                                 .toString();
                                         int offset =
@@ -7520,6 +7561,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
           if (f.hasFocus) f.unfocus();
         }
       }
+      for (final list in blockTableValueFocusNodes) {
+        if (list == null) continue;
+        for (final f in list) {
+          if (f.hasFocus) f.unfocus();
+        }
+      }
       for (final c in checkControllers) {
         c.dispose();
       }
@@ -7561,6 +7608,13 @@ class _NoteListScreenState extends State<NoteListScreen> {
         }
       }
       for (final list in blockTableLabelFocusNodes) {
+        if (list != null) {
+          for (final f in list) {
+            f.dispose();
+          }
+        }
+      }
+      for (final list in blockTableValueFocusNodes) {
         if (list != null) {
           for (final f in list) {
             f.dispose();
@@ -8492,13 +8546,15 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       final previewDrawingStrokes = previewImage == null
                           ? _firstDrawingStrokes(note)
                           : null;
-                      final previewContentText = isChecklist
+                      final showMixedPreview =
+                          isChecklist || _hasChecklistBlock(note);
+                      final previewContentText = showMixedPreview
                           ? ''
                           : ContentBlocks.plainText(
                               note['content'] as String?,
                             );
-                      final previewChecklistItems = isChecklist
-                          ? (note['checkItems'] as List? ?? [])
+                      final previewChecklistItems = showMixedPreview
+                          ? _previewLineItems(note)
                           : const [];
                       final previewReminderText = _formattedReminderText(
                         note,
@@ -8817,13 +8873,42 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                       const SizedBox(height: 8),
                                     ],
                                     if (previewChecklistItems.isNotEmpty)
-                                      ...((note['checkItems'] as List? ?? [])
+                                      ...(previewChecklistItems
                                           .take(_previewLines)
-                                          .map<Widget>(
-                                            (item) => Row(
+                                          .map<Widget>((item) {
+                                            final isItemChecklist =
+                                                item['checklist'] == true;
+                                            final isChecked =
+                                                item['checked'] == true;
+                                            final textWidget = Text(
+                                              (item['text'] ?? '').toString(),
+                                              style: TextStyle(
+                                                color:
+                                                    isItemChecklist &&
+                                                        isChecked
+                                                    ? Colors.grey
+                                                    : (dNoteEffectiveTextColor(context, _textColor)),
+                                                decoration:
+                                                    isItemChecklist &&
+                                                        isChecked
+                                                    ? TextDecoration
+                                                          .lineThrough
+                                                    : null,
+                                                fontSize:
+                                                    (note['fontSize'] as num?)
+                                                        ?.toDouble() ??
+                                                    _globalFontSize,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            );
+                                            if (!isItemChecklist) {
+                                              return textWidget;
+                                            }
+                                            return Row(
                                               children: [
                                                 Icon(
-                                                  item['checked'] == true
+                                                  isChecked
                                                       ? Icons.check_box
                                                       : Icons
                                                             .check_box_outline_blank,
@@ -8831,35 +8916,10 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                                   size: 16,
                                                 ),
                                                 const SizedBox(width: 6),
-                                                Expanded(
-                                                  child: Text(
-                                                    item['text'] ?? '',
-                                                    style: TextStyle(
-                                                      color:
-                                                          item['checked'] ==
-                                                              true
-                                                          ? Colors.grey
-                                                          : (dNoteEffectiveTextColor(context, _textColor)),
-                                                      decoration:
-                                                          item['checked'] ==
-                                                              true
-                                                          ? TextDecoration
-                                                                .lineThrough
-                                                          : null,
-                                                      fontSize:
-                                                          (note['fontSize']
-                                                                  as num?)
-                                                              ?.toDouble() ??
-                                                          _globalFontSize,
-                                                    ),
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
-                                                ),
+                                                Expanded(child: textWidget),
                                               ],
-                                            ),
-                                          )
+                                            );
+                                          })
                                           .toList())
                                     else if (previewContentText.isNotEmpty ||
                                         previewShowFavoriteAlone)
@@ -9165,6 +9225,34 @@ class _NoteListScreenState extends State<NoteListScreen> {
     );
   }
 
+  // Not içeriğinde (legacy tüm-not checklist tipi hariç) en az bir dolu
+  // checklist bloğu var mı? Varsa kart önizlemesinde düz metin yerine
+  // kutucuk ikonlu karışık satır listesi kullanılır.
+  bool _hasChecklistBlock(Map<String, dynamic> note) {
+    if (note['type'] == 'checklist') return false;
+    return ContentBlocks.hasChecklistBlock(note['content'] as String?);
+  }
+
+  // Kart önizlemesinde gösterilecek satır listesi. Hem eski (tüm not tek
+  // checklist) hem de yeni blok tabanlı checklist içeren notlar için ortak
+  // biçimde ({'checklist': bool, 'text': String, 'checked': bool}) döner;
+  // böylece liste ve ızgara görünümündeki önizleme kodu aynı veriyi
+  // kullanabilir.
+  List<Map<String, dynamic>> _previewLineItems(Map<String, dynamic> note) {
+    if (note['type'] == 'checklist') {
+      return (note['checkItems'] as List? ?? [])
+          .map<Map<String, dynamic>>(
+            (it) => {
+              'checklist': true,
+              'text': (it['text'] ?? '').toString(),
+              'checked': it['checked'] == true,
+            },
+          )
+          .toList();
+    }
+    return ContentBlocks.previewLines(note['content'] as String?);
+  }
+
   // Kart önizlemesinde göstermek üzere, notun içeriğindeki ilk dolu çizim
   // bloğunun stroke'larını bulur. Sadece görsel eki YOKSA çağrılır (bir not
   // hem fotoğraf hem çizim içeriyorsa önizlemede fotoğraf önceliklidir,
@@ -9292,10 +9380,11 @@ class _NoteListScreenState extends State<NoteListScreen> {
       height += 12.0; // başlık sonrası SizedBox
     }
 
-    if (isChecklist) {
-      final items = (note['checkItems'] as List? ?? []);
+    if (isChecklist || _hasChecklistBlock(note)) {
+      final items = _previewLineItems(note);
       final itemCount = items.length.clamp(0, _previewLines);
-      // Her checklist öğesi tek satır + altında 4px boşluk.
+      // Her önizleme satırı (checklist maddesi ya da metin satırı) tek
+      // satır + altında 4px boşluk.
       height += itemCount * ((12 * fontScale) * 1.3 + 4.0);
     } else {
       final content = ContentBlocks.plainText(note['content'] as String?);
@@ -9355,6 +9444,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
         : baseGridCardColor;
     final fontScale = _previewFontScale(note);
     final images = _previewImages(note);
+    final showMixedPreview = isChecklist || _hasChecklistBlock(note);
     // Yazısız (sadece foto) notlarda kart tamamen foto(lar)dan ibarettir;
     // checklist notlar bu özel modun dışında tutulur.
     final bool hasText = isChecklist
@@ -9631,60 +9721,61 @@ class _NoteListScreenState extends State<NoteListScreen> {
                             textDirection: TextDirection.ltr,
                           ),
                         if (hasTitle) const SizedBox(height: 12),
-                        isChecklist
+                        showMixedPreview
                             ? Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: (note['checkItems'] as List? ?? [])
+                                children: _previewLineItems(note)
                                     .take(_previewLines)
-                                    .map<Widget>(
-                                      (item) => Padding(
+                                    .map<Widget>((item) {
+                                      final isItemChecklist =
+                                          item['checklist'] == true;
+                                      final isChecked =
+                                          item['checked'] == true;
+                                      final textWidget = Text(
+                                        (item['text'] ?? '').toString(),
+                                        style: TextStyle(
+                                          color: isItemChecklist && isChecked
+                                              ? Colors.grey
+                                              : (dNoteEffectiveTextColor(context, _textColor)),
+                                          decoration:
+                                              isItemChecklist && isChecked
+                                              ? TextDecoration.lineThrough
+                                              : null,
+                                          fontSize:
+                                              (note['fontSize'] as num?)
+                                                  ?.toDouble() ??
+                                              _globalFontSize,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.start,
+                                        textDirection: TextDirection.ltr,
+                                      );
+                                      return Padding(
                                         padding: const EdgeInsets.only(
                                           bottom: 4,
                                         ),
-                                        child: Row(
-                                          textDirection: TextDirection.ltr,
-                                          children: [
-                                            Icon(
-                                              item['checked'] == true
-                                                  ? Icons.check_box
-                                                  : Icons
-                                                        .check_box_outline_blank,
-                                              color: Colors.amber,
-                                              size: 14,
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Expanded(
-                                              child: Text(
-                                                item['text'] ?? '',
-                                                style: TextStyle(
-                                                  color:
-                                                      item['checked'] == true
-                                                      ? Colors.grey
-                                                      : (dNoteEffectiveTextColor(context, _textColor)),
-                                                  decoration:
-                                                      item['checked'] == true
-                                                      ? TextDecoration
-                                                            .lineThrough
-                                                      : null,
-                                                  fontSize:
-                                                      (note['fontSize']
-                                                              as num?)
-                                                          ?.toDouble() ??
-                                                      _globalFontSize,
-                                                ),
-                                                maxLines: 1,
-                                                overflow:
-                                                    TextOverflow.ellipsis,
-                                                textAlign: TextAlign.start,
+                                        child: !isItemChecklist
+                                            ? textWidget
+                                            : Row(
                                                 textDirection:
                                                     TextDirection.ltr,
+                                                children: [
+                                                  Icon(
+                                                    isChecked
+                                                        ? Icons.check_box
+                                                        : Icons
+                                                              .check_box_outline_blank,
+                                                    color: Colors.amber,
+                                                    size: 14,
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Expanded(child: textWidget),
+                                                ],
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
+                                      );
+                                    })
                                     .toList(),
                               )
                             : Text(

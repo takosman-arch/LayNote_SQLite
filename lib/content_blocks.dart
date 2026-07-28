@@ -200,6 +200,72 @@ class ContentBlocks {
         .trim();
   }
 
+  // Bloklar içinde en az bir dolu (boş olmayan metinli) checklist bloğu
+  // var mı? Not kartı önizlemesinde checklist maddelerini kutucuk ikonuyla
+  // göstermeye karar vermek için kullanılır.
+  static bool hasChecklistBlock(String? raw) {
+    return parse(raw).any(
+      (b) =>
+          b['type'] == 'checklist' &&
+          (b['items'] as List? ?? const []).any(
+            (it) => ((it as Map)['text'] ?? '').toString().trim().isNotEmpty,
+          ),
+    );
+  }
+
+  // Kart önizlemesinde (liste/ızgara görünümü) gösterilecek satır listesini
+  // üretir. Blok sırası korunur: metin ve hesap tablosu blokları satır
+  // satır (yeni satıra göre) düz metne çevrilir, checklist bloklarındaki
+  // her madde ise kendi satırı olur ve "checklist": true ile işaretlenir —
+  // böylece önizlemede o satır, eski (tüm not tek checklist) notlarda
+  // olduğu gibi bir kutucuk ikonuyla çizilebilir. Boş metin satırları ve
+  // boş checklist maddeleri atlanır.
+  static List<Map<String, dynamic>> previewLines(String? raw) {
+    final blocks = parse(raw);
+    final lines = <Map<String, dynamic>>[];
+    for (final b in blocks) {
+      if (b['type'] == 'checklist') {
+        for (final it in (b['items'] as List? ?? const [])) {
+          final item = it as Map;
+          final text = (item['text'] ?? '').toString();
+          if (text.trim().isEmpty) continue;
+          lines.add({
+            'checklist': true,
+            'text': text,
+            'checked': item['checked'] == true,
+          });
+        }
+      } else if (b['type'] == 'text') {
+        final text = (b['text'] ?? '').toString();
+        for (final line in text.split('\n')) {
+          if (line.trim().isEmpty) continue;
+          lines.add({'checklist': false, 'text': line});
+        }
+      } else if (b['type'] == 'calc_table') {
+        final rows = (b['rows'] as List? ?? const []);
+        double total = 0;
+        var any = false;
+        for (final r in rows) {
+          final row = r as Map;
+          final label = (row['label'] ?? '').toString();
+          final valueText = (row['value'] ?? '').toString();
+          total += parseCalcValue(row['value']);
+          if (label.trim().isNotEmpty || valueText.trim().isNotEmpty) {
+            any = true;
+            lines.add({'checklist': false, 'text': '$label: $valueText'});
+          }
+        }
+        if (any) {
+          lines.add({
+            'checklist': false,
+            'text': 'Toplam: ${formatCalcNumber(total)}',
+          });
+        }
+      }
+    }
+    return lines;
+  }
+
   static bool hasAnyContent(List<Map<String, dynamic>> blocks) {
     for (final b in blocks) {
       if (b['type'] == 'text' &&
