@@ -14,6 +14,14 @@ class _NoteListScreenState extends State<NoteListScreen> {
   List<String> _categories = [];
   Map<String, String> _categoryColors = {};
   Set<String> _lockedCategories = {};
+  // Alt klasör desteği: bir kategori adını, ait olduğu üst kategorinin
+  // adına eşler. Bir kategori bu haritada yoksa (veya değeri null'sa) üst
+  // seviyededir. Şu an yalnızca 1 seviye derinlik destekleniyor; yani bir
+  // alt klasörün kendi alt klasörü olamaz.
+  Map<String, String?> _categoryParents = {};
+  // Alt klasörleri çekmecede gizlenmiş üst kategorilerin adlarını tutar.
+  // Her üst kategori kendi bağımsız daralt/genişlet durumuna sahiptir.
+  Set<String> _collapsedCategories = {};
   String _activeCategory = 'Tümü';
   DateTime? _lastBackPressTime;
 
@@ -468,6 +476,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
       _categories = List<String>.from(catData['categories'] as List);
       _categoryColors = Map<String, String>.from(catData['colors'] as Map);
       _lockedCategories = Set<String>.from(catData['locked'] as Set);
+      _categoryParents = Map<String, String?>.from(
+        catData['parents'] as Map? ?? {},
+      );
 
       if (notes.isNotEmpty || !neverInitialized) {
         _notes = notes;
@@ -556,7 +567,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
     final db = DBHelper.instance;
     await db.replaceNotes(_notes);
     await db.replaceDeletedNotes(_deletedNotes);
-    await db.replaceCategories(_categories, _categoryColors, _lockedCategories);
+    await db.replaceCategories(
+      _categories,
+      _categoryColors,
+      _lockedCategories,
+      _categoryParents,
+    );
 
     await db.setSetting('_initialized', 'true');
     await db.setSetting('sort_criteria', _sortCriteria);
@@ -671,6 +687,18 @@ class _NoteListScreenState extends State<NoteListScreen> {
     }).length;
   }
 
+  // Bir notun klasör etiketinde gösterilecek metni oluşturur. Kategori bir
+  // alt klasörse (yani _categoryParents içinde bir üst klasörü varsa)
+  // "Üst klasör / Alt klasör" biçiminde döndürülür; değilse sadece klasör
+  // adının kendisi döndürülür.
+  String _folderTagLabel(String category) {
+    final parent = _categoryParents[category];
+    if (parent != null && parent.isNotEmpty) {
+      return '$parent / $category';
+    }
+    return category;
+  }
+
   String _getCategoryDisplayName(String category) {
     if (category == 'Tümü' || category == 'Notlar') {
       return 'Notlar';
@@ -689,22 +717,153 @@ class _NoteListScreenState extends State<NoteListScreen> {
     }
   }
 
+  // Bir kategorinin (klasör/alt klasör) kilitli sayılıp sayılmayacağını
+  // belirler. Kategori doğrudan kilitliyse ya da bir alt klasörse ve ait
+  // olduğu üst klasör kilitliyse true döner; yani üst klasör kilitlendiğinde
+  // altındaki tüm alt klasörler de otomatik olarak kilitlenmiş sayılır.
+  bool _isCategoryEffectivelyLocked(String category) {
+    if (_lockedCategories.contains(category)) return true;
+    final parent = _categoryParents[category];
+    if (parent != null && _lockedCategories.contains(parent)) return true;
+    return false;
+  }
+
+  // Çekmecedeki (drawer) tek bir kategori/alt klasör satırını oluşturur.
+  // [isSubfolder] true verilirse satır girintili ve biraz daha küçük
+  // gösterilir (üst klasörünün altında bir alt klasör olduğunu belirtmek
+  // için).
+  Widget _buildCategoryDrawerTile(String cat, {bool isSubfolder = false}) {
+    final catColor = _getCategoryColor(cat);
+    final isCatLocked = _isCategoryEffectivelyLocked(cat);
+    return Container(
+      color: _activeCategory == cat
+          ? dNoteHighlight(context)
+          : Colors.transparent,
+      child: ListTile(
+        contentPadding: EdgeInsets.only(
+          left: isSubfolder ? 40 : 16,
+          right: 16,
+        ),
+        leading: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Icon(
+              Icons.folder_outlined,
+              color: catColor,
+              size: isSubfolder ? 20 : 24,
+            ),
+            if (isCatLocked)
+              Positioned(
+                right: -4,
+                bottom: -4,
+                child: Icon(
+                  Icons.lock,
+                  color: Colors.blueGrey[300],
+                  size: 12,
+                ),
+              ),
+          ],
+        ),
+        title: Text(
+          cat,
+          style: TextStyle(
+            fontSize: isSubfolder ? 14 : null,
+            color: _activeCategory == cat
+                ? catColor
+                : Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+        trailing: Text(
+          _getCountForCategory(cat).toString(),
+          style: const TextStyle(color: Colors.grey, fontSize: 16),
+        ),
+        onTap: () async {
+          if (isCatLocked) {
+            Navigator.pop(context); // drawer'ı kapat
+            await Future.delayed(const Duration(milliseconds: 350));
+            if (!mounted) return;
+            if (!_notePasswordEnabled) {
+              // Parola belirlenmemişse artık "Parola Gerekiyor" uyarı
+              // dialogu yerine doğrudan "Yeni Parola Oluştur" ekranı
+              // açılır; parola belirlenince kullanıcı doğrudan kategoriye
+              // girer.
+              final created = await _showCreatePasswordDialog();
+              if (!mounted || !created) return;
+              setState(() => _activeCategory = cat);
+              _saveData();
+              return;
+            }
+            final ok = await _checkPasswordPrompt();
+            if (!mounted) return;
+            if (ok) {
+              setState(() => _activeCategory = cat);
+              _saveData();
+            } else {
+              showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text(
+                    'Hatalı Parola',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                  content: const Text('Girdiğiniz parola yanlış.'),
+                  actions: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.amber,
+                      ),
+                      onPressed: () => Navigator.pop(ctx),
+                      child: const Text(
+                        'Tamam',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          } else {
+            setState(() => _activeCategory = cat);
+            _saveData();
+            Navigator.pop(context);
+          }
+        },
+        onLongPress: () => _showCategoryOptions(cat),
+      ),
+    );
+  }
+
   void _deleteCategory(String category) {
     setState(() {
-      _categories.remove(category);
-      _categoryColors.remove(category);
-      _lockedCategories.remove(category);
+      // Silinen kategori bir üst klasörse, altındaki alt klasörler de
+      // (sahipsiz kalmasınlar diye) birlikte silinir.
+      final childCategories = _categoryParents.entries
+          .where((e) => e.value == category)
+          .map((e) => e.key)
+          .toList();
+      final allToRemove = {category, ...childCategories};
+
+      for (final cat in allToRemove) {
+        _categories.remove(cat);
+        _categoryColors.remove(cat);
+        _lockedCategories.remove(cat);
+        _categoryParents.remove(cat);
+        _collapsedCategories.remove(cat);
+      }
       for (final note in _notes) {
-        if (note['category'] == category) {
+        if (allToRemove.contains(note['category'])) {
           note['category'] = null;
         }
       }
       for (final note in _deletedNotes) {
-        if (note['category'] == category) {
+        if (allToRemove.contains(note['category'])) {
           note['category'] = null;
         }
       }
-      if (_activeCategory == category) {
+      if (allToRemove.contains(_activeCategory)) {
         _activeCategory = 'Tümü';
       }
     });
@@ -713,6 +872,16 @@ class _NoteListScreenState extends State<NoteListScreen> {
 
   void _showCategoryOptions(String category) {
     final isLocked = _lockedCategories.contains(category);
+    // Kategori bir alt klasörse ve üst klasörü zaten kilitliyse, bu alt
+    // klasör üst klasörden kilidi otomatik devralır. Böyle bir durumda
+    // alt klasörü ayrıca kendi başına kilitleme seçeneği gösterilmez;
+    // aksi halde alt klasör hem üst klasörden hem de kendi kilidinden
+    // olmak üzere "iki defa" kilitlenmiş sayılır ve üst klasörün kilidi
+    // kaldırıldığında alt klasör hâlâ (kendi kilidiyle) kilitli kalırdı.
+    final parentCat = _categoryParents[category];
+    final isParentLocked =
+        parentCat != null && _lockedCategories.contains(parentCat);
+    final isCatCollapsed = _collapsedCategories.contains(category);
     showModalBottomSheet(
       context: context,
       backgroundColor: dNoteCardColor(context),
@@ -766,63 +935,64 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   _showAddCategoryDialog(editingCategory: category);
                 },
               ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  isLocked ? Icons.lock_open_outlined : Icons.lock_outline,
-                  color: Colors.blueGrey,
-                ),
-                title: Text(
-                  isLocked ? 'Kilidi Kaldır' : 'Kilitle',
-                  style: TextStyle(color: dNoteTextColor(sheetContext)),
-                ),
-                onTap: () async {
-                  Navigator.pop(sheetContext);
-                  if (!_notePasswordEnabled) {
-                    // Parola belirlenmemişse artık "Parola Gerekiyor"
-                    // uyarı dialogu yerine doğrudan "Yeni Parola Oluştur"
-                    // ekranı açılır; parola belirlenince kategori aynı
-                    // işlem içinde kilitlenir.
-                    final created = await _showCreatePasswordDialog();
-                    if (!mounted || !created) return;
-                    setState(() {
-                      if (isLocked) {
-                        _lockedCategories.remove(category);
-                      } else {
-                        _lockedCategories.add(category);
-                        if (_activeCategory == category) {
-                          _activeCategory = 'Tümü';
+              if (!isParentLocked)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    isLocked ? Icons.lock_open_outlined : Icons.lock_outline,
+                    color: Colors.blueGrey,
+                  ),
+                  title: Text(
+                    isLocked ? 'Kilidi Kaldır' : 'Kilitle',
+                    style: TextStyle(color: dNoteTextColor(sheetContext)),
+                  ),
+                  onTap: () async {
+                    Navigator.pop(sheetContext);
+                    if (!_notePasswordEnabled) {
+                      // Parola belirlenmemişse artık "Parola Gerekiyor"
+                      // uyarı dialogu yerine doğrudan "Yeni Parola Oluştur"
+                      // ekranı açılır; parola belirlenince kategori aynı
+                      // işlem içinde kilitlenir.
+                      final created = await _showCreatePasswordDialog();
+                      if (!mounted || !created) return;
+                      setState(() {
+                        if (isLocked) {
+                          _lockedCategories.remove(category);
+                        } else {
+                          _lockedCategories.add(category);
+                          if (_activeCategory == category) {
+                            _activeCategory = 'Tümü';
+                          }
                         }
-                      }
-                    });
-                    _saveData();
-                    _showInfoBar(
-                      isLocked ? 'Kilit kaldırıldı' : 'Kategori kilitlendi',
-                      icon: isLocked ? Icons.lock_open : Icons.lock,
-                    );
-                    return;
-                  }
-                  final ok = await _checkPasswordPrompt();
-                  if (!mounted) return;
-                  if (ok) {
-                    setState(() {
-                      if (isLocked) {
-                        _lockedCategories.remove(category);
-                      } else {
-                        _lockedCategories.add(category);
-                        if (_activeCategory == category) {
-                          _activeCategory = 'Tümü';
+                      });
+                      _saveData();
+                      _showInfoBar(
+                        isLocked ? 'Kilit kaldırıldı' : 'Kategori kilitlendi',
+                        icon: isLocked ? Icons.lock_open : Icons.lock,
+                      );
+                      return;
+                    }
+                    final ok = await _checkPasswordPrompt();
+                    if (!mounted) return;
+                    if (ok) {
+                      setState(() {
+                        if (isLocked) {
+                          _lockedCategories.remove(category);
+                        } else {
+                          _lockedCategories.add(category);
+                          if (_activeCategory == category) {
+                            _activeCategory = 'Tümü';
+                          }
                         }
-                      }
-                    });
-                    _saveData();
-                    _showInfoBar(
-                      isLocked ? 'Kilit kaldırıldı' : 'Kategori kilitlendi',
-                      icon: isLocked ? Icons.lock_open : Icons.lock,
-                    );
-                  } else {
-                    showDialog(
-                      context: context,
+                      });
+                      _saveData();
+                      _showInfoBar(
+                        isLocked ? 'Kilit kaldırıldı' : 'Kategori kilitlendi',
+                        icon: isLocked ? Icons.lock_open : Icons.lock,
+                      );
+                    } else {
+                      showDialog(
+                        context: context,
                       builder: (ctx) => AlertDialog(
                         backgroundColor: dNoteCardColor(ctx),
                         title: const Text(
@@ -853,6 +1023,53 @@ class _NoteListScreenState extends State<NoteListScreen> {
                   }
                 },
               ),
+              // Alt klasör oluşturma seçeneği yalnızca üst seviye
+              // kategorilerde gösterilir; şu an yalnızca 1 seviye derinlik
+              // desteklendiği için bir alt klasörün kendi alt klasörü
+              // oluşturulamaz.
+              if (_categoryParents[category] == null)
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(
+                    Icons.create_new_folder_outlined,
+                    color: Colors.amber,
+                  ),
+                  title: Text(
+                    'Alt Klasör Oluştur',
+                    style: TextStyle(color: dNoteTextColor(sheetContext)),
+                  ),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    _showAddCategoryDialog(parentCategory: category);
+                  },
+                ),
+              // Bu kategorinin alt klasörleri varsa, yalnızca bu kategoriye
+              // ait alt klasörleri daraltıp genişletme seçeneği burada
+              // sunulur; diğer kategorileri etkilemez.
+              if (_categories.any((c) => _categoryParents[c] == category))
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    isCatCollapsed ? Icons.unfold_more : Icons.unfold_less,
+                    color: Colors.amber,
+                  ),
+                  title: Text(
+                    isCatCollapsed
+                        ? 'Alt Klasörleri Genişlet'
+                        : 'Alt Klasörleri Daralt',
+                    style: TextStyle(color: dNoteTextColor(sheetContext)),
+                  ),
+                  onTap: () {
+                    Navigator.pop(sheetContext);
+                    setState(() {
+                      if (isCatCollapsed) {
+                        _collapsedCategories.remove(category);
+                      } else {
+                        _collapsedCategories.add(category);
+                      }
+                    });
+                  },
+                ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.delete_outline, color: Colors.red),
@@ -871,7 +1088,12 @@ class _NoteListScreenState extends State<NoteListScreen> {
                         style: TextStyle(color: Colors.amber),
                       ),
                       content: Text(
-                        '"$category" kategorisini silmek istediğinize emin misiniz? Bu kategorideki notlar kategorisiz kalacak.',
+                        _categoryParents[category] == null &&
+                                _categories.any(
+                                  (c) => _categoryParents[c] == category,
+                                )
+                            ? '"$category" klasörünü ve içindeki tüm alt klasörleri silmek istediğinize emin misiniz? Bu klasörlerdeki notlar kategorisiz kalacak.'
+                            : '"$category" kategorisini silmek istediğinize emin misiniz? Bu kategorideki notlar kategorisiz kalacak.',
                         style: TextStyle(color: dNoteTextColor(confirmContext)),
                       ),
                       actions: [
@@ -2142,14 +2364,26 @@ class _NoteListScreenState extends State<NoteListScreen> {
   void _showAddCategoryDialog({
     void Function(String)? onAdded,
     String? editingCategory,
+    // Verilirse, oluşturulacak yeni kategori bu kategorinin altında bir
+    // "alt klasör" olarak kaydedilir. Sadece yeni ekleme için geçerlidir
+    // (düzenlemede mevcut üst/alt bağlantısı zaten korunur).
+    String? parentCategory,
   }) {
     final isEditing = editingCategory != null;
+    final isSubfolder =
+        parentCategory != null ||
+        (isEditing && _categoryParents[editingCategory] != null);
     final controller = TextEditingController(
       text: isEditing ? editingCategory : '',
     );
     Color selectedColor = isEditing
         ? _getCategoryColor(editingCategory)
-        : _categoryPalette[_categories.length % _categoryPalette.length];
+        : (parentCategory != null
+              // Alt klasör oluşturulurken, renk seçme özelliği korunur
+              // (kullanıcı dilerse aşağıdan farklı bir renk seçebilir) ama
+              // başlangıç rengi üst klasörle aynı olur.
+              ? _getCategoryColor(parentCategory)
+              : _categoryPalette[_categories.length % _categoryPalette.length]);
 
     showDialog(
       context: context,
@@ -2157,13 +2391,23 @@ class _NoteListScreenState extends State<NoteListScreen> {
         builder: (context, setDialogState) => AlertDialog(
           backgroundColor: dNoteCardColor(context),
           title: Text(
-            isEditing ? 'Kategoriyi Düzenle' : 'Yeni Kategori',
+            isEditing
+                ? 'Kategoriyi Düzenle'
+                : (isSubfolder ? 'Yeni Alt Klasör' : 'Yeni Kategori'),
             style: const TextStyle(color: Colors.amber),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (!isEditing && parentCategory != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Text(
+                    '"$parentCategory" içinde oluşturulacak',
+                    style: const TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                ),
               TextField(
                 selectionWidthStyle: ui.BoxWidthStyle.tight,
                 contextMenuBuilder: buildCustomContextMenu,
@@ -2172,7 +2416,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                 autofocus: true,
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
-                  labelText: 'Kategori adı',
+                  labelText: isSubfolder ? 'Alt klasör adı' : 'Kategori adı',
                   labelStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(context)),
@@ -2253,6 +2497,21 @@ class _NoteListScreenState extends State<NoteListScreen> {
                       final idx = _categories.indexOf(editingCategory);
                       if (idx != -1) _categories[idx] = name;
                       _categoryColors.remove(editingCategory);
+                      // Bu kategorinin üst/alt klasör bağlantısını yeni
+                      // isme taşı: kendisi bir alt klasörse üst kategorisini
+                      // koru; bir üst klasörse altındaki alt klasörlerin
+                      // ebeveyn referansını güncelle.
+                      final oldParent = _categoryParents.remove(
+                        editingCategory,
+                      );
+                      if (oldParent != null) {
+                        _categoryParents[name] = oldParent;
+                      }
+                      for (final entry in _categoryParents.entries.toList()) {
+                        if (entry.value == editingCategory) {
+                          _categoryParents[entry.key] = name;
+                        }
+                      }
                       for (final note in _notes) {
                         if (note['category'] == editingCategory) {
                           note['category'] = name;
@@ -2275,6 +2534,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     setState(() {
                       _categories.add(name);
                       _categoryColors[name] = colorHex;
+                      if (parentCategory != null) {
+                        _categoryParents[name] = parentCategory;
+                      }
                     });
                     _saveData();
                   }
@@ -7229,7 +7491,7 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                             const SizedBox(width: 6),
                                             Flexible(
                                               child: Text(
-                                                noteCategory!,
+                                                _folderTagLabel(noteCategory!),
                                                 style: tagTextStyle,
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
@@ -8196,119 +8458,100 @@ class _NoteListScreenState extends State<NoteListScreen> {
                     thickness: 1,
                     height: 24,
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 16, top: 4, bottom: 4),
-                    child: Text(
-                      'KATEGORİLER',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 11,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                  ),
-                  ..._categories.map((cat) {
-                    final catColor = _getCategoryColor(cat);
-                    final isCatLocked = _lockedCategories.contains(cat);
-                    return Container(
-                      color: _activeCategory == cat
-                          ? dNoteHighlight(context)
-                          : Colors.transparent,
-                      child: ListTile(
-                        leading: Stack(
-                          clipBehavior: Clip.none,
+                  Builder(
+                    builder: (context) {
+                      // Alt klasörü olan üst kategorilerin listesi.
+                      final parentsWithChildren = _categories
+                          .where((cat) => _categoryParents[cat] == null)
+                          .where(
+                            (cat) => _categories.any(
+                              (c) => _categoryParents[c] == cat,
+                            ),
+                          )
+                          .toList();
+                      final hasAnySubfolder = parentsWithChildren.isNotEmpty;
+                      // Hepsi zaten daraltılmışsa başlıktaki yazı
+                      // "Genişlet" olur; aksi halde "Daralt" gösterilir.
+                      final allCollapsed =
+                          hasAnySubfolder &&
+                          parentsWithChildren.every(
+                            (cat) => _collapsedCategories.contains(cat),
+                          );
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          top: 4,
+                          bottom: 4,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Icon(Icons.folder_outlined, color: catColor),
-                            if (isCatLocked)
-                              Positioned(
-                                right: -4,
-                                bottom: -4,
-                                child: Icon(
-                                  Icons.lock,
-                                  color: Colors.blueGrey[300],
-                                  size: 12,
+                            const Text(
+                              'KATEGORİLER',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 11,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            if (hasAnySubfolder)
+                              GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  setState(() {
+                                    if (allCollapsed) {
+                                      // Hepsini genişlet.
+                                      _collapsedCategories.removeAll(
+                                        parentsWithChildren,
+                                      );
+                                    } else {
+                                      // Hepsini daralt.
+                                      _collapsedCategories.addAll(
+                                        parentsWithChildren,
+                                      );
+                                    }
+                                  });
+                                },
+                                child: Text(
+                                  allCollapsed ? 'Genişlet' : 'Daralt',
+                                  style: const TextStyle(
+                                    color: Colors.amber,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 1.0,
+                                  ),
                                 ),
                               ),
                           ],
                         ),
-                        title: Text(
+                      );
+                    },
+                  ),
+                  // Üst seviye kategoriler, hemen altlarında (varsa) girintili
+                  // olarak kendi alt klasörleriyle birlikte listelenir. Her
+                  // üst kategorinin alt klasörlerini gösterip gizlemesi
+                  // kendi bağımsız daralt/genişlet durumuna bağlıdır.
+                  ..._categories
+                      .where((cat) => _categoryParents[cat] == null)
+                      .expand((cat) {
+                        final children = _categories
+                            .where((c) => _categoryParents[c] == cat)
+                            .toList();
+                        final isCollapsed = _collapsedCategories.contains(
                           cat,
-                          style: TextStyle(
-                            color: _activeCategory == cat
-                                ? catColor
-                                : Theme.of(context).colorScheme.onSurface,
-                          ),
-                        ),
-                        trailing: Text(
-                          _getCountForCategory(cat).toString(),
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 16,
-                          ),
-                        ),
-                        onTap: () async {
-                          if (isCatLocked) {
-                            Navigator.pop(context); // drawer'ı kapat
-                            await Future.delayed(
-                              const Duration(milliseconds: 350),
-                            );
-                            if (!mounted) return;
-                            if (!_notePasswordEnabled) {
-                              // Parola belirlenmemişse artık "Parola
-                              // Gerekiyor" uyarı dialogu yerine doğrudan
-                              // "Yeni Parola Oluştur" ekranı açılır; parola
-                              // belirlenince kullanıcı doğrudan kategoriye
-                              // girer.
-                              final created = await _showCreatePasswordDialog();
-                              if (!mounted || !created) return;
-                              setState(() => _activeCategory = cat);
-                              _saveData();
-                              return;
-                            }
-                            final ok = await _checkPasswordPrompt();
-                            if (!mounted) return;
-                            if (ok) {
-                              setState(() => _activeCategory = cat);
-                              _saveData();
-                            } else {
-                              showDialog(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  title: const Text(
-                                    'Hatalı Parola',
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                  content: const Text(
-                                    'Girdiğiniz parola yanlış.',
-                                  ),
-                                  actions: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.amber,
-                                      ),
-                                      onPressed: () => Navigator.pop(ctx),
-                                      child: const Text(
-                                        'Tamam',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-                          } else {
-                            setState(() => _activeCategory = cat);
-                            _saveData();
-                            Navigator.pop(context);
-                          }
-                        },
-                        onLongPress: () => _showCategoryOptions(cat),
-                      ),
-                    );
-                  }),
+                        );
+                        return [
+                          _buildCategoryDrawerTile(cat),
+                          if (!isCollapsed)
+                            ...children.map(
+                              (child) => _buildCategoryDrawerTile(
+                                child,
+                                isSubfolder: true,
+                              ),
+                            ),
+                        ];
+                      }),
                   ListTile(
                     leading: Icon(
                       Icons.add_circle_outline,
@@ -9005,7 +9248,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                                             const SizedBox(width: 4),
                                             Flexible(
                                               child: Text(
-                                                note['category'],
+                                                _folderTagLabel(
+                                                  note['category'] as String,
+                                                ),
                                                 style: TextStyle(
                                                   color:
                                                       dNoteEffectiveTextColor(
@@ -9839,7 +10084,9 @@ class _NoteListScreenState extends State<NoteListScreen> {
                               const SizedBox(width: 4),
                               Flexible(
                                 child: Text(
-                                  note['category'],
+                                  _folderTagLabel(
+                                    note['category'] as String,
+                                  ),
                                   style: TextStyle(
                                     color: dNoteEffectiveTextColor(
                                       context,

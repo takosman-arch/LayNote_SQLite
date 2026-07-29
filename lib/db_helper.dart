@@ -22,7 +22,7 @@ class DBHelper {
     final path = p.join(dbDir, 'dnote.db');
     return openDatabase(
       path,
-      version: 7, // Bildirim paneline sabitleme: Sürüm 6'dan 7'ye yükseltildi
+      version: 8, // Alt klasör (kategori içinde kategori) desteği: 7'den 8'e yükseltildi
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           await _addColumnIfMissing(db, 'notes', 'attachments', 'TEXT');
@@ -59,6 +59,12 @@ class DBHelper {
             'isPinnedToNotification',
             'INTEGER NOT NULL DEFAULT 0',
           );
+        }
+        if (oldVersion < 8) {
+          // Alt klasör desteği: bir kategorinin başka bir kategorinin
+          // (üst klasörün) altında olup olmadığını tutan sütun eklenir.
+          // Null ise kategori üst seviyededir (alt klasör değildir).
+          await _addColumnIfMissing(db, 'categories', 'parent', 'TEXT');
         }
       },
       onCreate: (db, version) async {
@@ -115,7 +121,8 @@ class DBHelper {
             name TEXT PRIMARY KEY,
             color TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
-            sortOrder INTEGER NOT NULL DEFAULT 0
+            sortOrder INTEGER NOT NULL DEFAULT 0,
+            parent TEXT
           )
         ''');
         await db.execute('''
@@ -326,8 +333,12 @@ class DBHelper {
   Future<void> replaceCategories(
     List<String> categories,
     Map<String, String> colors,
-    Set<String> locked,
-  ) async {
+    Set<String> locked, [
+    // Alt klasör desteği: bir kategori adını, ait olduğu üst kategorinin
+    // adına eşler. Üst seviye bir kategori/klasör için değer null'dur
+    // (veya harita içinde hiç bulunmaz).
+    Map<String, String?> parents = const {},
+  ]) async {
     final db = await database;
     await db.transaction((txn) async {
       await txn.delete('categories');
@@ -339,6 +350,7 @@ class DBHelper {
           'color': colors[name],
           'isLocked': locked.contains(name) ? 1 : 0,
           'sortOrder': i,
+          'parent': parents[name],
         });
       }
       await batch.commit(noResult: true);
@@ -351,13 +363,23 @@ class DBHelper {
     final categories = <String>[];
     final colors = <String, String>{};
     final locked = <String>{};
+    final parents = <String, String?>{};
     for (final row in rows) {
       final name = row['name'] as String;
       categories.add(name);
       if (row['color'] != null) colors[name] = row['color'] as String;
       if (row['isLocked'] == 1) locked.add(name);
+      final parentName = row['parent'] as String?;
+      if (parentName != null && parentName.isNotEmpty) {
+        parents[name] = parentName;
+      }
     }
-    return {'categories': categories, 'colors': colors, 'locked': locked};
+    return {
+      'categories': categories,
+      'colors': colors,
+      'locked': locked,
+      'parents': parents,
+    };
   }
 
   // ── Ayarlar (key-value) ──────────────────────────────────────────────
