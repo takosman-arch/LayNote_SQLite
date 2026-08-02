@@ -96,7 +96,7 @@ class ContentBlocks {
   static List<Map<String, dynamic>> parse(String? raw) {
     if (raw == null || raw.trim().isEmpty) {
       return [
-        {'type': 'text', 'text': ''},
+        {'type': 'text', 'text': '', 'spans': <Map<String, dynamic>>[]},
       ];
     }
     try {
@@ -109,7 +109,13 @@ class ContentBlocks {
             final m = Map<String, dynamic>.from(e as Map);
             if (m['type'] == 'checklist') {
               m['items'] = (m['items'] as List? ?? const [])
-                  .map((it) => Map<String, dynamic>.from(it as Map))
+                  .map((it) {
+                    final item = Map<String, dynamic>.from(it as Map);
+                    // Madde metinleri de artık kalın/italik/vb. taşıyabilir
+                    // (bkz. RichTextSpans) — text bloğuyla aynı desen.
+                    item['spans'] = RichTextSpans.parse(item['spans']);
+                    return item;
+                  })
                   .toList();
             }
             if (m['type'] == 'calc_table') {
@@ -128,6 +134,9 @@ class ContentBlocks {
                   })
                   .toList();
             }
+            if (m['type'] == 'text') {
+              m['spans'] = RichTextSpans.parse(m['spans']);
+            }
             return m;
           }),
         );
@@ -136,7 +145,7 @@ class ContentBlocks {
       // JSON değil -> eski düz metin not.
     }
     return [
-      {'type': 'text', 'text': raw},
+      {'type': 'text', 'text': raw, 'spans': <Map<String, dynamic>>[]},
     ];
   }
 
@@ -155,9 +164,25 @@ class ContentBlocks {
         return (b['strokes'] as List?)?.isNotEmpty == true;
       }
       return true;
+    }).map((b) {
+      if (b['type'] == 'text') {
+        final m = Map<String, dynamic>.from(b);
+        m['spans'] = RichTextSpans.clean(b['spans'] as List?);
+        return m;
+      }
+      if (b['type'] == 'checklist') {
+        final m = Map<String, dynamic>.from(b);
+        m['items'] = (b['items'] as List? ?? const []).map((it) {
+          final item = Map<String, dynamic>.from(it as Map);
+          item['spans'] = RichTextSpans.clean(item['spans'] as List?);
+          return item;
+        }).toList();
+        return m;
+      }
+      return b;
     }).toList();
     if (cleaned.isEmpty) {
-      cleaned.add({'type': 'text', 'text': ''});
+      cleaned.add({'type': 'text', 'text': '', 'spans': <Map<String, dynamic>>[]});
     }
     return jsonEncode(cleaned);
   }
@@ -310,13 +335,23 @@ class ContentBlocks {
       if (a['type'] != b['type']) return false;
       if (a['type'] == 'text') {
         if ((a['text'] ?? '') != (b['text'] ?? '')) return false;
+        if (!RichTextSpans.listEquals(
+          a['spans'] as List?,
+          b['spans'] as List?,
+        )) {
+          return false;
+        }
       } else if (a['type'] == 'checklist') {
         final ai = List<Map>.from(a['items'] ?? const []);
         final bi = List<Map>.from(b['items'] ?? const []);
         if (ai.length != bi.length) return false;
         for (int j = 0; j < ai.length; j++) {
           if ((ai[j]['text'] ?? '') != (bi[j]['text'] ?? '') ||
-              (ai[j]['checked'] ?? false) != (bi[j]['checked'] ?? false)) {
+              (ai[j]['checked'] ?? false) != (bi[j]['checked'] ?? false) ||
+              !RichTextSpans.listEquals(
+                ai[j]['spans'] as List?,
+                bi[j]['spans'] as List?,
+              )) {
             return false;
           }
         }

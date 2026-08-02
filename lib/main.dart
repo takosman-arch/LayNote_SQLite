@@ -1,7 +1,3 @@
-import 'package:flutter/foundation.dart' show compute;
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart'; // compute için
 import 'package:device_info_plus/device_info_plus.dart'; // DeviceInfoPlugin için
 import 'package:permission_handler/permission_handler.dart'; // Permission, openAppSettings için
@@ -51,6 +47,8 @@ part 'backup_helper.dart';
 part 'backup_restore_screen.dart';
 part 'reminder_service.dart';
 part 'content_blocks.dart';
+part 'rich_text_spans.dart';
+part 'rich_block_text_controller.dart';
 part 'text_selection_menu.dart';
 part 'theme.dart';
 part 'note_list_screen.dart';
@@ -72,6 +70,10 @@ part 'undo_redo_stack.dart';
 part 'pdf_export_service.dart';
 part 'note_screenshot_service.dart';
 part 'note_drawing_block.dart';
+part 'note_calc_table_block.dart';
+part 'note_list_checklist_block_mixin.dart';
+
+
 
 
 

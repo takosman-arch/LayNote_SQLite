@@ -57,8 +57,7 @@ class BackupHelper {
     final backupData = await _collectBackupData();
     onProgress?.call(0.15, 'Notlar ve kategoriler paketleniyor...');
 
-    final jsonBytesRaw = utf8.encode(jsonEncode(backupData));
-    final jsonBytes = jsonBytesRaw is Uint8List ? jsonBytesRaw : Uint8List.fromList(jsonBytesRaw);
+    final jsonBytes = utf8.encode(jsonEncode(backupData));
 
     onProgress?.call(0.2, 'Ek dosyalar okunuyor...');
     final attDir = await DBHelper.instance.attachmentsDir();

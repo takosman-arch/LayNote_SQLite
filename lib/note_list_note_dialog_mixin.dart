@@ -30,6 +30,32 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   set _textColor(Color? value);
   TextEditingController get _titleController;
   void dispose();
+  // ---- NoteListChecklistBlockMixin'de tanımlı ----
+  Widget _buildChecklistContentBlock({
+    required BuildContext context,
+    required int blockIndex,
+    required int? noteIndex,
+    required Map<String, dynamic> block,
+    required List<TextEditingController> itemCtrls,
+    required List<FocusNode> itemFns,
+    required VoidCallback pushUndoCheckpoint,
+    required void Function(void Function()) setModalState,
+    required void Function(String sessionKey, TextEditingController controller)
+        noteTextEdited,
+    // Zengin metin (kalın/italik/vb.) desteği: yeni bir madde eklenirken
+    // (Enter'a basınca) o maddenin RichBlockTextController'ını ve odak
+    // dinleyicisi eklenmiş FocusNode'unu kurar; madde metni değiştiğinde
+    // span'ları kaydırmak için de aynı jenerik fonksiyon kullanılır (bkz.
+    // NoteListNoteDialogMixin._shiftSpansForTextChange).
+    required TextEditingController Function(Map<String, dynamic> item)
+        createItemController,
+    required FocusNode Function(Map<String, dynamic> item) createItemFocusNode,
+    required void Function(
+      Map<String, dynamic> spansHolder,
+      String oldText,
+      String newText,
+    ) shiftSpansForTextChange,
+  });
 
 
   void _showNoteDialog({
@@ -74,6 +100,35 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     List<TextEditingController?> blockControllers = [];
     List<FocusNode?> blockFocusNodes = [];
     int focusedBlockIndex = 0;
+    // Odaklı blok bir 'checklist' bloğuysa, o blok içindeki HANGİ maddenin
+    // odaklı olduğunu tutar (metin bloklarında ve odak yokken -1). Kalın/
+    // italik/vb. araç çubuğu, hangi span listesini değiştireceğini bu ikisi
+    // (focusedBlockIndex + focusedItemIndex) ile bulur.
+    int focusedItemIndex = -1;
+    // DÜZELTME (kalın/italik butonuna basıp SONRA yazınca uygulanmıyordu):
+    // eskiden _toggleSpanAttribute yalnızca seçili metin varken bir şey
+    // yapıyordu; imleç tek noktadaysa (seçim yoksa) sessizce hiçbir şey
+    // yapmadan çıkıyordu. Word/Google Docs'taki gibi, seçim yokken butona
+    // basmak "bundan sonra yazılacak karakterlere uygula" anlamına
+    // gelmeli. Bu iki bayrak o "bekleyen" durumu tutar; _toggleSpanAttribute
+    // seçim yokken bunları açıp kapatır, metin bloğunun onChanged'i ise
+    // (_shiftSpansForTextChange üzerinden) yeni yazılan karakter aralığına
+    // bunları uygular. Odak başka bir bloğa geçtiğinde sıfırlanır (aşağıda
+    // ilgili onTap'lerde).
+    bool pendingBold = false;
+    bool pendingItalic = false;
+    bool pendingUnderline = false;
+    bool pendingStrikethrough = false;
+    // Boyut/renk/yazı tipi ailesi bold/italic/underline'ın aksine AÇ/KAPA
+    // değil DEĞER bazlıdır: null "bekleyen özel bir değer yok" demektir.
+    // Seçim yokken bir picker'dan değer seçilirse buraya yazılır ve
+    // _shiftSpansForTextChange bir sonraki yazılan karaktere uygular
+    // (bkz. yukarıdaki pendingBold açıklaması — aynı "önce butona bas,
+    // sonra yaz" akışı).
+    double? pendingFontSize;
+    int? pendingColor;
+    String? pendingFontFamily;
+    void Function(VoidCallback)? requestEditorRebuild;
     // "Çizim Ekle" ile yeni eklenen çizim bloğunun tam ekran çizim
     // sayfasını otomatik açması gerektiğini işaretlemek için kullanılır
     // (bkz. NoteDrawingBlock.autoOpenOnce). Yalnızca eklendiği anda bir
@@ -101,6 +156,67 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // oluyor ve onChanged her klavyede güvenilir şekilde tetikleniyor (bkz.
     // aşağıdaki metin bloğu onChanged'i).
     const emptyTextSentinel = '\u200B';
+
+    // ── Checklist maddeleri için zengin metin (kalın/italik/vb.) desteği ──
+    // Bir madde her ne zaman oluşturulursa oluşturulsun (ilk açılış,
+    // undo/redo sonrası tam yeniden kurulum, ya da Enter'a basıp yeni madde
+    // eklerken) controller/focus node HEP bu iki fabrika üzerinden
+    // kurulmalı — böylece davranış tutarlı kalır.
+    //
+    // getSpans, madde MAP NESNESİNİN kendisini (index değil) yakalar:
+    // checklist maddeleri sürükle-bırak ile yer değiştirebiliyor
+    // (bkz. note_list_checklist_block_mixin.dart -> onReorder), bu sırada
+    // controller/focus node'lar index yeniden kurulmadan doğrudan taşınıyor.
+    // İndeks yakalasaydık, sıralama değiştiğinde yanlış maddenin span'ı
+    // gösterilirdi; nesne referansı taşınmaya karşı bağışıktır.
+    TextEditingController createChecklistItemController(
+      Map<String, dynamic> item,
+    ) {
+      return RichBlockTextController(
+        text: (item['text'] ?? '').toString(),
+        getSpans: () => RichTextSpans.parse(item['spans']),
+      );
+    }
+
+    // Odak dinleyicisi de aynı sebeple (sıralama değişebilmesi) maddenin
+    // O ANKİ konumunu index YAKALAMAK yerine block['items'] içinde nesne
+    // kimliğiyle (indexOf) arar. blockIndexRef, blok bir kez tam olarak
+    // yeniden kurulduğunda (rebuildBlockControllers) zaten geçerliliğini
+    // yitirip yeni bir closure ile değiştirileceği için sabit yakalanabilir
+    // (metin bloklarındaki capturedIndex deseniyle aynı varsayım).
+    FocusNode createChecklistItemFocusNode(
+      int blockIndexRef,
+      Map<String, dynamic> block,
+      Map<String, dynamic> item,
+    ) {
+      final fn = FocusNode();
+      fn.addListener(() {
+        if (fn.hasFocus) {
+          final currentItems = block['items'] as List?;
+          final foundIdx = currentItems?.indexOf(item) ?? -1;
+          if (foundIdx >= 0) {
+            if (focusedBlockIndex != blockIndexRef ||
+                focusedItemIndex != foundIdx) {
+              // Odak başka bir maddeye/bloğa geçti: bu yeni maddeyle
+              // ilgisi olmayan bekleyen (henüz hiç harf yazılmamış)
+              // kalın/italik/vb. durumu sıfırlanır (bkz. text bloğundaki
+              // aynı desen).
+              pendingBold = false;
+              pendingItalic = false;
+              pendingUnderline = false;
+              pendingStrikethrough = false;
+              pendingFontSize = null;
+              pendingColor = null;
+              pendingFontFamily = null;
+            }
+            focusedBlockIndex = blockIndexRef;
+            focusedItemIndex = foundIdx;
+          }
+        }
+        requestEditorRebuild?.call(() {});
+      });
+      return fn;
+    }
 
     // Blok listesi değiştiğinde (ekleme/silme/birleştirme) controller ve
     // focus node'ları tamamen yeniden kurar. Metin bloğu olmayan (ek)
@@ -163,15 +279,22 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       for (int i = 0; i < blocks.length; i++) {
         if (blocks[i]['type'] == 'text') {
           final rawText = (blocks[i]['text'] ?? '').toString();
-          final ctrl = TextEditingController(
+          final capturedIndex = i;
+          final ctrl = RichBlockTextController(
             text: (rawText.isEmpty && blocks.length > 1)
                 ? emptyTextSentinel
                 : rawText,
+            getSpans: () => RichTextSpans.parse(
+              blocks[capturedIndex]['spans'],
+            ),
           );
           final fn = FocusNode();
-          final capturedIndex = i;
           fn.addListener(() {
-            if (fn.hasFocus) focusedBlockIndex = capturedIndex;
+            if (fn.hasFocus) {
+              focusedBlockIndex = capturedIndex;
+              focusedItemIndex = -1;
+            }
+            requestEditorRebuild?.call(() {});
           });
           blockControllers.add(ctrl);
           blockFocusNodes.add(fn);
@@ -182,19 +305,25 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           blockTableLabelFocusNodes.add(null);
           blockTableValueFocusNodes.add(null);
         } else if (blocks[i]['type'] == 'checklist') {
+          final block = blocks[i];
           final items = List<Map<String, dynamic>>.from(
-            blocks[i]['items'] ?? const [],
+            block['items'] ?? const [],
           );
+          final capturedIndex = i;
           blockItemControllers.add(
+            items.map((it) => createChecklistItemController(it)).toList(),
+          );
+          blockItemFocusNodes.add(
             items
                 .map(
-                  (it) => TextEditingController(
-                    text: (it['text'] ?? '').toString(),
+                  (it) => createChecklistItemFocusNode(
+                    capturedIndex,
+                    block,
+                    it,
                   ),
                 )
                 .toList(),
           );
-          blockItemFocusNodes.add(items.map((_) => FocusNode()).toList());
           blockControllers.add(null);
           blockFocusNodes.add(null);
           blockTableLabelControllers.add(null);
@@ -282,7 +411,6 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // içindeki setModalState'e doğrudan erişemez (kapsam dışı); bu yüzden
     // builder her çalıştığında bu değişkene atanır ve pushUndoCheckpoint
     // ondan dolaylı olarak rebuild tetikler.
-    void Function(VoidCallback)? requestEditorRebuild;
     // Serbest metin girişleri (başlık/blok/madde metni) tuş vuruşu başına
     // değil, kelime sınırlarında (boşluk/noktalama) tek bir checkpoint
     // oluşturur; aksi halde her harf undo geçmişini doldururdu.
@@ -347,6 +475,562 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       // ÖNCE tanımlı); bunun yerine builder her çalıştığında güncellenen
       // requestEditorRebuild üzerinden dolaylı olarak çağrılır.
       requestEditorRebuild?.call(() {});
+    }
+
+    // Kalın/italik/vb. araç çubuğu ile yazı boyutu/renk/yazı tipi
+    // uygulaması, odaktaki alanın bir metin bloğu mu yoksa bir checklist
+    // maddesi mi olduğuna göre FARKLI yerlerden controller/span verisi
+    // okur. Bu iki yardımcı, o farkı tek bir yerde çözer; _toggleSpanAttribute
+    // ve _applyValueAttribute artık hangi tür alanda olduklarını bilmek
+    // zorunda değil.
+    TextEditingController? _resolveFocusedFormatController() {
+      final idx = focusedBlockIndex;
+      if (idx < 0 || idx >= blocks.length) return null;
+      final type = blocks[idx]['type'];
+      if (type == 'text') {
+        return blockControllers[idx];
+      }
+      if (type == 'checklist') {
+        final itemIdx = focusedItemIndex;
+        final ctrls = blockItemControllers[idx];
+        if (ctrls == null || itemIdx < 0 || itemIdx >= ctrls.length) {
+          return null;
+        }
+        return ctrls[itemIdx];
+      }
+      return null;
+    }
+
+    // Span'ların OKUNDUĞU/YAZILDIĞI map: metin bloğu için bloğun kendisi,
+    // checklist için odaklı maddenin map'i (referans olarak — burada
+    // döndürülen map üzerinde yapılan değişiklik doğrudan
+    // blocks[idx]['items'][itemIdx]'a yansır, kopya değildir).
+    Map<String, dynamic>? _resolveFocusedSpansHolder() {
+      final idx = focusedBlockIndex;
+      if (idx < 0 || idx >= blocks.length) return null;
+      final block = blocks[idx];
+      if (block['type'] == 'text') return block;
+      if (block['type'] == 'checklist') {
+        final itemIdx = focusedItemIndex;
+        final items = block['items'] as List?;
+        if (items == null || itemIdx < 0 || itemIdx >= items.length) {
+          return null;
+        }
+        return items[itemIdx] as Map<String, dynamic>;
+      }
+      return null;
+    }
+
+    // ── Aşama 3: seçili metne kalın/italik uygulama ───────────────────────
+    // Aşama 4'teki klavye üstü toolbar butonları bu iki fonksiyonu
+    // çağıracak. Odaktaki blok bir metin bloğu değilse, controller yoksa
+    // ya da seçim boşsa (imleç sadece bir noktadaysa) hiçbir şey yapılmaz
+    // — kalın/italik yalnızca SEÇİLİ metne uygulanır, imleç konumuna değil
+    // (bu, Word/Google Docs'taki standart davranışla aynıdır).
+    void _toggleSpanAttribute(String attr) {
+      final controller = _resolveFocusedFormatController();
+      if (controller == null) return;
+      final sel = controller.selection;
+      if (!sel.isValid) return;
+
+      if (sel.isCollapsed) {
+        // Seçili metin yok: bu tıklama, imleçten SONRA yazılacak
+        // karakterlere uygulanacak biçimlendirmeyi açar/kapatır. Gerçek
+        // uygulama, onChanged içinde _shiftSpansForTextChange tarafından
+        // yeni eklenen karakter aralığına yapılır (aşağıya bkz.).
+        if (attr == 'bold') {
+          pendingBold = !pendingBold;
+        } else if (attr == 'italic') {
+          pendingItalic = !pendingItalic;
+        } else if (attr == 'underline') {
+          pendingUnderline = !pendingUnderline;
+        } else {
+          pendingStrikethrough = !pendingStrikethrough;
+        }
+        // Araç çubuğundaki ikonun aktif/pasif rengini güncellemek için
+        // rebuild tetikle (bkz. format toolbar Builder'ı).
+        requestEditorRebuild?.call(() {});
+        return;
+      }
+
+      final start = sel.start;
+      final end = sel.end;
+      final textLength = controller.text.length;
+
+      // Diğer tüm biçimlendirme değişikliklerinde olduğu gibi (bkz.
+      // yukarıdaki desen), değişiklikten ÖNCE checkpoint alınır ki
+      // "Geri Al" bu tek kalın/italik uygulamasını tek adımda geri
+      // alabilsin (harf harf değil).
+      final spansHolder = _resolveFocusedSpansHolder();
+      if (spansHolder == null) return;
+
+      pushUndoCheckpoint();
+      final List? currentSpans = spansHolder['spans'] as List?;
+      final List? newSpans;
+      if (attr == 'bold') {
+        newSpans = RichTextSpans.toggleBold(
+          currentSpans,
+          textLength,
+          start,
+          end,
+        );
+      } else if (attr == 'italic') {
+        newSpans = RichTextSpans.toggleItalic(
+          currentSpans,
+          textLength,
+          start,
+          end,
+        );
+      } else if (attr == 'underline') {
+        newSpans = RichTextSpans.toggleUnderline(
+          currentSpans,
+          textLength,
+          start,
+          end,
+        );
+      } else {
+        newSpans = RichTextSpans.toggleStrikethrough(
+          currentSpans,
+          textLength,
+          start,
+          end,
+        );
+      }
+      spansHolder['spans'] = newSpans;
+      // Not: controller.text ve controller.selection'a dokunmuyoruz —
+      // RichBlockTextController zaten çizimi getSpans() üzerinden her
+      // seferinde spansHolder['spans']'tan okuyor, bu yüzden seçim de
+      // (kullanıcı biçimlendirmenin sonucunu görsün diye) olduğu gibi
+      // kalır.
+      requestEditorRebuild?.call(() {});
+    }
+
+    void toggleBoldForFocusedBlock() => _toggleSpanAttribute('bold');
+    void toggleItalicForFocusedBlock() => _toggleSpanAttribute('italic');
+    void toggleUnderlineForFocusedBlock() => _toggleSpanAttribute('underline');
+    void toggleStrikethroughForFocusedBlock() =>
+        _toggleSpanAttribute('strikethrough');
+
+    // "Klavyeyi Gizle" araç çubuğu ikonuna basınca çağrılır: klavyeyi
+    // kapatır ve odaklı bloktaki imleci de kaybettirir (unfocus).
+    // primaryFocus?.unfocus() kullanılıyor — dosyanın başka yerlerinde
+    // (ör. sayfa kapatılırken) aynı desen zaten kullanılıyor. Henüz hiç
+    // harf yazılmamış bekleyen (pending) kalın/italik/vb. durumlar da
+    // artık odaklanacak bir yer kalmadığından sıfırlanır — odak başka bir
+    // bloğa geçtiğinde yapılan sıfırlamayla aynı mantık (bkz. yukarıdaki
+    // ilgili onTap'ler).
+    void dismissKeyboardForFocusedBlock() {
+      pendingBold = false;
+      pendingItalic = false;
+      pendingUnderline = false;
+      pendingStrikethrough = false;
+      pendingFontSize = null;
+      pendingColor = null;
+      pendingFontFamily = null;
+      focusedItemIndex = -1;
+      FocusManager.instance.primaryFocus?.unfocus();
+      requestEditorRebuild?.call(() {});
+    }
+
+    // ── Seçili metne yazı boyutu/renk/yazı tipi ailesi uygulama ─────────
+    // _toggleSpanAttribute ile aynı iskelet, ama AÇ/KAPA yerine bir
+    // picker'dan (boyut listesi/renk paleti/yazı tipi listesi) seçilen
+    // DEĞERİ doğrudan atar. value == null verilirse "Varsayılan" seçilmiş
+    // demektir: seçili aralıktaki özel değer temizlenir. Odaktaki blok
+    // metin bloğu değilse, controller yoksa ya da seçim geçersizse hiçbir
+    // şey yapılmaz.
+    void _applyValueAttribute(String attr, dynamic value) {
+      final controller = _resolveFocusedFormatController();
+      if (controller == null) return;
+      final sel = controller.selection;
+      if (!sel.isValid) return;
+
+      if (sel.isCollapsed) {
+        // Seçili metin yok: bu seçim, imleçten SONRA yazılacak karaktere
+        // uygulanacak değeri "bekleyen" olarak ayarlar (bkz. pendingBold
+        // açıklaması). Gerçek uygulama _shiftSpansForTextChange içinde
+        // yapılır.
+        if (attr == 'fontSize') {
+          pendingFontSize = value as double?;
+        } else if (attr == 'color') {
+          pendingColor = value as int?;
+        } else {
+          pendingFontFamily = value as String?;
+        }
+        requestEditorRebuild?.call(() {});
+        return;
+      }
+
+      final start = sel.start;
+      final end = sel.end;
+      final textLength = controller.text.length;
+
+      final spansHolder = _resolveFocusedSpansHolder();
+      if (spansHolder == null) return;
+
+      pushUndoCheckpoint();
+      final currentSpans = spansHolder['spans'] as List?;
+      final List newSpans;
+      if (attr == 'fontSize') {
+        newSpans = RichTextSpans.setFontSize(
+          currentSpans,
+          textLength,
+          start,
+          end,
+          value as double?,
+        );
+      } else if (attr == 'color') {
+        newSpans = RichTextSpans.setColor(
+          currentSpans,
+          textLength,
+          start,
+          end,
+          value as int?,
+        );
+      } else {
+        newSpans = RichTextSpans.setFontFamily(
+          currentSpans,
+          textLength,
+          start,
+          end,
+          value as String?,
+        );
+      }
+      spansHolder['spans'] = newSpans;
+      requestEditorRebuild?.call(() {});
+    }
+
+    void setFontSizeForFocusedBlock(double? size) =>
+        _applyValueAttribute('fontSize', size);
+    void setColorForFocusedBlock(int? color) =>
+        _applyValueAttribute('color', color);
+    void setFontFamilyForFocusedBlock(String? family) =>
+        _applyValueAttribute('fontFamily', family);
+
+    // "Metin Özellikleri" araç çubuğu ikonuna basınca açılan, yazı
+    // boyutu/renk/yazı tipi ailesi seçilen alt menü (bottom sheet).
+    // Seçenekler dokununca hemen uygulanır (sayfa kapanmaz), böylece
+    // kullanıcı aynı oturumda birden çok özelliği ayarlayabilir; kapatmak
+    // için aşağıdaki "Kapat" butonu ya da sayfa dışına dokunmak yeterli.
+    void showTextPropertiesSheet(BuildContext sheetContext) {
+      showModalBottomSheet(
+        context: sheetContext,
+        showDragHandle: true,
+        builder: (ctx) {
+          Widget sectionTitle(String text) => Padding(
+            padding: const EdgeInsets.fromLTRB(4, 4, 4, 8),
+            child: Text(
+              text,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          );
+
+          Widget sizeChip(String label, double? size) => ActionChip(
+            label: Text(label),
+            onPressed: () => setFontSizeForFocusedBlock(size),
+          );
+
+          Widget colorSwatch(String label, int? colorValue) => InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: () => setColorForFocusedBlock(colorValue),
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: colorValue != null ? Color(colorValue) : null,
+                border: Border.all(
+                  color: Theme.of(ctx).dividerColor,
+                  width: colorValue == null ? 1.5 : 1,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: colorValue == null
+                  ? const Icon(Icons.format_color_reset, size: 18)
+                  : null,
+            ),
+          );
+
+          Widget fontChip(String label, String? family) => ActionChip(
+            label: Text(
+              label,
+              style: TextStyle(fontFamily: family),
+            ),
+            onPressed: () => setFontFamilyForFocusedBlock(family),
+          );
+
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    sectionTitle('Yazı Boyutu'),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        sizeChip('Varsayılan', null),
+                        sizeChip('Küçük', 12),
+                        sizeChip('Normal', 16),
+                        sizeChip('Orta', 20),
+                        sizeChip('Büyük', 24),
+                        sizeChip('Çok Büyük', 32),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    sectionTitle('Yazı Rengi'),
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: [
+                        colorSwatch('Varsayılan', null),
+                        colorSwatch('Kırmızı', 0xFFF44336),
+                        colorSwatch('Turuncu', 0xFFFF9800),
+                        colorSwatch('Sarı', 0xFFFFC107),
+                        colorSwatch('Yeşil', 0xFF4CAF50),
+                        colorSwatch('Mavi', 0xFF2196F3),
+                        colorSwatch('Mor', 0xFF9C27B0),
+                        colorSwatch('Siyah', 0xFF000000),
+                        colorSwatch('Gri', 0xFF9E9E9E),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    sectionTitle('Yazı Tipi'),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        fontChip('Varsayılan', null),
+                        fontChip('Serif', 'serif'),
+                        fontChip('Sabit Genişlik', 'monospace'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    // ── Aşama 5 (basit yöntem): "- "/"* " kısayolunu "• " madde işaretine
+    // çevirir ve Enter'a basılınca bullet modunu bir sonraki satıra taşır.
+    // Ayrı bir veri alanı KULLANILMAZ — tamamen düz metin üzerinde çalışan
+    // bir kısayoldur; bu yüzden mevcut undo/redo, spans (kalın/italik)
+    // mantığı ve plainText()/arama/PDF export hiç etkilenmez (onlar zaten
+    // controller'ın .text değerini olduğu gibi okuyor). Aynı desen
+    // dNoteMaybeAutoCalculate'in "=" kısayolunda da kullanılıyor: onChanged
+    // içinde block['text'] zaten güncellendikten SONRA, controller'ın o anki
+    // (kullanıcının az önce yazdığı) değerine bakarak çalışır.
+    const bulletMarker = '• ';
+    // [block] parametresi eklendi: "- "/"* " -> "• " dönüşümü aynı
+    // uzunlukta bir değişim olduğu için span kaydırmaya gerek yok, ama
+    // Enter'da bullet işaretinin satır başına EKLENMESİ/KALDIRILMASI tam
+    // olarak 2 karakterlik bir kayma yarattığından, o noktadan sonraki
+    // bold/italic span'ların start/end değerleri de kaydırılmalı — aksi
+    // halde span'lar yanlış karakter aralığını işaretlemeye devam eder
+    // (bkz. RichTextSpans.shiftForInsert/shiftForDelete).
+    void _maybeHandleBulletShortcut(
+      TextEditingController controller,
+      Map<String, dynamic> block, {
+      required void Function(String newText) onTextChanged,
+    }) {
+      final sel = controller.selection;
+      if (!sel.isValid || !sel.isCollapsed) return;
+      final text = controller.text;
+      final cursor = sel.baseOffset;
+      if (cursor <= 0 || cursor > text.length) return;
+
+      final justTyped = text[cursor - 1];
+
+      // 1) "- " veya "* " -> "• " (yalnızca satırın en başında).
+      if (justTyped == ' ') {
+        final lineStart = text.lastIndexOf('\n', cursor - 2) + 1;
+        final segment = text.substring(lineStart, cursor);
+        if (segment == '- ' || segment == '* ') {
+          // Aynı uzunlukta bir değişim (2 kod birimi -> 2 kod birimi):
+          // span'lar kaymaz, kaydırmaya gerek yok.
+          final newText = text.replaceRange(lineStart, cursor, bulletMarker);
+          final newCursor = lineStart + bulletMarker.length;
+          controller.value = TextEditingValue(
+            text: newText,
+            selection: TextSelection.collapsed(offset: newCursor),
+          );
+          onTextChanged(newText);
+        }
+        return;
+      }
+
+      // 2) Enter: bullet'li satırdan sonra yeni satır da bullet olsun;
+      // boş bullet satırında Enter'a basılırsa bullet modundan çıkılsın.
+      if (justTyped == '\n') {
+        final prevLineStart = text.lastIndexOf('\n', cursor - 2) + 1;
+        final prevLineEnd = cursor - 1;
+        if (prevLineEnd < prevLineStart) return;
+        final prevLine = text.substring(prevLineStart, prevLineEnd);
+        if (prevLine == bulletMarker) {
+          // Boş madde satırında Enter -> bullet modundan çık, işareti
+          // önceki (şimdi terk edilen) satırdan kaldır. Bu, [prevLineStart,
+          // prevLineEnd) aralığında (2 karakter) bir SİLME işlemidir.
+          final newText = text.replaceRange(prevLineStart, prevLineEnd, '');
+          final newCursor = cursor - bulletMarker.length;
+          block['spans'] = RichTextSpans.shiftForDelete(
+            block['spans'] as List?,
+            prevLineStart,
+            prevLineEnd,
+          );
+          controller.value = TextEditingValue(
+            text: newText,
+            selection: TextSelection.collapsed(
+              offset: newCursor.clamp(0, newText.length),
+            ),
+          );
+          onTextChanged(newText);
+        } else if (prevLine.startsWith(bulletMarker) &&
+            prevLine.length > bulletMarker.length) {
+          // Doldurulmuş bullet satırından sonra Enter -> yeni satır da
+          // bullet olarak devam etsin. Bu, [cursor] konumuna bulletMarker
+          // uzunluğunda (2 karakter) bir EKLEME işlemidir.
+          final newText = text.replaceRange(cursor, cursor, bulletMarker);
+          final newCursor = cursor + bulletMarker.length;
+          block['spans'] = RichTextSpans.shiftForInsert(
+            block['spans'] as List?,
+            cursor,
+            bulletMarker.length,
+          );
+          controller.value = TextEditingValue(
+            text: newText,
+            selection: TextSelection.collapsed(offset: newCursor),
+          );
+          onTextChanged(newText);
+        }
+      }
+    }
+
+    // ── Aşama 6 asıl düzeltmesi (yazma sırasında span kayması) ────────────
+    // toggleBold/toggleItalic çağrıldığında ya da "- "/"* " kısayolu veya
+    // Enter'da bullet ekleme/kaldırma durumunda spans zaten
+    // shiftForInsert/shiftForDelete ile güncelleniyordu. AMA kullanıcının
+    // sıradan yazması (harf ekleme/silme, otomatik düzeltme, seçili metni
+    // yazarak değiştirme) hiçbir zaman bu kaydırmayı tetiklemiyordu — metin
+    // bloğunun onChanged'i doğrudan block['text']'i yeni değere eşitleyip
+    // block['spans']'a hiç dokunmuyordu. Sonuç: kalın yapılmış bir kelimenin
+    // ortasına bir harf eklendiğinde metin kayıyor ama span'ların
+    // start/end'i eski karakter indekslerinde kalıyor, bu yüzden o
+    // noktadan sonraki kısım (kelimenin "yarısı") artık yanlış aralığı
+    // işaret ettiğinden ince görünüyordu.
+    //
+    // Çözüm: her onChanged'de eski metin (oldText) ile yeni metni (newText)
+    // karşılaştırıp ortak önek/sonek dışında kalan "değişen" aralığı
+    // buluyoruz; o aralık eskiden bir şey içeriyorsa shiftForDelete, yeni
+    // metinde bir şey içeriyorsa shiftForInsert uyguluyoruz. Bu, tek harf
+    // eklemeyi de, silmeyi de, seçili bir kelimeyi başka bir kelimeyle
+    // değiştirmeyi (klavyenin otomatik düzeltmesi dahil) de doğru şekilde
+    // kapsar.
+    void _shiftSpansForTextChange(
+      Map<String, dynamic> block,
+      String oldText,
+      String newText,
+    ) {
+      if (oldText == newText) return;
+      final maxPrefix = math.min(oldText.length, newText.length);
+      int prefix = 0;
+      while (prefix < maxPrefix && oldText[prefix] == newText[prefix]) {
+        prefix++;
+      }
+      final maxSuffix = maxPrefix - prefix;
+      int suffix = 0;
+      while (suffix < maxSuffix &&
+          oldText[oldText.length - 1 - suffix] ==
+              newText[newText.length - 1 - suffix]) {
+        suffix++;
+      }
+      final oldMiddleEnd = oldText.length - suffix;
+      final newMiddleEnd = newText.length - suffix;
+      List? spans = block['spans'] as List?;
+      if (oldMiddleEnd > prefix) {
+        spans = RichTextSpans.shiftForDelete(spans, prefix, oldMiddleEnd);
+      }
+      if (newMiddleEnd > prefix) {
+        spans = RichTextSpans.shiftForInsert(
+          spans,
+          prefix,
+          newMiddleEnd - prefix,
+        );
+        // DÜZELTME: "önce kalına/italiğe bas, sonra yaz" akışı — bekleyen
+        // (pending) bold/italic açıksa, az önce EKLENEN karakter aralığına
+        // (prefix..newMiddleEnd) ilgili biçimi uygula. Bu aralık yeni
+        // yazıldığı için henüz kendi span'ı yoktur, bu yüzden
+        // toggleBold/toggleItalic burada pratikte doğrudan "aç" gibi
+        // davranır.
+        if (pendingBold) {
+          spans = RichTextSpans.toggleBold(
+            spans,
+            newText.length,
+            prefix,
+            newMiddleEnd,
+          );
+        }
+        if (pendingItalic) {
+          spans = RichTextSpans.toggleItalic(
+            spans,
+            newText.length,
+            prefix,
+            newMiddleEnd,
+          );
+        }
+        if (pendingUnderline) {
+          spans = RichTextSpans.toggleUnderline(
+            spans,
+            newText.length,
+            prefix,
+            newMiddleEnd,
+          );
+        }
+        if (pendingStrikethrough) {
+          spans = RichTextSpans.toggleStrikethrough(
+            spans,
+            newText.length,
+            prefix,
+            newMiddleEnd,
+          );
+        }
+        // Aynı "önce butona bas, sonra yaz" akışı yazı boyutu/renk/yazı
+        // tipi ailesi için de geçerli — tek fark toggle değil DOĞRUDAN
+        // DEĞER ataması olması (bkz. _applyValueAttribute).
+        if (pendingFontSize != null) {
+          spans = RichTextSpans.setFontSize(
+            spans,
+            newText.length,
+            prefix,
+            newMiddleEnd,
+            pendingFontSize,
+          );
+        }
+        if (pendingColor != null) {
+          spans = RichTextSpans.setColor(
+            spans,
+            newText.length,
+            prefix,
+            newMiddleEnd,
+            pendingColor,
+          );
+        }
+        if (pendingFontFamily != null) {
+          spans = RichTextSpans.setFontFamily(
+            spans,
+            newText.length,
+            prefix,
+            newMiddleEnd,
+            pendingFontFamily,
+          );
+        }
+      }
+      block['spans'] = spans;
     }
 
     // Bir kelimenin bittiğini varsaydığımız karakterler: boşluk, satır
@@ -2184,230 +2868,34 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                 );
                               }
                               if (block['type'] == 'checklist') {
-                                final items = List<Map<String, dynamic>>.from(
-                                  block['items'] ?? const [],
-                                );
                                 final itemCtrls =
                                     blockItemControllers[i] ??
                                     <TextEditingController>[];
                                 final itemFns =
                                     blockItemFocusNodes[i] ?? <FocusNode>[];
-                                return Padding(
-                                  key: ValueKey('blk_checklist_$i'),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8,
+                                // Checklist blok arayüzü (madde listesi, sıra
+                                // değiştirme, ekleme/silme) ayrı bir mixin'e
+                                // taşındı: bkz. note_list_checklist_block_mixin.dart
+                                return _buildChecklistContentBlock(
+                                  context: context,
+                                  blockIndex: i,
+                                  noteIndex: index,
+                                  block: block,
+                                  itemCtrls: itemCtrls,
+                                  itemFns: itemFns,
+                                  pushUndoCheckpoint: pushUndoCheckpoint,
+                                  setModalState: setModalState,
+                                  noteTextEdited: noteTextEdited,
+                                  createItemController:
+                                      createChecklistItemController,
+                                  createItemFocusNode: (item) =>
+                                      createChecklistItemFocusNode(
+                                    i,
+                                    block,
+                                    item,
                                   ),
-                                  child: ReorderableListView(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    buildDefaultDragHandles: false,
-                                    onReorder: (oldIndex, newIndex) {
-                                      pushUndoCheckpoint();
-                                      setModalState(() {
-                                        if (newIndex > oldIndex) newIndex -= 1;
-                                        final movedItem = items.removeAt(
-                                          oldIndex,
-                                        );
-                                        items.insert(newIndex, movedItem);
-                                        block['items'] = items;
-                                        if (oldIndex < itemCtrls.length) {
-                                          final movedCtrl = itemCtrls.removeAt(
-                                            oldIndex,
-                                          );
-                                          itemCtrls.insert(newIndex, movedCtrl);
-                                        }
-                                        if (oldIndex < itemFns.length) {
-                                          final movedFn = itemFns.removeAt(
-                                            oldIndex,
-                                          );
-                                          itemFns.insert(newIndex, movedFn);
-                                        }
-                                      });
-                                    },
-                                    children: [
-                                      for (int j = 0; j < items.length; j++)
-                                        Row(
-                                          key: ValueKey(items[j]),
-                                          children: [
-                                            ReorderableDragStartListener(
-                                              index: j,
-                                              child: const Padding(
-                                                padding: EdgeInsets.only(
-                                                  right: 4,
-                                                ),
-                                                child: Icon(
-                                                  Icons.drag_indicator,
-                                                  color: Colors.grey,
-                                                  size: 20,
-                                                ),
-                                              ),
-                                            ),
-                                            Checkbox(
-                                              value:
-                                                  items[j]['checked']
-                                                      as bool? ??
-                                                  false,
-                                              activeColor: Colors.amber,
-                                              onChanged: (val) {
-                                                pushUndoCheckpoint();
-                                                setModalState(() {
-                                                  items[j]['checked'] =
-                                                      val ?? false;
-                                                  block['items'] = items;
-                                                });
-                                              },
-                                            ),
-                                            Expanded(
-                                              child: TextField(
-                                                selectionWidthStyle:
-                                                    ui.BoxWidthStyle.tight,
-                                                controller: j < itemCtrls.length
-                                                    ? itemCtrls[j]
-                                                    : null,
-                                                focusNode: j < itemFns.length
-                                                    ? itemFns[j]
-                                                    : null,
-                                                textInputAction:
-                                                    TextInputAction.next,
-                                                // Enter'a basınca Flutter'ın
-                                                // TextInputAction.next için
-                                                // uyguladığı VARSAYILAN odak
-                                                // değiştirme davranışını devre
-                                                // dışı bırakıyoruz; odak
-                                                // yönetimini zaten onSubmitted
-                                                // içinde biz yapıyoruz. Aksi
-                                                // halde klavye önce (yanlış bir
-                                                // widget'a odaklanıldığı için)
-                                                // kapanıp hemen ardından bizim
-                                                // requestFocus() çağrımızla
-                                                // tekrar açılıyordu (aşağı
-                                                // inip tekrar yukarı çıkma).
-                                                onEditingComplete: () {},
-                                                textCapitalization:
-                                                    TextCapitalization.sentences,
-                                                contextMenuBuilder:
-                                                    buildCustomContextMenu,
-                                                selectionHeightStyle:
-                                                    ui.BoxHeightStyle.max,
-                                                style: TextStyle(
-                                                  color:
-                                                      items[j]['checked'] ==
-                                                          true
-                                                      ? Colors.grey
-                                                      : dNoteEffectiveTextColor(
-                                                          context,
-                                                          _textColor,
-                                                        ),
-                                                  decoration:
-                                                      items[j]['checked'] ==
-                                                          true
-                                                      ? TextDecoration
-                                                            .lineThrough
-                                                      : null,
-                                                  fontSize: index != null
-                                                      ? ((_notes[index!]['fontSize']
-                                                                    as num?)
-                                                                ?.toDouble() ??
-                                                            _globalFontSize)
-                                                      : _globalFontSize,
-                                                ),
-                                                decoration: const InputDecoration(
-                                                  hintText: 'Madde...',
-                                                  hintStyle: TextStyle(
-                                                    color: Colors.grey,
-                                                  ),
-                                                  border: InputBorder.none,
-                                                ),
-                                                onChanged: (val) {
-                                                  noteTextEdited(
-                                                    'blk_checklist_${i}_$j',
-                                                    itemCtrls[j],
-                                                  );
-                                                  items[j]['text'] = val;
-                                                  block['items'] = items;
-                                                },
-                                                onSubmitted: (_) {
-                                                  pushUndoCheckpoint();
-                                                  setModalState(() {
-                                                    final newIndex = j + 1;
-                                                    items.insert(newIndex, {
-                                                      'text': '',
-                                                      'checked': false,
-                                                    });
-                                                    block['items'] = items;
-                                                    itemCtrls.insert(
-                                                      newIndex,
-                                                      TextEditingController(),
-                                                    );
-                                                    itemFns.insert(
-                                                      newIndex,
-                                                      FocusNode(),
-                                                    );
-                                                  });
-                                                  // Not: requestFocus'u
-                                                  // Future.microtask yerine
-                                                  // addPostFrameCallback ile
-                                                  // çağırıyoruz. Microtask, yeni
-                                                  // eklenen alanın widget
-                                                  // ağacına henüz oturmadığı bir
-                                                  // anda çalışabiliyor; bu da
-                                                  // klavyenin bir an için
-                                                  // odaksız kalıp kapanmasına ve
-                                                  // hemen ardından tekrar
-                                                  // açılmasına (aşağı inip
-                                                  // tekrar yukarı kalkmasına)
-                                                  // yol açıyordu.
-                                                  WidgetsBinding.instance
-                                                      .addPostFrameCallback((_) {
-                                                    itemFns[j + 1].requestFocus();
-                                                  });
-                                                },
-                                              ),
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.close,
-                                                color: Colors.grey,
-                                                size: 18,
-                                              ),
-                                              onPressed: () {
-                                                pushUndoCheckpoint();
-                                                // Aynı beyaz ekran sorunu:
-                                                // odaklı bir FocusNode'u
-                                                // önce odaktan çıkarmadan
-                                                // dispose etmeyelim.
-                                                FocusNode? removedFocusNode;
-                                                if (j < itemFns.length) {
-                                                  removedFocusNode = itemFns[j];
-                                                  if (removedFocusNode
-                                                      .hasFocus) {
-                                                    removedFocusNode.unfocus();
-                                                  }
-                                                }
-                                                setModalState(() {
-                                                  items.removeAt(j);
-                                                  block['items'] = items;
-                                                  if (j < itemCtrls.length) {
-                                                    itemCtrls
-                                                        .removeAt(j)
-                                                        .dispose();
-                                                  }
-                                                  if (j < itemFns.length) {
-                                                    itemFns.removeAt(j);
-                                                  }
-                                                });
-                                                if (removedFocusNode != null) {
-                                                  WidgetsBinding.instance
-                                                      .addPostFrameCallback((_) {
-                                                    removedFocusNode!.dispose();
-                                                  });
-                                                }
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                    ],
-                                  ),
+                                  shiftSpansForTextChange:
+                                      _shiftSpansForTextChange,
                                 );
                               }
                               if (block['type'] == 'calc_table') {
@@ -2431,345 +2919,148 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                               ?.toDouble() ??
                                           _globalFontSize)
                                     : _globalFontSize;
-                                double total = 0;
-                                for (final r in rows) {
-                                  total += ContentBlocks.parseCalcValue(
-                                    r['value'],
-                                  );
-                                }
-                                return Padding(
-                                  key: ValueKey('blk_calctable_$i'),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          for (int j = 0; j < rows.length; j++)
-                                            Row(
-                                              key: ValueKey(rows[j]),
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                            Expanded(
-                                              flex: 3,
-                                              child: TextField(
-                                                selectionWidthStyle:
-                                                    ui.BoxWidthStyle.tight,
-                                                controller:
-                                                    j < labelCtrls.length
-                                                    ? labelCtrls[j]
-                                                    : null,
-                                                focusNode: j < labelFns.length
-                                                    ? labelFns[j]
-                                                    : null,
-                                                textCapitalization:
-                                                    TextCapitalization.sentences,
-                                                contextMenuBuilder:
-                                                    buildCustomContextMenu,
-                                                selectionHeightStyle:
-                                                    ui.BoxHeightStyle.max,
-                                                textInputAction:
-                                                    TextInputAction.next,
-                                                // Bkz. aşağıdaki tutar alanı
-                                                // için açıklama: Flutter'ın
-                                                // TextInputAction.next
-                                                // varsayılan odak değiştirme
-                                                // davranışı devre dışı
-                                                // bırakılıyor, aksi halde
-                                                // Enter'a basınca klavye önce
-                                                // kapanıp hemen ardından tekrar
-                                                // açılıyordu.
-                                                onEditingComplete: () {},
-                                                style: TextStyle(
-                                                  color: dNoteEffectiveTextColor(
-                                                    context,
-                                                    _textColor,
-                                                  ),
-                                                  fontSize: fontSize,
-                                                ),
-                                                decoration:
-                                                    const InputDecoration(
-                                                  hintText: 'Kalem...',
-                                                  hintStyle: TextStyle(
-                                                    color: Colors.grey,
-                                                  ),
-                                                  border: InputBorder.none,
-                                                ),
-                                                onChanged: (val) {
-                                                  noteTextEdited(
-                                                    'calc_label_${i}_$j',
-                                                    labelCtrls[j],
-                                                  );
-                                                  rows[j]['label'] = val;
-                                                  block['rows'] = rows;
-                                                },
-                                                onSubmitted: (_) {
-                                                  if (j < valueFns.length) {
-                                                    valueFns[j]
-                                                        .requestFocus();
-                                                  }
-                                                },
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            Expanded(
-                                              flex: 2,
-                                              child: TextField(
-                                                selectionWidthStyle:
-                                                    ui.BoxWidthStyle.tight,
-                                                controller:
-                                                    j < valueCtrls.length
-                                                    ? valueCtrls[j]
-                                                    : null,
-                                                focusNode: j < valueFns.length
-                                                    ? valueFns[j]
-                                                    : null,
-                                                contextMenuBuilder:
-                                                    buildCustomContextMenu,
-                                                selectionHeightStyle:
-                                                    ui.BoxHeightStyle.max,
-                                                textAlign: TextAlign.right,
-                                                inputFormatters: [
-                                                  CalcTableInputFormatter(),
-                                                ],
-                                                textInputAction:
-                                                    TextInputAction.next,
-                                                // Bkz. yukarıdaki madde alanı
-                                                // için açıklama: Flutter'ın
-                                                // TextInputAction.next
-                                                // varsayılan odak değiştirme
-                                                // davranışı devre dışı
-                                                // bırakılıyor, aksi halde
-                                                // Enter'a basınca klavye önce
-                                                // kapanıp hemen ardından tekrar
-                                                // açılıyordu.
-                                                onEditingComplete: () {},
-                                                keyboardType:
-                                                    const TextInputType
-                                                        .numberWithOptions(
-                                                  decimal: true,
-                                                  signed: true,
-                                                ),
-                                                style: TextStyle(
-                                                  color: dNoteEffectiveTextColor(
-                                                    context,
-                                                    _textColor,
-                                                  ),
-                                                  fontSize: fontSize,
-                                                ),
-                                                decoration:
-                                                    const InputDecoration(
-                                                  hintText: '0',
-                                                  hintStyle: TextStyle(
-                                                    color: Colors.grey,
-                                                  ),
-                                                  border: InputBorder.none,
-                                                ),
-                                                onChanged: (val) {
-                                                  noteTextEdited(
-                                                    'calc_value_${i}_$j',
-                                                    valueCtrls[j],
-                                                  );
-                                                  setModalState(() {
-                                                    rows[j]['value'] = val;
-                                                    block['rows'] = rows;
-                                                  });
-                                                },
-                                                onSubmitted: (_) {
-                                                  pushUndoCheckpoint();
-                                                  setModalState(() {
-                                                    final newIndex = j + 1;
-                                                    rows.insert(newIndex, {
-                                                      'label': '',
-                                                      'value': '',
-                                                    });
-                                                    block['rows'] = rows;
-                                                    labelCtrls.insert(
-                                                      newIndex,
-                                                      TextEditingController(),
-                                                    );
-                                                    valueCtrls.insert(
-                                                      newIndex,
-                                                      TextEditingController(),
-                                                    );
-                                                    labelFns.insert(
-                                                      newIndex,
-                                                      FocusNode(),
-                                                    );
-                                                    valueFns.insert(
-                                                      newIndex,
-                                                      FocusNode(),
-                                                    );
-                                                  });
-                                                  WidgetsBinding.instance
-                                                      .addPostFrameCallback((_) {
-                                                    labelFns[j + 1]
-                                                        .requestFocus();
-                                                  });
-                                                },
-                                              ),
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(
-                                                Icons.close,
-                                                color: Colors.grey,
-                                                size: 18,
-                                              ),
-                                              onPressed: () {
-                                                pushUndoCheckpoint();
-                                                final removedFocusNodes =
-                                                    <FocusNode>[];
-                                                if (j < labelFns.length) {
-                                                  removedFocusNodes
-                                                      .add(labelFns[j]);
-                                                }
-                                                if (j < valueFns.length) {
-                                                  removedFocusNodes
-                                                      .add(valueFns[j]);
-                                                }
-                                                for (final f
-                                                    in removedFocusNodes) {
-                                                  if (f.hasFocus) f.unfocus();
-                                                }
-                                                bool tableRemoved = false;
-                                                setModalState(() {
-                                                  rows.removeAt(j);
-                                                  block['rows'] = rows;
-                                                  if (rows.isEmpty) {
-                                                    // Son satır da silindi:
-                                                    // "Toplam" satırıyla
-                                                    // birlikte boş bir tablo
-                                                    // ekranda asılı kalmasın
-                                                    // diye hesap tablosu
-                                                    // bloğunun tamamını
-                                                    // kaldırıyoruz. Ek/checklist
-                                                    // bloğu silinirken
-                                                    // kullanılanla aynı desen:
-                                                    // komşu metin blokları
-                                                    // varsa birleştir, yoksa
-                                                    // sadece bloğu çıkar; blok
-                                                    // listesi tamamen boş
-                                                    // kalırsa boş bir metin
-                                                    // bloğu ekle. Controller/
-                                                    // focus node dispose'u
-                                                    // rebuildBlockControllers()
-                                                    // güvenli şekilde kendisi
-                                                    // yapar; burada ayrıca
-                                                    // dispose ETMİYORUZ (çift
-                                                    // dispose çökmeye yol
-                                                    // açar).
-                                                    tableRemoved = true;
-                                                    final prevIsText =
-                                                        i > 0 &&
-                                                        blocks[i - 1]['type'] ==
-                                                            'text';
-                                                    final nextIsText =
-                                                        i < blocks.length - 1 &&
-                                                        blocks[i + 1]['type'] ==
-                                                            'text';
-                                                    if (prevIsText &&
-                                                        nextIsText) {
-                                                      final mergedText =
-                                                          ((blocks[i - 1]['text'] ??
-                                                                  '')
-                                                              .toString()) +
-                                                          ((blocks[i + 1]['text'] ??
-                                                                  '')
-                                                              .toString());
-                                                      blocks[i - 1]['text'] =
-                                                          mergedText;
-                                                      blocks.removeAt(i + 1);
-                                                      blocks.removeAt(i);
-                                                    } else {
-                                                      blocks.removeAt(i);
-                                                    }
-                                                    if (blocks.isEmpty) {
-                                                      blocks.add({
-                                                        'type': 'text',
-                                                        'text': '',
-                                                      });
-                                                    }
-                                                    rebuildBlockControllers();
-                                                  } else {
-                                                    if (j < labelCtrls.length) {
-                                                      labelCtrls
-                                                          .removeAt(j)
-                                                          .dispose();
-                                                    }
-                                                    if (j < valueCtrls.length) {
-                                                      valueCtrls
-                                                          .removeAt(j)
-                                                          .dispose();
-                                                    }
-                                                    if (j < labelFns.length) {
-                                                      labelFns.removeAt(j);
-                                                    }
-                                                    if (j < valueFns.length) {
-                                                      valueFns.removeAt(j);
-                                                    }
-                                                  }
-                                                });
-                                                if (!tableRemoved &&
-                                                    removedFocusNodes
-                                                        .isNotEmpty) {
-                                                  WidgetsBinding.instance
-                                                      .addPostFrameCallback((_) {
-                                                    for (final f
-                                                        in removedFocusNodes) {
-                                                      f.dispose();
-                                                    }
-                                                  });
-                                                }
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                    ],
-                                  ),
-                                  Divider(color: dNoteBorderColor(context)),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 3,
-                                            child: Text(
-                                              'Toplam',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: dNoteEffectiveTextColor(
-                                                  context,
-                                                  _textColor,
-                                                ),
-                                                fontSize: fontSize,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            flex: 2,
-                                            child: Text(
-                                              ContentBlocks.formatCalcNumber(
-                                                total,
-                                              ),
-                                              textAlign: TextAlign.right,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: dNoteEffectiveTextColor(
-                                                  context,
-                                                  _textColor,
-                                                ),
-                                                fontSize: fontSize,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 48),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                // Sunum NoteCalcTableBlock widget'ına
+                                // taşındı (bkz. note_calc_table_block.dart);
+                                // satır ekleme/silme, undo checkpoint ve
+                                // controller/focus node yönetimi burada
+                                // kalıyor çünkü blocks/blockTable*
+                                // listelerine (bu metodun local state'i)
+                                // doğrudan erişim gerektiriyor.
+                                return NoteCalcTableBlock(
+                                  blockIndex: i,
+                                  rows: rows,
+                                  labelControllers: labelCtrls,
+                                  valueControllers: valueCtrls,
+                                  labelFocusNodes: labelFns,
+                                  valueFocusNodes: valueFns,
+                                  fontSize: fontSize,
+                                  textColor: _textColor,
+                                  onLabelChanged: (j, val) {
+                                    noteTextEdited(
+                                      'calc_label_${i}_$j',
+                                      labelCtrls[j],
+                                    );
+                                    rows[j]['label'] = val;
+                                    block['rows'] = rows;
+                                  },
+                                  onValueChanged: (j, val) {
+                                    noteTextEdited(
+                                      'calc_value_${i}_$j',
+                                      valueCtrls[j],
+                                    );
+                                    setModalState(() {
+                                      rows[j]['value'] = val;
+                                      block['rows'] = rows;
+                                    });
+                                  },
+                                  onSubmitRow: (j) {
+                                    pushUndoCheckpoint();
+                                    setModalState(() {
+                                      final newIndex = j + 1;
+                                      rows.insert(newIndex, {
+                                        'label': '',
+                                        'value': '',
+                                      });
+                                      block['rows'] = rows;
+                                      labelCtrls.insert(
+                                        newIndex,
+                                        TextEditingController(),
+                                      );
+                                      valueCtrls.insert(
+                                        newIndex,
+                                        TextEditingController(),
+                                      );
+                                      labelFns.insert(newIndex, FocusNode());
+                                      valueFns.insert(newIndex, FocusNode());
+                                    });
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                      labelFns[j + 1].requestFocus();
+                                    });
+                                  },
+                                  onRemoveRow: (j) {
+                                    pushUndoCheckpoint();
+                                    final removedFocusNodes = <FocusNode>[];
+                                    if (j < labelFns.length) {
+                                      removedFocusNodes.add(labelFns[j]);
+                                    }
+                                    if (j < valueFns.length) {
+                                      removedFocusNodes.add(valueFns[j]);
+                                    }
+                                    for (final f in removedFocusNodes) {
+                                      if (f.hasFocus) f.unfocus();
+                                    }
+                                    bool tableRemoved = false;
+                                    setModalState(() {
+                                      rows.removeAt(j);
+                                      block['rows'] = rows;
+                                      if (rows.isEmpty) {
+                                        // Son satır da silindi: "Toplam"
+                                        // satırıyla birlikte boş bir tablo
+                                        // ekranda asılı kalmasın diye hesap
+                                        // tablosu bloğunun tamamını
+                                        // kaldırıyoruz. Ek/checklist bloğu
+                                        // silinirken kullanılanla aynı
+                                        // desen: komşu metin blokları varsa
+                                        // birleştir, yoksa sadece bloğu
+                                        // çıkar; blok listesi tamamen boş
+                                        // kalırsa boş bir metin bloğu ekle.
+                                        // Controller/focus node dispose'u
+                                        // rebuildBlockControllers() güvenli
+                                        // şekilde kendisi yapar; burada
+                                        // ayrıca dispose ETMİYORUZ (çift
+                                        // dispose çökmeye yol açar).
+                                        tableRemoved = true;
+                                        final prevIsText =
+                                            i > 0 &&
+                                            blocks[i - 1]['type'] == 'text';
+                                        final nextIsText =
+                                            i < blocks.length - 1 &&
+                                            blocks[i + 1]['type'] == 'text';
+                                        if (prevIsText && nextIsText) {
+                                          final mergedText =
+                                              ((blocks[i - 1]['text'] ?? '')
+                                                  .toString()) +
+                                              ((blocks[i + 1]['text'] ?? '')
+                                                  .toString());
+                                          blocks[i - 1]['text'] = mergedText;
+                                          blocks.removeAt(i + 1);
+                                          blocks.removeAt(i);
+                                        } else {
+                                          blocks.removeAt(i);
+                                        }
+                                        if (blocks.isEmpty) {
+                                          blocks.add({
+                                            'type': 'text',
+                                            'text': '',
+                                          });
+                                        }
+                                        rebuildBlockControllers();
+                                      } else {
+                                        if (j < labelCtrls.length) {
+                                          labelCtrls.removeAt(j).dispose();
+                                        }
+                                        if (j < valueCtrls.length) {
+                                          valueCtrls.removeAt(j).dispose();
+                                        }
+                                        if (j < labelFns.length) {
+                                          labelFns.removeAt(j);
+                                        }
+                                        if (j < valueFns.length) {
+                                          valueFns.removeAt(j);
+                                        }
+                                      }
+                                    });
+                                    if (!tableRemoved &&
+                                        removedFocusNodes.isNotEmpty) {
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) {
+                                        for (final f in removedFocusNodes) {
+                                          f.dispose();
+                                        }
+                                      });
+                                    }
+                                  },
                                 );
                               }
                               if (block['type'] == 'drawing') {
@@ -2896,12 +3187,15 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       'block_$i',
                                       blockControllers[i]!,
                                     );
+                                    // Span kaydırma için bu tuş vuruşundan
+                                    // ÖNCEKİ metin (henüz üzerine yazılmadan
+                                    // önceki hali) gerekiyor.
+                                    final oldTextForSpans =
+                                        (block['text'] ?? '').toString();
                                     // Bu blok daha önce mantıken boş muydu
                                     // (yalnızca görünmez işaretçi vardı)?
                                     final wasLogicallyEmpty =
-                                        (block['text'] ?? '')
-                                            .toString()
-                                            .isEmpty;
+                                        oldTextForSpans.isEmpty;
                                     if (val.isEmpty) {
                                       if (wasLogicallyEmpty) {
                                         // Kullanıcı, boş bloktaki görünmez
@@ -2923,7 +3217,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       // sadece boşalt. Görünmez işaretçiyi
                                       // geri koyarak bir sonraki Backspace'in
                                       // yine algılanabilir olmasını sağla.
+                                      // Metin tamamen boşaldığı için eski
+                                      // span'ların artık işaret edeceği
+                                      // hiçbir karakter kalmadı; temizle.
                                       block['text'] = '';
+                                      block['spans'] = [];
                                       blockControllers[i]!.value =
                                           const TextEditingValue(
                                         text: emptyTextSentinel,
@@ -2963,10 +3261,29 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                           ),
                                         ),
                                       );
+                                      _shiftSpansForTextChange(
+                                        block,
+                                        oldTextForSpans,
+                                        cleaned,
+                                      );
                                       block['text'] = cleaned;
                                     } else {
+                                      _shiftSpansForTextChange(
+                                        block,
+                                        oldTextForSpans,
+                                        val,
+                                      );
                                       block['text'] = val;
                                     }
+                                    // Aşama 5: "- "/"* " -> "• " kısayolu ve
+                                    // Enter'da bullet modunun devamı/çıkışı.
+                                    _maybeHandleBulletShortcut(
+                                      blockControllers[i]!,
+                                      block,
+                                      onTextChanged: (newText) {
+                                        block['text'] = newText;
+                                      },
+                                    );
                                     // Kullanıcı satırın sonuna "=" yazdıysa
                                     // (ör. "(2+4)+5*4+2^2-4/2=") ifadeyi
                                     // hesaplayıp sonucu otomatik ekler.
@@ -2977,7 +3294,22 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       },
                                     );
                                   },
-                                  onTap: () => focusedBlockIndex = i,
+                                  onTap: () {
+                                    // Odak başka bir bloğa geçiyorsa,
+                                    // bekleyen (henüz hiç harf yazılmamış)
+                                    // kalın/italik durumu bu yeni blokla
+                                    // ilgisiz olduğundan sıfırlanır.
+                                    if (focusedBlockIndex != i) {
+                                      pendingBold = false;
+                                      pendingItalic = false;
+                                      pendingUnderline = false;
+                                      pendingStrikethrough = false;
+                                      pendingFontSize = null;
+                                      pendingColor = null;
+                                      pendingFontFamily = null;
+                                    }
+                                    focusedBlockIndex = i;
+                                  },
                                   ),
                                 );
                               }
@@ -3368,6 +3700,104 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                       ),
                     ),
                     ),
+                      ),
+                      Builder(
+                        builder: (context) {
+                          // Zengin metin araç çubuğu (kalın/italik): tarih
+                          // barının hemen üstünde durması istendiği için
+                          // artık bottomNavigationBar yerine body Column'un
+                          // bir parçası olarak, tarih barından bir önceki
+                          // sırada render ediliyor. Scaffold'un
+                          // resizeToAvoidBottomInset:true davranışı body'yi
+                          // klavyeyle çakışmayacak şekilde zaten daralttığı
+                          // için burada ayrıca klavye yüksekliği kadar
+                          // Padding eklemeye gerek kalmadı.
+                          final hasFocusedTextBlock =
+                              focusedBlockIndex >= 0 &&
+                              focusedBlockIndex < blockFocusNodes.length &&
+                              blockFocusNodes[focusedBlockIndex]?.hasFocus ==
+                                  true;
+                          final focusedItemFocusNodes =
+                              focusedBlockIndex >= 0 &&
+                                  focusedBlockIndex < blockItemFocusNodes.length
+                              ? blockItemFocusNodes[focusedBlockIndex]
+                              : null;
+                          final hasFocusedChecklistItem =
+                              focusedItemFocusNodes != null &&
+                              focusedItemIndex >= 0 &&
+                              focusedItemIndex < focusedItemFocusNodes.length &&
+                              focusedItemFocusNodes[focusedItemIndex]
+                                  .hasFocus;
+                          if (!hasFocusedTextBlock && !hasFocusedChecklistItem) {
+                            return const SizedBox.shrink();
+                          }
+                          return Material(
+                            elevation: 8,
+                            color: Theme.of(context).cardColor,
+                            child: SizedBox(
+                              height: 44,
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.format_bold),
+                                    tooltip: 'Kalın',
+                                    color: pendingBold
+                                        ? Theme.of(context).colorScheme.primary
+                                        : null,
+                                    onPressed: toggleBoldForFocusedBlock,
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.format_italic),
+                                    tooltip: 'İtalik',
+                                    color: pendingItalic
+                                        ? Theme.of(context).colorScheme.primary
+                                        : null,
+                                    onPressed: toggleItalicForFocusedBlock,
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.format_underlined),
+                                    tooltip: 'Altı Çizili',
+                                    color: pendingUnderline
+                                        ? Theme.of(context).colorScheme.primary
+                                        : null,
+                                    onPressed: toggleUnderlineForFocusedBlock,
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.format_strikethrough,
+                                    ),
+                                    tooltip: 'Üzeri Çizili',
+                                    color: pendingStrikethrough
+                                        ? Theme.of(context).colorScheme.primary
+                                        : null,
+                                    onPressed:
+                                        toggleStrikethroughForFocusedBlock,
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.text_fields),
+                                    tooltip: 'Metin Özellikleri',
+                                    color:
+                                        (pendingFontSize != null ||
+                                                pendingColor != null ||
+                                                pendingFontFamily != null)
+                                            ? Theme.of(context)
+                                                  .colorScheme
+                                                  .primary
+                                            : null,
+                                    onPressed: () =>
+                                        showTextPropertiesSheet(context),
+                                  ),
+                                  const Spacer(),
+                                  IconButton(
+                                    icon: const Icon(Icons.keyboard_hide),
+                                    tooltip: 'Klavyeyi Gizle',
+                                    onPressed: dismissKeyboardForFocusedBlock,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                       SafeArea(
                       child: Builder(
