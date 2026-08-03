@@ -15,6 +15,21 @@ class PdfExportService {
   static pw.Font? _regularFont;
   static pw.Font? _boldFont;
 
+  // ── Zengin metin (rich text) renkleri ──────────────────────────────────
+  // PDF sayfası her zaman beyaz zemin olduğundan, kullanıcının telefonunda
+  // hangi tema (açık/koyu) aktif olursa olsun editördeki AÇIK TEMA vurgu
+  // rengiyle birebir aynı ton kullanılır (bkz.
+  // rich_block_text_controller.dart -> _highlightColorLight = 0xFFFFF59D).
+  // Koyu temanın vurgu rengi (_highlightColorDark) burada KASITLI olarak
+  // kullanılmaz — beyaz kağıt üzerinde o ton okunaksız/çok koyu kalırdı.
+  // NOT: bu sabit, rich_block_text_controller.dart içindeki
+  // _highlightColorLight ile birbirinden BAĞIMSIZ tutulur; biri
+  // değiştirilirse diğeri de elle güncellenmelidir.
+  static final PdfColor _highlightColorPdf = PdfColor.fromInt(0xFFFFF59D);
+  // Link olarak işaretlenmiş metnin rengi; rich_block_text_controller.dart
+  // içindeki _linkColor (0xFF1A73E8) ile aynı.
+  static final PdfColor _linkColorPdf = PdfColor.fromInt(0xFF1A73E8);
+
   // Uzun bir paragrafı, yaklaşık `maxChars` karakteri geçmeyecek şekilde
   // (kelime ortasından KIRMADAN) parçalara böler. pw.Text'in bu pakette
   // sayfalar arası kendi kendine bölünmesi güvenilir çalışmadığı için,
@@ -34,6 +49,168 @@ class PdfExportService {
     }
     if (buffer.isNotEmpty) chunks.add(buffer.toString());
     return chunks;
+  }
+
+  // _chunkPlainText ile AYNI amaç (bir sayfaya sığacak kadar kısa, kelime
+  // ortasından kırılmayan parçalara bölme) ama bu sefer span'ları (kalın/
+  // italik/altı çizili/üstü çizili/vurgu/özel renk-boyut/link) da parçayla
+  // BİRLİKTE, parçaya göre yeniden hizalanmış (yerel/0 tabanlı) indekslerle
+  // taşır. Böylece uzun bir metin bloğu birden fazla widget'a bölünse bile
+  // (pw.MultiPage kendi kendine bölünemediği için — bkz. _chunkPlainText
+  // yorumu) biçimlendirme parça sınırlarında kaybolmaz.
+  static List<({String text, List<Map<String, dynamic>> spans})>
+      _chunkRichText(
+    String text,
+    List<Map<String, dynamic>> spans,
+    int maxChars,
+  ) {
+    if (text.isEmpty) return const [];
+    if (text.length <= maxChars) {
+      return [(text: text, spans: spans)];
+    }
+    final words = text.split(RegExp(r'(?<=\s)'));
+    final chunks = <({String text, List<Map<String, dynamic>> spans})>[];
+    final buffer = StringBuffer();
+    var chunkStart = 0;
+
+    void flush() {
+      if (buffer.isEmpty) return;
+      final chunkText = buffer.toString();
+      final chunkEnd = chunkStart + chunkText.length;
+      final localSpans = <Map<String, dynamic>>[];
+      for (final s in spans) {
+        final sStart = s['start'] as int;
+        final sEnd = s['end'] as int;
+        final clampedStart = math.max(sStart, chunkStart);
+        final clampedEnd = math.min(sEnd, chunkEnd);
+        if (clampedEnd <= clampedStart) continue;
+        localSpans.add({
+          ...s,
+          'start': clampedStart - chunkStart,
+          'end': clampedEnd - chunkStart,
+        });
+      }
+      chunks.add((text: chunkText, spans: localSpans));
+      chunkStart = chunkEnd;
+      buffer.clear();
+    }
+
+    for (final word in words) {
+      if (buffer.length + word.length > maxChars && buffer.isNotEmpty) {
+        flush();
+      }
+      buffer.write(word);
+    }
+    flush();
+    return chunks;
+  }
+
+  // Bir metin parçasını ve o parçaya ait (parçaya göre yeniden hizalanmış)
+  // span listesini, RichBlockTextController.buildTextSpan (bkz.
+  // rich_block_text_controller.dart) ile AYNI algoritmayla — kırılma
+  // noktaları çıkarıp her aralıkta o an etkin olan özellikleri toplayarak —
+  // bir pw.RichText'e dönüştürür. Hiç span yoksa (düz metin) gereksiz
+  // sarmalamadan kaçınmak için basit bir pw.Text döner.
+  static pw.Widget _buildRichTextWidget(
+    String text,
+    List<Map<String, dynamic>> spans,
+    pw.Font regular,
+    pw.Font bold,
+    double fontSize,
+  ) {
+    if (spans.isEmpty || text.isEmpty) {
+      return pw.Text(
+        text,
+        style: pw.TextStyle(font: regular, fontSize: fontSize),
+      );
+    }
+
+    int clampIndex(num raw, int max) {
+      final v = raw.toInt();
+      if (v < 0) return 0;
+      if (v > max) return max;
+      return v;
+    }
+
+    final breakpoints = <int>{0, text.length};
+    for (final s in spans) {
+      breakpoints.add(clampIndex(s['start'] as num, text.length));
+      breakpoints.add(clampIndex(s['end'] as num, text.length));
+    }
+    final points = breakpoints.toList()..sort();
+
+    final children = <pw.TextSpan>[];
+    for (var i = 0; i < points.length - 1; i++) {
+      final start = points[i];
+      final end = points[i + 1];
+      if (start >= end) continue;
+
+      var isBold = false;
+      var italic = false;
+      var underline = false;
+      var strikethrough = false;
+      var highlight = false;
+      double? customSize;
+      int? colorValue;
+      String? link;
+      for (final s in spans) {
+        final sStart = clampIndex(s['start'] as num, text.length);
+        final sEnd = clampIndex(s['end'] as num, text.length);
+        if (start >= sStart && end <= sEnd) {
+          if (s['bold'] == true) isBold = true;
+          if (s['italic'] == true) italic = true;
+          if (s['underline'] == true) underline = true;
+          if (s['strikethrough'] == true) strikethrough = true;
+          if (s['highlight'] == true) highlight = true;
+          final sz = s['fontSize'];
+          if (sz is num) customSize = sz.toDouble();
+          final c = s['color'];
+          if (c is num) colorValue = c.toInt();
+          final lk = s['link'];
+          if (lk is String && lk.isNotEmpty) link = lk;
+        }
+      }
+
+      // Link'ler editördeki gibi her zaman altı çizili gösterilir; ayrıca
+      // 'underline' span verisine yazılmaz (bkz.
+      // rich_block_text_controller.dart'taki aynı kural).
+      final showUnderline = underline || link != null;
+      pw.TextDecoration? decoration;
+      if (showUnderline || strikethrough) {
+        decoration = pw.TextDecoration.combine([
+          if (showUnderline) pw.TextDecoration.underline,
+          if (strikethrough) pw.TextDecoration.lineThrough,
+        ]);
+      }
+      // Kullanıcı bu aralığa özel bir renk atamadıysa (colorValue == null)
+      // link mavisi kullanılır; özel renk atanmışsa kullanıcının seçimine
+      // saygı gösterilir (editördeki mantıkla birebir aynı).
+      final effectiveColor = colorValue != null
+          ? PdfColor.fromInt(colorValue)
+          : (link != null ? _linkColorPdf : PdfColors.black);
+
+      children.add(
+        pw.TextSpan(
+          text: text.substring(start, end),
+          style: pw.TextStyle(
+            // Not: yalnızca Regular/Bold TTF gömülü olduğundan "kalın",
+            // fontWeight yerine doğrudan bold TTF'ye geçilerek uygulanır
+            // (dosyanın geri kalanındaki mevcut desenle aynı).
+            font: isBold ? bold : regular,
+            fontSize: customSize ?? fontSize,
+            fontStyle: italic ? pw.FontStyle.italic : pw.FontStyle.normal,
+            decoration: decoration,
+            color: effectiveColor,
+            // Vurgu: metnin kendi rengine dokunmadan arkasına sabit bir
+            // bant ekler (bkz. sınıf başındaki _highlightColorPdf notu).
+            background:
+                highlight ? pw.BoxDecoration(color: _highlightColorPdf) : null,
+          ),
+        ),
+      );
+    }
+
+    return pw.RichText(text: pw.TextSpan(children: children));
   }
 
   static Future<void> _ensureFonts() async {
@@ -323,17 +500,55 @@ class PdfExportService {
         if (type == 'text') {
           final text = (block['text'] ?? '').toString();
           if (text.trim().isEmpty) continue;
+          // DÜZELTME: eskiden burada sadece düz metin (block['text'])
+          // basılıyor, blok'un 'spans' alanı (kalın/italik/altı çizili/
+          // üstü çizili/vurgu/özel renk-boyut/link — bkz.
+          // rich_text_spans.dart) HİÇ okunmuyordu; bu yüzden editörde
+          // zengin biçimlendirilmiş notlar PDF'e dışa aktarıldığında
+          // tamamen düz metin olarak çıkıyordu. Artık span'lar okunup
+          // paragraf/satır sınırlarına göre yeniden hizalanarak
+          // _buildRichTextWidget ile uygulanıyor.
+          final spans = RichTextSpans.parse(block['spans']);
           final paragraphs = text.split('\n');
+          var paraOffset = 0;
           for (final para in paragraphs) {
+            final paraStart = paraOffset;
+            final paraEnd = paraStart + para.length;
+            // +1: paragraflar arasındaki '\n' karakteri için (text.split
+            // bu karakteri kaldırır ama span indeksleri orijinal, '\n'
+            // dahil metne göredir).
+            paraOffset = paraEnd + 1;
+
             if (para.trim().isEmpty) {
               content.add(pw.SizedBox(height: effectiveFontSize * 0.6));
               continue;
             }
-            for (final chunk in _chunkPlainText(para, maxCharsPerTextChunk)) {
+
+            // Bu paragrafla kesişen span'ları paragraf-yerel (0 tabanlı)
+            // indekslere çevir.
+            final paraSpans = <Map<String, dynamic>>[];
+            for (final s in spans) {
+              final sStart = s['start'] as int;
+              final sEnd = s['end'] as int;
+              final clampedStart = math.max(sStart, paraStart);
+              final clampedEnd = math.min(sEnd, paraEnd);
+              if (clampedEnd <= clampedStart) continue;
+              paraSpans.add({
+                ...s,
+                'start': clampedStart - paraStart,
+                'end': clampedEnd - paraStart,
+              });
+            }
+
+            for (final chunk
+                in _chunkRichText(para, paraSpans, maxCharsPerTextChunk)) {
               content.add(
-                pw.Text(
-                  chunk,
-                  style: pw.TextStyle(font: regular, fontSize: effectiveFontSize),
+                _buildRichTextWidget(
+                  chunk.text,
+                  chunk.spans,
+                  regular,
+                  bold,
+                  effectiveFontSize,
                 ),
               );
             }
@@ -445,6 +660,13 @@ class PdfExportService {
               ),
             );
           }
+        } else if (type == 'divider') {
+          content.add(
+            pw.Padding(
+              padding: const pw.EdgeInsets.symmetric(vertical: 8),
+              child: pw.Divider(color: PdfColors.grey400, thickness: 0.75),
+            ),
+          );
         } else if (type == 'attachments') {
           final ids = List<String>.from(
             (block['ids'] as List? ?? const []).map((e) => e.toString()),

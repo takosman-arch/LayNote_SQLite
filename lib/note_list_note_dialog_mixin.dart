@@ -30,6 +30,18 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   set _textColor(Color? value);
   TextEditingController get _titleController;
   void dispose();
+
+  // ── DÜZELTME (çökme): text.lastIndexOf('\n', X) çağrısında X negatif
+  // olursa (imleç satırın/metnin en başındayken X = cursor - 1 ya da
+  // cursor - 2 formülüyle -1'e düşebiliyordu) Dart RangeError fırlatıyordu.
+  // lastIndexOf zaten "bulunamadı" durumunda -1 döndürdüğünden, negatif X
+  // için de doğrudan -1 döndürülüyor; hemen ardından yapılan "+ 1" bu
+  // durumda 0'a (metnin/satırın başına) düşüyor — ki zaten doğrusu bu.
+  int _safeLastNewlineIndex(String text, int before) {
+    if (before < 0) return -1;
+    return text.lastIndexOf('\n', before);
+  }
+
   // ---- NoteListChecklistBlockMixin'de tanımlı ----
   Widget _buildChecklistContentBlock({
     required BuildContext context,
@@ -119,6 +131,30 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     bool pendingItalic = false;
     bool pendingUnderline = false;
     bool pendingStrikethrough = false;
+    bool pendingHighlight = false;
+    // Araç çubuğundaki "Liste" butonuna basılınca, ana araç çubuğu satırı
+    // yerine madde/numara işareti seçeneklerini içeren bir ALT BAR
+    // gösterilir (bkz. aşağıdaki araç çubuğu Row'u). X ikonuna basılınca
+    // ya da odak değiştiğinde ana bara geri dönülür.
+    bool showListSubToolbar = false;
+    // Aynı desen: "Kalın" butonuna basılınca kalın/italik/altı çizili/üzeri
+    // çizili seçeneklerini içeren ayrı bir ALT BAR açılır. İki alt bar aynı
+    // anda gösterilmez — biri açılırken diğeri kapatılır (bkz. aşağıdaki
+    // onPressed'ler).
+    bool showStyleSubToolbar = false;
+    // Aynı desen: "Yazı Rengi" butonuna basılınca renk seçeneklerini
+    // içeren ayrı bir ALT BAR açılır (eskiden bottom sheet içindeydi,
+    // artık Liste/Stil alt barlarıyla aynı yerleşimi kullanıyor). Dört alt
+    // bardan (Liste/Stil/Renk/Yazı Boyutu) aynı anda yalnızca biri
+    // gösterilir.
+    bool showColorSubToolbar = false;
+    // Aynı desen: "Yazı Boyutu" butonuna basılınca da (eskiden
+    // showModalBottomSheet ile ayrı bir sayfa olarak açılıyordu, bkz.
+    // showTextPropertiesSheet) artık Liste/Stil/Renk alt barlarıyla aynı
+    // yerleşimde, ana araç çubuğu Row'unun yerini alan bir ALT BAR
+    // gösterilir. X ikonuna basılınca ya da odak değiştiğinde ana bara
+    // geri dönülür.
+    bool showFontSizeSubToolbar = false;
     // Boyut/renk/yazı tipi ailesi bold/italic/underline'ın aksine AÇ/KAPA
     // değil DEĞER bazlıdır: null "bekleyen özel bir değer yok" demektir.
     // Seçim yokken bir picker'dan değer seçilirse buraya yazılır ve
@@ -205,9 +241,14 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
               pendingItalic = false;
               pendingUnderline = false;
               pendingStrikethrough = false;
+              pendingHighlight = false;
               pendingFontSize = null;
               pendingColor = null;
               pendingFontFamily = null;
+              showListSubToolbar = false;
+              showStyleSubToolbar = false;
+              showColorSubToolbar = false;
+              showFontSizeSubToolbar = false;
             }
             focusedBlockIndex = blockIndexRef;
             focusedItemIndex = foundIdx;
@@ -216,6 +257,39 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         requestEditorRebuild?.call(() {});
       });
       return fn;
+    }
+
+    // Bir controller'da imleç TEK NOKTADAYKEN (seçim yokken), o konumdaki
+    // GERÇEK yazı boyutunu döndürür — yani "buradan yazmaya devam edilirse
+    // hangi boyut kullanılırdı" sorusunun cevabı. Kural: imlecin SOLUNDAKİ
+    // karakterin boyutuna bakılır (çoğu editörde de yazma davranışı budur);
+    // imleç metnin en başındaysa (offset == 0) SAĞINDAKİ ilk karaktere
+    // bakılır. Metin tamamen boşsa null (varsayılan) döner.
+    // (rebuildBlockControllers'tan ÖNCE tanımlanmalı: Dart'ta yerel
+    // fonksiyonlar, kullanıldıkları yerden önce tanımlanmış olmak zorunda.)
+    double? _fontSizeAtCollapsedCursor(
+      TextEditingController controller,
+      List? spans,
+    ) {
+      final text = controller.text;
+      final offset = controller.selection.baseOffset;
+      if (offset < 0 || text.isEmpty) return null;
+      final int rangeStart;
+      final int rangeEnd;
+      if (offset > 0) {
+        rangeStart = offset - 1;
+        rangeEnd = offset;
+      } else {
+        rangeStart = 0;
+        rangeEnd = 1;
+      }
+      if (rangeEnd > text.length) return null;
+      return RichTextSpans.getEffectiveFontSize(
+        spans,
+        text.length,
+        rangeStart,
+        rangeEnd,
+      );
     }
 
     // Blok listesi değiştiğinde (ekleme/silme/birleştirme) controller ve
@@ -288,11 +362,60 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
               blocks[capturedIndex]['spans'],
             ),
           );
+          // ── İmleç hareketinde Yazı Boyutu ikonunu senkronlama ──────────
+          // pendingFontSize normalde yalnızca kullanıcı Yazı Boyutu alt
+          // barından bir çipe bastığında (veya yazarken) güncellenir; imleç
+          // salt tıklama/ok tuşuyla başka bir yere (ör. daha önce "Başlık"
+          // uygulanmış bir bölüme) taşındığında DEĞİŞMEZ, bu yüzden ikon
+          // imlecin o an üzerinde bulunduğu metnin gerçek boyutunu yansıtmaz.
+          // Bunu düzeltmek için: controller'daki HER değişikliği dinleriz
+          // (TextEditingController.addListener hem metin hem seçim
+          // değişikliklerinde tetiklenir); metin AYNI kalıp yalnızca seçim
+          // (imleç) değiştiyse, bu saf bir imleç hareketidir ve pendingFontSize
+          // imlecin yeni konumundaki GERÇEK boyuta göre güncellenir (bkz.
+          // _fontSizeAtCollapsedCursor). Metin değiştiyse (yazma/silme) bu dal
+          // atlanır — yazarken pendingFontSize zaten kendi akışıyla (bkz.
+          // _shiftSpansForTextChange) doğru şekilde yönetiliyor.
+          int? lastSyncedOffset;
+          String? lastSyncedText;
+          ctrl.addListener(() {
+            final sel = ctrl.selection;
+            if (!sel.isValid || !sel.isCollapsed) return;
+            final currentText = ctrl.text;
+            final sameText = currentText == lastSyncedText;
+            final offsetChanged = sel.baseOffset != lastSyncedOffset;
+            final hadPrevious = lastSyncedText != null;
+            lastSyncedText = currentText;
+            lastSyncedOffset = sel.baseOffset;
+            if (hadPrevious && sameText && offsetChanged) {
+              final newSize = _fontSizeAtCollapsedCursor(
+                ctrl,
+                RichTextSpans.parse(blocks[capturedIndex]['spans']),
+              );
+              if (pendingFontSize != newSize) {
+                pendingFontSize = newSize;
+                requestEditorRebuild?.call(() {});
+              }
+            }
+          });
           final fn = FocusNode();
           fn.addListener(() {
             if (fn.hasFocus) {
               focusedBlockIndex = capturedIndex;
               focusedItemIndex = -1;
+              // Bloğa YENİ odaklanıldı: imlecin ilk konumuna göre de
+              // pendingFontSize'ı senkronla (yukarıdaki ctrl listener'ı
+              // yalnızca "önceki bir konum zaten biliniyorken" devreye
+              // girer; odağın ilk anı için burada da senkronluyoruz).
+              final sel = ctrl.selection;
+              if (sel.isValid && sel.isCollapsed) {
+                lastSyncedText = ctrl.text;
+                lastSyncedOffset = sel.baseOffset;
+                pendingFontSize = _fontSizeAtCollapsedCursor(
+                  ctrl,
+                  RichTextSpans.parse(blocks[capturedIndex]['spans']),
+                );
+              }
             }
             requestEditorRebuild?.call(() {});
           });
@@ -544,8 +667,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           pendingItalic = !pendingItalic;
         } else if (attr == 'underline') {
           pendingUnderline = !pendingUnderline;
-        } else {
+        } else if (attr == 'strikethrough') {
           pendingStrikethrough = !pendingStrikethrough;
+        } else {
+          pendingHighlight = !pendingHighlight;
         }
         // Araç çubuğundaki ikonun aktif/pasif rengini güncellemek için
         // rebuild tetikle (bkz. format toolbar Builder'ı).
@@ -588,8 +713,15 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           start,
           end,
         );
-      } else {
+      } else if (attr == 'strikethrough') {
         newSpans = RichTextSpans.toggleStrikethrough(
+          currentSpans,
+          textLength,
+          start,
+          end,
+        );
+      } else {
+        newSpans = RichTextSpans.toggleHighlight(
           currentSpans,
           textLength,
           start,
@@ -610,9 +742,466 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     void toggleUnderlineForFocusedBlock() => _toggleSpanAttribute('underline');
     void toggleStrikethroughForFocusedBlock() =>
         _toggleSpanAttribute('strikethrough');
+    void toggleHighlightForFocusedBlock() => _toggleSpanAttribute('highlight');
 
-    // "Klavyeyi Gizle" araç çubuğu ikonuna basınca çağrılır: klavyeyi
-    // kapatır ve odaklı bloktaki imleci de kaybettirir (unfocus).
+    // ── Araç çubuğu: "Madde İşareti" / "Numara İşareti" butonları ──────────
+    // Aşama 5'teki "- "/"* " -> "• " kısayolu yalnızca kullanıcı bunu
+    // YAZARKEN tetikleniyordu. Bu iki fonksiyon aynı işaretleri bir
+    // dokunuşla, imlecin bulunduğu SATIRIN başına ekler/kaldırır (satır
+    // zaten o işaretle başlıyorsa kaldırılır — kalın/italik'teki gibi
+    // açma/kapama). Basitlik için yalnızca imlecin o an bulunduğu tek
+    // satırı etkiler; çoklu satır seçiminde her satırı ayrı ayrı işlemek
+    // span kaydırmasını gereksiz yere karmaşıklaştırırdı.
+    //
+    // Madde ve numara işareti AYNI SATIRDA asla bir arada bulunmaz: satırda
+    // ZATEN öbür türden bir işaret varsa, yeni işaret eklenmeden önce o
+    // kaldırılır — yani numaraya basmak maddeyi numaraya, maddeye basmak
+    // numarayı maddeye DÖNÜŞTÜRÜR (iki ayrı adım — önce kaldır sonra ekle —
+    // DEĞİL, tek bir replaceRange ile). shiftOffsetForMarkerReplace bunu
+    // genel bir "[lineStart, lineStart+oldLen) aralığını newMarker ile
+    // değiştir" işlemi olarak ele alır; oldLen=0 saf ekleme, newMarker=''
+    // saf kaldırma, ikisi de doluysa gerçek bir dönüşüm olur — imleç/seçim
+    // kaydırma mantığı üçünde de aynı formülle doğru çalışır.
+    const bulletMarker = '• ';
+    // DİKKAT: Bu regex '^' ile başlıyor. Dart'ta matchAsPrefix(text, start)
+    // çağrısında '^', verilen 'start' konumuna DEĞİL, string'in MUTLAK
+    // başına (index 0) bakar — yani lineStart sıfırdan farklıysa (bloğun
+    // ilk satırı değilse) numberedLoop.matchAsPrefix(text, lineStart) HİÇBİR
+    // ZAMAN eşleşmez. Bu yüzden her yerde satırın kendisini (text yerine
+    // text.substring(lineStart)) matchAsPrefix'e veriyoruz — aksi halde
+    // "Numara İşareti" butonu ilk satır dışındaki numaralı satırları hiç
+    // tanıyamaz (kaldırmak yerine üstüne bir numara daha ekler) ve tek
+    // Backspace'te numarayı silme kısayolu ilk satır dışında hiç
+    // tetiklenmez (bkz. toggleBulletForFocusedBlock, toggleNumberForFocusedBlock,
+    // _maybeHandleNumberBackspace).
+    final numberedLoop = RegExp(r'^(\d+)\. ');
+    int nextNumberForLine(String text, int lineStart) {
+      if (lineStart == 0) return 1;
+      final prevLineEnd = lineStart - 1; // '\n' konumu
+      final prevLineStart = _safeLastNewlineIndex(text, prevLineEnd - 1) + 1;
+      if (prevLineEnd < prevLineStart) return 1;
+      final prevLine = text.substring(prevLineStart, prevLineEnd);
+      final match = numberedLoop.matchAsPrefix(prevLine);
+      if (match != null) {
+        final n = int.tryParse(match.group(1)!);
+        if (n != null) return n + 1;
+      }
+      return 1;
+    }
+
+    // [lineStart, lineStart+oldLen) aralığını [newMarker] ile değiştirir;
+    // spans'ı (varsa silme + varsa ekleme olarak) kaydırır ve yeni metni
+    // döndürür. oldLen=0 saf ekleme, newMarker='' saf kaldırma, ikisi de
+    // doluysa gerçek bir dönüşüm (madde<->numara) olur.
+    String _replaceLineMarker({
+      required Map<String, dynamic> holder,
+      required String text,
+      required int lineStart,
+      required int oldLen,
+      required String newMarker,
+    }) {
+      final newLen = newMarker.length;
+      final newText = text.replaceRange(
+        lineStart,
+        lineStart + oldLen,
+        newMarker,
+      );
+      var spans = holder['spans'] as List?;
+      if (oldLen > 0) {
+        spans = RichTextSpans.shiftForDelete(
+          spans,
+          lineStart,
+          lineStart + oldLen,
+        );
+      }
+      if (newLen > 0) {
+        spans = RichTextSpans.shiftForInsert(spans, lineStart, newLen);
+      }
+      holder['spans'] = spans;
+      holder['text'] = newText;
+      return newText;
+    }
+
+    // İmleç/seçim, [lineStart, lineStart+oldLen) aralığı [newLen] uzunluğunda
+    // bir işaretle değiştirildiğinde nereye kayması gerektiğini hesaplar:
+    // aralıktan SONRAKİ bir konumdaysa farkla birlikte kayar, aralığın
+    // İÇİNDEyse (yalnızca kaldırma/dönüşüm durumunda olabilir) yeni işaretin
+    // hemen sonrasına sabitlenir, ÖNCESİNDEyse olduğu yerde kalır.
+    int _shiftOffsetForMarkerReplace(
+      int offset,
+      int lineStart,
+      int oldLen,
+      int newLen,
+    ) {
+      // DÜZELTME (işaret yazının sağında kalıyordu): offset == lineStart
+      // durumu (imleç tam satır başında, en tipik durum) burada "offset"
+      // olarak DEĞİŞMEDEN döndürülüyordu. oldLen == 0 iken (yani işaret
+      // sıfırdan ekleniyorken) bu, imlecin yeni eklenen "• "/"N. "
+      // işaretinin ÖNÜNDE kalması demekti — kullanıcı bir sonraki harfi
+      // yazınca o harf işaretin SOLUNA giriyor, yani işaret yazının
+      // sağında kalmış gibi görünüyordu. offset < lineStart (satırdan
+      // önceki, etkilenmeyen kısım) ile offset == lineStart (eski
+      // işaretin/eklenme noktasının TAM başı, aşağıdaki orta dal ile aynı
+      // muameleyi görmesi gereken durum) artık ayrı ele alınıyor.
+      if (offset < lineStart) return offset;
+      if (offset >= lineStart + oldLen) return offset + (newLen - oldLen);
+      return lineStart + newLen;
+    }
+
+    void toggleBulletForFocusedBlock() {
+      final controller = _resolveFocusedFormatController();
+      final holder = _resolveFocusedSpansHolder();
+      if (controller == null || holder == null) return;
+      final sel = controller.selection;
+      if (!sel.isValid) return;
+
+      final text = controller.text;
+      final cursor = sel.start.clamp(0, text.length);
+      final lineStart = _safeLastNewlineIndex(text, cursor - 1) + 1;
+
+      final hasBullet = text.startsWith(bulletMarker, lineStart);
+      final numberMatch =
+          hasBullet ? null : numberedLoop.matchAsPrefix(text.substring(lineStart));
+
+      pushUndoCheckpoint();
+
+      final int oldLen;
+      final String newMarker;
+      if (hasBullet) {
+        // Satır zaten madde işaretli -> kaldır.
+        oldLen = bulletMarker.length;
+        newMarker = '';
+      } else if (numberMatch != null) {
+        // Satır numaralı -> numarayı kaldırıp yerine madde işareti koy.
+        oldLen = numberMatch.group(0)!.length;
+        newMarker = bulletMarker;
+      } else {
+        // Satır hiçbir işarete sahip değil -> başına madde işareti ekle.
+        oldLen = 0;
+        newMarker = bulletMarker;
+      }
+      final newLen = newMarker.length;
+
+      final newText = _replaceLineMarker(
+        holder: holder,
+        text: text,
+        lineStart: lineStart,
+        oldLen: oldLen,
+        newMarker: newMarker,
+      );
+
+      final newBase = _shiftOffsetForMarkerReplace(
+        sel.baseOffset,
+        lineStart,
+        oldLen,
+        newLen,
+      ).clamp(0, newText.length);
+      final newExtent = _shiftOffsetForMarkerReplace(
+        sel.extentOffset,
+        lineStart,
+        oldLen,
+        newLen,
+      ).clamp(0, newText.length);
+
+      controller.value = TextEditingValue(
+        text: newText,
+        selection: TextSelection(baseOffset: newBase, extentOffset: newExtent),
+      );
+      requestEditorRebuild?.call(() {});
+    }
+
+    void toggleNumberForFocusedBlock() {
+      final controller = _resolveFocusedFormatController();
+      final holder = _resolveFocusedSpansHolder();
+      if (controller == null || holder == null) return;
+      final sel = controller.selection;
+      if (!sel.isValid) return;
+
+      final text = controller.text;
+      final cursor = sel.start.clamp(0, text.length);
+      final lineStart = _safeLastNewlineIndex(text, cursor - 1) + 1;
+
+      final existingNumberMatch = numberedLoop.matchAsPrefix(text.substring(lineStart));
+      final hasBullet = existingNumberMatch == null &&
+          text.startsWith(bulletMarker, lineStart);
+
+      pushUndoCheckpoint();
+
+      final int oldLen;
+      final String newMarker;
+      if (existingNumberMatch != null) {
+        // Satır zaten numaralı -> kaldır.
+        oldLen = existingNumberMatch.group(0)!.length;
+        newMarker = '';
+      } else if (hasBullet) {
+        // Satır madde işaretli -> madde işaretini kaldırıp yerine numara
+        // koy.
+        oldLen = bulletMarker.length;
+        newMarker = '${nextNumberForLine(text, lineStart)}. ';
+      } else {
+        // Satır hiçbir işarete sahip değil -> başına numara ekle.
+        oldLen = 0;
+        newMarker = '${nextNumberForLine(text, lineStart)}. ';
+      }
+      final newLen = newMarker.length;
+
+      final newText = _replaceLineMarker(
+        holder: holder,
+        text: text,
+        lineStart: lineStart,
+        oldLen: oldLen,
+        newMarker: newMarker,
+      );
+
+      final newBase = _shiftOffsetForMarkerReplace(
+        sel.baseOffset,
+        lineStart,
+        oldLen,
+        newLen,
+      ).clamp(0, newText.length);
+      final newExtent = _shiftOffsetForMarkerReplace(
+        sel.extentOffset,
+        lineStart,
+        oldLen,
+        newLen,
+      ).clamp(0, newText.length);
+
+      controller.value = TextEditingValue(
+        text: newText,
+        selection: TextSelection(baseOffset: newBase, extentOffset: newExtent),
+      );
+      requestEditorRebuild?.call(() {});
+    }
+
+    // ── Araç çubuğu: "Paragraf Girintisi" butonu ────────────────────────────
+    // Madde/numara işaretlerinin aksine bir AÇMA/KAPAMA değil, yalnızca
+    // ARTIRMA işlemi: imlecin bulunduğu satırın en başına bir TAB karakteri
+    // ekler. Satır zaten "• " veya "N. " gibi bir işaretle başlıyorsa bile
+    // tab işaretin ÖNÜNE eklenir (satırın tamamı bir birim olarak içeri
+    // kayar) — bu, çoğu düzenleyicideki alışılmış girinti davranışıyla
+    // aynıdır. Çoklu satır seçiminde de yalnızca imlecin/seçimin
+    // BAŞLANGICININ bulunduğu satır etkilenir (madde/numara butonlarıyla
+    // aynı basitleştirme).
+    void indentFocusedBlock() {
+      final controller = _resolveFocusedFormatController();
+      final holder = _resolveFocusedSpansHolder();
+      if (controller == null || holder == null) return;
+      final sel = controller.selection;
+      if (!sel.isValid) return;
+
+      final text = controller.text;
+      final cursor = sel.start.clamp(0, text.length);
+      final lineStart = _safeLastNewlineIndex(text, cursor - 1) + 1;
+
+      pushUndoCheckpoint();
+
+      const indent = '     '; // 5 boşluk (eskiden tek bir '\t' idi)
+      final newText = text.replaceRange(lineStart, lineStart, indent);
+      final spans = RichTextSpans.shiftForInsert(
+        holder['spans'] as List?,
+        lineStart,
+        indent.length,
+      );
+      holder['spans'] = spans;
+      holder['text'] = newText;
+
+      final newBase = _shiftOffsetForMarkerReplace(
+        sel.baseOffset,
+        lineStart,
+        0,
+        indent.length,
+      ).clamp(0, newText.length);
+      final newExtent = _shiftOffsetForMarkerReplace(
+        sel.extentOffset,
+        lineStart,
+        0,
+        indent.length,
+      ).clamp(0, newText.length);
+
+      controller.value = TextEditingValue(
+        text: newText,
+        selection: TextSelection(baseOffset: newBase, extentOffset: newExtent),
+      );
+      requestEditorRebuild?.call(() {});
+    }
+
+    // ── Araç çubuğu: "Link Ekle" butonu ─────────────────────────────────────
+    // fontSize/color/fontFamily gibi bir DEĞER (URL) uygulaması olduğundan
+    // toggle değil; RichTextSpans.setLink kullanılır (bkz. o dosyadaki
+    // setFontSize/setColor ile aynı desen). Kalın/italik'in aksine link,
+    // SADECE seçili bir metin varken anlamlıdır (imleç konumuna
+    // "bundan sonra yazılacaklar link olsun" şeklinde bir bekleyen mod
+    // eklenmedi) — bu yüzden seçim boşsa kullanıcıya önce metin seçmesi
+    // gerektiği söylenir. URL, küçük bir diyalogla sorulur; şema
+    // ("https://") eksikse otomatik eklenir. Linkin gerçekten tıklanabilir
+    // olması (mavi/altı çizili görünüm + tarayıcıda açma) RichBlockText
+    // Controller.buildTextSpan tarafında 'link' alanına bakılarak yapılır.
+    Future<void> applyLinkForFocusedBlock() async {
+      final controller = _resolveFocusedFormatController();
+      final holder = _resolveFocusedSpansHolder();
+      if (controller == null || holder == null) return;
+      final sel = controller.selection;
+      if (!sel.isValid || sel.isCollapsed) {
+        // NOT: Bu uyarı eskiden düz "const SnackBar" idi ve zemini BEYAZ
+        // görünüyordu. Sebep: uygulamanın VARSAYILAN teması KOYU
+        // (appThemeMode başlangıç değeri ThemeMode.dark, main.dart) ve bir
+        // önceki düzeltme colorScheme.inverseSurface kullanıyordu —
+        // Material 3'te bu renk KASITLI olarak ters çalışır: koyu temada
+        // inverseSurface AÇIK/BEYAZ olur. Yani o düzeltme koyu temada aynı
+        // "beyaz zemin" sorununu yeniden üretiyordu.
+        // Bunun yerine, uygulamanın kendi koyu yüzey rengini kullanıyoruz —
+        // main.dart'taki cardTheme/dialogTheme ile birebir aynı ton: koyu
+        // temada #1E1E1E, açık temada beyaz — yani diğer panellerle/
+        // diyaloglarla TUTARLI, tema değişse de asla beklenmedik şekilde
+        // "ters dönmeyen" bir zemin.
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Theme.of(context).cardColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            content: Text(
+              'Önce link eklemek istediğiniz metni seçin',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+          ),
+        );
+        return;
+      }
+
+      final start = sel.start;
+      final end = sel.end;
+      final textLength = controller.text.length;
+
+      // DÜZENLEME/KALDIRMA (ayrı buton eklemek yerine): seçili aralığın
+      // TAMAMI zaten tek bir linke aitse (aralığı uçtan uca kapsayan bir
+      // span'in 'link' alanı doluysa), o linki bulup diyalogda hazır
+      // doldururuz ve "Linki Kaldır" seçeneği gösteririz. Böylece kullanıcı
+      // var olan bir linki düzenlemek/kaldırmak için sadece aynı
+      // "Link Ekle" ikonuna tekrar basar.
+      String? existingLink;
+      for (final s in RichTextSpans.parse(holder['spans'] as List?)) {
+        final sStart = (s['start'] as num).toInt().clamp(0, textLength);
+        final sEnd = (s['end'] as num).toInt().clamp(0, textLength);
+        if (start >= sStart && end <= sEnd && s['link'] != null) {
+          existingLink = s['link'] as String;
+          break;
+        }
+      }
+
+      final urlFieldController = TextEditingController(
+        text: existingLink ?? '',
+      );
+      // Sonuç sözleşmesi: null -> vazgeçildi (hiçbir şey yapma), '' (boş
+      // string) -> "Linki Kaldır" seçildi ya da alan boşken "Ekle"ye
+      // basıldı (her iki durumda da linki kaldırmak kullanıcı niyetiyle
+      // tutarlı), aksi halde girilen URL uygulanır.
+      final url = await showDialog<String>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: Text(existingLink != null ? 'Linki Düzenle' : 'Link Ekle'),
+          content: TextField(
+            controller: urlFieldController,
+            autofocus: true,
+            keyboardType: TextInputType.url,
+            textInputAction: TextInputAction.done,
+            decoration: const InputDecoration(hintText: 'https://ornek.com'),
+            onSubmitted: (v) => Navigator.of(dialogContext).pop(v.trim()),
+          ),
+          actions: [
+            if (existingLink != null)
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(''),
+                child: const Text('Linki Kaldır'),
+              ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Vazgeç'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(
+                dialogContext,
+              ).pop(urlFieldController.text.trim()),
+              child: const Text('Ekle'),
+            ),
+          ],
+        ),
+      );
+
+      if (url == null) return; // Vazgeçildi.
+
+      // Boş URL -> linki kaldır (null ata); doluysa şema yoksa ("ornek.com"
+      // gibi) https:// ekle, url_launcher şemasız adresleri açamıyor.
+      final normalizedUrl = url.isEmpty
+          ? null
+          : (url.contains('://') ? url : 'https://$url');
+
+      pushUndoCheckpoint();
+      holder['spans'] = RichTextSpans.setLink(
+        holder['spans'] as List?,
+        textLength,
+        start,
+        end,
+        normalizedUrl,
+      );
+      requestEditorRebuild?.call(() {});
+    }
+
+    // ── Araç çubuğu: "Yatay Çizgi Ekle" butonu ──────────────────────────────
+    // Link Ekle ikonunun yanında yer alır. Hesap tablosu/çizim eklemedeki
+    // aynı desen: imlecin bulunduğu metin bloğu imleç konumundan ikiye
+    // bölünür, arasına sayfayı boydan boya kaplayan bir 'divider' bloğu
+    // eklenir (bkz. aşağıda block['type'] == 'divider' render'ı ve
+    // removeDividerBlockAt).
+    void insertDividerBlock() {
+      if (noteType != 'text') return;
+      pushUndoCheckpoint();
+      // setModalState burada doğrudan görünmez (bu fonksiyon
+      // StatefulBuilder'ın builder'ından ÖNCE tanımlı); pushUndoCheckpoint
+      // ile aynı desen: builder her çalıştığında güncellenen
+      // requestEditorRebuild üzerinden dolaylı olarak çağrılır.
+      requestEditorRebuild?.call(() {
+        // İmlecin bulunduğu metin bloğunu bul; imleç orada yoksa son metin
+        // bloğuna eklenir (checklist/calc_table/drawing ekleme mantığıyla
+        // aynı).
+        int idx = focusedBlockIndex;
+        if (idx < 0 ||
+            idx >= blocks.length ||
+            blocks[idx]['type'] != 'text') {
+          idx = blocks.lastIndexWhere((b) => b['type'] == 'text');
+          if (idx == -1) {
+            blocks.add({'type': 'text', 'text': ''});
+            idx = blocks.length - 1;
+          }
+        }
+        final controller = blockControllers[idx];
+        final text =
+            controller?.text.replaceAll(emptyTextSentinel, '') ??
+            (blocks[idx]['text'] ?? '').toString();
+        int offset = controller?.selection.baseOffset ?? -1;
+        if (offset < 0 || offset > text.length) {
+          offset = text.length;
+        }
+        final leftText = text.substring(0, offset);
+        final rightText = text.substring(offset);
+
+        blocks[idx]['text'] = leftText;
+        blocks.insert(idx + 1, {'type': 'divider'});
+        blocks.insert(idx + 2, {'type': 'text', 'text': rightText});
+
+        rebuildBlockControllers();
+        focusedBlockIndex = idx + 2;
+        final newFocusNode = blockFocusNodes[idx + 2];
+        if (newFocusNode != null) {
+          Future.microtask(() => newFocusNode.requestFocus());
+        }
+      });
+    }
+
+    // Bu fonksiyon klavyeyi kapatır ve odaklı bloktaki imleci de kaybettirir (unfocus).
     // primaryFocus?.unfocus() kullanılıyor — dosyanın başka yerlerinde
     // (ör. sayfa kapatılırken) aynı desen zaten kullanılıyor. Henüz hiç
     // harf yazılmamış bekleyen (pending) kalın/italik/vb. durumlar da
@@ -624,9 +1213,14 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       pendingItalic = false;
       pendingUnderline = false;
       pendingStrikethrough = false;
+      pendingHighlight = false;
       pendingFontSize = null;
       pendingColor = null;
       pendingFontFamily = null;
+      showListSubToolbar = false;
+      showStyleSubToolbar = false;
+      showColorSubToolbar = false;
+      showFontSizeSubToolbar = false;
       focusedItemIndex = -1;
       FocusManager.instance.primaryFocus?.unfocus();
       requestEditorRebuild?.call(() {});
@@ -707,115 +1301,245 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     void setFontFamilyForFocusedBlock(String? family) =>
         _applyValueAttribute('fontFamily', family);
 
-    // "Metin Özellikleri" araç çubuğu ikonuna basınca açılan, yazı
-    // boyutu/renk/yazı tipi ailesi seçilen alt menü (bottom sheet).
-    // Seçenekler dokununca hemen uygulanır (sayfa kapanmaz), böylece
-    // kullanıcı aynı oturumda birden çok özelliği ayarlayabilir; kapatmak
-    // için aşağıdaki "Kapat" butonu ya da sayfa dışına dokunmak yeterli.
-    void showTextPropertiesSheet(BuildContext sheetContext) {
-      showModalBottomSheet(
-        context: sheetContext,
-        showDragHandle: true,
-        builder: (ctx) {
-          Widget sectionTitle(String text) => Padding(
-            padding: const EdgeInsets.fromLTRB(4, 4, 4, 8),
-            child: Text(
-              text,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
-          );
+    // ── Araç çubuğunda "şu an aktif" yazı boyutunu belirleme ─────────────
+    // pendingFontSize yalnızca imleç tek noktadayken (seçim yokken) anlamlı
+    // bir "bekleyen" değerdir (bkz. yukarıdaki pendingBold açıklaması).
+    // GERÇEK bir seçim varken (start < end) bir boyut uygulandığında bu
+    // _applyValueAttribute üzerinden DOĞRUDAN seçili aralığın span'larına
+    // yazılır — pendingFontSize hiç değişmez. Bu yüzden Yazı Boyutu
+    // ikonunun/çipinin "aktif" gösterimi, gerçek bir seçim olduğunda
+    // pendingFontSize yerine seçili aralığın span'larından okunan GERÇEK
+    // değeri (RichTextSpans.getEffectiveFontSize) kullanmalıdır. Seçim
+    // yoksa (imleç tek noktadaysa) davranış eskisiyle birebir aynıdır:
+    // doğrudan pendingFontSize döner.
+    double? _effectiveFontSizeForToolbar() {
+      final controller = _resolveFocusedFormatController();
+      if (controller == null) return pendingFontSize;
+      final sel = controller.selection;
+      if (!sel.isValid || sel.isCollapsed) return pendingFontSize;
 
-          Widget sizeChip(String label, double? size) => ActionChip(
-            label: Text(label),
-            onPressed: () => setFontSizeForFocusedBlock(size),
-          );
+      final holder = _resolveFocusedSpansHolder();
+      if (holder == null) return pendingFontSize;
 
-          Widget colorSwatch(String label, int? colorValue) => InkWell(
-            borderRadius: BorderRadius.circular(20),
-            onTap: () => setColorForFocusedBlock(colorValue),
-            child: Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: colorValue != null ? Color(colorValue) : null,
-                border: Border.all(
-                  color: Theme.of(ctx).dividerColor,
-                  width: colorValue == null ? 1.5 : 1,
-                ),
-              ),
-              alignment: Alignment.center,
-              child: colorValue == null
-                  ? const Icon(Icons.format_color_reset, size: 18)
-                  : null,
-            ),
-          );
-
-          Widget fontChip(String label, String? family) => ActionChip(
-            label: Text(
-              label,
-              style: TextStyle(fontFamily: family),
-            ),
-            onPressed: () => setFontFamilyForFocusedBlock(family),
-          );
-
-          return SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    sectionTitle('Yazı Boyutu'),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        sizeChip('Varsayılan', null),
-                        sizeChip('Küçük', 12),
-                        sizeChip('Normal', 16),
-                        sizeChip('Orta', 20),
-                        sizeChip('Büyük', 24),
-                        sizeChip('Çok Büyük', 32),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    sectionTitle('Yazı Rengi'),
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: [
-                        colorSwatch('Varsayılan', null),
-                        colorSwatch('Kırmızı', 0xFFF44336),
-                        colorSwatch('Turuncu', 0xFFFF9800),
-                        colorSwatch('Sarı', 0xFFFFC107),
-                        colorSwatch('Yeşil', 0xFF4CAF50),
-                        colorSwatch('Mavi', 0xFF2196F3),
-                        colorSwatch('Mor', 0xFF9C27B0),
-                        colorSwatch('Siyah', 0xFF000000),
-                        colorSwatch('Gri', 0xFF9E9E9E),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    sectionTitle('Yazı Tipi'),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        fontChip('Varsayılan', null),
-                        fontChip('Serif', 'serif'),
-                        fontChip('Sabit Genişlik', 'monospace'),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
+      return RichTextSpans.getEffectiveFontSize(
+        holder['spans'] as List?,
+        controller.text.length,
+        sel.start,
+        sel.end,
       );
     }
+
+    // "Varsayılan" çipinin GERÇEKTEN aktif olup olmadığını belirler.
+    // _effectiveFontSizeForToolbar() == null tek başına yeterli değil,
+    // çünkü hem "gerçekten varsayılan" hem de "karışık seçim" durumunda
+    // null dönüyor (bkz. RichTextSpans.getEffectiveFontSizeInfo
+    // açıklaması). İmleç tek noktadaysa (seçim yok) zaten karışıklık söz
+    // konusu olamaz — pendingFontSize null ise bu direkt gerçek
+    // varsayılandır.
+    bool _isFontSizeMixedForToolbar() {
+      final controller = _resolveFocusedFormatController();
+      if (controller == null) return false;
+      final sel = controller.selection;
+      if (!sel.isValid || sel.isCollapsed) return false;
+
+      final holder = _resolveFocusedSpansHolder();
+      if (holder == null) return false;
+
+      final (_, isMixed) = RichTextSpans.getEffectiveFontSizeInfo(
+        holder['spans'] as List?,
+        controller.text.length,
+        sel.start,
+        sel.end,
+      );
+      return isMixed;
+    }
+
+    // Renk seçenekleri ve tekil bir renk dairesini çizen widget artık
+    // Liste/Stil alt barlarıyla aynı yerleşimde kullanılan "Renk alt barı"
+    // tarafından (ana araç çubuğu Row'unun içinde, bkz. showColorSubToolbar)
+    // tüketildiği için bottom sheet'in içine değil, burada dış kapsamda
+    // tanımlanır. `ctx`, dividerColor'ı okumak için ilgili çağrı yerindeki
+    // BuildContext'i alır (bottom sheet açıkken sheet'in context'i, alt
+    // barda ise araç çubuğunun context'i).
+    const textColorOptions = <(String, int?)>[
+      ('Varsayılan', null),
+      ('Kırmızı', 0xFFF44336),
+      ('Turuncu', 0xFFFF9800),
+      ('Sarı', 0xFFFFC107),
+      ('Yeşil', 0xFF4CAF50),
+      ('Mavi', 0xFF2196F3),
+      ('Mor', 0xFF9C27B0),
+      ('Gri', 0xFF9E9E9E),
+      ('Siyah', 0xFF000000),
+    ];
+
+    Widget colorSwatch(BuildContext ctx, String label, int? colorValue) =>
+        InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () => setColorForFocusedBlock(colorValue),
+          child: Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: colorValue != null ? Color(colorValue) : null,
+              border: Border.all(
+                color: Theme.of(ctx).dividerColor,
+                width: colorValue == null ? 1.5 : 1,
+              ),
+            ),
+            alignment: Alignment.center,
+            child: colorValue == null
+                ? const Icon(Icons.format_color_reset, size: 18)
+                : null,
+          ),
+        );
+
+    // Yazı boyutu seçenekleri ve tekil bir boyut çipini çizen widget:
+    // eskiden "Yazı Boyutu" butonuna basılınca showModalBottomSheet ile
+    // ayrı bir sayfa açılırdı; artık Liste/Stil/Renk alt barlarıyla AYNI
+    // desende, ana araç çubuğu Row'unun yerini alan bir "Yazı Boyutu alt
+    // barı" olarak gösteriliyor (bkz. showFontSizeSubToolbar). Boyut
+    // seçenekleri dokununca hemen uygulanır, kapatmak için "Kapat" butonu
+    // yeterli (Renk alt barındaki colorSwatch ile birebir aynı yerleşim,
+    // sadece daire yerine chip kullanılıyor).
+    // NOT: Etiket metni artık dördünde de aynı ("Text") — aralarındaki
+    // fark yalnızca fontSizeChipLabelStyles'taki punto/kalınlıkla
+    // gösteriliyor. Eskiden Türkçe kelimeler (Varsayılan/Başlık/Ana
+    // Başlık/Manşet) kullanılıyordu; en uzun etiket ("Ana Başlık") dar
+    // çip genişliğine sığmak için previewScale'i alt sınıra (0.4)
+    // dayatıyor, bu da yetmeyip "Manşet" gibi etiketlerin bir kısmının
+    // (ör. sadece "Man") kırpılmasına yol açıyordu. Kısa ve sabit "Text"
+    // etiketiyle bu sorun ortadan kalkıyor.
+    final fontSizeOptions = <(String, double?)>[
+      ('Text', null),
+      ('Text', _globalFontSize + 4),
+      ('Text', _globalFontSize + 8),
+      ('Text', _globalFontSize + 12),
+    ];
+
+    // Her çipin ETİKETİNİN ("Text") kendi önizleme yazı tipi/kalınlığı:
+    // kullanıcı çipe bakınca o boyutun/kalınlığın nasıl göründüğünü görsün
+    // diye (gerçek uygulanan boyutla karışmasın — bu sadece etiketin
+    // görünümü). fontSizeOptions ile aynı sırada, artırarak: 17 ince,
+    // 20 kalın, 25 kalın, 31 kalın.
+    //
+    // DÜZELTME: Eskiden 17/18/21/24 idi — 2., 3. ve 4. çip hepsi zaten
+    // kalın olduğundan aralarındaki tek fark 3'er puntoluk küçük artışlardı
+    // ve göz ile ayırt edilmesi zordu. Adımlar artık kademeli olarak
+    // büyüyor (+3, +5, +6) ki dördü de birbirinden net bir şekilde
+    // ayrılsın (Apple Notes'taki Body/Subheading/Heading/Title
+    // seçicisindeki gibi).
+    //
+    // SIĞMA KONTROLÜ: Her çip zaten FittedBox(fit: BoxFit.scaleDown) ile
+    // sarılı (bkz. fontSizeChip -> buildFace) — bu, metnin kendi çipinin
+    // genişliğine göre GEREKTİĞİ KADAR küçültülüp sığdırılacağını, hiçbir
+    // koşulda taşmayacağını garanti eder. Tek risk, tüm çip genişlikleri
+    // eşit olduğundan (Row + Expanded flex:1) bir boyutun ihtiyaç duyduğu
+    // genişlik çip genişliğini AŞARSa o çipin de aynı genişliğe
+    // sıkıştırılıp bir öncekiyle aynı görünmesidir. 31pt kalın "Text"
+    // (4 karakter), tam genişlik araç çubuğunda 4 eşit çipe bölündüğünde
+    // (dar telefonlarda bile ~80-90dp/çip) rahatça sığacak kadar küçük
+    // kalıyor — bu yüzden dördü de kırpılmadan/eşitlenmeden kendi gerçek
+    // oranlarında görünür.
+    final fontSizeChipLabelStyles = <TextStyle>[
+      const TextStyle(fontSize: 17, fontWeight: FontWeight.normal),
+      const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      const TextStyle(fontSize: 31, fontWeight: FontWeight.bold),
+    ];
+
+    // [isActive]: bu çipin boyutu, o an geçerli olan "etkin" boyuta
+    // (_effectiveFontSizeForToolbar) eşit mi? true ise çip Kalın/Renk
+    // butonlarındaki vurguyla tutarlı bir şekilde (tema rengiyle
+    // çerçevelenerek) işaretlenir. "Varsayılan" çipi (size == null) için de
+    // artık aynı vurgu uygulanıyor — ama yalnızca GERÇEKTEN varsayılan
+    // durumdaysa (_isFontSizeMixedForToolbar() false iken); seçim karışıksa
+    // (bir kısmı bir boyutta, diğeri başka/varsayılan) hiçbir çip aktif
+    // gösterilmez, çünkü o durumda tekil bir "etkin boyut" yoktur.
+    Widget fontSizeChip(
+      BuildContext ctx,
+      String label,
+      double? size, {
+      required bool isActive,
+      TextStyle? labelStyle,
+    }) {
+      // Apple Notes'taki "Title/Heading/Subheading/Body" seçicisiyle benzer
+      // bir seçici: hiçbir seçenekte dolgu/zemin YOK (Material her zaman
+      // transparent) — seçili olan yalnızca AMBER RENKLİ YAZI ile belirtilir;
+      // seçili olmayanlar temanın normal metin rengiyle gösterilir. Seçenekler
+      // arasında boşluk YOK — bitişik duruyorlar. DÜZELTME: çipler
+      // arasındaki ince dikey ayırıcı çizgi (eski showLeftDivider/
+      // dividerColor mantığı) kaldırıldı — kullanıcı bu çizgilerin
+      // rahatsız edici göründüğünü belirtti, artık çipler arasında hiçbir
+      // görsel bölme yok.
+      final isDark = Theme.of(ctx).brightness == Brightness.dark;
+      final inactiveColor = isDark ? Colors.white : Colors.black87;
+
+      Widget buildFace(bool active) {
+        final effectiveStyle = (labelStyle ?? const TextStyle()).copyWith(
+          // Artık dolgu (amber zemin) YOK — seçili olan çip, arka planı
+          // değiştirmek yerine yazı rengini amber yapar; seçili olmayanlar
+          // temanın normal metin rengini kullanır.
+          color: active ? Colors.amber : inactiveColor,
+        );
+        // DÜZELTME (yazının bir kısmı — ör. "Text" -> "Tex" — görünmüyordu):
+        // Eskiden buradaki boyut, TextPainter ile ÖNCEDEN tahmin edilip
+        // (previewScale) elle hesaplanıyordu. Cihazın gerçek yazı tipi
+        // ölçeklendirmesi (ör. "büyük yazı tipi" erişilebilirlik ayarı)
+        // TextPainter'ın varsayımından FARKLI olabildiğinden, gerçekte
+        // çizilen metin hesaplanandan biraz daha geniş çıkabiliyor; taşan
+        // kısım da Row'da sıradaki çipin üstüne çizildiğinden (sonraki
+        // widget'lar üstte boyandığından) örtülüp kayboluyordu. FittedBox
+        // ise tahmine dayanmaz: gerçek layout anında, mevcut alana göre
+        // metni GEREKTİĞİ KADAR küçültür — bu yüzden hiçbir koşulda taşma/
+        // kırpılma olmaz, metin her zaman TAM ve okunur şekilde sığar.
+        return Material(
+          key: ValueKey<bool>(active),
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            // DÜZELTME: Dikey padding eskiden 8dp idi. Toolbar'ın toplam
+            // yüksekliği sabit 44dp olduğundan (bkz. showFontSizeSubToolbar
+            // Row'unu saran SizedBox(height: 44)), 8+8=16dp padding metne
+            // sadece 28dp yükseklik bırakıyordu — 25/31pt kalın "Text"in
+            // satır yüksekliği bunu aştığı için FittedBox hepsini aynı
+            // 28dp sınırına küçültüp görsel olarak eşitliyordu (farklı
+            // punto seçseniz de hepsi aynı görünüyordu). Padding 2dp'ye
+            // indirilerek metne ~40dp yükseklik bırakıldı — 31pt kalın
+            // "Text" bile bu sınırın içinde kalıp gerçek boyutunda render
+            // oluyor, dördü artık birbirinden net şekilde ayrılıyor.
+            padding: const EdgeInsets.symmetric(
+              horizontal: 2,
+              vertical: 2,
+            ),
+            alignment: Alignment.center,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.center,
+              child: Text(
+                label,
+                maxLines: 1,
+                style: effectiveStyle,
+              ),
+            ),
+          ),
+        );
+      }
+
+
+      return SizedBox(
+        width: double.infinity,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: () => setFontSizeForFocusedBlock(size),
+          // Seçili durum değişince geçiş animasyonu YOK — yüz doğrudan
+          // (kayma/solma olmadan) güncel isActive durumuna göre çizilir.
+          child: buildFace(isActive),
+        ),
+      );
+    }
+
 
     // ── Aşama 5 (basit yöntem): "- "/"* " kısayolunu "• " madde işaretine
     // çevirir ve Enter'a basılınca bullet modunu bir sonraki satıra taşır.
@@ -826,7 +1550,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // dNoteMaybeAutoCalculate'in "=" kısayolunda da kullanılıyor: onChanged
     // içinde block['text'] zaten güncellendikten SONRA, controller'ın o anki
     // (kullanıcının az önce yazdığı) değerine bakarak çalışır.
-    const bulletMarker = '• ';
+    // (bulletMarker burada YENİDEN tanımlanmıyor — toggleBulletForFocusedBlock
+    // ile aynı üst kapsamdaki tanım kullanılıyor.)
     // [block] parametresi eklendi: "- "/"* " -> "• " dönüşümü aynı
     // uzunlukta bir değişim olduğu için span kaydırmaya gerek yok, ama
     // Enter'da bullet işaretinin satır başına EKLENMESİ/KALDIRILMASI tam
@@ -849,7 +1574,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
 
       // 1) "- " veya "* " -> "• " (yalnızca satırın en başında).
       if (justTyped == ' ') {
-        final lineStart = text.lastIndexOf('\n', cursor - 2) + 1;
+        final lineStart = _safeLastNewlineIndex(text, cursor - 2) + 1;
         final segment = text.substring(lineStart, cursor);
         if (segment == '- ' || segment == '* ') {
           // Aynı uzunlukta bir değişim (2 kod birimi -> 2 kod birimi):
@@ -868,7 +1593,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       // 2) Enter: bullet'li satırdan sonra yeni satır da bullet olsun;
       // boş bullet satırında Enter'a basılırsa bullet modundan çıkılsın.
       if (justTyped == '\n') {
-        final prevLineStart = text.lastIndexOf('\n', cursor - 2) + 1;
+        final prevLineStart = _safeLastNewlineIndex(text, cursor - 2) + 1;
         final prevLineEnd = cursor - 1;
         if (prevLineEnd < prevLineStart) return;
         final prevLine = text.substring(prevLineStart, prevLineEnd);
@@ -911,7 +1636,189 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       }
     }
 
-    // ── Aşama 6 asıl düzeltmesi (yazma sırasında span kayması) ────────────
+    // ── Backspace ile madde işaretini TEK seferde silme ────────────────────
+    // Varsayılan TextField davranışı Backspace'te sadece imleçten önceki
+    // TEK karakteri siler. "• " işaretinin sonunda (yani imleç boşluktan
+    // hemen sonraysa) Backspace'e basıldığında bu, önce yalnızca boşluğu
+    // siler ve geriye "•" tek karakteri kalır — kullanıcı işareti tamamen
+    // kaldırmak için 2 kere Backspace'e basmak zorunda kalır. Bu fonksiyon,
+    // tam olarak bu durumu (bir önceki metinde "• " vardı, şimdi Backspace
+    // sonucu "•" tek başına kaldı ve imleç hemen ardında) yakalayıp geriye
+    // kalan "•" karakterini de siler; böylece TEK Backspace tüm 2 karakterlik
+    // işareti kaldırır. onChanged içinde block['text'] zaten güncellendikten
+    // SONRA çağrılır (bkz. _maybeHandleBulletShortcut'taki aynı desen).
+    void _maybeHandleBulletBackspace(
+      TextEditingController controller,
+      Map<String, dynamic> block,
+      String oldText, {
+      required void Function(String newText) onTextChanged,
+    }) {
+      final sel = controller.selection;
+      if (!sel.isValid || !sel.isCollapsed) return;
+      final text = controller.text;
+      final cursor = sel.baseOffset;
+      if (cursor < 0 || cursor > text.length) return;
+      // Tam olarak tek karakter silinmiş olmalı (normal yazma/yapıştırma
+      // değil, Backspace/Delete ile bir karakterlik bir silme).
+      if (oldText.length != text.length + 1) return;
+
+      const bulletMarker = '• ';
+      final lineStart = _safeLastNewlineIndex(text, cursor - 1) + 1;
+      if (cursor == lineStart + 1 &&
+          oldText.startsWith(bulletMarker, lineStart) &&
+          text.startsWith('•', lineStart)) {
+        final newText = text.replaceRange(lineStart, lineStart + 1, '');
+        block['spans'] = RichTextSpans.shiftForDelete(
+          block['spans'] as List?,
+          lineStart,
+          lineStart + 1,
+        );
+        controller.value = TextEditingValue(
+          text: newText,
+          selection: TextSelection.collapsed(offset: lineStart),
+        );
+        onTextChanged(newText);
+      }
+    }
+
+    // ── Enter'da numaralı listenin devamı/çıkışı ────────────────────────────
+    // _maybeHandleBulletShortcut'ın Enter dalıyla (2. adım) TAMAMEN AYNI
+    // mantık; tek fark, sabit "• " yerine değişken uzunlukta "N. " işareti
+    // ile çalışması ve bir sonraki satıra bir ARTAN numara ("N+1. ")
+    // eklenmesi. "- "/"* " kısayolundaki gibi bir OTOMATİK DÖNÜŞÜM adımı
+    // YOKTUR — kullanıcı zaten "1. " yazdığında metin olduğu gibi görünür,
+    // ayrıca bir karaktere çevrilmesi gerekmez; yalnızca Enter'a basılınca
+    // numaralamanın devam/çıkış davranışını yönetiriz.
+    final numberedLoopShortcut = RegExp(r'^(\d+)\. ');
+    void _maybeHandleNumberShortcut(
+      TextEditingController controller,
+      Map<String, dynamic> block, {
+      required void Function(String newText) onTextChanged,
+    }) {
+      final sel = controller.selection;
+      if (!sel.isValid || !sel.isCollapsed) return;
+      final text = controller.text;
+      final cursor = sel.baseOffset;
+      if (cursor <= 0 || cursor > text.length) return;
+
+      final justTyped = text[cursor - 1];
+      if (justTyped != '\n') return;
+
+      final prevLineStart = _safeLastNewlineIndex(text, cursor - 2) + 1;
+      final prevLineEnd = cursor - 1;
+      if (prevLineEnd < prevLineStart) return;
+      final prevLine = text.substring(prevLineStart, prevLineEnd);
+      final match = numberedLoopShortcut.matchAsPrefix(prevLine);
+      if (match == null) return;
+      final markerLen = match.group(0)!.length;
+
+      if (prevLine.length == markerLen) {
+        // Boş numaralı satırda Enter -> numaralama modundan çık, işareti
+        // önceki (şimdi terk edilen) satırdan kaldır.
+        final newText = text.replaceRange(prevLineStart, prevLineEnd, '');
+        final newCursor = cursor - markerLen;
+        block['spans'] = RichTextSpans.shiftForDelete(
+          block['spans'] as List?,
+          prevLineStart,
+          prevLineEnd,
+        );
+        controller.value = TextEditingValue(
+          text: newText,
+          selection: TextSelection.collapsed(
+            offset: newCursor.clamp(0, newText.length),
+          ),
+        );
+        onTextChanged(newText);
+      } else {
+        // Doldurulmuş numaralı satırdan sonra Enter -> yeni satır bir
+        // sonraki numarayla devam etsin.
+        final currentNumber = int.tryParse(match.group(1) ?? '') ?? 0;
+        final nextMarker = '${currentNumber + 1}. ';
+        final newText = text.replaceRange(cursor, cursor, nextMarker);
+        final newCursor = cursor + nextMarker.length;
+        block['spans'] = RichTextSpans.shiftForInsert(
+          block['spans'] as List?,
+          cursor,
+          nextMarker.length,
+        );
+        controller.value = TextEditingValue(
+          text: newText,
+          selection: TextSelection.collapsed(offset: newCursor),
+        );
+        onTextChanged(newText);
+      }
+    }
+
+    // ── Backspace ile numara işaretini TEK seferde silme ───────────────────
+    // _maybeHandleBulletBackspace ile TAMAMEN AYNI amaç; tek fark, işaretin
+    // sabit 2 karakter ("• ") değil, değişken uzunlukta "N. " olmasıdır.
+    // Kullanıcı Backspace'e bastığında önce yalnızca sondaki boşluk silinir
+    // (geriye "N." kalır); bu fonksiyon o durumu yakalayıp kalan "N."
+    // kısmını da tek seferde siler.
+    void _maybeHandleNumberBackspace(
+      TextEditingController controller,
+      Map<String, dynamic> block,
+      String oldText, {
+      required void Function(String newText) onTextChanged,
+    }) {
+      final sel = controller.selection;
+      if (!sel.isValid || !sel.isCollapsed) return;
+      final text = controller.text;
+      final cursor = sel.baseOffset;
+      if (cursor < 0 || cursor > text.length) return;
+      if (oldText.length != text.length + 1) return;
+
+      final lineStart = _safeLastNewlineIndex(text, cursor - 1) + 1;
+      final oldMatch = numberedLoopShortcut.matchAsPrefix(oldText.substring(lineStart));
+      if (oldMatch == null) return;
+      final oldMarker = oldMatch.group(0)!;
+      final markerWithoutSpace = oldMarker.substring(0, oldMarker.length - 1);
+      if (cursor == lineStart + markerWithoutSpace.length &&
+          text.startsWith(markerWithoutSpace, lineStart)) {
+        // Durum A: Backspace işaretin sonundaki boşluğu sildi (geriye
+        // "N." kaldı) -> kalan "N."yi de tek seferde sil.
+        final newText = text.replaceRange(
+          lineStart,
+          lineStart + markerWithoutSpace.length,
+          '',
+        );
+        block['spans'] = RichTextSpans.shiftForDelete(
+          block['spans'] as List?,
+          lineStart,
+          lineStart + markerWithoutSpace.length,
+        );
+        controller.value = TextEditingValue(
+          text: newText,
+          selection: TextSelection.collapsed(offset: lineStart),
+        );
+        onTextChanged(newText);
+        return;
+      }
+
+      // Durum B: Kullanıcı imleci doğrudan noktanın hemen ARDINA (boşluktan
+      // önce) koyup Backspace'e bastı ve yalnızca "." karakteri silindi.
+      // Numara ile noktası aynı işaretin iki parçası olduğundan, nokta tek
+      // başına silinince geriye anlamsız/yalnız bir sayı ("N text" gibi)
+      // kalmasın diye numarayı (rakamları) da birlikte sileriz.
+      final digits = oldMatch.group(1)!;
+      final dotIndex = lineStart + digits.length; // oldText'te '.' konumu
+      if (cursor == dotIndex &&
+          oldText.length > dotIndex &&
+          oldText[dotIndex] == '.' &&
+          text.startsWith(digits, lineStart)) {
+        final newText = text.replaceRange(lineStart, dotIndex, '');
+        block['spans'] = RichTextSpans.shiftForDelete(
+          block['spans'] as List?,
+          lineStart,
+          dotIndex,
+        );
+        controller.value = TextEditingValue(
+          text: newText,
+          selection: TextSelection.collapsed(offset: lineStart),
+        );
+        onTextChanged(newText);
+      }
+    }
     // toggleBold/toggleItalic çağrıldığında ya da "- "/"* " kısayolu veya
     // Enter'da bullet ekleme/kaldırma durumunda spans zaten
     // shiftForInsert/shiftForDelete ile güncelleniyordu. AMA kullanıcının
@@ -931,72 +1838,157 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // eklemeyi de, silmeyi de, seçili bir kelimeyi başka bir kelimeyle
     // değiştirmeyi (klavyenin otomatik düzeltmesi dahil) de doğru şekilde
     // kapsar.
+    // DÜZELTME (kalın/italik/vurgu bir harf koyu bir harf ince şeklinde
+    // dönüşümlü çıkıyordu): Bu fonksiyon eskiden değişikliğin METİNDE
+    // NEREDE olduğunu, "ortak önek/ortak sonek" (common prefix/suffix)
+    // sayarak TAHMİN ediyordu. Bu tahmin, düzenleme noktasının hemen
+    // yanındaki karakter kendisiyle aynıysa (ör. bir kelimenin ortasına
+    // önceki/sonraki harfle AYNI bir harf eklenmesi, ya da klavyenin
+    // otomatik düzeltmesinin bir kelimeyi yeniden yazması) YANLIŞ konumu
+    // hesaplayabiliyordu — çünkü algoritma sondan/baştan sayarken tesadüfi
+    // eşleşen karakterleri "değişmedi" sanıp gerçek düzenleme sınırını 1+
+    // karakter kaydırıyordu. Sonuç: shiftForInsert/shiftForDelete yanlış
+    // indekse uygulanıyor, span sınırı gerçek metinden kayıyor; bu da her
+    // yeni harfte tekrarlanınca komşu karakterlerin "bir kalın bir ince"
+    // görünmesine yol açıyordu (composing-range breakpoint sorunuyla aynı
+    // aile, farklı kaynak).
+    //
+    // ÇÖZÜM: Tahmin etmek yerine Flutter'ın zaten verdiği KESİN bilgiyi
+    // kullan — onChanged tetiklendiğinde controller.selection artık YENİ
+    // (değişiklik sonrası) imleç konumunu taşır. Eklenen/silinen uzunluk
+    // (newText.length - oldText.length) ile bu konumu birleştirince,
+    // düzenlemenin nerede olduğu TAHMİN edilmez, hesaplanır. Bu hesap
+    // ayrıca oldText/newText üzerinde substring karşılaştırmasıyla
+    // DOĞRULANIR; tutmazsa (ör. otomatik düzeltme metnin başka bir yerini
+    // de değiştirdiyse, ya da cursorPosition sağlanmadıysa) eski
+    // önek/sonek algoritmasına YEDEK olarak düşülür — böylece hiçbir
+    // durumda davranış eskisinden daha kötü olmaz.
     void _shiftSpansForTextChange(
       Map<String, dynamic> block,
       String oldText,
-      String newText,
-    ) {
+      String newText, {
+      int? cursorPosition,
+    }) {
       if (oldText == newText) return;
-      final maxPrefix = math.min(oldText.length, newText.length);
-      int prefix = 0;
-      while (prefix < maxPrefix && oldText[prefix] == newText[prefix]) {
-        prefix++;
+      final lengthDelta = newText.length - oldText.length;
+
+      int? editStart;
+      int? oldEditEnd; // eski metinde silinen aralığın bittiği yer
+      int? newEditEnd; // yeni metinde eklenen aralığın bittiği yer
+
+      // ── ÖNCELİK: gerçek imleç konumundan KESİN hesap ──────────────────
+      if (cursorPosition != null &&
+          cursorPosition >= 0 &&
+          cursorPosition <= newText.length) {
+        if (lengthDelta > 0) {
+          // Ekleme: eklenen metnin imlecin HEMEN ÖNÜNDE bittiğini varsay.
+          final insertStart = cursorPosition - lengthDelta;
+          if (insertStart >= 0 &&
+              insertStart <= oldText.length &&
+              oldText.substring(0, insertStart) ==
+                  newText.substring(0, insertStart) &&
+              oldText.substring(insertStart) ==
+                  newText.substring(cursorPosition)) {
+            editStart = insertStart;
+            oldEditEnd = insertStart; // eski metinde silinen yok
+            newEditEnd = cursorPosition;
+          }
+        } else if (lengthDelta < 0) {
+          // Silme: silinen aralığın imleçte bittiğini varsay.
+          final deleteStart = cursorPosition;
+          final deleteEnd = cursorPosition - lengthDelta; // -lengthDelta = silinen uzunluk
+          if (deleteStart >= 0 &&
+              deleteEnd <= oldText.length &&
+              oldText.substring(0, deleteStart) ==
+                  newText.substring(0, deleteStart) &&
+              oldText.substring(deleteEnd) == newText.substring(deleteStart)) {
+            editStart = deleteStart;
+            oldEditEnd = deleteEnd;
+            newEditEnd = deleteStart;
+          }
+        }
+        // lengthDelta == 0 durumunda (aynı uzunlukta seçili metin
+        // değişimi) imleç konumundan tek başına kesin bir sonuç
+        // çıkarılamaz; aşağıdaki yedeğe düşülür.
       }
-      final maxSuffix = maxPrefix - prefix;
-      int suffix = 0;
-      while (suffix < maxSuffix &&
-          oldText[oldText.length - 1 - suffix] ==
-              newText[newText.length - 1 - suffix]) {
-        suffix++;
+
+      // ── YEDEK: eski ortak-önek/sonek tahmini (cursor bilgisi yoksa ya
+      // da yukarıdaki doğrulama tutmadıysa) ───────────────────────────────
+      if (editStart == null) {
+        final maxPrefix = math.min(oldText.length, newText.length);
+        int prefix = 0;
+        while (prefix < maxPrefix && oldText[prefix] == newText[prefix]) {
+          prefix++;
+        }
+        final maxSuffix = maxPrefix - prefix;
+        int suffix = 0;
+        while (suffix < maxSuffix &&
+            oldText[oldText.length - 1 - suffix] ==
+                newText[newText.length - 1 - suffix]) {
+          suffix++;
+        }
+        editStart = prefix;
+        oldEditEnd = oldText.length - suffix;
+        newEditEnd = newText.length - suffix;
       }
-      final oldMiddleEnd = oldText.length - suffix;
-      final newMiddleEnd = newText.length - suffix;
+
+      final start = editStart;
+      final oldEnd = oldEditEnd!;
+      final newEnd = newEditEnd!;
+
       List? spans = block['spans'] as List?;
-      if (oldMiddleEnd > prefix) {
-        spans = RichTextSpans.shiftForDelete(spans, prefix, oldMiddleEnd);
+      if (oldEnd > start) {
+        spans = RichTextSpans.shiftForDelete(spans, start, oldEnd);
       }
-      if (newMiddleEnd > prefix) {
+      if (newEnd > start) {
         spans = RichTextSpans.shiftForInsert(
           spans,
-          prefix,
-          newMiddleEnd - prefix,
+          start,
+          newEnd - start,
         );
         // DÜZELTME: "önce kalına/italiğe bas, sonra yaz" akışı — bekleyen
         // (pending) bold/italic açıksa, az önce EKLENEN karakter aralığına
-        // (prefix..newMiddleEnd) ilgili biçimi uygula. Bu aralık yeni
-        // yazıldığı için henüz kendi span'ı yoktur, bu yüzden
-        // toggleBold/toggleItalic burada pratikte doğrudan "aç" gibi
-        // davranır.
+        // (start..newEnd) ilgili biçimi uygula. Bu aralık yeni yazıldığı
+        // için henüz kendi span'ı yoktur, bu yüzden toggleBold/toggleItalic
+        // burada pratikte doğrudan "aç" gibi davranır.
         if (pendingBold) {
           spans = RichTextSpans.toggleBold(
             spans,
             newText.length,
-            prefix,
-            newMiddleEnd,
+            start,
+            newEnd,
           );
         }
         if (pendingItalic) {
           spans = RichTextSpans.toggleItalic(
             spans,
             newText.length,
-            prefix,
-            newMiddleEnd,
+            start,
+            newEnd,
           );
         }
         if (pendingUnderline) {
           spans = RichTextSpans.toggleUnderline(
             spans,
             newText.length,
-            prefix,
-            newMiddleEnd,
+            start,
+            newEnd,
           );
         }
         if (pendingStrikethrough) {
           spans = RichTextSpans.toggleStrikethrough(
             spans,
             newText.length,
-            prefix,
-            newMiddleEnd,
+            start,
+            newEnd,
+          );
+        }
+        if (pendingHighlight) {
+          spans = RichTextSpans.toggleHighlight(
+            spans,
+            newText.length,
+            start,
+            newEnd,
           );
         }
         // Aynı "önce butona bas, sonra yaz" akışı yazı boyutu/renk/yazı
@@ -1006,8 +1998,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           spans = RichTextSpans.setFontSize(
             spans,
             newText.length,
-            prefix,
-            newMiddleEnd,
+            start,
+            newEnd,
             pendingFontSize,
           );
         }
@@ -1015,8 +2007,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           spans = RichTextSpans.setColor(
             spans,
             newText.length,
-            prefix,
-            newMiddleEnd,
+            start,
+            newEnd,
             pendingColor,
           );
         }
@@ -1024,8 +2016,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           spans = RichTextSpans.setFontFamily(
             spans,
             newText.length,
-            prefix,
-            newMiddleEnd,
+            start,
+            newEnd,
             pendingFontFamily,
           );
         }
@@ -1743,6 +2735,37 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 });
               }
 
+              // Yatay çizgi (divider) bloğunu kaldırır. Çizim/ek/hesap
+              // tablosu bloklarını kaldırırken kullanılan aynı desen: komşu
+              // iki taraf da metin bloğuysa birleştirilir, değilse blok
+              // sadece çıkarılır; blok listesi tamamen boş kalırsa boş bir
+              // metin bloğu eklenir.
+              void removeDividerBlockAt(int i) {
+                pushUndoCheckpoint();
+                setModalState(() {
+                  if (i < 0 || i >= blocks.length) return;
+                  final prevIsText =
+                      i > 0 && blocks[i - 1]['type'] == 'text';
+                  final nextIsText =
+                      i < blocks.length - 1 &&
+                      blocks[i + 1]['type'] == 'text';
+                  if (prevIsText && nextIsText) {
+                    final mergedText =
+                        ((blocks[i - 1]['text'] ?? '').toString()) +
+                        ((blocks[i + 1]['text'] ?? '').toString());
+                    blocks[i - 1]['text'] = mergedText;
+                    blocks.removeAt(i + 1);
+                    blocks.removeAt(i);
+                  } else {
+                    blocks.removeAt(i);
+                  }
+                  if (blocks.isEmpty) {
+                    blocks.add({'type': 'text', 'text': ''});
+                  }
+                  rebuildBlockControllers();
+                });
+              }
+
               // BOŞ bir metin bloğunda (ör. notun en başındaki boş satır)
               // imleç konumu 0'dayken Geri (Backspace) tuşuna basılınca
               // çağrılır. Normalde TextField'ın kendi silme davranışı bu
@@ -1885,6 +2908,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   case 'attachments':
                     final ids = List.from(b['ids'] ?? const []);
                     return '${ids.length} ek (fotoğraf/belge)';
+                  case 'divider':
+                    return 'Ayırıcı Çizgi';
                   default:
                     final t = (b['text'] ?? '').toString().trim();
                     return t.isEmpty ? '(boş metin)' : t;
@@ -1901,6 +2926,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     return Icons.draw;
                   case 'attachments':
                     return Icons.attach_file;
+                  case 'divider':
+                    return Icons.horizontal_rule;
                   default:
                     return Icons.notes;
                 }
@@ -2824,6 +3851,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         b['strokes'] ?? const [],
                                       );
                                       return strokes.isNotEmpty;
+                                    case 'divider':
+                                      return true;
                                     default:
                                       return (b['text'] ?? '')
                                           .toString()
@@ -3108,6 +4137,49 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   ),
                                 );
                               }
+                              if (block['type'] == 'divider') {
+                                // Sayfayı boydan boya kaplayan yatay çizgi.
+                                // Divider genişliği ebeveyninin (blok
+                                // sütununun) tamamını kapladığı için ayrıca
+                                // bir width ayarına gerek yok. Ek/çizim
+                                // bloklarındaki "uzun bas -> sil" deseniyle
+                                // aynı şekilde uzun basılınca (onay
+                                // istenmeden, Geri Al ile telafi edilebilir)
+                                // kaldırılır.
+                                //
+                                // DÜZELTME: Çizgi rengi eskiden doğrudan
+                                // dNoteBorderColor(context) idi — bu paylaşılan
+                                // tema rengi (ek kartları/çerçeveler gibi
+                                // birçok yerde de kullanıldığından burada
+                                // DEĞİŞTİRİLMEDİ) kullanıcıya göre fazla silik
+                                // görünüyordu. Bu yüzden sadece BU çizgiye
+                                // özel, tema yönüne göre bir ton AÇILAN
+                                // (koyu temada beyaza, açık temada siyaha
+                                // %25 yaklaştırılan) daha belirgin bir renk
+                                // uygulanıyor — dNoteBorderColor'ın diğer
+                                // kullanım yerleri (ek kartları vb.) etkilenmez.
+                                final isDark =
+                                    Theme.of(context).brightness ==
+                                    Brightness.dark;
+                                final dividerLineColor = Color.lerp(
+                                  dNoteBorderColor(context),
+                                  isDark ? Colors.white : Colors.black,
+                                  0.25,
+                                )!;
+                                return GestureDetector(
+                                  key: ValueKey('blk_divider_$i'),
+                                  onLongPress: () => removeDividerBlockAt(i),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 16,
+                                    ),
+                                    child: Divider(
+                                      thickness: 2,
+                                      color: dividerLineColor,
+                                    ),
+                                  ),
+                                );
+                              }
                               Widget buildTextBlockField(bool showHint) {
                                 return Focus(
                                   onKeyEvent: (node, event) {
@@ -3265,6 +4337,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         block,
                                         oldTextForSpans,
                                         cleaned,
+                                        cursorPosition: newOffset.clamp(
+                                          0,
+                                          cleaned.length,
+                                        ),
                                       );
                                       block['text'] = cleaned;
                                     } else {
@@ -3272,6 +4348,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         block,
                                         oldTextForSpans,
                                         val,
+                                        cursorPosition:
+                                            blockControllers[i]!
+                                                .selection
+                                                .baseOffset,
                                       );
                                       block['text'] = val;
                                     }
@@ -3280,6 +4360,37 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     _maybeHandleBulletShortcut(
                                       blockControllers[i]!,
                                       block,
+                                      onTextChanged: (newText) {
+                                        block['text'] = newText;
+                                      },
+                                    );
+                                    // Backspace, "• " işaretinin boşluğunu
+                                    // sildiyse geriye kalan "•" karakterini
+                                    // de sil (işaret TEK Backspace'te
+                                    // tamamen kalksın).
+                                    _maybeHandleBulletBackspace(
+                                      blockControllers[i]!,
+                                      block,
+                                      oldTextForSpans,
+                                      onTextChanged: (newText) {
+                                        block['text'] = newText;
+                                      },
+                                    );
+                                    // Numaralı liste: Enter'da devam/çıkış
+                                    // ve tek Backspace'te işareti tamamen
+                                    // silme (bkz. yukarıdaki bullet
+                                    // handler'larıyla aynı desen).
+                                    _maybeHandleNumberShortcut(
+                                      blockControllers[i]!,
+                                      block,
+                                      onTextChanged: (newText) {
+                                        block['text'] = newText;
+                                      },
+                                    );
+                                    _maybeHandleNumberBackspace(
+                                      blockControllers[i]!,
+                                      block,
+                                      oldTextForSpans,
                                       onTextChanged: (newText) {
                                         block['text'] = newText;
                                       },
@@ -3304,9 +4415,14 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       pendingItalic = false;
                                       pendingUnderline = false;
                                       pendingStrikethrough = false;
+                                      pendingHighlight = false;
                                       pendingFontSize = null;
                                       pendingColor = null;
                                       pendingFontFamily = null;
+                                      showListSubToolbar = false;
+                                      showStyleSubToolbar = false;
+                                      showColorSubToolbar = false;
+                                      showFontSizeSubToolbar = false;
                                     }
                                     focusedBlockIndex = i;
                                   },
@@ -3412,9 +4528,77 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       ),
                                       onChanged: (val) {
                                         noteTextEdited('checkitem_$i', checkControllers[i]);
+                                        // DÜZELTME: Metin bloklarında olduğu
+                                        // gibi checklist maddeleri de
+                                        // kalın/italik/vb. span destekliyor
+                                        // (araç çubuğu _resolveFocusedSpansHolder
+                                        // ile buraya da uygulanabiliyor), ama
+                                        // bu onChanged eskiden sadece
+                                        // checkItems[i]['text']'i güncelleyip
+                                        // checkItems[i]['spans']'a hiç
+                                        // dokunmuyordu — bir maddeyi kalın
+                                        // yaptıktan sonra o maddede yazmaya
+                                        // devam edildiğinde span'lar eski
+                                        // (kaymış) karakter konumlarında
+                                        // kalıyordu. Metin bloklarındakiyle
+                                        // AYNI kaydırma burada da uygulanır.
+                                        final oldItemText =
+                                            (checkItems[i]['text'] ?? '')
+                                                .toString();
+                                        _shiftSpansForTextChange(
+                                          checkItems[i],
+                                          oldItemText,
+                                          val,
+                                          cursorPosition:
+                                              checkControllers[i]
+                                                  .selection
+                                                  .baseOffset,
+                                        );
                                         checkItems[i]['text'] = val;
                                       },
                                       onSubmitted: (_) {
+                                        // DÜZELTME: Boş bırakılan bir
+                                        // satırda Enter'a basılınca artık
+                                        // yeni bir madde EKLENMİYOR — bunun
+                                        // yerine bu boş madde listeden
+                                        // silinip kontrol listesi
+                                        // tamamlanmış sayılıyor (klavye
+                                        // kapatılıyor). Google Keep/Apple
+                                        // Hatırlatıcılar'daki "boş satırda
+                                        // Enter = listeyi bitir" deseniyle
+                                        // aynı.
+                                        final isEmpty = checkControllers[i]
+                                            .text
+                                            .trim()
+                                            .isEmpty;
+                                        if (isEmpty) {
+                                          pushUndoCheckpoint();
+                                          final removedFocusNode =
+                                              checkFocusNodes[i];
+                                          if (removedFocusNode.hasFocus) {
+                                            removedFocusNode.unfocus();
+                                          }
+                                          setModalState(() {
+                                            // Liste tamamen boş kalmasın diye
+                                            // en az 1 madde her zaman
+                                            // korunur — tek madde varsa ve o
+                                            // da boşsa silinmez, sadece
+                                            // klavye kapatılır.
+                                            if (checkItems.length > 1) {
+                                              checkItems.removeAt(i);
+                                              checkControllers
+                                                  .removeAt(i)
+                                                  .dispose();
+                                              checkFocusNodes.removeAt(i);
+                                            }
+                                            newlyAddedIndex = null;
+                                          });
+                                          WidgetsBinding.instance
+                                              .addPostFrameCallback((_) {
+                                            removedFocusNode.dispose();
+                                          });
+                                          return;
+                                        }
                                         pushUndoCheckpoint();
                                         setModalState(() {
                                           final newIndex = i + 1;
@@ -3737,61 +4921,412 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                             child: SizedBox(
                               height: 44,
                               child: Row(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.format_bold),
-                                    tooltip: 'Kalın',
-                                    color: pendingBold
-                                        ? Theme.of(context).colorScheme.primary
-                                        : null,
-                                    onPressed: toggleBoldForFocusedBlock,
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.format_italic),
-                                    tooltip: 'İtalik',
-                                    color: pendingItalic
-                                        ? Theme.of(context).colorScheme.primary
-                                        : null,
-                                    onPressed: toggleItalicForFocusedBlock,
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.format_underlined),
-                                    tooltip: 'Altı Çizili',
-                                    color: pendingUnderline
-                                        ? Theme.of(context).colorScheme.primary
-                                        : null,
-                                    onPressed: toggleUnderlineForFocusedBlock,
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.format_strikethrough,
+                                children: showListSubToolbar
+                                    ? [
+                                        // ── Liste alt barı ──────────────────
+                                        // "Liste" butonuna basılınca ana bar
+                                        // yerine bu satır gösterilir; madde
+                                        // ve numara işareti seçenekleri
+                                        // buraya taşınmıştır (bkz. ekran
+                                        // görüntüleri). X'e basılınca ana
+                                        // bara geri dönülür. Beş ikon Stil alt
+                                        // barındakiyle aynı desende: her biri
+                                        // Expanded içinde, Spacer ile sola
+                                        // yaslı durmak yerine kalan genişliğe
+                                        // EŞİT olarak yayılıp (kapat butonu
+                                        // hariç) yatayda dengeli dağılıyorlar.
+                                        Expanded(
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.format_list_bulleted,
+                                            ),
+                                            tooltip: 'Madde İşareti',
+                                            onPressed:
+                                                toggleBulletForFocusedBlock,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.format_list_numbered,
+                                            ),
+                                            tooltip: 'Numara İşareti',
+                                            onPressed:
+                                                toggleNumberForFocusedBlock,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.format_indent_increase,
+                                            ),
+                                            tooltip: 'Paragraf Girintisi',
+                                            onPressed: indentFocusedBlock,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: IconButton(
+                                            icon: const Icon(Icons.link),
+                                            tooltip:
+                                                'Link Ekle / Düzenle / Kaldır',
+                                            onPressed: applyLinkForFocusedBlock,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.horizontal_rule,
+                                            ),
+                                            tooltip: 'Yatay Çizgi Ekle',
+                                            onPressed: insertDividerBlock,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.close),
+                                          tooltip: 'Kapat',
+                                          onPressed: () {
+                                            showListSubToolbar = false;
+                                            requestEditorRebuild?.call(() {});
+                                          },
+                                        ),
+                                      ]
+                                    : showStyleSubToolbar
+                                    ? [
+                                        // ── Stil alt barı ────────────────────
+                                        // "Kalın" butonuna basılınca ana bar
+                                        // yerine bu satır gösterilir; kalın/
+                                        // italik/altı çizili/üzeri çizili/
+                                        // vurgulama seçenekleri buraya
+                                        // taşınmıştır. X'e basılınca ana
+                                        // bara geri dönülür (Liste alt
+                                        // barıyla aynı desen). Beş ikon artık
+                                        // her biri Expanded içinde: Spacer ile
+                                        // sola yaslı durmak yerine, kalan
+                                        // genişliğe EŞİT olarak yayılıp
+                                        // (kapat butonu hariç) yatayda dengeli
+                                        // dağılıyorlar.
+                                        Expanded(
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.format_bold,
+                                            ),
+                                            tooltip: 'Kalın',
+                                            color: pendingBold
+                                                ? Colors.amber
+                                                : null,
+                                            onPressed:
+                                                toggleBoldForFocusedBlock,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.format_italic,
+                                            ),
+                                            tooltip: 'İtalik',
+                                            color: pendingItalic
+                                                ? Colors.amber
+                                                : null,
+                                            onPressed:
+                                                toggleItalicForFocusedBlock,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.format_underlined,
+                                            ),
+                                            tooltip: 'Altı Çizili',
+                                            color: pendingUnderline
+                                                ? Colors.amber
+                                                : null,
+                                            onPressed:
+                                                toggleUnderlineForFocusedBlock,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.format_strikethrough,
+                                            ),
+                                            tooltip: 'Üzeri Çizili',
+                                            color: pendingStrikethrough
+                                                ? Colors.amber
+                                                : null,
+                                            onPressed:
+                                                toggleStrikethroughForFocusedBlock,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: IconButton(
+                                            icon: const Icon(
+                                              Icons.format_color_fill,
+                                            ),
+                                            tooltip: 'Vurgula',
+                                            color: pendingHighlight
+                                                ? Colors.amber
+                                                : null,
+                                            onPressed:
+                                                toggleHighlightForFocusedBlock,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.close),
+                                          tooltip: 'Kapat',
+                                          onPressed: () {
+                                            showStyleSubToolbar = false;
+                                            requestEditorRebuild?.call(() {});
+                                          },
+                                        ),
+                                      ]
+                                    : showColorSubToolbar
+                                    ? [
+                                        // ── Renk alt barı ────────────────────
+                                        // "Yazı Rengi" butonuna basılınca ana
+                                        // bar yerine bu satır gösterilir;
+                                        // eskiden "Metin Özellikleri" bottom
+                                        // sheet'i içindeki renk kartelası
+                                        // artık burada, Liste/Stil alt
+                                        // barlarıyla aynı desende (yatay
+                                        // kayan bir liste + kapat butonu)
+                                        // sunuluyor. X'e basılınca ana bara
+                                        // geri dönülür.
+                                        Expanded(
+                                          child: ListView.separated(
+                                            scrollDirection: Axis.horizontal,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                            ),
+                                            itemCount: textColorOptions.length,
+                                            separatorBuilder: (_, __) =>
+                                                const SizedBox(width: 10),
+                                            itemBuilder: (_, i) {
+                                              final opt = textColorOptions[i];
+                                              return Center(
+                                                child: colorSwatch(
+                                                  context,
+                                                  opt.$1,
+                                                  opt.$2,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.close),
+                                          tooltip: 'Kapat',
+                                          onPressed: () {
+                                            showColorSubToolbar = false;
+                                            requestEditorRebuild?.call(() {});
+                                          },
+                                        ),
+                                      ]
+                                    : showFontSizeSubToolbar
+                                    ? [
+                                        // ── Yazı Boyutu alt barı ─────────────
+                                        // "Yazı Boyutu" butonuna basılınca ana
+                                        // bar yerine bu satır gösterilir;
+                                        // eskiden showModalBottomSheet ile
+                                        // ayrı bir sayfa olarak açılan boyut
+                                        // seçenekleri artık burada, Liste/
+                                        // Stil/Renk alt barlarıyla aynı
+                                        // desende (yatay kayan bir liste +
+                                        // kapat butonu) sunuluyor. X'e
+                                        // basılınca ana bara geri dönülür.
+                                        Expanded(
+                                          child: Padding(
+                                            // NOT: Öncesinde burada "left: 8"
+                                            // vardı — bu, ilk çipin ekranın
+                                            // en soluna DEĞMEMESİNE (görünür
+                                            // bir boşluk bırakmasına) yol
+                                            // açıyordu. Kapat (X) butonu da
+                                            // zaten kendi constraints'iyle
+                                            // (36x36, padding: zero) yeterince
+                                            // sıkı olduğundan, chip alanına
+                                            // solda ekstra boşluk eklemeye
+                                            // gerek yok — kaldırıldı ki metin
+                                            // için mümkün olan en geniş alan
+                                            // kullanılabilsin.
+                                            padding: EdgeInsets.zero,
+                                            child: Builder(
+                                              builder: (context) {
+                                                final effectiveSize =
+                                                    _effectiveFontSizeForToolbar();
+                                                final isMixed =
+                                                    _isFontSizeMixedForToolbar();
+                                                // Önce hepsinin aktiflik
+                                                // durumu hesaplanıyor ki
+                                                // her çip kendi seçili/pasif
+                                                // rengini (amber/normal)
+                                                // buna göre belirleyebilsin.
+                                                final activeFlags = [
+                                                  for (final opt
+                                                      in fontSizeOptions)
+                                                    opt.$2 != null
+                                                        ? opt.$2 ==
+                                                              effectiveSize
+                                                        : (effectiveSize ==
+                                                                  null &&
+                                                              !isMixed),
+                                                ];
+                                                // Segmentler EŞİT genişlikte
+                                                // (Expanded flex 1). Her
+                                                // çipin metni artık kendi
+                                                // FittedBox'ıyla (bkz.
+                                                // fontSizeChip/buildFace)
+                                                // gerçek layout anında
+                                                // gerektiği kadar küçültülüp
+                                                // sığdırılıyor — burada elle
+                                                // TextPainter ile önceden
+                                                // ölçek hesaplamaya artık
+                                                // gerek yok (bu, cihazın
+                                                // gerçek yazı tipi
+                                                // ölçeklendirmesiyle
+                                                // tutarsızlık yüzünden
+                                                // metnin bir kısmının
+                                                // görünmemesine yol
+                                                // açıyordu).
+                                                return Row(
+                                                  children: [
+                                                    for (
+                                                      var i = 0;
+                                                      i <
+                                                          fontSizeOptions
+                                                              .length;
+                                                      i++
+                                                    )
+                                                      Expanded(
+                                                        child: fontSizeChip(
+                                                          context,
+                                                          fontSizeOptions[i]
+                                                              .$1,
+                                                          fontSizeOptions[i]
+                                                              .$2,
+                                                          isActive:
+                                                              activeFlags[i],
+                                                          labelStyle:
+                                                              fontSizeChipLabelStyles[i],
+                                                        ),
+                                                      ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.close),
+                                          tooltip: 'Kapat',
+                                          padding: EdgeInsets.zero,
+                                          constraints: const BoxConstraints(
+                                            minWidth: 36,
+                                            minHeight: 36,
+                                          ),
+                                          onPressed: () {
+                                            showFontSizeSubToolbar = false;
+                                            requestEditorRebuild?.call(() {});
+                                          },
+                                        ),
+                                      ]
+                                    : [
+                                  // ── Ana araç çubuğu ──────────────────────
+                                  // 5 ikon (Kalın, Liste, Yazı Boyutu, Yazı
+                                  // Rengi, Klavyeyi Gizle) alt barlardaki gibi
+                                  // her biri Expanded içinde: Spacer ile en
+                                  // sağa yaslı durmak yerine (Klavyeyi Gizle
+                                  // dahil) hepsi kalan genişliğe EŞİT olarak
+                                  // yayılıp yatayda dengeli dağılıyorlar.
+                                  Expanded(
+                                    child: IconButton(
+                                      icon: const Icon(Icons.format_bold),
+                                      tooltip: 'Kalın',
+                                      color:
+                                          (pendingBold ||
+                                                  pendingItalic ||
+                                                  pendingUnderline ||
+                                                  pendingStrikethrough ||
+                                                  pendingHighlight)
+                                              ? Colors.amber
+                                              : null,
+                                      onPressed: () {
+                                        showStyleSubToolbar = true;
+                                        showListSubToolbar = false;
+                                        showColorSubToolbar = false;
+                                        showFontSizeSubToolbar = false;
+                                        requestEditorRebuild?.call(() {});
+                                      },
                                     ),
-                                    tooltip: 'Üzeri Çizili',
-                                    color: pendingStrikethrough
-                                        ? Theme.of(context).colorScheme.primary
-                                        : null,
-                                    onPressed:
-                                        toggleStrikethroughForFocusedBlock,
                                   ),
-                                  IconButton(
-                                    icon: const Icon(Icons.text_fields),
-                                    tooltip: 'Metin Özellikleri',
-                                    color:
-                                        (pendingFontSize != null ||
-                                                pendingColor != null ||
-                                                pendingFontFamily != null)
-                                            ? Theme.of(context)
-                                                  .colorScheme
-                                                  .primary
-                                            : null,
-                                    onPressed: () =>
-                                        showTextPropertiesSheet(context),
+                                  Expanded(
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.format_list_bulleted,
+                                      ),
+                                      tooltip: 'Liste',
+                                      onPressed: () {
+                                        showListSubToolbar = true;
+                                        showStyleSubToolbar = false;
+                                        showColorSubToolbar = false;
+                                        showFontSizeSubToolbar = false;
+                                        requestEditorRebuild?.call(() {});
+                                      },
+                                    ),
                                   ),
-                                  const Spacer(),
-                                  IconButton(
-                                    icon: const Icon(Icons.keyboard_hide),
-                                    tooltip: 'Klavyeyi Gizle',
-                                    onPressed: dismissKeyboardForFocusedBlock,
+                                  Expanded(
+                                    child: IconButton(
+                                      icon: const Icon(Icons.text_fields),
+                                      tooltip: 'Yazı Boyutu',
+                                      // pendingFontSize yerine
+                                      // _effectiveFontSizeForToolbar()
+                                      // kullanılıyor: seçim yokken davranış
+                                      // aynıdır (o da pendingFontSize'a
+                                      // düşer), ama gerçek bir metin seçimi
+                                      // varken artık seçili aralığın
+                                      // span'larından okunan GERÇEK boyuta
+                                      // göre vurgulanır (bkz. yukarıdaki
+                                      // _effectiveFontSizeForToolbar
+                                      // açıklaması).
+                                      color:
+                                          _effectiveFontSizeForToolbar() !=
+                                              null
+                                          ? Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                          : null,
+                                      onPressed: () {
+                                        showFontSizeSubToolbar = true;
+                                        showListSubToolbar = false;
+                                        showStyleSubToolbar = false;
+                                        showColorSubToolbar = false;
+                                        requestEditorRebuild?.call(() {});
+                                      },
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.format_color_text,
+                                      ),
+                                      tooltip: 'Yazı Rengi',
+                                      color: pendingColor != null
+                                          ? Color(pendingColor!)
+                                          : null,
+                                      onPressed: () {
+                                        showColorSubToolbar = true;
+                                        showListSubToolbar = false;
+                                        showStyleSubToolbar = false;
+                                        showFontSizeSubToolbar = false;
+                                        requestEditorRebuild?.call(() {});
+                                      },
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: IconButton(
+                                      icon: const Icon(Icons.keyboard_hide),
+                                      tooltip: 'Klavyeyi Gizle',
+                                      onPressed:
+                                          dismissKeyboardForFocusedBlock,
+                                    ),
                                   ),
                                 ],
                               ),

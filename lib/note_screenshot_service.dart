@@ -273,12 +273,24 @@ class _NoteScreenshotContent extends StatelessWidget {
         if (type == 'text') {
           final text = (block['text'] ?? '').toString();
           if (text.trim().isEmpty) continue;
+          // DÜZELTME: JPG dışa aktarma eskiden düzenleyicideki spans
+          // (kalın/italik/altı çizili/üzeri çizili/vurgu/özel renk-boyut-
+          // yazı tipi/link) verisini hiç okumadan metni düz bir Text
+          // widget'ına veriyordu — bu yüzden zengin metinli notlar dışa
+          // aktarılan görselde biçimsiz görünüyordu. Artık düzenleyicideki
+          // RichBlockTextController.buildTextSpan ile AYNI mantığı kullanan
+          // RichTextSpans.buildStaticSpan çağrılıyor (bkz. rich_text_spans.dart).
+          final isDark = Theme.of(context).brightness == Brightness.dark;
           children.add(
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: Text(
-                text,
-                style: TextStyle(fontSize: fontSize, color: textColor, height: 1.4),
+              child: Text.rich(
+                RichTextSpans.buildStaticSpan(
+                  text: text,
+                  rawSpans: block['spans'] as List?,
+                  style: TextStyle(fontSize: fontSize, color: textColor, height: 1.4),
+                  isDark: isDark,
+                ),
               ),
             ),
           );
@@ -362,6 +374,13 @@ class _NoteScreenshotContent extends StatelessWidget {
               ),
             );
           }
+        } else if (type == 'divider') {
+          children.add(
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Divider(color: borderColor, height: 1),
+            ),
+          );
         } else if (type == 'attachments') {
           final ids = List<String>.from(
             (block['ids'] as List? ?? const []).map((e) => e.toString()),

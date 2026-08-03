@@ -142,6 +142,51 @@ mixin NoteListChecklistBlockMixin on State<NoteListScreen> {
                       block['items'] = items;
                     },
                     onSubmitted: (_) {
+                      // DÜZELTME: Boş bırakılan bir maddede Enter'a
+                      // basılınca artık yeni bir madde EKLENMİYOR — bunun
+                      // yerine bu boş madde listeden silinip kontrol
+                      // listesi tamamlanmış sayılıyor (klavye kapatılıyor).
+                      // NoteListNoteDialogMixin'deki checklist TİPİ notlar
+                      // için uygulanan AYNI davranış, burada checklist
+                      // BLOĞU (karma içerikli notun içine gömülü) için de
+                      // uygulanıyor.
+                      final isEmpty =
+                          (j < itemCtrls.length
+                                  ? itemCtrls[j].text
+                                  : (items[j]['text'] ?? '').toString())
+                              .trim()
+                              .isEmpty;
+                      if (isEmpty) {
+                        pushUndoCheckpoint();
+                        FocusNode? removedFocusNode;
+                        if (j < itemFns.length) {
+                          removedFocusNode = itemFns[j];
+                          if (removedFocusNode.hasFocus) {
+                            removedFocusNode.unfocus();
+                          }
+                        }
+                        setModalState(() {
+                          // Liste tamamen boş kalmasın diye en az 1 madde
+                          // her zaman korunur — tek madde varsa ve o da
+                          // boşsa silinmez, sadece klavye kapatılır.
+                          if (items.length > 1) {
+                            items.removeAt(j);
+                            block['items'] = items;
+                            if (j < itemCtrls.length) {
+                              itemCtrls.removeAt(j).dispose();
+                            }
+                            if (j < itemFns.length) {
+                              itemFns.removeAt(j);
+                            }
+                          }
+                        });
+                        if (removedFocusNode != null) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            removedFocusNode!.dispose();
+                          });
+                        }
+                        return;
+                      }
                       pushUndoCheckpoint();
                       setModalState(() {
                         final newIndex = j + 1;

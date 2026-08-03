@@ -29,6 +29,7 @@ class ContentBlocks {
     'checklist',
     'calc_table',
     'drawing',
+    'divider',
   ];
 
   // Sayıyı toplam satırında gösterirken tam sayıysa ondalık kısmı at,
@@ -319,6 +320,9 @@ class ContentBlocks {
           (b['strokes'] as List?)?.isNotEmpty == true) {
         return true;
       }
+      if (b['type'] == 'divider') {
+        return true;
+      }
     }
     return false;
   }
@@ -387,6 +391,8 @@ class ContentBlocks {
             if (pa[k][0] != pb[k][0] || pa[k][1] != pb[k][1]) return false;
           }
         }
+      } else if (a['type'] == 'divider') {
+        // divider bloğunun ek alanı yok; tip eşitliği yeterli.
       } else {
         final ai = List.from(a['ids'] ?? const []);
         final bi = List.from(b['ids'] ?? const []);
