@@ -81,6 +81,14 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       _categoryParents = Map<String, String?>.from(
         catData['parents'] as Map? ?? {},
       );
+      // Kategori çekmecesindeki daraltılmış (alt klasörleri gizli)
+      // kategorilerin listesi. Önceden hiç kaydedilmiyordu; bu yüzden
+      // kullanıcının daralt/genişlet tercihi uygulama kapatılıp açılınca
+      // sıfırlanıyordu.
+      final collapsedRaw = settings['collapsed_categories'] ?? '';
+      _collapsedCategories = collapsedRaw.isEmpty
+          ? <String>{}
+          : collapsedRaw.split('\u0001').toSet();
 
       if (notes.isNotEmpty || !neverInitialized) {
         _notes = notes;
@@ -181,6 +189,13 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
     await db.setSetting('is_ascending', _isAscending.toString());
     await db.setSetting('is_list_view', _isListView.toString());
     await db.setSetting('active_category', _activeCategory);
+    // Kategori çekmecesindeki daralt/genişlet durumu; '\u0001' karakteri
+    // kategori adlarında geçmesi son derece olası olmadığı için ayraç
+    // olarak kullanılıyor.
+    await db.setSetting(
+      'collapsed_categories',
+      _collapsedCategories.join('\u0001'),
+    );
 
     // Ayarlar
     await db.setSetting(
@@ -670,6 +685,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                         _collapsedCategories.add(category);
                       }
                     });
+                    _saveData();
                   },
                 ),
               ListTile(

@@ -695,6 +695,12 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                       );
                                     }
                                   });
+                                  // DÜZELTME: Genişlet/daralt durumu
+                                  // kaydedilmediği için uygulamadan çıkıp
+                                  // girince unutuluyordu — diğer tüm
+                                  // durum değişikliklerinde olduğu gibi
+                                  // burada da kalıcı hale getiriliyor.
+                                  _saveData();
                                 },
                                 child: Text(
                                   allCollapsed ? 'Genişlet' : 'Daralt',
@@ -950,15 +956,22 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       final isSelected =
                           _isSelectionMode &&
                           _selectedNoteKeys.contains(_noteKey(note));
-                      final baseNoteCardColor = _colorfulNotes
-                          ? _categoryPalette[(originalIndex < 0
-                                        ? 0
-                                        : originalIndex) %
-                                    _categoryPalette.length]
-                                .withValues(alpha: 0.75)
-                          : (dNoteIsDark(context)
-                                ? const Color(0xFF2D2D2D)
-                                : Theme.of(context).cardColor);
+                      // Not arka plan rengi (palet ikonundan seçilmiş) varsa
+                      // her şeyin önüne geçer — renkli notlar açık olsa
+                      // (colorfulNotes) bile kullanıcının bilinçli olarak
+                      // seçtiği pastel renk gösterilir.
+                      final noteBgColorValue = note['bgColor'] as int?;
+                      final baseNoteCardColor = noteBgColorValue != null
+                          ? Color(noteBgColorValue)
+                          : (_colorfulNotes
+                                ? _categoryPalette[(originalIndex < 0
+                                              ? 0
+                                              : originalIndex) %
+                                          _categoryPalette.length]
+                                      .withValues(alpha: 0.75)
+                                : (dNoteIsDark(context)
+                                      ? const Color(0xFF2D2D2D)
+                                      : Theme.of(context).cardColor));
                       // Seçili notlar, dokununca beliren parlaklık efektiyle
                       // aynı tonda (amber) sürekli vurgulanır.
                       final noteCardColor = isSelected
@@ -972,8 +985,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       final previewDrawingStrokes = previewImage == null
                           ? _firstDrawingStrokes(note)
                           : null;
-                      final showMixedPreview =
-                          isChecklist || _hasChecklistBlock(note);
+                      // Checklist özelliği kaldırıldı; yalnızca eski (legacy)
+                      // tüm-not checklist tipindeki notlar için karışık
+                      // önizleme kullanılır (geriye dönük uyumluluk).
+                      final showMixedPreview = isChecklist;
                       final previewContentText = showMixedPreview
                           ? ''
                           : ContentBlocks.plainText(
@@ -1653,14 +1668,6 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     );
   }
 
-  // Not içeriğinde (legacy tüm-not checklist tipi hariç) en az bir dolu
-  // checklist bloğu var mı? Varsa kart önizlemesinde düz metin yerine
-  // kutucuk ikonlu karışık satır listesi kullanılır.
-  bool _hasChecklistBlock(Map<String, dynamic> note) {
-    if (note['type'] == 'checklist') return false;
-    return ContentBlocks.hasChecklistBlock(note['content'] as String?);
-  }
-
   // Kart önizlemesinde gösterilecek satır listesi. Hem eski (tüm not tek
   // checklist) hem de yeni blok tabanlı checklist içeren notlar için ortak
   // biçimde ({'checklist': bool, 'text': String, 'checked': bool}) döner;
@@ -1808,7 +1815,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       height += 12.0; // başlık sonrası SizedBox
     }
 
-    if (isChecklist || _hasChecklistBlock(note)) {
+    if (isChecklist) {
       final items = _previewLineItems(note);
       final itemCount = items.length.clamp(0, _previewLines);
       // Her önizleme satırı (checklist maddesi ya da metin satırı) tek
@@ -1855,13 +1862,18 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     final isFavorite = note['isFavorite'] == true;
     final isSelected =
         _isSelectionMode && _selectedNoteKeys.contains(_noteKey(note));
-    final baseGridCardColor = _colorfulNotes
-        ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) %
-                  _categoryPalette.length]
-              .withValues(alpha: 0.75)
-        : (dNoteIsDark(context)
-              ? const Color(0xFF2D2D2D)
-              : Theme.of(context).cardColor);
+    // Bkz. liste görünümündeki aynı isimli açıklama: seçilmiş not arka
+    // plan rengi varsa colorfulNotes/kategori rengi mantığının önüne geçer.
+    final noteBgColorValue = note['bgColor'] as int?;
+    final baseGridCardColor = noteBgColorValue != null
+        ? Color(noteBgColorValue)
+        : (_colorfulNotes
+              ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) %
+                        _categoryPalette.length]
+                    .withValues(alpha: 0.75)
+              : (dNoteIsDark(context)
+                    ? const Color(0xFF2D2D2D)
+                    : Theme.of(context).cardColor));
     // Seçili notlar, dokununca beliren parlaklık efektiyle aynı tonda
     // (amber) sürekli vurgulanır.
     final gridCardColor = isSelected
@@ -1872,7 +1884,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         : baseGridCardColor;
     final fontScale = _previewFontScale(note);
     final images = _previewImages(note);
-    final showMixedPreview = isChecklist || _hasChecklistBlock(note);
+    final showMixedPreview = isChecklist;
     // Yazısız (sadece foto) notlarda kart tamamen foto(lar)dan ibarettir;
     // checklist notlar bu özel modun dışında tutulur.
     final bool hasText = isChecklist

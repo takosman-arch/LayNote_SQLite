@@ -5,7 +5,6 @@ part of 'main.dart';
 // Not içeriği artık düz metin yerine, sırayla dizilmiş "bloklar"dan oluşur:
 //   {"type": "text", "text": "..."}
 //   {"type": "attachments", "ids": ["att1", "att2", ...]}
-//   {"type": "checklist", "items": [{"text": "...", "checked": false}, ...]}
 //   {"type": "calc_table", "rows": [{"label": "...", "value": "..."}, ...]}
 //   {"type": "drawing", "strokes": [
 //       {"color": <int argb>, "width": <double>, "points": [[x, y], ...]},
@@ -26,11 +25,23 @@ class ContentBlocks {
   static const List<String> _knownTypes = [
     'text',
     'attachments',
-    'checklist',
     'calc_table',
     'drawing',
     'divider',
   ];
+
+  // Checklist özelliği kaldırıldı. Eski notlarda hâlâ {"type": "checklist",
+  // "items": [...]} bloğu olabilir; bunu ham JSON olarak ekrana dökmemek
+  // (ya da tamamen kaybetmemek) için sade bir metin bloğuna çeviriyoruz —
+  // her madde kendi satırı olur.
+  static Map<String, dynamic> _migrateLegacyChecklistBlock(Map<String, dynamic> m) {
+    final items = (m['items'] as List? ?? const []);
+    final text = items
+        .map((it) => ((it as Map)['text'] ?? '').toString())
+        .where((t) => t.trim().isNotEmpty)
+        .join('\n');
+    return {'type': 'text', 'text': text, 'spans': <Map<String, dynamic>>[]};
+  }
 
   // Sayıyı toplam satırında gösterirken tam sayıysa ondalık kısmı at,
   // değilse en fazla 2 ondalık basamak göster. Binlik basamaklar nokta
@@ -104,20 +115,14 @@ class ContentBlocks {
       final decoded = jsonDecode(raw);
       if (decoded is List &&
           decoded.isNotEmpty &&
-          decoded.every((e) => e is Map && _knownTypes.contains(e['type']))) {
+          decoded.every((e) =>
+              e is Map &&
+              (_knownTypes.contains(e['type']) || e['type'] == 'checklist'))) {
         return List<Map<String, dynamic>>.from(
           decoded.map((e) {
-            final m = Map<String, dynamic>.from(e as Map);
+            var m = Map<String, dynamic>.from(e as Map);
             if (m['type'] == 'checklist') {
-              m['items'] = (m['items'] as List? ?? const [])
-                  .map((it) {
-                    final item = Map<String, dynamic>.from(it as Map);
-                    // Madde metinleri de artık kalın/italik/vb. taşıyabilir
-                    // (bkz. RichTextSpans) — text bloğuyla aynı desen.
-                    item['spans'] = RichTextSpans.parse(item['spans']);
-                    return item;
-                  })
-                  .toList();
+              m = _migrateLegacyChecklistBlock(m);
             }
             if (m['type'] == 'calc_table') {
               m['rows'] = (m['rows'] as List? ?? const [])
@@ -155,9 +160,6 @@ class ContentBlocks {
       if (b['type'] == 'attachments') {
         return (b['ids'] as List?)?.isNotEmpty == true;
       }
-      if (b['type'] == 'checklist') {
-        return (b['items'] as List?)?.isNotEmpty == true;
-      }
       if (b['type'] == 'calc_table') {
         return (b['rows'] as List?)?.isNotEmpty == true;
       }
@@ -169,15 +171,6 @@ class ContentBlocks {
       if (b['type'] == 'text') {
         final m = Map<String, dynamic>.from(b);
         m['spans'] = RichTextSpans.clean(b['spans'] as List?);
-        return m;
-      }
-      if (b['type'] == 'checklist') {
-        final m = Map<String, dynamic>.from(b);
-        m['items'] = (b['items'] as List? ?? const []).map((it) {
-          final item = Map<String, dynamic>.from(it as Map);
-          item['spans'] = RichTextSpans.clean(item['spans'] as List?);
-          return item;
-        }).toList();
         return m;
       }
       return b;
@@ -192,17 +185,8 @@ class ContentBlocks {
   static String plainText(String? raw) {
     final blocks = parse(raw);
     return blocks
-        .where((b) =>
-            b['type'] == 'text' ||
-            b['type'] == 'checklist' ||
-            b['type'] == 'calc_table')
+        .where((b) => b['type'] == 'text' || b['type'] == 'calc_table')
         .map((b) {
-          if (b['type'] == 'checklist') {
-            return (b['items'] as List? ?? const [])
-                .map((it) => ((it as Map)['text'] ?? '').toString())
-                .where((t) => t.trim().isNotEmpty)
-                .join('\n');
-          }
           if (b['type'] == 'calc_table') {
             final rows = (b['rows'] as List? ?? const []);
             double total = 0;
@@ -226,42 +210,15 @@ class ContentBlocks {
         .trim();
   }
 
-  // Bloklar içinde en az bir dolu (boş olmayan metinli) checklist bloğu
-  // var mı? Not kartı önizlemesinde checklist maddelerini kutucuk ikonuyla
-  // göstermeye karar vermek için kullanılır.
-  static bool hasChecklistBlock(String? raw) {
-    return parse(raw).any(
-      (b) =>
-          b['type'] == 'checklist' &&
-          (b['items'] as List? ?? const []).any(
-            (it) => ((it as Map)['text'] ?? '').toString().trim().isNotEmpty,
-          ),
-    );
-  }
-
   // Kart önizlemesinde (liste/ızgara görünümü) gösterilecek satır listesini
   // üretir. Blok sırası korunur: metin ve hesap tablosu blokları satır
-  // satır (yeni satıra göre) düz metne çevrilir, checklist bloklarındaki
-  // her madde ise kendi satırı olur ve "checklist": true ile işaretlenir —
-  // böylece önizlemede o satır, eski (tüm not tek checklist) notlarda
-  // olduğu gibi bir kutucuk ikonuyla çizilebilir. Boş metin satırları ve
-  // boş checklist maddeleri atlanır.
+  // satır (yeni satıra göre) düz metne çevrilir. Boş metin satırları
+  // atlanır.
   static List<Map<String, dynamic>> previewLines(String? raw) {
     final blocks = parse(raw);
     final lines = <Map<String, dynamic>>[];
     for (final b in blocks) {
-      if (b['type'] == 'checklist') {
-        for (final it in (b['items'] as List? ?? const [])) {
-          final item = it as Map;
-          final text = (item['text'] ?? '').toString();
-          if (text.trim().isEmpty) continue;
-          lines.add({
-            'checklist': true,
-            'text': text,
-            'checked': item['checked'] == true,
-          });
-        }
-      } else if (b['type'] == 'text') {
+      if (b['type'] == 'text') {
         final text = (b['text'] ?? '').toString();
         for (final line in text.split('\n')) {
           if (line.trim().isEmpty) continue;
@@ -302,12 +259,6 @@ class ContentBlocks {
           ((b['ids'] as List?)?.isNotEmpty ?? false)) {
         return true;
       }
-      if (b['type'] == 'checklist' &&
-          (b['items'] as List? ?? const []).any(
-            (it) => ((it as Map)['text'] ?? '').toString().trim().isNotEmpty,
-          )) {
-        return true;
-      }
       if (b['type'] == 'calc_table' &&
           (b['rows'] as List? ?? const []).any((r) {
             final row = r as Map;
@@ -344,20 +295,6 @@ class ContentBlocks {
           b['spans'] as List?,
         )) {
           return false;
-        }
-      } else if (a['type'] == 'checklist') {
-        final ai = List<Map>.from(a['items'] ?? const []);
-        final bi = List<Map>.from(b['items'] ?? const []);
-        if (ai.length != bi.length) return false;
-        for (int j = 0; j < ai.length; j++) {
-          if ((ai[j]['text'] ?? '') != (bi[j]['text'] ?? '') ||
-              (ai[j]['checked'] ?? false) != (bi[j]['checked'] ?? false) ||
-              !RichTextSpans.listEquals(
-                ai[j]['spans'] as List?,
-                bi[j]['spans'] as List?,
-              )) {
-            return false;
-          }
         }
       } else if (a['type'] == 'calc_table') {
         final ar = List<Map>.from(a['rows'] ?? const []);

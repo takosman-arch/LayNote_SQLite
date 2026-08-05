@@ -22,7 +22,7 @@ class DBHelper {
     final path = p.join(dbDir, 'dnote.db');
     return openDatabase(
       path,
-      version: 8, // Alt klasör (kategori içinde kategori) desteği: 7'den 8'e yükseltildi
+      version: 9, // Not arka plan rengi (bgColor) desteği: 8'den 9'a yükseltildi
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           await _addColumnIfMissing(db, 'notes', 'attachments', 'TEXT');
@@ -66,6 +66,13 @@ class DBHelper {
           // Null ise kategori üst seviyededir (alt klasör değildir).
           await _addColumnIfMissing(db, 'categories', 'parent', 'TEXT');
         }
+        if (oldVersion < 9) {
+          // Not arka planı paleti: notun tüm arka planına uygulanan tek
+          // renk değeri (int? renk kodu, null = varsayılan/kategori rengi).
+          // Bkz. note_bg_color_palette.dart.
+          await _addColumnIfMissing(db, 'notes', 'bgColor', 'INTEGER');
+          await _addColumnIfMissing(db, 'deleted_notes', 'bgColor', 'INTEGER');
+        }
       },
       onCreate: (db, version) async {
         await db.execute('''
@@ -86,6 +93,7 @@ class DBHelper {
             assignedDate TEXT,
             reminderRepeat TEXT,
             deletedDate TEXT,
+            bgColor INTEGER,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0,
@@ -110,6 +118,7 @@ class DBHelper {
             assignedDate TEXT,
             reminderRepeat TEXT,
             deletedDate TEXT,
+            bgColor INTEGER,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0,
@@ -172,6 +181,7 @@ class DBHelper {
       'assignedDate': note['assignedDate']?.toString(),
       'reminderRepeat': note['reminderRepeat']?.toString(),
       'deletedDate': note['deletedDate']?.toString(), // Aşama 7.1
+      'bgColor': (note['bgColor'] as num?)?.toInt(),
       'isLocked': (note['isLocked'] == true) ? 1 : 0,
       'isArchived': (note['isArchived'] == true) ? 1 : 0,
       'isFavorite': (note['isFavorite'] == true) ? 1 : 0,
@@ -197,6 +207,7 @@ class DBHelper {
       if (row['assignedDate'] != null) 'assignedDate': row['assignedDate'],
       if (row['reminderRepeat'] != null) 'reminderRepeat': row['reminderRepeat'],
       if (row['deletedDate'] != null) 'deletedDate': row['deletedDate'], // Aşama 7.1
+      if (row['bgColor'] != null) 'bgColor': row['bgColor'],
       'isLocked': row['isLocked'] == 1,
       'isArchived': row['isArchived'] == 1,
       'isFavorite': row['isFavorite'] == 1,

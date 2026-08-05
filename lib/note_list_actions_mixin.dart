@@ -2405,6 +2405,15 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     DateTime? reminder,
     DateTime? assignedDate,
     String? reminderRepeat,
+    // Not arka plan rengi (palet ikonundan seçilir, null = varsayılan/
+    // kategori rengi). Eskiden bu alan burada değil, çağıran taraftaki
+    // (NoteListNoteDialogMixin) üç ayrı kayıt noktasında notu _notes
+    // listesine yazdıktan HEMEN SONRA elle _notes[..]['bgColor'] = ...
+    // şeklinde işlenip ayrıca _saveData() çağrılıyordu. Artık tek
+    // kaynaktan (burada) hem state'e yazılıyor hem de zaten çağrılan
+    // _saveData() ile diske kaydediliyor; çağıran tarafta ekstra kayıt
+    // adımına gerek kalmadı.
+    int? bgColor,
   ]) {
     final isValid =
         (noteType == 'text'
@@ -2471,6 +2480,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         final newAssignedRaw = assignedDate?.toIso8601String();
         final assignedDateChanged = oldAssignedRaw != newAssignedRaw;
 
+        final oldBgColor = _notes[index]['bgColor'] as int?;
+        final bgColorChanged = oldBgColor != bgColor;
+
         final hasChanges =
             newTitle != oldTitle ||
             contentChanged ||
@@ -2478,7 +2490,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             checkItemsChanged ||
             attachmentsChanged ||
             reminderChanged ||
-            assignedDateChanged;
+            assignedDateChanged ||
+            bgColorChanged;
 
         if (!hasChanges) return false;
 
@@ -2496,6 +2509,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             'reminderDate': newReminderRaw,
             'reminderRepeat': newRepeatRaw,
             'assignedDate': newAssignedRaw,
+            'bgColor': bgColor,
           };
         });
         _saveData();
@@ -2549,6 +2563,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             'isArchived': _activeCategory == '__archive__',
             'reminderDate': reminder?.toIso8601String(),
             'reminderRepeat': savedRepeat,
+            'bgColor': bgColor,
           });
         });
         _saveData();
