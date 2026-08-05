@@ -28,19 +28,20 @@ class ContentBlocks {
     'calc_table',
     'drawing',
     'divider',
+    'checklist',
   ];
 
-  // Checklist özelliği kaldırıldı. Eski notlarda hâlâ {"type": "checklist",
-  // "items": [...]} bloğu olabilir; bunu ham JSON olarak ekrana dökmemek
-  // (ya da tamamen kaybetmemek) için sade bir metin bloğuna çeviriyoruz —
-  // her madde kendi satırı olur.
-  static Map<String, dynamic> _migrateLegacyChecklistBlock(Map<String, dynamic> m) {
-    final items = (m['items'] as List? ?? const []);
-    final text = items
-        .map((it) => ((it as Map)['text'] ?? '').toString())
-        .where((t) => t.trim().isNotEmpty)
-        .join('\n');
-    return {'type': 'text', 'text': text, 'spans': <Map<String, dynamic>>[]};
+  // Checklist bloğunun items listesini normalize eder.
+  // Her eleman {"text": "...", "checked": false} şeklinde döner.
+  static List<Map<String, dynamic>> _parseChecklistItems(dynamic raw) {
+    final list = raw as List? ?? const [];
+    return list.map((it) {
+      final m = Map<String, dynamic>.from(it as Map);
+      return {
+        'text': (m['text'] ?? '').toString(),
+        'checked': m['checked'] == true,
+      };
+    }).toList();
   }
 
   // Sayıyı toplam satırında gösterirken tam sayıysa ondalık kısmı at,
@@ -117,12 +118,12 @@ class ContentBlocks {
           decoded.isNotEmpty &&
           decoded.every((e) =>
               e is Map &&
-              (_knownTypes.contains(e['type']) || e['type'] == 'checklist'))) {
+              _knownTypes.contains(e['type']))) {
         return List<Map<String, dynamic>>.from(
           decoded.map((e) {
             var m = Map<String, dynamic>.from(e as Map);
             if (m['type'] == 'checklist') {
-              m = _migrateLegacyChecklistBlock(m);
+              m['items'] = _parseChecklistItems(m['items']);
             }
             if (m['type'] == 'calc_table') {
               m['rows'] = (m['rows'] as List? ?? const [])
@@ -166,6 +167,9 @@ class ContentBlocks {
       if (b['type'] == 'drawing') {
         return (b['strokes'] as List?)?.isNotEmpty == true;
       }
+      if (b['type'] == 'checklist') {
+        return (b['items'] as List?)?.isNotEmpty == true;
+      }
       return true;
     }).map((b) {
       if (b['type'] == 'text') {
@@ -185,8 +189,22 @@ class ContentBlocks {
   static String plainText(String? raw) {
     final blocks = parse(raw);
     return blocks
-        .where((b) => b['type'] == 'text' || b['type'] == 'calc_table')
+        .where((b) =>
+            b['type'] == 'text' ||
+            b['type'] == 'calc_table' ||
+            b['type'] == 'checklist')
         .map((b) {
+          if (b['type'] == 'checklist') {
+            final items = (b['items'] as List? ?? const []);
+            return items
+                .map((it) {
+                  final m = it as Map;
+                  final text = (m['text'] ?? '').toString();
+                  return text;
+                })
+                .where((line) => line.trim().isNotEmpty)
+                .join('\n');
+          }
           if (b['type'] == 'calc_table') {
             final rows = (b['rows'] as List? ?? const []);
             double total = 0;
@@ -223,6 +241,14 @@ class ContentBlocks {
         for (final line in text.split('\n')) {
           if (line.trim().isEmpty) continue;
           lines.add({'checklist': false, 'text': line});
+        }
+      } else if (b['type'] == 'checklist') {
+        final items = (b['items'] as List? ?? const []);
+        for (final it in items) {
+          final m = it as Map;
+          final text = (m['text'] ?? '').toString();
+          if (text.trim().isEmpty) continue;
+          lines.add({'checklist': true, 'checked': m['checked'] == true, 'text': text});
         }
       } else if (b['type'] == 'calc_table') {
         final rows = (b['rows'] as List? ?? const []);
@@ -272,6 +298,11 @@ class ContentBlocks {
         return true;
       }
       if (b['type'] == 'divider') {
+        return true;
+      }
+      if (b['type'] == 'checklist' &&
+          (b['items'] as List? ?? const []).any((it) =>
+              (it as Map)['text'].toString().trim().isNotEmpty)) {
         return true;
       }
     }
@@ -326,6 +357,16 @@ class ContentBlocks {
           if (pa.length != pb.length) return false;
           for (int k = 0; k < pa.length; k++) {
             if (pa[k][0] != pb[k][0] || pa[k][1] != pb[k][1]) return false;
+          }
+        }
+      } else if (a['type'] == 'checklist') {
+        final ai = List<Map>.from(a['items'] ?? const []);
+        final bi = List<Map>.from(b['items'] ?? const []);
+        if (ai.length != bi.length) return false;
+        for (int j = 0; j < ai.length; j++) {
+          if ((ai[j]['text'] ?? '') != (bi[j]['text'] ?? '') ||
+              ai[j]['checked'] != bi[j]['checked']) {
+            return false;
           }
         }
       } else if (a['type'] == 'divider') {

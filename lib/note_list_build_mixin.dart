@@ -985,10 +985,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       final previewDrawingStrokes = previewImage == null
                           ? _firstDrawingStrokes(note)
                           : null;
-                      // Checklist özelliği kaldırıldı; yalnızca eski (legacy)
-                      // tüm-not checklist tipindeki notlar için karışık
-                      // önizleme kullanılır (geriye dönük uyumluluk).
-                      final showMixedPreview = isChecklist;
+                      // Eski (legacy) checklist notları ve yeni blok tabanlı
+                      // checklist içeren notlar için karışık önizleme kullanılır.
+                      final _noteBlocks = ContentBlocks.parse(note['content'] as String?);
+                      final _hasChecklistBlock = _noteBlocks.any((b) => b['type'] == 'checklist');
+                      final showMixedPreview = isChecklist || _hasChecklistBlock;
                       final previewContentText = showMixedPreview
                           ? ''
                           : ContentBlocks.plainText(
@@ -1327,7 +1328,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                 color:
                                                     isItemChecklist &&
                                                         isChecked
-                                                    ? Colors.grey
+                                                    ? dNoteEffectiveTextColor(context, _textColor)
+                                                          ?.withOpacity(0.5)
                                                     : (dNoteEffectiveTextColor(context, _textColor)),
                                                 decoration:
                                                     isItemChecklist &&
@@ -1335,6 +1337,14 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                     ? TextDecoration
                                                           .lineThrough
                                                     : null,
+                                                decorationColor:
+                                                    isItemChecklist &&
+                                                        isChecked
+                                                    ? dNoteEffectiveTextColor(context, _textColor)
+                                                          ?.withOpacity(0.75)
+                                                    : null,
+                                                decorationStyle:
+                                                    TextDecorationStyle.solid,
                                                 fontSize:
                                                     (note['fontSize'] as num?)
                                                         ?.toDouble() ??
@@ -1350,11 +1360,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                               children: [
                                                 Icon(
                                                   isChecked
-                                                      ? Icons.check_box
+                                                      ? Icons.check_box_rounded
                                                       : Icons
-                                                            .check_box_outline_blank,
+                                                            .check_box_outline_blank_rounded,
                                                   color: Colors.amber,
-                                                  size: 16,
+                                                  size: 13,
                                                 ),
                                                 const SizedBox(width: 6),
                                                 Expanded(child: textWidget),
@@ -1770,6 +1780,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   ) {
     final hasTitle = (note['title'] ?? '').toString().isNotEmpty;
     final isChecklist = note['type'] == 'checklist';
+    final _estimateBlocks = ContentBlocks.parse(note['content'] as String?);
+    final _estimateHasChecklistBlock = _estimateBlocks.any((b) => b['type'] == 'checklist');
+    final bool isMixedChecklist = isChecklist || _estimateHasChecklistBlock;
     final fontScale = _previewFontScale(note);
     // Kartın gerçek (padding'siz) genişliği; _buildGridView içindeki
     // cardInnerPadding (16.0) değeriyle bire bir eşleşmeli.
@@ -1779,14 +1792,14 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     // Yazısız (sadece foto) notlarda kart tamamen foto(lar)dan ibarettir;
     // checklist notlarda bu özel mod uygulanmaz (checklist her zaman
     // "yazılı" kabul edilir, mevcut davranış korunur).
-    final bool hasText = isChecklist
+    final bool hasText = isMixedChecklist
         ? true
         : ContentBlocks.plainText(note['content'] as String?).isNotEmpty;
     // Fotoğraf yoksa, notun ilk çizim bloğuna bakılır (bkz. _gridPreviewDrawingTile);
     // bir not hem fotoğraf hem çizim içeriyorsa fotoğraf önceliklidir.
     final drawingStrokes = images.isEmpty ? _firstDrawingStrokes(note) : null;
     final bool hasVisual = images.isNotEmpty || drawingStrokes != null;
-    final bool photoOnlyMode = !isChecklist && hasVisual && !hasText;
+    final bool photoOnlyMode = !isMixedChecklist && hasVisual && !hasText;
 
     if (photoOnlyMode) {
       // Kart sadece foto(lar)/çizimden ibaret: iç/dış boşluk, başlık,
@@ -1815,7 +1828,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       height += 12.0; // başlık sonrası SizedBox
     }
 
-    if (isChecklist) {
+    if (isMixedChecklist) {
       final items = _previewLineItems(note);
       final itemCount = items.length.clamp(0, _previewLines);
       // Her önizleme satırı (checklist maddesi ya da metin satırı) tek
@@ -1884,10 +1897,12 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         : baseGridCardColor;
     final fontScale = _previewFontScale(note);
     final images = _previewImages(note);
-    final showMixedPreview = isChecklist;
+    final _noteBlocks = ContentBlocks.parse(note['content'] as String?);
+    final _hasChecklistBlock = _noteBlocks.any((b) => b['type'] == 'checklist');
+    final showMixedPreview = isChecklist || _hasChecklistBlock;
     // Yazısız (sadece foto) notlarda kart tamamen foto(lar)dan ibarettir;
     // checklist notlar bu özel modun dışında tutulur.
-    final bool hasText = isChecklist
+    final bool hasText = showMixedPreview
         ? true
         : ContentBlocks.plainText(note['content'] as String?).isNotEmpty;
     // Fotoğraf yoksa notun ilk çizim bloğuna bakılır; fotoğraf her zaman
@@ -1895,7 +1910,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     final previewDrawingStrokes =
         images.isEmpty ? _firstDrawingStrokes(note) : null;
     final bool hasVisual = images.isNotEmpty || previewDrawingStrokes != null;
-    final bool photoOnlyMode = !isChecklist && hasVisual && !hasText;
+    final bool photoOnlyMode = !showMixedPreview && hasVisual && !hasText;
 
     return GestureDetector(
       onLongPress: isTrash
@@ -2176,12 +2191,18 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                         (item['text'] ?? '').toString(),
                                         style: TextStyle(
                                           color: isItemChecklist && isChecked
-                                              ? Colors.grey
+                                              ? dNoteEffectiveTextColor(context, _textColor)?.withOpacity(0.5)
                                               : (dNoteEffectiveTextColor(context, _textColor)),
                                           decoration:
                                               isItemChecklist && isChecked
                                               ? TextDecoration.lineThrough
                                               : null,
+                                          decorationColor:
+                                              isItemChecklist && isChecked
+                                              ? dNoteEffectiveTextColor(context, _textColor)?.withOpacity(0.75)
+                                              : null,
+                                          decorationStyle:
+                                              TextDecorationStyle.solid,
                                           fontSize:
                                               (note['fontSize'] as num?)
                                                   ?.toDouble() ??
@@ -2204,11 +2225,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                 children: [
                                                   Icon(
                                                     isChecked
-                                                        ? Icons.check_box
+                                                        ? Icons.check_box_rounded
                                                         : Icons
-                                                              .check_box_outline_blank,
+                                                              .check_box_outline_blank_rounded,
                                                     color: Colors.amber,
-                                                    size: 14,
+                                                    size: 13,
                                                   ),
                                                   const SizedBox(width: 4),
                                                   Expanded(child: textWidget),

@@ -219,129 +219,131 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // focus node'ları tamamen yeniden kurar. Metin bloğu olmayan (ek)
     // konumlar için null tutulur.
     void rebuildBlockControllers() {
-      // Not listesi her zaman bir metin bloğuyla bitmelidir: aksi halde
-      // (ör. "Blokları Sırala" ile bir blok en sona taşındığında ya da en
-      // sondaki boş satır Backspace ile silindiğinde) notun altına
-      // dokunup yazı ekleyebileceğimiz bir alan kalmaz. Böyle bir durum
-      // oluşmuşsa sona boş bir metin bloğu ekleriz.
+      // Not listesi her zaman bir metin bloğuyla bitmelidir.
       if (blocks.isEmpty || blocks.last['type'] != 'text') {
         blocks.add({'type': 'text', 'text': ''});
       }
-      // Beyaz ekran sorunu (bkz. çarpıya basınca madde/satır silme kodundaki
-      // aynı isimli not): eski controller/focus node'lardan biri o an hâlâ
-      // odaklıysa (kullanıcı klavyeyle o alana yazıyorsa), onu odaktan
-      // çıkarmadan hemen dispose etmek Flutter'ın bir sonraki frame'de
-      // dispose edilmiş bir FocusNode'a erişmeye çalışmasına ve ekranın
-      // bembeyaz kalmasına yol açabiliyordu. Bu fonksiyon eskiden bloklar
-      // her değiştiğinde (ek eklerken, blok birleştirirken, vb.) bu hataya
-      // düşüyordu. Çözüm: önce tüm eski odaklı node'ları odaktan çıkar,
-      // dispose işlemini bir sonraki frame'e ertele.
-      final oldControllers = <TextEditingController>[
-        ...blockControllers.whereType<TextEditingController>(),
-        for (final list in blockItemControllers)
-          if (list != null) ...list,
-        for (final list in blockTableLabelControllers)
-          if (list != null) ...list,
-        for (final list in blockTableValueControllers)
-          if (list != null) ...list,
-      ];
-      final oldFocusNodes = <FocusNode>[
-        ...blockFocusNodes.whereType<FocusNode>(),
-        for (final list in blockItemFocusNodes)
-          if (list != null) ...list,
-        for (final list in blockTableLabelFocusNodes)
-          if (list != null) ...list,
-        for (final list in blockTableValueFocusNodes)
-          if (list != null) ...list,
-      ];
-      for (final f in oldFocusNodes) {
-        if (f.hasFocus) f.unfocus();
-      }
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        for (final c in oldControllers) {
-          c.dispose();
-        }
-        for (final f in oldFocusNodes) {
-          f.dispose();
-        }
-      });
-      blockControllers = [];
-      blockFocusNodes = [];
-      blockItemControllers = [];
-      blockItemFocusNodes = [];
-      blockTableLabelControllers = [];
-      blockTableValueControllers = [];
-      blockTableLabelFocusNodes = [];
-      blockTableValueFocusNodes = [];
+
+      // ── Diff tabanlı güncelleme ──────────────────────────────────────────
+      // Eski yaklaşım tüm controller/node'ları atıp sıfırdan kuruyordu; bu
+      // sırada odaklı node dispose edilince klavye kapanıyordu. Yeni yaklaşım:
+      // mevcut blok listesini yeni blok listesiyle karşılaştırır, aynı tip ve
+      // konumdaki blokların controller/node'larını KORUR, sadece eklenen veya
+      // tip değişen konumlar için yenisini oluşturur. Klavye hiç kapanmaz çünkü
+      // odaklı node hiç dispose edilmez — o blok korunur.
+
+      // Eski listeleri sakla.
+      final prevControllers        = List<TextEditingController?>.from(blockControllers);
+      final prevFocusNodes         = List<FocusNode?>.from(blockFocusNodes);
+      final prevItemControllers    = List<List<TextEditingController>?>.from(blockItemControllers);
+      final prevItemFocusNodes     = List<List<FocusNode>?>.from(blockItemFocusNodes);
+      final prevLabelControllers   = List<List<TextEditingController>?>.from(blockTableLabelControllers);
+      final prevValueControllers   = List<List<TextEditingController>?>.from(blockTableValueControllers);
+      final prevLabelFocusNodes    = List<List<FocusNode>?>.from(blockTableLabelFocusNodes);
+      final prevValueFocusNodes    = List<List<FocusNode>?>.from(blockTableValueFocusNodes);
+
+      // Yeni listeler.
+      blockControllers             = [];
+      blockFocusNodes              = [];
+      blockItemControllers         = [];
+      blockItemFocusNodes          = [];
+      blockTableLabelControllers   = [];
+      blockTableValueControllers   = [];
+      blockTableLabelFocusNodes    = [];
+      blockTableValueFocusNodes    = [];
+
+      // Kullanılan (korunan) eski node'ları takip et — bunlar dispose edilmez.
+      final usedControllers  = <TextEditingController>{};
+      final usedFocusNodes   = <FocusNode>{};
+
       for (int i = 0; i < blocks.length; i++) {
-        if (blocks[i]['type'] == 'text') {
-          final rawText = (blocks[i]['text'] ?? '').toString();
+        final type = blocks[i]['type'] as String?;
+        final prevType = i < prevControllers.length
+            ? (i < prevFocusNodes.length && prevFocusNodes[i] != null
+                ? 'text'
+                : (i < prevItemFocusNodes.length && prevItemFocusNodes[i] != null
+                    ? 'checklist'
+                    : (i < prevLabelFocusNodes.length && prevLabelFocusNodes[i] != null
+                        ? 'calc_table'
+                        : 'other')))
+            : null;
+
+        if (type == 'text') {
+          // Aynı konumda daha önce de metin bloğu varsa controller'ı koru,
+          // sadece metnini güncelle. Focus node'u her zaman koru.
+          TextEditingController ctrl;
+          FocusNode fn;
           final capturedIndex = i;
-          final ctrl = RichBlockTextController(
-            text: (rawText.isEmpty && blocks.length > 1)
+
+          if (prevType == 'text' &&
+              i < prevControllers.length &&
+              prevControllers[i] != null &&
+              i < prevFocusNodes.length &&
+              prevFocusNodes[i] != null) {
+            // Mevcut controller'ı koru; metnini senkronla.
+            ctrl = prevControllers[i]!;
+            fn   = prevFocusNodes[i]!;
+            usedControllers.add(ctrl);
+            usedFocusNodes.add(fn);
+            final rawText = (blocks[i]['text'] ?? '').toString();
+            final newText = (rawText.isEmpty && blocks.length > 1)
                 ? emptyTextSentinel
-                : rawText,
-            getSpans: () => RichTextSpans.parse(
-              blocks[capturedIndex]['spans'],
-            ),
-          );
-          // ── İmleç hareketinde Yazı Boyutu ikonunu senkronlama ──────────
-          // pendingFontSize normalde yalnızca kullanıcı Yazı Boyutu alt
-          // barından bir çipe bastığında (veya yazarken) güncellenir; imleç
-          // salt tıklama/ok tuşuyla başka bir yere (ör. daha önce "Başlık"
-          // uygulanmış bir bölüme) taşındığında DEĞİŞMEZ, bu yüzden ikon
-          // imlecin o an üzerinde bulunduğu metnin gerçek boyutunu yansıtmaz.
-          // Bunu düzeltmek için: controller'daki HER değişikliği dinleriz
-          // (TextEditingController.addListener hem metin hem seçim
-          // değişikliklerinde tetiklenir); metin AYNI kalıp yalnızca seçim
-          // (imleç) değiştiyse, bu saf bir imleç hareketidir ve pendingFontSize
-          // imlecin yeni konumundaki GERÇEK boyuta göre güncellenir (bkz.
-          // _fontSizeAtCollapsedCursor). Metin değiştiyse (yazma/silme) bu dal
-          // atlanır — yazarken pendingFontSize zaten kendi akışıyla (bkz.
-          // _shiftSpansForTextChange) doğru şekilde yönetiliyor.
-          int? lastSyncedOffset;
-          String? lastSyncedText;
-          ctrl.addListener(() {
-            final sel = ctrl.selection;
-            if (!sel.isValid || !sel.isCollapsed) return;
-            final currentText = ctrl.text;
-            final sameText = currentText == lastSyncedText;
-            final offsetChanged = sel.baseOffset != lastSyncedOffset;
-            final hadPrevious = lastSyncedText != null;
-            lastSyncedText = currentText;
-            lastSyncedOffset = sel.baseOffset;
-            if (hadPrevious && sameText && offsetChanged) {
-              final newSize = _fontSizeAtCollapsedCursor(
-                ctrl,
-                RichTextSpans.parse(blocks[capturedIndex]['spans']),
-              );
-              if (pendingFontSize != newSize) {
-                pendingFontSize = newSize;
-                requestEditorRebuild?.call(() {});
-              }
+                : rawText;
+            if (ctrl.text != newText) {
+              ctrl.text = newText;
             }
-          });
-          final fn = FocusNode();
-          fn.addListener(() {
-            if (fn.hasFocus) {
-              focusedBlockIndex = capturedIndex;
-              focusedItemIndex = -1;
-              // Bloğa YENİ odaklanıldı: imlecin ilk konumuna göre de
-              // pendingFontSize'ı senkronla (yukarıdaki ctrl listener'ı
-              // yalnızca "önceki bir konum zaten biliniyorken" devreye
-              // girer; odağın ilk anı için burada da senkronluyoruz).
+          } else {
+            // Yeni blok veya tip değişti → yeni controller + node oluştur.
+            final rawText = (blocks[i]['text'] ?? '').toString();
+            int? lastSyncedOffset;
+            String? lastSyncedText;
+            ctrl = RichBlockTextController(
+              text: (rawText.isEmpty && blocks.length > 1)
+                  ? emptyTextSentinel
+                  : rawText,
+              getSpans: () => RichTextSpans.parse(
+                blocks[capturedIndex]['spans'],
+              ),
+            );
+            ctrl.addListener(() {
               final sel = ctrl.selection;
-              if (sel.isValid && sel.isCollapsed) {
-                lastSyncedText = ctrl.text;
-                lastSyncedOffset = sel.baseOffset;
-                pendingFontSize = _fontSizeAtCollapsedCursor(
+              if (!sel.isValid || !sel.isCollapsed) return;
+              final currentText = ctrl.text;
+              final sameText = currentText == lastSyncedText;
+              final offsetChanged = sel.baseOffset != lastSyncedOffset;
+              final hadPrevious = lastSyncedText != null;
+              lastSyncedText = currentText;
+              lastSyncedOffset = sel.baseOffset;
+              if (hadPrevious && sameText && offsetChanged) {
+                final newSize = _fontSizeAtCollapsedCursor(
                   ctrl,
                   RichTextSpans.parse(blocks[capturedIndex]['spans']),
                 );
+                if (pendingFontSize != newSize) {
+                  pendingFontSize = newSize;
+                  requestEditorRebuild?.call(() {});
+                }
               }
-            }
-            requestEditorRebuild?.call(() {});
-          });
+            });
+            fn = FocusNode();
+            fn.addListener(() {
+              if (fn.hasFocus) {
+                focusedBlockIndex = capturedIndex;
+                focusedItemIndex = -1;
+                final sel = ctrl.selection;
+                if (sel.isValid && sel.isCollapsed) {
+                  lastSyncedText = ctrl.text;
+                  lastSyncedOffset = sel.baseOffset;
+                  pendingFontSize = _fontSizeAtCollapsedCursor(
+                    ctrl,
+                    RichTextSpans.parse(blocks[capturedIndex]['spans']),
+                  );
+                }
+              }
+              requestEditorRebuild?.call(() {});
+            });
+          }
+
           blockControllers.add(ctrl);
           blockFocusNodes.add(fn);
           blockItemControllers.add(null);
@@ -350,34 +352,167 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           blockTableValueControllers.add(null);
           blockTableLabelFocusNodes.add(null);
           blockTableValueFocusNodes.add(null);
-        } else if (blocks[i]['type'] == 'calc_table') {
+
+        } else if (type == 'calc_table') {
           final rows = List<Map<String, dynamic>>.from(
             blocks[i]['rows'] ?? const [],
           );
-          blockTableLabelControllers.add(
-            rows
-                .map(
-                  (r) => TextEditingController(
-                    text: (r['label'] ?? '').toString(),
-                  ),
-                )
-                .toList(),
-          );
-          blockTableValueControllers.add(
-            rows
-                .map(
-                  (r) => TextEditingController(
-                    text: (r['value'] ?? '').toString(),
-                  ),
-                )
-                .toList(),
-          );
-          blockTableLabelFocusNodes.add(rows.map((_) => FocusNode()).toList());
-          blockTableValueFocusNodes.add(rows.map((_) => FocusNode()).toList());
+
+          List<TextEditingController> labelCtrls;
+          List<TextEditingController> valueCtrls;
+          List<FocusNode> labelFns;
+          List<FocusNode> valueFns;
+
+          if (prevType == 'calc_table' &&
+              i < prevLabelControllers.length &&
+              prevLabelControllers[i] != null) {
+            // Aynı konumdaki tablo: mevcut controller/node'ları koru,
+            // sayı değiştiyse farkı uygula.
+            final oldLabelCtrls = prevLabelControllers[i]!;
+            final oldValueCtrls = prevValueControllers[i]!;
+            final oldLabelFns   = prevLabelFocusNodes[i]!;
+            final oldValueFns   = prevValueFocusNodes[i]!;
+
+            labelCtrls = [];
+            valueCtrls = [];
+            labelFns   = [];
+            valueFns   = [];
+
+            for (int j = 0; j < rows.length; j++) {
+              if (j < oldLabelCtrls.length) {
+                final lc = oldLabelCtrls[j];
+                final vc = oldValueCtrls[j];
+                final lf = oldLabelFns[j];
+                final vf = oldValueFns[j];
+                final labelText = (rows[j]['label'] ?? '').toString();
+                final valueText = (rows[j]['value'] ?? '').toString();
+                if (lc.text != labelText) lc.text = labelText;
+                if (vc.text != valueText) vc.text = valueText;
+                labelCtrls.add(lc);
+                valueCtrls.add(vc);
+                labelFns.add(lf);
+                valueFns.add(vf);
+                usedControllers..add(lc)..add(vc);
+                usedFocusNodes..add(lf)..add(vf);
+              } else {
+                labelCtrls.add(TextEditingController(text: (rows[j]['label'] ?? '').toString()));
+                valueCtrls.add(TextEditingController(text: (rows[j]['value'] ?? '').toString()));
+                labelFns.add(FocusNode());
+                valueFns.add(FocusNode());
+              }
+            }
+          } else {
+            labelCtrls = rows.map((r) => TextEditingController(text: (r['label'] ?? '').toString())).toList();
+            valueCtrls = rows.map((r) => TextEditingController(text: (r['value'] ?? '').toString())).toList();
+            labelFns   = rows.map((_) => FocusNode()).toList();
+            valueFns   = rows.map((_) => FocusNode()).toList();
+          }
+
+          blockTableLabelControllers.add(labelCtrls);
+          blockTableValueControllers.add(valueCtrls);
+          blockTableLabelFocusNodes.add(labelFns);
+          blockTableValueFocusNodes.add(valueFns);
           blockControllers.add(null);
           blockFocusNodes.add(null);
           blockItemControllers.add(null);
           blockItemFocusNodes.add(null);
+
+        } else if (type == 'checklist') {
+          final items = List<Map<String, dynamic>>.from(
+            blocks[i]['items'] ?? const [],
+          );
+          final capturedBlockIndex = i;
+
+          List<TextEditingController> itemCtrls;
+          List<FocusNode> itemFns;
+
+          if (prevType == 'checklist' &&
+              i < prevItemControllers.length &&
+              prevItemControllers[i] != null) {
+            // Aynı konumdaki checklist: mevcut controller/node'ları koru.
+            final oldCtrls = prevItemControllers[i]!;
+            final oldFns   = prevItemFocusNodes[i]!;
+
+            itemCtrls = [];
+            itemFns   = [];
+
+            for (int j = 0; j < items.length; j++) {
+              final capturedItemIndex = j;
+              if (j < oldCtrls.length) {
+                final ctrl = oldCtrls[j];
+                final fn   = oldFns[j];
+                final newText = (items[j]['text'] ?? '').toString();
+                if (ctrl.text != newText) ctrl.text = newText;
+                itemCtrls.add(ctrl);
+                itemFns.add(fn);
+                usedControllers.add(ctrl);
+                usedFocusNodes.add(fn);
+              } else {
+                // Yeni eklenen madde.
+                final capturedItem = items[j];
+                final ctrl = RichBlockTextController(
+                  text: (capturedItem['text'] ?? '').toString(),
+                  getSpans: () {
+                    if (capturedBlockIndex >= blocks.length) return [];
+                    final blk = blocks[capturedBlockIndex];
+                    if (blk['type'] != 'checklist') return [];
+                    final its = blk['items'] as List?;
+                    if (its == null || capturedItemIndex >= its.length) return [];
+                    return RichTextSpans.parse((its[capturedItemIndex] as Map)['spans']);
+                  },
+                );
+                final fn = FocusNode();
+                fn.addListener(() {
+                  if (fn.hasFocus) {
+                    focusedBlockIndex = capturedBlockIndex;
+                    focusedItemIndex  = capturedItemIndex;
+                    requestEditorRebuild?.call(() {});
+                  }
+                });
+                itemCtrls.add(ctrl);
+                itemFns.add(fn);
+              }
+            }
+          } else {
+            // Yeni checklist bloğu — her şeyi sıfırdan kur.
+            itemCtrls = [];
+            itemFns   = [];
+            for (int j = 0; j < items.length; j++) {
+              final capturedItemIndex = j;
+              final capturedItem = items[j];
+              final ctrl = RichBlockTextController(
+                text: (capturedItem['text'] ?? '').toString(),
+                getSpans: () {
+                  if (capturedBlockIndex >= blocks.length) return [];
+                  final blk = blocks[capturedBlockIndex];
+                  if (blk['type'] != 'checklist') return [];
+                  final its = blk['items'] as List?;
+                  if (its == null || capturedItemIndex >= its.length) return [];
+                  return RichTextSpans.parse((its[capturedItemIndex] as Map)['spans']);
+                },
+              );
+              final fn = FocusNode();
+              fn.addListener(() {
+                if (fn.hasFocus) {
+                  focusedBlockIndex = capturedBlockIndex;
+                  focusedItemIndex  = capturedItemIndex;
+                  requestEditorRebuild?.call(() {});
+                }
+              });
+              itemCtrls.add(ctrl);
+              itemFns.add(fn);
+            }
+          }
+
+          blockItemControllers.add(itemCtrls);
+          blockItemFocusNodes.add(itemFns);
+          blockControllers.add(null);
+          blockFocusNodes.add(null);
+          blockTableLabelControllers.add(null);
+          blockTableValueControllers.add(null);
+          blockTableLabelFocusNodes.add(null);
+          blockTableValueFocusNodes.add(null);
+
         } else {
           blockControllers.add(null);
           blockFocusNodes.add(null);
@@ -389,6 +524,65 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           blockTableValueFocusNodes.add(null);
         }
       }
+
+      // Artık kullanılmayan eski controller/node'ları dispose et.
+      // Bunlar focus'ta olmayan node'lar olduğundan klavye etkilenmez.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        for (final c in prevControllers.whereType<TextEditingController>()) {
+          if (!usedControllers.contains(c)) c.dispose();
+        }
+        for (final list in prevItemControllers) {
+          if (list == null) continue;
+          for (final c in list) {
+            if (!usedControllers.contains(c)) c.dispose();
+          }
+        }
+        for (final list in prevLabelControllers) {
+          if (list == null) continue;
+          for (final c in list) {
+            if (!usedControllers.contains(c)) c.dispose();
+          }
+        }
+        for (final list in prevValueControllers) {
+          if (list == null) continue;
+          for (final c in list) {
+            if (!usedControllers.contains(c)) c.dispose();
+          }
+        }
+        for (final f in prevFocusNodes.whereType<FocusNode>()) {
+          if (!usedFocusNodes.contains(f)) {
+            if (f.hasFocus) f.unfocus();
+            f.dispose();
+          }
+        }
+        for (final list in prevItemFocusNodes) {
+          if (list == null) continue;
+          for (final f in list) {
+            if (!usedFocusNodes.contains(f)) {
+              if (f.hasFocus) f.unfocus();
+              f.dispose();
+            }
+          }
+        }
+        for (final list in prevLabelFocusNodes) {
+          if (list == null) continue;
+          for (final f in list) {
+            if (!usedFocusNodes.contains(f)) {
+              if (f.hasFocus) f.unfocus();
+              f.dispose();
+            }
+          }
+        }
+        for (final list in prevValueFocusNodes) {
+          if (list == null) continue;
+          for (final f in list) {
+            if (!usedFocusNodes.contains(f)) {
+              if (f.hasFocus) f.unfocus();
+              f.dispose();
+            }
+          }
+        }
+      });
     }
 
     void syncControllersAndFocusNodes() {
@@ -1093,7 +1287,183 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         focusedBlockIndex = idx + 2;
         final newFocusNode = blockFocusNodes[idx + 2];
         if (newFocusNode != null) {
-          Future.microtask(() => newFocusNode.requestFocus());
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              newFocusNode.requestFocus();
+            });
+          });
+        }
+      });
+    }
+
+    // ── Araç çubuğu: "Yapılacaklar Listesi Ekle" butonu ─────────────────────
+    // insertDividerBlock ile aynı desen: imlecin bulunduğu metin bloğu
+    // imleç konumundan ikiye bölünür, arasına boş bir 'checklist' bloğu
+    // eklenir. Blok en az bir boş maddeyle başlar; kullanıcı Enter'a basarak
+    // yeni madde ekleyebilir.
+    void insertChecklistBlock() {
+      if (noteType != 'text') return;
+      pushUndoCheckpoint();
+      requestEditorRebuild?.call(() {
+        int idx = focusedBlockIndex;
+
+        // ── Toggle: odaklı blok zaten 'checklist' ise ──
+        // Odaklı maddeyi checklist'ten çıkarıp düz metne dönüştür.
+        // Tek madde kaldıysa tüm blok düz metne döner;
+        // birden fazla madde varsa sadece odaklı madde çıkarılır,
+        // geri kalanlar checklist olarak devam eder.
+        if (idx >= 0 &&
+            idx < blocks.length &&
+            blocks[idx]['type'] == 'checklist') {
+          final items = List<Map<String, dynamic>>.from(
+            blocks[idx]['items'] ?? const [],
+          );
+          // Hangi madde odaklı?
+          final itemIdx = (focusedItemIndex >= 0 && focusedItemIndex < items.length)
+              ? focusedItemIndex
+              : 0;
+          final removedText = (items[itemIdx]['text'] ?? '').toString();
+
+          if (items.length <= 1) {
+            // Tek madde kaldı → tüm blok düz metne dönüşür (eski davranış).
+            final prevIsText = idx > 0 && blocks[idx - 1]['type'] == 'text';
+            final nextIsText =
+                idx < blocks.length - 1 && blocks[idx + 1]['type'] == 'text';
+            if (prevIsText && nextIsText) {
+              final prevText = (blocks[idx - 1]['text'] ?? '').toString();
+              final nextText = (blocks[idx + 1]['text'] ?? '').toString();
+              final sep = prevText.isNotEmpty && removedText.isNotEmpty ? '\n' : '';
+              final sep2 = (prevText + removedText).isNotEmpty && nextText.isNotEmpty ? '\n' : '';
+              blocks[idx - 1]['text'] = prevText + sep + removedText + sep2 + nextText;
+              blocks.removeAt(idx + 1);
+              blocks.removeAt(idx);
+              focusedBlockIndex = idx - 1;
+            } else if (prevIsText) {
+              final prevText = (blocks[idx - 1]['text'] ?? '').toString();
+              final sep = prevText.isNotEmpty && removedText.isNotEmpty ? '\n' : '';
+              blocks[idx - 1]['text'] = prevText + sep + removedText;
+              blocks.removeAt(idx);
+              focusedBlockIndex = idx - 1;
+            } else {
+              blocks[idx] = {'type': 'text', 'text': removedText};
+            }
+          } else {
+            // Birden fazla madde var → sadece odaklı maddeyi çıkar.
+            items.removeAt(itemIdx);
+            blocks[idx]['items'] = items;
+
+            // Çıkarılan maddenin metnini:
+            // - itemIdx == 0 ise checklist bloğunun önündeki metin bloğuna ekle
+            //   (yoksa yeni bir metin bloğu olarak önüne ekle).
+            // - itemIdx > 0 ise bir önceki maddenin hemen ardına metin bloğu
+            //   olarak araya ekle.
+            if (itemIdx == 0) {
+              final prevIsText = idx > 0 && blocks[idx - 1]['type'] == 'text';
+              if (prevIsText) {
+                final prevText = (blocks[idx - 1]['text'] ?? '').toString();
+                final sep = prevText.isNotEmpty && removedText.isNotEmpty ? '\n' : '';
+                blocks[idx - 1]['text'] = prevText + sep + removedText;
+                focusedBlockIndex = idx - 1;
+              } else {
+                blocks.insert(idx, {'type': 'text', 'text': removedText});
+                focusedBlockIndex = idx;
+                // checklist bloğu idx+1'e kaydı, focusedItemIndex güncelle
+              }
+            } else {
+              // Maddeyi checklist bloğundan sonra değil, ortasından çıkardık.
+              // Bloğu ikiye böl: [0..itemIdx-1] checklist, metin, [itemIdx..son] checklist.
+              final upperItems = items.sublist(0, itemIdx);
+              final lowerItems = items.sublist(itemIdx);
+              blocks[idx]['items'] = upperItems;
+              blocks.insert(idx + 1, {'type': 'text', 'text': removedText});
+              if (lowerItems.isNotEmpty) {
+                blocks.insert(idx + 2, {'type': 'checklist', 'items': lowerItems});
+              }
+              focusedBlockIndex = idx + 1;
+            }
+          }
+
+          if (blocks.isEmpty) {
+            blocks.add({'type': 'text', 'text': ''});
+            focusedBlockIndex = 0;
+          }
+          rebuildBlockControllers();
+          final targetIdx = focusedBlockIndex.clamp(0, blocks.length - 1);
+          focusedItemIndex = -1;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              blockFocusNodes[targetIdx]?.requestFocus();
+            });
+          });
+          return;
+        }
+
+        // ── Normal akış: odaklı blok bir metin bloğu, checklist ekle ──
+        if (idx < 0 ||
+            idx >= blocks.length ||
+            blocks[idx]['type'] != 'text') {
+          idx = blocks.lastIndexWhere((b) => b['type'] == 'text');
+          if (idx == -1) {
+            blocks.add({'type': 'text', 'text': ''});
+            idx = blocks.length - 1;
+          }
+        }
+        final controller = blockControllers[idx];
+        final text =
+            controller?.text.replaceAll(emptyTextSentinel, '') ??
+            (blocks[idx]['text'] ?? '').toString();
+        int offset = controller?.selection.baseOffset ?? -1;
+        if (offset < 0 || offset > text.length) {
+          offset = text.length;
+        }
+
+        // İmlecin bulunduğu satırın başını ve sonunu bul.
+        // Satır başı: offset'ten geriye doğru ilk '\n'den sonraki konum.
+        // Satır sonu: offset'ten ileriye doğru ilk '\n'nin konumu (yoksa
+        // metnin sonu). Satır sonu '\n' karakterini içermez; '\n' kendisi
+        // üst bloğun sonuna bırakılır ki alt metin bloğu yeni satırla başlamasın.
+        final lineStartIdx = _safeLastNewlineIndex(text, offset - 1) + 1;
+        final nextNewline = text.indexOf('\n', offset);
+        final lineEndIdx = nextNewline == -1 ? text.length : nextNewline;
+
+        // Satırdan önce kalan metin (varsa sondaki '\n' dahil).
+        final aboveText = text.substring(0, lineStartIdx);
+        // İmlecin bulunduğu satırın metni → checklist'in ilk maddesi olur.
+        final currentLineText = text.substring(lineStartIdx, lineEndIdx);
+        // Satırdan sonra kalan metin ('\n' sonrasından itibaren).
+        final belowText = nextNewline == -1
+            ? ''
+            : text.substring(nextNewline + 1);
+
+        blocks[idx]['text'] = aboveText.endsWith('\n')
+            ? aboveText.substring(0, aboveText.length - 1)
+            : aboveText;
+        blocks.insert(idx + 1, {
+          'type': 'checklist',
+          'items': [
+            {'text': currentLineText, 'checked': false},
+          ],
+        });
+        blocks.insert(idx + 2, {'type': 'text', 'text': belowText});
+
+        rebuildBlockControllers();
+
+        // Yeni eklenen checklist bloğunun ilk maddesine odaklan.
+        // Çift addPostFrameCallback kullanıyoruz: ilk frame'de
+        // rebuildBlockControllers'ın dispose callback'i çalışır,
+        // ikinci frame'de requestFocus yapılır — böylece klavye
+        // kapanıp açılmaz (titreme olmaz).
+        final newItemFocusNodes = blockItemFocusNodes[idx + 1];
+        if (newItemFocusNodes != null && newItemFocusNodes.isNotEmpty) {
+          focusedBlockIndex = idx + 1;
+          focusedItemIndex = 0;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (newItemFocusNodes.isNotEmpty) {
+                newItemFocusNodes[0].requestFocus();
+              }
+            });
+          });
         }
       });
     }
@@ -2761,17 +3131,19 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   final targetIdx = newFocusIdx;
                   final targetOffset = caretOffset;
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (targetIdx >= 0 &&
-                        targetIdx < blockControllers.length &&
-                        blockControllers[targetIdx] != null &&
-                        targetIdx < blockFocusNodes.length &&
-                        blockFocusNodes[targetIdx] != null) {
-                      blockFocusNodes[targetIdx]!.requestFocus();
-                      final c = blockControllers[targetIdx]!;
-                      c.selection = TextSelection.collapsed(
-                        offset: targetOffset.clamp(0, c.text.length),
-                      );
-                    }
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (targetIdx >= 0 &&
+                          targetIdx < blockControllers.length &&
+                          blockControllers[targetIdx] != null &&
+                          targetIdx < blockFocusNodes.length &&
+                          blockFocusNodes[targetIdx] != null) {
+                        blockFocusNodes[targetIdx]!.requestFocus();
+                        final c = blockControllers[targetIdx]!;
+                        c.selection = TextSelection.collapsed(
+                          offset: targetOffset.clamp(0, c.text.length),
+                        );
+                      }
+                    });
                   });
                 });
               }
@@ -2856,6 +3228,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     return '${ids.length} ek (fotoğraf/belge)';
                   case 'divider':
                     return 'Ayırıcı Çizgi';
+                  case 'checklist':
+                    final items = List<Map<String, dynamic>>.from(
+                      b['items'] ?? const [],
+                    );
+                    return 'Kontrol Listesi (${items.length} madde)';
                   default:
                     final t = (b['text'] ?? '').toString().trim();
                     return t.isEmpty ? '(boş metin)' : t;
@@ -2872,6 +3249,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     return Icons.attach_file;
                   case 'divider':
                     return Icons.horizontal_rule;
+                  case 'checklist':
+                    return Icons.checklist_rounded;
                   default:
                     return Icons.notes;
                 }
@@ -3345,9 +3724,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   blockTableLabelFocusNodes[idx + 1];
                               if (newLabelFns != null &&
                                   newLabelFns.isNotEmpty) {
-                                Future.microtask(
-                                  () => newLabelFns.first.requestFocus(),
-                                );
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    newLabelFns.first.requestFocus();
+                                  });
+                                });
                               }
                             });
                           } else if (value == 'drawing') {
@@ -3396,9 +3777,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               focusedBlockIndex = idx + 2;
                               final newFocusNode = blockFocusNodes[idx + 2];
                               if (newFocusNode != null) {
-                                Future.microtask(
-                                  () => newFocusNode.requestFocus(),
-                                );
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    newFocusNode.requestFocus();
+                                  });
+                                });
                               }
                             });
                           } else if (value == 'reorder_blocks') {
@@ -3958,6 +4341,185 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         }
                                       });
                                     }
+                                  },
+                                );
+                              }
+                              if (block['type'] == 'checklist') {
+                                final items = List<Map<String, dynamic>>.from(
+                                  block['items'] ?? const [],
+                                );
+                                final itemCtrls =
+                                    blockItemControllers[i] ??
+                                    <TextEditingController>[];
+                                final itemFns =
+                                    blockItemFocusNodes[i] ?? <FocusNode>[];
+                                final fontSize = index != null
+                                    ? ((_notes[index!]['fontSize'] as num?)
+                                              ?.toDouble() ??
+                                          _globalFontSize)
+                                    : _globalFontSize;
+                                return NoteChecklistBlock(
+                                  key: ValueKey('blk_checklist_$i'),
+                                  blockIndex: i,
+                                  items: items,
+                                  controllers: itemCtrls,
+                                  focusNodes: itemFns,
+                                  fontSize: fontSize,
+                                  textColor: _textColor,
+                                  onTextChanged: (j, val) {
+                                    noteTextEdited(
+                                      'checklist_${i}_$j',
+                                      itemCtrls[j],
+                                    );
+                                    final oldText = (items[j]['text'] ?? '').toString();
+                                    final cursorPos = itemCtrls[j].selection.baseOffset;
+                                    _shiftSpansForTextChange(
+                                      items[j],
+                                      oldText,
+                                      val,
+                                      cursorPosition: cursorPos >= 0 ? cursorPos : null,
+                                    );
+                                    items[j]['text'] = val;
+                                    block['items'] = items;
+                                  },
+                                  onToggle: (j) {
+                                    pushUndoCheckpoint();
+                                    setModalState(() {
+                                      items[j]['checked'] =
+                                          !(items[j]['checked'] as bool? ??
+                                              false);
+                                      block['items'] = items;
+                                    });
+                                  },
+                                  onAddItem: (j) {
+                                    pushUndoCheckpoint();
+                                    final newIndex = j + 1;
+                                    setModalState(() {
+                                      items.insert(newIndex, {
+                                        'text': '',
+                                        'checked': false,
+                                      });
+                                      block['items'] = items;
+                                      final capturedBlockIndex = i;
+                                      final capturedItemIndex = newIndex;
+                                      final newCtrl = RichBlockTextController(
+                                        text: '',
+                                        getSpans: () {
+                                          if (capturedBlockIndex >= blocks.length) return [];
+                                          final blk = blocks[capturedBlockIndex];
+                                          if (blk['type'] != 'checklist') return [];
+                                          final its = blk['items'] as List?;
+                                          if (its == null || capturedItemIndex >= its.length) return [];
+                                          return RichTextSpans.parse(
+                                            (its[capturedItemIndex] as Map)['spans'],
+                                          );
+                                        },
+                                      );
+                                      final newFn = FocusNode();
+                                      newFn.addListener(() {
+                                        if (newFn.hasFocus) {
+                                          focusedBlockIndex = capturedBlockIndex;
+                                          focusedItemIndex = capturedItemIndex;
+                                          requestEditorRebuild?.call(() {});
+                                        }
+                                      });
+                                      itemCtrls.insert(newIndex, newCtrl);
+                                      itemFns.insert(newIndex, newFn);
+                                    });
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                      if (newIndex < itemFns.length) {
+                                        itemFns[newIndex].requestFocus();
+                                      }
+                                    });
+                                  },
+                                  // Madde boşken Backspace'e basıldığında
+                                  // ya da çarpı ikonuna basıldığında
+                                  // çağrılır: madde checklist'ten çıkar,
+                                  // (varsa) metnini siler ve imleç aynı
+                                  // satırda kalacak şekilde boş bir düz
+                                  // metin satırına dönüştürür. Madde
+                                  // listenin başında/ortasında/sonunda
+                                  // olmasına göre checklist bloğu gerekirse
+                                  // ikiye bölünür (yalnızca "Liste" araç
+                                  // çubuğu toggle'ındaki bölme deseniyle
+                                  // aynı yaklaşım, bkz. insertChecklistBlock).
+                                  onConvertItemToText: (j) {
+                                    pushUndoCheckpoint();
+                                    int focusBlockIndex = i;
+                                    setModalState(() {
+                                      if (j < 0 || j >= items.length) return;
+                                      items.removeAt(j);
+                                      if (items.isEmpty) {
+                                        // Tek maddeydi: checklist bloğunun
+                                        // tamamı yerinde boş bir metin
+                                        // satırına dönüşür.
+                                        blocks[i] = {'type': 'text', 'text': ''};
+                                        focusBlockIndex = i;
+                                      } else if (j == 0) {
+                                        // İlk madde çıkarıldı: checklist'in
+                                        // önüne boş bir metin satırı eklenir.
+                                        block['items'] = items;
+                                        blocks.insert(
+                                          i,
+                                          {'type': 'text', 'text': ''},
+                                        );
+                                        focusBlockIndex = i;
+                                      } else if (j >= items.length) {
+                                        // Son madde çıkarıldı: checklist'in
+                                        // ardına boş bir metin satırı eklenir.
+                                        block['items'] = items;
+                                        blocks.insert(
+                                          i + 1,
+                                          {'type': 'text', 'text': ''},
+                                        );
+                                        focusBlockIndex = i + 1;
+                                      } else {
+                                        // Ortadan çıkarıldı: bloğu ikiye
+                                        // böl, arasına boş metin satırı koy.
+                                        final upperItems = items.sublist(0, j);
+                                        final lowerItems = items.sublist(j);
+                                        block['items'] = upperItems;
+                                        blocks.insert(
+                                          i + 1,
+                                          {'type': 'text', 'text': ''},
+                                        );
+                                        blocks.insert(i + 2, {
+                                          'type': 'checklist',
+                                          'items': lowerItems,
+                                        });
+                                        focusBlockIndex = i + 1;
+                                      }
+                                      if (blocks.isEmpty) {
+                                        blocks.add({
+                                          'type': 'text',
+                                          'text': '',
+                                        });
+                                        focusBlockIndex = 0;
+                                      }
+                                      rebuildBlockControllers();
+                                    });
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) {
+                                        final idx = focusBlockIndex.clamp(
+                                          0,
+                                          blockFocusNodes.length - 1,
+                                        );
+                                        final fn = blockFocusNodes[idx];
+                                        if (fn != null) {
+                                          fn.requestFocus();
+                                          final ctrl = blockControllers[idx];
+                                          if (ctrl != null) {
+                                            ctrl.selection =
+                                                TextSelection.collapsed(
+                                              offset: 0,
+                                            );
+                                          }
+                                        }
+                                      });
+                                    });
                                   },
                                 );
                               }
@@ -5254,9 +5816,15 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   // "Not Arka Planı" (palet) butonu artık üst
                                   // bardaki geri/ileri al ikonlarının yanında
                                   // (bkz. AppBar actions); burada değil.
-                                  // (Kaldırıldı) "Kontrol Listesi" butonu —
-                                  // checklist bloğu ekleme özelliği tamamen
-                                  // kaldırıldı.
+                                  Expanded(
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.checklist_rounded,
+                                      ),
+                                      tooltip: 'Yapılacaklar Listesi Ekle',
+                                      onPressed: insertChecklistBlock,
+                                    ),
+                                  ),
                                   Expanded(
                                     child: IconButton(
                                       icon: const Icon(Icons.keyboard_hide),
@@ -5491,16 +6059,19 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         final newCaretOffset = newLeft.length;
                                         WidgetsBinding.instance
                                             .addPostFrameCallback((_) {
-                                          final newCtrl =
-                                              blockControllers[idx];
-                                          if (newCtrl != null) {
-                                            newCtrl.selection =
-                                                TextSelection.collapsed(
-                                                  offset: newCaretOffset,
-                                                );
-                                            blockFocusNodes[idx]
-                                                ?.requestFocus();
-                                          }
+                                          WidgetsBinding.instance
+                                              .addPostFrameCallback((_) {
+                                            final newCtrl =
+                                                blockControllers[idx];
+                                            if (newCtrl != null) {
+                                              newCtrl.selection =
+                                                  TextSelection.collapsed(
+                                                    offset: newCaretOffset,
+                                                  );
+                                              blockFocusNodes[idx]
+                                                  ?.requestFocus();
+                                            }
+                                          });
                                         });
                                       });
                                     },
