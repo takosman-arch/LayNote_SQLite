@@ -13,6 +13,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
   List<Color> get _categoryPalette;
   Map<String, String?> get _categoryParents;
   set _categoryParents(Map<String, String?> value);
+  Set<String> get _collapsedCategories;
+  set _collapsedCategories(Set<String> value);
   List<Map<String, dynamic>> get _deletedNotes;
   set _deletedNotes(List<Map<String, dynamic>> value);
   void _enterSelectionMode(Map<String, dynamic> note);
@@ -307,7 +309,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     final hasAction = actionLabel != null && onAction != null;
     _snackOverlay = OverlayEntry(
       builder: (ctx) => Positioned(
-        bottom: MediaQuery.of(ctx).padding.bottom + 24,
+        // FAB: alt kenardan 16 boşluk + 56 yükseklik = 72. Üstüne 16 daha
+        // boşluk bırakarak bildirim, artı butonunu kapatmasın.
+        bottom: MediaQuery.of(ctx).padding.bottom + 72 + 16,
         left: 0,
         right: 0,
         child: Center(
@@ -1187,6 +1191,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         const SnackBar(
           content: Text('Parola yanlış.'),
           backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(left: 16, right: 16, bottom: 88),
         ),
       );
     }
@@ -1451,6 +1457,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                       _categoryColors[name] = colorHex;
                       if (parentCategory != null) {
                         _categoryParents[name] = parentCategory;
+                        // Üst klasör daraltılmışsa (alt klasörleri gizliyse)
+                        // yeni oluşturulan alt klasörün görünür olması için
+                        // otomatik olarak genişlet.
+                        _collapsedCategories.remove(parentCategory);
                       }
                     });
                     _saveData();
@@ -1491,7 +1501,52 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (sheetContext) => SafeArea(
+      builder: (sheetContext) {
+        // Tek bir kategori satırını (üst klasör ya da alt klasör) çizen
+        // yardımcı fonksiyon. Alt klasörler (isSub) girintili ve daha küçük
+        // bir "dallanma" ikonuyla gösterilerek üst klasörün altında
+        // hiyerarşik bir görünüm oluşturur.
+        Widget buildCategoryTile(String cat, {required bool isSub}) {
+          final isSelected = currentCategory == cat;
+          final catColor = _getCategoryColor(cat);
+          // Görünüm ana menü çekmecesindeki (_buildCategoryDrawerTile)
+          // klasör satırlarıyla BİREBİR aynı desende: büyük üst klasör (sol
+          // boşluk 16, ikon 24, yazı boyutu varsayılan), girintili küçük
+          // alt klasör (sol boşluk 40, ikon 20, yazı boyutu 14). Alt
+          // klasörler de artık çekmecedeki gibi aynı folder_outlined
+          // ikonunu kullanıyor (eskiden burada ayrı bir "dallanma" oku
+          // ikonu vardı). İkon rengi seçili olmayan durumda da
+          // SOLUKLAŞTIRILMAZ (drawer'da da yok).
+          return ListTile(
+            contentPadding: EdgeInsets.only(
+              left: isSub ? 40 : 16,
+              right: 16,
+            ),
+            leading: Icon(
+              Icons.folder_outlined,
+              size: isSub ? 20 : 24,
+              color: catColor,
+            ),
+            title: Text(
+              cat,
+              style: TextStyle(
+                fontSize: isSub ? 14 : null,
+                color: isSelected
+                    ? catColor
+                    : dNoteTextColor(sheetContext),
+              ),
+            ),
+            trailing: isSelected
+                ? Icon(Icons.check_circle, color: catColor)
+                : null,
+            onTap: () {
+              Navigator.pop(sheetContext);
+              assignCategory(cat);
+            },
+          );
+        }
+
+        return SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
           child: Column(
@@ -1548,34 +1603,21 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                   constraints: const BoxConstraints(maxHeight: 280),
                   child: ListView(
                     shrinkWrap: true,
-                    children: _categories.map((cat) {
-                      final isSelected = currentCategory == cat;
-                      final catColor = _getCategoryColor(cat);
-                      return ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: Icon(
-                          Icons.folder_outlined,
-                          color: isSelected
-                              ? catColor
-                              : catColor.withValues(alpha: 0.6),
-                        ),
-                        title: Text(
-                          cat,
-                          style: TextStyle(
-                            color: isSelected
-                                ? catColor
-                                : dNoteTextColor(sheetContext),
-                          ),
-                        ),
-                        trailing: isSelected
-                            ? Icon(Icons.check_circle, color: catColor)
-                            : null,
-                        onTap: () {
-                          Navigator.pop(sheetContext);
-                          assignCategory(cat);
-                        },
-                      );
-                    }).toList(),
+                    children: [
+                      // Önce üst seviye (ebeveyni olmayan) klasörler, hemen
+                      // ardından da o klasöre ait alt klasörler girintili
+                      // olarak listelenir; böylece düz alfabetik liste
+                      // yerine klasör/alt klasör hiyerarşisi görünür olur.
+                      for (final cat in _categories.where(
+                        (c) => _categoryParents[c] == null,
+                      )) ...[
+                        buildCategoryTile(cat, isSub: false),
+                        for (final sub in _categories.where(
+                          (c) => _categoryParents[c] == cat,
+                        ))
+                          buildCategoryTile(sub, isSub: true),
+                      ],
+                    ],
                   ),
                 ),
               ],
@@ -1603,7 +1645,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             ],
           ),
         ),
-      ),
+        );
+      },
     );
   }
 
@@ -2230,11 +2273,18 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                         });
                         _saveData();
                       } else if (key == 'archive') {
+                        final willArchive =
+                            !(_notes[noteIndex]['isArchived'] == true);
                         setState(() {
-                          _notes[noteIndex]['isArchived'] =
-                              !(_notes[noteIndex]['isArchived'] == true);
+                          _notes[noteIndex]['isArchived'] = willArchive;
                         });
                         _saveData();
+                        _showInfoBar(
+                          willArchive ? 'Not arşivlendi' : 'Arşivden çıkarıldı',
+                          icon: willArchive
+                              ? Icons.archive_outlined
+                              : Icons.unarchive_outlined,
+                        );
                       } else if (key == 'delete') {
                         _deleteNote(noteIndex);
                       } else if (key == 'classify') {
@@ -2603,6 +2653,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             duration: Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
             backgroundColor: Color(0xFF424242),
+            margin: EdgeInsets.only(left: 16, right: 16, bottom: 88),
           ),
         );
       }

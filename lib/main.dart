@@ -72,7 +72,6 @@ part 'pdf_export_service.dart';
 part 'note_screenshot_service.dart';
 part 'note_drawing_block.dart';
 part 'note_calc_table_block.dart';
-part 'note_bg_color_palette.dart';
 part 'note_checklist_block.dart';
 
 

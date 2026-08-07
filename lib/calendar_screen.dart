@@ -29,6 +29,61 @@ class _DayMarker {
       );
 }
 
+// Bir notun hatırlatıcısının verilen günde (tekrar sıklığı dahil) devreye
+// girip girmediğini belirler. Tekrarsız hatırlatıcılarda VE 'hourly'
+// (saatlik) tekrarda yalnızca kurulduğu gün eşleşir — saatlik tekrar bir
+// güne değil gün İÇİNDEKİ her saate bağlı olduğundan takvimde ileriye dönük
+// her günü işaretlemek anlamsız/gürültülü olurdu. Diğer tekrarlarda
+// (daily/weekly/monthly/yearly) ilk kurulduğu günden itibaren (geçmişe doğru
+// eşleşmez) sıklığa göre her uygun günde eşleşir. Ay/yıl bazlı tekrarlarda,
+// hedef gün o ayda yoksa (örn. 31'i kurulmuş ama Şubat'ta 28 gün varsa) o
+// ayın son gününe düşürülür — böylece hatırlatıcı hiç görünmeden geçmez.
+bool _reminderOccursOnDay(Map<String, dynamic> note, DateTime day) {
+  final raw = note['reminderDate']?.toString();
+  if (raw == null || raw.isEmpty) return false;
+  final base = DateTime.tryParse(raw);
+  if (base == null) return false;
+  final baseDay = DateTime(base.year, base.month, base.day);
+  final target = DateTime(day.year, day.month, day.day);
+  if (target.isBefore(baseDay)) return false;
+
+  final repeat = note['reminderRepeat']?.toString();
+  switch (repeat) {
+    case 'daily':
+      return true; // baseDay'den itibaren her gün tetiklenir.
+    case 'weekly':
+      return target.weekday == baseDay.weekday;
+    case 'monthly':
+      final daysInTargetMonth = DateTime(target.year, target.month + 1, 0).day;
+      final effectiveDay =
+          baseDay.day > daysInTargetMonth ? daysInTargetMonth : baseDay.day;
+      return target.day == effectiveDay;
+    case 'yearly':
+      if (target.month != base.month) return false;
+      final daysInTargetMonth = DateTime(target.year, target.month + 1, 0).day;
+      final effectiveDay =
+          baseDay.day > daysInTargetMonth ? daysInTargetMonth : baseDay.day;
+      return target.day == effectiveDay;
+    // 'hourly' de dahil: takvimde günlük bir tekrar kalıbı olarak temsil
+    // edilemeyecek türler ve tekrarsız hatırlatıcılar, yalnızca kurulduğu
+    // günde işaretlenir (ileriye dönük her günü boyamaz).
+    default:
+      return target.isAtSameMomentAs(baseDay);
+  }
+}
+
+// Belirli bir günde geçerli olan hatırlatıcının o güne özgü saat/dakikasını
+// (tekrarda saat, ilk kurulan hatırlatıcıdan miras alınır) döndürür; o günde
+// hatırlatıcı devrede değilse null.
+DateTime? _effectiveReminderOn(Map<String, dynamic> note, DateTime day) {
+  final raw = note['reminderDate']?.toString();
+  if (raw == null || raw.isEmpty) return null;
+  final base = DateTime.tryParse(raw);
+  if (base == null) return null;
+  if (!_reminderOccursOnDay(note, day)) return null;
+  return DateTime(day.year, day.month, day.day, base.hour, base.minute);
+}
+
 class _CalendarScreenState extends State<CalendarScreen> {
   static const List<String> _monthNamesTr = [
     'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
@@ -50,8 +105,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _selectedDay = DateTime.now();
   final DateTime _today = DateTime.now();
 
-  // 'yyyy-M-d' -> o güne ait not/hatırlatıcı işaretleri.
+  // 'yyyy-M-d' -> o güne ait NOT işaretleri (tekrar mantığı yok, tek gün).
   Map<String, _DayMarker> _markers = {};
+  // Hatırlatıcısı kurulu (kilitli olmayan) notlar. Tekrarlı hatırlatıcılar
+  // sabit bir güne değil bir KURALA bağlı olduğundan (örn. "her gün"),
+  // sonsuz kaydırılabilen takvimde önceden bir haritaya sığdırılamaz;
+  // bunun yerine her hücre çizilirken _reminderOccursOnDay ile o günde
+  // devrede olup olmadığı anlık hesaplanır.
+  List<Map<String, dynamic>> _reminderNotes = [];
 
   @override
   void initState() {
@@ -78,32 +139,32 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return DateTime(dt.year, dt.month, dt.day);
   }
 
-  // Notun hatırlatıcısının kurulu olduğu gün (varsa).
-  DateTime? _reminderDay(Map<String, dynamic> note) {
-    final raw = note['reminderDate']?.toString();
-    if (raw == null || raw.isEmpty) return null;
-    final dt = DateTime.tryParse(raw);
-    if (dt == null) return null;
-    return DateTime(dt.year, dt.month, dt.day);
-  }
-
   void _buildMarkers() {
     final map = <String, _DayMarker>{};
+    final reminders = <Map<String, dynamic>>[];
     for (final note in widget.notes) {
       if (note['isLocked'] == true) continue;
       final noteDay = _noteDay(note);
-      if (noteDay != null) {
+      // Bir notun "ait olduğu gün" (oluşturma/atama) ile o notun kendi
+      // hatırlatıcısının tetiklendiği gün ÇAKIŞIYORSA, aynı tek not için
+      // hem sarı hem mavi nokta göstermek gereksiz — sanki o günde iki
+      // farklı şey varmış izlenimi veriyordu. Bu durumda yalnızca mavi
+      // (hatırlatıcı) noktası bırakılır; sarı katkı bu not için atlanır.
+      // Başka bir notun o günü zaten sarı işaretlemiş olması bundan
+      // etkilenmez (harita OR mantığıyla dolduğu için).
+      final ownReminderSameDay =
+          noteDay != null && _reminderOccursOnDay(note, noteDay);
+      if (noteDay != null && !ownReminderSameDay) {
         final key = _dayKey(noteDay);
         map[key] = (map[key] ?? const _DayMarker()).copyWith(hasNote: true);
       }
-      final remDay = _reminderDay(note);
-      if (remDay != null) {
-        final key = _dayKey(remDay);
-        map[key] =
-            (map[key] ?? const _DayMarker()).copyWith(hasReminder: true);
+      final raw = note['reminderDate']?.toString();
+      if (raw != null && raw.isNotEmpty) {
+        reminders.add(note);
       }
     }
     _markers = map;
+    _reminderNotes = reminders;
   }
 
   @override
@@ -192,6 +253,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     today: _today,
                     selectedDay: _selectedDay,
                     markers: _markers,
+                    reminderNotes: _reminderNotes,
                     onDaySelected: (day) {
                       setState(() {
                         _selectedDay = day;
@@ -207,6 +269,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.amber,
+        onPressed: () => Navigator.pop(
+          context,
+          {'action': 'new', 'date': _selectedDay},
+        ),
+        child: const Icon(Icons.add, color: Colors.black, size: 30),
       ),
     );
   }
@@ -313,28 +383,30 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   // Seçili güne ait notları döndürür: o gün oluşturulmuş notlar VE/VEYA
-  // o gün için hatırlatıcısı kurulmuş notlar. Kilitli notlar, uygulamanın
-  // geri kalanında olduğu gibi burada da gösterilmez (gizlilik).
+  // o gün için hatırlatıcısı DEVREDE olan notlar (tekrarlı hatırlatıcılarda
+  // bu, ilk kurulan gün değil, kurala göre bugün de eşleşen herhangi bir
+  // gün olabilir). Kilitli notlar, uygulamanın geri kalanında olduğu gibi
+  // burada da gösterilmez (gizlilik).
   List<Map<String, dynamic>> _notesForSelectedDay() {
     final result = <Map<String, dynamic>>[];
     for (final note in widget.notes) {
       if (note['isLocked'] == true) continue;
       final noteDay = _noteDay(note);
-      final remDay = _reminderDay(note);
       final matchesNote = noteDay != null && _isSameDay(noteDay, _selectedDay);
-      final matchesReminder =
-          remDay != null && _isSameDay(remDay, _selectedDay);
+      final matchesReminder = _reminderOccursOnDay(note, _selectedDay);
       if (matchesNote || matchesReminder) {
         result.add(note);
       }
     }
     result.sort((a, b) {
-      DateTime? timeOf(Map<String, dynamic> n) =>
-          DateTime.tryParse((n['reminderDate'] ?? n['createdDate'] ?? '').toString());
-      final ad = timeOf(a);
-      final bd = timeOf(b);
-      if (ad == null || bd == null) return 0;
-      return ad.compareTo(bd);
+      // Tekrarlı bir hatırlatıcı bugün eşleşiyorsa, sıralamada notun ilk
+      // kurulduğu (muhtemelen geçmiş) tarihi değil, BUGÜNKÜ saatini esas
+      // alırız; yoksa oluşturulma tarihine düşülür.
+      DateTime timeOf(Map<String, dynamic> n) =>
+          _effectiveReminderOn(n, _selectedDay) ??
+          DateTime.tryParse((n['createdDate'] ?? '').toString()) ??
+          _selectedDay;
+      return timeOf(a).compareTo(timeOf(b));
     });
     return result;
   }
@@ -454,8 +526,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       return _DayNoteTile(
                         note: note,
                         day: _selectedDay,
-                        onTap: () =>
-                            Navigator.pop(context, note['id']?.toString()),
+                        onTap: () => Navigator.pop(
+                          context,
+                          {'action': 'open', 'id': note['id']?.toString()},
+                        ),
                       );
                     },
                   ),
@@ -478,9 +552,6 @@ class _DayNoteTile extends StatelessWidget {
     required this.onTap,
   });
 
-  bool _isSameDay(DateTime a, DateTime b) =>
-      a.year == b.year && a.month == b.month && a.day == b.day;
-
   @override
   Widget build(BuildContext context) {
     final rawTitle = note['title']?.toString().trim() ?? '';
@@ -491,12 +562,18 @@ class _DayNoteTile extends StatelessWidget {
     final primaryText = hasTitle ? rawTitle : content;
 
     String? reminderLabel;
-    final remRaw = note['reminderDate']?.toString();
-    if (remRaw != null && remRaw.isNotEmpty) {
-      final remDt = DateTime.tryParse(remRaw);
-      if (remDt != null && _isSameDay(remDt, day)) {
-        final hh = remDt.hour.toString().padLeft(2, '0');
-        final mm = remDt.minute.toString().padLeft(2, '0');
+    bool isRepeatingOccurrence = false;
+    final effectiveReminder = _effectiveReminderOn(note, day);
+    if (effectiveReminder != null) {
+      final repeat = note['reminderRepeat']?.toString();
+      isRepeatingOccurrence = repeat != null && repeat.isNotEmpty;
+      if (repeat == 'hourly') {
+        // Saatlik tekrarda tek bir saat göstermek yanıltıcı olur (o gün
+        // boyunca her saat başı tetiklenir); sabit saat yerine bunu belirtiriz.
+        reminderLabel = 'Her saat';
+      } else {
+        final hh = effectiveReminder.hour.toString().padLeft(2, '0');
+        final mm = effectiveReminder.minute.toString().padLeft(2, '0');
         reminderLabel = '$hh:$mm';
       }
     }
@@ -561,8 +638,10 @@ class _DayNoteTile extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.notifications,
+                    Icon(
+                      isRepeatingOccurrence
+                          ? Icons.repeat
+                          : Icons.notifications,
                       size: 12,
                       color: Colors.lightBlueAccent,
                     ),
@@ -592,6 +671,9 @@ class _MonthGrid extends StatelessWidget {
   final DateTime today;
   final DateTime selectedDay;
   final Map<String, _DayMarker> markers;
+  // Hatırlatıcısı kurulu notlar; her hücrede _reminderOccursOnDay ile
+  // tekrar kuralına göre devrede olup olmadığı kontrol edilir.
+  final List<Map<String, dynamic>> reminderNotes;
   final ValueChanged<DateTime> onDaySelected;
 
   const _MonthGrid({
@@ -599,6 +681,7 @@ class _MonthGrid extends StatelessWidget {
     required this.today,
     required this.selectedDay,
     required this.markers,
+    required this.reminderNotes,
     required this.onDaySelected,
   });
 
@@ -651,13 +734,16 @@ class _MonthGrid extends StatelessWidget {
           final marker =
               markers[_CalendarScreenState._dayKey(cell.date)] ??
                   const _DayMarker();
+          final hasReminder = reminderNotes.any(
+            (n) => _reminderOccursOnDay(n, cell.date),
+          );
           return _DayCellWidget(
             date: cell.date,
             inCurrentMonth: cell.inCurrentMonth,
             isToday: _isSameDay(cell.date, today),
             isSelected: _isSameDay(cell.date, selectedDay),
             hasNote: marker.hasNote,
-            hasReminder: marker.hasReminder,
+            hasReminder: hasReminder,
             onTap: () => onDaySelected(cell.date),
           );
         },

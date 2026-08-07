@@ -24,6 +24,7 @@ class NoteChecklistBlock extends StatelessWidget {
     required this.onTextChanged,
     required this.onAddItem,
     required this.onConvertItemToText,
+    required this.onReorder,
   });
 
   /// Bu bloğun blocks listesindeki indeksi (yalnızca ValueKey için).
@@ -53,6 +54,13 @@ class NoteChecklistBlock extends StatelessWidget {
   /// aynı satırda kalacak şekilde boş bir düz metin satırına dönüşür.
   final void Function(int itemIndex) onConvertItemToText;
 
+  /// Sürükleme tutamacıyla bir madde başka bir konuma taşındığında
+  /// çağrılır. [oldIndex] ve [newIndex], ReorderableListView'ın standart
+  /// semantiğiyle verilir (newIndex, öğe eski listeden çıkarılmadan
+  /// ÖNCEKİ hedef konumu ifade eder — çağıran taraf gerekirse kendi
+  /// düzeltmesini yapar).
+  final void Function(int oldIndex, int newIndex) onReorder;
+
   @override
   Widget build(BuildContext context) {
     final effectiveColor = dNoteEffectiveTextColor(context, textColor);
@@ -64,14 +72,33 @@ class NoteChecklistBlock extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Madde listesi — bloğu sil butonu ilk madde satırının sonunda
-          Column(
-            mainAxisSize: MainAxisSize.min,
+          ReorderableListView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            buildDefaultDragHandles: false,
+            proxyDecorator: (child, index, animation) => Material(
+              color: Colors.transparent,
+              child: child,
+            ),
+            onReorder: onReorder,
             children: [
               for (int j = 0; j < items.length; j++)
                 Row(
                   key: ValueKey('checklist_${blockIndex}_item_$j'),
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    // Sürükleme tutamacı — satırı yeniden sıralamak için.
+                    ReorderableDragStartListener(
+                      index: j,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: Icon(
+                          Icons.drag_indicator_rounded,
+                          color: Colors.grey[400],
+                          size: fontSize + 4,
+                        ),
+                      ),
+                    ),
                     // Checkbox
                     GestureDetector(
                       onTap: () => onToggle(j),
@@ -126,7 +153,7 @@ class NoteChecklistBlock extends StatelessWidget {
                                 ? TextDecoration.lineThrough
                                 : TextDecoration.none,
                             decorationColor: items[j]['checked'] == true
-                                ? effectiveColor?.withOpacity(0.75)
+                                ? Colors.grey[300]
                                 : effectiveColor?.withOpacity(0.75),
                             decorationStyle: TextDecorationStyle.solid,
                           ),

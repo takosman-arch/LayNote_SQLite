@@ -61,7 +61,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   void _showAddCategoryDialog({ void Function(String)? onAdded, String? editingCategory, String? parentCategory, });
   void _showClassifyDialogForSelection();
   void _showNoteActions( BuildContext ctx, int noteIndex, bool isTrash, { DateTime? editorReminder, String? editorReminderRepeat, void Function(DateTime? reminder, String? repeat)? onReminderChanged, VoidCallback? onDiscard, void Function(String text)? onInsertText, bool showSelectAction = false, });
-  void _showNoteDialog({ int? index, String type = 'text', String? initialText, });
+  void _showNoteDialog({ int? index, String type = 'text', String? initialText, DateTime? initialAssignedDate, });
   String get _sortCriteria;
   set _sortCriteria(String value);
   Color? get _textColor;
@@ -261,7 +261,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
           actions: _isSelectionMode
               ? [
                   IconButton(
-                    icon: const Icon(Icons.delete_outline, color: Colors.amber),
+                    icon: const Icon(Icons.delete_outline, color: Colors.red),
                     tooltip: 'Sil',
                     onPressed: _deleteSelectedNotes,
                   ),
@@ -780,7 +780,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     ),
                     onTap: () async {
                       Navigator.pop(context);
-                      final tappedNoteId = await Navigator.push<String>(
+                      final result = await Navigator.push<Map<String, dynamic>>(
                         context,
                         MaterialPageRoute(
                           builder: (_) => CalendarScreen(
@@ -788,12 +788,22 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                           ),
                         ),
                       );
-                      if (!mounted || tappedNoteId == null) return;
-                      final index = _notes.indexWhere(
-                        (n) => n['id']?.toString() == tappedNoteId,
-                      );
-                      if (index != -1) {
-                        _openNoteWithPasswordCheck(index);
+                      if (!mounted || result == null) return;
+
+                      if (result['action'] == 'new') {
+                        _showNoteDialog(
+                          type: 'text',
+                          initialAssignedDate: result['date'] as DateTime,
+                        );
+                      } else if (result['action'] == 'open') {
+                        final tappedNoteId = result['id'] as String?;
+                        if (tappedNoteId == null) return;
+                        final index = _notes.indexWhere(
+                          (n) => n['id']?.toString() == tappedNoteId,
+                        );
+                        if (index != -1) {
+                          _openNoteWithPasswordCheck(index);
+                        }
                       }
                     },
                   ),
@@ -956,22 +966,19 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       final isSelected =
                           _isSelectionMode &&
                           _selectedNoteKeys.contains(_noteKey(note));
-                      // Not arka plan rengi (palet ikonundan seçilmiş) varsa
-                      // her şeyin önüne geçer — renkli notlar açık olsa
-                      // (colorfulNotes) bile kullanıcının bilinçli olarak
-                      // seçtiği pastel renk gösterilir.
-                      final noteBgColorValue = note['bgColor'] as int?;
-                      final baseNoteCardColor = noteBgColorValue != null
-                          ? Color(noteBgColorValue)
-                          : (_colorfulNotes
-                                ? _categoryPalette[(originalIndex < 0
-                                              ? 0
-                                              : originalIndex) %
-                                          _categoryPalette.length]
-                                      .withValues(alpha: 0.75)
-                                : (dNoteIsDark(context)
-                                      ? const Color(0xFF2D2D2D)
-                                      : Theme.of(context).cardColor));
+                      // Not arka planı (palet) özelliği kaldırıldı: kart
+                      // rengi artık her zaman colorfulNotes/kategori rengi
+                      // mantığıyla belirlenir, kaydedilmiş eski bgColor
+                      // değeri olsa bile dikkate alınmaz.
+                      final baseNoteCardColor = _colorfulNotes
+                          ? _categoryPalette[(originalIndex < 0
+                                        ? 0
+                                        : originalIndex) %
+                                    _categoryPalette.length]
+                                .withValues(alpha: 0.75)
+                          : (dNoteIsDark(context)
+                                ? const Color(0xFF2D2D2D)
+                                : Theme.of(context).cardColor);
                       // Seçili notlar, dokununca beliren parlaklık efektiyle
                       // aynı tonda (amber) sürekli vurgulanır.
                       final noteCardColor = isSelected
@@ -1364,7 +1371,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                       : Icons
                                                             .check_box_outline_blank_rounded,
                                                   color: Colors.amber,
-                                                  size: 13,
+                                                  size: 16,
                                                 ),
                                                 const SizedBox(width: 6),
                                                 Expanded(child: textWidget),
@@ -1416,7 +1423,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                 ? Icons.access_time
                                                 : Icons.repeat,
                                             color: Colors.grey,
-                                            size: 16,
+                                            size: 20,
                                           ),
                                           const SizedBox(width: 4),
                                           Flexible(
@@ -1451,7 +1458,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                             Icon(
                                               Icons.folder_outlined,
                                               color: Colors.grey,
-                                              size: 16,
+                                              size: 20,
                                             ),
                                             const SizedBox(width: 4),
                                             Flexible(
@@ -1875,18 +1882,15 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     final isFavorite = note['isFavorite'] == true;
     final isSelected =
         _isSelectionMode && _selectedNoteKeys.contains(_noteKey(note));
-    // Bkz. liste görünümündeki aynı isimli açıklama: seçilmiş not arka
-    // plan rengi varsa colorfulNotes/kategori rengi mantığının önüne geçer.
-    final noteBgColorValue = note['bgColor'] as int?;
-    final baseGridCardColor = noteBgColorValue != null
-        ? Color(noteBgColorValue)
-        : (_colorfulNotes
-              ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) %
-                        _categoryPalette.length]
-                    .withValues(alpha: 0.75)
-              : (dNoteIsDark(context)
-                    ? const Color(0xFF2D2D2D)
-                    : Theme.of(context).cardColor));
+    // Not arka planı (palet) özelliği kaldırıldı: bkz. liste görünümündeki
+    // aynı isimli açıklama.
+    final baseGridCardColor = _colorfulNotes
+        ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) %
+                  _categoryPalette.length]
+              .withValues(alpha: 0.75)
+        : (dNoteIsDark(context)
+              ? const Color(0xFF2D2D2D)
+              : Theme.of(context).cardColor);
     // Seçili notlar, dokununca beliren parlaklık efektiyle aynı tonda
     // (amber) sürekli vurgulanır.
     final gridCardColor = isSelected
@@ -2229,7 +2233,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                         : Icons
                                                               .check_box_outline_blank_rounded,
                                                     color: Colors.amber,
-                                                    size: 13,
+                                                    size: 16,
                                                   ),
                                                   const SizedBox(width: 4),
                                                   Expanded(child: textWidget),
@@ -2264,7 +2268,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                     ? Icons.access_time
                                     : Icons.repeat,
                                 color: Colors.grey,
-                                size: 16,
+                                size: 20,
                               ),
                               const SizedBox(width: 4),
                               Flexible(
@@ -2295,7 +2299,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                               Icon(
                                 Icons.folder_outlined,
                                 color: Colors.grey,
-                                size: 16,
+                                size: 20,
                               ),
                               const SizedBox(width: 4),
                               Flexible(

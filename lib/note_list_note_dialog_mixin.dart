@@ -6,6 +6,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   // ---- Diğer mixin'lerde tanımlı, burada kullanılan üyeler ----
   Widget _buildAttachmentGrid({ required List<String> ids, required List<Map<String, dynamic>> attachmentsList, required void Function(String id) onRemove, required void Function(Map<String, dynamic> att) onOpen, required String? deletingId, required void Function(String? id) onDeletingIdChanged, });
   Widget _buildDocPreview(Map<String, dynamic> att, String filePath);
+  // Çekmecede seçili aktif kategori ('__reminders__' = Hatırlatıcı bölümü).
+  // Gerçek tanımı NoteListDataCategoryMixin'de; burada sadece bu mixin'in
+  // erişebilmesi için abstract olarak bildiriliyor.
+  String get _activeCategory;
   List<Color> get _categoryPalette;
   bool get _colorfulNotes;
   set _colorfulNotes(bool value);
@@ -55,7 +59,20 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // Başka bir uygulamadan paylaşılan link/metin buraya gelir; yalnızca
     // yeni not oluştururken (index == null) kullanılır.
     String? initialText,
+    // Takvim ekranından "bu güne not ekle" ile açıldığında, notun
+    // varsayılan olarak atanacağı gün. Yalnızca yeni not oluştururken
+    // (index == null) kullanılır; düzenlemede notun kendi tarihi
+    // (satır ~2425'teki yükleme) geçerlidir ve bu değeri ezer.
+    DateTime? initialAssignedDate,
   }) {
+    // Diyalog KAPANIRKEN "yeni not oluşturma akışıydı mı?" kontrolü için.
+    // `index` parametresi diyalog içinde (kategori seçilirken, bkz. aşağıda
+    // ~satır 5360) güncellenebildiğinden, bu bilgiyi en başta sabitliyoruz.
+    final bool isNewNote = index == null;
+    // Hatırlatıcı penceresi bir kez gösterildikten sonra (kullanıcı seçim
+    // yapsın ya da iptal etsin), bir SONRAKİ geri basışta artık tekrar
+    // sorulmadan normal kaydet+çık akışına devam edilir.
+    bool reminderPromptShown = false;
     String noteDate = "";
     String noteType = type;
     // Not: TextField'ın onChanged'i tetiklendiğinde Flutter, controller'ın
@@ -84,7 +101,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     String? noteReminderRepeat;
     // Notun takvimde hangi güne ait sayılacağı (kullanıcı isterse takvimden
     // farklı bir gün seçebilir; seçmezse oluşturulma/mevcut tarih kullanılır).
-    DateTime noteAssignedDate = DateTime.now();
+    DateTime noteAssignedDate = initialAssignedDate ?? DateTime.now();
 
     // ── İçerik blokları (metin + araya eklenen fotoğraf/belge grupları) ──
     List<Map<String, dynamic>> blocks = [];
@@ -1279,13 +1296,27 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         final leftText = text.substring(0, offset);
         final rightText = text.substring(offset);
 
-        blocks[idx]['text'] = leftText;
-        blocks.insert(idx + 1, {'type': 'divider'});
-        blocks.insert(idx + 2, {'type': 'text', 'text': rightText});
+        // DÜZELTME (checklist'teki ile aynı sorun): leftText boşsa (imleç
+        // metnin en başındaysa), ayrı bir boş metin bloğu bırakmak yerine
+        // idx'teki blok doğrudan divider'a dönüştürülür — aksi halde boş
+        // TextField kendi satır yüksekliğini kaplayıp divider'ı bir alt
+        // satıra itiyormuş gibi gösteriyordu.
+        final int dividerIdx;
+        if (leftText.isEmpty) {
+          blocks[idx] = {'type': 'divider'};
+          dividerIdx = idx;
+        } else {
+          blocks[idx]['text'] = leftText;
+          blocks.insert(idx + 1, {'type': 'divider'});
+          dividerIdx = idx + 1;
+        }
+        if (rightText.isNotEmpty) {
+          blocks.insert(dividerIdx + 1, {'type': 'text', 'text': rightText});
+        }
 
         rebuildBlockControllers();
-        focusedBlockIndex = idx + 2;
-        final newFocusNode = blockFocusNodes[idx + 2];
+        focusedBlockIndex = dividerIdx + 1;
+        final newFocusNode = blockFocusNodes[dividerIdx + 1];
         if (newFocusNode != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -1435,16 +1466,44 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
             ? ''
             : text.substring(nextNewline + 1);
 
-        blocks[idx]['text'] = aboveText.endsWith('\n')
+        final finalAboveText = aboveText.endsWith('\n')
             ? aboveText.substring(0, aboveText.length - 1)
             : aboveText;
-        blocks.insert(idx + 1, {
-          'type': 'checklist',
-          'items': [
-            {'text': currentLineText, 'checked': false},
-          ],
-        });
-        blocks.insert(idx + 2, {'type': 'text', 'text': belowText});
+
+        // DÜZELTME (checklist bir alt satıra ekleniyordu): finalAboveText
+        // boşsa (checklist'e dönüştürülen satır, metin bloğundaki tek/ilk
+        // satırsa), eskiden yine de blocks[idx] boş bir metin bloğu olarak
+        // listede bırakılıyordu. Her blok kendi widget'ı/kendi boşluğuyla
+        // render edildiğinden, bu boş metin bloğu checklist'in ÜSTÜNDE
+        // fazladan bir satır gibi görünüyor, checklist de görsel olarak bir
+        // alt satıra kaymış gibi duruyordu. Aynısı belowText için de
+        // (checklist'in ALTINDA fazladan boş satır) geçerliydi. Şimdi: üst
+        // taraf boşsa ayrı blok bırakmak yerine idx'teki bloğun kendisi
+        // checklist'e dönüştürülüyor; alt taraf boşsa hiç blok eklenmiyor
+        // (rebuildBlockControllers zaten listenin metinle bitmesini
+        // garanti ediyor).
+        final int checklistIdx;
+        if (finalAboveText.isEmpty) {
+          blocks[idx] = {
+            'type': 'checklist',
+            'items': [
+              {'text': currentLineText, 'checked': false},
+            ],
+          };
+          checklistIdx = idx;
+        } else {
+          blocks[idx]['text'] = finalAboveText;
+          blocks.insert(idx + 1, {
+            'type': 'checklist',
+            'items': [
+              {'text': currentLineText, 'checked': false},
+            ],
+          });
+          checklistIdx = idx + 1;
+        }
+        if (belowText.isNotEmpty) {
+          blocks.insert(checklistIdx + 1, {'type': 'text', 'text': belowText});
+        }
 
         rebuildBlockControllers();
 
@@ -1453,9 +1512,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         // rebuildBlockControllers'ın dispose callback'i çalışır,
         // ikinci frame'de requestFocus yapılır — böylece klavye
         // kapanıp açılmaz (titreme olmaz).
-        final newItemFocusNodes = blockItemFocusNodes[idx + 1];
+        final newItemFocusNodes = blockItemFocusNodes[checklistIdx];
         if (newItemFocusNodes != null && newItemFocusNodes.isNotEmpty) {
-          focusedBlockIndex = idx + 1;
+          focusedBlockIndex = checklistIdx;
           focusedItemIndex = 0;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -2414,7 +2473,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       noteDate = _notes[index]['date'] ?? "";
       noteType = _notes[index]['type'] ?? 'text';
       noteCategory = _notes[index]['category'] as String?;
-      noteBgColor = _notes[index]['bgColor'] as int?;
+      // Not arka planı özelliği kaldırıldı: eskiden kaydedilmiş bir
+      // bgColor olsa bile artık okunmuyor, notlar her zaman varsayılan
+      // (arka plansız) görünümle açılır.
       final rawReminder = _notes[index]['reminderDate'];
       if (rawReminder != null && rawReminder.toString().isNotEmpty) {
         noteReminder = DateTime.tryParse(rawReminder.toString());
@@ -3513,6 +3574,30 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     setModalState(() => deletingAttachmentId = null);
                     return;
                   }
+                  // Çekmece → Hatırlatıcı bölümünden yeni not eklenirken:
+                  // ilk geri basışta notu kaydedip kapatmak yerine, önce
+                  // hatırlatıcı seçme penceresini aç. Kullanıcı bir tarih
+                  // seçebilir ya da pencereyi iptal edebilir; ikisinde de
+                  // reminderPromptShown true olur ve BİR SONRAKİ geri
+                  // basışta normal kaydet+çık akışı çalışır.
+                  if (isNewNote &&
+                      _activeCategory == '__reminders__' &&
+                      noteReminder == null &&
+                      !reminderPromptShown) {
+                    reminderPromptShown = true;
+                    _handleReminderRowTap(
+                      context: context,
+                      currentReminder: null,
+                      currentRepeat: null,
+                      onChanged: (reminder, repeat) {
+                        setModalState(() {
+                          noteReminder = reminder;
+                          noteReminderRepeat = repeat;
+                        });
+                      },
+                    );
+                    return;
+                  }
                   final saved = _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDate, noteReminderRepeat, noteBgColor);
                   SystemChrome.setSystemUIOverlayStyle(
                     dNoteSystemBarsStyle(context),
@@ -3535,16 +3620,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   });
                 },
                 child: Scaffold(
-                  // noteBgColor seçiliyse (palet ikonundan) o renk; aksi
-                  // halde eskisi gibi temanın kart rengi kullanılır.
-                  backgroundColor: noteBgColor != null
-                      ? Color(noteBgColor!)
-                      : Theme.of(context).cardColor,
+                  // Not arka planı (palet) özelliği kaldırıldı: artık
+                  // her zaman temanın varsayılan rengi kullanılır.
+                  backgroundColor: Theme.of(context).cardColor,
                   resizeToAvoidBottomInset: true,
                   appBar: AppBar(
-                    backgroundColor: noteBgColor != null
-                        ? Color(noteBgColor!)
-                        : dNoteHeaderColor(context),
+                    backgroundColor: dNoteHeaderColor(context),
                     leading: IconButton(
                       icon: Icon(
                         Icons.arrow_back_ios,
@@ -3553,6 +3634,28 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                       onPressed: () {
                         if (deletingAttachmentId != null) {
                           setModalState(() => deletingAttachmentId = null);
+                          return;
+                        }
+                        // Bkz. PopScope'taki aynı isimli blok: yeni not +
+                        // Hatırlatıcı bölümü + henüz hatırlatıcı yoksa,
+                        // ilk basışta kapatmak yerine hatırlatıcı seçme
+                        // penceresini aç.
+                        if (isNewNote &&
+                            _activeCategory == '__reminders__' &&
+                            noteReminder == null &&
+                            !reminderPromptShown) {
+                          reminderPromptShown = true;
+                          _handleReminderRowTap(
+                            context: context,
+                            currentReminder: null,
+                            currentRepeat: null,
+                            onChanged: (reminder, repeat) {
+                              setModalState(() {
+                                noteReminder = reminder;
+                                noteReminderRepeat = repeat;
+                              });
+                            },
+                          );
                           return;
                         }
                         final saved = _saveNoteIfValid(
@@ -3639,33 +3742,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               }
                             : null,
                       ),
-                      // "Not Arka Planı" (palet) butonu: eskiden zengin metin
-                      // araç çubuğunun (bkz. showBgColorSubToolbar) bir
-                      // parçasıydı ve yalnızca bir metin/kontrol listesi
-                      // öğesi odaklanmışken görünüyordu; kullanıcı isteğiyle
-                      // buraya, geri/ileri al ikonlarının yanına taşındı ki
-                      // klavye kapalıyken de erişilebilsin. Tıklanınca aynı
-                      // showBgColorSubToolbar mekanizması üzerinden alt
-                      // araç çubuğunda renk kartelası açılır (bkz. aşağıdaki
-                      // Builder, artık showBgColorSubToolbar true olduğunda
-                      // odak şartı olmadan da gösteriliyor).
-                      IconButton(
-                        tooltip: 'Not Arka Planı',
-                        icon: Icon(
-                          Icons.palette,
-                          color: noteBgColor != null
-                              ? Color(noteBgColor!)
-                              : dNoteEditorAppBarColor(context),
-                        ),
-                        onPressed: () {
-                          showBgColorSubToolbar = !showBgColorSubToolbar;
-                          showListSubToolbar = false;
-                          showStyleSubToolbar = false;
-                          showColorSubToolbar = false;
-                          showFontSizeSubToolbar = false;
-                          setModalState(() {});
-                        },
-                      ),
+                      // "Not Arka Planı" (palet) seçeneği artık aşağıdaki
+                      // üç nokta (PopupMenuButton) menüsünün en üstünde
+                      // (bkz. itemBuilder içindeki 'note_bg_color' öğesi);
+                      // tıklanınca aynı showBgColorSubToolbar mekanizması
+                      // üzerinden alt araç çubuğunda renk kartelası açılır.
                       // Not üzerindeki ek özellikler menüsü: "Hesap Tablosu
                       // Ekle"; ileride aynı ikonun altına yeni seçenekler
                       // eklenebilir. (Checklist ekleme özelliği kaldırıldı.)
@@ -3958,6 +4039,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           }
                         },
                         itemBuilder: (_) => [
+                          // "Not Arka Planı" (palet) menü öğesi kaldırıldı:
+                          // artık notlarda arka plan rengi seçilemiyor.
                           if (noteType == 'text')
                             const PopupMenuItem(
                               value: 'calc_table',
@@ -4426,11 +4509,24 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       itemCtrls.insert(newIndex, newCtrl);
                                       itemFns.insert(newIndex, newFn);
                                     });
+                                    // Çift addPostFrameCallback: ilk frame'de
+                                    // setModalState sonrası widget ağacı
+                                    // (yeni controller/focus node) kurulur,
+                                    // ikinci frame'de requestFocus yapılır —
+                                    // böylece klavye (TextInputConnection)
+                                    // tam olarak yeniden kurulur ve
+                                    // TextCapitalization.sentences ayarı
+                                    // (ilk harf büyük göstergesi) doğru
+                                    // yansır; tek frame'de bazen klavye
+                                    // güncellenmiyordu.
                                     WidgetsBinding.instance
                                         .addPostFrameCallback((_) {
-                                      if (newIndex < itemFns.length) {
-                                        itemFns[newIndex].requestFocus();
-                                      }
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) {
+                                        if (newIndex < itemFns.length) {
+                                          itemFns[newIndex].requestFocus();
+                                        }
+                                      });
                                     });
                                   },
                                   // Madde boşken Backspace'e basıldığında
@@ -4519,6 +4615,36 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                           }
                                         }
                                       });
+                                    });
+                                  },
+                                  // Sürükleme tutamacıyla bir madde başka
+                                  // bir konuma taşındığında: items,
+                                  // controller ve focus node listeleri
+                                  // birlikte (senkron kalacak şekilde)
+                                  // yeniden sıralanır.
+                                  onReorder: (oldIndex, newIndex) {
+                                    pushUndoCheckpoint();
+                                    setModalState(() {
+                                      // ReorderableListView semantiği:
+                                      // oldIndex < newIndex ise hedef
+                                      // konum, öğe eski listeden
+                                      // çıkarılmadan ÖNCEKİ indekse göre
+                                      // 1 fazla verilir; düzeltiyoruz.
+                                      var target = newIndex;
+                                      if (oldIndex < target) target -= 1;
+                                      final movedItem = items.removeAt(
+                                        oldIndex,
+                                      );
+                                      items.insert(target, movedItem);
+                                      block['items'] = items;
+                                      final movedCtrl = itemCtrls.removeAt(
+                                        oldIndex,
+                                      );
+                                      itemCtrls.insert(target, movedCtrl);
+                                      final movedFn = itemFns.removeAt(
+                                        oldIndex,
+                                      );
+                                      itemFns.insert(target, movedFn);
                                     });
                                   },
                                 );
@@ -5674,48 +5800,6 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                           },
                                         ),
                                       ]
-                                    : showBgColorSubToolbar
-                                    ? [
-                                        // ── Not Arka Planı alt barı ──────────
-                                        // "Not Arka Planı" (palet) ikonuna
-                                        // basılınca ana bar yerine bu satır
-                                        // gösterilir; Renk alt barıyla AYNI
-                                        // desen, ama seçim span'a değil
-                                        // doğrudan noteBgColor'a yazılır (bkz.
-                                        // setNoteBgColor).
-                                        Expanded(
-                                          child: ListView.separated(
-                                            scrollDirection: Axis.horizontal,
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                            ),
-                                            itemCount:
-                                                noteBgColorOptions.length,
-                                            separatorBuilder: (_, __) =>
-                                                const SizedBox(width: 10),
-                                            itemBuilder: (_, i) {
-                                              final opt =
-                                                  noteBgColorOptions[i];
-                                              return Center(
-                                                child: bgColorSwatch(
-                                                  context,
-                                                  opt.$2,
-                                                  noteBgColor,
-                                                  setNoteBgColor,
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.close),
-                                          tooltip: 'Kapat',
-                                          onPressed: () {
-                                            showBgColorSubToolbar = false;
-                                            requestEditorRebuild?.call(() {});
-                                          },
-                                        ),
-                                      ]
                                     : [
                                   // ── Ana araç çubuğu ──────────────────────
                                   // 6 ikon (Liste, Kalın, Yazı Boyutu, Yazı
@@ -5743,7 +5827,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   ),
                                   Expanded(
                                     child: IconButton(
-                                      icon: const Icon(Icons.format_bold),
+                                      icon: const Icon(
+                                        Icons.format_bold,
+                                        size: 25,
+                                      ),
                                       tooltip: 'Kalın',
                                       color:
                                           (pendingBold ||
@@ -5780,9 +5867,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       color:
                                           _effectiveFontSizeForToolbar() !=
                                               null
-                                          ? Theme.of(context)
-                                                .colorScheme
-                                                .primary
+                                          ? Colors.amber
                                           : null,
                                       onPressed: () {
                                         showFontSizeSubToolbar = true;
@@ -5798,6 +5883,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     child: IconButton(
                                       icon: const Icon(
                                         Icons.format_color_text,
+                                        size: 20,
                                       ),
                                       tooltip: 'Yazı Rengi',
                                       color: pendingColor != null
@@ -5820,6 +5906,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     child: IconButton(
                                       icon: const Icon(
                                         Icons.checklist_rounded,
+                                        size: 26,
                                       ),
                                       tooltip: 'Yapılacaklar Listesi Ekle',
                                       onPressed: insertChecklistBlock,
