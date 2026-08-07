@@ -1,5 +1,9 @@
 plugins {
     id("com.android.application")
+    // Ana ekran widget'ı (Glance) Compose kullanır. Sürümü
+    // android/settings.gradle.kts içinde "org.jetbrains.kotlin.plugin.compose"
+    // olarak (kotlin.android ile aynı, 2.3.20) tanımlandı.
+    id("org.jetbrains.kotlin.plugin.compose")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
@@ -13,6 +17,12 @@ android {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    // Ana ekran widget'ı (Glance), Jetpack Compose derleyicisini kullandığı
+    // için bu modülde Compose desteği açılıyor.
+    buildFeatures {
+        compose = true
     }
 
     defaultConfig {
@@ -57,4 +67,8 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+
+    // ── Ana ekran widget'ı (Jetpack Glance) için ──
+    implementation("androidx.glance:glance-appwidget:1.1.1")
+    implementation("androidx.glance:glance-material3:1.1.1")
 }

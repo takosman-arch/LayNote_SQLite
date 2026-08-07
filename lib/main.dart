@@ -40,10 +40,12 @@ import 'package:image/image.dart' as img;
 import 'package:video_player/video_player.dart';
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:home_widget/home_widget.dart'; // Ana ekran widget'ı için
 
 
 
 part 'db_helper.dart';
+part 'note_widget_service.dart';
 part 'backup_helper.dart';
 part 'backup_restore_screen.dart';
 part 'reminder_service.dart';

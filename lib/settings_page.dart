@@ -115,6 +115,251 @@ class _SettingsPageState extends State<SettingsPage> {
     Colors.orangeAccent,
   ];
 
+  // ── Widget: Metin Boyutu seçici ─────────────────────────────────────
+  void _showWidgetFontSizeSheet() {
+    double tempSize = s._widgetFontSize;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: dNoteCardColor(context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      isScrollControlled: true,
+      builder: (_) => StatefulBuilder(
+        builder: (ctx, setSheet) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[500],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Widget Metin Boyutu',
+                  style: TextStyle(
+                    color: dNoteTextColor(ctx),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    const Icon(Icons.text_fields, color: Colors.grey, size: 16),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          activeTrackColor: Colors.amber,
+                          inactiveTrackColor: dNoteSurfaceVariant(ctx),
+                          thumbColor: Colors.amber,
+                          overlayColor: Colors.amber.withValues(alpha: 0.2),
+                          valueIndicatorColor: Colors.amber,
+                          valueIndicatorTextStyle: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        child: Slider(
+                          value: tempSize,
+                          min: 10,
+                          max: 24,
+                          divisions: 14,
+                          label: '${tempSize.round()}',
+                          onChanged: (v) => setSheet(() => tempSize = v),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.text_fields, color: Colors.grey, size: 24),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Örnek başlık - ${tempSize.round()} pt',
+                  style: TextStyle(
+                    color: dNoteTextColor(ctx).withValues(alpha: 0.7),
+                    fontSize: tempSize,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        child: const Text(
+                          'İptal',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.amber,
+                        ),
+                        onPressed: () {
+                          s.setState(() => s._widgetFontSize = tempSize);
+                          setState(() {});
+                          s._saveData();
+                          NoteWidgetService.instance.syncAppearanceSettings(
+                            fontSize: s._widgetFontSize,
+                            bgOpacity: s._widgetBgOpacity,
+                            dark: s._widgetDark,
+                          );
+                          Navigator.pop(ctx);
+                        },
+                        child: const Text(
+                          'Uygula',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Widget: Arka Plan Saydamlığı seçici ─────────────────────────────
+  void _showWidgetOpacitySheet() {
+    double tempOpacity = s._widgetBgOpacity;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: dNoteCardColor(context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      isScrollControlled: true,
+      builder: (_) => StatefulBuilder(
+        builder: (ctx, setSheet) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[500],
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Arka Plan Saydamlığı',
+                  style: TextStyle(
+                    color: dNoteTextColor(ctx),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    const Icon(Icons.opacity, color: Colors.grey, size: 16),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: SliderTheme(
+                        data: SliderTheme.of(context).copyWith(
+                          activeTrackColor: Colors.amber,
+                          inactiveTrackColor: dNoteSurfaceVariant(ctx),
+                          thumbColor: Colors.amber,
+                          overlayColor: Colors.amber.withValues(alpha: 0.2),
+                          valueIndicatorColor: Colors.amber,
+                          valueIndicatorTextStyle: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        child: Slider(
+                          value: tempOpacity,
+                          min: 0.2,
+                          max: 1.0,
+                          divisions: 16,
+                          label: '%${(tempOpacity * 100).round()}',
+                          onChanged: (v) => setSheet(() => tempOpacity = v),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Icon(Icons.opacity, color: Colors.grey, size: 24),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '%${(tempOpacity * 100).round()} saydamlık',
+                  style: TextStyle(
+                    color: dNoteTextColor(ctx).withValues(alpha: 0.7),
+                    fontSize: 13,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        child: const Text(
+                          'İptal',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.amber,
+                        ),
+                        onPressed: () {
+                          s.setState(() => s._widgetBgOpacity = tempOpacity);
+                          setState(() {});
+                          s._saveData();
+                          NoteWidgetService.instance.syncAppearanceSettings(
+                            fontSize: s._widgetFontSize,
+                            bgOpacity: s._widgetBgOpacity,
+                            dark: s._widgetDark,
+                          );
+                          Navigator.pop(ctx);
+                        },
+                        child: const Text(
+                          'Uygula',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showTextColorPicker() {
     showModalBottomSheet(
       context: context,
@@ -1291,76 +1536,56 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               child: Column(
                 children: [
-                  // Bilgi kutusu
-                  Container(
-                    margin: const EdgeInsets.all(12),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.amber.withValues(alpha: 0.08),
-                      border: Border.all(
-                        color: Colors.amber.withValues(alpha: 0.3),
-                      ),
-                      borderRadius: BorderRadius.circular(10),
+                  _settingTile(
+                    icon: Icons.text_fields,
+                    iconColor: Colors.cyanAccent,
+                    title: 'Widget Metin Boyutu',
+                    subtitle: '${s._widgetFontSize.round()} pt',
+                    trailing: const Icon(
+                      Icons.chevron_right,
+                      color: Colors.grey,
                     ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.info_outline, color: Colors.amber, size: 18),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            'Widget ayarları yakında aktif olacak.',
-                            style: TextStyle(color: Colors.amber, fontSize: 12),
-                          ),
-                        ),
-                      ],
-                    ),
+                    onTap: _showWidgetFontSizeSheet,
                   ),
-                  Opacity(
-                    opacity: 0.45,
-                    child: Column(
-                      children: [
-                        _settingTile(
-                          icon: Icons.text_fields,
-                          iconColor: Colors.cyanAccent,
-                          title: 'Widget Metin Boyutu',
-                          subtitle: '${s._widgetFontSize.round()} pt',
-                          trailing: const Icon(
-                            Icons.chevron_right,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Divider(
-                          color: Theme.of(context).dividerColor,
-                          height: 1,
-                          indent: 56,
-                        ),
-                        _settingTile(
-                          icon: Icons.opacity,
-                          iconColor: Colors.lightBlueAccent,
-                          title: 'Arka Plan Saydamlığı',
-                          subtitle: '%${(s._widgetBgOpacity * 100).round()}',
-                          trailing: const Icon(
-                            Icons.chevron_right,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        Divider(
-                          color: Theme.of(context).dividerColor,
-                          height: 1,
-                          indent: 56,
-                        ),
-                        _settingTile(
-                          icon: Icons.dark_mode_outlined,
-                          iconColor: Colors.deepPurpleAccent,
-                          title: 'Koyu Widget',
-                          subtitle: 'Widget için koyu renk şeması.',
-                          trailing: Switch(
-                            value: s._widgetDark,
-                            activeThumbColor: Colors.amber,
-                            onChanged: null,
-                          ),
-                        ),
-                      ],
+                  Divider(
+                    color: Theme.of(context).dividerColor,
+                    height: 1,
+                    indent: 56,
+                  ),
+                  _settingTile(
+                    icon: Icons.opacity,
+                    iconColor: Colors.lightBlueAccent,
+                    title: 'Arka Plan Saydamlığı',
+                    subtitle: '%${(s._widgetBgOpacity * 100).round()}',
+                    trailing: const Icon(
+                      Icons.chevron_right,
+                      color: Colors.grey,
+                    ),
+                    onTap: _showWidgetOpacitySheet,
+                  ),
+                  Divider(
+                    color: Theme.of(context).dividerColor,
+                    height: 1,
+                    indent: 56,
+                  ),
+                  _settingTile(
+                    icon: Icons.dark_mode_outlined,
+                    iconColor: Colors.deepPurpleAccent,
+                    title: 'Koyu Widget',
+                    subtitle: 'Widget için koyu renk şeması.',
+                    trailing: Switch(
+                      value: s._widgetDark,
+                      activeThumbColor: Colors.amber,
+                      onChanged: (v) {
+                        s.setState(() => s._widgetDark = v);
+                        setState(() {});
+                        s._saveData();
+                        NoteWidgetService.instance.syncAppearanceSettings(
+                          fontSize: s._widgetFontSize,
+                          bgOpacity: s._widgetBgOpacity,
+                          dark: s._widgetDark,
+                        );
+                      },
                     ),
                   ),
                 ],

@@ -232,6 +232,25 @@ class AutoBackupService {
       // Çöp kutusu temizliği başarısız olsa da yedeklemeyi engellemesin.
     }
 
+    // 1.1 Ana ekran widget'ını tazele (bkz. note_widget_service.dart).
+    // Normalde her not kaydında zaten senkronize olur (db_helper.dart ->
+    // replaceNotes), ama bu adım ek bir güvenlik ağı sağlar: uygulama
+    // günlerce hiç açılmasa bile widget güncel kalır ve widget yakın
+    // zamanda eklenip de ilk senkronizasyonu kaçırmışsa (ör. o an bir
+    // önceki senkronizasyon sürüyorken eklendiyse) burada kendiliğinden
+    // onarılır (self-healing). Bu periyodik görev yalnızca otomatik
+    // yedekleme AÇIKKEN (isEnabled() true) çalıştığı için, widget
+    // yenilemesinin bu ek güvenlik ağı da yalnızca o durumda işler; not
+    // kaydedildiğinde çalışan asıl senkronizasyon (db_helper.dart) her
+    // koşulda zaten çalışmaya devam eder.
+    try {
+      final notes = await DBHelper.instance.getNotes();
+      await NoteWidgetService.instance.syncFromNotes(notes);
+    } catch (_) {
+      // Widget güncellemesi başarısız olsa da yedekleme görevini
+      // engellemesin.
+    }
+
     final target = await getTarget();
     final maxLocalBackups = await getMaxLocalBackups();
 

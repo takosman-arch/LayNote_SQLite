@@ -152,6 +152,16 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       _widgetDark = (settings['widget_dark'] ?? 'true') == 'true';
     });
 
+    // Kayıtlı widget görünüm ayarlarını (yazı boyutu, saydamlık, koyu/açık
+    // tema) native tarafa da yansıt; böylece ör. bir yedekten geri
+    // yükledikten sonra widget, uygulamayı hiç açmadan eski (varsayılan)
+    // görünümde kalmaz.
+    unawaited(NoteWidgetService.instance.syncAppearanceSettings(
+      fontSize: _widgetFontSize,
+      bgOpacity: _widgetBgOpacity,
+      dark: _widgetDark,
+    ));
+
     // İlk açılışta oluşturulan hoş geldin notunu kalıcı hale getir ve
     // veritabanının artık başlatılmış olduğunu işaretle.
     if (neverInitialized) {
@@ -214,6 +224,11 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
     await db.setSetting('widget_font_size', _widgetFontSize.toString());
     await db.setSetting('widget_bg_opacity', _widgetBgOpacity.toString());
     await db.setSetting('widget_dark', _widgetDark.toString());
+
+    // Ana ekran widget'ını her kayıtta güncel not listesiyle senkronize et.
+    // Native taraf (Aşama 2) henüz kurulmadıysa NoteWidgetService bu
+    // çağrıyı içeride sessizce yutar; burada ekstra try/catch gerekmez.
+    unawaited(NoteWidgetService.instance.syncFromNotes(_notes));
   }
 
   // Kısa Türkçe tarih biçimi: "Tem 20, 21:17" — alt bardaki ve not

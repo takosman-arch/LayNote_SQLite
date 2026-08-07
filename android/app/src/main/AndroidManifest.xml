@@ -83,6 +83,22 @@
         <receiver
             android:exported="false"
             android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
+
+        <!-- Ana ekran widget'ı (Glance) receiver kaydı. exported="false" —
+             sistem dışında hiçbir uygulama bu receiver'ı doğrudan
+             tetikleyemez; ana ekran/launcher üzerinden widget güncellemeleri
+             normal APPWIDGET_UPDATE mekanizmasıyla gelir. -->
+        <receiver
+            android:name=".NoteWidgetReceiver"
+            android:exported="false"
+            android:label="DNote">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/note_widget_info" />
+        </receiver>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

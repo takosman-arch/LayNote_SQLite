@@ -238,6 +238,11 @@ class DBHelper {
       }
       await batch.commit(noResult: true);
     });
+    // Not listesi her kaydedildiğinde ana ekran widget'ını da güncelle.
+    // Widget güncellemesi başarısız olsa bile (ör. native taraf henüz
+    // kurulmamışsa) not kaydetme işlemini etkilememesi için senkron
+    // akışın dışında (unawaited) tetiklenir.
+    unawaited(NoteWidgetService.instance.syncFromNotes(notes));
   }
 
   Future<void> replaceDeletedNotes(List<Map<String, dynamic>> notes) async {

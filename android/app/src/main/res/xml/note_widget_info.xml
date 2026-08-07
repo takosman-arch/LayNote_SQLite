@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Ana ekran widget'ının boyut/davranış tanımı. Gerçek görsel içerik
+  NoteWidget.kt (Glance/Compose) tarafından çizilir; initialLayout burada
+  yalnızca widget ilk eklendiğinde Compose içeriği hazır olana kadar
+  gösterilecek yer tutucu için gereklidir.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/note_widget_loading"
+    android:minWidth="180dp"
+    android:minHeight="90dp"
+    android:targetCellWidth="3"
+    android:targetCellHeight="2"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"
+    android:updatePeriodMillis="0"
+    android:previewLayout="@layout/note_widget_loading" />
