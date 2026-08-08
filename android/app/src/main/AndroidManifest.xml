@@ -84,13 +84,20 @@
             android:exported="false"
             android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
 
-        <!-- Ana ekran widget'ı (Glance) receiver kaydı. exported="false" —
-             sistem dışında hiçbir uygulama bu receiver'ı doğrudan
-             tetikleyemez; ana ekran/launcher üzerinden widget güncellemeleri
-             normal APPWIDGET_UPDATE mekanizmasıyla gelir. -->
+        <!-- Ana ekran widget'ı (Glance) receiver kaydı. exported="true"
+             ZORUNLU: Android widget receiver'ları sistemden (launcher/
+             AppWidgetManager) gelen APPWIDGET_UPDATE broadcast'ini ancak
+             exported=true ise alabilir. exported=false olduğunda widget
+             ekleniyor ama sistem gerçek güncellemeyi hiç iletemediği için
+             Compose içeriği (NoteWidget.kt) asla render edilmiyor ve widget
+             note_widget_loading.xml'deki spinner'da takılı kalıyor —
+             "widget ekleniyor ama içinde yazı yok" şikayetinin sebebi buydu.
+             android:permission="android.permission.BIND_APPWIDGET" GEREKMEZ,
+             bu izin AppWidgetManager tarafında otomatik yönetilir; sadece
+             exported=true yeterlidir. -->
         <receiver
-            android:name=".NoteWidgetReceiver"
-            android:exported="false"
+            android:name=".NoteWidgetReceiverV2"
+            android:exported="true"
             android:label="DNote">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -99,6 +106,19 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/note_widget_info" />
         </receiver>
+
+        <!-- Widget ana ekrana eklenirken kullanıcının hangi notu göstermek
+             istediğini seçmesini sağlayan yapılandırma ekranı (bkz.
+             note_widget_info.xml'deki android:configure özniteliği).
+             exported="true" ZORUNLU: sistem (launcher) bu Activity'yi
+             kendi sürecinden başlatır. -->
+        <activity
+            android:name=".NoteWidgetConfigActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

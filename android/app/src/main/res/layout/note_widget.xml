@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Widget'ın gerçek görünümü - artık Compose/Glance değil, klasik
+  RemoteViews layout'u kullanılıyor. NoteWidgetReceiver.kt bu layout'u
+  doldurup çiziyor.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1E1E1E"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/widget_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="Henüz not yok" />
+
+        <TextView
+            android:id="@+id/widget_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#B0B0B0"
+            android:textSize="12sp"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <!--
+          Checklist/hesap tablosu bloklarının satır satır (checkbox ikonlu,
+          tablo hizalamalı) çizildiği container. NoteWidgetReceiverV2.kt bu
+          alana all_notes_lines_json'daki satırlara göre dinamik olarak
+          widget_line_*.xml şablonlarından view ekler (removeAllViews +
+          addView). Yapılandırılmış satır yoksa (eski/senkronize edilmemiş
+          veri) GONE yapılıp yukarıdaki widget_content (düz metin) yedek
+          olarak gösterilir — ikisi asla aynı anda görünür değildir.
+        -->
+        <LinearLayout
+            android:id="@+id/widget_lines_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:orientation="vertical" />
+
+        <TextView
+            android:id="@+id/widget_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textColor="#B0B0B0"
+            android:textSize="11sp" />
+    </LinearLayout>
+</FrameLayout>

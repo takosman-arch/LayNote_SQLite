@@ -117,7 +117,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   // ── Widget: Metin Boyutu seçici ─────────────────────────────────────
   void _showWidgetFontSizeSheet() {
-    double tempSize = s._widgetFontSize;
+    // Daha önce kaydedilmiş (veya varsayılan 14.0) değer yeni slider
+    // aralığının (16-30) dışında kalabilir; Slider'a aralık dışı bir
+    // value verilmesi assertion hatasına yol açar, bu yüzden sıkıştırılır.
+    double tempSize = s._widgetFontSize.clamp(16, 30);
     showModalBottomSheet(
       context: context,
       backgroundColor: dNoteCardColor(context),
@@ -169,8 +172,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         child: Slider(
                           value: tempSize,
-                          min: 10,
-                          max: 24,
+                          min: 16,
+                          max: 30,
                           divisions: 14,
                           label: '${tempSize.round()}',
                           onChanged: (v) => setSheet(() => tempSize = v),

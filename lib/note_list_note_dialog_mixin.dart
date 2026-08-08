@@ -35,7 +35,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   void _showAddAttachmentSheet( BuildContext ctx, { required void Function(String value) onSelected, });
   void _showClassifyDialog(int noteIndex, {void Function(String?)? onChanged});
   Future<void> _showExportSubmenu({ required BuildContext context, required GlobalKey anchorKey, required String title, required String noteType, required List<Map<String, dynamic>> blocks, required List<Map<String, dynamic>> checkItems, required List<Map<String, dynamic>> attachments, double fontSize = 16.0, });
-  void _showInfoBar( String message, { IconData icon = Icons.check_circle, String? actionLabel, VoidCallback? onAction, });
+  void _showInfoBar( String message, { IconData icon = Icons.check_circle, String? actionLabel, VoidCallback? onAction, Color backgroundColor = const Color(0xFF3D3D3D), });
   void _showNoteActions( BuildContext ctx, int noteIndex, bool isTrash, { DateTime? editorReminder, String? editorReminderRepeat, void Function(DateTime? reminder, String? repeat)? onReminderChanged, VoidCallback? onDiscard, void Function(String text)? onInsertText, bool showSelectAction = false, });
   Color? get _textColor;
   set _textColor(Color? value);
@@ -64,6 +64,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // (index == null) kullanılır; düzenlemede notun kendi tarihi
     // (satır ~2425'teki yükleme) geçerlidir ve bu değeri ezer.
     DateTime? initialAssignedDate,
+    // true ise editör AÇILIŞ animasyonu (transitionDuration) atlanır —
+    // widget'a tıklanınca not editörünün "beklemeden" açılması için (bkz.
+    // NoteListLifecycleMixin._handleWidgetLaunchUri). Geri dönüş
+    // (reverseTransitionDuration) her durumda normal süresinde kalır;
+    // yalnızca ilk açılış anlık olur, kullanıcının editörden normal
+    // şekilde geri çıkması animasyonsuz kalmaz.
+    bool openInstantly = false,
   }) {
     // Diyalog KAPANIRKEN "yeni not oluşturma akışıydı mı?" kontrolü için.
     // `index` parametresi diyalog içinde (kategori seçilirken, bkz. aşağıda
@@ -2521,7 +2528,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
 
     Navigator.of(context).push(
       PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 300),
+        // openInstantly true ise (widget'tan tıklanarak açılış) editör
+        // hiç bekletmeden, anında görünür; geri dönüş animasyonu ise
+        // (kullanıcı normal şekilde editörden çıkarken) her zaman normal
+        // süresinde kalır — yalnızca ilk açılış anlık olur.
+        transitionDuration: openInstantly
+            ? Duration.zero
+            : const Duration(milliseconds: 300),
         reverseTransitionDuration: const Duration(milliseconds: 300),
         pageBuilder: (context, animation, secondaryAnimation) {
           // Bu bayrak, düzenleyici sayfası kapatıldıktan (Navigator.pop)

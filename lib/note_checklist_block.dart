@@ -153,7 +153,7 @@ class NoteChecklistBlock extends StatelessWidget {
                                 ? TextDecoration.lineThrough
                                 : TextDecoration.none,
                             decorationColor: items[j]['checked'] == true
-                                ? Colors.grey[300]
+                                ? Colors.grey[700]
                                 : effectiveColor?.withOpacity(0.75),
                             decorationStyle: TextDecorationStyle.solid,
                           ),

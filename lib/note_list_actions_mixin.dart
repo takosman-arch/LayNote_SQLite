@@ -35,7 +35,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
   String get _passwordHintQuestion;
   set _passwordHintQuestion(String value);
   Future<void> _saveData();
-  void _showNoteDialog({ int? index, String type = 'text', String? initialText, });
+  void _showNoteDialog({ int? index, String type = 'text', String? initialText, bool openInstantly = false, });
   Future<_ReminderPickResult?> _showReminderPickerDialog({ required BuildContext context, required DateTime initialDateTime, String? initialRepeat, });
   OverlayEntry? get _snackOverlay;
   set _snackOverlay(OverlayEntry? value);
@@ -61,7 +61,18 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     });
     _saveData();
 
-    _showDeletedBar(deletedNote);
+    _showInfoBar(
+      'Not silindi',
+      icon: Icons.delete_outline,
+      actionLabel: 'Geri Getir',
+      onAction: () {
+        setState(() {
+          _notes.add(deletedNote);
+          _deletedNotes.removeWhere((n) => n['id'] == deletedNote['id']);
+        });
+        _saveData();
+      },
+    );
   }
 
   // Bir not çöp kutusundan geri yüklendiğinde veya kopyalandığında, hâlâ
@@ -304,6 +315,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     IconData icon = Icons.check_circle,
     String? actionLabel,
     VoidCallback? onAction,
+    Color backgroundColor = const Color(0xFF3D3D3D),
   }) {
     _hideDeletedBar();
     final hasAction = actionLabel != null && onAction != null;
@@ -319,11 +331,11 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             color: Colors.transparent,
             child: Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 8,
+                horizontal: 28,
+                vertical: 14,
               ),
               decoration: BoxDecoration(
-                color: const Color(0xFF3D3D3D),
+                color: backgroundColor,
                 borderRadius: BorderRadius.circular(30),
                 boxShadow: [
                   BoxShadow(
@@ -1152,9 +1164,12 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
   // Not: notu doğrudan açar. Kilitli notlar zaten "Kilitli" klasöründe ve
   // o klasöre girişte parola soruluyor; notun kendisinde tekrar parola
   // sorup içeriği gizlemeye gerek yok.
-  Future<void> _openNoteWithPasswordCheck(int index) async {
+  Future<void> _openNoteWithPasswordCheck(
+    int index, {
+    bool openInstantly = false,
+  }) async {
     if (index < 0 || index >= _notes.length) return;
-    _showNoteDialog(index: index);
+    _showNoteDialog(index: index, openInstantly: openInstantly);
   }
 
   // ── Ayarlar Sayfası ────────────────────────────────────────
@@ -1187,13 +1202,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       setState(() => _activeCategory = '__locked__');
       _saveData();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Parola yanlış.'),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.only(left: 16, right: 16, bottom: 88),
-        ),
+      _showInfoBar(
+        'Parola yanlış.',
+        icon: Icons.lock_outline,
+        backgroundColor: Colors.red,
       );
     }
   }
@@ -1205,62 +1217,6 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     _snackTimer = null;
   }
 
-  void _showDeletedBar(Map<String, dynamic> deletedNote) {
-    _hideDeletedBar();
-
-    _snackOverlay = OverlayEntry(
-      builder: (ctx) => Positioned(
-        bottom: 24,
-        left: 16,
-        right: 16,
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: dNoteCardColor(context),
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.4),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Not silindi',
-                  style: TextStyle(color: dNoteTextColor(context)),
-                ),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _notes.add(deletedNote);
-                      _deletedNotes.removeWhere(
-                        (n) => n['id'] == deletedNote['id'],
-                      );
-                    });
-                    _saveData();
-                    _hideDeletedBar();
-                  },
-                  child: const Text(
-                    'Geri Getir',
-                    style: TextStyle(color: Colors.amber),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-
-    Overlay.of(context).insert(_snackOverlay!);
-    _snackTimer = Timer(const Duration(seconds: 2), _hideDeletedBar);
-  }
 
   // İlk harfi Türkçe kurallarına göre büyütür (örn. "istanbul" -> "İstanbul",
   // "iş" -> "İş"). Dart'ın standart toUpperCase() metodu Türkçe'deki
@@ -2358,11 +2314,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                           );
                           if (title.isEmpty && content.isEmpty) {
                             if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Boş not sabitlenemez.'),
-                                backgroundColor: Colors.red,
-                              ),
+                            _showInfoBar(
+                              'Boş not sabitlenemez.',
+                              icon: Icons.push_pin_outlined,
+                              backgroundColor: Colors.red,
                             );
                             return;
                           }
@@ -2643,18 +2598,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         now.difference(_lastBackPressTime!) > const Duration(seconds: 2)) {
       _lastBackPressTime = now;
       if (mounted) {
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Çıkmak için tekrar geri tuşuna basın',
-              style: TextStyle(color: Colors.white),
-            ),
-            duration: Duration(seconds: 2),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Color(0xFF424242),
-            margin: EdgeInsets.only(left: 16, right: 16, bottom: 88),
-          ),
+        _showInfoBar(
+          'Çıkmak için tekrar geri tuşuna basın',
+          icon: Icons.arrow_back,
         );
       }
       return false;

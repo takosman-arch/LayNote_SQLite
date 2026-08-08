@@ -46,7 +46,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   List<Map<String, dynamic>> get _notes;
   set _notes(List<Map<String, dynamic>> value);
   Future<void> _openLockedFolder();
-  Future<void> _openNoteWithPasswordCheck(int index);
+  Future<void> _openNoteWithPasswordCheck(int index, {bool openInstantly = false});
   void _openSettings();
   int get _previewLines;
   set _previewLines(int value);
@@ -61,7 +61,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   void _showAddCategoryDialog({ void Function(String)? onAdded, String? editingCategory, String? parentCategory, });
   void _showClassifyDialogForSelection();
   void _showNoteActions( BuildContext ctx, int noteIndex, bool isTrash, { DateTime? editorReminder, String? editorReminderRepeat, void Function(DateTime? reminder, String? repeat)? onReminderChanged, VoidCallback? onDiscard, void Function(String text)? onInsertText, bool showSelectAction = false, });
-  void _showNoteDialog({ int? index, String type = 'text', String? initialText, DateTime? initialAssignedDate, });
+  void _showNoteDialog({ int? index, String type = 'text', String? initialText, DateTime? initialAssignedDate, bool openInstantly = false, });
   String get _sortCriteria;
   set _sortCriteria(String value);
   Color? get _textColor;
@@ -1347,8 +1347,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                 decorationColor:
                                                     isItemChecklist &&
                                                         isChecked
-                                                    ? dNoteEffectiveTextColor(context, _textColor)
-                                                          ?.withOpacity(0.75)
+                                                    ? Colors.grey[700]
                                                     : null,
                                                 decorationStyle:
                                                     TextDecorationStyle.solid,
@@ -2203,7 +2202,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                               : null,
                                           decorationColor:
                                               isItemChecklist && isChecked
-                                              ? dNoteEffectiveTextColor(context, _textColor)?.withOpacity(0.75)
+                                              ? Colors.grey[700]
                                               : null,
                                           decorationStyle:
                                               TextDecorationStyle.solid,

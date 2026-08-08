@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginBottom="2dp">
+
+    <!-- DÜZELTME: Düz <View> RemoteViews (App Widget) tarafından
+         desteklenmiyor (izin verilen view listesinde yok) ve launcher
+         tarafında inflate hatasına, dolayısıyla tüm widget'ın
+         çizilememesine yol açıyordu. <ImageView> RemoteViews'in
+         desteklediği bir sınıf; setBackgroundColor View'dan miras
+         alındığı için Kotlin tarafında (setInt ile) hiçbir değişikliğe
+         gerek kalmadan aynı şekilde çalışır. -->
+    <ImageView
+        android:id="@+id/line_total_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="3dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/line_total_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="Toplam"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/line_total_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="end"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Widget ilk eklendiğinde Glance içeriği devreye girene kadar kısaca
-     görünen basit yer tutucu. -->
+<!--
+  Glance, gerçek Compose içeriği ilk kez çizilene kadar (ve sistem widget'ı
+  önizlerken) bu klasik RemoteViews layout'unu gösterir. AppWidgetProviderInfo
+  (note_widget_info.xml) android:initialLayout bunu işaret ediyor.
+  Gerçek widget UI'ı burada DEĞİL, NoteWidget.kt içindeki Compose kodunda.
+-->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1E1E1E"
-    android:padding="12dp">
+    android:background="#1E1E1E">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|start"
-        android:text="DNote"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+    <ProgressBar
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:indeterminateTint="#B0B0B0" />
 
 </FrameLayout>

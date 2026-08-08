@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Mevcut res/values/strings.xml dosyana dokunmamak için ayrı bir dosyada
+  tutuluyor; Android bir res/values/ altındaki tüm .xml dosyalarını birleşik
+  olarak okur, dosya adı önemli değildir. İçeriğini mevcut strings.xml'e de
+  taşıyabilirsin, fark etmez.
+-->
+<resources>
+    <string name="note_widget_description">DNote — son notunuzu ana ekranda gösterir</string>
+</resources>

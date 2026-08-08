@@ -162,6 +162,17 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       dark: _widgetDark,
     ));
 
+    // DÜZELTME (2026-08-08): syncFromNotes eskiden SADECE _saveData()
+    // içinde (yani bir not düzenlenip kaydedildiğinde) tetikleniyordu.
+    // Bu yüzden widget önizleme mantığı (ör. checklist/hesap tablosu
+    // biçimlendirmesi) güncellendiğinde, ÖNCEDEN oluşturulmuş ve o
+    // tarihten sonra hiç düzenlenmemiş notlar widget'ta hâlâ eski
+    // (bayat) SharedPreferences verisini gösteriyordu — kullanıcı notu
+    // tekrar açıp kaydetmeden bu düzelmiyordu. Uygulama her açıldığında
+    // da senkronize ederek widget'ın her zaman güncel not listesini ve
+    // güncel önizleme mantığını yansıtması sağlanıyor.
+    unawaited(NoteWidgetService.instance.syncFromNotes(_notes));
+
     // İlk açılışta oluşturulan hoş geldin notunu kalıcı hale getir ve
     // veritabanının artık başlatılmış olduğunu işaretle.
     if (neverInitialized) {

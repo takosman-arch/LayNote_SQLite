@@ -9,7 +9,7 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
   Future<void> _loadData();
   List<Map<String, dynamic>> get _notes;
   set _notes(List<Map<String, dynamic>> value);
-  Future<void> _openNoteWithPasswordCheck(int index);
+  Future<void> _openNoteWithPasswordCheck(int index, {bool openInstantly = false});
   Future<void> _saveData();
   void _showNoteDialog({ int? index, String type = 'text', String? initialText, });
 
@@ -95,7 +95,7 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
   int _previewLines = 3;
 
   // Widget
-  double _widgetFontSize = 14.0;
+  double _widgetFontSize = 16.0;
   double _widgetBgOpacity = 1.0;
   bool _widgetDark = true;
   // ─────────────────────────────────────────────────────────
@@ -108,6 +108,11 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
   // Başka bir uygulamadan "Paylaş" ile gönderilen metin/bağlantıları
   // yakalamak için kullanılan akış aboneliği (bkz. _initShareListener).
   StreamSubscription<List<SharedMediaFile>>? _shareIntentSub;
+  // Ana ekran widget'ına, uygulama açıkken (ön/arka plan) tıklanınca gelen
+  // URI'leri yakalamak için kullanılan akış aboneliği (bkz.
+  // _initWidgetClickListener). Soğuk başlangıç durumu ayrıca initState
+  // içinde HomeWidget.initiallyLaunchedFromHomeWidget() ile ele alınır.
+  StreamSubscription<Uri?>? _widgetClickSub;
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
@@ -132,6 +137,41 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
     // alınır (bkz. reminder_service.dart).
     ReminderService.instance.onUnpinRequested =
         _handleUnpinRequestedFromNotification;
+    _initWidgetClickListener();
+  }
+
+  // ── Ana ekran widget'ına tıklanınca ilgili notu açma ───────────────────
+  // Widget'a tıklanınca native taraf (NoteWidgetReceiverV2.kt / NoteWidget.kt)
+  // uygulamayı "dnote://note?id=..." biçiminde bir URI ile açar. Bu URI iki
+  // farklı yoldan Dart'a ulaşabilir:
+  //   1) Uygulama tamamen kapalıyken widget'a tıklanırsa (soğuk başlangıç)
+  //      -> HomeWidget.initiallyLaunchedFromHomeWidget()
+  //   2) Uygulama zaten açıkken (ön/arka planda) widget'a tıklanırsa
+  //      -> HomeWidget.widgetClicked akışı
+  void _initWidgetClickListener() {
+    HomeWidget.initiallyLaunchedFromHomeWidget().then(_handleWidgetLaunchUri);
+    _widgetClickSub = HomeWidget.widgetClicked.listen(_handleWidgetLaunchUri);
+  }
+
+  // Bildirimdeki _openNoteByIdFromNotification ile birebir aynı mantık:
+  // id'ye göre _notes içinde arar, bulursa notu açar. Not bulunamazsa (ör.
+  // o arada silinmişse) sessizce hiçbir şey yapmaz.
+  void _handleWidgetLaunchUri(Uri? uri) {
+    final noteId = uri?.queryParameters['id'];
+    if (noteId == null || noteId.isEmpty) return;
+    final index = _notes.indexWhere((n) => n['id']?.toString() == noteId);
+    if (index == -1) return;
+    // Widget ağacı henüz tam hazır olmayabilir (özellikle soğuk
+    // başlangıçta); bir sonraki frame'e ertelenir.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      // openInstantly: true -> widget'tan tıklanınca not editörü 300ms'lik
+      // açılış animasyonu olmadan anında açılır (bkz.
+      // NoteListNoteDialogMixin._showNoteDialog). Bildirimden açılışta
+      // (_openNoteByIdFromNotification) bu bayrak KASITLI olarak
+      // verilmiyor; orası eskisi gibi animasyonlu kalır.
+      _openNoteWithPasswordCheck(index, openInstantly: true);
+    });
   }
 
   // Bildirimdeki "Kaldır" aksiyonuna dokunulunca çağrılır. Bildirimin
@@ -170,6 +210,7 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
     _snackTimer?.cancel();
     _snackOverlay?.remove();
     _shareIntentSub?.cancel();
+    _widgetClickSub?.cancel();
     _titleController.dispose();
     _searchController.dispose();
     super.dispose();

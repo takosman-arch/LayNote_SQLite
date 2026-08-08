@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Ana ekran widget'ının boyut/davranış tanımı. Gerçek görsel içerik
-  NoteWidget.kt (Glance/Compose) tarafından çizilir; initialLayout burada
-  yalnızca widget ilk eklendiğinde Compose içeriği hazır olana kadar
-  gösterilecek yer tutucu için gereklidir.
+  Ana ekran widget'ının (Glance) sistem tarafından bilinen özellikleri.
+  AndroidManifest.xml içindeki NoteWidgetReceiver <receiver> tanımının
+  meta-data'sı bu dosyaya işaret ediyor (android:resource="@xml/note_widget_info").
+
+  minResizeHeight: Launcher'lar boyutu genelde "hücre = ceil((dp + 30) / 70)"
+  formülüyle hücreye çevirir. Eski 80dp değeri hâlâ 2 hücre (2 satır) olarak
+  yuvarlanıyordu; widget'ın tek satıra kadar küçültülebilmesi için ~40dp
+  (1 hücre) gerekiyor.
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialLayout="@layout/note_widget_loading"
     android:minWidth="180dp"
-    android:minHeight="90dp"
+    android:minHeight="110dp"
+    android:minResizeWidth="120dp"
+    android:minResizeHeight="40dp"
     android:targetCellWidth="3"
     android:targetCellHeight="2"
+    android:updatePeriodMillis="1800000"
+    android:initialLayout="@layout/note_widget"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
-    android:updatePeriodMillis="0"
-    android:previewLayout="@layout/note_widget_loading" />
+    android:previewImage="@mipmap/ic_launcher"
+    android:description="@string/note_widget_description"
+    android:configure="com.example.flutter_application_1.NoteWidgetConfigActivity" />
