@@ -170,7 +170,6 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     duplicate['createdDate'] = newRawTime;
     duplicate['modifiedDate'] = newRawTime;
     duplicate['date'] = formattedDate;
-    duplicate['assignedDate'] = newRawTime;
 
     // checkItems ve attachments listeleri orijinalle AYNI referansı
     // paylaşmasın diye derin kopya alınır.
@@ -2551,7 +2550,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             'date': _getFormattedDate(assignedDate),
             'createdDate': currentRawTime,
             'modifiedDate': currentRawTime,
-            'assignedDate': (assignedDate ?? DateTime.now()).toIso8601String(),
+            'assignedDate': assignedDate?.toIso8601String(),
             'category':
                 (_activeCategory == 'Tümü' ||
                     _activeCategory == '__favorites__' ||

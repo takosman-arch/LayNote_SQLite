@@ -8,8 +8,23 @@ part of 'main.dart';
 // ════════════════════════════════════════════════════════════════════════
 class CalendarScreen extends StatefulWidget {
   final List<Map<String, dynamic>> notes;
+  // Not: Bu ekran artık kendini Navigator.pop ile kapatıp sonucu üst
+  // ekrana döndürmüyor (bu, not ekranının Takvim'in ÜSTÜNE değil, Takvim
+  // zaten yığından çıkmışken üst ekranın (not listesi) üstüne push
+  // edilmesine sebep oluyordu — bu yüzden not ekranından geri çıkınca
+  // Takvim'e değil, not listesine dönülüyordu). Bunun yerine, tıklanan
+  // aksiyon bu callback'ler ile üst ekrana bildirilir; üst ekran not
+  // ekranını (Takvim hâlâ yığındayken) Takvim'in üstüne push eder, böylece
+  // geri tuşu doğal olarak tekrar Takvim'e döner.
+  final void Function(String noteId) onOpenNote;
+  final void Function(DateTime date) onNewNote;
 
-  const CalendarScreen({super.key, required this.notes});
+  const CalendarScreen({
+    super.key,
+    required this.notes,
+    required this.onOpenNote,
+    required this.onNewNote,
+  });
 
   @override
   State<CalendarScreen> createState() => _CalendarScreenState();
@@ -101,7 +116,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
   static const int _centerIndex = 6000;
 
   late final PageController _pageController;
-  late DateTime _focusedMonth; // o an ekranda görünen ayın 1. günü
+  // Ay başlığı (üstteki "Ağustos 2026" yazısı) ValueNotifier ile ayrı
+  // tutulur; onPageChanged sürükleme SIRASINDA (parmak henüz kalkmadan)
+  // tetiklendiği için, bunu normal setState ile güncellemek tüm ekranı
+  // (AppBar, legend, hafta günleri başlığı, PageView ve içindeki tüm ay
+  // ızgaraları) sürükleme devam ederken yeniden inşa ediyordu — bu da gün
+  // ızgarasında hafif bir zıplama/titreme hissi yaratıyordu. ValueNotifier +
+  // ValueListenableBuilder kullanarak yalnızca başlık metni izole şekilde
+  // güncellenir, geri kalan hiçbir şey sürükleme sırasında yeniden inşa
+  // edilmez.
+  late final ValueNotifier<DateTime> _focusedMonthNotifier;
   DateTime _selectedDay = DateTime.now();
   final DateTime _today = DateTime.now();
 
@@ -118,7 +142,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   void initState() {
     super.initState();
     final now = DateTime.now();
-    _focusedMonth = DateTime(now.year, now.month, 1);
+    _focusedMonthNotifier = ValueNotifier(DateTime(now.year, now.month, 1));
     _pageController = PageController(initialPage: _centerIndex);
     _buildMarkers();
   }
@@ -178,6 +202,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   void dispose() {
     _pageController.dispose();
+    _focusedMonthNotifier.dispose();
     super.dispose();
   }
 
@@ -194,6 +219,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
     setState(() {
       _selectedDay = DateTime.now();
     });
+    final now = DateTime.now();
+    _focusedMonthNotifier.value = DateTime(now.year, now.month, 1);
     _pageController.animateToPage(
       _centerIndex,
       duration: const Duration(milliseconds: 350),
@@ -242,9 +269,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               child: PageView.builder(
                 controller: _pageController,
                 onPageChanged: (index) {
-                  setState(() {
-                    _focusedMonth = _monthForIndex(index);
-                  });
+                  _focusedMonthNotifier.value = _monthForIndex(index);
                 },
                 itemBuilder: (context, index) {
                   final month = _monthForIndex(index);
@@ -272,10 +297,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.amber,
-        onPressed: () => Navigator.pop(
-          context,
-          {'action': 'new', 'date': _selectedDay},
-        ),
+        onPressed: () => widget.onNewNote(_selectedDay),
         child: const Icon(Icons.add, color: Colors.black, size: 30),
       ),
     );
@@ -297,27 +319,32 @@ class _CalendarScreenState extends State<CalendarScreen> {
           ),
           Expanded(
             child: Center(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 250),
-                transitionBuilder: (child, anim) => FadeTransition(
-                  opacity: anim,
-                  child: SlideTransition(
-                    position: Tween<Offset>(
-                      begin: const Offset(0, 0.2),
-                      end: Offset.zero,
-                    ).animate(anim),
-                    child: child,
-                  ),
-                ),
-                child: Text(
-                  '${_monthNamesTr[_focusedMonth.month - 1]} ${_focusedMonth.year}',
-                  key: ValueKey('${_focusedMonth.year}-${_focusedMonth.month}'),
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.amber,
-                  ),
-                ),
+              child: ValueListenableBuilder<DateTime>(
+                valueListenable: _focusedMonthNotifier,
+                builder: (context, focusedMonth, _) {
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 250),
+                    transitionBuilder: (child, anim) => FadeTransition(
+                      opacity: anim,
+                      child: SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0, 0.2),
+                          end: Offset.zero,
+                        ).animate(anim),
+                        child: child,
+                      ),
+                    ),
+                    child: Text(
+                      '${_monthNamesTr[focusedMonth.month - 1]} ${focusedMonth.year}',
+                      key: ValueKey('${focusedMonth.year}-${focusedMonth.month}'),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.amber,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -344,13 +371,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
         children: [
           const _MarkerDot(color: Colors.amber),
           const SizedBox(width: 5),
-          Text('Not', style: TextStyle(fontSize: 11, color: subtleColor)),
+          Text('Not', style: TextStyle(fontSize: 12, color: subtleColor)),
           const SizedBox(width: 14),
           const _MarkerDot(color: Colors.lightBlueAccent),
           const SizedBox(width: 5),
           Text(
             'Hatırlatıcı',
-            style: TextStyle(fontSize: 11, color: subtleColor),
+            style: TextStyle(fontSize: 12, color: subtleColor),
           ),
         ],
       ),
@@ -526,10 +553,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       return _DayNoteTile(
                         note: note,
                         day: _selectedDay,
-                        onTap: () => Navigator.pop(
-                          context,
-                          {'action': 'open', 'id': note['id']?.toString()},
-                        ),
+                        onTap: () {
+                          final id = note['id']?.toString();
+                          if (id != null) widget.onOpenNote(id);
+                        },
                       );
                     },
                   ),
@@ -583,12 +610,11 @@ class _DayNoteTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               width: 4,
               height: 34,
-              margin: const EdgeInsets.only(top: 2),
               decoration: BoxDecoration(
                 color: reminderLabel != null
                     ? Colors.lightBlueAccent
@@ -601,29 +627,30 @@ class _DayNoteTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    primaryText,
+                  RichText(
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      color: dNoteTextColor(context),
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: dNoteTextColor(context),
+                      ),
+                      children: [
+                        TextSpan(
+                          text: primaryText,
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        if (hasTitle && content.isNotEmpty)
+                          TextSpan(
+                            text: ' - $content',
+                            style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              color: dNoteTextColor(context).withValues(alpha: 0.7),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
-                  if (hasTitle && content.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 2),
-                      child: Text(
-                        content,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: dNoteTextColor(context).withValues(alpha: 0.55),
-                        ),
-                      ),
-                    ),
                 ],
               ),
             ),
@@ -812,6 +839,7 @@ class _DayCellWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(3),
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -1,0 +1,841 @@
+part of 'main.dart';
+
+// ════════════════════════════════════════════════════════════════════════
+// GÜNDEM EKRANI
+// İki kaynaktan gelen notları zaman bazlı bölümler altında listeler:
+//   Gecikmiş → Bugün → Yarın → (bugünden itibaren ilk 7 günün kalan her
+//   günü kendi barında, örn. "Çarşamba") → Gelecek Hafta → Daha İleri
+// Hafta sınırları takvim haftası (Pazartesi-Pazar) değil, bugüne göre
+// kayan (rolling) bir penceredir: ilk hafta bugün+6'ya kadar, Gelecek
+// Hafta day+7..day+13, Daha İleri day+14 ve sonrası.
+//
+// Satırlarda artık kaynağa göre renkli bir şerit YOK; tüm satırlar aynı
+// nötr kart görünümünde. Yalnızca hatırlatıcı kaynaklı satırlarda, saat
+// satırın en sağında mavi renkte gösterilir (atanan-tarih satırlarında
+// saat gösterilmez).
+// Bir notun hem hatırlatıcısı hem de aynı güne denk gelen atanmış tarihi
+// varsa, tek satır (hatırlatıcı öncelikli) gösterilir; farklı günlere
+// denk geliyorsa iki ayrı satır olarak görünebilir.
+//
+// Tek-günlük bölümlerde (Bugün/Yarın/[gün adı]) satırda tarih tekrar
+// gösterilmez (başlık zaten günü söylüyor); çok-günlük bölümlerde
+// (Gecikmiş/Gelecek Hafta/Daha İleri) satırın altında hangi güne ait
+// olduğu gösterilir.
+//
+// Takvim ekranındaki tekrar (repeat) hesaplama mantığı
+// (_reminderOccursOnDay / _effectiveReminderOn) burada da kullanılır.
+//
+// _reminderAgendaDay / _assignedAgendaDay / _gundemNoteCount TOP-LEVEL
+// (sınıf dışı) fonksiyonlardır; böylece hem bu ekran hem de çekmece
+// menüsündeki sayaç (bkz. note_list_build_mixin.dart) aynı mantığı
+// kod tekrarı olmadan paylaşabilir.
+// ════════════════════════════════════════════════════════════════════════
+
+const List<String> _gundemWeekDayFullTr = [
+  'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar',
+];
+
+const List<String> _gundemMonthNamesTr = [
+  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
+];
+
+const List<String> _gundemMonthNamesShortTr = [
+  'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
+  'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara',
+];
+
+bool _gundemIsSameDay(DateTime a, DateTime b) =>
+    a.year == b.year && a.month == b.month && a.day == b.day;
+
+// Bir notun hatırlatıcısının "gündemdeki günü"nü belirler:
+// - Tekrarsız hatırlatıcılarda doğrudan kurulu tarihin günüdür (geçmişte
+//   olsa bile döner; bu sayede "gecikmiş" bölümüne düşebilir).
+// - Tekrarlı hatırlatıcılarda bugünden (veya kurulduğu günden, hangisi
+//   daha ilerideyse) itibaren ileri doğru taranarak kuralın devreye
+//   girdiği en yakın gün bulunur. 'hourly' tekrar yalnızca kurulduğu
+//   günde eşleşir (bkz. calendar_screen.dart -> _reminderOccursOnDay).
+DateTime? _reminderAgendaDay(Map<String, dynamic> note) {
+  final raw = note['reminderDate']?.toString();
+  if (raw == null || raw.isEmpty) return null;
+  final base = DateTime.tryParse(raw);
+  if (base == null) return null;
+  final baseDay = DateTime(base.year, base.month, base.day);
+
+  final repeat = note['reminderRepeat']?.toString();
+  if (repeat == null || repeat.isEmpty) {
+    return baseDay;
+  }
+
+  final today = DateTime.now();
+  final todayDay = DateTime(today.year, today.month, today.day);
+  final searchStart = todayDay.isBefore(baseDay) ? baseDay : todayDay;
+  for (int i = 0; i < 400; i++) {
+    final candidate = searchStart.add(Duration(days: i));
+    if (_reminderOccursOnDay(note, candidate)) return candidate;
+  }
+  return null;
+}
+
+// Alt bardan (takvimden) atanan tarihin günü. Zaman bilgisi yok sayılır,
+// sadece gün esas alınır.
+DateTime? _assignedAgendaDay(Map<String, dynamic> note) {
+  final raw = note['assignedDate']?.toString();
+  if (raw == null || raw.isEmpty) return null;
+  final dt = DateTime.tryParse(raw);
+  if (dt == null) return null;
+  return DateTime(dt.year, dt.month, dt.day);
+}
+
+// Çekmece menüsündeki "Gündem" satırının yanında gösterilecek sayı:
+// Gündem'de en az bir satırla temsil edilen (hatırlatıcılı VEYA atanmış
+// tarihli, kilitli/arşivlenmemiş) DİSTİNCT not sayısı.
+int _gundemNoteCount(List<Map<String, dynamic>> notes) {
+  var count = 0;
+  for (final note in notes) {
+    if (note['isLocked'] == true || note['isArchived'] == true) continue;
+    if (_reminderAgendaDay(note) != null || _assignedAgendaDay(note) != null) {
+      count++;
+    }
+  }
+  return count;
+}
+
+// Tek bir gündem satırını temsil eder: hangi nota ait olduğu, hangi güne
+// düştüğü ve kaynağının hatırlatıcı mı yoksa atanan tarih mi olduğu.
+class _AgendaEntry {
+  final Map<String, dynamic> note;
+  final DateTime day;
+  final bool isAssigned;
+  const _AgendaEntry({
+    required this.note,
+    required this.day,
+    required this.isAssigned,
+  });
+}
+
+// Tek bir zaman bölümü (Gecikmiş / Bugün / Yarın / [gün adı] /
+// Gelecek Hafta / Daha İleri) ve o bölüme ait satırlar.
+class _AgendaSection {
+  final String title;
+  final IconData icon;
+  final Color headerColor;
+  final bool showFullDate;
+  final List<_AgendaEntry> entries;
+  _AgendaSection({
+    required this.title,
+    required this.icon,
+    required this.headerColor,
+    required this.showFullDate,
+    required this.entries,
+  });
+}
+
+class GundemScreen extends StatefulWidget {
+  final List<Map<String, dynamic>> notes;
+
+  // Ayarlar > Kişiselleştirme > Metin Boyutu ile aynı değer. Not kartlarında
+  // kullanılan başlık/içerik yazı boyutlarıyla birebir aynı ölçeklemeyi
+  // burada da uygulayabilmek için (bkz. NoteListBuildMixin._previewFontScale)
+  // dışarıdan geçiriliyor.
+  final double globalFontSize;
+
+  // Notu doğrudan açan callback. Verilirse, nota tıklandığında Gündem
+  // KENDİNİ KAPATMADAN bu callback çağrılır (asıl not ekranı, çağıranın
+  // kendi Navigator context'i üzerinden açılır ve Gündem'in ÜZERİNE
+  // biner). Böylece not ekranından geri dönüldüğünde Gündem otomatik
+  // olarak yeniden görünür. Verilmezse geriye dönük uyumluluk için eski
+  // davranışa (Gündem kendini kapatıp sonucu çağırana Navigator.pop ile
+  // iletme) geri düşülür.
+  final void Function(Map<String, dynamic> note)? onOpenNote;
+
+  // Gündemdeki bir satıra basılı tutulunca çıkan menüden "Gündemden
+  // kaldır" seçilirse çağrılır. isAssigned true ise satır atanan tarihten,
+  // false ise hatırlatıcıdan geliyordu — hangi alanın temizleneceğini
+  // belirlemek için kullanılır. Verilmezse, not üzerinde ilgili tarih
+  // alanı doğrudan bu ekranda (kalıcı olmadan, yalnızca görünüm için)
+  // temizlenir.
+  final void Function(Map<String, dynamic> note, bool isAssigned)?
+      onRemoveFromAgenda;
+
+  // Aynı menüden "Notu sil" seçilirse çağrılır. Verilmezse, not yalnızca
+  // bu ekranın kendi listesinden (kalıcı olmadan) çıkarılır.
+  final void Function(Map<String, dynamic> note)? onDeleteNote;
+
+  const GundemScreen({
+    super.key,
+    required this.notes,
+    this.globalFontSize = 16.0,
+    this.onOpenNote,
+    this.onRemoveFromAgenda,
+    this.onDeleteNote,
+  });
+
+  @override
+  State<GundemScreen> createState() => _GundemScreenState();
+}
+
+class _GundemScreenState extends State<GundemScreen> {
+  // "Gecikmiş" bölümü gecikmiş not varsa en üstte KAPALI bir bar olarak
+  // durur (sadece başlık görünür); kullanıcı bara dokununca içindeki
+  // notlar açılır/kapanır. Gecikmiş not yoksa bar hiç gösterilmez.
+  bool _overdueExpanded = false;
+
+  DateTime _reminderTimeOf(Map<String, dynamic> note, DateTime agendaDay) {
+    return _effectiveReminderOn(note, agendaDay) ??
+        DateTime.tryParse(note['reminderDate']?.toString() ?? '') ??
+        agendaDay;
+  }
+
+  DateTime _timeOf(_AgendaEntry e) => e.isAssigned
+      ? (DateTime.tryParse(e.note['assignedDate']?.toString() ?? '') ?? e.day)
+      : _reminderTimeOf(e.note, e.day);
+
+  // Bir gündem satırına tıklandığında notu açar. onOpenNote sağlanmışsa
+  // Gündem KAPANMADAN callback çağrılır; not ekranı Gündem'in üzerine
+  // açılır ve geri dönüldüğünde Gündem otomatik olarak tekrar görünür.
+  // Sağlanmamışsa eski davranışa (Gündem kendini kapatıp sonucu çağırana
+  // iletme) geri düşülür.
+  void _openNote(BuildContext context, Map<String, dynamic> note) {
+    final callback = widget.onOpenNote;
+    if (callback != null) {
+      callback(note);
+    } else {
+      Navigator.pop(context, {
+        'action': 'open',
+        'id': note['id']?.toString(),
+      });
+    }
+  }
+
+  // Gündemdeki bir satıra basılı tutulunca çıkan menü: "Gündemden kaldır"
+  // (yalnızca bu satırın kaynağı olan tarih/hatırlatıcıyı temizler, not
+  // kalır) veya "Notu sil" (notun tamamını siler). Kalıcı veri değişikliği
+  // dışarıdan sağlanan onRemoveFromAgenda/onDeleteNote callback'leri
+  // üzerinden yapılır; sağlanmazsa yalnızca bu ekranın görünümünde
+  // (kalıcı olmadan) uygulanır.
+  Future<void> _showAgendaTileMenu(
+    BuildContext context,
+    Map<String, dynamic> note,
+    bool isAssigned,
+  ) async {
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: dNoteCardColor(context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (sheetCtx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.event_busy, color: Colors.blueGrey),
+              title: const Text('Gündemden kaldır'),
+              onTap: () => Navigator.pop(sheetCtx, 'remove'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
+              title: const Text('Notu sil'),
+              onTap: () => Navigator.pop(sheetCtx, 'delete'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (!context.mounted || action == null) return;
+
+    if (action == 'remove') {
+      final callback = widget.onRemoveFromAgenda;
+      if (callback != null) {
+        callback(note, isAssigned);
+      } else {
+        setState(() {
+          if (isAssigned) {
+            note.remove('assignedDate');
+          } else {
+            note.remove('reminderDate');
+            note.remove('reminderRepeat');
+          }
+        });
+      }
+    } else if (action == 'delete') {
+      final callback = widget.onDeleteNote;
+      if (callback != null) {
+        callback(note);
+      } else {
+        setState(() {
+          widget.notes.removeWhere(
+            (n) => n['id']?.toString() == note['id']?.toString(),
+          );
+        });
+      }
+    }
+  }
+
+  // Tüm notları tarayıp gündem satırlarını (_AgendaEntry) üretir, ardından
+  // bunları zaman bazlı bölümlere (_AgendaSection) ayırır. Bölüm sırası:
+  // Gecikmiş, Bugün, Yarın, bugünden itibaren ilk 7 günün kalan her günü
+  // (ayrı ayrı, örn. "Salı"), Gelecek Hafta (day+7..day+13), Daha İleri.
+  // Hafta sınırları takvim haftası (Pazartesi-Pazar) değil, bugüne göre
+  // kayan (rolling) bir penceredir.
+  List<_AgendaSection> _buildSections() {
+    final today = DateTime.now();
+    final todayDay = DateTime(today.year, today.month, today.day);
+    final tomorrow = todayDay.add(const Duration(days: 1));
+
+
+    // "İlk hafta": bugünden itibaren kayan (rolling) 7 günlük pencere
+    // (bugün + sonraki 6 gün) — takvim haftası (Pazartesi-Pazar) değil.
+    // Bu pencerenin son günü firstWeekEnd; Gelecek Hafta bölümü bunu
+    // takip eden 7 günü (day+7 .. day+13) kapsar.
+    final firstWeekEnd = todayDay.add(const Duration(days: 6));
+    final nextWeekStart = todayDay.add(const Duration(days: 7));
+    final nextWeekEnd = todayDay.add(const Duration(days: 13));
+
+    // Bu haftanın kalan günleri (yarından sonra, ilk haftanın sonuna kadar)
+    // için sırayla anahtar/gün listesi. firstWeekEnd, tomorrow'dan önce ya
+    // da aynıysa boş kalır.
+    final restOfWeekDays = <DateTime>[];
+    var cursor = tomorrow.add(const Duration(days: 1));
+    while (!cursor.isAfter(firstWeekEnd)) {
+      restOfWeekDays.add(cursor);
+      cursor = cursor.add(const Duration(days: 1));
+    }
+
+    // Her bölüm için boş bir _AgendaEntry listesi hazırla (sıra önemli).
+    final overdueEntries = <_AgendaEntry>[];
+    final todayEntries = <_AgendaEntry>[];
+    final tomorrowEntries = <_AgendaEntry>[];
+    final restOfWeekEntries = {
+      for (final d in restOfWeekDays) d: <_AgendaEntry>[],
+    };
+    final nextWeekEntries = <_AgendaEntry>[];
+    final furtherEntries = <_AgendaEntry>[];
+
+    void addEntry(_AgendaEntry entry) {
+      final day = entry.day;
+      if (day.isBefore(todayDay)) {
+        overdueEntries.add(entry);
+      } else if (_gundemIsSameDay(day, todayDay)) {
+        todayEntries.add(entry);
+      } else if (_gundemIsSameDay(day, tomorrow)) {
+        tomorrowEntries.add(entry);
+      } else if (!day.isAfter(firstWeekEnd)) {
+        restOfWeekEntries[day]?.add(entry);
+      } else if (!day.isBefore(nextWeekStart) && !day.isAfter(nextWeekEnd)) {
+        nextWeekEntries.add(entry);
+      } else {
+        furtherEntries.add(entry);
+      }
+    }
+
+    for (final note in widget.notes) {
+      if (note['isLocked'] == true || note['isArchived'] == true) continue;
+
+      final reminderDay = _reminderAgendaDay(note);
+      if (reminderDay != null) {
+        addEntry(_AgendaEntry(note: note, day: reminderDay, isAssigned: false));
+      }
+
+      final assignedDay = _assignedAgendaDay(note);
+      if (assignedDay != null) {
+        // Aynı not, aynı gün için zaten hatırlatıcı satırıyla temsil
+        // ediliyorsa, aynı notu iki kez göstermemek için atanan-tarih
+        // satırı atlanır.
+        final ownReminderSameDay =
+            reminderDay != null && _gundemIsSameDay(assignedDay, reminderDay);
+        if (!ownReminderSameDay) {
+          addEntry(_AgendaEntry(note: note, day: assignedDay, isAssigned: true));
+        }
+      }
+    }
+
+    void sortEntries(List<_AgendaEntry> list) =>
+        list.sort((a, b) => _timeOf(a).compareTo(_timeOf(b)));
+
+    sortEntries(overdueEntries);
+    sortEntries(todayEntries);
+    sortEntries(tomorrowEntries);
+    for (final list in restOfWeekEntries.values) {
+      sortEntries(list);
+    }
+    sortEntries(nextWeekEntries);
+    sortEntries(furtherEntries);
+
+    final futureColor = Colors.grey;
+    final sections = <_AgendaSection>[
+      _AgendaSection(
+        title: 'Gecikmiş',
+        icon: Icons.error_outline,
+        headerColor: Colors.redAccent,
+        showFullDate: true,
+        entries: _lastThree(overdueEntries),
+      ),
+      _AgendaSection(
+        title: 'Bugün',
+        icon: Icons.today_outlined,
+        headerColor: Colors.green,
+        showFullDate: false,
+        entries: todayEntries,
+      ),
+      _AgendaSection(
+        title: 'Yarın',
+        icon: Icons.wb_twilight,
+        headerColor: futureColor,
+        showFullDate: false,
+        entries: tomorrowEntries,
+      ),
+      for (final d in restOfWeekDays)
+        _AgendaSection(
+          title: _gundemWeekDayFullTr[d.weekday - 1],
+          icon: Icons.calendar_today_outlined,
+          headerColor: futureColor,
+          showFullDate: false,
+          entries: restOfWeekEntries[d]!,
+        ),
+      _AgendaSection(
+        title: 'Gelecek Hafta',
+        icon: Icons.date_range_outlined,
+        headerColor: futureColor,
+        showFullDate: true,
+        entries: nextWeekEntries,
+      ),
+      _AgendaSection(
+        title: 'Daha İleri',
+        icon: Icons.more_horiz,
+        headerColor: futureColor,
+        showFullDate: true,
+        entries: furtherEntries,
+      ),
+    ];
+
+    // Boş bölümleri (satırı olmayan) gösterme.
+    return sections.where((s) => s.entries.isNotEmpty).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final sections = _buildSections();
+    final overdueSection = sections.where((s) => s.title == 'Gecikmiş').isEmpty
+        ? null
+        : sections.firstWhere((s) => s.title == 'Gecikmiş');
+    final restSections = sections.where((s) => s.title != 'Gecikmiş').toList();
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: false,
+        iconTheme: const IconThemeData(color: Colors.amber),
+        title: const Text(
+          'Gündem',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.amber,
+            fontSize: 18,
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: sections.isEmpty
+            ? _buildEmptyState(context)
+            : CustomScrollView(
+                slivers: [
+                  if (overdueSection != null)
+                    SliverToBoxAdapter(
+                      child: _buildOverdueCollapsedBar(context, overdueSection),
+                    ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) =>
+                            _buildSection(context, restSections[index]),
+                        childCount: restSections.length,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+
+  // "Gecikmiş" bölümünü en üstte, kapalı bir başlık satırı olarak gösterir
+  // (yalnızca ikon + başlık görünür, sayı YOK). Diğer bölüm başlıklarıyla
+  // aynı genişlik/hizada durur (kutu/çerçeve yok); dokunulduğunda altındaki
+  // notlar açılır/kapanır (_overdueExpanded). Açılıp kapanma yalnızca
+  // yükseklik olarak animasyonludur, opaklık/yanıp sönme efekti yoktur.
+  Widget _buildOverdueCollapsedBar(BuildContext context, _AgendaSection section) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: () => setState(() => _overdueExpanded = !_overdueExpanded),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(4, 6, 4, 8),
+              child: Row(
+                children: [
+                  Icon(section.icon, size: 16, color: section.headerColor),
+                  const SizedBox(width: 6),
+                  Text(
+                    section.title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: section.headerColor,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                  const Spacer(),
+                  AnimatedRotation(
+                    turns: _overdueExpanded ? 0.5 : 0.0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(
+                      Icons.keyboard_arrow_down,
+                      size: 20,
+                      color: dNoteTextColor(context).withValues(alpha: 0.5),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            alignment: Alignment.topCenter,
+            child: !_overdueExpanded
+                ? const SizedBox(width: double.infinity)
+                : Column(
+                    children: section.entries
+                        .map(
+                          (entry) => _AgendaTile(
+                            note: entry.note,
+                            agendaDay: entry.day,
+                            isAssigned: entry.isAssigned,
+                            showFullDate: section.showFullDate,
+                            globalFontSize: widget.globalFontSize,
+                            onTap: (ctx) => _openNote(ctx, entry.note),
+                            onLongPress: (ctx) => _showAgendaTileMenu(
+                              ctx,
+                              entry.note,
+                              entry.isAssigned,
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.event_available_outlined,
+              size: 56,
+              color: dNoteTextColor(context).withValues(alpha: 0.35),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Gündeminde bir şey yok',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: dNoteTextColor(context).withValues(alpha: 0.7),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Hatırlatıcı eklediğin veya tarih atadığın notlar burada listelenir.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                color: dNoteTextColor(context).withValues(alpha: 0.45),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSection(BuildContext context, _AgendaSection section) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 6, 4, 8),
+            child: Row(
+              children: [
+                Icon(section.icon, size: 16, color: section.headerColor),
+                const SizedBox(width: 6),
+                Text(
+                  section.title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: section.headerColor,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  '${section.entries.length}',
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: dNoteTextColor(context).withValues(alpha: 0.4),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ...section.entries.map(
+            (entry) => _AgendaTile(
+              note: entry.note,
+              agendaDay: entry.day,
+              isAssigned: entry.isAssigned,
+              showFullDate: section.showFullDate,
+              globalFontSize: widget.globalFontSize,
+              onTap: (ctx) => _openNote(ctx, entry.note),
+              onLongPress: (ctx) => _showAgendaTileMenu(
+                ctx,
+                entry.note,
+                entry.isAssigned,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // En fazla son 3 eleman (bugüne en yakın olan 3 tanesi) döner; liste
+  // zaten en eskiden en yeniye sıralı olduğu için son 3 eleman alınır.
+  List<_AgendaEntry> _lastThree(List<_AgendaEntry> entries) {
+    if (entries.length <= 3) return entries;
+    return entries.sublist(entries.length - 3);
+  }
+}
+
+// note['content'] alanı çoğu notta düz JSON blok dizisi olarak saklanır
+// (örn. [{"type":"text","text":"..."}] veya [{"type":"checklist",...}]).
+// Başlık boşken bu alanı doğrudan ekrana basmak yerine, bloklardan okunabilir
+// bir önizleme metni üretir. content JSON değilse (eski/düz metin notlar)
+// olduğu gibi döner.
+String _gundemPreviewFromContent(String raw) {
+  final trimmed = raw.trim();
+  if (trimmed.isEmpty) return '';
+  try {
+    final decoded = jsonDecode(trimmed);
+    if (decoded is! List) return trimmed;
+
+    final buffer = StringBuffer();
+    void addPart(String part) {
+      final p = part.trim();
+      if (p.isEmpty) return;
+      if (buffer.isNotEmpty) buffer.write(' ');
+      buffer.write(p);
+    }
+
+    for (final block in decoded) {
+      if (block is! Map) continue;
+      switch (block['type']?.toString()) {
+        case 'text':
+          addPart(block['text']?.toString() ?? '');
+          break;
+        case 'checklist':
+          final items = block['items'];
+          if (items is List) {
+            for (final item in items) {
+              if (item is Map) addPart(item['text']?.toString() ?? '');
+            }
+          }
+          break;
+        case 'calc_table':
+          addPart('[Hesap Tablosu]');
+          break;
+        case 'drawing':
+          addPart('[Çizim]');
+          break;
+        case 'image':
+          addPart('[Görsel]');
+          break;
+        default:
+          break;
+      }
+      if (buffer.length > 120) break;
+    }
+    return buffer.toString();
+  } catch (_) {
+    // Geçerli JSON değil → zaten düz metin, olduğu gibi kullan.
+    return trimmed;
+  }
+}
+
+// ── Gündemdeki tek bir not satırı ────────────────────────────────────────
+class _AgendaTile extends StatelessWidget {
+  final Map<String, dynamic> note;
+  final DateTime agendaDay;
+  final bool isAssigned;
+  final bool showFullDate;
+  final double globalFontSize;
+  final void Function(BuildContext context) onTap;
+  final void Function(BuildContext context)? onLongPress;
+
+  const _AgendaTile({
+    required this.note,
+    required this.agendaDay,
+    required this.isAssigned,
+    required this.showFullDate,
+    required this.globalFontSize,
+    required this.onTap,
+    this.onLongPress,
+  });
+
+  static const Map<String, String> _repeatLabels = {
+    'hourly': 'Her saat',
+    'daily': 'Her gün',
+    'weekly': 'Her hafta',
+    'monthly': 'Her ay',
+    'yearly': 'Her yıl',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final contentPreview =
+        _gundemPreviewFromContent(note['content']?.toString() ?? '');
+    final hasRealTitle = note['title']?.toString().trim().isNotEmpty ?? false;
+    final title = hasRealTitle
+        ? note['title'].toString()
+        : (contentPreview.isNotEmpty ? contentPreview : 'Adsız not');
+
+    // Notun kendi fontSize'ı varsa o, yoksa Ayarlar > Kişiselleştirme >
+    // Metin Boyutu (globalFontSize) esas alınır. Başlık ile içerik önizlemesi
+    // aynı boyutta gösterilir; başlıklı notlarda yalnızca kalınlık (bold)
+    // farkı vardır.
+    final noteFontSize =
+        (note['fontSize'] as num?)?.toDouble() ?? globalFontSize;
+    final titleFontSize = noteFontSize;
+    final titleFontWeight = FontWeight.w600;
+
+    // Zaman/tekrar bilgisi yalnızca hatırlatıcı kaynaklı satırlarda
+    // anlamlıdır; atanan-tarih satırlarında saat gösterilmez.
+    final effective = isAssigned ? null : _effectiveReminderOn(note, agendaDay);
+    final timeLabel = effective != null
+        ? '${effective.hour.toString().padLeft(2, '0')}:${effective.minute.toString().padLeft(2, '0')}'
+        : '';
+    final repeat = isAssigned ? null : note['reminderRepeat']?.toString();
+    final repeatLabel = (repeat != null && repeat.isNotEmpty)
+        ? _repeatLabels[repeat]
+        : null;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: dNoteCardColor(context),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: dNoteBorderColor(context)),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () => onTap(context),
+          onLongPress: onLongPress == null ? null : () => onLongPress!(context),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            child: ConstrainedBox(
+              // Eskiden bu yükseklik, kaldırılan renkli şeridin (Container
+              // width:3 height:34) satır içinde durması sayesinde
+              // sağlanıyordu. Şerit kalktığı için satırın eski yüksekliğini
+              // korumak amacıyla aynı minimum yükseklik burada veriliyor.
+              constraints: const BoxConstraints(minHeight: 34),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: titleFontSize,
+                            fontWeight: titleFontWeight,
+                            color: dNoteTextColor(context),
+                          ),
+                        ),
+                        if (repeatLabel != null) ...[
+                          const SizedBox(height: 3),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.repeat,
+                                size: 11,
+                                color: dNoteTextColor(context)
+                                    .withValues(alpha: 0.5),
+                              ),
+                              const SizedBox(width: 3),
+                              Text(
+                                repeatLabel,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: dNoteTextColor(context)
+                                      .withValues(alpha: 0.5),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  if (timeLabel.isNotEmpty) ...[
+                    const SizedBox(width: 8),
+                    const Icon(
+                      Icons.notifications,
+                      size: 13,
+                      color: Colors.lightBlueAccent,
+                    ),
+                    const SizedBox(width: 3),
+                    Text(
+                      timeLabel,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.lightBlueAccent,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(width: 6),
+                  Icon(
+                    Icons.chevron_right,
+                    size: 18,
+                    color: dNoteTextColor(context).withValues(alpha: 0.3),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

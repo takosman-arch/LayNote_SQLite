@@ -64,6 +64,7 @@ part 'note_list_note_dialog_mixin.dart';
 part 'note_list_build_mixin.dart';
 part 'settings_page.dart';
 part 'calendar_screen.dart';
+part 'gundem_screen.dart';
 part 'backup_history_screen.dart';
 part 'backup_last_info_widget.dart';
 part 'google_drive_helper.dart';

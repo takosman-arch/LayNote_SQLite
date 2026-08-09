@@ -29,6 +29,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   void _exitSelectionMode();
   String _folderTagLabel(String category);
   String _formatDateTimeShortTr(DateTime dt);
+  Color _getCategoryColor(String? category);
   String _getCategoryDisplayName(String category);
   int _getCountForCategory(String category);
   double get _globalFontSize;
@@ -537,6 +538,61 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       },
                     ),
                   ),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.event_note_outlined,
+                      color: Colors.amber,
+                    ),
+                    title: const Text('Gündem'),
+                    trailing: Text(
+                      _gundemNoteCount(_notes).toString(),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => GundemScreen(
+                            notes: List<Map<String, dynamic>>.from(_notes),
+                            globalFontSize: _globalFontSize,
+                            onOpenNote: (note) {
+                              final tappedNoteId = note['id']?.toString();
+                              if (tappedNoteId == null) return;
+                              final index = _notes.indexWhere(
+                                (n) => n['id']?.toString() == tappedNoteId,
+                              );
+                              if (index != -1) {
+                                _openNoteWithPasswordCheck(index);
+                              }
+                            },
+                            onRemoveFromAgenda: (note, isAssigned) {
+                              setState(() {
+                                if (isAssigned) {
+                                  note.remove('assignedDate');
+                                } else {
+                                  note.remove('reminderDate');
+                                  note.remove('reminderRepeat');
+                                }
+                              });
+                              _rescheduleNoteReminder(note);
+                              _saveData();
+                            },
+                            onDeleteNote: (note) {
+                              final key = _noteKey(note);
+                              setState(() {
+                                _selectedNoteKeys = {key};
+                              });
+                              _deleteSelectedNotes();
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                   Container(
                     color: _activeCategory == '__reminders__'
                         ? dNoteHighlight(context)
@@ -778,33 +834,30 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     title: const Text(
                       'Takvim',
                     ),
-                    onTap: () async {
+                    onTap: () {
                       Navigator.pop(context);
-                      final result = await Navigator.push<Map<String, dynamic>>(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) => CalendarScreen(
                             notes: List<Map<String, dynamic>>.from(_notes),
+                            onNewNote: (date) {
+                              _showNoteDialog(
+                                type: 'text',
+                                initialAssignedDate: date,
+                              );
+                            },
+                            onOpenNote: (noteId) {
+                              final index = _notes.indexWhere(
+                                (n) => n['id']?.toString() == noteId,
+                              );
+                              if (index != -1) {
+                                _openNoteWithPasswordCheck(index);
+                              }
+                            },
                           ),
                         ),
                       );
-                      if (!mounted || result == null) return;
-
-                      if (result['action'] == 'new') {
-                        _showNoteDialog(
-                          type: 'text',
-                          initialAssignedDate: result['date'] as DateTime,
-                        );
-                      } else if (result['action'] == 'open') {
-                        final tappedNoteId = result['id'] as String?;
-                        if (tappedNoteId == null) return;
-                        final index = _notes.indexWhere(
-                          (n) => n['id']?.toString() == tappedNoteId,
-                        );
-                        if (index != -1) {
-                          _openNoteWithPasswordCheck(index);
-                        }
-                      }
                     },
                   ),
                   ListTile(
@@ -1291,7 +1344,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                     .toString(),
                                               ),
                                               style: TextStyle(
-                                                fontWeight: FontWeight.bold,
+                                                fontWeight: FontWeight.w600,
                                                 fontSize: 18 * fontScale,
                                                 color: dNoteEffectiveTextColor(context, _textColor),
                                               ),
@@ -1419,10 +1472,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                         children: [
                                           Icon(
                                             note['reminderRepeat'] == null
-                                                ? Icons.access_time
+                                                ? Icons.notifications
                                                 : Icons.repeat,
                                             color: Colors.grey,
-                                            size: 20,
+                                            size: 16,
                                           ),
                                           const SizedBox(width: 4),
                                           Flexible(
@@ -1434,9 +1487,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                   _textColor,
                                                 ),
                                                 fontSize:
-                                                    (note['fontSize'] as num?)
+                                                    ((note['fontSize'] as num?)
                                                         ?.toDouble() ??
-                                                    _globalFontSize,
+                                                    _globalFontSize) -
+                                                    1,
                                               ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -1456,8 +1510,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                           children: [
                                             Icon(
                                               Icons.folder_outlined,
-                                              color: Colors.grey,
-                                              size: 20,
+                                              color: _getCategoryColor(
+                                                note['category'] as String?,
+                                              ),
+                                              size: 16,
                                             ),
                                             const SizedBox(width: 4),
                                             Flexible(
@@ -1472,10 +1528,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                     _textColor,
                                                   ),
                                                   fontSize:
-                                                      (note['fontSize']
+                                                      ((note['fontSize']
                                                               as num?)
                                                           ?.toDouble() ??
-                                                      _globalFontSize,
+                                                      _globalFontSize) -
+                                                      1,
                                                 ),
                                                 maxLines: 1,
                                                 overflow:
@@ -2169,7 +2226,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                               (note['title'] ?? '').toString(),
                             ),
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w600,
                               fontSize: 18 * fontScale,
                               color: dNoteEffectiveTextColor(context, _textColor),
                             ),
@@ -2264,10 +2321,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             children: [
                               Icon(
                                 note['reminderRepeat'] == null
-                                    ? Icons.access_time
+                                    ? Icons.notifications
                                     : Icons.repeat,
                                 color: Colors.grey,
-                                size: 20,
+                                size: 16,
                               ),
                               const SizedBox(width: 4),
                               Flexible(
@@ -2279,9 +2336,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                       _textColor,
                                     ),
                                     fontSize:
-                                        (note['fontSize'] as num?)
+                                        ((note['fontSize'] as num?)
                                             ?.toDouble() ??
-                                        _globalFontSize,
+                                        _globalFontSize) -
+                                        1,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -2297,8 +2355,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             children: [
                               Icon(
                                 Icons.folder_outlined,
-                                color: Colors.grey,
-                                size: 20,
+                                color: _getCategoryColor(
+                                  note['category'] as String?,
+                                ),
+                                size: 16,
                               ),
                               const SizedBox(width: 4),
                               Flexible(
@@ -2312,9 +2372,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                       _textColor,
                                     ),
                                     fontSize:
-                                        (note['fontSize'] as num?)
+                                        ((note['fontSize'] as num?)
                                             ?.toDouble() ??
-                                        _globalFontSize,
+                                        _globalFontSize) -
+                                        1,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,

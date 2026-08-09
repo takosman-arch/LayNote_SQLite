@@ -23,7 +23,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   Future<void> _handleReminderRowTap({ required BuildContext context, required DateTime? currentReminder, required String? currentRepeat, required void Function(DateTime? reminder, String? repeat) onChanged, });
   List<Map<String, dynamic>> get _notes;
   set _notes(List<Map<String, dynamic>> value);
-  Future<DateTime?> _pickCalendarDate({ required BuildContext context, required DateTime initialDate, required DateTime firstDate, required DateTime lastDate, required String helpText, });
+  Future<DateTime?> _pickCalendarDate({ required BuildContext context, required DateTime initialDate, required DateTime firstDate, required DateTime lastDate, required String helpText, bool showClearOption = false, });
   bool _saveNoteIfValid( int? index, String noteType, List<Map<String, dynamic>> checkItems, [ List<Map<String, dynamic>> attachments = const [], List<Map<String, dynamic>> blocks = const [], DateTime? reminder, DateTime? assignedDate, String? reminderRepeat, int? bgColor, ]);
   // Not arka plan rengi (noteBgColor), artık _saveNoteIfValid'in son
   // parametresi (bgColor) olarak doğrudan geçirilir (gerçek gövde bu
@@ -109,6 +109,14 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // Notun takvimde hangi güne ait sayılacağı (kullanıcı isterse takvimden
     // farklı bir gün seçebilir; seçmezse oluşturulma/mevcut tarih kullanılır).
     DateTime noteAssignedDate = initialAssignedDate ?? DateTime.now();
+    // noteAssignedDate her zaman geçerli bir tarih tutar (alt bardaki
+    // butonun göstereceği bir değer lazım), ancak bu, notun GERÇEKTEN bir
+    // tarihe atanmış sayılıp Gündem'de görüneceği anlamına gelmez. Yalnızca
+    // kullanıcı alt bardan elle bir tarih seçtiğinde ya da not, takvimden
+    // "bu güne ekle" ile (initialAssignedDate dolu) açıldığında ya da
+    // düzenlenen notun zaten kayıtlı bir assignedDate'i varsa true olur.
+    // false kaldığı sürece kaydederken assignedDate alanına null yazılır.
+    bool noteAssignedDateSet = initialAssignedDate != null;
 
     // ── İçerik blokları (metin + araya eklenen fotoğraf/belge grupları) ──
     List<Map<String, dynamic>> blocks = [];
@@ -673,6 +681,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         'noteReminder': noteReminder?.toIso8601String(),
         'noteReminderRepeat': noteReminderRepeat,
         'noteAssignedDate': noteAssignedDate.toIso8601String(),
+        'noteAssignedDateSet': noteAssignedDateSet,
       };
     }
 
@@ -698,6 +707,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       noteAssignedDate =
           DateTime.tryParse(snap['noteAssignedDate'] as String) ??
           DateTime.now();
+      noteAssignedDateSet = snap['noteAssignedDateSet'] as bool? ?? false;
       rebuildBlockControllers();
       syncControllersAndFocusNodes();
     }
@@ -2490,6 +2500,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       }
       final rawAssigned = _notes[index]['assignedDate']?.toString();
       final rawCreated = _notes[index]['createdDate']?.toString();
+      noteAssignedDateSet = rawAssigned != null && rawAssigned.isNotEmpty;
       noteAssignedDate =
           DateTime.tryParse((rawAssigned != null && rawAssigned.isNotEmpty)
                   ? rawAssigned
@@ -3611,7 +3622,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     );
                     return;
                   }
-                  final saved = _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDate, noteReminderRepeat, noteBgColor);
+                  final saved = _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDateSet ? noteAssignedDate : null, noteReminderRepeat, noteBgColor);
                   SystemChrome.setSystemUIOverlayStyle(
                     dNoteSystemBarsStyle(context),
                   );
@@ -3678,7 +3689,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           attachments,
                           blocks,
                           noteReminder,
-                          noteAssignedDate,
+                          noteAssignedDateSet ? noteAssignedDate : null,
                           noteReminderRepeat,
                           noteBgColor,
                         );
@@ -5312,11 +5323,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               final tagTextStyle = TextStyle(
                                 color: dNoteEffectiveTextColor(context, _textColor),
                                 fontWeight: FontWeight.normal,
-                                fontSize: index != null
+                                fontSize: (index != null
                                     ? ((_notes[index!]['fontSize'] as num?)
                                               ?.toDouble() ??
                                           _globalFontSize)
-                                    : _globalFontSize,
+                                    : _globalFontSize) -
+                                    1,
                               );
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 10),
@@ -5359,10 +5371,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             children: [
                                               Icon(
                                                 noteReminderRepeat == null
-                                                    ? Icons.access_time
+                                                    ? Icons.notifications
                                                     : Icons.repeat,
-                                                size: 16,
-                                                color: Colors.grey,
+                                                size: 20,
+                                                color: Colors.lightBlueAccent,
                                               ),
                                               const SizedBox(width: 6),
                                               Flexible(
@@ -5408,7 +5420,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                           children: [
                                             const Icon(
                                               Icons.folder_outlined,
-                                              size: 16,
+                                              size: 20,
                                               color: Colors.grey,
                                             ),
                                             const SizedBox(width: 6),
@@ -5434,7 +5446,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                               },
                                             );
                                           } else {
-                                            _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDate, noteReminderRepeat, noteBgColor);
+                                            _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDateSet ? noteAssignedDate : null, noteReminderRepeat, noteBgColor);
                                             if (_notes.isNotEmpty) {
                                               final newIndex =
                                                   _notes.length - 1;
@@ -5988,66 +6000,154 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      InkWell(
-                                        borderRadius: BorderRadius.circular(8),
-                                        onTap: () async {
-                                          final now = DateTime.now();
-                                          final picked = await _pickCalendarDate(
-                                            context: context,
-                                            initialDate: noteAssignedDate,
-                                            firstDate: DateTime(2000, 1, 1),
-                                            lastDate: now.add(
-                                              const Duration(days: 3650),
+                                      Builder(
+                                        builder: (context) {
+                                          Future<void> pickAndAssignDate() async {
+                                            final now = DateTime.now();
+                                            final picked = await _pickCalendarDate(
+                                              context: context,
+                                              initialDate: noteAssignedDate,
+                                              firstDate: DateTime(2000, 1, 1),
+                                              lastDate: now.add(
+                                                const Duration(days: 3650),
+                                              ),
+                                              helpText: 'Notu bir güne ata',
+                                            );
+                                            if (picked == null) return;
+                                            pushUndoCheckpoint();
+                                            setModalState(() {
+                                              noteAssignedDateSet = true;
+                                              noteAssignedDate = DateTime(
+                                                picked.year,
+                                                picked.month,
+                                                picked.day,
+                                                noteAssignedDate.hour,
+                                                noteAssignedDate.minute,
+                                              );
+                                              noteDate = _getFormattedDate(
+                                                noteAssignedDate,
+                                              );
+                                            });
+                                          }
+
+                                          return InkWell(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            onTap: pickAndAssignDate,
+                                            onLongPress: noteAssignedDateSet
+                                                ? () async {
+                                                    final action =
+                                                        await showModalBottomSheet<
+                                                            String>(
+                                                      context: context,
+                                                      backgroundColor:
+                                                          dNoteCardColor(
+                                                              context),
+                                                      shape:
+                                                          const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .vertical(
+                                                          top: Radius.circular(
+                                                              16),
+                                                        ),
+                                                      ),
+                                                      builder: (sheetCtx) =>
+                                                          SafeArea(
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            ListTile(
+                                                              leading: const Icon(
+                                                                Icons
+                                                                    .edit_calendar,
+                                                                color: Colors
+                                                                    .blue,
+                                                              ),
+                                                              title: const Text(
+                                                                  'Tarihi değiştir'),
+                                                              onTap: () =>
+                                                                  Navigator.pop(
+                                                                      sheetCtx,
+                                                                      'edit'),
+                                                            ),
+                                                            ListTile(
+                                                              leading: const Icon(
+                                                                Icons
+                                                                    .event_busy,
+                                                                color: Colors
+                                                                    .redAccent,
+                                                              ),
+                                                              title: const Text(
+                                                                  'Atamayı kaldır'),
+                                                              onTap: () =>
+                                                                  Navigator.pop(
+                                                                      sheetCtx,
+                                                                      'remove'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+                                                    if (action == 'remove') {
+                                                      pushUndoCheckpoint();
+                                                      setModalState(() {
+                                                        noteAssignedDateSet =
+                                                            false;
+                                                        noteDate =
+                                                            _getFormattedDate(
+                                                          noteAssignedDate,
+                                                        );
+                                                      });
+                                                    } else if (action ==
+                                                        'edit') {
+                                                      await pickAndAssignDate();
+                                                    }
+                                                  }
+                                                : null,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 6,
+                                                vertical: 2,
+                                              ),
+                                              child: Row(
+                                                mainAxisSize:
+                                                    MainAxisSize.min,
+                                                children: [
+                                                  if (noteAssignedDateSet) ...[
+                                                    Icon(
+                                                      Icons.event,
+                                                      size: 12,
+                                                      color: barColor,
+                                                    ),
+                                                    const SizedBox(width: 3),
+                                                  ],
+                                                  Flexible(
+                                                    child: Text(
+                                                      noteAssignedDateSet
+                                                          ? '${_gundemMonthNamesShortTr[noteAssignedDate.month - 1]} ${noteAssignedDate.day}, ${_gundemWeekDayFullTr[noteAssignedDate.weekday - 1]}'
+                                                          : _getFormattedDate(
+                                                              noteAssignedDate,
+                                                            ),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        color: barColor,
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                      ),
+                                                      overflow: TextOverflow
+                                                          .ellipsis,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                            helpText: 'Notu bir güne ata',
                                           );
-                                          if (picked == null) return;
-                                          pushUndoCheckpoint();
-                                          setModalState(() {
-                                            noteAssignedDate = DateTime(
-                                              picked.year,
-                                              picked.month,
-                                              picked.day,
-                                              noteAssignedDate.hour,
-                                              noteAssignedDate.minute,
-                                            );
-                                            noteDate = _getFormattedDate(
-                                              noteAssignedDate,
-                                            );
-                                          });
                                         },
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 6,
-                                            vertical: 2,
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(
-                                                Icons.event,
-                                                size: 12,
-                                                color: barColor,
-                                              ),
-                                              const SizedBox(width: 3),
-                                              Flexible(
-                                                child: Text(
-                                                  _getFormattedDate(
-                                                    noteAssignedDate,
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: barColor,
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.normal,
-                                                  ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
                                       ),
                                     ],
                                   ),

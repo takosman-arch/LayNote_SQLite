@@ -2,6 +2,13 @@ part of 'main.dart';
 
 // ignore_for_file: unused_element
 
+// _pickCalendarDate'in showClearOption:true modunda "İptal" (atamayı
+// kaldır) butonuna basıldığını işaretlemek için kullanılan sentinel değer.
+// Gerçek bir seçili tarih asla bu değere eşit olmayacağı için çağıran
+// taraf bunu normal bir tarih seçiminden (ya da Vazgeç'in döndürdüğü
+// null'dan) güvenle ayırt edebilir.
+final DateTime _clearAssignedDateSentinel = DateTime.utc(1, 1, 1);
+
 mixin NoteListAttachmentMixin on State<NoteListScreen> {
 
   // ── Ek (fotoğraf/belge) IZGARASI ────────────────────────────────────────
@@ -210,21 +217,95 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
   // tarih aralığı (firstDate/lastDate) ve başlık (helpText) çağıran yere
   // göre değişir; alarm için "bugünden sonrası", not atama için "her tarih"
   // gibi farklı kısıtlar dışarıdan verilir.
+  //
+  // showClearOption: true verilirse (yalnızca not atama akışında, zaten
+  // atanmış bir tarih varken kullanılır), standart showDatePicker yerine
+  // aynı görünümü elle kuran özel bir dialog açılır; bu dialogda "Vazgeç"in
+  // SOLUNA "İptal" (atamayı kaldır) butonu eklenir. İptal'a basılırsa
+  // dönüş değeri _clearAssignedDateSentinel olur — çağıran taraf bunu
+  // normal bir tarih seçiminden ayırt edip atamayı kaldırmalıdır. Vazgeç'e
+  // basılırsa (ya da dialog dışına dokunulursa) null döner, hiçbir şey
+  // değişmez — bu, showClearOption:false durumundaki mevcut sözleşmeyle
+  // birebir aynıdır.
   Future<DateTime?> _pickCalendarDate({
     required BuildContext context,
     required DateTime initialDate,
     required DateTime firstDate,
     required DateTime lastDate,
     required String helpText,
+    bool showClearOption = false,
   }) {
-    return showDatePicker(
+    if (!showClearOption) {
+      return showDatePicker(
+        context: context,
+        initialDate: initialDate,
+        firstDate: firstDate,
+        lastDate: lastDate,
+        helpText: helpText,
+        cancelText: 'Vazgeç',
+        confirmText: 'Seç',
+      );
+    }
+
+    DateTime selected = initialDate;
+    return showDialog<DateTime?>(
       context: context,
-      initialDate: initialDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
-      helpText: helpText,
-      cancelText: 'Vazgeç',
-      confirmText: 'Seç',
+      builder: (dialogContext) {
+        return Dialog(
+          child: SizedBox(
+            width: 328,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 4),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      helpText,
+                      style: TextStyle(
+                        color: dNoteTextColor(dialogContext),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+                CalendarDatePicker(
+                  initialDate: initialDate,
+                  firstDate: firstDate,
+                  lastDate: lastDate,
+                  onDateChanged: (d) => selected = d,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                  child: Row(
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(
+                          dialogContext,
+                          _clearAssignedDateSentinel,
+                        ),
+                        child: const Text('İptal'),
+                      ),
+                      const Spacer(),
+                      TextButton(
+                        onPressed: () => Navigator.pop(dialogContext, null),
+                        child: const Text('Vazgeç'),
+                      ),
+                      TextButton(
+                        onPressed: () =>
+                            Navigator.pop(dialogContext, selected),
+                        child: const Text('Seç'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
