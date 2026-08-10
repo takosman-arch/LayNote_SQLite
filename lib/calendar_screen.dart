@@ -16,14 +16,24 @@ class CalendarScreen extends StatefulWidget {
   // aksiyon bu callback'ler ile üst ekrana bildirilir; üst ekran not
   // ekranını (Takvim hâlâ yığındayken) Takvim'in üstüne push eder, böylece
   // geri tuşu doğal olarak tekrar Takvim'e döner.
-  final void Function(String noteId) onOpenNote;
-  final void Function(DateTime date) onNewNote;
+  // Future dönerler: not ekranından (veya yeni not diyalogundan) geri
+  // dönüldüğünde bu ekran, dönüşü bekleyip hem işaretçileri (_markers)
+  // yeniden hesaplar hem de kendi setState'ini tetikler. Aksi halde
+  // Takvim'e dönüldüğünde değişiklikler (başlık, hatırlatıcı, atanan
+  // tarih vb.) hemen görünmez.
+  final Future<void> Function(String noteId) onOpenNote;
+  final Future<void> Function(DateTime date) onNewNote;
+
+  // Üst bardaki gündem ikonuna basılınca çağrılır (context, Gündem ekranını
+  // push edebilmek için verilir). Verilmezse ikon gösterilmez.
+  final void Function(BuildContext context)? onOpenGundem;
 
   const CalendarScreen({
     super.key,
     required this.notes,
     required this.onOpenNote,
     required this.onNewNote,
+    this.onOpenGundem,
   });
 
   @override
@@ -297,7 +307,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.amber,
-        onPressed: () => widget.onNewNote(_selectedDay),
+        onPressed: () async {
+          await widget.onNewNote(_selectedDay);
+          // Yeni not eklendiyse o günün işaretçisi (sarı nokta) hemen
+          // görünsün diye yeniden hesaplanır.
+          if (!mounted) return;
+          _buildMarkers();
+          setState(() {});
+        },
         child: const Icon(Icons.add, color: Colors.black, size: 30),
       ),
     );
@@ -553,9 +570,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       return _DayNoteTile(
                         note: note,
                         day: _selectedDay,
-                        onTap: () {
+                        onTap: () async {
                           final id = note['id']?.toString();
-                          if (id != null) widget.onOpenNote(id);
+                          if (id == null) return;
+                          await widget.onOpenNote(id);
+                          // Not düzenlendiyse başlık/hatırlatıcı/atanan
+                          // tarih değişmiş olabilir; işaretçileri yeniden
+                          // hesaplayıp ekranı tazele.
+                          if (!mounted) return;
+                          _buildMarkers();
+                          setState(() {});
                         },
                       );
                     },

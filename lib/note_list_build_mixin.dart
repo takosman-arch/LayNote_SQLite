@@ -62,7 +62,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   void _showAddCategoryDialog({ void Function(String)? onAdded, String? editingCategory, String? parentCategory, });
   void _showClassifyDialogForSelection();
   void _showNoteActions( BuildContext ctx, int noteIndex, bool isTrash, { DateTime? editorReminder, String? editorReminderRepeat, void Function(DateTime? reminder, String? repeat)? onReminderChanged, VoidCallback? onDiscard, void Function(String text)? onInsertText, bool showSelectAction = false, });
-  void _showNoteDialog({ int? index, String type = 'text', String? initialText, DateTime? initialAssignedDate, bool openInstantly = false, });
+  Future<void> _showNoteDialog({ int? index, String type = 'text', String? initialText, DateTime? initialAssignedDate, bool openInstantly = false, });
   String get _sortCriteria;
   set _sortCriteria(String value);
   Color? get _textColor;
@@ -555,41 +555,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       Navigator.pop(context);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => GundemScreen(
-                            notes: List<Map<String, dynamic>>.from(_notes),
-                            globalFontSize: _globalFontSize,
-                            onOpenNote: (note) {
-                              final tappedNoteId = note['id']?.toString();
-                              if (tappedNoteId == null) return;
-                              final index = _notes.indexWhere(
-                                (n) => n['id']?.toString() == tappedNoteId,
-                              );
-                              if (index != -1) {
-                                _openNoteWithPasswordCheck(index);
-                              }
-                            },
-                            onRemoveFromAgenda: (note, isAssigned) {
-                              setState(() {
-                                if (isAssigned) {
-                                  note.remove('assignedDate');
-                                } else {
-                                  note.remove('reminderDate');
-                                  note.remove('reminderRepeat');
-                                }
-                              });
-                              _rescheduleNoteReminder(note);
-                              _saveData();
-                            },
-                            onDeleteNote: (note) {
-                              final key = _noteKey(note);
-                              setState(() {
-                                _selectedNoteKeys = {key};
-                              });
-                              _deleteSelectedNotes();
-                            },
-                          ),
-                        ),
+                        MaterialPageRoute(builder: (_) => _buildGundemScreen()),
                       );
                     },
                   ),
@@ -838,25 +804,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       Navigator.pop(context);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => CalendarScreen(
-                            notes: List<Map<String, dynamic>>.from(_notes),
-                            onNewNote: (date) {
-                              _showNoteDialog(
-                                type: 'text',
-                                initialAssignedDate: date,
-                              );
-                            },
-                            onOpenNote: (noteId) {
-                              final index = _notes.indexWhere(
-                                (n) => n['id']?.toString() == noteId,
-                              );
-                              if (index != -1) {
-                                _openNoteWithPasswordCheck(index);
-                              }
-                            },
-                          ),
-                        ),
+                        MaterialPageRoute(builder: (_) => _buildCalendarScreen()),
                       );
                     },
                   ),
@@ -1345,7 +1293,13 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                               ),
                                               style: TextStyle(
                                                 fontWeight: FontWeight.w600,
-                                                fontSize: 18 * fontScale,
+                                                // Başlık, notun kendi (veya
+                                                // Ayarlar > Metin Boyutu'ndan
+                                                // gelen) yazı boyutunun 2
+                                                // birim fazlası. fontScale =
+                                                // noteFontSize/16 olduğundan
+                                                // noteFontSize = 16*fontScale.
+                                                fontSize: (16 * fontScale) + 2,
                                                 color: dNoteEffectiveTextColor(context, _textColor),
                                               ),
                                             ),
@@ -1499,6 +1453,38 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                         ],
                                       ),
                                     ],
+                                    if (_showsGundemBadge(note)) ...[
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.today_outlined,
+                                            color: Colors.grey,
+                                            size: 16,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Flexible(
+                                            child: Text(
+                                              _gundemBadgeDateLabel(note)!,
+                                              style: TextStyle(
+                                                color: dNoteEffectiveTextColor(
+                                                  context,
+                                                  _textColor,
+                                                ),
+                                                fontSize:
+                                                    ((note['fontSize'] as num?)
+                                                        ?.toDouble() ??
+                                                    _globalFontSize) -
+                                                    1,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                     if ((note['category'] ?? '')
                                         .toString()
                                         .isNotEmpty) ...[
@@ -1510,9 +1496,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                           children: [
                                             Icon(
                                               Icons.folder_outlined,
-                                              color: _getCategoryColor(
-                                                note['category'] as String?,
-                                              ),
+                                              color: Colors.grey,
                                               size: 16,
                                             ),
                                             const SizedBox(width: 4),
@@ -1887,7 +1871,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     }
 
     if (hasTitle) {
-      height += (18 * fontScale) * 1.2; // başlık satırı (tek satır, maxLines:1)
+      height += ((16 * fontScale) + 2) * 1.2; // başlık satırı (tek satır, maxLines:1)
       height += 12.0; // başlık sonrası SizedBox
     }
 
@@ -2227,7 +2211,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             ),
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
-                              fontSize: 18 * fontScale,
+                              fontSize: (16 * fontScale) + 2,
                               color: dNoteEffectiveTextColor(context, _textColor),
                             ),
                             maxLines: 1,
@@ -2348,6 +2332,38 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             ],
                           ),
                         ],
+                        if (_showsGundemBadge(note)) ...[
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.today_outlined,
+                                color: Colors.grey,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  _gundemBadgeDateLabel(note)!,
+                                  style: TextStyle(
+                                    color: dNoteEffectiveTextColor(
+                                      context,
+                                      _textColor,
+                                    ),
+                                    fontSize:
+                                        ((note['fontSize'] as num?)
+                                            ?.toDouble() ??
+                                        _globalFontSize) -
+                                        1,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                         if ((note['category'] ?? '').toString().isNotEmpty) ...[
                           const SizedBox(height: 6),
                           Row(
@@ -2355,9 +2371,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             children: [
                               Icon(
                                 Icons.folder_outlined,
-                                color: _getCategoryColor(
-                                  note['category'] as String?,
-                                ),
+                                color: Colors.grey,
                                 size: 16,
                               ),
                               const SizedBox(width: 4),
@@ -2420,9 +2434,118 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
 
   // Hatırlatıcı tarihini "gg.aa.yyyy ss:dd" biçiminde döndürür (kartlarda ve
   // not içinde gösterilir); yoksa null döner.
+  // Hatırlatıcı rozeti (saat/ikon) zaten gösterilmiyorsa VE not, Gündem
+  // ekranında bir satırla temsil ediliyorsa (hatırlatıcı VEYA atanmış
+  // tarih üzerinden — bkz. gundem_screen.dart -> _gundemNoteCount ile
+  // aynı mantık) true döner. Hatırlatıcı rozeti zaten varsa (kullanıcının
+  // isteği üzerine) ayrıca gündem rozeti gösterilmez.
+  bool _showsGundemBadge(Map<String, dynamic> note) {
+    if (_formattedReminderText(note) != null) return false;
+    if (note['isLocked'] == true || note['isArchived'] == true) return false;
+    return _reminderAgendaDay(note) != null || _assignedAgendaDay(note) != null;
+  }
+
+  // Gündem rozetinin yanında gösterilecek tarih metni, "Ağu 9, Pazar"
+  // biçiminde (bkz. gundem_screen.dart -> _gundemMonthNamesShortTr /
+  // _gundemWeekDayFullTr, aynı top-level listeler burada da kullanılıyor).
+  // _showsGundemBadge true dönmüyorsa null döner.
+  String? _gundemBadgeDateLabel(Map<String, dynamic> note) {
+    final day = _reminderAgendaDay(note) ?? _assignedAgendaDay(note);
+    if (day == null) return null;
+    return '${_gundemMonthNamesShortTr[day.month - 1]} ${day.day}, ${_gundemWeekDayFullTr[day.weekday - 1]}';
+  }
+
   String? _formattedReminderText(Map<String, dynamic> note) {
     if (!_hasActiveReminder(note)) return null;
     final dt = DateTime.parse(note['reminderDate'].toString());
     return _formatDateTimeShortTr(dt);
+  }
+
+  // Gündem ekranını tüm callback'leriyle birlikte kurar. Hem çekmece
+  // menüsündeki "Gündem" satırından hem de Takvim ekranının üst barındaki
+  // gündem ikonundan (onOpenGundem) çağrılır; böylece iki ekran arasında
+  // gidiş-geliş için kod tekrarı yapılmaz.
+  Widget _buildGundemScreen() {
+    return GundemScreen(
+      // ÖNEMLİ: kopya değil, _notes'un KENDİSİ veriliyor. Not düzenlenince
+      // kaydetme kodu _notes[index]'i YENİ bir Map ile değiştiriyor (bkz.
+      // note_list_actions_mixin.dart); Gündem ayrı bir kopya tutsaydı bu
+      // değişikliği hiç göremezdi. Aynı referans paylaşıldığı için
+      // Gündem'in kendi setState'i (onOpenNote'un await'i tamamlanınca)
+      // artık güncel veriyi yeniden çizer.
+      notes: _notes,
+      globalFontSize: _globalFontSize,
+      onOpenNote: (note) async {
+        final tappedNoteId = note['id']?.toString();
+        if (tappedNoteId == null) return;
+        final index = _notes.indexWhere(
+          (n) => n['id']?.toString() == tappedNoteId,
+        );
+        if (index != -1) {
+          // Gündem, bu Future tamamlanana (yani not ekranından geri
+          // dönülene) kadar bekleyip ardından kendi görünümünü yeniliyor.
+          await _openNoteWithPasswordCheck(index);
+        }
+      },
+      onRemoveFromAgenda: (note, isAssigned) {
+        setState(() {
+          if (isAssigned) {
+            note.remove('assignedDate');
+          } else {
+            note.remove('reminderDate');
+            note.remove('reminderRepeat');
+          }
+        });
+        _rescheduleNoteReminder(note);
+        _saveData();
+      },
+      onDeleteNote: (note) {
+        final key = _noteKey(note);
+        setState(() {
+          _selectedNoteKeys = {key};
+        });
+        _deleteSelectedNotes();
+      },
+      // Üst bardaki takvim ikonu: Gündem'in üzerine Takvim'i push eder.
+      onOpenCalendar: (ctx) {
+        Navigator.push(
+          ctx,
+          MaterialPageRoute(builder: (_) => _buildCalendarScreen()),
+        );
+      },
+    );
+  }
+
+  // Takvim ekranını tüm callback'leriyle birlikte kurar. Hem çekmece
+  // menüsündeki "Takvim" satırından hem de Gündem ekranının üst barındaki
+  // takvim ikonundan (onOpenCalendar) çağrılır.
+  Widget _buildCalendarScreen() {
+    return CalendarScreen(
+      // Gündem'deki aynı düzeltme: kopya değil, _notes'un kendisi. Not
+      // kaydedildiğinde _notes[index] YENİ bir Map ile değiştiriliyor;
+      // Takvim ayrı bir kopya tutsaydı bu değişikliği göremezdi.
+      notes: _notes,
+      onNewNote: (date) async {
+        await _showNoteDialog(
+          type: 'text',
+          initialAssignedDate: date,
+        );
+      },
+      onOpenNote: (noteId) async {
+        final index = _notes.indexWhere(
+          (n) => n['id']?.toString() == noteId,
+        );
+        if (index != -1) {
+          await _openNoteWithPasswordCheck(index);
+        }
+      },
+      // Üst bardaki gündem ikonu: Takvim'in üzerine Gündem'i push eder.
+      onOpenGundem: (ctx) {
+        Navigator.push(
+          ctx,
+          MaterialPageRoute(builder: (_) => _buildGundemScreen()),
+        );
+      },
+    );
   }
 }

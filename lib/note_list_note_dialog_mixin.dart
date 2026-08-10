@@ -53,7 +53,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     return text.lastIndexOf('\n', before);
   }
 
-  void _showNoteDialog({
+  Future<void> _showNoteDialog({
     int? index,
     String type = 'text',
     // Başka bir uygulamadan paylaşılan link/metin buraya gelir; yalnızca
@@ -2537,7 +2537,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     syncControllersAndFocusNodes();
     rebuildBlockControllers();
 
-    Navigator.of(context).push(
+    // Bu push'un Future'ı RETURN ediliyor: çağıran taraf (bkz.
+    // _openNoteWithPasswordCheck) editör tamamen kapanana (Navigator.pop)
+    // kadar bekleyebilsin diye. Önceden bu sonuç göz ardı ediliyordu; bu
+    // yüzden "await _openNoteWithPasswordCheck(...)" aslında editör
+    // AÇILIR AÇILMAZ tamamlanıyordu, kapanışını değil.
+    return Navigator.of(context).push<void>(
       PageRouteBuilder(
         // openInstantly true ise (widget'tan tıklanarak açılış) editör
         // hiç bekletmeden, anında görünür; geri dönüş animasyonu ise
@@ -4189,7 +4194,16 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                             ),
                             style: TextStyle(
                               color: dNoteEffectiveTextColor(context, _textColor),
-                              fontSize: 20,
+                              // Not kendi fontSize'ını taşıyorsa o, yoksa
+                              // Ayarlar > Kişiselleştirme > Metin Boyutu
+                              // (_globalFontSize) baz alınır; başlık gövde
+                              // metninden her zaman 2 birim büyük gösterilir.
+                              fontSize: (index != null
+                                      ? ((_notes[index!]['fontSize'] as num?)
+                                              ?.toDouble() ??
+                                          _globalFontSize)
+                                      : _globalFontSize) +
+                                  2,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -5418,10 +5432,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            const Icon(
+                                            Icon(
                                               Icons.folder_outlined,
                                               size: 20,
-                                              color: Colors.grey,
+                                              color: _getCategoryColor(
+                                                noteCategory,
+                                              ),
                                             ),
                                             const SizedBox(width: 6),
                                             Flexible(

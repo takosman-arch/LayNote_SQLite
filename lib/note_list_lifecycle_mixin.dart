@@ -11,7 +11,7 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
   set _notes(List<Map<String, dynamic>> value);
   Future<void> _openNoteWithPasswordCheck(int index, {bool openInstantly = false});
   Future<void> _saveData();
-  void _showNoteDialog({ int? index, String type = 'text', String? initialText, });
+  Future<void> _showNoteDialog({ int? index, String type = 'text', String? initialText, });
 
 
   final List<Color> _categoryPalette = [

@@ -35,7 +35,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
   String get _passwordHintQuestion;
   set _passwordHintQuestion(String value);
   Future<void> _saveData();
-  void _showNoteDialog({ int? index, String type = 'text', String? initialText, bool openInstantly = false, });
+  Future<void> _showNoteDialog({ int? index, String type = 'text', String? initialText, bool openInstantly = false, });
   Future<_ReminderPickResult?> _showReminderPickerDialog({ required BuildContext context, required DateTime initialDateTime, String? initialRepeat, });
   OverlayEntry? get _snackOverlay;
   set _snackOverlay(OverlayEntry? value);
@@ -1168,7 +1168,13 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     bool openInstantly = false,
   }) async {
     if (index < 0 || index >= _notes.length) return;
-    _showNoteDialog(index: index, openInstantly: openInstantly);
+    // await: bu Future artık editör KAPANANA (Navigator.pop) kadar
+    // tamamlanmıyor (bkz. note_list_note_dialog_mixin.dart ->
+    // _showNoteDialog, artık push'un Future'ını return ediyor). Önceden
+    // burada await/return olmadığından, bu fonksiyonu bekleyen çağıranlar
+    // (ör. Gündem ekranının onOpenNote'u) editör açılır açılmaz "bitti"
+    // sanıp erken setState çağırıyordu.
+    await _showNoteDialog(index: index, openInstantly: openInstantly);
   }
 
   // ── Ayarlar Sayfası ────────────────────────────────────────

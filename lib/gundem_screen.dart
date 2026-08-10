@@ -48,6 +48,11 @@ const List<String> _gundemMonthNamesShortTr = [
 bool _gundemIsSameDay(DateTime a, DateTime b) =>
     a.year == b.year && a.month == b.month && a.day == b.day;
 
+// "Bugün"/"Yarın" başlıklarının yanında gösterilecek kısa tarih etiketi,
+// örn. "9 Ağu".
+String _gundemShortDateLabel(DateTime d) =>
+    '${d.day} ${_gundemMonthNamesShortTr[d.month - 1]}';
+
 // Bir notun hatırlatıcısının "gündemdeki günü"nü belirler:
 // - Tekrarsız hatırlatıcılarda doğrudan kurulu tarihin günüdür (geçmişte
 //   olsa bile döner; bu sayede "gecikmiş" bölümüne düşebilir).
@@ -122,12 +127,18 @@ class _AgendaSection {
   final Color headerColor;
   final bool showFullDate;
   final List<_AgendaEntry> entries;
+  // Yalnızca "Bugün" ve "Yarın" bölümlerinde doldurulur (örn. "9 Ağu");
+  // başlığın yanında, aynı yazı stiliyle gösterilir. Diğer bölümlerde
+  // (gün adları, Gelecek Hafta, Daha İleri, Gecikmiş) null kalır — onlarda
+  // tarih zaten satırların altında gösteriliyor.
+  final String? dateLabel;
   _AgendaSection({
     required this.title,
     required this.icon,
     required this.headerColor,
     required this.showFullDate,
     required this.entries,
+    this.dateLabel,
   });
 }
 
@@ -147,7 +158,12 @@ class GundemScreen extends StatefulWidget {
   // olarak yeniden görünür. Verilmezse geriye dönük uyumluluk için eski
   // davranışa (Gündem kendini kapatıp sonucu çağırana Navigator.pop ile
   // iletme) geri düşülür.
-  final void Function(Map<String, dynamic> note)? onOpenNote;
+  //
+  // Future döner: not ekranından geri dönüldüğünde (kaydet/vazgeç fark
+  // etmeksizin) Gündem bu Future'ı bekleyip kendi setState'ini tetikler;
+  // aksi halde not üzerinde yapılan değişiklikler Gündem'e yansımaz (bkz.
+  // _openNote).
+  final Future<void> Function(Map<String, dynamic> note)? onOpenNote;
 
   // Gündemdeki bir satıra basılı tutulunca çıkan menüden "Gündemden
   // kaldır" seçilirse çağrılır. isAssigned true ise satır atanan tarihten,
@@ -162,6 +178,10 @@ class GundemScreen extends StatefulWidget {
   // bu ekranın kendi listesinden (kalıcı olmadan) çıkarılır.
   final void Function(Map<String, dynamic> note)? onDeleteNote;
 
+  // Üst bardaki takvim ikonuna basılınca çağrılır (context, Takvim ekranını
+  // push edebilmek için verilir). Verilmezse ikon gösterilmez.
+  final void Function(BuildContext context)? onOpenCalendar;
+
   const GundemScreen({
     super.key,
     required this.notes,
@@ -169,6 +189,7 @@ class GundemScreen extends StatefulWidget {
     this.onOpenNote,
     this.onRemoveFromAgenda,
     this.onDeleteNote,
+    this.onOpenCalendar,
   });
 
   @override
@@ -196,10 +217,19 @@ class _GundemScreenState extends State<GundemScreen> {
   // açılır ve geri dönüldüğünde Gündem otomatik olarak tekrar görünür.
   // Sağlanmamışsa eski davranışa (Gündem kendini kapatıp sonucu çağırana
   // iletme) geri düşülür.
-  void _openNote(BuildContext context, Map<String, dynamic> note) {
+  Future<void> _openNote(
+    BuildContext context,
+    Map<String, dynamic> note,
+  ) async {
     final callback = widget.onOpenNote;
     if (callback != null) {
-      callback(note);
+      // Not ekranı Gündem'in üzerine açılıyor; kullanıcı geri dönene kadar
+      // bu Future tamamlanmaz. Döndüğünde not üzerinde değişiklik yapılmış
+      // olabileceğinden (widget.notes ile aynı Map referansı paylaşıldığı
+      // için veri zaten güncel), Gündem'in yalnızca kendi build'ini
+      // yenilemesi yeterlidir.
+      await callback(note);
+      if (mounted) setState(() {});
     } else {
       Navigator.pop(context, {
         'action': 'open',
@@ -247,29 +277,34 @@ class _GundemScreenState extends State<GundemScreen> {
 
     if (action == 'remove') {
       final callback = widget.onRemoveFromAgenda;
-      if (callback != null) {
-        callback(note, isAssigned);
-      } else {
-        setState(() {
+      // Not: callback verilmişse bile widget.notes ile parent'ın listesi
+      // aynı Map referanslarını paylaşır, dolayısıyla callback içindeki
+      // alan temizliği burada da görünür olur. Eksik olan tek şey Gündem'in
+      // bunu görmesi için kendi setState'ini çağırması.
+      setState(() {
+        if (callback != null) {
+          callback(note, isAssigned);
+        } else {
           if (isAssigned) {
             note.remove('assignedDate');
           } else {
             note.remove('reminderDate');
             note.remove('reminderRepeat');
           }
-        });
-      }
+        }
+      });
     } else if (action == 'delete') {
       final callback = widget.onDeleteNote;
-      if (callback != null) {
-        callback(note);
-      } else {
-        setState(() {
-          widget.notes.removeWhere(
-            (n) => n['id']?.toString() == note['id']?.toString(),
-          );
-        });
-      }
+      // callback verilmiş olsa bile widget.notes AYRI bir liste (Gündem
+      // açılırken alınan bir kopya); parent kendi listesinden silse de bu
+      // listeden otomatik düşmez. Bu yüzden burada HER ZAMAN kendi
+      // listesinden de çıkarıyoruz.
+      setState(() {
+        if (callback != null) callback(note);
+        widget.notes.removeWhere(
+          (n) => n['id']?.toString() == note['id']?.toString(),
+        );
+      });
     }
   }
 
@@ -378,6 +413,7 @@ class _GundemScreenState extends State<GundemScreen> {
         headerColor: Colors.green,
         showFullDate: false,
         entries: todayEntries,
+        dateLabel: _gundemShortDateLabel(todayDay),
       ),
       _AgendaSection(
         title: 'Yarın',
@@ -385,6 +421,7 @@ class _GundemScreenState extends State<GundemScreen> {
         headerColor: futureColor,
         showFullDate: false,
         entries: tomorrowEntries,
+        dateLabel: _gundemShortDateLabel(tomorrow),
       ),
       for (final d in restOfWeekDays)
         _AgendaSection(
@@ -393,6 +430,7 @@ class _GundemScreenState extends State<GundemScreen> {
           headerColor: futureColor,
           showFullDate: false,
           entries: restOfWeekEntries[d]!,
+          dateLabel: _gundemShortDateLabel(d),
         ),
       _AgendaSection(
         title: 'Gelecek Hafta',
@@ -436,6 +474,14 @@ class _GundemScreenState extends State<GundemScreen> {
             fontSize: 18,
           ),
         ),
+        actions: [
+          if (widget.onOpenCalendar != null)
+            IconButton(
+              icon: const Icon(Icons.calendar_month),
+              tooltip: 'Takvim',
+              onPressed: () => widget.onOpenCalendar!(context),
+            ),
+        ],
       ),
       body: SafeArea(
         child: sections.isEmpty
@@ -601,6 +647,18 @@ class _GundemScreenState extends State<GundemScreen> {
                     color: dNoteTextColor(context).withValues(alpha: 0.4),
                   ),
                 ),
+                if (section.dateLabel != null) ...[
+                  const Spacer(),
+                  Text(
+                    section.dateLabel!,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: section.headerColor,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -730,8 +788,11 @@ class _AgendaTile extends StatelessWidget {
     // farkı vardır.
     final noteFontSize =
         (note['fontSize'] as num?)?.toDouble() ?? globalFontSize;
-    final titleFontSize = noteFontSize;
-    final titleFontWeight = FontWeight.w600;
+    // Gündemde başlık, ayarlı/nota özel yazı boyutunun 1 birim eksiği
+    // olarak gösterilir (bkz. kart önizleme: +2, editör: +2 — gündem
+    // kasıtlı olarak daha düşük tutuluyor).
+    final titleFontSize = noteFontSize - 1;
+    final titleFontWeight = FontWeight.w500;
 
     // Zaman/tekrar bilgisi yalnızca hatırlatıcı kaynaklı satırlarda
     // anlamlıdır; atanan-tarih satırlarında saat gösterilmez.
