@@ -24,6 +24,12 @@ class CalendarScreen extends StatefulWidget {
   final Future<void> Function(String noteId) onOpenNote;
   final Future<void> Function(DateTime date) onNewNote;
 
+  // Ayarlar > Kişiselleştirme > Yazı Tipi ile aynı değer (dNoteFontFamilyValue
+  // ile dönüştürülmüş hâli). Seçili günün not listesindeki başlık/içerik
+  // yazı tipini not kartlarıyla aynı fontta göstermek için dışarıdan
+  // geçiriliyor. null ise sistem varsayılan fontu kullanılır ('Varsayılan').
+  final String? fontFamily;
+
   // Üst bardaki gündem ikonuna basılınca çağrılır (context, Gündem ekranını
   // push edebilmek için verilir). Verilmezse ikon gösterilmez.
   final void Function(BuildContext context)? onOpenGundem;
@@ -34,6 +40,7 @@ class CalendarScreen extends StatefulWidget {
     required this.onOpenNote,
     required this.onNewNote,
     this.onOpenGundem,
+    this.fontFamily,
   });
 
   @override
@@ -246,21 +253,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
         elevation: 0,
         centerTitle: false,
         titleSpacing: 0,
-        iconTheme: const IconThemeData(color: Colors.amber),
-        title: const Text(
+        iconTheme: IconThemeData(color: appAccentColor.value),
+        title: Text(
           'Takvim',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.amber,
+            color: appAccentColor.value,
             fontSize: 18,
           ),
         ),
         actions: [
           TextButton(
             onPressed: _goToToday,
-            child: const Text(
+            child: Text(
               'Bugün',
-              style: TextStyle(color: Colors.amber, fontWeight: FontWeight.w600),
+              style: TextStyle(color: appAccentColor.value, fontWeight: FontWeight.w600),
             ),
           ),
           const SizedBox(width: 4),
@@ -306,7 +313,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.amber,
+        backgroundColor: appAccentColor.value,
         onPressed: () async {
           await widget.onNewNote(_selectedDay);
           // Yeni not eklendiyse o günün işaretçisi (sarı nokta) hemen
@@ -326,7 +333,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.chevron_left, color: Colors.amber),
+            icon: Icon(Icons.chevron_left, color: appAccentColor.value),
             onPressed: () {
               _pageController.previousPage(
                 duration: const Duration(milliseconds: 300),
@@ -354,10 +361,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     child: Text(
                       '${_monthNamesTr[focusedMonth.month - 1]} ${focusedMonth.year}',
                       key: ValueKey('${focusedMonth.year}-${focusedMonth.month}'),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Colors.amber,
+                        color: appAccentColor.value,
                       ),
                     ),
                   );
@@ -366,7 +373,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.chevron_right, color: Colors.amber),
+            icon: Icon(Icons.chevron_right, color: appAccentColor.value),
             onPressed: () {
               _pageController.nextPage(
                 duration: const Duration(milliseconds: 300),
@@ -386,7 +393,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const _MarkerDot(color: Colors.amber),
+          _MarkerDot(color: appAccentColor.value),
           const SizedBox(width: 5),
           Text('Not', style: TextStyle(fontSize: 12, color: subtleColor)),
           const SizedBox(width: 14),
@@ -479,12 +486,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.amber.withValues(alpha: 0.12),
+                    color: appAccentColor.value.withValues(alpha: 0.12),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.event_note,
-                    color: Colors.amber,
+                    color: appAccentColor.value,
                     size: 20,
                   ),
                 ),
@@ -504,12 +511,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         ),
                       ),
                       if (isToday)
-                        const Padding(
+                        Padding(
                           padding: EdgeInsets.only(top: 2),
                           child: Text(
                             'Bugün',
                             style: TextStyle(
-                              color: Colors.amber,
+                              color: appAccentColor.value,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                             ),
@@ -570,6 +577,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       return _DayNoteTile(
                         note: note,
                         day: _selectedDay,
+                        fontFamily: widget.fontFamily,
                         onTap: () async {
                           final id = note['id']?.toString();
                           if (id == null) return;
@@ -595,11 +603,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
 class _DayNoteTile extends StatelessWidget {
   final Map<String, dynamic> note;
   final DateTime day;
+  final String? fontFamily;
   final VoidCallback onTap;
 
   const _DayNoteTile({
     required this.note,
     required this.day,
+    this.fontFamily,
     required this.onTap,
   });
 
@@ -642,7 +652,7 @@ class _DayNoteTile extends StatelessWidget {
               decoration: BoxDecoration(
                 color: reminderLabel != null
                     ? Colors.lightBlueAccent
-                    : Colors.amber,
+                    : appAccentColor.value,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -658,6 +668,7 @@ class _DayNoteTile extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         color: dNoteTextColor(context),
+                        fontFamily: fontFamily,
                       ),
                       children: [
                         TextSpan(
@@ -849,7 +860,7 @@ class _DayCellWidget extends StatelessWidget {
     // (koyu) tutulur; diğer durumlarda normal renkler kullanılır.
     final dots = <Widget>[];
     if (hasNote) {
-      dots.add(_MarkerDot(color: isSelected ? Colors.black87 : Colors.amber));
+      dots.add(_MarkerDot(color: isSelected ? Colors.black87 : appAccentColor.value));
     }
     if (hasReminder) {
       if (dots.isNotEmpty) dots.add(const SizedBox(width: 3));
@@ -874,10 +885,10 @@ class _DayCellWidget extends StatelessWidget {
               width: 30,
               height: 30,
               decoration: BoxDecoration(
-                color: isSelected ? Colors.amber : Colors.transparent,
+                color: isSelected ? appAccentColor.value : Colors.transparent,
                 shape: BoxShape.circle,
                 border: (isToday && !isSelected)
-                    ? Border.all(color: Colors.amber, width: 1.6)
+                    ? Border.all(color: appAccentColor.value, width: 1.6)
                     : null,
               ),
               alignment: Alignment.center,

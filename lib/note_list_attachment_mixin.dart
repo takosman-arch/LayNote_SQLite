@@ -124,7 +124,7 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
       );
     }
 
-    return _docFallback(fileName, Icons.insert_drive_file_outlined, Colors.amber);
+    return _docFallback(fileName, Icons.insert_drive_file_outlined, appAccentColor.value);
   }
 
   Widget _docFallback(String fileName, IconData icon, Color color) {

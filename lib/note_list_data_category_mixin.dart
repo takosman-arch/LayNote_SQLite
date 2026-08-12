@@ -4,6 +4,8 @@ part of 'main.dart';
 
 mixin NoteListDataCategoryMixin on State<NoteListScreen> {
   // ---- Diğer mixin'lerde tanımlı, burada kullanılan üyeler ----
+  Color get _accentColor;
+  set _accentColor(Color value);
   String get _activeCategory;
   set _activeCategory(String value);
   List<String> get _categories;
@@ -138,6 +140,12 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       // Uygulama genelindeki temayı da senkronize et (açılışta main() zaten
       // ayarlamıştı, ama eski 'dark_theme' göçü burada da tutarlı olsun).
       appThemeMode.value = _themeMode;
+      // Vurgu rengi — kayıtlı bir değer yoksa (veya bozuksa) varsayılan
+      // olarak Colors.amber kullanılır (bkz. accentColorFromSettingValue).
+      _accentColor = accentColorFromSettingValue(settings['accent_color']);
+      // Uygulama genelindeki vurgu rengini de senkronize et (açılışta
+      // main() zaten ayarlamıştı; burada tutarlılık için tekrar yapılır).
+      appAccentColor.value = _accentColor;
       _colorfulNotes = (settings['colorful_notes'] ?? 'false') == 'true';
       _fontFamily = settings['font_family'] ?? 'Varsayılan';
       _globalFontSize =
@@ -227,6 +235,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
     await db.setSetting('password_hint_question', _passwordHintQuestion);
     await db.setSetting('password_hint_answer', _passwordHintAnswer);
     await db.setSetting('theme_mode', themeModeToSettingValue(_themeMode));
+    await db.setSetting('accent_color', accentColorToSettingValue(_accentColor));
     await db.setSetting('colorful_notes', _colorfulNotes.toString());
     await db.setSetting('font_family', _fontFamily);
     await db.setSetting('global_font_size', _globalFontSize.toString());
@@ -453,7 +462,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                   actions: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.amber,
+                        backgroundColor: Theme.of(ctx).primaryColor,
                       ),
                       onPressed: () => Navigator.pop(ctx),
                       child: const Text(
@@ -649,7 +658,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                         actions: [
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.amber,
+                              backgroundColor: Theme.of(ctx).primaryColor,
                             ),
                             onPressed: () => Navigator.pop(ctx),
                             child: const Text(
@@ -673,9 +682,9 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
               if (_categoryParents[category] == null)
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  leading: const Icon(
+                  leading: Icon(
                     Icons.create_new_folder_outlined,
-                    color: Colors.amber,
+                    color: Theme.of(sheetContext).primaryColor,
                   ),
                   title: Text(
                     'Alt Klasör Oluştur',
@@ -694,7 +703,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                   contentPadding: EdgeInsets.zero,
                   leading: Icon(
                     isCatCollapsed ? Icons.unfold_more : Icons.unfold_less,
-                    color: Colors.amber,
+                    color: Theme.of(sheetContext).primaryColor,
                   ),
                   title: Text(
                     isCatCollapsed
@@ -727,9 +736,9 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                     context: context,
                     builder: (confirmContext) => AlertDialog(
                       backgroundColor: dNoteCardColor(confirmContext),
-                      title: const Text(
+                      title: Text(
                         'Kategoriyi Sil',
-                        style: TextStyle(color: Colors.amber),
+                        style: TextStyle(color: Theme.of(confirmContext).primaryColor),
                       ),
                       content: Text(
                         _categoryParents[category] == null &&

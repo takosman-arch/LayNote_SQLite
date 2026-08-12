@@ -19,6 +19,7 @@ class NoteCalcTableBlock extends StatelessWidget {
     required this.labelFocusNodes,
     required this.valueFocusNodes,
     required this.fontSize,
+    this.fontFamily,
     required this.textColor,
     required this.onLabelChanged,
     required this.onValueChanged,
@@ -36,6 +37,9 @@ class NoteCalcTableBlock extends StatelessWidget {
   final List<FocusNode> valueFocusNodes;
 
   final double fontSize;
+  // Ayarlar > Kişiselleştirme > Yazı Tipi. null ise Flutter varsayılan
+  // (sistem) fontuna düşer.
+  final String? fontFamily;
   final Color? textColor;
 
   /// Bir satırın "Kalem" alanı değiştiğinde çağrılır.
@@ -95,6 +99,7 @@ class NoteCalcTableBlock extends StatelessWidget {
                         style: TextStyle(
                           color: dNoteEffectiveTextColor(context, textColor),
                           fontSize: fontSize,
+                          fontFamily: fontFamily,
                         ),
                         decoration: const InputDecoration(
                           hintText: 'Kalem...',
@@ -138,6 +143,7 @@ class NoteCalcTableBlock extends StatelessWidget {
                         style: TextStyle(
                           color: dNoteEffectiveTextColor(context, textColor),
                           fontSize: fontSize,
+                          fontFamily: fontFamily,
                         ),
                         decoration: const InputDecoration(
                           hintText: '0',
@@ -171,6 +177,7 @@ class NoteCalcTableBlock extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: dNoteEffectiveTextColor(context, textColor),
                     fontSize: fontSize,
+                    fontFamily: fontFamily,
                   ),
                 ),
               ),
@@ -184,6 +191,7 @@ class NoteCalcTableBlock extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: dNoteEffectiveTextColor(context, textColor),
                     fontSize: fontSize,
+                    fontFamily: fontFamily,
                   ),
                 ),
               ),

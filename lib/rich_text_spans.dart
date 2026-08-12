@@ -418,7 +418,7 @@ class RichTextSpans {
             ? Color(color)
             : (link != null ? _linkColor : style?.color);
         partStyle = (style ?? const TextStyle()).copyWith(
-          fontWeight: bold ? FontWeight.bold : style?.fontWeight,
+          fontWeight: bold ? _boldWeightFor(style?.fontWeight) : style?.fontWeight,
           fontStyle: italic ? FontStyle.italic : style?.fontStyle,
           decoration: decoration,
           fontSize: fontSize ?? style?.fontSize,
@@ -493,17 +493,52 @@ class RichTextSpans {
 
     final runs = _buildRuns(spans, textLength, start, end);
 
-    final selectedRuns = runs.where(
-      (r) => (r['start'] as int) >= start && (r['end'] as int) <= end,
-    );
-    final allOn =
-        selectedRuns.isNotEmpty && selectedRuns.every((r) => r[attr] == true);
+    final allOn = isAttributeFullyActive(rawSpans, textLength, start, end, attr);
     for (final r in runs) {
       if ((r['start'] as int) >= start && (r['end'] as int) <= end) {
         r[attr] = !allOn;
       }
     }
     return _mergeRuns(runs);
+  }
+
+  // ── Seçili aralıkta bir AÇ/KAPA özelliğin (bold/italic/underline/
+  // strikethrough/highlight) GERÇEKTEN aktif olup olmadığını okur ────────
+  // _toggleAttribute'daki "allOn" hesabıyla BİREBİR AYNI mantık — buradan
+  // dışa açılmasının sebebi, araç çubuğu ikonlarının (basılınca vurgu
+  // rengi alması gereken Kalın/İtalik/Altı Çizili/Üzeri Çizili/Vurgula
+  // butonları) "şu an aktif mi" durumunu, imleç tek noktadayken kullanılan
+  // pending* değişkenleri yerine, GERÇEK bir metin seçimi varken seçili
+  // aralığın span'larından okuyabilmesi — tıpkı getEffectiveFontSize/
+  // getEffectiveColor'ın value bazlı özellikler için zaten yaptığı gibi
+  // (bkz. o metotların üzerindeki açıklama). Bu karşılık daha önce
+  // eklenmediğinden, seçili (ve zaten kalın/italik/vb. olan) bir metin
+  // üzerinde ikonlar hiç vurgu rengi almıyordu — kullanıcı butona
+  // BASMADIĞI sürece pending* hiç güncellenmiyordu.
+  //
+  // Dönen değer: seçili aralık en az bir run içeriyor VE o run'ların
+  // TAMAMINDA [attr] true İSE true; aksi halde (kısmi/karışık seçim,
+  // tamamı kapalı, ya da geçersiz aralık) false. Bu, _toggleAttribute'un
+  // "bir sonraki basışta AÇACAK mı KAPATACAK mı" kararıyla aynı tanımı
+  // kullandığından, ikonun gösterdiği "aktif" durumu ile butona basınca
+  // olacak davranış her zaman tutarlı kalır.
+  static bool isAttributeFullyActive(
+    List? rawSpans,
+    int textLength,
+    int rawStart,
+    int rawEnd,
+    String attr,
+  ) {
+    final spans = parse(rawSpans);
+    final start = rawStart.clamp(0, textLength);
+    final end = rawEnd.clamp(0, textLength);
+    if (start >= end) return false; // seçim yok/geçersiz: aktif sayılmaz
+
+    final runs = _buildRuns(spans, textLength, start, end);
+    final selectedRuns = runs.where(
+      (r) => (r['start'] as int) >= start && (r['end'] as int) <= end,
+    );
+    return selectedRuns.isNotEmpty && selectedRuns.every((r) => r[attr] == true);
   }
 
   // ── Seçili aralığa yazı boyutu / renk / yazı tipi ailesi uygulama ──────

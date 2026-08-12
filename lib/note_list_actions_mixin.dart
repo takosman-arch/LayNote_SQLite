@@ -43,7 +43,14 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
   set _snackTimer(Timer? value);
   Color? get _textColor;
   set _textColor(Color? value);
-  TextEditingController get _titleController;
+  // Aşama 2: gerçek tanım (note_list_lifecycle_mixin.dart) artık düz
+  // TextEditingController değil, RichBlockTextController — abstract
+  // getter'ın tipi buna uyumlu olarak daraltıldı (bkz. dialog_mixin'deki
+  // aynı isimli düzeltme). Dart, mixin zincirinde bir üyenin dönüş tipinin
+  // override'landığı yerde EN AZ o kadar spesifik olmasını zorunlu kılar;
+  // burası eski geniş tip olarak kaldığı için build hatası veriyordu.
+  RichBlockTextController get _titleController;
+  List<Map<String, dynamic>> get _titleSpans;
 
 
   void _deleteNote(int index) {
@@ -364,8 +371,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                       },
                       child: Text(
                         actionLabel,
-                        style: const TextStyle(
-                          color: Colors.amber,
+                        style: TextStyle(
+                          color: appAccentColor.value,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -396,6 +403,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     required List<Map<String, dynamic>> checkItems,
     required List<Map<String, dynamic>> attachments,
     double fontSize = 16.0,
+    String? fontFamily,
   }) async {
     debugPrint('[PDF] export başladı, attachments: ${attachments.length}');
     _showInfoBar('PDF hazırlanıyor…', icon: Icons.picture_as_pdf);
@@ -415,6 +423,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         checkItems: checkItems,
         attachments: attachments,
         fontSize: fontSize,
+        fontFamily: fontFamily,
         phoneScreenWidth: phoneScreenWidth,
       );
       debugPrint('[PDF] dosya oluştu: ${file.path}');
@@ -481,6 +490,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     required List<Map<String, dynamic>> checkItems,
     required List<Map<String, dynamic>> attachments,
     double fontSize = 16.0,
+    String? fontFamily,
   }) async {
     final overlayBox =
         Overlay.of(context).context.findRenderObject() as RenderBox;
@@ -563,6 +573,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         checkItems: checkItems,
         attachments: attachments,
         fontSize: fontSize,
+        fontFamily: fontFamily,
       );
     } else if (selected == 'export_jpg') {
       _exportNoteAsJpg(
@@ -573,6 +584,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         checkItems: checkItems,
         attachments: attachments,
         fontSize: fontSize,
+        fontFamily: fontFamily,
       );
     } else if (selected == 'export_txt') {
       _exportNoteAsTxt(
@@ -608,6 +620,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     required List<Map<String, dynamic>> checkItems,
     required List<Map<String, dynamic>> attachments,
     double fontSize = 16.0,
+    String? fontFamily,
   }) async {
     _showInfoBar('JPG hazırlanıyor…', icon: Icons.image_outlined);
     try {
@@ -619,6 +632,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         checkItems: checkItems,
         attachments: attachments,
         fontSize: fontSize,
+        fontFamily: fontFamily,
         textColor: dNoteEffectiveTextColor(context, _textColor),
         borderColor: dNoteBorderColor(context),
         backgroundColor: Theme.of(context).cardColor,
@@ -759,11 +773,11 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                     Expanded(
                       child: SliderTheme(
                         data: SliderTheme.of(context).copyWith(
-                          activeTrackColor: Colors.amber,
+                          activeTrackColor: appAccentColor.value,
                           inactiveTrackColor: dNoteBorderColor(context),
-                          thumbColor: Colors.amber,
-                          overlayColor: Colors.amber.withValues(alpha: 0.2),
-                          valueIndicatorColor: Colors.amber,
+                          thumbColor: appAccentColor.value,
+                          overlayColor: appAccentColor.value.withValues(alpha: 0.2),
+                          valueIndicatorColor: appAccentColor.value,
                           valueIndicatorTextStyle: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
@@ -807,7 +821,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.amber,
+                          backgroundColor: appAccentColor.value,
                         ),
                         onPressed: () {
                           setState(
@@ -852,9 +866,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx2, setDlg) => AlertDialog(
           backgroundColor: dNoteCardColor(ctx2),
-          title: const Text(
+          title: Text(
             'Yeni Parola Oluştur',
-            style: TextStyle(color: Colors.amber),
+            style: TextStyle(color: appAccentColor.value),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -879,8 +893,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
                   ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: appAccentColor.value),
                   ),
                 ),
               ),
@@ -899,8 +913,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
                   ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: appAccentColor.value),
                   ),
                 ),
               ),
@@ -915,7 +929,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               child: const Text('İptal', style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+              style: ElevatedButton.styleFrom(backgroundColor: appAccentColor.value),
               onPressed: () {
                 final pass = passCtrl.text;
                 if (pass.trim().isEmpty) {
@@ -959,9 +973,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx2, setDlg) => AlertDialog(
           backgroundColor: dNoteCardColor(ctx2),
-          title: const Text(
+          title: Text(
             'Parola Gerekiyor',
-            style: TextStyle(color: Colors.amber),
+            style: TextStyle(color: appAccentColor.value),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -980,8 +994,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
                   ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: appAccentColor.value),
                   ),
                 ),
               ),
@@ -996,9 +1010,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                       completer.complete(false);
                       _showForgotPasswordDialog();
                     },
-                    child: const Text(
+                    child: Text(
                       'Şifremi unuttum',
-                      style: TextStyle(color: Colors.amber, fontSize: 13),
+                      style: TextStyle(color: appAccentColor.value, fontSize: 13),
                     ),
                   ),
                 ),
@@ -1014,7 +1028,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               child: const Text('İptal', style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+              style: ElevatedButton.styleFrom(backgroundColor: appAccentColor.value),
               onPressed: () {
                 final ok = ctrl.text == _notePassword;
                 Navigator.pop(ctx);
@@ -1043,9 +1057,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       builder: (ctx) => StatefulBuilder(
         builder: (ctx2, setDlg) => AlertDialog(
           backgroundColor: dNoteCardColor(ctx2),
-          title: const Text(
+          title: Text(
             'Güvenlik Sorusu',
-            style: TextStyle(color: Colors.amber),
+            style: TextStyle(color: appAccentColor.value),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -1071,8 +1085,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
                   ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: appAccentColor.value),
                   ),
                   errorText: errorText,
                 ),
@@ -1086,7 +1100,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               child: const Text('İptal', style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+              style: ElevatedButton.styleFrom(backgroundColor: appAccentColor.value),
               onPressed: () {
                 final correct =
                     answerCtrl.text.trim().toLowerCase() ==
@@ -1115,7 +1129,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: const Text('Şifreniz', style: TextStyle(color: Colors.amber)),
+        title: Text('Şifreniz', style: TextStyle(color: appAccentColor.value)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1134,8 +1148,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               ),
               child: SelectableText(
                 _notePassword,
-                style: const TextStyle(
-                  color: Colors.amber,
+                style: TextStyle(
+                  color: appAccentColor.value,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -1145,7 +1159,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         ),
         actions: [
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+            style: ElevatedButton.styleFrom(backgroundColor: appAccentColor.value),
             onPressed: () => Navigator.pop(ctx),
             child: const Text(
               'Tamam',
@@ -1276,7 +1290,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             isEditing
                 ? 'Kategoriyi Düzenle'
                 : (isSubfolder ? 'Yeni Alt Klasör' : 'Yeni Kategori'),
-            style: const TextStyle(color: Colors.amber),
+            style: TextStyle(color: appAccentColor.value),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -1303,8 +1317,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(context)),
                   ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: appAccentColor.value),
                   ),
                 ),
                 style: TextStyle(color: dNoteTextColor(context)),
@@ -1359,7 +1373,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               child: const Text('İptal', style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+              style: ElevatedButton.styleFrom(backgroundColor: appAccentColor.value),
               onPressed: () {
                 final rawName = controller.text.trim();
                 final name = _capitalizeFirstLetterTr(rawName);
@@ -1665,7 +1679,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             children: [
               _detailRow(
                 Icons.calendar_today_outlined,
-                Colors.amber,
+                appAccentColor.value,
                 'Oluşturulma',
                 createdStr,
               ),
@@ -1696,7 +1710,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         actions: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.amber,
+              backgroundColor: appAccentColor.value,
               foregroundColor: Colors.black,
             ),
             onPressed: () => Navigator.pop(ctx),
@@ -1957,7 +1971,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       {
         'icon': isFavorite ? Icons.star : Icons.star_outline,
         'label': isFavorite ? 'Favoriden Çıkar' : 'Favori',
-        'color': Colors.amber,
+        'color': appAccentColor.value,
         'key': 'favorite',
       },
       {
@@ -2044,7 +2058,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         {
           'icon': Icons.check_circle_outline,
           'label': 'Seç',
-          'color': Colors.amber,
+          'color': appAccentColor.value,
           'key': 'select',
         },
     ];
@@ -2438,6 +2452,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         // kapatıldıysa) modifiedDate güncellenmemeli, yoksa not "son
         // düzenleme" sıralamasında haksız yere başa taşınır.
         final newTitle = _capitalizeFirstLetterTr(_titleController.text.trim());
+        final newTitleSpans = RichTextSpans.clean(_titleSpans);
         final newContent = noteType == 'text'
             ? ContentBlocks.serialize(blocks)
             : '';
@@ -2446,6 +2461,23 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             : <Map<String, dynamic>>[];
 
         final oldTitle = (_notes[index]['title'] ?? '').toString();
+        // Not: newTitle zaten _capitalizeFirstLetterTr ile normalize
+        // ediliyor ama başlığın ilk harfi büyütülünce span aralıkları
+        // (start/end index) kayabileceğinden, span karşılaştırmasını
+        // ham eşitlik yerine RichTextSpans.clean çıktısı üzerinden
+        // yapıyoruz — böylece yalnızca biçimlendirme değişse bile
+        // (metin aynı kalsa da) hasChanges bunu yakalar.
+        final oldTitleSpans = RichTextSpans.clean(
+          RichTextSpans.parse(_notes[index]['titleSpans']),
+        );
+        // NOT: RichTextSpans sınıfında hazır bir equals() olup olmadığını
+        // bilmediğimden (bu dosyanın kapsamı dışında), ek import
+        // gerektirmeyen basit bir toString() karşılaştırması kullandım.
+        // clean() çıktısı deterministik (aynı içerik için hep aynı
+        // Map/List sırası) olduğu sürece bu güvenlidir. Eğer
+        // RichTextSpans zaten bir equals()/== operatörü sağlıyorsa onu
+        // kullanmak burada daha temiz olur.
+        final titleSpansChanged = oldTitleSpans.toString() != newTitleSpans.toString();
         final oldContent = (_notes[index]['content'] ?? '').toString();
         final oldType = (_notes[index]['type'] ?? 'text').toString();
         final oldCheckItemsRaw = _notes[index]['checkItems'];
@@ -2495,6 +2527,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
 
         final hasChanges =
             newTitle != oldTitle ||
+            titleSpansChanged ||
             contentChanged ||
             noteType != oldType ||
             checkItemsChanged ||
@@ -2511,6 +2544,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
           _notes[index] = {
             ..._notes[index],
             'title': newTitle,
+            'titleSpans': newTitleSpans,
             'content': newContent,
             'checkItems': newCheckItems,
             'attachments': attachments,
@@ -2543,11 +2577,13 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       } else {
         final currentRawTime = DateTime.now().toString();
         final newTitle = _capitalizeFirstLetterTr(_titleController.text.trim());
+        final newTitleSpans = RichTextSpans.clean(_titleSpans);
         final savedRepeat = reminder != null ? reminderRepeat : null;
         setState(() {
           _notes.add({
             'id': currentRawTime,
             'title': newTitle,
+            'titleSpans': newTitleSpans,
             'content': noteType == 'text'
                 ? ContentBlocks.serialize(blocks)
                 : '',

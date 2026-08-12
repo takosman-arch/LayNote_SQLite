@@ -151,6 +151,12 @@ class GundemScreen extends StatefulWidget {
   // dışarıdan geçiriliyor.
   final double globalFontSize;
 
+  // Ayarlar > Kişiselleştirme > Yazı Tipi ile aynı değer (dNoteFontFamilyValue
+  // ile dönüştürülmüş hâli). Not kartlarındaki yazı tipiyle birebir aynı
+  // fontu Gündem satırlarında da uygulayabilmek için dışarıdan geçiriliyor.
+  // null ise sistem varsayılan fontu kullanılır ('Varsayılan').
+  final String? fontFamily;
+
   // Notu doğrudan açan callback. Verilirse, nota tıklandığında Gündem
   // KENDİNİ KAPATMADAN bu callback çağrılır (asıl not ekranı, çağıranın
   // kendi Navigator context'i üzerinden açılır ve Gündem'in ÜZERİNE
@@ -186,6 +192,7 @@ class GundemScreen extends StatefulWidget {
     super.key,
     required this.notes,
     this.globalFontSize = 16.0,
+    this.fontFamily,
     this.onOpenNote,
     this.onRemoveFromAgenda,
     this.onDeleteNote,
@@ -465,12 +472,12 @@ class _GundemScreenState extends State<GundemScreen> {
       appBar: AppBar(
         elevation: 0,
         centerTitle: false,
-        iconTheme: const IconThemeData(color: Colors.amber),
-        title: const Text(
+        iconTheme: IconThemeData(color: appAccentColor.value),
+        title: Text(
           'Gündem',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.amber,
+            color: appAccentColor.value,
             fontSize: 18,
           ),
         ),
@@ -566,6 +573,7 @@ class _GundemScreenState extends State<GundemScreen> {
                             isAssigned: entry.isAssigned,
                             showFullDate: section.showFullDate,
                             globalFontSize: widget.globalFontSize,
+                            fontFamily: widget.fontFamily,
                             onTap: (ctx) => _openNote(ctx, entry.note),
                             onLongPress: (ctx) => _showAgendaTileMenu(
                               ctx,
@@ -669,6 +677,7 @@ class _GundemScreenState extends State<GundemScreen> {
               isAssigned: entry.isAssigned,
               showFullDate: section.showFullDate,
               globalFontSize: widget.globalFontSize,
+              fontFamily: widget.fontFamily,
               onTap: (ctx) => _openNote(ctx, entry.note),
               onLongPress: (ctx) => _showAgendaTileMenu(
                 ctx,
@@ -752,6 +761,7 @@ class _AgendaTile extends StatelessWidget {
   final bool isAssigned;
   final bool showFullDate;
   final double globalFontSize;
+  final String? fontFamily;
   final void Function(BuildContext context) onTap;
   final void Function(BuildContext context)? onLongPress;
 
@@ -761,6 +771,7 @@ class _AgendaTile extends StatelessWidget {
     required this.isAssigned,
     required this.showFullDate,
     required this.globalFontSize,
+    this.fontFamily,
     required this.onTap,
     this.onLongPress,
   });
@@ -841,6 +852,7 @@ class _AgendaTile extends StatelessWidget {
                             fontSize: titleFontSize,
                             fontWeight: titleFontWeight,
                             color: dNoteTextColor(context),
+                            fontFamily: fontFamily,
                           ),
                         ),
                         if (repeatLabel != null) ...[

@@ -229,7 +229,7 @@ class _VoiceRecorderSheetState extends State<_VoiceRecorderSheet> {
                   FilledButton.icon(
                     onPressed: _starting ? null : () => _stop(save: true),
                     style: FilledButton.styleFrom(
-                      backgroundColor: Colors.amber,
+                      backgroundColor: appAccentColor.value,
                       foregroundColor: Colors.black,
                     ),
                     icon: const Icon(Icons.stop),
@@ -483,7 +483,7 @@ class _SpeechToTextSheetState extends State<_SpeechToTextSheet> {
                         ? null
                         : () => _stop(save: true),
                     style: FilledButton.styleFrom(
-                      backgroundColor: Colors.amber,
+                      backgroundColor: appAccentColor.value,
                       foregroundColor: Colors.black,
                     ),
                     icon: const Icon(Icons.check),
@@ -882,7 +882,7 @@ class _VoicePlayerSheetState extends State<_VoicePlayerSheet> {
             Slider(
               value: current,
               max: total,
-              activeColor: Colors.amber,
+              activeColor: appAccentColor.value,
               onChanged: (v) {
                 setState(() => _position = Duration(milliseconds: v.toInt()));
               },
@@ -910,7 +910,7 @@ class _VoicePlayerSheetState extends State<_VoicePlayerSheet> {
                 _isPlaying
                     ? Icons.pause_circle_filled
                     : Icons.play_circle_filled,
-                color: Colors.amber,
+                color: appAccentColor.value,
               ),
               onPressed: _togglePlay,
             ),
@@ -987,10 +987,10 @@ class _VideoPlayerDialogState extends State<_VideoPlayerDialog> {
               ),
             )
           else
-            const SizedBox(
+            SizedBox(
               height: 120,
               child: Center(
-                child: CircularProgressIndicator(color: Colors.amber),
+                child: CircularProgressIndicator(color: appAccentColor.value),
               ),
             ),
           if (_ready && !_controller.value.isPlaying)
@@ -1013,8 +1013,8 @@ class _VideoPlayerDialogState extends State<_VideoPlayerDialog> {
                   VideoProgressIndicator(
                     _controller,
                     allowScrubbing: true,
-                    colors: const VideoProgressColors(
-                      playedColor: Colors.amber,
+                    colors: VideoProgressColors(
+                      playedColor: appAccentColor.value,
                       bufferedColor: Colors.white30,
                       backgroundColor: Colors.white12,
                     ),

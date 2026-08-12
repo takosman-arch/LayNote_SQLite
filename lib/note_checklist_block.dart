@@ -19,6 +19,7 @@ class NoteChecklistBlock extends StatelessWidget {
     required this.controllers,
     required this.focusNodes,
     required this.fontSize,
+    this.fontFamily,
     required this.textColor,
     required this.onToggle,
     required this.onTextChanged,
@@ -37,6 +38,9 @@ class NoteChecklistBlock extends StatelessWidget {
   final List<FocusNode> focusNodes;
 
   final double fontSize;
+  // Ayarlar > Kişiselleştirme > Yazı Tipi. null ise Flutter varsayılan
+  // (sistem) fontuna düşer.
+  final String? fontFamily;
   final Color? textColor;
 
   /// Bir maddenin checkbox'ına tıklandığında çağrılır.
@@ -107,7 +111,7 @@ class NoteChecklistBlock extends StatelessWidget {
                             ? Icons.check_box_rounded
                             : Icons.check_box_outline_blank_rounded,
                         color: items[j]['checked'] == true
-                            ? Colors.amber
+                            ? appAccentColor.value
                             : Colors.grey[400],
                         size: fontSize + 6,
                       ),
@@ -149,6 +153,7 @@ class NoteChecklistBlock extends StatelessWidget {
                                 ? effectiveColor?.withOpacity(0.5)
                                 : effectiveColor,
                             fontSize: fontSize,
+                            fontFamily: fontFamily,
                             decoration: items[j]['checked'] == true
                                 ? TextDecoration.lineThrough
                                 : TextDecoration.none,

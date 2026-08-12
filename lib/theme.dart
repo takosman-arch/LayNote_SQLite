@@ -34,3 +34,40 @@ String themeModeToSettingValue(ThemeMode mode) {
   }
 }
 
+// ════════════════════════════════════════════════════════════════════════
+// VURGU RENGİ (Ayarlar > Tema > Vurgu Rengi)
+// Uygulama genelinde "primary" rengi (AppBar başlıkları, switch'ler,
+// butonlar, seçili öğeler vb.) bu global ValueNotifier üzerinden yönetilir.
+// Ayarlar ekranındaki seçim değiştiğinde appAccentColor.value güncellenir;
+// bunu dinleyen DNoteApp, MaterialApp'in temasını otomatik olarak yeniden
+// kurar. Varsayılan değer, uygulamanın önceki sabit rengiyle (Colors.amber)
+// birebir aynıdır — böylece hiç ayar kaydedilmemiş kullanıcılarda görünüm
+// değişmez.
+// ════════════════════════════════════════════════════════════════════════
+final ValueNotifier<Color> appAccentColor = ValueNotifier<Color>(
+  Colors.amber,
+);
+
+// DB'de rengi Color.toARGB32() sonucunun String'e çevrilmiş hâli olarak
+// saklıyoruz (bkz. NoteListDataCategoryMixin._saveData / _loadData).
+// Bu, projede _textColor için zaten kullanılan yöntemle birebir aynıdır.
+Color accentColorFromSettingValue(String? value) {
+  if (value == null || value.isEmpty) return Colors.amber;
+  final argb = int.tryParse(value);
+  if (argb == null) return Colors.amber;
+  return Color(argb);
+}
+
+String accentColorToSettingValue(Color color) {
+  return color.toARGB32().toString();
+}
+
+// Ayarlar ekranında (Vurgu Rengi satırı ve önizleme dairesi) gösterilecek
+// rengi döndürür. Şimdilik seçili vurgu rengi, açık/koyu tema fark etmeksizin
+// olduğu gibi kullanılır (palet zaten her iki temada da okunaklı renklerden
+// oluşuyor); isDark parametresi ileride tema bazlı bir ayarlama gerekirse
+// diye çağrı imzasında tutuluyor.
+Color dNoteResolveAccentColor(Color accentColor, bool isDark) {
+  return accentColor;
+}
+

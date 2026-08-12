@@ -84,7 +84,7 @@ class _LastBackupInfoTileState extends State<LastBackupInfoTile> {
         children: [
           Icon(
             hasBackup ? Icons.check_circle_outline : Icons.info_outline,
-            color: hasBackup ? Colors.green : Colors.amber,
+            color: hasBackup ? Colors.green : appAccentColor.value,
             size: 20,
           ),
           const SizedBox(width: 10),

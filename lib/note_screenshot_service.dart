@@ -17,11 +17,22 @@ class NoteScreenshotService {
   static Future<File> exportNoteAsScreenshotJpg({
     required BuildContext context,
     required String title,
+    // Not başlığındaki kalın/italik/altı çizili/üstü çizili/vurgu/özel
+    // renk-link span'ları (bkz. rich_text_spans.dart). Verilmezse (null/boş)
+    // başlık eskisi gibi tek tip w600 düz metin olarak çizilir.
+    List<dynamic>? titleSpans,
     required String noteType,
     required List<Map<String, dynamic>> blocks,
     required List<Map<String, dynamic>> checkItems,
     required List<Map<String, dynamic>> attachments,
     required double fontSize,
+    // Notun/uygulamanın genel yazı stili (Ayarlar > Kişiselleştirme >
+    // Yazı Stili). Span bazlı özel font override'ları (RichTextSpans)
+    // zaten kendi 'fontFamily' değerini taşıdığından bunlardan
+    // etkilenmez; bu yalnızca span'da özel font seçilmemiş metinlerin
+    // düşeceği TABAN fonttur. null ise sistem varsayılanı kullanılır
+    // (eskiden zaten hep bu oluyordu).
+    String? fontFamily,
     required Color textColor,
     required Color borderColor,
     required Color backgroundColor,
@@ -53,11 +64,13 @@ class NoteScreenshotService {
               padding: const EdgeInsets.all(horizontalPadding),
               child: _NoteScreenshotContent(
                 title: title,
+                titleSpans: titleSpans,
                 noteType: noteType,
                 blocks: blocks,
                 checkItems: checkItems,
                 attachments: attachments,
                 fontSize: fontSize,
+                fontFamily: fontFamily,
                 textColor: textColor,
                 borderColor: borderColor,
                 contentWidth: contentWidth,
@@ -124,11 +137,13 @@ class NoteScreenshotService {
 // ikonlarıyla (uygulamadaki Checkbox widget'ının görünümüne yakın) çizilir.
 class _NoteScreenshotContent extends StatelessWidget {
   final String title;
+  final List<dynamic>? titleSpans;
   final String noteType;
   final List<Map<String, dynamic>> blocks;
   final List<Map<String, dynamic>> checkItems;
   final List<Map<String, dynamic>> attachments;
   final double fontSize;
+  final String? fontFamily;
   final Color textColor;
   final Color borderColor;
   final double contentWidth;
@@ -136,11 +151,13 @@ class _NoteScreenshotContent extends StatelessWidget {
 
   const _NoteScreenshotContent({
     required this.title,
+    this.titleSpans,
     required this.noteType,
     required this.blocks,
     required this.checkItems,
     required this.attachments,
     required this.fontSize,
+    this.fontFamily,
     required this.textColor,
     required this.borderColor,
     required this.contentWidth,
@@ -155,7 +172,7 @@ class _NoteScreenshotContent extends StatelessWidget {
         children: [
           Icon(
             checked ? Icons.check_box : Icons.check_box_outline_blank,
-            color: checked ? Colors.amber : Colors.grey,
+            color: checked ? appAccentColor.value : Colors.grey,
             size: fontSize + 6,
           ),
           const SizedBox(width: 8),
@@ -164,6 +181,7 @@ class _NoteScreenshotContent extends StatelessWidget {
               text,
               style: TextStyle(
                 fontSize: fontSize,
+                fontFamily: fontFamily,
                 color: checked ? Colors.grey : textColor,
                 decoration: checked ? TextDecoration.lineThrough : null,
               ),
@@ -243,12 +261,17 @@ class _NoteScreenshotContent extends StatelessWidget {
 
     final children = <Widget>[
       if (!isDrawingOnlyNote) ...[
-        Text(
-          title.trim().isEmpty ? 'Başlıksız Not' : title.trim(),
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: textColor,
+        Text.rich(
+          RichTextSpans.buildStaticSpan(
+            text: title.trim().isEmpty ? 'Başlıksız Not' : title.trim(),
+            rawSpans: titleSpans,
+            style: TextStyle(
+              fontSize: 20,
+              fontFamily: fontFamily,
+              fontWeight: FontWeight.w600,
+              color: textColor,
+            ),
+            isDark: Theme.of(context).brightness == Brightness.dark,
           ),
         ),
         const SizedBox(height: 4),
@@ -288,7 +311,12 @@ class _NoteScreenshotContent extends StatelessWidget {
                 RichTextSpans.buildStaticSpan(
                   text: text,
                   rawSpans: block['spans'] as List?,
-                  style: TextStyle(fontSize: fontSize, color: textColor, height: 1.4),
+                  style: TextStyle(
+                    fontSize: fontSize,
+                    fontFamily: fontFamily,
+                    color: textColor,
+                    height: 1.4,
+                  ),
                   isDark: isDark,
                 ),
               ),
@@ -327,14 +355,25 @@ class _NoteScreenshotContent extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
-                    child: Text(label, style: TextStyle(fontSize: fontSize, color: textColor)),
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontFamily: fontFamily,
+                        color: textColor,
+                      ),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
                     child: Text(
                       valueText,
                       textAlign: TextAlign.right,
-                      style: TextStyle(fontSize: fontSize, color: textColor),
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontFamily: fontFamily,
+                        color: textColor,
+                      ),
                     ),
                   ),
                 ],
@@ -349,7 +388,12 @@ class _NoteScreenshotContent extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
                     child: Text(
                       'Toplam',
-                      style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold, color: textColor),
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontFamily: fontFamily,
+                        fontWeight: FontWeight.bold,
+                        color: textColor,
+                      ),
                     ),
                   ),
                   Padding(
@@ -357,7 +401,12 @@ class _NoteScreenshotContent extends StatelessWidget {
                     child: Text(
                       ContentBlocks.formatCalcNumber(total),
                       textAlign: TextAlign.right,
-                      style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold, color: textColor),
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontFamily: fontFamily,
+                        fontWeight: FontWeight.bold,
+                        color: textColor,
+                      ),
                     ),
                   ),
                 ],

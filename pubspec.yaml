@@ -150,3 +150,20 @@ flutter:
         - asset: assets/fonts/NotoSans-Regular.ttf
         - asset: assets/fonts/NotoSans-Bold.ttf
           weight: 700
+
+    # ── Ayarlar > Kişiselleştirme > Yazı Tipi seçenekleri için ──
+    - family: DNoteMono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono-Regular.ttf
+        - asset: assets/fonts/JetBrainsMono-Bold.ttf
+          weight: 700
+    - family: DNoteSerif
+      fonts:
+        - asset: assets/fonts/Merriweather_96pt-Regular.ttf
+        - asset: assets/fonts/Merriweather_96pt-Bold.ttf
+          weight: 700
+    - family: DNoteCursive
+      fonts:
+        - asset: assets/fonts/DancingScript-Regular.ttf
+        - asset: assets/fonts/DancingScript-Bold.ttf
+          weight: 700

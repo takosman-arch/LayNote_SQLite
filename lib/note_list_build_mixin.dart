@@ -32,6 +32,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   Color _getCategoryColor(String? category);
   String _getCategoryDisplayName(String category);
   int _getCountForCategory(String category);
+  String get _fontFamily;
   double get _globalFontSize;
   set _globalFontSize(double value);
   Future<bool> _handleBackPress();
@@ -214,7 +215,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         appBar: AppBar(
           leading: _isSelectionMode
               ? IconButton(
-                  icon: const Icon(Icons.close, color: Colors.amber),
+                  icon: Icon(Icons.close, color: appAccentColor.value),
                   tooltip: 'Seçimi İptal Et',
                   onPressed: _exitSelectionMode,
                 )
@@ -222,9 +223,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
           title: _isSelectionMode
               ? Text(
                   '${_selectedNoteKeys.length} seçildi',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.amber,
+                    color: appAccentColor.value,
                     fontSize: 18,
                   ),
                 )
@@ -249,16 +250,16 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                 )
               : Text(
                   _getCategoryDisplayName(_activeCategory),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.amber,
+                    color: appAccentColor.value,
                     fontSize: 18,
                   ),
                 ),
           elevation: 0,
           centerTitle: false,
           titleSpacing: 0,
-          iconTheme: const IconThemeData(color: Colors.amber),
+          iconTheme: IconThemeData(color: appAccentColor.value),
           actions: _isSelectionMode
               ? [
                   IconButton(
@@ -267,12 +268,12 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     onPressed: _deleteSelectedNotes,
                   ),
                   IconButton(
-                    icon: const Icon(Icons.archive_outlined, color: Colors.amber),
+                    icon: Icon(Icons.archive_outlined, color: appAccentColor.value),
                     tooltip: 'Arşiv',
                     onPressed: _archiveSelectedNotes,
                   ),
                   IconButton(
-                    icon: const Icon(Icons.folder_outlined, color: Colors.amber),
+                    icon: Icon(Icons.folder_outlined, color: appAccentColor.value),
                     tooltip: 'Kategori',
                     onPressed: _showClassifyDialogForSelection,
                   ),
@@ -282,7 +283,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 4),
               icon: Icon(
                 _isSearching ? Icons.close : Icons.search,
-                color: Colors.amber,
+                color: appAccentColor.value,
               ),
               onPressed: () {
                 setState(() {
@@ -297,15 +298,15 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             if (isTrash)
               PopupMenuButton<String>(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
-                icon: const Icon(Icons.more_vert, color: Colors.amber),
+                icon: Icon(Icons.more_vert, color: appAccentColor.value),
                 onSelected: (String choice) {
                   if (choice == 'empty') {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text(
+                        title: Text(
                           'Çöpü Boşalt',
-                          style: TextStyle(color: Colors.amber),
+                          style: TextStyle(color: appAccentColor.value),
                         ),
                         content: const Text(
                           'Tüm silinen notlar kalıcı olarak silinecek. Emin misiniz?',
@@ -367,11 +368,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         style: TextStyle(color: Colors.red),
                       ),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'restore_all',
                       child: Text(
                         'Hepsini Geri Yükle',
-                        style: TextStyle(color: Colors.amber),
+                        style: TextStyle(color: appAccentColor.value),
                       ),
                     ),
                   ];
@@ -380,7 +381,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             else
               PopupMenuButton<String>(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
-                icon: const Icon(Icons.sort, color: Colors.amber),
+                icon: Icon(Icons.sort, color: appAccentColor.value),
                 tooltip: 'Notları Sırala',
                 onSelected: (String choice) {
                   setState(() {
@@ -433,7 +434,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             IconButton(
               icon: Icon(
                 _isListView ? Icons.grid_view : Icons.view_list,
-                color: Colors.amber,
+                color: appAccentColor.value,
               ),
               tooltip: _isListView ? 'Izgara Görünümü' : 'Liste Görünümü',
               onPressed: () {
@@ -457,14 +458,14 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                 children: [
                   DrawerHeader(
                     decoration: BoxDecoration(color: dNoteHeaderColor(context)),
-                    child: const Column(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           'LayNote',
                           style: TextStyle(
-                            color: Colors.amber,
+                            color: appAccentColor.value,
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
                           ),
@@ -496,7 +497,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
-                      leading: const Icon(Icons.notes, color: Colors.amber),
+                      leading: Icon(Icons.notes, color: appAccentColor.value),
                       title: const Text('Notlar'),
                       trailing: Text(
                         _getCountForCategory('Tümü').toString(),
@@ -517,9 +518,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
-                      leading: const Icon(
+                      leading: Icon(
                         Icons.star_outline,
-                        color: Colors.amber,
+                        color: appAccentColor.value,
                       ),
                       title: const Text(
                         'Favori',
@@ -539,9 +540,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     ),
                   ),
                   ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.event_note_outlined,
-                      color: Colors.amber,
+                      color: appAccentColor.value,
                     ),
                     title: const Text('Gündem'),
                     trailing: Text(
@@ -564,9 +565,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
-                      leading: const Icon(
+                      leading: Icon(
                         Icons.notifications_active_outlined,
-                        color: Colors.amber,
+                        color: appAccentColor.value,
                       ),
                       title: const Text('Hatırlatıcı'),
                       trailing: Text(
@@ -588,9 +589,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
-                      leading: const Icon(
+                      leading: Icon(
                         Icons.lock_outline,
-                        color: Colors.amber,
+                        color: appAccentColor.value,
                       ),
                       title: const Text(
                         'Kilitli',
@@ -610,9 +611,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
-                      leading: const Icon(
+                      leading: Icon(
                         Icons.archive_outlined,
-                        color: Colors.amber,
+                        color: appAccentColor.value,
                       ),
                       title: const Text(
                         'Arşiv',
@@ -636,9 +637,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
-                      leading: const Icon(
+                      leading: Icon(
                         Icons.delete_outline,
-                        color: Colors.amber,
+                        color: appAccentColor.value,
                       ),
                       title: const Text(
                         'Çöp',
@@ -726,8 +727,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                 },
                                 child: Text(
                                   allCollapsed ? 'Genişlet' : 'Daralt',
-                                  style: const TextStyle(
-                                    color: Colors.amber,
+                                  style: TextStyle(
+                                    color: appAccentColor.value,
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600,
                                     letterSpacing: 1.0,
@@ -793,9 +794,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     ),
                   ),
                   ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.calendar_month,
-                      color: Colors.amber,
+                      color: appAccentColor.value,
                     ),
                     title: const Text(
                       'Takvim',
@@ -809,9 +810,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     },
                   ),
                   ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.settings_outlined,
-                      color: Colors.amber,
+                      color: appAccentColor.value,
                     ),
                     title: const Text(
                       'Ayarlar',
@@ -819,9 +820,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     onTap: _openSettings,
                   ),
                   ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.backup_outlined,
-                      color: Colors.amber,
+                      color: appAccentColor.value,
                     ),
                     title: const Text(
                       'Yedekle & Geri Yükle',
@@ -837,9 +838,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     },
                   ),
                   ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.workspace_premium_outlined,
-                      color: Colors.amber,
+                      color: appAccentColor.value,
                     ),
                     title: const Text(
                       'Pro\'ya Yükselt',
@@ -850,7 +851,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.amber,
+                        color: appAccentColor.value,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Text(
@@ -865,9 +866,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     onTap: () => Navigator.pop(context),
                   ),
                   ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.volunteer_activism_outlined,
-                      color: Colors.amber,
+                      color: appAccentColor.value,
                     ),
                     title: const Text(
                       'Geliştirme Desteği',
@@ -875,9 +876,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     onTap: () => Navigator.pop(context),
                   ),
                   ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.rate_review_outlined,
-                      color: Colors.amber,
+                      color: appAccentColor.value,
                     ),
                     title: const Text(
                       'Geri Bildirim',
@@ -885,9 +886,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     onTap: () => Navigator.pop(context),
                   ),
                   ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.info_outline,
-                      color: Colors.amber,
+                      color: appAccentColor.value,
                     ),
                     title: const Text(
                       'Hakkında',
@@ -984,7 +985,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       // aynı tonda (amber) sürekli vurgulanır.
                       final noteCardColor = isSelected
                           ? Color.alphaBlend(
-                              Colors.amber.withValues(alpha: 0.30),
+                              appAccentColor.value.withValues(alpha: 0.30),
                               baseNoteCardColor,
                             )
                           : baseNoteCardColor;
@@ -1045,7 +1046,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                         children: [
                                           ElevatedButton.icon(
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.amber,
+                                              backgroundColor: appAccentColor.value,
                                             ),
                                             icon: const Icon(
                                               Icons.restore_outlined,
@@ -1126,8 +1127,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                               side: isSelected
-                                  ? const BorderSide(
-                                      color: Colors.amber,
+                                  ? BorderSide(
+                                      color: appAccentColor.value,
                                       width: 2,
                                     )
                                   : BorderSide.none,
@@ -1154,7 +1155,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                   style:
                                                       ElevatedButton.styleFrom(
                                                         backgroundColor:
-                                                            Colors.amber,
+                                                            appAccentColor.value,
                                                       ),
                                                   icon: const Icon(
                                                     Icons.restore_outlined,
@@ -1286,21 +1287,30 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                       Row(
                                         children: [
                                           Expanded(
-                                            child: Text(
-                                              _capitalizeFirstLetterTr(
-                                                (note['title'] ?? '')
-                                                    .toString(),
-                                              ),
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                // Başlık, notun kendi (veya
-                                                // Ayarlar > Metin Boyutu'ndan
-                                                // gelen) yazı boyutunun 2
-                                                // birim fazlası. fontScale =
-                                                // noteFontSize/16 olduğundan
-                                                // noteFontSize = 16*fontScale.
-                                                fontSize: (16 * fontScale) + 2,
-                                                color: dNoteEffectiveTextColor(context, _textColor),
+                                            child: RichText(
+                                              // Aşama 5: bkz. grid karttaki
+                                              // aynı isimli açıklama —
+                                              // maxLines/overflow eskiden de
+                                              // yoktu, davranış değişmedi.
+                                              text: buildStaticTextSpan(
+                                                _capitalizeFirstLetterTr(
+                                                  (note['title'] ?? '')
+                                                      .toString(),
+                                                ),
+                                                note['titleSpans'] as List?,
+                                                TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  // Başlık, notun kendi (veya
+                                                  // Ayarlar > Metin Boyutu'ndan
+                                                  // gelen) yazı boyutunun 2
+                                                  // birim fazlası. fontScale =
+                                                  // noteFontSize/16 olduğundan
+                                                  // noteFontSize = 16*fontScale.
+                                                  fontSize: (16 * fontScale) + 2,
+                                                  color: dNoteEffectiveTextColor(context, _textColor),
+                                                  fontFamily: dNoteFontFamilyValue(_fontFamily),
+                                                ),
+                                                isDark: dNoteIsDark(context),
                                               ),
                                             ),
                                           ),
@@ -1311,7 +1321,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                               ),
                                               child: Icon(
                                                 Icons.star,
-                                                color: Colors.amber,
+                                                color: appAccentColor.value,
                                                 size: 18,
                                               ),
                                             ),
@@ -1362,6 +1372,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                     (note['fontSize'] as num?)
                                                         ?.toDouble() ??
                                                     _globalFontSize,
+                                                fontFamily: dNoteFontFamilyValue(_fontFamily),
                                               ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -1376,7 +1387,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                       ? Icons.check_box_rounded
                                                       : Icons
                                                             .check_box_outline_blank_rounded,
-                                                  color: Colors.amber,
+                                                  color: appAccentColor.value,
                                                   size: 16,
                                                 ),
                                                 const SizedBox(width: 6),
@@ -1400,6 +1411,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                     (note['fontSize'] as num?)
                                                         ?.toDouble() ??
                                                     _globalFontSize,
+                                                fontFamily: dNoteFontFamilyValue(_fontFamily),
                                               ),
                                               maxLines: _previewLines,
                                               overflow: TextOverflow.ellipsis,
@@ -1412,7 +1424,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                               ),
                                               child: Icon(
                                                 Icons.star,
-                                                color: Colors.amber,
+                                                color: appAccentColor.value,
                                                 size: 18,
                                               ),
                                             ),
@@ -1445,6 +1457,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                         ?.toDouble() ??
                                                     _globalFontSize) -
                                                     1,
+                                                fontFamily: dNoteFontFamilyValue(
+                                                  _fontFamily,
+                                                ),
                                               ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -1477,6 +1492,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                         ?.toDouble() ??
                                                     _globalFontSize) -
                                                     1,
+                                                fontFamily: dNoteFontFamilyValue(
+                                                  _fontFamily,
+                                                ),
                                               ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -1517,6 +1535,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                           ?.toDouble() ??
                                                       _globalFontSize) -
                                                       1,
+                                                  fontFamily:
+                                                      dNoteFontFamilyValue(
+                                                    _fontFamily,
+                                                  ),
                                                 ),
                                                 maxLines: 1,
                                                 overflow:
@@ -1549,7 +1571,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _showNoteDialog(type: 'text'),
-          backgroundColor: Colors.amber,
+          backgroundColor: appAccentColor.value,
           child: const Icon(Icons.add, color: Colors.black, size: 30),
         ),
       ),
@@ -1935,7 +1957,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     // (amber) sürekli vurgulanır.
     final gridCardColor = isSelected
         ? Color.alphaBlend(
-            Colors.amber.withValues(alpha: 0.30),
+            appAccentColor.value.withValues(alpha: 0.30),
             baseGridCardColor,
           )
         : baseGridCardColor;
@@ -1973,7 +1995,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       children: [
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.amber,
+                            backgroundColor: appAccentColor.value,
                           ),
                           icon: const Icon(
                             Icons.restore_outlined,
@@ -2041,7 +2063,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: isSelected
-              ? const BorderSide(color: Colors.amber, width: 2)
+              ? BorderSide(color: appAccentColor.value, width: 2)
               : BorderSide.none,
         ),
         child: InkWell(
@@ -2063,7 +2085,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                           children: [
                             ElevatedButton.icon(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.amber,
+                                backgroundColor: appAccentColor.value,
                               ),
                               icon: const Icon(
                                 Icons.restore_outlined,
@@ -2205,14 +2227,24 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (hasTitle)
-                          Text(
-                            _capitalizeFirstLetterTr(
-                              (note['title'] ?? '').toString(),
-                            ),
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: (16 * fontScale) + 2,
-                              color: dNoteEffectiveTextColor(context, _textColor),
+                          RichText(
+                            // Aşama 5: başlık artık kalın/italik/vurgu/link
+                            // vb. span'larıyla birlikte çiziliyor (bkz.
+                            // buildStaticTextSpan, rich_block_text_controller.dart).
+                            // maxLines/overflow/textAlign/textDirection
+                            // öncekiyle birebir aynı korunuyor.
+                            text: buildStaticTextSpan(
+                              _capitalizeFirstLetterTr(
+                                (note['title'] ?? '').toString(),
+                              ),
+                              note['titleSpans'] as List?,
+                              TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: (16 * fontScale) + 2,
+                                color: dNoteEffectiveTextColor(context, _textColor),
+                                fontFamily: dNoteFontFamilyValue(_fontFamily),
+                              ),
+                              isDark: dNoteIsDark(context),
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -2251,6 +2283,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                               (note['fontSize'] as num?)
                                                   ?.toDouble() ??
                                               _globalFontSize,
+                                          fontFamily: dNoteFontFamilyValue(_fontFamily),
                                         ),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -2272,7 +2305,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                         ? Icons.check_box_rounded
                                                         : Icons
                                                               .check_box_outline_blank_rounded,
-                                                    color: Colors.amber,
+                                                    color: appAccentColor.value,
                                                     size: 16,
                                                   ),
                                                   const SizedBox(width: 4),
@@ -2292,6 +2325,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                   fontSize:
                                       (note['fontSize'] as num?)?.toDouble() ??
                                       _globalFontSize,
+                                  fontFamily: dNoteFontFamilyValue(_fontFamily),
                                 ),
                                 maxLines: _previewLines,
                                 overflow: TextOverflow.ellipsis,
@@ -2324,6 +2358,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                             ?.toDouble() ??
                                         _globalFontSize) -
                                         1,
+                                    fontFamily: dNoteFontFamilyValue(
+                                      _fontFamily,
+                                    ),
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -2356,6 +2393,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                             ?.toDouble() ??
                                         _globalFontSize) -
                                         1,
+                                    fontFamily: dNoteFontFamilyValue(
+                                      _fontFamily,
+                                    ),
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -2390,6 +2430,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                             ?.toDouble() ??
                                         _globalFontSize) -
                                         1,
+                                    fontFamily: dNoteFontFamilyValue(
+                                      _fontFamily,
+                                    ),
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -2409,7 +2452,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                 Positioned(
                   top: 8,
                   right: note['isLocked'] == true ? 36 : 8,
-                  child: const Icon(Icons.star, color: Colors.amber, size: 18),
+                  child: Icon(Icons.star, color: appAccentColor.value, size: 18),
                 ),
               if (note['isLocked'] == true)
                 const Positioned(
@@ -2475,6 +2518,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       // artık güncel veriyi yeniden çizer.
       notes: _notes,
       globalFontSize: _globalFontSize,
+      fontFamily: dNoteFontFamilyValue(_fontFamily),
       onOpenNote: (note) async {
         final tappedNoteId = note['id']?.toString();
         if (tappedNoteId == null) return;
@@ -2525,6 +2569,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       // kaydedildiğinde _notes[index] YENİ bir Map ile değiştiriliyor;
       // Takvim ayrı bir kopya tutsaydı bu değişikliği göremezdi.
       notes: _notes,
+      fontFamily: dNoteFontFamilyValue(_fontFamily),
       onNewNote: (date) async {
         await _showNoteDialog(
           type: 'text',

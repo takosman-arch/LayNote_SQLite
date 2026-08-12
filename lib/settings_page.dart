@@ -19,6 +19,33 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
+// Ayarlar > Kişiselleştirme > Yazı Tipi'nde seçilen görünen ismi ('Varsayılan',
+// 'Monospace', 'Serif', 'Cursive') Flutter'ın TextStyle.fontFamily alanının
+// anladığı gerçek değere çevirir. Top-level (private DEĞİL) olarak
+// tanımlanıyor ki note_list_build_mixin.dart ve note_list_note_dialog_mixin.dart
+// gibi diğer 'part of main.dart' dosyaları da not metnini çizerken bunu
+// çağırabilsin — önceden bu sadece _SettingsPageState içine gömülüydü ve
+// SADECE ayarlar ekranındaki önizlemede kullanılıyordu, notlara hiç
+// uygulanmıyordu.
+// NOT: 'monospace' / 'serif' / 'cursive' gibi jenerik (CSS tarzı) isimler
+// Flutter'da otomatik çalışmaz — pubspec.yaml'da o isimle tanımlı bir font
+// olmadığı sürece Flutter sessizce varsayılan fonta düşer ve önizlemede
+// hiçbir görsel fark oluşmaz. Bu yüzden burada, pubspec.yaml'a eklenen
+// gömülü fontların ("DNoteMono", "DNoteSerif", "DNoteCursive") gerçek
+// aile isimleri döndürülüyor.
+String? dNoteFontFamilyValue(String? name) {
+  switch (name) {
+    case 'Monospace':
+      return 'DNoteMono';
+    case 'Serif':
+      return 'DNoteSerif';
+    case 'Cursive':
+      return 'DNoteCursive';
+    default:
+      return null;
+  }
+}
+
 class _SettingsPageState extends State<SettingsPage> {
   _NoteListScreenState get s => widget.state;
 
@@ -40,8 +67,8 @@ class _SettingsPageState extends State<SettingsPage> {
     padding: const EdgeInsets.fromLTRB(16, 24, 16, 6),
     child: Text(
       title.toUpperCase(),
-      style: const TextStyle(
-        color: Colors.amber,
+      style: TextStyle(
+        color: Theme.of(context).primaryColor,
         fontSize: 11,
         fontWeight: FontWeight.bold,
         letterSpacing: 1.4,
@@ -89,18 +116,7 @@ class _SettingsPageState extends State<SettingsPage> {
     'Cursive',
   ];
 
-  static String? _fontFamilyValue(String name) {
-    switch (name) {
-      case 'Monospace':
-        return 'monospace';
-      case 'Serif':
-        return 'serif';
-      case 'Cursive':
-        return 'cursive';
-      default:
-        return null;
-    }
-  }
+  static String? _fontFamilyValue(String name) => dNoteFontFamilyValue(name);
 
   // ── Metin rengi seçici ────────────────────────────────────────────
   static const List<Color> _textPalette = [
@@ -160,11 +176,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     Expanded(
                       child: SliderTheme(
                         data: SliderTheme.of(context).copyWith(
-                          activeTrackColor: Colors.amber,
+                          activeTrackColor: Theme.of(context).primaryColor,
                           inactiveTrackColor: dNoteSurfaceVariant(ctx),
-                          thumbColor: Colors.amber,
-                          overlayColor: Colors.amber.withValues(alpha: 0.2),
-                          valueIndicatorColor: Colors.amber,
+                          thumbColor: Theme.of(context).primaryColor,
+                          overlayColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                          valueIndicatorColor: Theme.of(context).primaryColor,
                           valueIndicatorTextStyle: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
@@ -209,7 +225,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.amber,
+                          backgroundColor: Theme.of(context).primaryColor,
                         ),
                         onPressed: () {
                           s.setState(() => s._widgetFontSize = tempSize);
@@ -283,11 +299,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     Expanded(
                       child: SliderTheme(
                         data: SliderTheme.of(context).copyWith(
-                          activeTrackColor: Colors.amber,
+                          activeTrackColor: Theme.of(context).primaryColor,
                           inactiveTrackColor: dNoteSurfaceVariant(ctx),
-                          thumbColor: Colors.amber,
-                          overlayColor: Colors.amber.withValues(alpha: 0.2),
-                          valueIndicatorColor: Colors.amber,
+                          thumbColor: Theme.of(context).primaryColor,
+                          overlayColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+                          valueIndicatorColor: Theme.of(context).primaryColor,
                           valueIndicatorTextStyle: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
@@ -331,7 +347,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.amber,
+                          backgroundColor: Theme.of(context).primaryColor,
                         ),
                         onPressed: () {
                           s.setState(() => s._widgetBgOpacity = tempOpacity);
@@ -420,9 +436,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         s._saveData();
                       },
                       child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(9),
-                          gradient: const LinearGradient(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [Colors.white, Colors.black87],
@@ -434,7 +449,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           'A',
                           style: TextStyle(
                             color: s._textColor == null
-                                ? Colors.amber
+                                ? Theme.of(context).primaryColor
                                 : Colors.grey[500],
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -470,7 +485,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.amber,
+                      backgroundColor: Theme.of(context).primaryColor,
                     ),
                     onPressed: () => Navigator.pop(ctx),
                     child: const Text(
@@ -504,9 +519,9 @@ class _SettingsPageState extends State<SettingsPage> {
       builder: (_) => StatefulBuilder(
         builder: (ctx, setDlg) => AlertDialog(
           backgroundColor: dNoteCardColor(ctx),
-          title: const Text(
+          title: Text(
             'Güvenlik Sorusu',
-            style: TextStyle(color: Colors.amber),
+            style: TextStyle(color: Theme.of(context).primaryColor),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -527,8 +542,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                   ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor),
                   ),
                 ),
                 items: _hintQuestions
@@ -554,8 +569,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                   ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.amber),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor),
                   ),
                 ),
               ),
@@ -567,7 +582,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: const Text('İptal', style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+              style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
               onPressed: () {
                 if (selectedQuestion == null ||
                     answerCtrl.text.trim().isEmpty) {
@@ -618,7 +633,7 @@ class _SettingsPageState extends State<SettingsPage> {
           backgroundColor: dNoteCardColor(ctx),
           title: Text(
             isNew ? 'Şifre Oluştur' : 'Mevcut Şifreyi Gir',
-            style: const TextStyle(color: Colors.amber),
+            style: TextStyle(color: Theme.of(context).primaryColor),
           ),
           content: SingleChildScrollView(
             child: Column(
@@ -639,8 +654,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                       ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.amber),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -666,8 +681,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                       ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.amber),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -693,8 +708,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                       ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.amber),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -722,8 +737,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                       ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.amber),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
                       ),
                     ),
                     items: _hintQuestions
@@ -750,8 +765,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: dNoteBorderColor(ctx)),
                       ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.amber),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Theme.of(context).primaryColor),
                       ),
                     ),
                   ),
@@ -770,7 +785,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: const Text('İptal', style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+              style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
               onPressed: () {
                 if (isNew) {
                   if (ctrl1.text.isEmpty) return;
@@ -879,6 +894,88 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   // ─────────────────────────────────────────────────────────────────
+  // VURGU RENGİ — "Tema Değiştir" ile aynı diyalog/kayıt kalıbı, ama
+  // ThemeMode yerine hazır bir renk paletinden seçim yapılıyor. Gerçek
+  // kaynak appAccentColor notifier'ıdır (bkz. theme.dart); s._accentColor
+  // yalnızca bu ekrandaki seçili durumu göstermek için tutulur.
+  // ─────────────────────────────────────────────────────────────────
+  static const List<Color> _accentColorPalette = [
+    Colors.amber,
+    Colors.deepOrange,
+    Colors.red,
+    Colors.pink,
+    Colors.purple,
+    Colors.deepPurple,
+    Colors.indigo,
+    Colors.blue,
+    Colors.lightBlue,
+    Colors.cyan,
+    Colors.teal,
+    Colors.green,
+    Colors.lightGreen,
+  ];
+
+  void _showAccentColorDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Vurgu Rengini Seçin'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: Wrap(
+              spacing: 14,
+              runSpacing: 14,
+              children: _accentColorPalette.map((color) {
+                final bool selected =
+                    color.toARGB32() == s._accentColor.toARGB32();
+                return GestureDetector(
+                  onTap: () => _updateAccentColor(context, color),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                      border: selected
+                          ? Border.all(color: Colors.white, width: 3)
+                          : null,
+                      boxShadow: selected
+                          ? [
+                              BoxShadow(
+                                color: color.withValues(alpha: 0.6),
+                                blurRadius: 8,
+                                spreadRadius: 1,
+                              ),
+                            ]
+                          : null,
+                    ),
+                    child: selected
+                        ? const Icon(
+                            Icons.check,
+                            color: Colors.black,
+                            size: 20,
+                          )
+                        : null,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _updateAccentColor(BuildContext context, Color color) async {
+    s.setState(() => s._accentColor = color);
+    appAccentColor.value = color;
+    await s._saveData();
+    setState(() {});
+    if (context.mounted) Navigator.pop(context);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -891,10 +988,10 @@ class _SettingsPageState extends State<SettingsPage> {
           icon: Icon(Icons.arrow_back_ios, color: dNoteTextColor(context)),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Ayarlar',
           style: TextStyle(
-            color: Colors.amber,
+            color: Theme.of(context).primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -922,7 +1019,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         : 'Şifre ayarlanmadı',
                     trailing: Switch(
                       value: s._notePasswordEnabled,
-                      activeThumbColor: Colors.amber,
+                      activeThumbColor: Theme.of(context).primaryColor,
                       onChanged: (val) {
                         if (val) {
                           _showPasswordDialog(isNew: true);
@@ -951,10 +1048,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       subtitle: s._passwordHintQuestion.isNotEmpty
                           ? 'Belirlendi ✓ — şifreyi unutursanız kullanılır'
                           : 'Belirlenmedi — şifrenizi kaybederseniz kurtaramazsınız',
-                      trailing: const Icon(
-                        Icons.chevron_right,
-                        color: Colors.grey,
-                      ),
+                      trailing: null,
                       onTap: () => _showHintQuestionDialog(),
                     ),
                   ],
@@ -981,11 +1075,37 @@ class _SettingsPageState extends State<SettingsPage> {
                       ThemeMode.dark => 'Koyu',
                       ThemeMode.system => 'Sistem',
                     },
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
+                    trailing: null,
                     onTap: () => _showThemeDialog(context),
+                  ),
+                  Divider(
+                    color: Theme.of(context).dividerColor,
+                    height: 1,
+                    indent: 56,
+                  ),
+                  _settingTile(
+                    icon: Icons.color_lens_outlined,
+                    iconColor: dNoteResolveAccentColor(
+                      s._accentColor,
+                      Theme.of(context).brightness == Brightness.dark,
+                    ),
+                    title: 'Vurgu Rengi',
+                    subtitle: 'AppBar, buton ve anahtarlarda kullanılan renk',
+                    trailing: Container(
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: dNoteResolveAccentColor(
+                          s._accentColor,
+                          Theme.of(context).brightness == Brightness.dark,
+                        ),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Theme.of(context).dividerColor,
+                        ),
+                      ),
+                    ),
+                    onTap: () => _showAccentColorDialog(context),
                   ),
                   Divider(
                     color: Theme.of(context).dividerColor,
@@ -999,7 +1119,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     subtitle: 'Her not kartı farklı renk tonu alır.',
                     trailing: Switch(
                       value: s._colorfulNotes,
-                      activeThumbColor: Colors.amber,
+                      activeThumbColor: Theme.of(context).primaryColor,
                       onChanged: (val) {
                         s.setState(() => s._colorfulNotes = val);
                         setState(() {});
@@ -1027,10 +1147,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     iconColor: Colors.tealAccent,
                     title: 'Yazı Tipi',
                     subtitle: s._fontFamily,
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
+                    trailing: null,
                     onTap: () {
                       showModalBottomSheet(
                         context: context,
@@ -1063,15 +1180,15 @@ class _SettingsPageState extends State<SettingsPage> {
                                       f,
                                       style: TextStyle(
                                         color: s._fontFamily == f
-                                            ? Colors.amber
+                                            ? Theme.of(context).primaryColor
                                             : dNoteTextColor(context),
                                         fontFamily: _fontFamilyValue(f),
                                       ),
                                     ),
                                     trailing: s._fontFamily == f
-                                        ? const Icon(
+                                        ? Icon(
                                             Icons.check_circle,
-                                            color: Colors.amber,
+                                            color: Theme.of(context).primaryColor,
                                           )
                                         : null,
                                     onTap: () {
@@ -1101,10 +1218,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: 'Metin Boyutu',
                     subtitle:
                         '${s._globalFontSize.round()} pt — tüm notlara uygulanır.',
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
+                    trailing: null,
                     onTap: () {
                       double tempSize = s._globalFontSize;
                       bool applyToAll = false;
@@ -1159,14 +1273,14 @@ class _SettingsPageState extends State<SettingsPage> {
                                         child: SliderTheme(
                                           data: SliderTheme.of(context)
                                               .copyWith(
-                                                activeTrackColor: Colors.amber,
+                                                activeTrackColor: Theme.of(context).primaryColor,
                                                 inactiveTrackColor:
                                                     dNoteSurfaceVariant(ctx),
-                                                thumbColor: Colors.amber,
-                                                overlayColor: Colors.amber
+                                                thumbColor: Theme.of(context).primaryColor,
+                                                overlayColor: Theme.of(context).primaryColor
                                                     .withValues(alpha: 0.2),
                                                 valueIndicatorColor:
-                                                    Colors.amber,
+                                                    Theme.of(context).primaryColor,
                                                 valueIndicatorTextStyle:
                                                     const TextStyle(
                                                       color: Colors.black,
@@ -1201,6 +1315,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                         ctx,
                                       ).withValues(alpha: 0.7),
                                       fontSize: tempSize,
+                                      fontFamily: dNoteFontFamilyValue(
+                                        s._fontFamily,
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(height: 16),
@@ -1208,7 +1325,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     children: [
                                       Checkbox(
                                         value: applyToAll,
-                                        activeColor: Colors.amber,
+                                        activeColor: Theme.of(context).primaryColor,
                                         onChanged: (v) => setSheet(
                                           () => applyToAll = v ?? false,
                                         ),
@@ -1256,7 +1373,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       Expanded(
                                         child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.amber,
+                                            backgroundColor: Theme.of(context).primaryColor,
                                           ),
                                           onPressed: () {
                                             s.setState(() {
@@ -1310,11 +1427,9 @@ class _SettingsPageState extends State<SettingsPage> {
                           decoration: BoxDecoration(
                             color: dNoteEffectiveTextColor(context, s._textColor),
                             border: Border.all(color: Colors.grey[600]!),
-                            borderRadius: BorderRadius.circular(5),
+                            borderRadius: BorderRadius.circular(11),
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        const Icon(Icons.chevron_right, color: Colors.grey),
                       ],
                     ),
                     onTap: _showTextColorPicker,
@@ -1327,14 +1442,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Not önizleme satırı
                   _settingTile(
                     icon: Icons.wrap_text,
-                    iconColor: Colors.amberAccent,
+                    iconColor: Theme.of(context).primaryColor,
                     title: 'Not Önizleme Satırı',
                     subtitle:
                         'En fazla ${s._previewLines} satır göster. Not daha kısaysa gerçek satır sayısı görünür.',
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
+                    trailing: null,
                     onTap: () {
                       int tempLines = s._previewLines;
                       showModalBottomSheet(
@@ -1377,23 +1489,23 @@ class _SettingsPageState extends State<SettingsPage> {
                                   const SizedBox(height: 6),
                                   Text(
                                     'Şu an: $tempLines satır',
-                                    style: const TextStyle(
-                                      color: Colors.amber,
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
                                       fontSize: 13,
                                     ),
                                   ),
                                   const SizedBox(height: 12),
                                   SliderTheme(
                                     data: SliderTheme.of(context).copyWith(
-                                      activeTrackColor: Colors.amber,
+                                      activeTrackColor: Theme.of(context).primaryColor,
                                       inactiveTrackColor: dNoteSurfaceVariant(
                                         ctx,
                                       ),
-                                      thumbColor: Colors.amber,
-                                      overlayColor: Colors.amber.withValues(
+                                      thumbColor: Theme.of(context).primaryColor,
+                                      overlayColor: Theme.of(context).primaryColor.withValues(
                                         alpha: 0.2,
                                       ),
-                                      valueIndicatorColor: Colors.amber,
+                                      valueIndicatorColor: Theme.of(context).primaryColor,
                                       valueIndicatorTextStyle: const TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold,
@@ -1439,7 +1551,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       Expanded(
                                         child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.amber,
+                                            backgroundColor: Theme.of(context).primaryColor,
                                           ),
                                           onPressed: () {
                                             s.setState(
@@ -1472,62 +1584,11 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
 
-            // ── 4. YEDEKLEME VE BULUT AYARLARI ───────────────────────────
-            _sectionHeader('Yedekleme'),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: dNoteCardColor(context),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Column(
-                children: [
-                  _settingTile(
-                    icon: Icons.backup_outlined,
-                    iconColor: Colors.greenAccent,
-                    title: 'Manuel Yedekle ve Yükle',
-                    subtitle:
-                        'Notları el ile cihaz hafızasına yedekleyin veya geri yükleyin',
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const BackupRestoreScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  Divider(
-                    color: Theme.of(context).dividerColor,
-                    height: 1,
-                    indent: 56,
-                  ),
-                  _settingTile(
-                    icon: Icons.cloud_sync_outlined,
-                    iconColor: Colors.lightBlueAccent,
-                    title: 'Otomatik Yedekleme Ayarları',
-                    subtitle: 'Arka plan yedekleme sıklığı ve bulut hedefleri',
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const AutoBackupSettingsScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
+            // NOT: Yedekleme bölümü buradan kaldırıldı. Manuel yedekle/geri
+            // yükle, yedek geçmişi ve otomatik yedekleme ayarları artık tek
+            // bir yerde toplanıyor: çekmece menüsündeki "Yedekle & Geri
+            // Yükle" girişi (BackupRestoreScreen). Bkz.
+            // note_list_build_mixin.dart ve backup_restore_screen.dart.
 
             // ── 5. WİDGET ────────────────────────────────────────────────
             _sectionHeader('Widget'),
@@ -1544,10 +1605,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     iconColor: Colors.cyanAccent,
                     title: 'Widget Metin Boyutu',
                     subtitle: '${s._widgetFontSize.round()} pt',
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
+                    trailing: null,
                     onTap: _showWidgetFontSizeSheet,
                   ),
                   Divider(
@@ -1560,10 +1618,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     iconColor: Colors.lightBlueAccent,
                     title: 'Arka Plan Saydamlığı',
                     subtitle: '%${(s._widgetBgOpacity * 100).round()}',
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: Colors.grey,
-                    ),
+                    trailing: null,
                     onTap: _showWidgetOpacitySheet,
                   ),
                   Divider(
@@ -1578,7 +1633,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     subtitle: 'Widget için koyu renk şeması.',
                     trailing: Switch(
                       value: s._widgetDark,
-                      activeThumbColor: Colors.amber,
+                      activeThumbColor: Theme.of(context).primaryColor,
                       onChanged: (v) {
                         s.setState(() => s._widgetDark = v);
                         setState(() {});
@@ -1649,10 +1704,10 @@ class _TextColorSwatch extends StatelessWidget {
         decoration: BoxDecoration(
           color: color,
           border: Border.all(
-            color: selected ? Colors.amber : Colors.grey[500]!,
+            color: selected ? Theme.of(context).primaryColor : Colors.grey[500]!,
             width: selected ? 2.5 : 1,
           ),
-          borderRadius: BorderRadius.circular(10),
+          shape: BoxShape.circle,
         ),
         child: child,
       ),

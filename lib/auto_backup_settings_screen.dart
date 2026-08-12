@@ -64,7 +64,15 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
     await _backupService.rescheduleFromSavedSettings();
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Otomatik yedekleme ayarları güncellendi.')),
+      SnackBar(
+        content: const Text('Otomatik yedekleme ayarları güncellendi.'),
+        backgroundColor: Colors.green.shade700,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      ),
     );
   }
 
@@ -156,36 +164,60 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
           ],
 
           // 5. Durum Raporlama Paneli
-          Card(
-            color: _lastRunSuccess == null
-                ? Colors.grey.shade100
-                : (_lastRunSuccess! ? Colors.green.shade50 : Colors.red.shade50),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Sistem Durumu',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: _lastRunSuccess == null
-                          ? Colors.black87
-                          : (_lastRunSuccess! ? Colors.green.shade900 : Colors.red.shade900),
-                    ),
+          // AŞAMA: kart artık dNoteIsDark(context)'e göre koyu/açık tema
+          // uyumlu renkler kullanıyor. Önceden sabit Colors.grey.shade100 /
+          // green.shade50 / red.shade50 kullanıldığı için koyu temada bile
+          // panel her zaman beyaza yakın görünüyordu; artık nötr durumda
+          // dNoteCardColor(context) (uygulamanın standart kart rengi),
+          // başarı/hata durumlarında ise koyu temaya özel, düşük opaklıklı
+          // yeşil/kırmızı tonlar kullanılıyor.
+          Builder(
+            builder: (context) {
+              final isDark = dNoteIsDark(context);
+              final Color cardColor = _lastRunSuccess == null
+                  ? dNoteCardColor(context)
+                  : (_lastRunSuccess!
+                      ? (isDark
+                          ? Colors.green.shade900.withValues(alpha: 0.25)
+                          : Colors.green.shade50)
+                      : (isDark
+                          ? Colors.red.shade900.withValues(alpha: 0.25)
+                          : Colors.red.shade50));
+              final Color titleColor = _lastRunSuccess == null
+                  ? dNoteTextColor(context)
+                  : (_lastRunSuccess!
+                      ? (isDark ? Colors.green.shade300 : Colors.green.shade900)
+                      : (isDark ? Colors.red.shade300 : Colors.red.shade900));
+              final Color bodyColor = _lastRunSuccess == null
+                  ? dNoteTextColor(context).withValues(alpha: 0.7)
+                  : (_lastRunSuccess!
+                      ? (isDark ? Colors.green.shade200 : Colors.green.shade800)
+                      : (isDark ? Colors.red.shade200 : Colors.red.shade800));
+
+              return Card(
+                color: cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Sistem Durumu',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: titleColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _lastRunInfo,
+                        style: TextStyle(color: bodyColor),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    _lastRunInfo,
-                    style: TextStyle(
-                      color: _lastRunSuccess == null
-                          ? Colors.black54
-                          : (_lastRunSuccess! ? Colors.green.shade800 : Colors.red.shade800),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
         ],
       ),

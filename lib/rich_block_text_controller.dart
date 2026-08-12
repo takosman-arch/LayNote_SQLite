@@ -33,6 +33,22 @@ const Color _highlightColorLight = Color(0xFFFFF59D);
 // "vurgu kalemi" hissini (amber/sarı ton) korur.
 const Color _highlightColorDark = Color(0xFF7A5B00);
 
+// ── "Kalın" AÇIK olduğunda uygulanacak fontWeight'i belirler ───────────
+// Sabit FontWeight.bold (w700) her zaman kullanılırsa, TABAN stil zaten
+// yarı-kalınsa (ör. not başlığının kendi stili FontWeight.w600 taşıyor —
+// bkz. note_list_note_dialog_mixin.dart'taki başlık TextField'i) 600'den
+// 700'e sıçrama görsel olarak neredeyse fark edilmiyor; kullanıcı "Kalın"
+// butonuna bassa da metinde hiçbir değişiklik görmüyordu (DÜZELTME: bu
+// başlıkta "Kalın çalışmıyor" şikayetinin sebebiydi — span/ikon tarafı
+// doğruydu, sorun salt görseldi). Taban ağırlık zaten w600 veya üzerindeyse
+// en kalın adıma (w900) atlanır; aksi halde (gövde metni gibi normal/w400
+// taban) her zamanki gibi FontWeight.bold (w700) kullanılır — gövdedeki
+// mevcut görünüm hiç değişmez.
+FontWeight _boldWeightFor(FontWeight? base) {
+  final baseIndex = (base ?? FontWeight.normal).index;
+  return baseIndex >= FontWeight.w600.index ? FontWeight.w900 : FontWeight.bold;
+}
+
 // ════════════════════════════════════════════════════════════════════════
 // RichBlockTextController
 // Bir metin bloğunun 'spans' listesine (bkz. rich_text_spans.dart) bakarak
@@ -221,7 +237,7 @@ class RichBlockTextController extends TextEditingController {
         final effectiveColor =
             color != null ? Color(color) : (link != null ? _linkColor : style?.color);
         partStyle = (style ?? const TextStyle()).copyWith(
-          fontWeight: bold ? FontWeight.bold : style?.fontWeight,
+          fontWeight: bold ? _boldWeightFor(style?.fontWeight) : style?.fontWeight,
           fontStyle: italic ? FontStyle.italic : style?.fontStyle,
           decoration: decoration,
           fontSize: fontSize ?? style?.fontSize,
@@ -251,4 +267,130 @@ class RichBlockTextController extends TextEditingController {
 
     return TextSpan(style: style, children: children);
   }
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// Aşama 5: buildStaticTextSpan
+// RichBlockTextController.buildTextSpan ile BİREBİR AYNI dilimleme/
+// birleştirme mantığını kullanan, ama bir controller/TextEditingController
+// örneği gerektirmeyen salt-okunur bir yardımcı fonksiyon. Not listesindeki
+// grid kart ve liste görünümü başlıkları gibi DÜZENLENEMEYEN, sadece
+// görüntülenen yerlerde kullanılmak üzere tasarlandı.
+//
+// buildTextSpan'dan iki kasıtlı farkı var:
+//   1) Link'ler için TapGestureRecognizer OLUŞTURULMAZ. Recognizer'lar bir
+//      State'in dispose() yaşam döngüsüne bağlı kaynaklardır (bkz.
+//      RichBlockTextController._linkRecognizers); salt-okunur, tek seferlik
+//      çizilen bir önizleme metninde bu yaşam döngüsünü yönetecek bir
+//      controller yok. Link'ler yine görsel olarak mavi/altı çizili
+//      gösterilir, sadece tıklanamaz.
+//   2) BuildContext yerine doğrudan isDark alınır. Highlight rengi
+//      (_highlightColorDark / _highlightColorLight) tema parlaklığına göre
+//      seçildiğinden bu bilgi gerekli, ama çağıran taraf zaten kendi
+//      build() metodu içinde olduğundan Theme.of(context).brightness'ı tek
+//      satırda hesaplayıp buraya geçebilir; fonksiyonu context'e bağımlı
+//      kılmamak ileride BuildContext olmayan bir yerden (ör. dışa aktarma/
+//      export akışı) çağrılabilmesini de kolaylaştırır.
+//
+// rawSpans, notun ham (JSON'dan gelmiş olabilecek, henüz normalize
+// edilmemiş) 'titleSpans' alanıdır — RichTextSpans.parse ile, aynı
+// blocks[i]['spans'] için yapıldığı gibi, burada da normalize edilir.
+TextSpan buildStaticTextSpan(
+  String text,
+  List<dynamic>? rawSpans,
+  TextStyle? style, {
+  required bool isDark,
+}) {
+  final spans = RichTextSpans.parse(rawSpans);
+  if (spans.isEmpty || text.isEmpty) {
+    return TextSpan(style: style, text: text);
+  }
+
+  final effectiveHighlightColor =
+      isDark ? _highlightColorDark : _highlightColorLight;
+
+  int clampIndex(num raw, int max) {
+    final v = raw.toInt();
+    if (v < 0) return 0;
+    if (v > max) return max;
+    return v;
+  }
+
+  final breakpoints = <int>{0, text.length};
+  for (final s in spans) {
+    breakpoints.add(clampIndex(s['start'] as num, text.length));
+    breakpoints.add(clampIndex(s['end'] as num, text.length));
+  }
+  final points = breakpoints.toList()..sort();
+
+  final children = <TextSpan>[];
+  for (int i = 0; i < points.length - 1; i++) {
+    final start = points[i];
+    final end = points[i + 1];
+    if (start >= end) continue;
+    bool bold = false;
+    bool italic = false;
+    bool underline = false;
+    bool strikethrough = false;
+    bool highlight = false;
+    double? fontSize;
+    int? color;
+    String? fontFamily;
+    String? link;
+    for (final s in spans) {
+      final sStart = clampIndex(s['start'] as num, text.length);
+      final sEnd = clampIndex(s['end'] as num, text.length);
+      if (start >= sStart && end <= sEnd) {
+        if (s['bold'] == true) bold = true;
+        if (s['italic'] == true) italic = true;
+        if (s['underline'] == true) underline = true;
+        if (s['strikethrough'] == true) strikethrough = true;
+        if (s['highlight'] == true) highlight = true;
+        final sz = s['fontSize'];
+        if (sz is num) fontSize = sz.toDouble();
+        final c = s['color'];
+        if (c is num) color = c.toInt();
+        final ff = s['fontFamily'];
+        if (ff is String) fontFamily = ff;
+        final lk = s['link'];
+        if (lk is String && lk.isNotEmpty) link = lk;
+      }
+    }
+    TextStyle? partStyle = style;
+    if (bold || italic || underline || strikethrough || highlight ||
+        fontSize != null || color != null || fontFamily != null ||
+        link != null) {
+      // Altı çizili ve üzeri çizili aynı anda AÇIK olabilir — bkz.
+      // buildTextSpan'daki aynı isimli açıklama (TextDecoration.combine
+      // gerekliliği).
+      final showUnderline = underline || link != null;
+      TextDecoration? decoration = style?.decoration;
+      if (showUnderline || strikethrough) {
+        final parts = <TextDecoration>[
+          if (showUnderline) TextDecoration.underline,
+          if (strikethrough) TextDecoration.lineThrough,
+        ];
+        decoration = TextDecoration.combine(parts);
+      }
+      final effectiveColor = color != null
+          ? Color(color)
+          : (link != null ? _linkColor : style?.color);
+      partStyle = (style ?? const TextStyle()).copyWith(
+        fontWeight: bold ? _boldWeightFor(style?.fontWeight) : style?.fontWeight,
+        fontStyle: italic ? FontStyle.italic : style?.fontStyle,
+        decoration: decoration,
+        fontSize: fontSize ?? style?.fontSize,
+        color: effectiveColor,
+        fontFamily: fontFamily ?? style?.fontFamily,
+        backgroundColor:
+            highlight ? effectiveHighlightColor : style?.backgroundColor,
+      );
+    }
+    children.add(TextSpan(
+      text: text.substring(start, end),
+      style: partStyle,
+    ));
+  }
+
+  return TextSpan(style: style, children: children);
 }

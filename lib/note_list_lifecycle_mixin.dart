@@ -30,12 +30,12 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
   ];
 
   Color _getCategoryColor(String? category) {
-    if (category == null || category.isEmpty) return Colors.amber;
+    if (category == null || category.isEmpty) return appAccentColor.value;
     final hex = _categoryColors[category];
     if (hex != null) {
       return Color(int.parse(hex, radix: 16));
     }
-    return Colors.amber;
+    return appAccentColor.value;
   }
 
   // Undo/redo checkpoint'leri için Map/List/ilkel değerlerden oluşan bir
@@ -84,6 +84,9 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
   // burada sadece Ayarlar ekranındaki seçili seçeneği göstermek için tutulur.
   ThemeMode _themeMode = ThemeMode.dark;
   bool _colorfulNotes = false;
+  // Vurgu Rengi — gerçek kaynak appAccentColor notifier'ıdır, burada sadece
+  // Ayarlar ekranındaki seçili rengi göstermek için tutulur (bkz. theme.dart).
+  Color _accentColor = Colors.amber;
 
   // Kişiselleştirme
   String _fontFamily = 'Varsayılan';
@@ -114,7 +117,35 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
   // içinde HomeWidget.initiallyLaunchedFromHomeWidget() ile ele alınır.
   StreamSubscription<Uri?>? _widgetClickSub;
 
-  final TextEditingController _titleController = TextEditingController();
+  // Aşama 2: _titleController artık düz TextEditingController değil,
+  // RichBlockTextController — gövde bloklarındaki controller'larla aynı
+  // desende.
+  // NOT: RichBlockTextController'ın 'text' parametresi için varsayılan
+  // değeri (muhtemelen '') doğrulayamadım — gövde bloklarındaki her
+  // kullanımda text: açıkça veriliyordu. Eğer text: zorunluysa
+  // aşağıdaki satıra text: '' eklemek gerekir.
+  late final RichBlockTextController _titleController =
+      RichBlockTextController(getSpans: () => _titleSpans);
+  // Aşama 3 revizyonu: span'lar artık düz bir List alanında değil, TEK
+  // 'spans' anahtarlı bir Map içinde tutuluyor — birebir gövde
+  // bloklarındaki desen (block['spans']). Sebep: _resolveFocusedSpansHolder()
+  // başlık odaktayken bir Map<String, dynamic> döndürmeli ki
+  // _toggleSpanAttribute/_applyValueAttribute içindeki merkezi
+  // 'spansHolder['spans'] = newSpans' yazımı GERÇEK veriye işlesin —
+  // düz bir List'i bu şekilde "referansla döndürüp içini değiştirmek"
+  // mümkün değil, bu yüzden holder'ın kendisi artık Map.
+  // _titleSpans getter/setter'ı (Aşama 1'den beri actions_mixin'in ve
+  // dialog_mixin'in captureSnapshot/applySnapshot'ının kullandığı arayüz)
+  // AYNEN korunuyor — bu Map'in üstünde ince bir List görünümü sağlıyor,
+  // o yüzden bu iki dosyada BAŞKA HİÇBİR DEĞİŞİKLİK gerekmedi.
+  Map<String, dynamic> _titleSpansHolder = {
+    'spans': <Map<String, dynamic>>[],
+  };
+  List<Map<String, dynamic>> get _titleSpans =>
+      ((_titleSpansHolder['spans'] as List?) ?? const [])
+          .cast<Map<String, dynamic>>();
+  set _titleSpans(List<Map<String, dynamic>> value) =>
+      _titleSpansHolder['spans'] = value;
   final TextEditingController _searchController = TextEditingController();
 
   @override

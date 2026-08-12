@@ -20,6 +20,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   String _getFormattedDate([DateTime? date]);
   double get _globalFontSize;
   set _globalFontSize(double value);
+  String get _fontFamily;
   Future<void> _handleReminderRowTap({ required BuildContext context, required DateTime? currentReminder, required String? currentRepeat, required void Function(DateTime? reminder, String? repeat) onChanged, });
   List<Map<String, dynamic>> get _notes;
   set _notes(List<Map<String, dynamic>> value);
@@ -34,12 +35,39 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   Future<void> _saveData();
   void _showAddAttachmentSheet( BuildContext ctx, { required void Function(String value) onSelected, });
   void _showClassifyDialog(int noteIndex, {void Function(String?)? onChanged});
-  Future<void> _showExportSubmenu({ required BuildContext context, required GlobalKey anchorKey, required String title, required String noteType, required List<Map<String, dynamic>> blocks, required List<Map<String, dynamic>> checkItems, required List<Map<String, dynamic>> attachments, double fontSize = 16.0, });
+  Future<void> _showExportSubmenu({ required BuildContext context, required GlobalKey anchorKey, required String title, required String noteType, required List<Map<String, dynamic>> blocks, required List<Map<String, dynamic>> checkItems, required List<Map<String, dynamic>> attachments, double fontSize = 16.0, String? fontFamily, });
   void _showInfoBar( String message, { IconData icon = Icons.check_circle, String? actionLabel, VoidCallback? onAction, Color backgroundColor = const Color(0xFF3D3D3D), });
   void _showNoteActions( BuildContext ctx, int noteIndex, bool isTrash, { DateTime? editorReminder, String? editorReminderRepeat, void Function(DateTime? reminder, String? repeat)? onReminderChanged, VoidCallback? onDiscard, void Function(String text)? onInsertText, bool showSelectAction = false, });
   Color? get _textColor;
   set _textColor(Color? value);
-  TextEditingController get _titleController;
+  // Aşama 2: gerçek tanım (note_list_lifecycle_mixin.dart) artık düz
+  // TextEditingController değil, RichBlockTextController — abstract
+  // getter'ın tipi buna uyumlu olarak daraltıldı. RichBlockTextController
+  // zaten TextEditingController'ı extend ettiğinden (bkz. checklist/gövde
+  // bloklarında List<TextEditingController> içine konulabiliyor olması),
+  // bu dosyadaki mevcut .text / .clear() kullanımları değişmeden çalışır.
+  RichBlockTextController get _titleController;
+  // ── Aşama 1: başlık span verisi (kalın/italik/vb.) ────────────────────
+  // _titleController gibi, notlar arasında geçişte sıfırlanan/yüklenen
+  // PAYLAŞILAN (State düzeyinde) bir alan. _saveNoteIfValid'in gerçek
+  // implementasyonu (NoteListActionsMixin) title'ı _titleController.text
+  // üzerinden okuduğu için, titleSpans de aynı şekilde bu getter üzerinden
+  // okunup notun 'titleSpans' alanına yazılmalı — bu sayede
+  // _saveNoteIfValid'in imzasına/çağrı noktalarına dokunmaya gerek kalmaz.
+  // Somut alan, _titleController'ın gerçek tanımlandığı yerde (bu dosyada
+  // değil) bir List<Map<String, dynamic>> instance değişkeni olarak
+  // eklenmelidir.
+  List<Map<String, dynamic>> get _titleSpans;
+  set _titleSpans(List<Map<String, dynamic>> value);
+  // ── Aşama 3: _resolveFocusedSpansHolder() başlık odaktayken bunu
+  // döndürecek. Gerçek tanımı (lifecycle_mixin) _titleSpans'ı BUNUN
+  // içindeki 'spans' anahtarında tutuyor — yani bu, gövde bloklarındaki
+  // 'block' map'inin başlık karşılığı: _toggleSpanAttribute/
+  // _applyValueAttribute buraya 'spansHolder['spans'] = newSpans' ile
+  // yazdığında gerçek veri güncellenir (yukarıdaki _titleSpans
+  // getter/setter'ı da aynı Map üzerinden okuyup yazdığı için otomatik
+  // senkron kalır).
+  Map<String, dynamic> get _titleSpansHolder;
   void dispose();
 
   // ── DÜZELTME (çökme): text.lastIndexOf('\n', X) çağrısında X negatif
@@ -92,6 +120,29 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // pushUndoCheckpoint çağrısından SONRA güncelleniyor. Başlık için de
     // aynı deseni uygulamak üzere ayrı bir model değişkeni tutuyoruz.
     String titleModel = "";
+    // titleModel ile aynı desen: RichBlockTextController.getSpans() her
+    // çizimde bunu okuyacak (bkz. Aşama 2), bold/italic/vb. araç çubuğu
+    // butonları da _resolveFocusedSpansHolder üzerinden bunu değiştirecek
+    // (bkz. Aşama 3). Undo/redo checkpoint'lerine dahil edilmesi için
+    // captureSnapshot/applySnapshot'a da eklendi (aşağıya bkz.).
+    List<Map<String, dynamic>> titleSpansModel = [];
+    // ── Aşama 3: başlığın odakta olup olmadığını ayırt eden bayrak ────────
+    // Gövde bloklarında "hangi blok odaklı" bilgisi zaten focusedBlockIndex
+    // ile tutuluyor (0, 1, 2...); başlık için ayrı bir sentinel değer
+    // (ör. -1) kullanmak yerine bağımsız bir bool tercih edildi — çünkü
+    // focusedBlockIndex'in başlangıç değeri zaten 0 (henüz hiçbir şey
+    // odaklanmamışken de 0. blok odaklıymış gibi davranıyor), -1'i "başlık"
+    // anlamına getirmek bu mevcut davranışla çakışabilirdi.
+    bool _titleFocused = false;
+    // Başlık TextField'ının kendi FocusNode'u: hasFocus değeri true/false
+    // olduğunda _titleFocused'u senkron tutan bir listener ekleniyor. Bu
+    // TEK YÖNLÜ değil ÇİFT YÖNLÜ çalışır (hem odak alınca hem kaybedilince
+    // günceller) — gövde bloklarının kendi FocusNode listener'larının
+    // aksine (onlar yalnızca odak ALINCA ilgilenir, çünkü focusedBlockIndex
+    // zaten bir sonraki bloğun kendi listener'ı tarafından üzerine
+    // yazılır); başlık için böyle bir "bir sonraki" mekanizma olmadığından
+    // burada kaybı da elle işlemek gerekiyor.
+    final titleFocusNode = FocusNode();
     List<Map<String, dynamic>> checkItems = [];
     List<TextEditingController> checkControllers = [];
     List<FocusNode> checkFocusNodes = [];
@@ -182,7 +233,58 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     int? noteBgColor;
     bool showBgColorSubToolbar = false;
     void Function(VoidCallback)? requestEditorRebuild;
+    // Aşama 3: titleFocusNode'un dinleyicisi requestEditorRebuild
+    // tanımlandıktan SONRA eklenir (Dart'ta yerel değişkenler kendi
+    // bildirim satırından önce kapanışlardan bile erişilemez).
+    titleFocusNode.addListener(() {
+      final gainedFocus = titleFocusNode.hasFocus;
+      // Aşama 4: gövde bloklarının onTap'indeki desenin aynısı (bkz.
+      // 'if (focusedBlockIndex != i) { pendingBold = false; ... }') —
+      // başlık odağı alınca, başka bir blokta bırakılmış "bekleyen"
+      // (henüz hiç harf yazılmamış) kalın/italik/vb. durumu bu yeni
+      // alanla ilgisiz olduğundan sıfırlanır. Odak kaybedilirken
+      // sıfırlamaya gerek yok — o zaten yeni odaklanan alanın kendi
+      // onTap'i/listener'ı tarafından (yukarıdaki desenle) yapılıyor.
+      if (gainedFocus) {
+        pendingBold = false;
+        pendingItalic = false;
+        pendingUnderline = false;
+        pendingStrikethrough = false;
+        pendingHighlight = false;
+        pendingFontSize = null;
+        pendingColor = null;
+        pendingFontFamily = null;
+        showListSubToolbar = false;
+        showStyleSubToolbar = false;
+        showColorSubToolbar = false;
+        showFontSizeSubToolbar = false;
+        // DÜZELTME (başlıkta kalın/italik/vb. çalışmıyordu): _titleFocused
+        // artık SADECE odak KAZANILINCA true'ya çekiliyor — gövde
+        // bloklarının/checklist maddelerinin kendi FocusNode listener'ları
+        // (bkz. bu dosyadaki diğer 'if (fn.hasFocus) { ... }' bloklarına
+        // eklenen '_titleFocused = false;' satırları) ile BİREBİR aynı
+        // "yalnızca odak KAZANILINCA ilgilen" deseni. Eskiden burada
+        // 'kaybedilince de false' (çift yönlü) yapılıyordu; bu, araç
+        // çubuğundaki bir IconButton'a (ör. Kalın) dokunulduğunda sorun
+        // çıkarıyordu: Flutter'da odaklanabilir bir widget'a dokunmak,
+        // onPressed henüz ÇALIŞMADAN önce mevcut odağı (titleFocusNode'u)
+        // geçici olarak kaybettirebiliyor — bu blur, listener'ı hemen
+        // tetikleyip _titleFocused'u false yapıyordu. onPressed
+        // (toggleBoldForFocusedBlock -> _toggleSpanAttribute) çalıştığında
+        // artık _titleFocused false olduğundan _resolveFocusedFormatController/
+        // _resolveFocusedSpansHolder başlığı değil, o an focusedBlockIndex'in
+        // hâlâ gösterdiği (ilgisiz, çoğu zaman görünmeyen) bir GÖVDE
+        // bloğunu döndürüyordu — biçimlendirme orada sessizce uygulanıp
+        // başlıkta hiçbir görsel değişiklik olmuyordu. Artık _titleFocused
+        // yalnızca gerçekten başka bir alan (gövde bloğu/checklist maddesi)
+        // odak KAZANDIĞINDA ya da klavye elle kapatıldığında (bkz.
+        // dismissKeyboardForFocusedBlock) false'a çekiliyor.
+        _titleFocused = true;
+      }
+      requestEditorRebuild?.call(() {});
+    });
     // "Çizim Ekle" ile yeni eklenen çizim bloğunun tam ekran çizim
+
     // sayfasını otomatik açması gerektiğini işaretlemek için kullanılır
     // (bkz. NoteDrawingBlock.autoOpenOnce). Yalnızca eklendiği anda bir
     // sonraki widget kurulumunda bir kez tüketilir, sonra null'a döner.
@@ -362,6 +464,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
               if (fn.hasFocus) {
                 focusedBlockIndex = capturedIndex;
                 focusedItemIndex = -1;
+                // DÜZELTME: bkz. titleFocusNode listener'ındaki aynı
+                // isimli açıklama — _titleFocused artık yalnızca burada,
+                // gerçek bir gövde bloğu odak KAZANDIĞINDA false'a çekiliyor.
+                _titleFocused = false;
                 final sel = ctrl.selection;
                 if (sel.isValid && sel.isCollapsed) {
                   lastSyncedText = ctrl.text;
@@ -498,6 +604,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   if (fn.hasFocus) {
                     focusedBlockIndex = capturedBlockIndex;
                     focusedItemIndex  = capturedItemIndex;
+                    _titleFocused = false;
                     requestEditorRebuild?.call(() {});
                   }
                 });
@@ -528,6 +635,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 if (fn.hasFocus) {
                   focusedBlockIndex = capturedBlockIndex;
                   focusedItemIndex  = capturedItemIndex;
+                  _titleFocused = false;
                   requestEditorRebuild?.call(() {});
                 }
               });
@@ -673,6 +781,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     Map<String, dynamic> captureSnapshot() {
       return {
         'title': titleModel,
+        'titleSpans': _deepClone(titleSpansModel),
         'noteType': noteType,
         'blocks': _deepClone(blocks),
         'checkItems': _deepClone(checkItems),
@@ -688,6 +797,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     void applySnapshot(Map<String, dynamic> snap) {
       titleModel = snap['title'] as String? ?? '';
       _titleController.text = titleModel;
+      titleSpansModel = (_deepClone(snap['titleSpans']) as List? ?? [])
+          .map((e) => Map<String, dynamic>.from(e as Map))
+          .toList();
+      _titleSpans = titleSpansModel;
       noteType = snap['noteType'] as String? ?? noteType;
       blocks = (_deepClone(snap['blocks']) as List)
           .map((e) => Map<String, dynamic>.from(e as Map))
@@ -732,6 +845,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // ve _applyValueAttribute artık hangi tür alanda olduklarını bilmek
     // zorunda değil.
     TextEditingController? _resolveFocusedFormatController() {
+      // Aşama 3: başlık odaktaysa doğrudan _titleController döner —
+      // böylece _toggleSpanAttribute/_applyValueAttribute'un buton
+      // kodlarına dokunmadan başlıkta da çalışması sağlanır.
+      if (_titleFocused) return _titleController;
       final idx = focusedBlockIndex;
       if (idx < 0 || idx >= blocks.length) return null;
       final type = blocks[idx]['type'];
@@ -754,6 +871,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // döndürülen map üzerinde yapılan değişiklik doğrudan
     // blocks[idx]['items'][itemIdx]'a yansır, kopya değildir).
     Map<String, dynamic>? _resolveFocusedSpansHolder() {
+      // Aşama 3: başlık odaktaysa _titleSpansHolder döner — bu, gövde
+      // bloklarındaki 'block' map'inin başlık karşılığı; üzerine yazılan
+      // ['spans'] = newSpans doğrudan gerçek veriye işler (bkz.
+      // lifecycle_mixin'deki _titleSpansHolder/_titleSpans açıklaması).
+      if (_titleFocused) return _titleSpansHolder;
       final idx = focusedBlockIndex;
       if (idx < 0 || idx >= blocks.length) return null;
       final block = blocks[idx];
@@ -1282,6 +1404,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // eklenir (bkz. aşağıda block['type'] == 'divider' render'ı ve
     // removeDividerBlockAt).
     void insertDividerBlock() {
+      // DÜZELTME: bu fonksiyon focusedBlockIndex/blocks üzerinde çalışıyor
+      // — başlıkta "blok" kavramı yok (başlık span'lı ama tek satırlık düz
+      // metin). _titleFocused iken bu buton basılırsa eskiden GÖRÜNMEZ bir
+      // şekilde gövdenin (o anki focusedBlockIndex'in) içine bir divider
+      // ekliyordu; artık başlık odaktayken no-op.
+      if (_titleFocused) return;
       if (noteType != 'text') return;
       pushUndoCheckpoint();
       // setModalState burada doğrudan görünmez (bu fonksiyon
@@ -1350,6 +1478,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // eklenir. Blok en az bir boş maddeyle başlar; kullanıcı Enter'a basarak
     // yeni madde ekleyebilir.
     void insertChecklistBlock() {
+      // DÜZELTME: insertDividerBlock ile aynı sorun — başlıkta blok
+      // kavramı olmadığından, başlık odaktayken bu buton eskiden gövdenin
+      // (o anki focusedBlockIndex'in) içine sessizce bir checklist bloğu
+      // ekliyordu. Artık başlık odaktayken no-op.
+      if (_titleFocused) return;
       if (noteType != 'text') return;
       pushUndoCheckpoint();
       requestEditorRebuild?.call(() {
@@ -1566,6 +1699,14 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       showFontSizeSubToolbar = false;
       showBgColorSubToolbar = false;
       focusedItemIndex = -1;
+      // DÜZELTME: _titleFocused artık yalnızca ilgili FocusNode'ların
+      // "odak kazanma" listener'larında güncelleniyor (bkz. titleFocusNode
+      // listener'ındaki açıklama); klavye burada elle kapatılıp odak
+      // tamamen kaldırıldığında bunu ayrıca elle false'a çekmek gerekiyor,
+      // aksi halde başlık odaktan çıktıktan sonra bile _titleFocused true
+      // takılı kalıp araç çubuğunun (gereksiz yere) görünür kalmasına yol
+      // açardı.
+      _titleFocused = false;
       FocusManager.instance.primaryFocus?.unfocus();
       requestEditorRebuild?.call(() {});
     }
@@ -1680,6 +1821,79 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         sel.end,
       );
     }
+
+    // ── Araç çubuğunda "şu an aktif" yazı rengini belirleme ───────────────
+    // _effectiveFontSizeForToolbar ile BİREBİR AYNI desen: pendingColor
+    // yalnızca imleç tek noktadayken (seçim yokken) anlamlı bir "bekleyen"
+    // değerdir. GERÇEK bir seçim varken bir renk uygulandığında bu
+    // _applyValueAttribute üzerinden DOĞRUDAN seçili aralığın span'larına
+    // yazılır — pendingColor hiç değişmez. Bu yüzden "Yazı Rengi" ikonunun
+    // "aktif" gösterimi (ana bardaki ikon o renge dönüşmesi), gerçek bir
+    // seçim olduğunda pendingColor yerine seçili aralığın span'larından
+    // okunan GERÇEK rengi (RichTextSpans.getEffectiveColor) kullanmalıdır.
+    // (DÜZELTME: eskiden ikon yalnızca pendingColor'a bakıyordu; seçili
+    // metne bir renk uygulandığında ana bardaki ikon o renge hiç
+    // dönüşmüyordu, çünkü seçim yoluyla uygulanan renk pendingColor'ı hiç
+    // değiştirmiyordu — Kalın/İtalik/vb. için daha önce yapılan düzeltmeyle
+    // birebir aynı kök neden.)
+    int? _effectiveColorForToolbar() {
+      final controller = _resolveFocusedFormatController();
+      if (controller == null) return pendingColor;
+      final sel = controller.selection;
+      if (!sel.isValid || sel.isCollapsed) return pendingColor;
+
+      final holder = _resolveFocusedSpansHolder();
+      if (holder == null) return pendingColor;
+
+      return RichTextSpans.getEffectiveColor(
+        holder['spans'] as List?,
+        controller.text.length,
+        sel.start,
+        sel.end,
+      );
+    }
+
+    // ── Araç çubuğunda "şu an aktif" bold/italic/underline/strikethrough/
+    // highlight durumunu belirleme ─────────────────────────────────────
+    // _effectiveFontSizeForToolbar ile BİREBİR AYNI desen: pendingBold/vb.
+    // yalnızca imleç tek noktadayken (seçim yokken) anlamlı bir "bekleyen"
+    // durumdur. GERÇEK bir seçim varken bu değerler _toggleSpanAttribute
+    // tarafından hiç güncellenmez (doğrudan seçili aralığın span'larına
+    // yazılır) — bu yüzden ikonun "aktif" gösterimi, gerçek bir seçim
+    // olduğunda pending* yerine RichTextSpans.isAttributeFullyActive ile
+    // seçili aralığın span'larından okunan GERÇEK durumu kullanmalıdır.
+    // (DÜZELTME: eskiden ikonlar yalnızca pending*'e bakıyordu; zaten
+    // kalın/italik/vb. olan bir metni SEÇTİĞİNİZDE ikon hiç vurgu rengi
+    // almıyordu, çünkü seçim yoluyla uygulanan biçimlendirme pending*'i
+    // hiç değiştirmiyordu.)
+    bool _effectiveBoolAttrForToolbar(String attr, bool pendingValue) {
+      final controller = _resolveFocusedFormatController();
+      if (controller == null) return pendingValue;
+      final sel = controller.selection;
+      if (!sel.isValid || sel.isCollapsed) return pendingValue;
+
+      final holder = _resolveFocusedSpansHolder();
+      if (holder == null) return pendingValue;
+
+      return RichTextSpans.isAttributeFullyActive(
+        holder['spans'] as List?,
+        controller.text.length,
+        sel.start,
+        sel.end,
+        attr,
+      );
+    }
+
+    bool _effectiveBoldForToolbar() =>
+        _effectiveBoolAttrForToolbar('bold', pendingBold);
+    bool _effectiveItalicForToolbar() =>
+        _effectiveBoolAttrForToolbar('italic', pendingItalic);
+    bool _effectiveUnderlineForToolbar() =>
+        _effectiveBoolAttrForToolbar('underline', pendingUnderline);
+    bool _effectiveStrikethroughForToolbar() =>
+        _effectiveBoolAttrForToolbar('strikethrough', pendingStrikethrough);
+    bool _effectiveHighlightForToolbar() =>
+        _effectiveBoolAttrForToolbar('highlight', pendingHighlight);
 
     // "Varsayılan" çipinin GERÇEKTEN aktif olup olmadığını belirler.
     // _effectiveFontSizeForToolbar() == null tek başına yeterli değil,
@@ -1833,7 +2047,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           // Artık dolgu (amber zemin) YOK — seçili olan çip, arka planı
           // değiştirmek yerine yazı rengini amber yapar; seçili olmayanlar
           // temanın normal metin rengini kullanır.
-          color: active ? Colors.amber : inactiveColor,
+          color: active ? appAccentColor.value : inactiveColor,
         );
         // DÜZELTME (yazının bir kısmı — ör. "Text" -> "Tex" — görünmüyordu):
         // Eskiden buradaki boyut, TextPainter ile ÖNCEDEN tahmin edilip
@@ -2487,6 +2701,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     if (index != null) {
       _titleController.text = _notes[index]['title'] ?? '';
       titleModel = _titleController.text;
+      titleSpansModel = RichTextSpans.parse(_notes[index]['titleSpans']);
+      _titleSpans = titleSpansModel;
       noteDate = _notes[index]['date'] ?? "";
       noteType = _notes[index]['type'] ?? 'text';
       noteCategory = _notes[index]['category'] as String?;
@@ -2524,6 +2740,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     } else {
       _titleController.clear();
       titleModel = '';
+      titleSpansModel = [];
+      _titleSpans = titleSpansModel;
       blocks = [
         {'type': 'text', 'text': initialText ?? ''},
       ];
@@ -2820,8 +3038,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 showDialog(
                   context: context,
                   barrierDismissible: false,
-                  builder: (_) => const Center(
-                    child: CircularProgressIndicator(color: Colors.amber),
+                  builder: (_) => Center(
+                    child: CircularProgressIndicator(color: appAccentColor.value),
                   ),
                 );
 
@@ -3467,13 +3685,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   ),
                                   child: Row(
                                     children: [
-                                      const Expanded(
+                                      Expanded(
                                         child: Text(
                                           'Blokları Sırala',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
-                                            color: Colors.amber,
+                                            color: appAccentColor.value,
                                           ),
                                         ),
                                       ),
@@ -3483,7 +3701,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                           Icons.keyboard_arrow_up,
                                           color:
                                               selected != null && selected! > 0
-                                              ? Colors.amber
+                                              ? appAccentColor.value
                                               : Colors.grey,
                                         ),
                                         onPressed:
@@ -3499,7 +3717,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                               selected != null &&
                                                   selected! <
                                                       groups.length - 1
-                                              ? Colors.amber
+                                              ? appAccentColor.value
                                               : Colors.grey,
                                         ),
                                         onPressed:
@@ -3541,7 +3759,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       final isSelected = selected == i;
                                       return Material(
                                         color: isSelected
-                                            ? Colors.amber.withValues(
+                                            ? appAccentColor.value.withValues(
                                                 alpha: 0.15,
                                               )
                                             : Colors.transparent,
@@ -3550,7 +3768,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             blockPreviewIcon(
                                               (b['type'] ?? 'text').toString(),
                                             ),
-                                            color: Colors.amber,
+                                            color: appAccentColor.value,
                                           ),
                                           title: Text(
                                             blockPreviewText(b),
@@ -3558,9 +3776,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           trailing: isSelected
-                                              ? const Icon(
+                                              ? Icon(
                                                   Icons.check_circle,
-                                                  color: Colors.amber,
+                                                  color: appAccentColor.value,
                                                 )
                                               : null,
                                           onTap: () => setSheetState(
@@ -4063,6 +4281,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                 checkItems: checkItems,
                                 attachments: attachments,
                                 fontSize: effectiveFontSize,
+                                fontFamily: dNoteFontFamilyValue(_fontFamily),
                               );
                             });
                           }
@@ -4071,13 +4290,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           // "Not Arka Planı" (palet) menü öğesi kaldırıldı:
                           // artık notlarda arka plan rengi seçilemiyor.
                           if (noteType == 'text')
-                            const PopupMenuItem(
+                            PopupMenuItem(
                               value: 'calc_table',
                               child: Row(
                                 children: [
                                   Icon(
                                     Icons.calculate,
-                                    color: Colors.amber,
+                                    color: appAccentColor.value,
                                     size: 24,
                                   ),
                                   SizedBox(width: 10),
@@ -4086,13 +4305,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               ),
                             ),
                           if (noteType == 'text')
-                            const PopupMenuItem(
+                            PopupMenuItem(
                               value: 'drawing',
                               child: Row(
                                 children: [
                                   Icon(
                                     Icons.draw,
-                                    color: Colors.amber,
+                                    color: appAccentColor.value,
                                     size: 24,
                                   ),
                                   SizedBox(width: 10),
@@ -4101,13 +4320,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               ),
                             ),
                           if (noteType == 'text' && blocks.length > 1)
-                            const PopupMenuItem(
+                            PopupMenuItem(
                               value: 'reorder_blocks',
                               child: Row(
                                 children: [
                                   Icon(
                                     Icons.swap_vert,
-                                    color: Colors.amber,
+                                    color: appAccentColor.value,
                                     size: 24,
                                   ),
                                   SizedBox(width: 10),
@@ -4116,13 +4335,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               ),
                             ),
                           if (noteType == 'text') const PopupMenuDivider(),
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 'import_txt',
                             child: Row(
                               children: [
                                 Icon(
                                   Icons.upload_file,
-                                  color: Colors.amber,
+                                  color: appAccentColor.value,
                                   size: 24,
                                 ),
                                 SizedBox(width: 10),
@@ -4130,13 +4349,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               ],
                             ),
                           ),
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 'export_menu',
                             child: Row(
                               children: [
                                 Icon(
                                   Icons.ios_share,
-                                  color: Colors.amber,
+                                  color: appAccentColor.value,
                                   size: 24,
                                 ),
                                 SizedBox(width: 10),
@@ -4173,9 +4392,28 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                             contextMenuBuilder: buildCustomContextMenu,
                             selectionHeightStyle: ui.BoxHeightStyle.max,
                             controller: _titleController,
+                            focusNode: titleFocusNode,
                             textCapitalization: TextCapitalization.sentences,
                             onChanged: (v) {
                               noteTextEdited('title', _titleController);
+                              // Aşama 4: pendingBold/pendingItalic/vb.
+                              // bayrakları ve span kaydırmasını gövde
+                              // bloklarıyla/checklist maddeleriyle BİREBİR
+                              // aynı merkezi fonksiyon üzerinden başlığa da
+                              // uygular. oldText olarak titleModel (henüz
+                              // güncellenmemiş ÖNCEKİ değer) kullanılır —
+                              // tıpkı checklist'teki 'final oldText =
+                              // (items[j]['text'] ?? '').toString();'
+                              // deseninde olduğu gibi, titleModel = v;
+                              // satırından ÖNCE okunmalı.
+                              final cursorPos =
+                                  _titleController.selection.baseOffset;
+                              _shiftSpansForTextChange(
+                                _titleSpansHolder,
+                                titleModel,
+                                v,
+                                cursorPosition: cursorPos >= 0 ? cursorPos : null,
+                              );
                               titleModel = v;
                             },
                             decoration: InputDecoration(
@@ -4205,6 +4443,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       : _globalFontSize) +
                                   2,
                               fontWeight: FontWeight.w600,
+                              // Ayarlar > Kişiselleştirme > Yazı Tipi.
+                              fontFamily: dNoteFontFamilyValue(_fontFamily),
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -4336,6 +4576,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   labelFocusNodes: labelFns,
                                   valueFocusNodes: valueFns,
                                   fontSize: fontSize,
+                                  fontFamily: dNoteFontFamilyValue(_fontFamily),
                                   textColor: _textColor,
                                   onLabelChanged: (j, val) {
                                     noteTextEdited(
@@ -4486,6 +4727,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   controllers: itemCtrls,
                                   focusNodes: itemFns,
                                   fontSize: fontSize,
+                                  fontFamily: dNoteFontFamilyValue(_fontFamily),
                                   textColor: _textColor,
                                   onTextChanged: (j, val) {
                                     noteTextEdited(
@@ -4541,6 +4783,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         if (newFn.hasFocus) {
                                           focusedBlockIndex = capturedBlockIndex;
                                           focusedItemIndex = capturedItemIndex;
+                                          _titleFocused = false;
                                           requestEditorRebuild?.call(() {});
                                         }
                                       });
@@ -4841,6 +5084,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                               _globalFontSize)
                                         : _globalFontSize,
                                     height: 1.6,
+                                    // Ayarlar > Kişiselleştirme > Yazı Tipi.
+                                    // RichBlockTextController.buildTextSpan bu
+                                    // stili taban alıp span'lar kendi
+                                    // fontFamily'sini taşımıyorsa (fontFamily
+                                    // ?? style?.fontFamily) bunu kullanır.
+                                    fontFamily: dNoteFontFamilyValue(_fontFamily),
                                   ),
                                   onChanged: (val) {
                                     // NOT: blockControllers, 'checklist'/'calc'
@@ -5012,7 +5261,16 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     // bekleyen (henüz hiç harf yazılmamış)
                                     // kalın/italik durumu bu yeni blokla
                                     // ilgisiz olduğundan sıfırlanır.
-                                    if (focusedBlockIndex != i) {
+                                    // Aşama 4: _titleFocused de ayrıca
+                                    // kontrol ediliyor — başlık odaktayken
+                                    // focusedBlockIndex zaten i'ye eşit
+                                    // kalmış olabilir (başlık kendi
+                                    // odağını focusedBlockIndex'i
+                                    // DEĞİŞTİRMEDEN bağımsız bir bayrakla
+                                    // takip ediyor), o durumda salt
+                                    // 'focusedBlockIndex != i' kontrolü
+                                    // başlıktan çıkışı yakalayamazdı.
+                                    if (focusedBlockIndex != i || _titleFocused) {
                                       pendingBold = false;
                                       pendingItalic = false;
                                       pendingUnderline = false;
@@ -5090,7 +5348,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             checkItems[i]['checked']
                                                 as bool? ??
                                             false,
-                                        activeColor: Colors.amber,
+                                        activeColor: appAccentColor.value,
                                         onChanged: (val) {
                                           pushUndoCheckpoint();
                                           setModalState(() {
@@ -5122,6 +5380,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                                       ?.toDouble() ??
                                                   _globalFontSize)
                                             : _globalFontSize,
+                                        // Ayarlar > Kişiselleştirme > Yazı Tipi.
+                                        fontFamily: dNoteFontFamilyValue(_fontFamily),
                                       ),
                                       decoration: const InputDecoration(
                                         hintText: 'Madde...',
@@ -5343,6 +5603,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                           _globalFontSize)
                                     : _globalFontSize) -
                                     1,
+                                fontFamily: dNoteFontFamilyValue(_fontFamily),
                               );
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 10),
@@ -5501,11 +5762,20 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           // klavyeyle çakışmayacak şekilde zaten daralttığı
                           // için burada ayrıca klavye yüksekliği kadar
                           // Padding eklemeye gerek kalmadı.
+                          // DÜZELTME (başlıkta zengin metin barı çıkmıyordu):
+                          // hasFocusedTextBlock yalnızca gövde bloklarının
+                          // FocusNode'larına bakıyordu; başlık odaktayken
+                          // (_titleFocused true, ama focusedBlockIndex hâlâ
+                          // gövde bloklarından birine — genelde 0'a — işaret
+                          // ediyor) bu şart hiçbir zaman true olmuyor, bar da
+                          // hiç görünmüyordu. _titleFocused burada da
+                          // koşula eklendi.
                           final hasFocusedTextBlock =
-                              focusedBlockIndex >= 0 &&
+                              _titleFocused ||
+                              (focusedBlockIndex >= 0 &&
                               focusedBlockIndex < blockFocusNodes.length &&
                               blockFocusNodes[focusedBlockIndex]?.hasFocus ==
-                                  true;
+                                  true);
                           final focusedItemFocusNodes =
                               focusedBlockIndex >= 0 &&
                                   focusedBlockIndex < blockItemFocusNodes.length
@@ -5624,8 +5894,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                               Icons.format_bold,
                                             ),
                                             tooltip: 'Kalın',
-                                            color: pendingBold
-                                                ? Colors.amber
+                                            color: _effectiveBoldForToolbar()
+                                                ? appAccentColor.value
                                                 : null,
                                             onPressed:
                                                 toggleBoldForFocusedBlock,
@@ -5637,8 +5907,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                               Icons.format_italic,
                                             ),
                                             tooltip: 'İtalik',
-                                            color: pendingItalic
-                                                ? Colors.amber
+                                            color: _effectiveItalicForToolbar()
+                                                ? appAccentColor.value
                                                 : null,
                                             onPressed:
                                                 toggleItalicForFocusedBlock,
@@ -5650,8 +5920,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                               Icons.format_underlined,
                                             ),
                                             tooltip: 'Altı Çizili',
-                                            color: pendingUnderline
-                                                ? Colors.amber
+                                            color: _effectiveUnderlineForToolbar()
+                                                ? appAccentColor.value
                                                 : null,
                                             onPressed:
                                                 toggleUnderlineForFocusedBlock,
@@ -5663,8 +5933,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                               Icons.format_strikethrough,
                                             ),
                                             tooltip: 'Üzeri Çizili',
-                                            color: pendingStrikethrough
-                                                ? Colors.amber
+                                            color: _effectiveStrikethroughForToolbar()
+                                                ? appAccentColor.value
                                                 : null,
                                             onPressed:
                                                 toggleStrikethroughForFocusedBlock,
@@ -5676,8 +5946,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                               Icons.format_color_fill,
                                             ),
                                             tooltip: 'Vurgula',
-                                            color: pendingHighlight
-                                                ? Colors.amber
+                                            color: _effectiveHighlightForToolbar()
+                                                ? appAccentColor.value
                                                 : null,
                                             onPressed:
                                                 toggleHighlightForFocusedBlock,
@@ -5874,12 +6144,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       ),
                                       tooltip: 'Kalın',
                                       color:
-                                          (pendingBold ||
-                                                  pendingItalic ||
-                                                  pendingUnderline ||
-                                                  pendingStrikethrough ||
-                                                  pendingHighlight)
-                                              ? Colors.amber
+                                          (_effectiveBoldForToolbar() ||
+                                                  _effectiveItalicForToolbar() ||
+                                                  _effectiveUnderlineForToolbar() ||
+                                                  _effectiveStrikethroughForToolbar() ||
+                                                  _effectiveHighlightForToolbar())
+                                              ? appAccentColor.value
                                               : null,
                                       onPressed: () {
                                         showStyleSubToolbar = true;
@@ -5908,7 +6178,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       color:
                                           _effectiveFontSizeForToolbar() !=
                                               null
-                                          ? Colors.amber
+                                          ? appAccentColor.value
                                           : null,
                                       onPressed: () {
                                         showFontSizeSubToolbar = true;
@@ -5927,8 +6197,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         size: 20,
                                       ),
                                       tooltip: 'Yazı Rengi',
-                                      color: pendingColor != null
-                                          ? Color(pendingColor!)
+                                      color: _effectiveColorForToolbar() != null
+                                          ? Color(_effectiveColorForToolbar()!)
                                           : null,
                                       onPressed: () {
                                         showColorSubToolbar = true;
@@ -6324,6 +6594,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       // okuyla) tamamen kapandı: o ana kadar oluşturulan tüm
       // TextEditingController/FocusNode'ları serbest bırak. Odaklı olan
       // varsa önce odaktan çıkar (aksi halde beyaz ekran sorunu).
+      // Aşama 3: titleFocusNode da bu local FocusNode'lardan biri —
+      // _titleController (RichBlockTextController) lifecycle_mixin'de
+      // dispose ediliyor (State ömrü boyunca yaşıyor), ama titleFocusNode
+      // bu dialog açılışına özel yerel bir nesne, o yüzden burada
+      // serbest bırakılmalı.
+      if (titleFocusNode.hasFocus) titleFocusNode.unfocus();
+      titleFocusNode.dispose();
       for (final f in checkFocusNodes) {
         if (f.hasFocus) f.unfocus();
       }

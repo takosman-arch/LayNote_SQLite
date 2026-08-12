@@ -15,6 +15,39 @@ class PdfExportService {
   static pw.Font? _regularFont;
   static pw.Font? _boldFont;
 
+  // ── AŞAMA 1: Yazı stili → TTF asset eşleme tablosu ─────────────────────
+  // Ayarlar > Kişiselleştirme > Yazı Tipi'nde seçilen değer, önce
+  // settings_page.dart'taki dNoteFontFamilyValue() ile Flutter'ın
+  // TextStyle.fontFamily alanının anladığı isme çevrilir (null / 'DNoteMono'
+  // / 'DNoteSerif' / 'DNoteCursive') — çağrı zincirinde PDF/JPG servislerine
+  // de AYNI çevrilmiş değer akar (bkz. note_list_note_dialog_mixin.dart'taki
+  // dNoteFontFamilyValue(_fontFamily) çağrısı). Bu tablo, o değeri
+  // pubspec.yaml'da tanımlı gerçek TTF dosya yollarına eşler; 'pdf' paketi
+  // Flutter'ın font motorunu kullanmadığından, her aile için regular/bold
+  // TTF'i kendimiz rootBundle üzerinden yüklememiz gerekir (bkz. AŞAMA 2:
+  // _ensureFonts). null / eşleşmeyen değer → varsayılan (NotoSansTr) kullanılır.
+  static const Map<String, ({String regular, String bold})> _fontAssetMap = {
+    'DNoteMono': (
+      regular: 'assets/fonts/JetBrainsMono-Regular.ttf',
+      bold: 'assets/fonts/JetBrainsMono-Bold.ttf',
+    ),
+    'DNoteSerif': (
+      regular: 'assets/fonts/Merriweather_96pt-Regular.ttf',
+      bold: 'assets/fonts/Merriweather_96pt-Bold.ttf',
+    ),
+    'DNoteCursive': (
+      regular: 'assets/fonts/DancingScript-Regular.ttf',
+      bold: 'assets/fonts/DancingScript-Bold.ttf',
+    ),
+  };
+
+  // Varsayılan (Türkçe karakter destekli) font — fontFamily null/eşleşmeyen
+  // bir değer olduğunda fallback olarak kullanılır.
+  static const ({String regular, String bold}) _defaultFontAsset = (
+    regular: 'assets/fonts/NotoSans-Regular.ttf',
+    bold: 'assets/fonts/NotoSans-Bold.ttf',
+  );
+
   // ── Zengin metin (rich text) renkleri ──────────────────────────────────
   // PDF sayfası her zaman beyaz zemin olduğundan, kullanıcının telefonunda
   // hangi tema (açık/koyu) aktif olursa olsun editördeki AÇIK TEMA vurgu
@@ -111,17 +144,26 @@ class PdfExportService {
   // noktaları çıkarıp her aralıkta o an etkin olan özellikleri toplayarak —
   // bir pw.RichText'e dönüştürür. Hiç span yoksa (düz metin) gereksiz
   // sarmalamadan kaçınmak için basit bir pw.Text döner.
+  // [baseFont]: span'da 'bold' işaretlenmemiş kısımlarda kullanılacak font.
+  // Gövde metni için varsayılan (regular) yeterlidir; başlık için ise
+  // taban zaten her zaman kalın olduğundan (bkz. exportNoteToPdf'teki
+  // başlık çağrısı) buraya `bold` verilir — böylece başlığın span'la
+  // biçimlendirilmemiş kısımları da eskisi gibi kalın kalır, sadece
+  // italik/altı çizili/vurgu/renk/link gibi span'a özgü stiller ek olarak
+  // uygulanabilir hale gelir.
   static pw.Widget _buildRichTextWidget(
     String text,
     List<Map<String, dynamic>> spans,
     pw.Font regular,
     pw.Font bold,
-    double fontSize,
-  ) {
+    double fontSize, {
+    pw.Font? baseFont,
+  }) {
+    final defaultFont = baseFont ?? regular;
     if (spans.isEmpty || text.isEmpty) {
       return pw.Text(
         text,
-        style: pw.TextStyle(font: regular, fontSize: fontSize),
+        style: pw.TextStyle(font: defaultFont, fontSize: fontSize),
       );
     }
 
@@ -196,7 +238,7 @@ class PdfExportService {
             // Not: yalnızca Regular/Bold TTF gömülü olduğundan "kalın",
             // fontWeight yerine doğrudan bold TTF'ye geçilerek uygulanır
             // (dosyanın geri kalanındaki mevcut desenle aynı).
-            font: isBold ? bold : regular,
+            font: isBold ? bold : defaultFont,
             fontSize: customSize ?? fontSize,
             fontStyle: italic ? pw.FontStyle.italic : pw.FontStyle.normal,
             decoration: decoration,
@@ -213,14 +255,41 @@ class PdfExportService {
     return pw.RichText(text: pw.TextSpan(children: children));
   }
 
-  static Future<void> _ensureFonts() async {
-    if (_regularFont != null && _boldFont != null) return;
-    final regularData = await rootBundle.load(
-      'assets/fonts/NotoSans-Regular.ttf',
-    );
-    final boldData = await rootBundle.load('assets/fonts/NotoSans-Bold.ttf');
-    _regularFont = pw.Font.ttf(regularData);
-    _boldFont = pw.Font.ttf(boldData);
+  // ── AŞAMA 2: Çoklu font desteği ────────────────────────────────────────
+  // Eskiden tek statik çift (_regularFont/_boldFont) her zaman NotoSans'a
+  // sabitliydi. Artık asset yoluna göre anahtarlanan bir cache tutuyoruz
+  // (_fontCache), böylece uygulamanın 4 yazı stili seçeneğinin (Varsayılan/
+  // Monospace/Serif/Cursive) her biri kendi TTF'ini yükleyip önbelleğe
+  // alabiliyor — aynı font aynı export/oturum içinde tekrar tekrar diskten
+  // okunmuyor.
+  static final Map<String, pw.Font> _fontCache = {};
+
+  static Future<pw.Font> _loadCachedFont(String assetPath) async {
+    final cached = _fontCache[assetPath];
+    if (cached != null) return cached;
+    final data = await rootBundle.load(assetPath);
+    final font = pw.Font.ttf(data);
+    _fontCache[assetPath] = font;
+    return font;
+  }
+
+  // [fontFamily]: dNoteFontFamilyValue() çıktısı (null / 'DNoteMono' /
+  // 'DNoteSerif' / 'DNoteCursive'). _fontAssetMap'te karşılığı yoksa (null
+  // dahil) _defaultFontAsset (NotoSansTr) kullanılır. DNoteMono/Serif/
+  // Cursive'in Bold TTF'i de artık pubspec.yaml'a eklendiği için burada
+  // gerçek bir bold font yükleniyor (eskiden bu üçünde bold TTF yoktu).
+  static Future<({pw.Font regular, pw.Font bold})> _ensureFonts([
+    String? fontFamily,
+  ]) async {
+    final asset = _fontAssetMap[fontFamily] ?? _defaultFontAsset;
+    final regular = await _loadCachedFont(asset.regular);
+    final bold = await _loadCachedFont(asset.bold);
+    // Geriye dönük uyumluluk: eski _regularFont/_boldFont alanlarını hâlâ
+    // okuyan bir kod kalmışsa (AŞAMA 3 tamamlanana kadar exportNoteToPdf
+    // bunu yapıyor) en son yüklenen fontu bu alanlara da yazıyoruz.
+    _regularFont = regular;
+    _boldFont = bold;
+    return (regular: regular, bold: bold);
   }
 
   // Kameradan gelen fotoğraflar genelde çok yüksek çözünürlüktedir (ör.
@@ -350,11 +419,21 @@ class PdfExportService {
   // faktörüyle büyütülür.
   static Future<File> exportNoteToPdf({
     required String title,
+    // Not başlığındaki kalın/italik/altı çizili/üstü çizili/vurgu/özel
+    // renk-link span'ları (bkz. rich_text_spans.dart). Verilmezse (null/boş)
+    // başlık eskisi gibi tamamen düz kalın metin olarak basılır.
+    List<dynamic>? titleSpans,
     required String noteType,
     required List<Map<String, dynamic>> blocks,
     required List<Map<String, dynamic>> checkItems,
     required List<Map<String, dynamic>> attachments,
     double fontSize = 16.0,
+    // AŞAMA 3: dNoteFontFamilyValue() çıktısı (null / 'DNoteMono' /
+    // 'DNoteSerif' / 'DNoteCursive') — _ensureFonts'a iletilip AŞAMA 1'deki
+    // _fontAssetMap üzerinden doğru regular/bold TTF çiftinin seçilmesini
+    // sağlar. JPG dışa aktarmadaki aynı parametreyle (NoteScreenshotService)
+    // birebir aynı anlam ve akışa sahiptir.
+    String? fontFamily,
     // Not düzenleyicideki gerçek telefon ekranı genişliği (dp). PDF sayfası
     // (A4) telefon ekranından çok daha geniş olduğundan, aynı sayısal
     // fontSize değeri PDF'te satır başına çok daha fazla kelime sığdırır
@@ -365,9 +444,9 @@ class PdfExportService {
     // (ör. eski çağrılar), yaygın bir telefon genişliği varsayılır.
     double? phoneScreenWidth,
   }) async {
-    await _ensureFonts();
-    final regular = _regularFont!;
-    final bold = _boldFont!;
+    final fonts = await _ensureFonts(fontFamily);
+    final regular = fonts.regular;
+    final bold = fonts.bold;
 
     // Not editöründeki içerik genişliği: ekran genişliği eksi 20+20 padding
     // (bkz. note_list_screen.dart SingleChildScrollView padding: EdgeInsets.all(20)).
@@ -475,9 +554,13 @@ class PdfExportService {
 
     final content = <pw.Widget>[
       if (!isDrawingOnlyNote) ...[
-        pw.Text(
+        _buildRichTextWidget(
           title.trim().isEmpty ? 'Başlıksız Not' : title.trim(),
-          style: pw.TextStyle(font: bold, fontSize: titleFontSize),
+          RichTextSpans.parse(titleSpans),
+          regular,
+          bold,
+          titleFontSize,
+          baseFont: bold,
         ),
         pw.SizedBox(height: 4),
         pw.Text(

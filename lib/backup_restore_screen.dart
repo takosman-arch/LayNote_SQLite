@@ -99,6 +99,11 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       SnackBar(
         content: Text(message),
         backgroundColor: isError ? Colors.red.shade700 : Colors.green.shade700,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       ),
     );
   }
@@ -122,10 +127,15 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         content: Text(message),
         backgroundColor: Colors.red.shade700,
         duration: const Duration(seconds: 6),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         action: (retryable && onRetry != null)
             ? SnackBarAction(
                 label: 'Tekrar Dene',
-                textColor: Colors.amber,
+                textColor: appAccentColor.value,
                 onPressed: onRetry,
               )
             : null,
@@ -153,9 +163,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: const Text(
+        title: Text(
           'Depolama İzni Gerekli',
-          style: TextStyle(color: Colors.amber),
+          style: TextStyle(color: appAccentColor.value),
         ),
         content: Text(
           permanentlyDenied
@@ -175,7 +185,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: Colors.amber,
+              backgroundColor: appAccentColor.value,
               foregroundColor: Colors.black,
             ),
             onPressed: () => Navigator.pop(ctx, true),
@@ -230,9 +240,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: const Text(
+        title: Text(
           'Google Drive Bağlantısını Kes',
-          style: TextStyle(color: Colors.amber),
+          style: TextStyle(color: appAccentColor.value),
         ),
         content: Text(
           'Bağlantı kesilirse Drive\'a manuel veya otomatik yedekleme '
@@ -273,9 +283,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: const Text(
+        title: Text(
           'Google Hesabı Gerekli',
-          style: TextStyle(color: Colors.amber),
+          style: TextStyle(color: appAccentColor.value),
         ),
         content: Text(
           'Bu işlem için Google hesabınızla bağlanmanız gerekiyor. Şimdi '
@@ -289,7 +299,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: Colors.amber,
+              backgroundColor: appAccentColor.value,
               foregroundColor: Colors.black,
             ),
             onPressed: () => Navigator.pop(ctx, true),
@@ -445,9 +455,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: const Text(
+        title: Text(
           'Drive\'dan Yedek Seç',
-          style: TextStyle(color: Colors.amber),
+          style: TextStyle(color: appAccentColor.value),
         ),
         content: SizedBox(
           width: double.maxFinite,
@@ -461,9 +471,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
             itemBuilder: (_, i) {
               final b = backups[i];
               return ListTile(
-                leading: const Icon(
+                leading: Icon(
                   Icons.cloud_outlined,
-                  color: Colors.amber,
+                  color: appAccentColor.value,
                 ),
                 title: Text(
                   b.name,
@@ -610,7 +620,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: const Text('Büyük Yedek', style: TextStyle(color: Colors.amber)),
+        title: Text('Büyük Yedek', style: TextStyle(color: appAccentColor.value)),
         content: Text(
           'İşlenecek veri boyutu yaklaşık $sizeText. Bu boyuttaki bir '
           '$actionLabel işlemi cihazınıza bağlı olarak biraz zaman '
@@ -625,7 +635,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: Colors.amber,
+              backgroundColor: appAccentColor.value,
               foregroundColor: Colors.black,
             ),
             onPressed: () => Navigator.pop(ctx, true),
@@ -642,7 +652,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: const Text('Yedek Hazır', style: TextStyle(color: Colors.amber)),
+        title: Text('Yedek Hazır', style: TextStyle(color: appAccentColor.value)),
         content: Text(
           'Yedek dosyanız cihazınıza kaydedildi. Dosyayı şimdi paylaşmak '
           '(örn. bulut depolama, e-posta, başka bir cihaz) ister misiniz?',
@@ -655,7 +665,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: Colors.amber,
+              backgroundColor: appAccentColor.value,
               foregroundColor: Colors.black,
             ),
             onPressed: () => Navigator.pop(ctx, true),
@@ -691,6 +701,17 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     if (selected != null) {
       await _restoreFromFile(selected);
     }
+  }
+
+  // Yedekleme ayarlarının tek bir ekranda toplanması amacıyla eklendi:
+  // Ayarlar sayfasındaki "Otomatik Yedekleme Ayarları" girişi kaldırıldı,
+  // buradan açılıyor.
+  void _openAutoBackupSettings() {
+    if (_busy) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const AutoBackupSettingsScreen()),
+    );
   }
 
   // ── Cihazdan yedek seç & geri yükle ─────────────────────────────────
@@ -786,9 +807,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: const Text(
+        title: Text(
           'Yedeği Geri Yükle',
-          style: TextStyle(color: Colors.amber),
+          style: TextStyle(color: appAccentColor.value),
         ),
         content: SingleChildScrollView(
           child: Column(
@@ -980,7 +1001,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: Colors.amber),
+          Icon(icon, size: 16, color: appAccentColor.value),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -1140,30 +1161,33 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                     ),
                   ),
                   const SizedBox(height: 28),
+                  // AŞAMA 6.6/8: Google Drive'a manuel yedekleme.
                   _actionCard(
                     context,
-                    icon: Icons.backup_outlined,
-                    title: 'Yedek Oluştur',
+                    icon: Icons.cloud_upload_outlined,
+                    title: 'Google Drive\'a Yedekle',
                     subtitle:
-                        'Tüm verilerinizi tek bir .zip dosyası olarak cihaza '
-                        'kaydedin ve isterseniz paylaşın.',
-                    buttonLabel: 'Yedek Oluştur',
-                    onPressed: _createBackup,
+                        'Yeni bir yedek oluşturup doğrudan Google Drive\'ınızın '
+                        'gizli alanına yükleyin.',
+                    buttonLabel: 'Drive\'a Yedekle',
+                    onPressed: _backupToDrive,
                   ),
                   const SizedBox(height: 16),
                   _actionCard(
                     context,
-                    icon: Icons.restore_outlined,
-                    title: 'Cihazdan Yedek Seç',
+                    icon: Icons.backup_outlined,
+                    title: 'Cihaza Yedekle',
                     subtitle:
-                        'Daha önce aldığınız bir .zip yedeğini seçip geri '
-                        'yükleyin.',
-                    buttonLabel: 'Yedek Seç',
-                    onPressed: _pickAndRestore,
+                        'Tüm verilerinizi tek bir .zip dosyası olarak cihaza '
+                        'kaydedin ve isterseniz paylaşın.',
+                    buttonLabel: 'Cihaza Yedekle',
+                    onPressed: _createBackup,
                   ),
                   const SizedBox(height: 16),
                   // AŞAMA 5.1: cihazda oluşturulmuş yedeklerin tarih ve
                   // boyut bilgisiyle listelendiği geçmiş ekranına geçiş.
+                  // "Cihazdan Yedek Seç" ve "Google Drive'dan Geri Yükle"
+                  // işlevleri artık bu ekrandan yapılıyor.
                   _actionCard(
                     context,
                     icon: Icons.history_outlined,
@@ -1172,51 +1196,23 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                         'Cihazda kayıtlı tüm yedekleri tarih ve boyutlarıyla '
                         'görüntüleyin; buradan doğrudan paylaşabilir, geri '
                         'yükleyebilir veya silebilirsiniz.',
-                    buttonLabel: 'Geçmişi Görüntüle',
+                    buttonLabel: 'Geri Yükle',
                     onPressed: _openHistory,
                   ),
-                  const SizedBox(height: 28),
-                  Text(
-                    'Google Drive (Bulut Yedekleme)',
-                    style: TextStyle(
-                      color: dNoteTextColor(context),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Yedeklerinizi Google Drive\'ınızdaki gizli, sadece bu '
-                    'uygulamanın erişebildiği bir alanda saklayın — normal '
-                    'Drive dosyalarınızda görünmez.',
-                    style: TextStyle(
-                      color: dNoteTextColor(context).withValues(alpha: 0.7),
-                      fontSize: 12,
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  // AŞAMA 6.6: Google Drive'a manuel yedekleme.
-                  _actionCard(
-                    context,
-                    icon: Icons.cloud_upload_outlined,
-                    title: 'Google Drive\'a Yedekle',
-                    subtitle:
-                        'Yeni bir yedek oluşturup doğrudan Google Drive\'ınızın '
-                        'gizli alanına yükleyin.',
-                    buttonLabel: 'Drive\'a Yükle',
-                    onPressed: _backupToDrive,
-                  ),
                   const SizedBox(height: 16),
-                  // AŞAMA 6.6: Google Drive'dan geri yükleme.
+                  // Yedekleme ile ilgili tüm ayarların tek bir yerde
+                  // toplanması amacıyla; Ayarlar sayfasındaki eski
+                  // "Otomatik Yedekleme Ayarları" girişi kaldırıldı, bu
+                  // ekrana taşındı.
                   _actionCard(
                     context,
-                    icon: Icons.cloud_download_outlined,
-                    title: 'Google Drive\'dan Geri Yükle',
+                    icon: Icons.cloud_sync_outlined,
+                    title: 'Otomatik Yedekleme Ayarları',
                     subtitle:
-                        'Drive\'a yüklediğiniz bir yedeği seçip bu cihaza '
-                        'geri yükleyin.',
-                    buttonLabel: 'Drive\'dan Seç',
-                    onPressed: _restoreFromDrive,
+                        'Arka planda periyodik yedekleme sıklığını ve bulut '
+                        'hedeflerini yapılandırın.',
+                    buttonLabel: 'Ayarları Aç',
+                    onPressed: _openAutoBackupSettings,
                   ),
                 ],
               ),
@@ -1241,9 +1237,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                 height: 52,
                                 child: CircularProgressIndicator(
                                   value: _progress,
-                                  color: Colors.amber,
+                                  color: appAccentColor.value,
                                   backgroundColor:
-                                      Colors.amber.withValues(alpha: 0.15),
+                                      appAccentColor.value.withValues(alpha: 0.15),
                                   strokeWidth: 4,
                                 ),
                               ),
@@ -1252,8 +1248,8 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                 _progress != null
                                     ? '%${(_progress! * 100).clamp(0, 100).toStringAsFixed(0)}'
                                     : '',
-                                style: const TextStyle(
-                                  color: Colors.amber,
+                                style: TextStyle(
+                                  color: appAccentColor.value,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
                                 ),
@@ -1310,7 +1306,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         children: [
           Icon(
             _driveSignedIn ? Icons.cloud_done_outlined : Icons.cloud_off_outlined,
-            color: _driveSignedIn ? Colors.green : Colors.amber,
+            color: _driveSignedIn ? Colors.green : appAccentColor.value,
             size: 20,
           ),
           const SizedBox(width: 10),
@@ -1334,7 +1330,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
             child: Text(
               _driveSignedIn ? 'Bağlantıyı Kes' : 'Bağlan',
               style: TextStyle(
-                color: _driveSignedIn ? Colors.red : Colors.amber,
+                color: _driveSignedIn ? Colors.red : appAccentColor.value,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -1342,6 +1338,51 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         ],
       ),
     );
+  }
+
+  // AŞAMA: tüm _actionCard butonlarının aynı (sabit) genişlikte olmasını
+  // sağlamak için kullanılan metin stili ve en uzun etiket. Buton
+  // genişliği artık double.infinity (kartın tamamı) değil, bu sabit
+  // değere göre hesaplanıyor — böylece kısa etiketli butonlar (ör.
+  // "Ayarları Aç") gereksiz yere kocaman görünmüyor, ama hepsi görsel
+  // olarak aynı boyda kalıyor.
+  static const String _longestActionButtonLabel = 'Drive\'a Yedekle';
+  static const TextStyle _actionButtonTextStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+  );
+
+  // En uzun buton etiketinin ("Drive'a Yedekle") mevcut yazı tipiyle
+  // gerçek genişliğini ölçüp buna FilledButton'ın varsayılan yatay
+  // padding'ini (Material 3'te 24+24) ekleyerek sabit bir buton
+  // genişliği hesaplar. Bu sayede metin hiçbir zaman kesilmez ve diğer
+  // (daha kısa) etiketli butonlar da aynı genişlikte durur.
+  double _actionButtonWidth(BuildContext context) {
+    final painter = TextPainter(
+      text: const TextSpan(
+        text: _longestActionButtonLabel,
+        style: _actionButtonTextStyle,
+      ),
+      textDirection: Directionality.of(context),
+      // DÜZELTME (buton metni bir alt satıra düşüyordu): eskiden burada
+      // textScaler hiç verilmiyordu, yani ölçüm HER ZAMAN ölçeksiz (1.0)
+      // yapılıyordu. Cihazda Erişilebilirlik > Yazı Tipi Boyutu normalden
+      // büyük ayarlıysa, FilledButton'ın kendi Text'i sistem ölçeğine göre
+      // BÜYÜK render ediliyordu ama biz genişliği hep KÜÇÜK (ölçeksiz)
+      // hesaplıyorduk — metin gerçek genişlikte sığmayıp "Yedekle" bir alt
+      // satıra taşıyordu. Artık ölçüm de MediaQuery'nin gerçek yazı tipi
+      // ölçeğini kullanıyor.
+      textScaler: MediaQuery.textScalerOf(context),
+    )..layout();
+    // DÜZELTME (devamı): sabit +48 payı (24+24 varsayılan FilledButton
+    // yatay padding'i) teorik olarak yeterli görünse de, gerçek Material 3
+    // render'ında (harf aralığı/font metrikleri gibi küçük farklar
+    // yüzünden) tam sınırda kalabiliyordu — özellikle en uzun etiketin
+    // KENDİSİ ("Drive'a Yedekle") bazen bir-iki piksel taşıp yine alt
+    // satıra düşüyordu. Küçük bir güvenlik payı (+16) eklenerek metnin
+    // HER koşulda (farklı yazı tipi ölçekleri dahil) tek satırda kalması
+    // garanti edildi.
+    return painter.width + 48 + 16;
   }
 
   Widget _actionCard(
@@ -1364,7 +1405,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         children: [
           Row(
             children: [
-              Icon(icon, color: Colors.amber, size: 26),
+              Icon(icon, color: appAccentColor.value, size: 26),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -1387,15 +1428,19 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
             ),
           ),
           const SizedBox(height: 14),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.amber,
-                foregroundColor: Colors.black,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: SizedBox(
+              width: _actionButtonWidth(context),
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: appAccentColor.value,
+                  foregroundColor: Colors.black,
+                  textStyle: _actionButtonTextStyle,
+                ),
+                onPressed: onPressed,
+                child: Text(buttonLabel, textAlign: TextAlign.center),
               ),
-              onPressed: onPressed,
-              child: Text(buttonLabel),
             ),
           ),
         ],

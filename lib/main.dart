@@ -112,6 +112,10 @@ void main() async {
     }
   }
 
+  // Vurgu rengi tercihini de aynı şekilde ilk çizimden önce oku; böylece
+  // açılışta bir an için eski (varsayılan) renk yanıp sönmez.
+  appAccentColor.value = accentColorFromSettingValue(settings['accent_color']);
+
   SystemChrome.setSystemUIOverlayStyle(
     dNoteSystemBarsStyleForMode(appThemeMode.value),
   );
@@ -120,7 +124,6 @@ void main() async {
 
 final ThemeData _dNoteDarkTheme = ThemeData(
   brightness: Brightness.dark,
-  primaryColor: Colors.amber,
   scaffoldBackgroundColor: const Color(0xFF121212),
   cardTheme: const CardThemeData(color: Color(0xFF1E1E1E)),
   dividerColor: const Color(0xFF2A2A2A),
@@ -137,7 +140,6 @@ final ThemeData _dNoteDarkTheme = ThemeData(
 
 final ThemeData _dNoteLightTheme = ThemeData(
   brightness: Brightness.light,
-  primaryColor: Colors.amber,
   scaffoldBackgroundColor: const Color(0xFFF5F5F5),
   cardTheme: const CardThemeData(color: Colors.white),
   dividerColor: const Color(0xFFE0E0E0),
@@ -620,20 +622,30 @@ class DNoteApp extends StatelessWidget {
             dNoteSystemBarsStyleForMode(mode),
           );
         });
-        return MaterialApp(
-          title: 'DNote',
-          debugShowCheckedModeBanner: false,
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [Locale('tr', 'TR'), Locale('en', 'US')],
-          locale: const Locale('tr', 'TR'),
-          themeMode: mode,
-          theme: _dNoteLightTheme,
-          darkTheme: _dNoteDarkTheme,
-          home: const NoteListScreen(),
+        // Vurgu rengi (Ayarlar > Tema > Vurgu Rengi) değiştiğinde de temayı
+        // anında yeniden kurar. Taban temalar (_dNoteLightTheme /
+        // _dNoteDarkTheme) sabit kalır; sadece primaryColor bu renkle
+        // ezilir — böylece AppBar başlıkları, switch'ler, butonlar vb.
+        // tüm uygulamada aynı anda güncellenir.
+        return ValueListenableBuilder<Color>(
+          valueListenable: appAccentColor,
+          builder: (context, accentColor, _) {
+            return MaterialApp(
+              title: 'DNote',
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: const [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [Locale('tr', 'TR'), Locale('en', 'US')],
+              locale: const Locale('tr', 'TR'),
+              themeMode: mode,
+              theme: _dNoteLightTheme.copyWith(primaryColor: accentColor),
+              darkTheme: _dNoteDarkTheme.copyWith(primaryColor: accentColor),
+              home: const NoteListScreen(),
+            );
+          },
         );
       },
     );

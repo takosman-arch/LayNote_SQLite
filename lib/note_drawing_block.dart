@@ -399,8 +399,8 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
                       },
                       child: Text(
                         actionLabel,
-                        style: const TextStyle(
-                          color: Colors.amber,
+                        style: TextStyle(
+                          color: appAccentColor.value,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -1250,13 +1250,13 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
         margin: const EdgeInsets.symmetric(horizontal: 2),
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
-          color: selected ? Colors.amber.withValues(alpha: 0.18) : null,
+          color: selected ? appAccentColor.value.withValues(alpha: 0.18) : null,
           borderRadius: BorderRadius.circular(6),
         ),
         child: Icon(
           icon,
           size: 20,
-          color: selected ? Colors.amber : Colors.grey,
+          color: selected ? appAccentColor.value : Colors.grey,
         ),
       ),
     );
@@ -1285,7 +1285,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
           shape: BoxShape.circle,
           color: displayColor,
           border: Border.all(
-            color: selected ? Colors.amber : widget.borderColor,
+            color: selected ? appAccentColor.value : widget.borderColor,
             width: selected ? 2 : 1,
           ),
         ),
@@ -1310,7 +1310,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: selected ? Colors.amber : Colors.transparent,
+            color: selected ? appAccentColor.value : Colors.transparent,
             width: 1.5,
           ),
         ),
@@ -1319,7 +1319,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
           height: size,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: selected ? Colors.amber : Colors.grey,
+            color: selected ? appAccentColor.value : Colors.grey,
           ),
         ),
       ),
@@ -1342,7 +1342,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
         margin: const EdgeInsets.symmetric(horizontal: 2),
         padding: const EdgeInsets.all(6),
         decoration: BoxDecoration(
-          color: selected ? Colors.amber.withValues(alpha: 0.18) : null,
+          color: selected ? appAccentColor.value.withValues(alpha: 0.18) : null,
           borderRadius: BorderRadius.circular(6),
         ),
         child: SizedBox(
@@ -1358,7 +1358,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(3),
                   border: Border.all(
-                    color: selected ? Colors.amber : Colors.grey,
+                    color: selected ? appAccentColor.value : Colors.grey,
                     width: 1,
                   ),
                 ),
@@ -1367,14 +1367,14 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
                     Expanded(
                       child: Container(
                         color: selected
-                            ? Colors.amber.withValues(alpha: 0.35)
+                            ? appAccentColor.value.withValues(alpha: 0.35)
                             : Colors.grey.withValues(alpha: 0.35),
                       ),
                     ),
                     Expanded(
                       child: Container(
                         color: selected
-                            ? Colors.amber.withValues(alpha: 0.85)
+                            ? appAccentColor.value.withValues(alpha: 0.85)
                             : Colors.grey.withValues(alpha: 0.85),
                       ),
                     ),
@@ -1405,11 +1405,11 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 15, color: Colors.amber),
+            Icon(icon, size: 15, color: appAccentColor.value),
             const SizedBox(width: 3),
             Text(
               label,
-              style: const TextStyle(fontSize: 11, color: Colors.amber),
+              style: TextStyle(fontSize: 11, color: appAccentColor.value),
             ),
           ],
         ),
@@ -1547,7 +1547,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
                     icon: Icon(
                       Icons.undo,
                       size: 20,
-                      color: _history.canUndo ? Colors.amber : Colors.grey,
+                      color: _history.canUndo ? appAccentColor.value : Colors.grey,
                     ),
                     onPressed: _history.canUndo ? _undo : null,
                   ),
@@ -1557,7 +1557,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
                     icon: Icon(
                       Icons.redo,
                       size: 20,
-                      color: _history.canRedo ? Colors.amber : Colors.grey,
+                      color: _history.canRedo ? appAccentColor.value : Colors.grey,
                     ),
                     onPressed: _history.canRedo ? _redo : null,
                   ),

@@ -135,7 +135,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: const Text('Yedeği Sil', style: TextStyle(color: Colors.amber)),
+        title: Text('Yedeği Sil', style: TextStyle(color: appAccentColor.value)),
         content: Text(
           '"${p.basename(file.path)}" adlı yedek dosyasını kalıcı olarak '
           'silmek istediğinize emin misiniz? Bu işlem geri alınamaz.',
@@ -248,9 +248,9 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: const Text(
+        title: Text(
           'Google Drive Bağlantısını Kes',
-          style: TextStyle(color: Colors.amber),
+          style: TextStyle(color: appAccentColor.value),
         ),
         content: Text(
           'Bağlantı kesilirse Drive\'a manuel veya otomatik yedekleme '
@@ -352,9 +352,9 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: const Text(
+        title: Text(
           'Drive Yedeğini Sil',
-          style: TextStyle(color: Colors.amber),
+          style: TextStyle(color: appAccentColor.value),
         ),
         content: Text(
           '"${file.name}" adlı yedeği Google Drive\'dan kalıcı olarak '
@@ -405,8 +405,8 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
         title: const Text('Yedek Geçmişi'),
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: Colors.amber,
-          labelColor: Colors.amber,
+          indicatorColor: appAccentColor.value,
+          labelColor: appAccentColor.value,
           unselectedLabelColor: dNoteTextColor(context).withValues(alpha: 0.6),
           tabs: const [
             Tab(icon: Icon(Icons.smartphone_outlined), text: 'Cihaz'),
@@ -429,7 +429,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
     return AbsorbPointer(
       absorbing: _busyDevice,
       child: _loadingDevice
-          ? const Center(child: CircularProgressIndicator(color: Colors.amber))
+          ? Center(child: CircularProgressIndicator(color: appAccentColor.value))
           : _deviceBackups.isEmpty
               ? _emptyState(
                   context,
@@ -439,7 +439,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
                 )
               : RefreshIndicator(
                   onRefresh: _loadDeviceBackups,
-                  color: Colors.amber,
+                  color: appAccentColor.value,
                   child: ListView.separated(
                     padding: const EdgeInsets.all(16),
                     itemCount: _deviceBackups.length,
@@ -453,7 +453,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
   // ── Drive sekmesi görünümü ────────────────────────────────────────
   Widget _driveTab(BuildContext context) {
     if (_loadingDrive) {
-      return const Center(child: CircularProgressIndicator(color: Colors.amber));
+      return Center(child: CircularProgressIndicator(color: appAccentColor.value));
     }
 
     if (!_driveSignedIn) {
@@ -480,7 +480,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
                       )
                     : RefreshIndicator(
                         onRefresh: _loadDriveStatusAndBackups,
-                        color: Colors.amber,
+                        color: appAccentColor.value,
                         child: ListView.separated(
                           padding: const EdgeInsets.all(16),
                           itemCount: _driveBackups.length,
@@ -515,10 +515,10 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
             ),
             const SizedBox(height: 16),
             _busyDrive
-                ? const CircularProgressIndicator(color: Colors.amber)
+                ? CircularProgressIndicator(color: appAccentColor.value)
                 : FilledButton.icon(
                     style: FilledButton.styleFrom(
-                      backgroundColor: Colors.amber,
+                      backgroundColor: appAccentColor.value,
                       foregroundColor: Colors.black,
                     ),
                     onPressed: _connectDrive,
@@ -538,7 +538,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
       color: dNoteCardColor(context),
       child: Row(
         children: [
-          const Icon(Icons.account_circle_outlined, size: 18, color: Colors.amber),
+          Icon(Icons.account_circle_outlined, size: 18, color: appAccentColor.value),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -584,7 +584,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
             child: LinearProgressIndicator(
               value: _driveProgress,
               backgroundColor: dNoteBorderColor(context),
-              color: Colors.amber,
+              color: appAccentColor.value,
               minHeight: 6,
             ),
           ),
@@ -611,7 +611,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
               const SizedBox(height: 16),
               FilledButton.icon(
                 style: FilledButton.styleFrom(
-                  backgroundColor: Colors.amber,
+                  backgroundColor: appAccentColor.value,
                   foregroundColor: Colors.black,
                 ),
                 onPressed: _loadDriveStatusAndBackups,
@@ -725,7 +725,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       child: Row(
         children: [
-          Icon(icon, color: Colors.amber, size: 28),
+          Icon(icon, color: appAccentColor.value, size: 28),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -761,7 +761,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
                 value: 'restore',
                 child: Row(
                   children: [
-                    const Icon(Icons.restore_outlined, size: 18, color: Colors.amber),
+                    Icon(Icons.restore_outlined, size: 18, color: appAccentColor.value),
                     const SizedBox(width: 8),
                     Text('Geri Yükle', style: TextStyle(color: dNoteTextColor(ctx))),
                   ],
