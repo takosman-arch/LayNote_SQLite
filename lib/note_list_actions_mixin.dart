@@ -877,7 +877,6 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     final confirmCtrl = TextEditingController();
     final hintAnswerCtrl = TextEditingController();
     final completer = Completer<bool>();
-    String? errorText;
     String? selectedHintQuestion;
 
     showDialog(
@@ -887,7 +886,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         builder: (ctx2, setDlg) => AlertDialog(
           backgroundColor: dNoteCardColor(ctx2),
           title: Text(
-            'Yeni Parola Oluştur',
+            'Şifre Oluştur',
             style: TextStyle(color: appAccentColor.value),
           ),
           content: SingleChildScrollView(
@@ -904,7 +903,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 autofocus: true,
                 style: TextStyle(color: dNoteTextColor(ctx2)),
                 decoration: InputDecoration(
-                  hintText: 'Yeni parola',
+                  hintText: 'Yeni şifre',
                   hintStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
@@ -923,9 +922,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 obscureText: true,
                 style: TextStyle(color: dNoteTextColor(ctx2)),
                 decoration: InputDecoration(
-                  hintText: 'Parolayı doğrula',
+                  hintText: 'Şifreyi tekrar gir',
                   hintStyle: const TextStyle(color: Colors.grey),
-                  errorText: errorText,
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
                   ),
@@ -999,12 +997,14 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               style: ElevatedButton.styleFrom(backgroundColor: appAccentColor.value),
               onPressed: () {
                 final pass = passCtrl.text;
-                if (pass.trim().isEmpty) {
-                  setDlg(() => errorText = 'Parola boş olamaz');
-                  return;
-                }
+                if (pass.isEmpty) return;
                 if (pass != confirmCtrl.text) {
-                  setDlg(() => errorText = 'Parolalar eşleşmiyor');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Şifreler eşleşmiyor!'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                   return;
                 }
                 setState(() {
@@ -1043,10 +1043,11 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         builder: (ctx2, setDlg) => AlertDialog(
           backgroundColor: dNoteCardColor(ctx2),
           title: Text(
-            'Parola Gerekiyor',
+            'Şifre Gerekiyor',
             style: TextStyle(color: appAccentColor.value),
           ),
-          content: Column(
+          content: SingleChildScrollView(
+            child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1058,7 +1059,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 obscureText: true,
                 style: TextStyle(color: dNoteTextColor(ctx2)),
                 decoration: InputDecoration(
-                  hintText: 'Parolayı girin',
+                  hintText: 'Şifreyi girin',
                   hintStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
@@ -1087,6 +1088,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 ),
               ],
             ],
+            ),
           ),
           actions: [
             TextButton(
@@ -1130,7 +1132,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             'Güvenlik Sorusu',
             style: TextStyle(color: appAccentColor.value),
           ),
-          content: Column(
+          content: SingleChildScrollView(
+            child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1162,6 +1165,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 onSubmitted: (_) {},
               ),
             ],
+            ),
           ),
           actions: [
             TextButton(

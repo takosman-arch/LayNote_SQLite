@@ -628,7 +628,7 @@ class _SettingsPageState extends State<SettingsPage> {
         builder: (ctx, setDlg) => AlertDialog(
           backgroundColor: dNoteCardColor(ctx),
           title: Text(
-            isNew ? 'Şifre Oluştur' : 'Mevcut Şifreyi Gir',
+            isNew ? 'Şifre Oluştur' : 'Şifre Gerekiyor',
             style: TextStyle(color: Theme.of(context).primaryColor),
           ),
           content: SingleChildScrollView(
@@ -645,7 +645,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     obscureText: obscure1,
                     style: TextStyle(color: dNoteTextColor(ctx)),
                     decoration: InputDecoration(
-                      hintText: 'Mevcut şifre',
+                      hintText: 'Şifreyi girin',
                       hintStyle: const TextStyle(color: Colors.grey),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: dNoteBorderColor(ctx)),
