@@ -736,9 +736,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   Divider(color: Theme.of(ctx).dividerColor, height: 28),
-                  const Text(
+                  Text(
                     'Şifrenizi unutursanız diye bir güvenlik sorusu belirleyin (zorunlu değildir).',
-                    style: TextStyle(color: Colors.grey, fontSize: 13),
+                    style: TextStyle(color: dNoteTextColor(ctx), fontSize: 13),
                   ),
                   const SizedBox(height: 10),
                   DropdownButtonFormField<String>(
