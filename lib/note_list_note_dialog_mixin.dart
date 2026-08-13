@@ -35,7 +35,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   Future<void> _saveData();
   void _showAddAttachmentSheet( BuildContext ctx, { required void Function(String value) onSelected, });
   void _showClassifyDialog(int noteIndex, {void Function(String?)? onChanged});
-  Future<void> _showExportSubmenu({ required BuildContext context, required GlobalKey anchorKey, required String title, required String noteType, required List<Map<String, dynamic>> blocks, required List<Map<String, dynamic>> checkItems, required List<Map<String, dynamic>> attachments, double fontSize = 16.0, String? fontFamily, });
+  // DÜZELTME (JPG dışa aktarmada başlık rengi/kalın/italik gibi span
+  // biçimlendirmeleri görünmüyordu): titleSpans parametresi eksikti, bu
+  // yüzden çağrı noktası (aşağıda, export_menu case'i) başlığın span
+  // verisini hiç iletemiyordu ve NoteScreenshotService'e her zaman null
+  // gidiyordu. Artık _titleSpans buradan geçiriliyor.
+  Future<void> _showExportSubmenu({ required BuildContext context, required GlobalKey anchorKey, required String title, List<dynamic>? titleSpans, required String noteType, required List<Map<String, dynamic>> blocks, required List<Map<String, dynamic>> checkItems, required List<Map<String, dynamic>> attachments, double fontSize = 16.0, String? fontFamily, });
   void _showInfoBar( String message, { IconData icon = Icons.check_circle, String? actionLabel, VoidCallback? onAction, Color backgroundColor = const Color(0xFF3D3D3D), });
   void _showNoteActions( BuildContext ctx, int noteIndex, bool isTrash, { DateTime? editorReminder, String? editorReminderRepeat, void Function(DateTime? reminder, String? repeat)? onReminderChanged, VoidCallback? onDiscard, void Function(String text)? onInsertText, bool showSelectAction = false, });
   Color? get _textColor;
@@ -1571,10 +1576,17 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           rebuildBlockControllers();
           final targetIdx = focusedBlockIndex.clamp(0, blocks.length - 1);
           focusedItemIndex = -1;
+          // DÜZELTME: eskiden iki kat iç içe addPostFrameCallback kullanılıyordu.
+          // rebuildBlockControllers zaten eski (odaklı) FocusNode'un unfocus+dispose
+          // işlemini KENDİ postFrameCallback'i içinde, bu callback'ten ÖNCE
+          // sıraya koyuyor. Odak isteğini bir frame daha geciktirmek (çift
+          // callback), eski odağın kaybı ile yeninin kazanılması arasına
+          // fazladan bir frame sokuyor — klavye bu sırada tamamen kapanıp
+          // gözle görülür şekilde tekrar açılıyordu. Tek callback'e indirerek
+          // ikisi aynı frame sonunda art arda çalışıyor, klavye kapanmadan
+          // geçiş yapıyor.
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              blockFocusNodes[targetIdx]?.requestFocus();
-            });
+            blockFocusNodes[targetIdx]?.requestFocus();
           });
           return;
         }
@@ -1658,20 +1670,22 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         rebuildBlockControllers();
 
         // Yeni eklenen checklist bloğunun ilk maddesine odaklan.
-        // Çift addPostFrameCallback kullanıyoruz: ilk frame'de
-        // rebuildBlockControllers'ın dispose callback'i çalışır,
-        // ikinci frame'de requestFocus yapılır — böylece klavye
-        // kapanıp açılmaz (titreme olmaz).
+        // DÜZELTME: eskiden çift addPostFrameCallback kullanılıyordu (ilk
+        // frame'de rebuildBlockControllers'ın dispose callback'i, ikinci
+        // frame'de requestFocus). Bu ekstra frame gecikmesi, eski odağın
+        // (metin bloğunun) unfocus+dispose olmasıyla yeni maddenin odağı
+        // kazanmasını birbirinden AYIRIYOR ve klavyenin görünür şekilde
+        // kapanıp yeniden açılmasına (titremeye) sebep oluyordu. Tek
+        // callback'e indirildi: dispose ve requestFocus artık aynı frame
+        // sonunda art arda çalışıyor, klavye kapanmadan geçiş yapıyor.
         final newItemFocusNodes = blockItemFocusNodes[checklistIdx];
         if (newItemFocusNodes != null && newItemFocusNodes.isNotEmpty) {
           focusedBlockIndex = checklistIdx;
           focusedItemIndex = 0;
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (newItemFocusNodes.isNotEmpty) {
-                newItemFocusNodes[0].requestFocus();
-              }
-            });
+            if (newItemFocusNodes.isNotEmpty) {
+              newItemFocusNodes[0].requestFocus();
+            }
           });
         }
       });
@@ -4052,10 +4066,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   blockTableLabelFocusNodes[idx + 1];
                               if (newLabelFns != null &&
                                   newLabelFns.isNotEmpty) {
+                                // DÜZELTME: çift addPostFrameCallback, klavyenin
+                                // bir frame boyunca kapanmasına (görünür titreme)
+                                // sebep oluyordu — bkz. checklist ekleme
+                                // düzeltmesindeki aynı açıklama. Tek callback'e
+                                // indirildi.
                                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                                    newLabelFns.first.requestFocus();
-                                  });
+                                  newLabelFns.first.requestFocus();
                                 });
                               }
                             });
@@ -4105,10 +4122,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               focusedBlockIndex = idx + 2;
                               final newFocusNode = blockFocusNodes[idx + 2];
                               if (newFocusNode != null) {
+                                // DÜZELTME: çift addPostFrameCallback, klavyenin
+                                // bir frame boyunca kapanmasına (görünür titreme)
+                                // sebep oluyordu — bkz. checklist ekleme
+                                // düzeltmesindeki aynı açıklama. Tek callback'e
+                                // indirildi.
                                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                                    newFocusNode.requestFocus();
-                                  });
+                                  newFocusNode.requestFocus();
                                 });
                               }
                             });
@@ -4276,6 +4296,14 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                 context: context,
                                 anchorKey: moreMenuButtonKey,
                                 title: _titleController.text,
+                                // DÜZELTME: eskiden titleSpans hiç
+                                // geçilmiyordu (bkz. yukarıdaki
+                                // _showExportSubmenu tanımındaki not) —
+                                // _titleSpans, _titleSpansHolder ile aynı
+                                // Map üzerinden okuduğundan başlık o an
+                                // odakta olsa da olmasa da her zaman
+                                // güncel span verisini taşır.
+                                titleSpans: _titleSpans,
                                 noteType: noteType,
                                 blocks: blocks,
                                 checkItems: checkItems,
@@ -6113,29 +6141,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       ]
                                     : [
                                   // ── Ana araç çubuğu ──────────────────────
-                                  // 6 ikon (Liste, Kalın, Yazı Boyutu, Yazı
-                                  // Rengi, Kontrol Listesi, Klavyeyi Gizle)
+                                  // 6 ikon (Kalın, Yazı Boyutu, Yazı Rengi,
+                                  // Liste, Kontrol Listesi, Klavyeyi Gizle)
                                   // alt barlardaki gibi her biri Expanded
                                   // içinde: Spacer ile en sağa yaslı durmak
                                   // yerine (Klavyeyi Gizle dahil) hepsi kalan
                                   // genişliğe EŞİT olarak yayılıp yatayda
                                   // dengeli dağılıyorlar.
-                                  Expanded(
-                                    child: IconButton(
-                                      icon: const Icon(
-                                        Icons.format_list_bulleted,
-                                      ),
-                                      tooltip: 'Liste',
-                                      onPressed: () {
-                                        showListSubToolbar = true;
-                                        showStyleSubToolbar = false;
-                                        showColorSubToolbar = false;
-                                        showFontSizeSubToolbar = false;
-                                        showBgColorSubToolbar = false;
-                                        requestEditorRebuild?.call(() {});
-                                      },
-                                    ),
-                                  ),
                                   Expanded(
                                     child: IconButton(
                                       icon: const Icon(
@@ -6213,6 +6225,22 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   // "Not Arka Planı" (palet) butonu artık üst
                                   // bardaki geri/ileri al ikonlarının yanında
                                   // (bkz. AppBar actions); burada değil.
+                                  Expanded(
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.format_list_bulleted,
+                                      ),
+                                      tooltip: 'Liste',
+                                      onPressed: () {
+                                        showListSubToolbar = true;
+                                        showStyleSubToolbar = false;
+                                        showColorSubToolbar = false;
+                                        showFontSizeSubToolbar = false;
+                                        showBgColorSubToolbar = false;
+                                        requestEditorRebuild?.call(() {});
+                                      },
+                                    ),
+                                  ),
                                   Expanded(
                                     child: IconButton(
                                       icon: const Icon(

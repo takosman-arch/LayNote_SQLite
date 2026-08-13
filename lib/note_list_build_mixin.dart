@@ -999,11 +999,19 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       final _noteBlocks = ContentBlocks.parse(note['content'] as String?);
                       final _hasChecklistBlock = _noteBlocks.any((b) => b['type'] == 'checklist');
                       final showMixedPreview = isChecklist || _hasChecklistBlock;
-                      final previewContentText = showMixedPreview
-                          ? ''
-                          : ContentBlocks.plainText(
+                      // previewContentText, ContentBlocks.plainText() ile
+                      // BİREBİR AYNI metni üretir (metin karakterleri hiç
+                      // değişmedi) — previewContentSpans ise o metindeki
+                      // kalın/italik/renk/link/vurgu aralıklarını taşır,
+                      // aşağıda RichText + buildStaticTextSpan ile çizilsin
+                      // diye eklendi.
+                      final previewTextData = showMixedPreview
+                          ? const ('', <Map<String, dynamic>>[])
+                          : ContentBlocks.previewTextWithSpans(
                               note['content'] as String?,
                             );
+                      final previewContentText = previewTextData.$1;
+                      final previewContentSpans = previewTextData.$2;
                       final previewChecklistItems = showMixedPreview
                           ? _previewLineItems(note)
                           : const [];
@@ -1403,15 +1411,35 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Expanded(
-                                            child: Text(
-                                              previewContentText,
-                                              style: TextStyle(
-                                                color: dNoteEffectiveTextColor(context, _textColor),
-                                                fontSize:
-                                                    (note['fontSize'] as num?)
-                                                        ?.toDouble() ??
-                                                    _globalFontSize,
-                                                fontFamily: dNoteFontFamilyValue(_fontFamily),
+                                            child: Text.rich(
+                                              // DÜZELTME: RichText, Text'in
+                                              // aksine çevredeki
+                                              // DefaultTextStyle'ı (ve metin
+                                              // ölçekleme ayarlarını)
+                                              // otomatik miras almıyor —
+                                              // bu yüzden önceki Text(...)
+                                              // widget'ının GÖRÜNÜMÜNÜ birebir
+                                              // korumak için RichText yerine
+                                              // Text.rich kullanılıyor
+                                              // (Text.rich, Text ile aynı
+                                              // DefaultTextStyle birleştirme
+                                              // mantığını kullanır). TextStyle/
+                                              // maxLines/overflow öncekiyle
+                                              // birebir aynı korunuyor,
+                                              // sadece kalın/italik/renk/
+                                              // link/vurgu artık görünüyor.
+                                              buildStaticTextSpan(
+                                                previewContentText,
+                                                previewContentSpans,
+                                                TextStyle(
+                                                  color: dNoteEffectiveTextColor(context, _textColor),
+                                                  fontSize:
+                                                      (note['fontSize'] as num?)
+                                                          ?.toDouble() ??
+                                                      _globalFontSize,
+                                                  fontFamily: dNoteFontFamilyValue(_fontFamily),
+                                                ),
+                                                isDark: dNoteIsDark(context),
                                               ),
                                               maxLines: _previewLines,
                                               overflow: TextOverflow.ellipsis,
@@ -1966,11 +1994,19 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     final _noteBlocks = ContentBlocks.parse(note['content'] as String?);
     final _hasChecklistBlock = _noteBlocks.any((b) => b['type'] == 'checklist');
     final showMixedPreview = isChecklist || _hasChecklistBlock;
+    // Gövde önizlemesinin metni ve (kalın/italik/renk/link/vurgu) span'ları
+    // — metin karakterleri ContentBlocks.plainText() ile birebir aynı,
+    // tek fark RichText ile çizilebilmesi için span bilgisinin de burada
+    // taşınması. showMixedPreview true iken (checklist notlar) bu alan
+    // kullanılmıyor, boş bırakılıyor.
+    final previewTextData = showMixedPreview
+        ? const ('', <Map<String, dynamic>>[])
+        : ContentBlocks.previewTextWithSpans(note['content'] as String?);
+    final previewContentText = previewTextData.$1;
+    final previewContentSpans = previewTextData.$2;
     // Yazısız (sadece foto) notlarda kart tamamen foto(lar)dan ibarettir;
     // checklist notlar bu özel modun dışında tutulur.
-    final bool hasText = showMixedPreview
-        ? true
-        : ContentBlocks.plainText(note['content'] as String?).isNotEmpty;
+    final bool hasText = showMixedPreview ? true : previewContentText.isNotEmpty;
     // Fotoğraf yoksa notun ilk çizim bloğuna bakılır; fotoğraf her zaman
     // önceliklidir (bkz. _gridPreviewDrawingTile).
     final previewDrawingStrokes =
@@ -2316,16 +2352,26 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                     })
                                     .toList(),
                               )
-                            : Text(
-                                ContentBlocks.plainText(
-                                  note['content'] as String?,
-                                ),
-                                style: TextStyle(
-                                  color: dNoteEffectiveTextColor(context, _textColor),
-                                  fontSize:
-                                      (note['fontSize'] as num?)?.toDouble() ??
-                                      _globalFontSize,
-                                  fontFamily: dNoteFontFamilyValue(_fontFamily),
+                            : Text.rich(
+                                // DÜZELTME: RichText, DefaultTextStyle'ı
+                                // otomatik miras almadığından, önceki
+                                // Text(...) widget'ının görünümünü birebir
+                                // korumak için Text.rich kullanılıyor (bkz.
+                                // liste görünümündeki aynı isimli açıklama).
+                                // TextStyle/maxLines/overflow/textAlign/
+                                // textDirection öncekiyle birebir aynı
+                                // korunuyor.
+                                buildStaticTextSpan(
+                                  previewContentText,
+                                  previewContentSpans,
+                                  TextStyle(
+                                    color: dNoteEffectiveTextColor(context, _textColor),
+                                    fontSize:
+                                        (note['fontSize'] as num?)?.toDouble() ??
+                                        _globalFontSize,
+                                    fontFamily: dNoteFontFamilyValue(_fontFamily),
+                                  ),
+                                  isDark: dNoteIsDark(context),
                                 ),
                                 maxLines: _previewLines,
                                 overflow: TextOverflow.ellipsis,

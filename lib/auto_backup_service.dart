@@ -286,6 +286,13 @@ class AutoBackupService {
           // (target sadece 'drive' ise 2. adımda hiç oluşturulmamış
           // olabilir).
           File zipFile;
+          // Hedef sadece 'drive' iken oluşturulan bu zip, Drive'a
+          // yüklendikten sonra cihazda TUTULMAMASI gereken, sadece
+          // yükleme için üretilmiş geçici bir dosyadır (bkz. aşağıdaki
+          // "temiz çözüm" notu). 'both' hedefinde ise zaten 2. adımda
+          // kasıtlı olarak kalıcı bir yerel yedek isteniyor, o yüzden
+          // silinmez.
+          final isDriveOnly = target == AutoBackupTarget.drive;
           if (target == AutoBackupTarget.both) {
             // 2. adımda zaten oluşturuldu; en yeni yerel yedeği kullan.
             final backups = await BackupHelper.instance.listBackups();
@@ -293,10 +300,25 @@ class AutoBackupService {
           } else {
             zipFile = await BackupHelper.instance.createBackup();
           }
-          await GoogleDriveHelper.instance.uploadBackup(zipFile);
-          await GoogleDriveHelper.instance.enforceRetention();
-          messages.add('Drive yedeklemesi başarılı.');
-          anySuccess = true;
+          try {
+            await GoogleDriveHelper.instance.uploadBackup(zipFile);
+            await GoogleDriveHelper.instance.enforceRetention();
+            messages.add('Drive yedeklemesi başarılı.');
+            anySuccess = true;
+          } catch (e) {
+            rethrow;
+          } finally {
+            // Hedef sadece 'drive' ise, bu zip Drive'a yükleme için
+            // üretilmiş geçici bir dosyadır — kullanıcı yerel kopya hiç
+            // istemedi. Yükleme BAŞARILI da olsa BAŞARISIZ da olsa
+            // cihazda tutulmaz: başarısız denemede yerelde "fallback"
+            // bırakmak, art arda başarısız denemelerde gereksiz
+            // dosya birikimine yol açardı; bunun yerine hiç iz
+            // bırakılmaması tercih edildi.
+            if (isDriveOnly) {
+              await BackupHelper.instance.deleteBackupFile(zipFile);
+            }
+          }
         }
       } catch (e) {
         final ex = GoogleDriveException.fromError(e);

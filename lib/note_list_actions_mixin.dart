@@ -398,6 +398,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
   // notları (bloklar) hem de kontrol listesi notları desteklenir.
   Future<void> _exportNoteAsPdf({
     required String title,
+    List<dynamic>? titleSpans,
     required String noteType,
     required List<Map<String, dynamic>> blocks,
     required List<Map<String, dynamic>> checkItems,
@@ -418,6 +419,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       final phoneScreenWidth = MediaQuery.of(context).size.width;
       final file = await PdfExportService.exportNoteToPdf(
         title: title,
+        titleSpans: titleSpans,
         noteType: noteType,
         blocks: blocks,
         checkItems: checkItems,
@@ -485,6 +487,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     required BuildContext context,
     required GlobalKey anchorKey,
     required String title,
+    List<dynamic>? titleSpans,
     required String noteType,
     required List<Map<String, dynamic>> blocks,
     required List<Map<String, dynamic>> checkItems,
@@ -568,6 +571,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     if (selected == 'export_pdf') {
       _exportNoteAsPdf(
         title: title,
+        titleSpans: titleSpans,
         noteType: noteType,
         blocks: blocks,
         checkItems: checkItems,
@@ -579,6 +583,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       _exportNoteAsJpg(
         context: context,
         title: title,
+        titleSpans: titleSpans,
         noteType: noteType,
         blocks: blocks,
         checkItems: checkItems,
@@ -615,6 +620,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
   Future<void> _exportNoteAsJpg({
     required BuildContext context,
     required String title,
+    List<dynamic>? titleSpans,
     required String noteType,
     required List<Map<String, dynamic>> blocks,
     required List<Map<String, dynamic>> checkItems,
@@ -627,6 +633,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       final jpgFile = await NoteScreenshotService.exportNoteAsScreenshotJpg(
         context: context,
         title: title,
+        titleSpans: titleSpans,
         noteType: noteType,
         blocks: blocks,
         checkItems: checkItems,
@@ -854,11 +861,24 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
   // gösterilen "Yeni Parola Oluştur" ekranıyla kullanıcı parolasını hemen
   // belirleyebilir. true dönerse parola başarıyla oluşturulup kaydedilmiştir
   // (_notePasswordEnabled otomatik olarak açılır).
+  // ── Şifre ipucu soruları (sabit liste) ──────────────────────────────
+  static const List<String> _hintQuestions = [
+    'İlk evcil hayvanınızın adı nedir?',
+    'En sevdiğiniz öğretmeninizin adı nedir?',
+    'Doğduğunuz şehir nedir?',
+    'En sevdiğiniz yemek nedir?',
+    'Annenizin kızlık soyadı nedir?',
+    'İlk okuduğunuz okulun adı nedir?',
+    'En sevdiğiniz renk nedir?',
+  ];
+
   Future<bool> _showCreatePasswordDialog() async {
     final passCtrl = TextEditingController();
     final confirmCtrl = TextEditingController();
+    final hintAnswerCtrl = TextEditingController();
     final completer = Completer<bool>();
     String? errorText;
+    String? selectedHintQuestion;
 
     showDialog(
       context: context,
@@ -870,15 +890,11 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             'Yeni Parola Oluştur',
             style: TextStyle(color: appAccentColor.value),
           ),
-          content: Column(
+          content: SingleChildScrollView(
+            child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Kilitleme özelliğini kullanabilmek için önce bir not parolası belirlemeniz gerekiyor.',
-                style: TextStyle(color: dNoteTextColor(ctx2), fontSize: 13),
-              ),
-              const SizedBox(height: 14),
               TextField(
                 selectionWidthStyle: ui.BoxWidthStyle.tight,
                 contextMenuBuilder: buildCustomContextMenu,
@@ -918,7 +934,58 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 14),
+              Text(
+                'Şifrenizi unutursanız diye bir güvenlik sorusu belirleyin (zorunlu değildir).',
+                style: TextStyle(color: dNoteTextColor(ctx2), fontSize: 13),
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                initialValue: selectedHintQuestion,
+                isExpanded: true,
+                dropdownColor: dNoteCardColor(ctx2),
+                style: TextStyle(color: dNoteTextColor(ctx2), fontSize: 14),
+                decoration: InputDecoration(
+                  hintText: 'Güvenlik sorusu seçin',
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: appAccentColor.value),
+                  ),
+                ),
+                items: _hintQuestions
+                    .map(
+                      (q) => DropdownMenuItem(
+                        value: q,
+                        child: Text(q, overflow: TextOverflow.ellipsis),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (val) =>
+                    setDlg(() => selectedHintQuestion = val),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                selectionWidthStyle: ui.BoxWidthStyle.tight,
+                contextMenuBuilder: buildCustomContextMenu,
+                selectionHeightStyle: ui.BoxHeightStyle.max,
+                controller: hintAnswerCtrl,
+                style: TextStyle(color: dNoteTextColor(ctx2)),
+                decoration: InputDecoration(
+                  hintText: 'Cevabınız',
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: appAccentColor.value),
+                  ),
+                ),
+              ),
             ],
+            ),
           ),
           actions: [
             TextButton(
@@ -943,6 +1010,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 setState(() {
                   _notePasswordEnabled = true;
                   _notePassword = pass;
+                  _passwordHintQuestion = selectedHintQuestion ?? '';
+                  _passwordHintAnswer = hintAnswerCtrl.text;
                 });
                 _saveData();
                 Navigator.pop(ctx);

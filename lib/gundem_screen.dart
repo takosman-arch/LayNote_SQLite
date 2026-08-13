@@ -754,6 +754,97 @@ String _gundemPreviewFromContent(String raw) {
   }
 }
 
+// _gundemPreviewFromContent() ile BİREBİR AYNI algoritmayı izleyen, ama
+// ayrıca 'text' bloklarının span'larını (offset'lenmiş olarak) da
+// döndüren yardımcı. Gündem satırında başlık yerine içerik önizlemesi
+// gösterildiğinde (notun başlığı yoksa) kalın/italik/renk/link/vurgu
+// biçimlendirmesinin de görünebilmesi için eklendi.
+//
+// ÖNEMLİ: _gundemPreviewFromContent() KENDİSİ DEĞİŞTİRİLMEDİ. Buradaki
+// metin üretimi onunla TAMAMEN aynı adımları (aynı ' ' ile birleştirme,
+// her parçanın ayrı ayrı trim edilmesi, 120 karakter sonrası kesme)
+// izler — aksi halde span'ların start/end'i ekranda gösterilen metinle
+// uyuşmaz. Yalnızca 'text' tipi bloklar span taşıyabilir (checklist
+// öğeleri, hesap tablosu/çizim/görsel yer tutucuları hiç span
+// taşımıyor), dolayısıyla span kaydırma sadece o bloklar için yapılır.
+(String, List<Map<String, dynamic>>) _gundemPreviewWithSpans(String raw) {
+  final trimmed = raw.trim();
+  if (trimmed.isEmpty) return ('', const []);
+  try {
+    final decoded = jsonDecode(trimmed);
+    if (decoded is! List) return (trimmed, const []);
+
+    final buffer = StringBuffer();
+    final spans = <Map<String, dynamic>>[];
+    int offset = 0;
+
+    void addPart(String part, [List<Map<String, dynamic>>? blockSpans]) {
+      // _gundemPreviewFromContent'teki part.trim() ile aynı: baştan/sondan
+      // atılan boşluk kadar, o bloğa ait span'ların start/end'i de
+      // kaydırılmalı/kırpılmalı.
+      final leadingTrim = part.length - part.trimLeft().length;
+      final p = part.trim();
+      if (p.isEmpty) return;
+      if (buffer.isNotEmpty) {
+        buffer.write(' ');
+        offset += 1;
+      }
+      if (blockSpans != null) {
+        for (final s in blockSpans) {
+          var sStart = (s['start'] as int) - leadingTrim;
+          var sEnd = (s['end'] as int) - leadingTrim;
+          if (sStart < 0) sStart = 0;
+          if (sStart > p.length) sStart = p.length;
+          if (sEnd < 0) sEnd = 0;
+          if (sEnd > p.length) sEnd = p.length;
+          if (sStart >= sEnd) continue;
+          final shifted = Map<String, dynamic>.from(s);
+          shifted['start'] = sStart + offset;
+          shifted['end'] = sEnd + offset;
+          spans.add(shifted);
+        }
+      }
+      buffer.write(p);
+      offset += p.length;
+    }
+
+    for (final block in decoded) {
+      if (block is! Map) continue;
+      switch (block['type']?.toString()) {
+        case 'text':
+          addPart(
+            block['text']?.toString() ?? '',
+            RichTextSpans.parse(block['spans']),
+          );
+          break;
+        case 'checklist':
+          final items = block['items'];
+          if (items is List) {
+            for (final item in items) {
+              if (item is Map) addPart(item['text']?.toString() ?? '');
+            }
+          }
+          break;
+        case 'calc_table':
+          addPart('[Hesap Tablosu]');
+          break;
+        case 'drawing':
+          addPart('[Çizim]');
+          break;
+        case 'image':
+          addPart('[Görsel]');
+          break;
+        default:
+          break;
+      }
+      if (buffer.length > 120) break;
+    }
+    return (buffer.toString(), spans);
+  } catch (_) {
+    return (trimmed, const []);
+  }
+}
+
 // ── Gündemdeki tek bir not satırı ────────────────────────────────────────
 class _AgendaTile extends StatelessWidget {
   final Map<String, dynamic> note;
@@ -786,12 +877,26 @@ class _AgendaTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final contentPreview =
-        _gundemPreviewFromContent(note['content']?.toString() ?? '');
     final hasRealTitle = note['title']?.toString().trim().isNotEmpty ?? false;
-    final title = hasRealTitle
-        ? note['title'].toString()
-        : (contentPreview.isNotEmpty ? contentPreview : 'Adsız not');
+    // title: ekranda gösterilecek metin (değişmedi). titleRenderSpans: o
+    // metnin kalın/italik/renk/link/vurgu aralıkları — notun kendi başlığı
+    // gösteriliyorsa 'titleSpans', içerik önizlemesi gösteriliyorsa
+    // _gundemPreviewWithSpans'ten gelen (offset'lenmiş) span'lar kullanılır.
+    final String title;
+    final List<Map<String, dynamic>> titleRenderSpans;
+    if (hasRealTitle) {
+      title = note['title'].toString();
+      titleRenderSpans = RichTextSpans.parse(note['titleSpans'] as List?);
+    } else {
+      final preview = _gundemPreviewWithSpans(note['content']?.toString() ?? '');
+      if (preview.$1.isNotEmpty) {
+        title = preview.$1;
+        titleRenderSpans = preview.$2;
+      } else {
+        title = 'Adsız not';
+        titleRenderSpans = const [];
+      }
+    }
 
     // Notun kendi fontSize'ı varsa o, yoksa Ayarlar > Kişiselleştirme >
     // Metin Boyutu (globalFontSize) esas alınır. Başlık ile içerik önizlemesi
@@ -844,16 +949,26 @@ class _AgendaTile extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          title,
+                        Text.rich(
+                          // DÜZELTME (bkz. note_list_build_mixin.dart'taki
+                          // aynı isimli not): RichText, DefaultTextStyle'ı
+                          // otomatik miras almadığından burada da Text.rich
+                          // kullanılıyor — TextStyle/maxLines/overflow
+                          // öncekiyle birebir aynı korunuyor, sadece
+                          // kalın/italik/renk/link/vurgu artık görünüyor.
+                          buildStaticTextSpan(
+                            title,
+                            titleRenderSpans,
+                            TextStyle(
+                              fontSize: titleFontSize,
+                              fontWeight: titleFontWeight,
+                              color: dNoteTextColor(context),
+                              fontFamily: fontFamily,
+                            ),
+                            isDark: dNoteIsDark(context),
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: titleFontSize,
-                            fontWeight: titleFontWeight,
-                            color: dNoteTextColor(context),
-                            fontFamily: fontFamily,
-                          ),
                         ),
                         if (repeatLabel != null) ...[
                           const SizedBox(height: 3),

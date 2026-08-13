@@ -19,6 +19,11 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
   String _lastRunInfo = 'Henüz otomatik yedekleme çalışmadı.';
   bool? _lastRunSuccess;
 
+  // Google Drive bağlantı durumu. Segment butonlarındaki "Google Drive" ve
+  // "Her İkisi" seçeneklerinin aktif/pasif olmasını belirler.
+  bool _driveConnected = false;
+  bool _driveConnecting = false;
+
   @override
   void initState() {
     super.initState();
@@ -44,13 +49,52 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
       _lastRunInfo = 'Son Çalışma: ${lastRun.day}.${lastRun.month}.${lastRun.year} ${lastRun.hour.toString().padLeft(2, '0')}:${lastRun.minute.toString().padLeft(2, '0')} ($statusText)\nMesaj: $lastMessage';
     }
 
+    // Google Drive bağlantısını kontrol et. isSignedIn anlık (senkron)
+    // durumu yansıtır ama uygulama yeni açıldıysa henüz güncellenmemiş
+    // olabilir; bu yüzden gerekirse sessiz girişi de deneriz.
+    var driveConnected = GoogleDriveHelper.instance.isSignedIn;
+    if (!driveConnected) {
+      driveConnected = await GoogleDriveHelper.instance.trySilentSignIn();
+    }
+
+    // Kayıtlı hedef Drive/Her İkisi ama bağlantı yoksa (ör. oturum
+    // kapatılmış/token geçersiz), kullanıcının soluk/tıklanamaz bir
+    // segmentte "seçili" görünmesini önlemek için hedefi Yerel'e çekip
+    // kaydediyoruz.
+    var effectiveTarget = target;
+    if (!driveConnected && target != AutoBackupTarget.local) {
+      effectiveTarget = AutoBackupTarget.local;
+      await _backupService.setTarget(effectiveTarget);
+      await _backupService.rescheduleFromSavedSettings();
+    }
+
     setState(() {
       _isEnabled = enabled;
-      _target = target;
+      _target = effectiveTarget;
       _frequencyHours = frequency;
       _wifiOnly = wifiOnly;
+      _driveConnected = driveConnected;
       _isLoading = false;
     });
+  }
+
+  Future<void> _connectGoogleDrive() async {
+    setState(() => _driveConnecting = true);
+    final success = await GoogleDriveHelper.instance.signIn();
+    if (!mounted) return;
+    setState(() {
+      _driveConnected = success;
+      _driveConnecting = false;
+    });
+    if (!success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Google hesabına bağlanılamadı.'),
+          backgroundColor: Colors.red.shade700,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   Future<void> _saveAndReschedule() async {
@@ -113,10 +157,18 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: SegmentedButton<AutoBackupTarget>(
-                segments: const [
-                  ButtonSegment(value: AutoBackupTarget.local, label: Text('Yerel')),
-                  ButtonSegment(value: AutoBackupTarget.drive, label: Text('Google Drive')),
-                  ButtonSegment(value: AutoBackupTarget.both, label: Text('Her İkisi')),
+                segments: [
+                  const ButtonSegment(value: AutoBackupTarget.local, label: Text('Yerel')),
+                  ButtonSegment(
+                    value: AutoBackupTarget.drive,
+                    label: const Text('Google Drive'),
+                    enabled: _driveConnected,
+                  ),
+                  ButtonSegment(
+                    value: AutoBackupTarget.both,
+                    label: const Text('Her İkisi'),
+                    enabled: _driveConnected,
+                  ),
                 ],
                 selected: {_target},
                 onSelectionChanged: (Set<AutoBackupTarget> selection) {
@@ -125,6 +177,37 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
                 },
               ),
             ),
+
+            // Drive bağlı değilse: neden pasif olduğunu açıklayan kısa not
+            // ve bağlanmayı tetikleyen buton.
+            if (!_driveConnected)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Google Drive seçeneklerini kullanmak için önce hesabınızı bağlayın.',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: dNoteTextColor(context).withValues(alpha: 0.6),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    _driveConnecting
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : TextButton(
+                            onPressed: _connectGoogleDrive,
+                            child: const Text('Bağlan'),
+                          ),
+                  ],
+                ),
+              ),
             const SizedBox(height: 16),
 
             // 3. Yedekleme Sıklığı (Frekans)

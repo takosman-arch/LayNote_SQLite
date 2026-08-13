@@ -60,6 +60,12 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   bool _driveSignedIn = false;
   String? _driveAccountEmail;
 
+  // Otomatik yedekleme AÇIK/KAPALI durumu — Drive kartıyla aynı desende
+  // ayrı bir küçük durum kartında gösterilir (bkz. _autoBackupStatusCard).
+  // Ekran her açıldığında ve Ayarlar ekranından geri dönüldüğünde
+  // AutoBackupService'ten tazelenir (bkz. initState/_openAutoBackupSettings).
+  bool _autoBackupEnabled = false;
+
   // AŞAMA 5.2: LastBackupInfoTile'ı yeni bir yedek oluşturulduktan sonra
   // ekrandan çıkıp geri girmeye gerek kalmadan yenilemek için kullanılır.
   final GlobalKey<_LastBackupInfoTileState> _lastBackupKey = GlobalKey();
@@ -71,6 +77,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     // (kullanıcıya herhangi bir diyalog göstermeden) geri yüklenip
     // yüklenemeyeceği kontrol edilir.
     _refreshDriveStatus();
+    _refreshAutoBackupStatus();
   }
 
   // AŞAMA 6.6: Google Drive bağlantı durumunu tazeler. Hem initState'te
@@ -82,6 +89,17 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       _driveSignedIn = signedIn;
       _driveAccountEmail = GoogleDriveHelper.instance.accountEmail;
     });
+  }
+
+  // Otomatik yedekleme AÇIK/KAPALI durumunu tazeler. initState'te ve
+  // Otomatik Yedekleme Ayarları ekranından geri dönüldüğünde çağrılır
+  // (bkz. _openAutoBackupSettings) — kullanıcı o ekranda anahtarı
+  // değiştirip geri geldiğinde bu ekrandaki küçük durum kartı da güncel
+  // kalsın diye.
+  Future<void> _refreshAutoBackupStatus() async {
+    final enabled = await AutoBackupService.instance.isEnabled();
+    if (!mounted) return;
+    setState(() => _autoBackupEnabled = enabled);
   }
 
   void _setBusy(bool value, {String? label}) {
@@ -382,6 +400,11 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         },
       );
     } catch (e) {
+      // Yükleme başarısız oldu: bu ekran kullanıcıdan hiçbir zaman ayrıca
+      // yerel bir kopya istemedi, o yüzden başarısız denemede de
+      // localFile fallback olarak TUTULMAZ — "Tekrar Dene" ile üst üste
+      // denense bile cihazda hiçbir iz birikmez.
+      await BackupHelper.instance.deleteBackupFile(localFile);
       _setBusy(false);
       final ex = GoogleDriveException.fromError(e);
       _showErrorSnack(
@@ -391,6 +414,13 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       );
       return;
     }
+
+    // TEMİZ ÇÖZÜM: yükleme başarılıysa, Drive'a yedeklemek için sadece
+    // geçici olarak oluşturulan bu yerel zip artık gereksizdir — bu
+    // ekrandaki "Drive'a Yedekle" akışı kullanıcıdan hiçbir zaman ayrıca
+    // yerel bir kopya istemedi. Silinmezse her manuel Drive
+    // yedeklemesinde cihazda sessizce bir dosya daha birikirdi.
+    await BackupHelper.instance.deleteBackupFile(localFile);
 
     // AŞAMA 6.5: yükleme başarılı olduktan sonra eski Drive yedekleri
     // sessizce temizlenir. Bu adım başarısız olsa bile (örn. anlık ağ
@@ -595,6 +625,19 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     }
     _setBusy(false);
     if (!mounted) return;
+    // AŞAMA: manuel ("Cihaza Yedekle") yedeklerde de aynı yerel saklama
+    // sınırı uygulanır. Önceden enforceLocalRetention() yalnızca otomatik
+    // yedekleme akışında çağrılıyordu; bu yüzden elle alınan yedekler hiç
+    // silinmeden birikiyordu (7, 8, 9... gibi). Ayarlar ekranındaki
+    // "maks. yerel yedek sayısı" (varsayılan 5) artık burada da geçerli.
+    try {
+      final maxLocalBackups =
+          await AutoBackupService.instance.getMaxLocalBackups();
+      await BackupHelper.enforceLocalRetention(maxLocalBackups);
+    } catch (_) {
+      // Sessizce geç: temizleme başarısız olsa bile yeni yedek zaten
+      // oluşturuldu, kullanıcı akışını bozmaya değmez.
+    }
     // AŞAMA 4.3c: son rötuş — kullanıcı yedeğin boyutunu görmek için
     // ayrıca dosya listesine bakmak zorunda kalmasın diye dosya boyutu
     // doğrudan başarı mesajında da gösterilir.
@@ -698,6 +741,11 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       context,
       MaterialPageRoute(builder: (_) => const BackupHistoryScreen()),
     );
+    // Kullanıcı bu ekranda Google hesabına bağlanmış/bağlantıyı kesmiş
+    // olabilir (BackupHistoryScreen kendi ayrı Drive bağlantı state'ini
+    // tutuyor) — geri dönüşte burası da tazelenmezse Drive kartı eski
+    // durumda kalmaya devam eder.
+    _refreshDriveStatus();
     if (selected != null) {
       await _restoreFromFile(selected);
     }
@@ -706,12 +754,20 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   // Yedekleme ayarlarının tek bir ekranda toplanması amacıyla eklendi:
   // Ayarlar sayfasındaki "Otomatik Yedekleme Ayarları" girişi kaldırıldı,
   // buradan açılıyor.
-  void _openAutoBackupSettings() {
+  void _openAutoBackupSettings() async {
     if (_busy) return;
-    Navigator.push(
+    await Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const AutoBackupSettingsScreen()),
     );
+    // Kullanıcı ayarlar ekranında anahtarı değiştirip geri dönmüş
+    // olabilir; bu ekrandaki küçük durum kartının güncel kalması için
+    // tazelenir. Ayrıca o ekrandan Google hesabına bağlanmış/bağlantıyı
+    // kesmiş olabilir (AutoBackupSettingsScreen kendi Drive bağlantı
+    // durumunu ayrı bir state olarak tutuyor) — bu yüzden Drive kartı da
+    // burada tazelenmezse eski durumda ("bağlı değil") kalmaya devam eder.
+    _refreshAutoBackupStatus();
+    _refreshDriveStatus();
   }
 
   // ── Cihazdan yedek seç & geri yükle ─────────────────────────────────
@@ -1152,6 +1208,12 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                   // hesap e-postası ve "Bağlantıyı Kes", bağlı değilse
                   // "Bağlan" butonu gösterilir.
                   _driveStatusCard(context),
+                  // Otomatik yedekleme durumu — Drive kartıyla aynı
+                  // tasarımda, hemen altında. Ayarlar sayfasındaki eski
+                  // "Otomatik Yedekleme Ayarları" girişi kaldırıldığı gibi,
+                  // bu ekrandaki eski büyük _actionCard girişi de kaldırılıp
+                  // buraya taşındı.
+                  _autoBackupStatusCard(context),
                   Text(
                     'Notlarınızı, kategorilerinizi, ayarlarınızı ve eklerinizi '
                     'tek bir .zip dosyası olarak yedekleyebilir veya daha '
@@ -1198,22 +1260,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                         'yükleyebilir veya silebilirsiniz.',
                     buttonLabel: 'Geri Yükle',
                     onPressed: _openHistory,
+                    outlined: true,
                   ),
-                  const SizedBox(height: 16),
-                  // Yedekleme ile ilgili tüm ayarların tek bir yerde
-                  // toplanması amacıyla; Ayarlar sayfasındaki eski
-                  // "Otomatik Yedekleme Ayarları" girişi kaldırıldı, bu
-                  // ekrana taşındı.
-                  _actionCard(
-                    context,
-                    icon: Icons.cloud_sync_outlined,
-                    title: 'Otomatik Yedekleme Ayarları',
-                    subtitle:
-                        'Arka planda periyodik yedekleme sıklığını ve bulut '
-                        'hedeflerini yapılandırın.',
-                    buttonLabel: 'Ayarları Aç',
-                    onPressed: _openAutoBackupSettings,
-                  ),
+                  const SizedBox(height: 28),
                 ],
               ),
               if (_busy)
@@ -1340,6 +1389,57 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     );
   }
 
+  // Otomatik yedekleme AÇIK/KAPALI durumunu gösteren, _driveStatusCard ile
+  // BİREBİR AYNI tasarımda küçük durum kartı. Solda ikon + durum metni,
+  // sağda ayarlar ekranını açan "Ayarla" butonu. Eskiden bu ekranda büyük
+  // bir _actionCard (başlık+açıklama+tam genişlik buton) olarak duruyordu;
+  // Drive kartıyla aynı yerde/dilde gösterilmesi istendiği için kaldırılıp
+  // buraya taşındı.
+  Widget _autoBackupStatusCard(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: dNoteCardColor(context),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: dNoteBorderColor(context)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            _autoBackupEnabled ? Icons.cloud_sync_outlined : Icons.sync_disabled,
+            color: _autoBackupEnabled ? Colors.green : appAccentColor.value,
+            size: 20,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              _autoBackupEnabled
+                  ? 'Otomatik Yedekleme: açık'
+                  : 'Otomatik Yedekleme: kapalı',
+              style: TextStyle(
+                color: dNoteTextColor(context).withValues(alpha: 0.85),
+                fontSize: 13,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          TextButton(
+            onPressed: _openAutoBackupSettings,
+            child: Text(
+              'Ayarla',
+              style: TextStyle(
+                color: appAccentColor.value,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   // AŞAMA: tüm _actionCard butonlarının aynı (sabit) genişlikte olmasını
   // sağlamak için kullanılan metin stili ve en uzun etiket. Buton
   // genişliği artık double.infinity (kartın tamamı) değil, bu sabit
@@ -1392,6 +1492,11 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     required String subtitle,
     required String buttonLabel,
     required VoidCallback onPressed,
+    // "Yedek Geçmişi" kartındaki "Geri Yükle" butonu diğer kartlardaki
+    // (dolu, amber arka planlı) butonlardan görsel olarak ayrışsın diye
+    // eklendi: true olduğunda buton koyu gri zeminli, amber (tema rengi)
+    // yazılı ve amber ince kenarlıklı olur — diğer kartlar etkilenmez.
+    bool outlined = false,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -1434,9 +1539,14 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
               width: _actionButtonWidth(context),
               child: FilledButton(
                 style: FilledButton.styleFrom(
-                  backgroundColor: appAccentColor.value,
-                  foregroundColor: Colors.black,
+                  backgroundColor:
+                      outlined ? dNoteCardColor(context) : appAccentColor.value,
+                  foregroundColor:
+                      outlined ? appAccentColor.value : Colors.black,
                   textStyle: _actionButtonTextStyle,
+                  side: outlined
+                      ? BorderSide(color: appAccentColor.value, width: 1)
+                      : BorderSide.none,
                 ),
                 onPressed: onPressed,
                 child: Text(buttonLabel, textAlign: TextAlign.center),

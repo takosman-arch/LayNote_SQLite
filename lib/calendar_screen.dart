@@ -615,12 +615,48 @@ class _DayNoteTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final rawTitle = note['title']?.toString().trim() ?? '';
+    final rawTitleUntrimmed = note['title']?.toString() ?? '';
+    final rawTitle = rawTitleUntrimmed.trim();
     final hasTitle = rawTitle.isNotEmpty;
-    final content = ContentBlocks.plainText(note['content'] as String?)
-        .replaceAll('\n', ' ')
-        .trim();
+    // ContentBlocks.plainText() ile BİREBİR AYNI metni üreten
+    // previewTextWithSpans() kullanılıyor; .replaceAll('\n', ' ') tek
+    // karakteri tek karakterle değiştirdiğinden span offset'lerini
+    // etkilemiyor, sondaki .trim() de (metin zaten uçtan boşluksuz
+    // döndüğünden) bir şey değiştirmiyor — bu yüzden içerik metni ve
+    // uzunluğu ÖNCEKİYLE birebir aynı kalıyor.
+    final contentPreview = ContentBlocks.previewTextWithSpans(
+      note['content'] as String?,
+    );
+    final content = contentPreview.$1.replaceAll('\n', ' ');
+    final contentRenderSpans = contentPreview.$2;
     final primaryText = hasTitle ? rawTitle : content;
+    // Notun kendi başlığı gösteriliyorsa titleSpans kullanılır; rawTitle
+    // rawTitleUntrimmed'in trim edilmiş hâli olduğundan, baştan atılan
+    // boşluk kadar span'lar da kaydırılır/kırpılır (aksi halde kalın/
+    // italik/renk aralığı kaymış görünür).
+    List<Map<String, dynamic>> primaryRenderSpans;
+    if (hasTitle) {
+      final leadingTrim =
+          rawTitleUntrimmed.length - rawTitleUntrimmed.trimLeft().length;
+      final parsed = RichTextSpans.parse(note['titleSpans'] as List?);
+      final shifted = <Map<String, dynamic>>[];
+      for (final s in parsed) {
+        var start = (s['start'] as int) - leadingTrim;
+        var end = (s['end'] as int) - leadingTrim;
+        if (start < 0) start = 0;
+        if (start > rawTitle.length) start = rawTitle.length;
+        if (end < 0) end = 0;
+        if (end > rawTitle.length) end = rawTitle.length;
+        if (start >= end) continue;
+        final m = Map<String, dynamic>.from(s);
+        m['start'] = start;
+        m['end'] = end;
+        shifted.add(m);
+      }
+      primaryRenderSpans = shifted;
+    } else {
+      primaryRenderSpans = contentRenderSpans;
+    }
 
     String? reminderLabel;
     bool isRepeatingOccurrence = false;
@@ -661,27 +697,46 @@ class _DayNoteTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  RichText(
+                  Text.rich(
+                    // DÜZELTME (bkz. note_list_build_mixin.dart /
+                    // gundem_screen.dart'taki aynı isimli notlar): RichText,
+                    // DefaultTextStyle'ı otomatik miras almadığından burada
+                    // da Text.rich kullanılıyor. Dış TextSpan'in stili
+                    // (fontSize/color/fontFamily) öncekiyle birebir aynı;
+                    // primaryText ve " - content" parçaları artık kendi
+                    // kalın/italik/renk/link/vurgu span'larıyla birlikte
+                    // çiziliyor (buildStaticTextSpan), üstteki kalın/
+                    // dim (soluk) vurgusu değişmedi.
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    text: TextSpan(
+                    TextSpan(
                       style: TextStyle(
                         fontSize: 16,
                         color: dNoteTextColor(context),
                         fontFamily: fontFamily,
                       ),
                       children: [
-                        TextSpan(
-                          text: primaryText,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        buildStaticTextSpan(
+                          primaryText,
+                          primaryRenderSpans,
+                          const TextStyle(fontWeight: FontWeight.w600),
+                          isDark: dNoteIsDark(context),
                         ),
                         if (hasTitle && content.isNotEmpty)
                           TextSpan(
-                            text: ' - $content',
                             style: TextStyle(
                               fontWeight: FontWeight.normal,
                               color: dNoteTextColor(context).withValues(alpha: 0.7),
                             ),
+                            children: [
+                              const TextSpan(text: ' - '),
+                              buildStaticTextSpan(
+                                content,
+                                contentRenderSpans,
+                                const TextStyle(),
+                                isDark: dNoteIsDark(context),
+                              ),
+                            ],
                           ),
                       ],
                     ),

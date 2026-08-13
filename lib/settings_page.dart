@@ -161,7 +161,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Widget Metin Boyutu',
+                  'Widget Yazı Boyutu',
                   style: TextStyle(
                     color: dNoteTextColor(ctx),
                     fontSize: 16,
@@ -408,7 +408,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 Text(
-                  'Metin Rengi',
+                  'Yazı Rengi',
                   style: TextStyle(
                     color: dNoteTextColor(ctx),
                     fontSize: 16,
@@ -430,30 +430,25 @@ class _SettingsPageState extends State<SettingsPage> {
                     // açık temada koyu gri).
                     _TextColorSwatch(
                       selected: s._textColor == null,
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Colors.white, Colors.black87],
+                        stops: [0.5, 0.5],
+                      ),
                       onTap: () {
                         s.setState(() => s._textColor = null);
                         setSheet(() {});
                         s._saveData();
                       },
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [Colors.white, Colors.black87],
-                            stops: [0.5, 0.5],
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'A',
-                          style: TextStyle(
-                            color: s._textColor == null
-                                ? Theme.of(context).primaryColor
-                                : Colors.grey[500],
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
+                      child: Text(
+                        'A',
+                        style: TextStyle(
+                          color: s._textColor == null
+                              ? Theme.of(context).primaryColor
+                              : Colors.grey[500],
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
                         ),
                       ),
                     ),
@@ -534,6 +529,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 14),
               DropdownButtonFormField<String>(
                 initialValue: selectedQuestion,
+                isExpanded: true,
                 dropdownColor: dNoteSurfaceVariant(ctx),
                 style: TextStyle(color: dNoteTextColor(ctx), fontSize: 14),
                 decoration: InputDecoration(
@@ -640,7 +636,7 @@ class _SettingsPageState extends State<SettingsPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (!isNew)
+                if (!isNew) ...[
                   TextField(
                     selectionWidthStyle: ui.BoxWidthStyle.tight,
                     contextMenuBuilder: buildCustomContextMenu,
@@ -666,7 +662,25 @@ class _SettingsPageState extends State<SettingsPage> {
                         onPressed: () => setDlg(() => obscure1 = !obscure1),
                       ),
                     ),
-                  )
+                  ),
+                  if (s._passwordHintQuestion.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
+                        style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          s._showForgotPasswordDialog();
+                        },
+                        child: Text(
+                          'Şifremi unuttum',
+                          style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 13),
+                        ),
+                      ),
+                    ),
+                  ],
+                ]
                 else ...[
                   TextField(
                     selectionWidthStyle: ui.BoxWidthStyle.tight,
@@ -723,12 +737,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   Divider(color: Theme.of(ctx).dividerColor, height: 28),
                   const Text(
-                    'Şifrenizi unutursanız diye bir güvenlik sorusu belirleyin.',
-                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                    'Şifrenizi unutursanız diye bir güvenlik sorusu belirleyin (zorunlu değildir).',
+                    style: TextStyle(color: Colors.grey, fontSize: 13),
                   ),
                   const SizedBox(height: 10),
                   DropdownButtonFormField<String>(
                     initialValue: selectedHintQuestion,
+                    isExpanded: true,
                     dropdownColor: dNoteSurfaceVariant(ctx),
                     style: TextStyle(color: dNoteTextColor(ctx), fontSize: 14),
                     decoration: InputDecoration(
@@ -769,11 +784,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         borderSide: BorderSide(color: Theme.of(context).primaryColor),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Bu alan zorunlu değildir ama şiddetle önerilir.',
-                    style: TextStyle(color: Colors.grey, fontSize: 11),
                   ),
                 ],
               ],
@@ -853,40 +863,52 @@ class _SettingsPageState extends State<SettingsPage> {
   void _showThemeDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Tema Seçin'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              RadioListTile<ThemeMode>(
-                title: const Text('Sistem Varsayılanı'),
-                value: ThemeMode.system,
-                groupValue: s._themeMode,
-                onChanged: (val) => _updateTheme(context, val),
-              ),
-              RadioListTile<ThemeMode>(
-                title: const Text('Açık Tema'),
-                value: ThemeMode.light,
-                groupValue: s._themeMode,
-                onChanged: (val) => _updateTheme(context, val),
-              ),
-              RadioListTile<ThemeMode>(
-                title: const Text('Koyu Tema'),
-                value: ThemeMode.dark,
-                groupValue: s._themeMode,
-                onChanged: (val) => _updateTheme(context, val),
-              ),
-            ],
+      builder: (dialogCtx) {
+        return StatefulBuilder(
+          builder: (ctx, setDlg) => AlertDialog(
+            title: const Text('Tema Seçin'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RadioListTile<ThemeMode>(
+                  title: const Text('Sistem Varsayılanı'),
+                  value: ThemeMode.system,
+                  groupValue: s._themeMode,
+                  onChanged: (val) => _updateTheme(ctx, val, setDlg),
+                ),
+                RadioListTile<ThemeMode>(
+                  title: const Text('Açık Tema'),
+                  value: ThemeMode.light,
+                  groupValue: s._themeMode,
+                  onChanged: (val) => _updateTheme(ctx, val, setDlg),
+                ),
+                RadioListTile<ThemeMode>(
+                  title: const Text('Koyu Tema'),
+                  value: ThemeMode.dark,
+                  groupValue: s._themeMode,
+                  onChanged: (val) => _updateTheme(ctx, val, setDlg),
+                ),
+              ],
+            ),
           ),
         );
       },
     );
   }
 
-  void _updateTheme(BuildContext context, ThemeMode? mode) async {
+  // [dialogSetState]: diyaloğun kendi StatefulBuilder'ının setState'i.
+  // s._themeMode değiştiği anda (henüz _saveData beklenirken) radio
+  // seçimi diyalog içinde de hemen güncellensin diye çağrılır — aksi
+  // halde disk yazma bitene kadar (Navigator.pop'a kadar) eski seçili
+  // radio görünmeye devam ederdi.
+  void _updateTheme(
+    BuildContext context,
+    ThemeMode? mode,
+    void Function(void Function()) dialogSetState,
+  ) async {
     if (mode == null) return;
     s.setState(() => s._themeMode = mode);
+    dialogSetState(() {});
     appThemeMode.value = mode;
     await s._saveData();
     setState(() {});
@@ -918,48 +940,50 @@ class _SettingsPageState extends State<SettingsPage> {
   void _showAccentColorDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Vurgu Rengini Seçin'),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: Wrap(
-              spacing: 14,
-              runSpacing: 14,
-              children: _accentColorPalette.map((color) {
-                final bool selected =
-                    color.toARGB32() == s._accentColor.toARGB32();
-                return GestureDetector(
-                  onTap: () => _updateAccentColor(context, color),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: color,
-                      shape: BoxShape.circle,
-                      border: selected
-                          ? Border.all(color: Colors.white, width: 3)
-                          : null,
-                      boxShadow: selected
-                          ? [
-                              BoxShadow(
-                                color: color.withValues(alpha: 0.6),
-                                blurRadius: 8,
-                                spreadRadius: 1,
-                              ),
-                            ]
+      builder: (dialogCtx) {
+        return StatefulBuilder(
+          builder: (ctx, setDlg) => AlertDialog(
+            title: const Text('Vurgu Rengini Seçin'),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: Wrap(
+                spacing: 14,
+                runSpacing: 14,
+                children: _accentColorPalette.map((color) {
+                  final bool selected =
+                      color.toARGB32() == s._accentColor.toARGB32();
+                  return GestureDetector(
+                    onTap: () => _updateAccentColor(ctx, color, setDlg),
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: color,
+                        shape: BoxShape.circle,
+                        border: selected
+                            ? Border.all(color: Colors.white, width: 3)
+                            : null,
+                        boxShadow: selected
+                            ? [
+                                BoxShadow(
+                                  color: color.withValues(alpha: 0.6),
+                                  blurRadius: 8,
+                                  spreadRadius: 1,
+                                ),
+                              ]
+                            : null,
+                      ),
+                      child: selected
+                          ? const Icon(
+                              Icons.check,
+                              color: Colors.black,
+                              size: 20,
+                            )
                           : null,
                     ),
-                    child: selected
-                        ? const Icon(
-                            Icons.check,
-                            color: Colors.black,
-                            size: 20,
-                          )
-                        : null,
-                  ),
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             ),
           ),
         );
@@ -967,8 +991,16 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  void _updateAccentColor(BuildContext context, Color color) async {
+  // [dialogSetState]: bkz. _updateTheme'deki aynı isimli parametrenin
+  // açıklaması — seçili renk halkası/tik işareti, kaydetme beklenirken
+  // bile diyalog içinde hemen güncellensin diye.
+  void _updateAccentColor(
+    BuildContext context,
+    Color color,
+    void Function(void Function()) dialogSetState,
+  ) async {
     s.setState(() => s._accentColor = color);
+    dialogSetState(() {});
     appAccentColor.value = color;
     await s._saveData();
     setState(() {});
@@ -1215,7 +1247,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.text_fields,
                     iconColor: Colors.pinkAccent,
-                    title: 'Metin Boyutu',
+                    title: 'Yazı Boyutu',
                     subtitle:
                         '${s._globalFontSize.round()} pt — tüm notlara uygulanır.',
                     trailing: null,
@@ -1253,7 +1285,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                   const SizedBox(height: 16),
                                   Text(
-                                    'Metin Boyutu',
+                                    'Yazı Boyutu',
                                     style: TextStyle(
                                       color: dNoteTextColor(ctx),
                                       fontSize: 16,
@@ -1416,7 +1448,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.format_color_text,
                     iconColor: Colors.lightBlueAccent,
-                    title: 'Metin Rengi',
+                    title: 'Yazı Rengi',
                     subtitle: 'Not içerik metni için renk.',
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -1603,7 +1635,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.text_fields,
                     iconColor: Colors.cyanAccent,
-                    title: 'Widget Metin Boyutu',
+                    title: 'Widget Yazı Boyutu',
                     subtitle: '${s._widgetFontSize.round()} pt',
                     trailing: null,
                     onTap: _showWidgetFontSizeSheet,
@@ -1677,17 +1709,22 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 }
 
-// ── Metin Rengi seçicideki tek bir renk karesi ───────────────────────────
-// `color` verilmezse (Varsayılan seçeneği) kare tamamen `child` tarafından
-// çizilir; verilirse düz bir renk karesi olur.
+// ── Metin Rengi seçicideki tek bir renk dairesi ───────────────────────────
+// `color` verilmezse ve `gradient` de verilmezse boş kalır. `gradient`
+// verilirse (Varsayılan seçeneği) daire, iç içe kare bir child widget
+// yerine DOĞRUDAN kendi BoxDecoration'ına gradyanı uygular — bu sayede
+// dairesel kırpma (clip) ile kare bir child'ı birleştirmeye gerek kalmaz
+// ve kenarlarda kırpmadan kaynaklanan boşluk/uyumsuzluk oluşmaz.
 class _TextColorSwatch extends StatelessWidget {
   final Color? color;
+  final Gradient? gradient;
   final bool selected;
   final VoidCallback onTap;
   final Widget? child;
 
   const _TextColorSwatch({
     this.color,
+    this.gradient,
     required this.selected,
     required this.onTap,
     this.child,
@@ -1700,9 +1737,10 @@ class _TextColorSwatch extends StatelessWidget {
       child: Container(
         width: 48,
         height: 48,
-        clipBehavior: Clip.antiAlias,
+        alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: color,
+          color: gradient == null ? color : null,
+          gradient: gradient,
           border: Border.all(
             color: selected ? Theme.of(context).primaryColor : Colors.grey[500]!,
             width: selected ? 2.5 : 1,

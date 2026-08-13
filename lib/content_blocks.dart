@@ -228,6 +228,107 @@ class ContentBlocks {
         .trim();
   }
 
+  // ── Önizlemede zengin metin (kalın/italik/renk/link/vurgu) ─────────────
+  // plainText() ile BİREBİR AYNI metni üretir, ayrıca o metnin karakter
+  // indekslerine göre kaydırılmış (offset'lenmiş) bir span listesi de
+  // döndürür. Liste/ızgara kart önizlemesinde gövde metni artık düz Text
+  // yerine RichText + buildStaticTextSpan ile çizilebilsin diye eklendi
+  // (bkz. note_list_build_mixin.dart -> previewContentText/previewContentSpans).
+  //
+  // ÖNEMLİ: plainText() KENDİSİ DEĞİŞTİRİLMEDİ — arama/kopyalama/paylaşma
+  // gibi ondan bağımsız her yer eskisi gibi çalışmaya devam eder. Burada
+  // sadece plainText()'in izlediği AYNI adımlar (aynı blok filtresi, aynı
+  // '\n' ile join, aynı .trim()) tekrarlanıyor; tek fark, 'text' tipi
+  // bloklardan gelen span'ların start/end'inin, o bloğun birleşik metindeki
+  // başlangıç konumuna göre kaydırılarak toplanması. calc_table ve
+  // checklist blokları zaten span taşımıyor (bkz. RichTextSpans/
+  // _parseChecklistItems), dolayısıyla onlar için sadece metin uzunluğu
+  // kadar offset ilerletmek yeterli.
+  static (String, List<Map<String, dynamic>>) previewTextWithSpans(
+    String? raw,
+  ) {
+    final blocks = parse(raw);
+    final relevant = blocks
+        .where((b) =>
+            b['type'] == 'text' ||
+            b['type'] == 'calc_table' ||
+            b['type'] == 'checklist')
+        .toList();
+
+    final segments = <String>[];
+    final allSpans = <Map<String, dynamic>>[];
+    int offset = 0;
+
+    for (final b in relevant) {
+      String segmentText;
+      if (b['type'] == 'checklist') {
+        final items = (b['items'] as List? ?? const []);
+        segmentText = items
+            .map((it) => ((it as Map)['text'] ?? '').toString())
+            .where((line) => line.trim().isNotEmpty)
+            .join('\n');
+      } else if (b['type'] == 'calc_table') {
+        final rows = (b['rows'] as List? ?? const []);
+        double total = 0;
+        final lines = <String>[];
+        for (final r in rows) {
+          final row = r as Map;
+          final label = (row['label'] ?? '').toString();
+          final valueText = (row['value'] ?? '').toString();
+          total += parseCalcValue(row['value']);
+          if (label.trim().isNotEmpty || valueText.trim().isNotEmpty) {
+            lines.add('$label: $valueText');
+          }
+        }
+        segmentText = lines.isEmpty
+            ? ''
+            : (lines..add('Toplam: ${formatCalcNumber(total)}')).join('\n');
+      } else {
+        // 'text' bloğu: hem metni hem de o bloğun kendi span'larını
+        // (offset'lenerek) al.
+        segmentText = (b['text'] ?? '').toString();
+        final blockSpans = RichTextSpans.parse(b['spans']);
+        for (final s in blockSpans) {
+          final shifted = Map<String, dynamic>.from(s);
+          shifted['start'] = (s['start'] as int) + offset;
+          shifted['end'] = (s['end'] as int) + offset;
+          allSpans.add(shifted);
+        }
+      }
+      segments.add(segmentText);
+      // plainText()'teki .join('\n') ile aynı ayraç: her segmentten sonra
+      // 1 karakterlik ('\n') offset ilerletilir (join, elemanlar arasına
+      // tam olarak bunu ekler).
+      offset += segmentText.length + 1;
+    }
+
+    final combined = segments.join('\n');
+    final trimmedText = combined.trim();
+
+    // plainText() sonunda .trim() çağrılıyor; baştan atılan boşluk kadar
+    // tüm span'ları geri kaydırmak gerekir, yoksa metin kaymışken span
+    // indeksleri eski (kaymamış) konumu göstermeye devam eder.
+    final leadingTrimmed = combined.length - combined.trimLeft().length;
+    if (leadingTrimmed > 0) {
+      for (final s in allSpans) {
+        s['start'] = (s['start'] as int) - leadingTrimmed;
+        s['end'] = (s['end'] as int) - leadingTrimmed;
+      }
+    }
+    // Sondan atılan boşluk sadece metnin toplam uzunluğunu kısaltır;
+    // güvenlik amacıyla, artık metin sınırının dışında kalan/taşan
+    // span'lar burada temizlenir (buildStaticTextSpan zaten ayrıca
+    // clamp uyguluyor, bu sadece ekstra güvenlik).
+    allSpans.removeWhere((s) => (s['start'] as int) >= trimmedText.length);
+    for (final s in allSpans) {
+      if ((s['end'] as int) > trimmedText.length) {
+        s['end'] = trimmedText.length;
+      }
+    }
+
+    return (trimmedText, allSpans);
+  }
+
   // Kart önizlemesinde (liste/ızgara görünümü) gösterilecek satır listesini
   // üretir. Blok sırası korunur: metin ve hesap tablosu blokları satır
   // satır (yeni satıra göre) düz metne çevrilir. Boş metin satırları

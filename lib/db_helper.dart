@@ -22,7 +22,7 @@ class DBHelper {
     final path = p.join(dbDir, 'dnote.db');
     return openDatabase(
       path,
-      version: 9, // Not arka plan rengi (bgColor) desteği: 8'den 9'a yükseltildi
+      version: 10, // Başlık zengin metin (titleSpans) desteği: 9'dan 10'a yükseltildi
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           await _addColumnIfMissing(db, 'notes', 'attachments', 'TEXT');
@@ -73,6 +73,17 @@ class DBHelper {
           await _addColumnIfMissing(db, 'notes', 'bgColor', 'INTEGER');
           await _addColumnIfMissing(db, 'deleted_notes', 'bgColor', 'INTEGER');
         }
+        if (oldVersion < 10) {
+          // Not başlığındaki zengin metin (kalın/italik/renk/vb.) span
+          // listesi. content_blocks içindeki 'spans' ile aynı JSON şekli
+          // ('RichTextSpans'), ama başlık 'content' JSON'ının DIŞINDA ayrı
+          // bir alan olduğundan kendi sütununa ihtiyaç duyar. Bu sütun
+          // eklenmeden önce titleSpans hiçbir yere yazılmıyordu; bu yüzden
+          // başlığa uygulanan zengin metin uygulama yeniden açıldığında
+          // kayboluyordu.
+          await _addColumnIfMissing(db, 'notes', 'titleSpans', 'TEXT');
+          await _addColumnIfMissing(db, 'deleted_notes', 'titleSpans', 'TEXT');
+        }
       },
       onCreate: (db, version) async {
         await db.execute('''
@@ -94,6 +105,7 @@ class DBHelper {
             reminderRepeat TEXT,
             deletedDate TEXT,
             bgColor INTEGER,
+            titleSpans TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0,
@@ -119,6 +131,7 @@ class DBHelper {
             reminderRepeat TEXT,
             deletedDate TEXT,
             bgColor INTEGER,
+            titleSpans TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0,
@@ -182,6 +195,12 @@ class DBHelper {
       'reminderRepeat': note['reminderRepeat']?.toString(),
       'deletedDate': note['deletedDate']?.toString(), // Aşama 7.1
       'bgColor': (note['bgColor'] as num?)?.toInt(),
+      // Başlığın zengin metin span'ları (bkz. RichTextSpans). Boşsa null
+      // yazılır ki eski notlarda olduğu gibi "spans hiç yok" davranışı
+      // korunsun (RichTextSpans.parse zaten null'ı boş liste sayıyor).
+      'titleSpans': (note['titleSpans'] != null && (note['titleSpans'] as List).isNotEmpty)
+          ? jsonEncode(note['titleSpans'])
+          : null,
       'isLocked': (note['isLocked'] == true) ? 1 : 0,
       'isArchived': (note['isArchived'] == true) ? 1 : 0,
       'isFavorite': (note['isFavorite'] == true) ? 1 : 0,
@@ -208,6 +227,8 @@ class DBHelper {
       if (row['reminderRepeat'] != null) 'reminderRepeat': row['reminderRepeat'],
       if (row['deletedDate'] != null) 'deletedDate': row['deletedDate'], // Aşama 7.1
       if (row['bgColor'] != null) 'bgColor': row['bgColor'],
+      if (row['titleSpans'] != null)
+        'titleSpans': jsonDecode(row['titleSpans'] as String),
       'isLocked': row['isLocked'] == 1,
       'isArchived': row['isArchived'] == 1,
       'isFavorite': row['isFavorite'] == 1,
