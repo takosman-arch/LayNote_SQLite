@@ -441,7 +441,8 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
         title: Text(
           cat,
           style: TextStyle(
-            fontSize: isSubfolder ? 14 : null,
+            fontSize: isSubfolder ? 16 : 18,
+            fontWeight: FontWeight.w500,
             color: _activeCategory == cat
                 ? catColor
                 : Theme.of(context).colorScheme.onSurface,
@@ -449,7 +450,11 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
         ),
         trailing: Text(
           _getCountForCategory(cat).toString(),
-          style: const TextStyle(color: Colors.grey, fontSize: 16),
+          style: const TextStyle(
+            color: Colors.grey,
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         onTap: () async {
           if (isCatLocked) {

@@ -265,7 +265,13 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       child: Scaffold(
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
-        drawerEdgeDragWidth: MediaQuery.of(context).size.width,
+        // Menü (Drawer) önceden tüm ekran genişliğinden kaydırılarak
+        // açılabiliyordu; bu da not içeriği üzerinde (özellikle yatay
+        // kaydırma gerektiren yerlerde) istenmeden menünün açılmasına yol
+        // açıyordu. Sadece ekranın sol kenarındaki dar bir şeritten
+        // kaydırınca açılsın diye standart bir kenar genişliğine
+        // (24 mantıksal piksel) düşürüldü.
+        drawerEdgeDragWidth: 24.0,
         // Menü (Drawer) açıldığında Flutter'ın varsayılan siyah yarı saydam
         // scrim'i arka planı koyulaştırıyor. Koyu temada zaten koyu bir zemin
         // üzerine bindiği için fark edilmiyordu; açık temada ise FAB gibi alt
@@ -554,7 +560,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       'NOTLAR',
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 11,
+                        fontSize: 12,
                         letterSpacing: 1.2,
                       ),
                     ),
@@ -567,12 +573,19 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         : Colors.transparent,
                     child: ListTile(
                       leading: Icon(Icons.notes, color: appAccentColor.value),
-                      title: const Text('Notlar'),
+                      title: const Text(
+                        'Notlar',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                       trailing: Text(
                         _getCountForCategory('Tümü').toString(),
                         style: const TextStyle(
                           color: Colors.grey,
-                          fontSize: 16,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       onTap: () {
@@ -593,12 +606,17 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       ),
                       title: const Text(
                         'Favori',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       trailing: Text(
                         _getCountForCategory('__favorites__').toString(),
                         style: const TextStyle(
                           color: Colors.grey,
-                          fontSize: 16,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       onTap: () {
@@ -613,12 +631,19 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       Icons.event_note_outlined,
                       color: appAccentColor.value,
                     ),
-                    title: const Text('Gündem'),
+                    title: const Text(
+                      'Gündem',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                     trailing: Text(
                       _gundemNoteCount(_notes).toString(),
                       style: const TextStyle(
                         color: Colors.grey,
-                        fontSize: 16,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     onTap: () {
@@ -638,12 +663,19 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         Icons.notifications_active_outlined,
                         color: appAccentColor.value,
                       ),
-                      title: const Text('Hatırlatıcı'),
+                      title: const Text(
+                        'Hatırlatıcı',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                       trailing: Text(
                         _getCountForCategory('__reminders__').toString(),
                         style: const TextStyle(
                           color: Colors.grey,
-                          fontSize: 16,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       onTap: () {
@@ -664,12 +696,17 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       ),
                       title: const Text(
                         'Kilitli',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       trailing: Text(
                         _getCountForCategory('__locked__').toString(),
                         style: const TextStyle(
                           color: Colors.grey,
-                          fontSize: 16,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       onTap: () => _openLockedFolder(),
@@ -686,12 +723,17 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       ),
                       title: const Text(
                         'Arşiv',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       trailing: Text(
                         _getCountForCategory('__archive__').toString(),
                         style: const TextStyle(
                           color: Colors.grey,
-                          fontSize: 16,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       onTap: () {
@@ -712,12 +754,17 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       ),
                       title: const Text(
                         'Çöp',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       trailing: Text(
                         _deletedNotes.length.toString(),
                         style: const TextStyle(
                           color: Colors.grey,
-                          fontSize: 16,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       onTap: () {
@@ -766,7 +813,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                               'KLASÖRLER',
                               style: TextStyle(
                                 color: Colors.grey,
-                                fontSize: 11,
+                                fontSize: 12,
                                 letterSpacing: 1.2,
                               ),
                             ),
@@ -798,7 +845,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                   allCollapsed ? 'Genişlet' : 'Daralt',
                                   style: TextStyle(
                                     color: appAccentColor.value,
-                                    fontSize: 11,
+                                    fontSize: 12,
                                     fontWeight: FontWeight.w600,
                                     letterSpacing: 1.0,
                                   ),
@@ -840,6 +887,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Klasör Ekle',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     onTap: () {
                       Navigator.pop(context);
@@ -857,7 +908,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       'UYGULAMA',
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 11,
+                        fontSize: 12,
                         letterSpacing: 1.2,
                       ),
                     ),
@@ -869,6 +920,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Takvim',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     onTap: () {
                       Navigator.pop(context);
@@ -885,6 +940,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Ayarlar',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     onTap: _openSettings,
                   ),
@@ -895,6 +954,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Yedekle & Geri Yükle',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     onTap: () {
                       Navigator.pop(context);
@@ -913,6 +976,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Pro\'ya Yükselt',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     trailing: Container(
                       padding: const EdgeInsets.symmetric(
@@ -941,6 +1008,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Geliştirme Desteği',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     onTap: () => Navigator.pop(context),
                   ),
@@ -951,6 +1022,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Geri Bildirim',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     onTap: () => Navigator.pop(context),
                   ),
@@ -961,6 +1036,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     ),
                     title: const Text(
                       'Hakkında',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     onTap: () => Navigator.pop(context),
                   ),
@@ -1041,12 +1120,24 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     ),
                   )
                 : _isListView
-                ? ListView.builder(
+                ? AnimatedPadding(
+                    // Etiket şeridini büyüten AnimatedSize ile birebir aynı
+                    // süre/eğri: böylece üstteki toplam boşluk (şerit
+                    // yüksekliği + bu padding) her an tutarlı kalır ve
+                    // yumuşakça 12 -> şerit yüksekliği arasında geçiş yapar.
+                    // Önceden padding anında (animasyonsuz) 12'den 0'a
+                    // düşüyordu; şerit ise 0'dan büyümeye yeni başlıyordu.
+                    // Bu ikisi arasındaki an'lık boşluk kaybı, notların
+                    // önce yukarı zıplayıp sonra (şerit büyüdükçe) tekrar
+                    // aşağı inmesine yol açıyordu.
+                    duration: const Duration(milliseconds: 220),
+                    curve: Curves.easeOutCubic,
                     padding: EdgeInsets.only(
                       top: (_isSearching && tagStripTags.isNotEmpty)
                           ? 0.0
                           : 12.0,
                     ),
+                    child: ListView.builder(
                     itemCount: listItems.length,
                     itemBuilder: (context, index) {
                       final listItem = listItems[index];
@@ -1717,16 +1808,25 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ),
                       );
                     },
+                    ),
                   )
-                : SingleChildScrollView(
+                : AnimatedPadding(
+                    // Aynı gerekçe: ızgara görünümünde de üst boşluk,
+                    // şeridin AnimatedSize'ı ile aynı süre/eğride
+                    // animasyonlu geçmeli, aksi halde aynı yukarı-aşağı
+                    // zıplama burada da oluşur.
+                    duration: const Duration(milliseconds: 220),
+                    curve: Curves.easeOutCubic,
                     padding: EdgeInsets.only(
                       top: (_isSearching && tagStripTags.isNotEmpty)
                           ? 0.0
                           : 12.0,
                     ),
-                    child: _buildGridView(
-                      filteredNotes: filteredNotes,
-                      isTrash: isTrash,
+                    child: SingleChildScrollView(
+                      child: _buildGridView(
+                        filteredNotes: filteredNotes,
+                        isTrash: isTrash,
+                      ),
                     ),
                   ),
                 ),
