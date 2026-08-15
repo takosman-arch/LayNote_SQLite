@@ -3,6 +3,37 @@ part of 'main.dart';
 // ignore_for_file: unused_element
 
 mixin NoteListBuildMixin on State<NoteListScreen> {
+  // Arama modundaki etiket şeridinin hangi notlardan beslenceğini belirler.
+  // Ana `build` içindeki kategori filtreleme dallarıyla (bkz. aşağıdaki
+  // `filteredNotes` hesaplaması) aynı mantığı, arama sorgusu olmadan
+  // uygular — amaç sadece "bu bölümde hangi etiketler var" sorusunu
+  // yanıtlamak. "Tümü"/"Notlar" bölümünde kasıtlı olarak filtre uygulanmaz
+  // (arşiv/kilitli dahil tüm notlardaki etiketler önerilir); diğer
+  // bölümlerde (Favoriler, Kilitli, Arşiv, Hatırlatıcılar, klasörler) o
+  // bölümde fiilen görünen notlarla sınırlanır.
+  List<Map<String, dynamic>> _notesForActiveTagScope(bool isTrash) {
+    if (isTrash) return _deletedNotes;
+    if (_activeCategory == 'Tümü' || _activeCategory == 'Notlar') {
+      return _notes;
+    }
+    return _notes.where((note) {
+      final isArchived = note['isArchived'] == true;
+      final isFavorite = note['isFavorite'] == true;
+      final isLocked = note['isLocked'] == true;
+      if (_activeCategory == '__favorites__') {
+        return isFavorite && !isArchived && !isLocked;
+      } else if (_activeCategory == '__locked__') {
+        return isLocked && !isArchived;
+      } else if (_activeCategory == '__archive__') {
+        return isArchived && !isLocked;
+      } else if (_activeCategory == '__reminders__') {
+        return _hasActiveReminder(note) && !isArchived && !isLocked;
+      } else {
+        return !isArchived && !isLocked && note['category'] == _activeCategory;
+      }
+    }).toList();
+  }
+
   // ---- Diğer mixin'lerde tanımlı, burada kullanılan üyeler ----
   String get _activeCategory;
   set _activeCategory(String value);
@@ -62,7 +93,17 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   set _selectedNoteKeys(Set<String> value);
   void _showAddCategoryDialog({ void Function(String)? onAdded, String? editingCategory, String? parentCategory, });
   void _showClassifyDialogForSelection();
-  void _showNoteActions( BuildContext ctx, int noteIndex, bool isTrash, { DateTime? editorReminder, String? editorReminderRepeat, void Function(DateTime? reminder, String? repeat)? onReminderChanged, VoidCallback? onDiscard, void Function(String text)? onInsertText, bool showSelectAction = false, });
+  // note_list_actions_mixin.dart -> _showInfoBar: etiket yeniden
+  // adlandırma/silme sonrası kısa bilgi barı göstermek için burada da
+  // kullanılıyor (bkz. _handleTagLongPress ve altındaki yardımcılar).
+  void _showInfoBar(
+    String message, {
+    IconData icon,
+    String? actionLabel,
+    VoidCallback? onAction,
+    Color backgroundColor,
+  });
+  void _showNoteActions( BuildContext ctx, int noteIndex, bool isTrash, { DateTime? editorReminder, String? editorReminderRepeat, void Function(DateTime? reminder, String? repeat)? onReminderChanged, VoidCallback? onDiscard, void Function(String text)? onInsertText, void Function(String? category)? onCategoryChanged, bool showSelectAction = false, });
   Future<void> _showNoteDialog({ int? index, String type = 'text', String? initialText, DateTime? initialAssignedDate, bool openInstantly = false, });
   String get _sortCriteria;
   set _sortCriteria(String value);
@@ -76,6 +117,15 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     List<Map<String, dynamic>> filteredNotes;
     SystemChrome.setSystemUIOverlayStyle(dNoteSystemBarsStyle(context));
     bool isTrash = _activeCategory == '__trash__';
+    // Arama modundaki etiket şeridi için: aktif bölümde (Tümü/Notlar,
+    // Favoriler, klasör, vb.) hangi etiketlerin bulunduğu build başında bir
+    // kez hesaplanır. Liste boşsa aşağıda `bottom` tamamen null bırakılır —
+    // sadece içeriği boş bir widget döndürmek yeterli değil, çünkü
+    // PreferredSize'ın yüksekliği (44) her durumda ayrılan alanı belirler;
+    // bu da etiket olmasa bile boş bir şeridin açılmasına yol açardı.
+    final tagStripTags = collectAllKnownTags(
+      _notesForActiveTagScope(isTrash),
+    );
 
     if (isTrash) {
       filteredNotes = _deletedNotes.where((note) {
@@ -84,7 +134,13 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
           note['content'] as String?,
         ).toLowerCase();
         final query = _searchQuery.toLowerCase();
-        return title.contains(query) || content.contains(query);
+        // Etiketler de arama kapsamına dahil: notun etiketlerinden biri
+        // sorguyu içeriyorsa da not sonuçta gösterilir (başlık/içerik ile
+        // aynı mantık — kısmi eşleşme yeterli).
+        final tagsRaw = note['tags'];
+        final matchesTags = tagsRaw is List &&
+            tagsRaw.any((t) => t.toString().toLowerCase().contains(query));
+        return title.contains(query) || content.contains(query) || matchesTags;
       }).toList();
     } else {
       filteredNotes = _notes.where((note) {
@@ -93,7 +149,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
           note['content'] as String?,
         ).toLowerCase();
         final query = _searchQuery.toLowerCase();
-        final matchesSearch = title.contains(query) || content.contains(query);
+        final tagsRaw = note['tags'];
+        final matchesTags = tagsRaw is List &&
+            tagsRaw.any((t) => t.toString().toLowerCase().contains(query));
+        final matchesSearch =
+            title.contains(query) || content.contains(query) || matchesTags;
         final isArchived = note['isArchived'] == true;
         final isFavorite = note['isFavorite'] == true;
         final isLocked = note['isLocked'] == true;
@@ -274,7 +334,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                   ),
                   IconButton(
                     icon: Icon(Icons.folder_outlined, color: appAccentColor.value),
-                    tooltip: 'Kategori',
+                    tooltip: 'Klasör',
                     onPressed: _showClassifyDialogForSelection,
                   ),
                 ]
@@ -426,7 +486,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     CheckedPopupMenuItem<String>(
                       value: 'Kategori',
                       checked: _sortCriteria == 'Kategori',
-                      child: const Text('Sırala: Kategori'),
+                      child: const Text('Sırala: Klasör'),
                     ),
                   ];
                 },
@@ -445,6 +505,15 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
               },
             ),
           ],
+          // NOT: Etiket şeridi artık AppBar'ın `bottom` alanında değil,
+          // body'nin en üstünde (bkz. aşağıdaki `_TagFilterStrip` kullanımı)
+          // gösteriliyor. Sebebi: AppBar'ın kendi yüksekliği (preferredSize)
+          // build başına sabit bir değerdir ve Flutter bunu kare kare
+          // animasyonlamaz; `bottom` null'dan bir widget'a geçtiğinde alan
+          // aniden 44px büyüyordu, içerideki kayma/solma animasyonu da bu
+          // sabit kutunun içinde neredeyse fark edilmiyordu. Body içindeki
+          // `AnimatedSize` ise gerçek bir yükseklik animasyonu sağladığı
+          // için şerit gerçekten yukarıdan kayarak/büyüyerek açılıyor.
         ),
         drawer: Drawer(
           backgroundColor: Colors.transparent,
@@ -694,7 +763,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text(
-                              'KATEGORİLER',
+                              'KLASÖRLER',
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 11,
@@ -770,7 +839,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
                     title: const Text(
-                      'Kategori Ekle',
+                      'Klasör Ekle',
                     ),
                     onTap: () {
                       Navigator.pop(context);
@@ -920,7 +989,51 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
               right: 8.0,
               bottom: MediaQuery.of(context).padding.bottom,
             ),
-            child: filteredNotes.isEmpty
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Arama modundayken listenin üstünde, o an aktif olan
+                // bölümdeki (Tümü/Notlar, Favoriler, bir klasör, vb.)
+                // notlara ait etiketleri yan yana (yatay kaydırmalı)
+                // listeleyen bir şerit gösterilir. Bir etikete dokunmak,
+                // arama kutusuna o etiketi yazmışçasına filtreler; aynı
+                // etikete tekrar dokunmak filtreyi kaldırır. Hiç etiket
+                // yoksa (ör. Arşiv'de) şerit hiç yer kaplamaz.
+                //
+                // `AnimatedSize` gerçek bir yükseklik animasyonu sağladığı
+                // için şerit, alanı olmayan bir AppBar altlığı yerine
+                // burada gerçekten yukarıdan büyüyerek/kayarak açılıyor.
+                //
+                // Üstteki boşluk (12), aşağıdaki not listesinin/ızgaranın
+                // zaten sahip olduğu top:12 padding'iyle eşleşecek şekilde
+                // seçildi — böylece şeridin üstündeki ve altındaki boşluk
+                // eşit oluyor (altta ayrıca kendi payı eklenmiyor, listenin
+                // mevcut üst boşluğuna güveniliyor).
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOutCubic,
+                  alignment: Alignment.topCenter,
+                  child: (_isSearching && tagStripTags.isNotEmpty)
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 12, bottom: 12),
+                          child: _TagFilterStrip(
+                            allTags: tagStripTags,
+                            searchQuery: _searchQuery,
+                            textColor: _textColor,
+                            onTagSelected: (tag, selected) {
+                              setState(() {
+                                _searchQuery = selected ? tag : "";
+                                _searchController.text = _searchQuery;
+                              });
+                            },
+                            onTagLongPress: (tag) =>
+                                _handleTagLongPress(tag, isTrash),
+                          ),
+                        )
+                      : const SizedBox(width: double.infinity, height: 0),
+                ),
+                Expanded(
+                  child: filteredNotes.isEmpty
                 ? const Center(
                     child: Text(
                       'Not bulunamadı.',
@@ -929,13 +1042,29 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                   )
                 : _isListView
                 ? ListView.builder(
-                    padding: const EdgeInsets.only(top: 12.0),
+                    padding: EdgeInsets.only(
+                      top: (_isSearching && tagStripTags.isNotEmpty)
+                          ? 0.0
+                          : 12.0,
+                    ),
                     itemCount: listItems.length,
                     itemBuilder: (context, index) {
                       final listItem = listItems[index];
                       if (listItem is String) {
+                        // İlk öğe bir tarih başlığıysa (ör. "Bugün"), üstteki
+                        // ListView padding'i (12) ile bu başlığın kendi üst
+                        // boşluğu (18) üst üste binip gereksiz büyük bir boşluk
+                        // oluşturuyordu (Izgara görünümünde böyle bir başlık
+                        // olmadığından bu fazlalık orada yoktu). Sadece en
+                        // baştaki başlık için üst boşluğu küçültüyoruz; sonraki
+                        // gruplar arasındaki ayraç boşluğu aynı kalıyor.
                         return Padding(
-                          padding: const EdgeInsets.fromLTRB(14, 18, 14, 6),
+                          padding: EdgeInsets.fromLTRB(
+                            14,
+                            index == 0 ? 4 : 18,
+                            14,
+                            6,
+                          ),
                           child: Text(
                             listItem,
                             style: TextStyle(
@@ -1577,6 +1706,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                         ),
                                       ),
                                     ],
+                                    _buildNoteTagChips(note),
                                   ],
                                 ),
                                   ),
@@ -1589,12 +1719,19 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     },
                   )
                 : SingleChildScrollView(
-                    padding: const EdgeInsets.only(top: 12.0),
+                    padding: EdgeInsets.only(
+                      top: (_isSearching && tagStripTags.isNotEmpty)
+                          ? 0.0
+                          : 12.0,
+                    ),
                     child: _buildGridView(
                       filteredNotes: filteredNotes,
                       isTrash: isTrash,
                     ),
                   ),
+                ),
+              ],
+            ),
           ),
         ),
         floatingActionButton: FloatingActionButton(
@@ -2489,6 +2626,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             ],
                           ),
                         ],
+                        _buildNoteTagChips(note),
                       ],
                     ),
                   ),
@@ -2512,6 +2650,163 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       ),
     );
   }
+
+  // Not kartında (liste/ızgara görünümü) kategori etiketinin altında
+  // gösterilen etiket önizlemesi. Reminder/gündem/klasör rozetleriyle
+  // birebir aynı stil: küçük gri ikon + tek satır metin (taşarsa "...").
+  // Notun 'tags' listesi boşsa/yoksa boş bir widget (SizedBox.shrink())
+  // döner ki çağıran taraf koşulsuz ekleyebilsin.
+  Widget _buildNoteTagChips(Map<String, dynamic> note) {
+    final rawTags = note['tags'];
+    if (rawTags is! List || rawTags.isEmpty) return const SizedBox.shrink();
+    final tags = rawTags.map((e) => e.toString()).toList();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.sell_outlined,
+            color: Colors.grey,
+            size: 16,
+          ),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              tags.join(', '),
+              style: TextStyle(
+                color: dNoteEffectiveTextColor(context, _textColor),
+                fontSize:
+                    ((note['fontSize'] as num?)?.toDouble() ??
+                        _globalFontSize) -
+                    1,
+                fontFamily: dNoteFontFamilyValue(_fontFamily),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // [oldTag]'ı, [target] listesindeki (çöp kutusu ya da aktif notlar) TÜM
+  // notlarda kullanıcının gireceği yeni isimle değiştirir. Bir notta hem
+  // eski etiket hem de (büyük/küçük harf duyarsız) yeni isimle eşleşen
+  // başka bir etiket zaten varsa, kopya oluşmasın diye eski olan silinir
+  // (yeni adında zaten var demektir) — bkz. note_tags_sheet.dart içindeki
+  // addTag'in aynı çakışma mantığı. Vazgeçilirse ya da isim değişmediyse
+  // null, başarıyla değiştirildiyse yeni ismi döner — çağıran taraf
+  // (ör. showNoteTagsSheet'in onRenameTagGlobally'si) bu dönüş değerini
+  // kendi yerel state'ini güncellemek için kullanır.
+  Future<String?> _renameTagInList(
+    String oldTag,
+    List<Map<String, dynamic>> target,
+  ) async {
+    final newTag = await showRenameTagDialog(context, oldTag);
+    if (newTag == null || newTag.isEmpty || newTag == oldTag) return null;
+
+    setState(() {
+      for (var i = 0; i < target.length; i++) {
+        final rawTags = target[i]['tags'];
+        if (rawTags is! List) continue;
+        final tags = rawTags.map((e) => e.toString()).toList();
+        final idx = tags.indexWhere(
+          (t) => t.toLowerCase() == oldTag.toLowerCase(),
+        );
+        if (idx == -1) continue;
+        final duplicateIdx = tags.indexWhere(
+          (t) => t.toLowerCase() == newTag.toLowerCase(),
+        );
+        if (duplicateIdx != -1 && duplicateIdx != idx) {
+          tags.removeAt(idx);
+        } else {
+          tags[idx] = newTag;
+        }
+        target[i] = {...target[i], 'tags': tags};
+      }
+      if (_searchQuery == oldTag) _searchQuery = newTag;
+    });
+    _saveData();
+    _showInfoBar('Etiket yeniden adlandırıldı', icon: Icons.edit_outlined);
+    return newTag;
+  }
+
+  // [tag]'ı, [target] listesindeki (çöp kutusu ya da aktif notlar) tüm
+  // notlardan siler. Etiket en az bir notta kullanılıyorsa önce kaç
+  // nottan kaldırılacağını belirten bir onay diyaloğu gösterilir.
+  // Silme gerçekleştiyse true, vazgeçildiyse false döner.
+  Future<bool> _deleteTagInList(
+    String tag,
+    List<Map<String, dynamic>> target,
+  ) async {
+    final affectedCount = countNotesWithTag(target, tag);
+
+    final confirmed = affectedCount > 0
+        ? await showDeleteTagConfirmDialog(
+            context,
+            tag: tag,
+            affectedCount: affectedCount,
+          )
+        : true;
+    if (!confirmed) return false;
+
+    setState(() {
+      for (var i = 0; i < target.length; i++) {
+        final rawTags = target[i]['tags'];
+        if (rawTags is! List) continue;
+        final tags = rawTags.map((e) => e.toString()).toList();
+        final idx = tags.indexWhere(
+          (t) => t.toLowerCase() == tag.toLowerCase(),
+        );
+        if (idx == -1) continue;
+        tags.removeAt(idx);
+        target[i] = {...target[i], 'tags': tags};
+      }
+      if (_searchQuery == tag) {
+        _searchQuery = "";
+        _searchController.text = "";
+      }
+    });
+    _saveData();
+    _showInfoBar('Etiket silindi', icon: Icons.delete_outline);
+    return true;
+  }
+
+  // Etiket şeridinde (arama modu) bir etikete basılı tutulunca çağrılır.
+  // "Yeniden Adlandır / Sil" seçeneklerini gösterir; [isTrash] true ise
+  // işlem çöp kutusundaki notlar üzerinde, değilse aktif not listesi
+  // üzerinde uygulanır — şerit zaten hangi listeden besleniyorsa
+  // (bkz. _notesForActiveTagScope) o kapsamla tutarlı kalması için.
+  void _handleTagLongPress(String tag, bool isTrash) {
+    showTagOptionsSheet(
+      context,
+      tag: tag,
+      onRename: () => _renameTagEverywhere(tag, isTrash),
+      onDelete: () => _deleteTagWithConfirmation(tag, isTrash),
+    );
+  }
+
+  Future<void> _renameTagEverywhere(String oldTag, bool isTrash) async {
+    await _renameTagInList(oldTag, isTrash ? _deletedNotes : _notes);
+  }
+
+  Future<void> _deleteTagWithConfirmation(String tag, bool isTrash) async {
+    await _deleteTagInList(tag, isTrash ? _deletedNotes : _notes);
+  }
+
+  // Not düzenleme diyaloğundaki "Etiketler" sheet'i (showNoteTagsSheet)
+  // için: o sheet her zaman aktif (çöp kutusu olmayan) notlar üzerinde
+  // çalışır, bu yüzden isTrash parametresi almadan doğrudan _notes'u
+  // hedefler. Sheet, bu iki metodu sırasıyla onRenameTagGlobally ve
+  // onDeleteTagGlobally callback'leri olarak alır.
+  Future<String?> _renameTagGlobally(String oldTag) =>
+      _renameTagInList(oldTag, _notes);
+
+  Future<bool> _deleteTagGlobally(String tag) =>
+      _deleteTagInList(tag, _notes);
 
   // Notun gelecekte planlanmış bir hatırlatıcısı var mı?
   bool _hasActiveReminder(Map<String, dynamic> note) {
@@ -2637,6 +2932,112 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
           MaterialPageRoute(builder: (_) => _buildGundemScreen()),
         );
       },
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// Arama modunda üst barın altında beliren etiket şeridi. `Builder` her
+// _isSearching değişiminde bu widget'ı sıfırdan (yeni bir instance olarak)
+// oluşturduğundan, initState'te başlattığımız giriş animasyonu her açılışta
+// tekrar çalışır: şerit hafifçe yukarıdan kayarak ve belirerek iner. Kapanış
+// ayrıca animasyonlu değildir (üst bar zaten anında geri daralıyor); istenen
+// sadece açılışın yumuşatılmasıydı.
+// ════════════════════════════════════════════════════════════════════════
+class _TagFilterStrip extends StatefulWidget {
+  const _TagFilterStrip({
+    required this.allTags,
+    required this.searchQuery,
+    required this.textColor,
+    required this.onTagSelected,
+    required this.onTagLongPress,
+  });
+
+  final List<String> allTags;
+  final String searchQuery;
+  final Color? textColor;
+  final void Function(String tag, bool selected) onTagSelected;
+  // Bir etikete basılı tutulunca (yeniden adlandır/sil seçenekleri için)
+  // çağrılır — bkz. NoteListBuildMixin._handleTagLongPress.
+  final void Function(String tag) onTagLongPress;
+
+  @override
+  State<_TagFilterStrip> createState() => _TagFilterStripState();
+}
+
+class _TagFilterStripState extends State<_TagFilterStrip>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<Offset> _slide;
+  late final Animation<double> _fade;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 220),
+    );
+    final curved = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    );
+    _slide = Tween<Offset>(
+      begin: const Offset(0, -0.25),
+      end: Offset.zero,
+    ).animate(curved);
+    _fade = curved;
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: _slide,
+      child: FadeTransition(
+        opacity: _fade,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final tag in widget.allTags)
+                // GestureDetector, ChoiceChip'in kendi onSelected'ını
+                // (tap) engellemeden üstüne basılı tutma (long press)
+                // algılamak için sarmalayıcı olarak eklendi — chip'in
+                // normal tıklama/seçim davranışı aynen çalışmaya devam
+                // eder, sadece uzun basışta ek olarak yeniden
+                // adlandır/sil sheet'i açılır.
+                GestureDetector(
+                  onLongPress: () => widget.onTagLongPress(tag),
+                  child: ChoiceChip(
+                    label: Text(tag),
+                    selected: widget.searchQuery == tag,
+                    onSelected: (selected) =>
+                        widget.onTagSelected(tag, selected),
+                    selectedColor: appAccentColor.value.withOpacity(0.3),
+                    backgroundColor: Colors.grey.withOpacity(0.15),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                    labelStyle: TextStyle(
+                      color: dNoteEffectiveTextColor(
+                        context,
+                        widget.textColor,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

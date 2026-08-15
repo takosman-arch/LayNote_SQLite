@@ -61,6 +61,7 @@ part 'note_list_data_category_mixin.dart';
 part 'note_list_actions_mixin.dart';
 part 'note_list_attachment_mixin.dart';
 part 'note_list_note_dialog_mixin.dart';
+part 'note_tags_sheet.dart';
 part 'note_list_build_mixin.dart';
 part 'settings_page.dart';
 part 'calendar_screen.dart';

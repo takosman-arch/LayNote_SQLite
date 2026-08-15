@@ -204,51 +204,73 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
 
   Future<void> _saveData() async {
     final db = DBHelper.instance;
-    await db.replaceNotes(_notes);
-    await db.replaceDeletedNotes(_deletedNotes);
-    await db.replaceCategories(
-      _categories,
-      _categoryColors,
-      _lockedCategories,
-      _categoryParents,
-    );
+    // GEÇİCİ TEŞHİS (etiket özelliği sonrası "son not kayboluyor" hatası
+    // için): _saveData() çağrıldığı yerlerde (_saveNoteIfValid içinde)
+    // `await` edilmeden çağrılıyor; bu yüzden içeride bir SQLite hatası
+    // (ör. eksik/uyumsuz sütun) oluşursa hata sessizce yutulup UI hiçbir
+    // şey göstermiyordu — kullanıcı notun kaydedildiğini sanıyor, ama
+    // veritabanına hiçbir şey yazılmıyordu. Artık her adım try/catch
+    // içinde: hata olursa hem konsola (debugPrint) hem de kullanıcıya
+    // kırmızı bir bildirim çubuğuyla gösteriliyor, böylece gerçek neden
+    // görünür oluyor. Kök neden bulunup düzeltildikten sonra bu blok
+    // sadeleştirilebilir/kaldırılabilir.
+    try {
+      await db.replaceNotes(_notes);
+      await db.replaceDeletedNotes(_deletedNotes);
+      await db.replaceCategories(
+        _categories,
+        _categoryColors,
+        _lockedCategories,
+        _categoryParents,
+      );
 
-    await db.setSetting('_initialized', 'true');
-    await db.setSetting('sort_criteria', _sortCriteria);
-    await db.setSetting('is_ascending', _isAscending.toString());
-    await db.setSetting('is_list_view', _isListView.toString());
-    await db.setSetting('active_category', _activeCategory);
-    // Kategori çekmecesindeki daralt/genişlet durumu; '\u0001' karakteri
-    // kategori adlarında geçmesi son derece olası olmadığı için ayraç
-    // olarak kullanılıyor.
-    await db.setSetting(
-      'collapsed_categories',
-      _collapsedCategories.join('\u0001'),
-    );
+      await db.setSetting('_initialized', 'true');
+      await db.setSetting('sort_criteria', _sortCriteria);
+      await db.setSetting('is_ascending', _isAscending.toString());
+      await db.setSetting('is_list_view', _isListView.toString());
+      await db.setSetting('active_category', _activeCategory);
+      // Kategori çekmecesindeki daralt/genişlet durumu; '\u0001' karakteri
+      // kategori adlarında geçmesi son derece olası olmadığı için ayraç
+      // olarak kullanılıyor.
+      await db.setSetting(
+        'collapsed_categories',
+        _collapsedCategories.join('\u0001'),
+      );
 
-    // Ayarlar
-    await db.setSetting(
-      'note_password_enabled',
-      _notePasswordEnabled.toString(),
-    );
-    await db.setSetting('note_password', _notePassword);
-    await db.setSetting('password_hint_question', _passwordHintQuestion);
-    await db.setSetting('password_hint_answer', _passwordHintAnswer);
-    await db.setSetting('theme_mode', themeModeToSettingValue(_themeMode));
-    await db.setSetting('accent_color', accentColorToSettingValue(_accentColor));
-    await db.setSetting('colorful_notes', _colorfulNotes.toString());
-    await db.setSetting('font_family', _fontFamily);
-    await db.setSetting('global_font_size', _globalFontSize.toString());
-    await db.setSetting('text_color', _textColor?.toARGB32().toString());
-    await db.setSetting('preview_lines', _previewLines.toString());
-    await db.setSetting('widget_font_size', _widgetFontSize.toString());
-    await db.setSetting('widget_bg_opacity', _widgetBgOpacity.toString());
-    await db.setSetting('widget_dark', _widgetDark.toString());
+      // Ayarlar
+      await db.setSetting(
+        'note_password_enabled',
+        _notePasswordEnabled.toString(),
+      );
+      await db.setSetting('note_password', _notePassword);
+      await db.setSetting('password_hint_question', _passwordHintQuestion);
+      await db.setSetting('password_hint_answer', _passwordHintAnswer);
+      await db.setSetting('theme_mode', themeModeToSettingValue(_themeMode));
+      await db.setSetting('accent_color', accentColorToSettingValue(_accentColor));
+      await db.setSetting('colorful_notes', _colorfulNotes.toString());
+      await db.setSetting('font_family', _fontFamily);
+      await db.setSetting('global_font_size', _globalFontSize.toString());
+      await db.setSetting('text_color', _textColor?.toARGB32().toString());
+      await db.setSetting('preview_lines', _previewLines.toString());
+      await db.setSetting('widget_font_size', _widgetFontSize.toString());
+      await db.setSetting('widget_bg_opacity', _widgetBgOpacity.toString());
+      await db.setSetting('widget_dark', _widgetDark.toString());
 
-    // Ana ekran widget'ını her kayıtta güncel not listesiyle senkronize et.
-    // Native taraf (Aşama 2) henüz kurulmadıysa NoteWidgetService bu
-    // çağrıyı içeride sessizce yutar; burada ekstra try/catch gerekmez.
-    unawaited(NoteWidgetService.instance.syncFromNotes(_notes));
+      // Ana ekran widget'ını her kayıtta güncel not listesiyle senkronize et.
+      // Native taraf (Aşama 2) henüz kurulmadıysa NoteWidgetService bu
+      // çağrıyı içeride sessizce yutar; burada ekstra try/catch gerekmez.
+      unawaited(NoteWidgetService.instance.syncFromNotes(_notes));
+    } catch (e, st) {
+      debugPrint('[_saveData] KAYIT HATASI: $e');
+      debugPrint('[_saveData] stack: $st');
+      if (mounted) {
+        _showInfoBar(
+          'Kayıt hatası: $e',
+          icon: Icons.error_outline,
+        );
+      }
+      rethrow;
+    }
   }
 
   // Kısa Türkçe tarih biçimi: "Tem 20, 21:17" — alt bardaki ve not
@@ -619,7 +641,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                       });
                       _saveData();
                       _showInfoBar(
-                        isLocked ? 'Kilit kaldırıldı' : 'Kategori kilitlendi',
+                        isLocked ? 'Kilit kaldırıldı' : 'Klasör kilitlendi',
                         icon: isLocked ? Icons.lock_open : Icons.lock,
                       );
                       return;
@@ -639,7 +661,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                       });
                       _saveData();
                       _showInfoBar(
-                        isLocked ? 'Kilit kaldırıldı' : 'Kategori kilitlendi',
+                        isLocked ? 'Kilit kaldırıldı' : 'Klasör kilitlendi',
                         icon: isLocked ? Icons.lock_open : Icons.lock,
                       );
                     } else {
@@ -727,7 +749,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.delete_outline, color: Colors.red),
                 title: const Text(
-                  'Kategoriyi Sil',
+                  'Klasörü Sil',
                   style: TextStyle(color: Colors.red),
                 ),
                 onTap: () {
@@ -737,7 +759,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                     builder: (confirmContext) => AlertDialog(
                       backgroundColor: dNoteCardColor(confirmContext),
                       title: Text(
-                        'Kategoriyi Sil',
+                        'Klasörü Sil',
                         style: TextStyle(color: Theme.of(confirmContext).primaryColor),
                       ),
                       content: Text(
@@ -745,8 +767,8 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                                 _categories.any(
                                   (c) => _categoryParents[c] == category,
                                 )
-                            ? '"$category" klasörünü ve içindeki tüm alt klasörleri silmek istediğinize emin misiniz? Bu klasörlerdeki notlar kategorisiz kalacak.'
-                            : '"$category" kategorisini silmek istediğinize emin misiniz? Bu kategorideki notlar kategorisiz kalacak.',
+                            ? '"$category" klasörünü ve içindeki tüm alt klasörleri silmek istediğinize emin misiniz? Bu klasörlerdeki notlar klasörsüz kalacak.'
+                            : '"$category" klasörünü silmek istediğinize emin misiniz? Bu klasördeki notlar klasörsüz kalacak.',
                         style: TextStyle(color: dNoteTextColor(confirmContext)),
                       ),
                       actions: [

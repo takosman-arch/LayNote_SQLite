@@ -22,7 +22,17 @@ class DBHelper {
     final path = p.join(dbDir, 'dnote.db');
     return openDatabase(
       path,
-      version: 10, // Başlık zengin metin (titleSpans) desteği: 9'dan 10'a yükseltildi
+      // NOT (2026-08-15 düzeltmesi): version 11 bazı cihazlarda 'tags'
+      // sütununu ekleyen migration kodu yazılmadan ÖNCE bir kez zaten
+      // diske yazılmıştı (dev/test sırasında). Bu yüzden sqflite
+      // oldVersion==newVersion (11==11) gördüğünde onUpgrade hiç
+      // tetiklenmiyor ve 'tags' sütunu o cihazlarda asla eklenmiyordu
+      // ("table notes has no column named tags" hatası). Versiyon 12'ye
+      // çıkarılarak bu cihazlarda migration'ın bir kereliğine yeniden
+      // tetiklenmesi sağlanıyor. Ayrıca aşağıdaki onOpen bloğu, versiyon
+      // numarasından tamamen bağımsız olarak kritik sütunların varlığını
+      // her açılışta garanti eden bir güvenlik ağıdır.
+      version: 12,
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           await _addColumnIfMissing(db, 'notes', 'attachments', 'TEXT');
@@ -84,6 +94,31 @@ class DBHelper {
           await _addColumnIfMissing(db, 'notes', 'titleSpans', 'TEXT');
           await _addColumnIfMissing(db, 'deleted_notes', 'titleSpans', 'TEXT');
         }
+        if (oldVersion < 12) {
+          // Not etiketleri: bir nota atanmış, kullanıcı tanımlı serbest
+          // metin etiketlerinin listesi (ör. ["iş","acil"]). 'attachments'
+          // ile aynı desen: JSON string olarak saklanır, boşsa/atanmamışsa
+          // null (bkz. _noteToRow/_rowToNote). Kategoriden farklı olarak
+          // bir notta birden fazla etiket olabilir, bu yüzden ayrı bir
+          // 'categories' tablosu değil, tek sütunda liste tercih edildi.
+          // (Eskiden oldVersion < 11 idi; bkz. yukarıdaki version notu —
+          // bazı cihazlarda bu blok hiç çalışmamıştı.)
+          await _addColumnIfMissing(db, 'notes', 'tags', 'TEXT');
+          await _addColumnIfMissing(db, 'deleted_notes', 'tags', 'TEXT');
+        }
+      },
+      // GÜVENLİK AĞI: onUpgrade yalnızca sqflite'ın PRAGMA user_version'da
+      // sakladığı sayı arttığında tetiklenir. Eğer bir cihazda bu sayı
+      // (herhangi bir sebeple, ör. geliştirme sürecindeki yarım kalmış bir
+      // build) migration kodu çalışmadan önce zaten yazılmışsa, onUpgrade
+      // bir daha ASLA tetiklenmez ve sütun kalıcı olarak eksik kalır. Bu
+      // callback her veritabanı açılışında (onCreate/onUpgrade'den SONRA)
+      // çalışır ve versiyon numarasından bağımsız olarak kritik sütunların
+      // gerçekten var olduğunu garanti eder — varsa hiçbir şey yapmaz
+      // (ucuz PRAGMA table_info sorgusu), yoksa ekler.
+      onOpen: (db) async {
+        await _addColumnIfMissing(db, 'notes', 'tags', 'TEXT');
+        await _addColumnIfMissing(db, 'deleted_notes', 'tags', 'TEXT');
       },
       onCreate: (db, version) async {
         await db.execute('''
@@ -106,6 +141,7 @@ class DBHelper {
             deletedDate TEXT,
             bgColor INTEGER,
             titleSpans TEXT,
+            tags TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0,
@@ -132,6 +168,7 @@ class DBHelper {
             deletedDate TEXT,
             bgColor INTEGER,
             titleSpans TEXT,
+            tags TEXT,
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0,
@@ -201,6 +238,12 @@ class DBHelper {
       'titleSpans': (note['titleSpans'] != null && (note['titleSpans'] as List).isNotEmpty)
           ? jsonEncode(note['titleSpans'])
           : null,
+      // Not etiketleri: liste doluysa JSON string olarak yazılır, boş/null
+      // ise (attachments/titleSpans ile aynı desen) null yazılır ki eski
+      // notlarda olduğu gibi "etiket hiç yok" davranışı korunsun.
+      'tags': (note['tags'] != null && (note['tags'] as List).isNotEmpty)
+          ? jsonEncode(note['tags'])
+          : null,
       'isLocked': (note['isLocked'] == true) ? 1 : 0,
       'isArchived': (note['isArchived'] == true) ? 1 : 0,
       'isFavorite': (note['isFavorite'] == true) ? 1 : 0,
@@ -229,6 +272,8 @@ class DBHelper {
       if (row['bgColor'] != null) 'bgColor': row['bgColor'],
       if (row['titleSpans'] != null)
         'titleSpans': jsonDecode(row['titleSpans'] as String),
+      if (row['tags'] != null)
+        'tags': jsonDecode(row['tags'] as String),
       'isLocked': row['isLocked'] == 1,
       'isArchived': row['isArchived'] == 1,
       'isFavorite': row['isFavorite'] == 1,

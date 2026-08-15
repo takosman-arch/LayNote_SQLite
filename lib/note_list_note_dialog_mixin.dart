@@ -25,7 +25,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   List<Map<String, dynamic>> get _notes;
   set _notes(List<Map<String, dynamic>> value);
   Future<DateTime?> _pickCalendarDate({ required BuildContext context, required DateTime initialDate, required DateTime firstDate, required DateTime lastDate, required String helpText, bool showClearOption = false, });
-  bool _saveNoteIfValid( int? index, String noteType, List<Map<String, dynamic>> checkItems, [ List<Map<String, dynamic>> attachments = const [], List<Map<String, dynamic>> blocks = const [], DateTime? reminder, DateTime? assignedDate, String? reminderRepeat, int? bgColor, ]);
+  // note_list_build_mixin.dart -> _renameTagGlobally / _deleteTagGlobally:
+  // "Etiketler" sheet'inde bir etikete basılı tutulunca (yeniden adlandır/
+  // sil) tetiklenir; her ikisi de _notes içindeki TÜM notlarda çalışır
+  // (bkz. showTagsSheet aşağıda).
+  Future<String?> _renameTagGlobally(String oldTag);
+  Future<bool> _deleteTagGlobally(String tag);
+  bool _saveNoteIfValid( int? index, String noteType, List<Map<String, dynamic>> checkItems, [ List<Map<String, dynamic>> attachments = const [], List<Map<String, dynamic>> blocks = const [], DateTime? reminder, DateTime? assignedDate, String? reminderRepeat, int? bgColor, List<String> tags = const [], ]);
   // Not arka plan rengi (noteBgColor), artık _saveNoteIfValid'in son
   // parametresi (bgColor) olarak doğrudan geçirilir (gerçek gövde bu
   // dosyada değil, NoteListActionsMixin'de tanımlı). Notu _notes
@@ -42,7 +48,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   // gidiyordu. Artık _titleSpans buradan geçiriliyor.
   Future<void> _showExportSubmenu({ required BuildContext context, required GlobalKey anchorKey, required String title, List<dynamic>? titleSpans, required String noteType, required List<Map<String, dynamic>> blocks, required List<Map<String, dynamic>> checkItems, required List<Map<String, dynamic>> attachments, double fontSize = 16.0, String? fontFamily, });
   void _showInfoBar( String message, { IconData icon = Icons.check_circle, String? actionLabel, VoidCallback? onAction, Color backgroundColor = const Color(0xFF3D3D3D), });
-  void _showNoteActions( BuildContext ctx, int noteIndex, bool isTrash, { DateTime? editorReminder, String? editorReminderRepeat, void Function(DateTime? reminder, String? repeat)? onReminderChanged, VoidCallback? onDiscard, void Function(String text)? onInsertText, bool showSelectAction = false, });
+  void _showNoteActions( BuildContext ctx, int noteIndex, bool isTrash, { DateTime? editorReminder, String? editorReminderRepeat, void Function(DateTime? reminder, String? repeat)? onReminderChanged, VoidCallback? onDiscard, void Function(String text)? onInsertText, void Function(String? category)? onCategoryChanged, bool showSelectAction = false, });
   Color? get _textColor;
   set _textColor(Color? value);
   // Aşama 2: gerçek tanım (note_list_lifecycle_mixin.dart) artık düz
@@ -85,6 +91,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     if (before < 0) return -1;
     return text.lastIndexOf('\n', before);
   }
+
+  // NOT: Etiket önerileri için `collectAllKnownTags(_notes)` kullanılır —
+  // bkz. note_tags_sheet.dart (dialog mixin'ini büyütmemek için taşındı).
 
   Future<void> _showNoteDialog({
     int? index,
@@ -152,6 +161,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     List<TextEditingController> checkControllers = [];
     List<FocusNode> checkFocusNodes = [];
     List<Map<String, dynamic>> attachments = [];
+    // Not etiketleri: kullanıcı tanımlı serbest metin etiketlerin listesi
+    // (ör. ["iş","acil"]). attachments ile aynı desen: modal state'te bir
+    // liste olarak tutulur, düzenleme sırasında (üç nokta menüsü >
+    // Etiketler) değiştirilir, kaydedilirken _saveNoteIfValid'e geçirilir.
+    List<String> tags = [];
     int? newlyAddedIndex; // hangi maddeye autofocus verilecek
     String? noteCategory;
     // Basılı tutulunca sil ikonu gösterilen ekin id'si (aynı anda tek ek).
@@ -2750,6 +2764,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           (rawAttachments as List).map((e) => Map<String, dynamic>.from(e)),
         );
       }
+      final rawTags = _notes[index]['tags'];
+      if (rawTags != null) {
+        tags = List<String>.from((rawTags as List).map((e) => e.toString()));
+      }
       blocks = ContentBlocks.parse(_notes[index]['content'] as String?);
     } else {
       _titleController.clear();
@@ -3814,6 +3832,29 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 );
               }
 
+              // ── Etiketler: üç nokta menüsündeki "Etiketler" öğesiyle
+              // açılan alt menü. Sheet UI'ı ve etiket düzenleme mantığı
+              // note_tags_sheet.dart'a taşındı (dialog mixin'ini gereksiz
+              // büyütmemek için); burada yalnızca ana modal state'teki
+              // `tags` listesini geçirip değişiklikleri setModalState ile
+              // geri alan ince bir sarmalayıcı kalıyor. Böylece not
+              // kartındaki/araç çubuğundaki görünüm ve nihai kayıt
+              // (_saveNoteIfValid'e geçirilen `tags`) her zaman güncel kalır.
+              void showTagsSheet() {
+                showNoteTagsSheet(
+                  context,
+                  currentTags: tags,
+                  allKnownTags: collectAllKnownTags(_notes),
+                  onChanged: (newTags) {
+                    setModalState(() {
+                      tags = newTags;
+                    });
+                  },
+                  onRenameTagGlobally: _renameTagGlobally,
+                  onDeleteTagGlobally: _deleteTagGlobally,
+                );
+              }
+
               final catColor = _getCategoryColor(noteCategory);
               final isDark =
                   ThemeData.estimateBrightnessForColor(catColor) ==
@@ -3859,7 +3900,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     );
                     return;
                   }
-                  final saved = _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDateSet ? noteAssignedDate : null, noteReminderRepeat, noteBgColor);
+                  final saved = _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDateSet ? noteAssignedDate : null, noteReminderRepeat, noteBgColor, tags);
                   SystemChrome.setSystemUIOverlayStyle(
                     dNoteSystemBarsStyle(context),
                   );
@@ -3929,6 +3970,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           noteAssignedDateSet ? noteAssignedDate : null,
                           noteReminderRepeat,
                           noteBgColor,
+                          tags,
                         );
                         SystemChrome.setSystemUIOverlayStyle(
                           dNoteSystemBarsStyle(context),
@@ -4134,6 +4176,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                             });
                           } else if (value == 'reorder_blocks') {
                             showBlockReorderSheet();
+                          } else if (value == 'tags') {
+                            showTagsSheet();
                           } else if (value == 'import_txt') {
                             // Üç nokta menüsünde "İçe Aktar (TXT)" öğesine
                             // basılınca çağrılır. Kullanıcıya bir .txt
@@ -4362,6 +4406,20 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                 ],
                               ),
                             ),
+                          PopupMenuItem(
+                            value: 'tags',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.sell_outlined,
+                                  color: appAccentColor.value,
+                                  size: 24,
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(child: Text('Etiketler')),
+                              ],
+                            ),
+                          ),
                           if (noteType == 'text') const PopupMenuDivider(),
                           PopupMenuItem(
                             value: 'import_txt',
@@ -5614,7 +5672,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               final hasCategory =
                                   noteCategory != null &&
                                   noteCategory!.isNotEmpty;
-                              if (!hasReminder && !hasCategory) {
+                              final hasTags = tags.isNotEmpty;
+                              if (!hasReminder && !hasCategory && !hasTags) {
                                 return const SizedBox.shrink();
                               }
                               // Alarm yazısı ve kategori etiketi aynı renk,
@@ -5751,7 +5810,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                               },
                                             );
                                           } else {
-                                            _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDateSet ? noteAssignedDate : null, noteReminderRepeat, noteBgColor);
+                                            _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDateSet ? noteAssignedDate : null, noteReminderRepeat, noteBgColor, tags);
                                             if (_notes.isNotEmpty) {
                                               final newIndex =
                                                   _notes.length - 1;
@@ -5768,6 +5827,54 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             }
                                           }
                                         },
+                                      ),
+                                    if (hasTags)
+                                      // Etiket pill'i de reminder/kategori
+                                      // ile aynı çerçeveli/tıklanabilir
+                                      // sistemi kullanır; dokununca etiket
+                                      // düzenleme sheet'i açılır. İkon rengi
+                                      // -- not kartındaki etiket
+                                      // önizlemesiyle tutarlı olsun diye --
+                                      // kategori/reminder'ın aksine tema
+                                      // rengi değil, sabit gri.
+                                      GestureDetector(
+                                        behavior: HitTestBehavior.opaque,
+                                        onTap: showTagsSheet,
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 14,
+                                            vertical: 8,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: dNoteBorderColor(context),
+                                              width: 1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.sell_outlined,
+                                                size: 20,
+                                                color: appAccentColor.value,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Flexible(
+                                                child: Text(
+                                                  tags.join(', '),
+                                                  style: tagTextStyle,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                   ],
                                 ),
@@ -6482,6 +6589,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       setModalState(() {
                                         noteReminder = reminder;
                                         noteReminderRepeat = repeat;
+                                      });
+                                    },
+                                    onCategoryChanged: (cat) {
+                                      pushUndoCheckpoint();
+                                      setModalState(() {
+                                        noteCategory = cat;
                                       });
                                     },
                                     onDiscard: () {

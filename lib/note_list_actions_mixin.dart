@@ -335,50 +335,70 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         child: Center(
           child: Material(
             color: Colors.transparent,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 28,
-                vertical: 14,
+            // Bar'ın ekran genişliğini aşmaması için maksimum genişlik
+            // sınırlanıyor; mesaj metni (ör. beklenmeyen uzun bir hata
+            // mesajı, "Kayıt hatası: DatabaseException(...)" gibi) artık
+            // bu sınır içinde satır kaydırarak gösteriliyor, tek satırda
+            // ekranın çok dışına taşmıyor (bkz. aşağıdaki Flexible).
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(ctx).size.width - 48,
               ),
-              decoration: BoxDecoration(
-                color: backgroundColor,
-                borderRadius: BorderRadius.circular(30),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.35),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    message,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 28,
+                  vertical: 14,
+                ),
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.35),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
                     ),
-                  ),
-                  if (hasAction) ...[
-                    const SizedBox(width: 14),
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        _hideDeletedBar();
-                        onAction();
-                      },
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Flexible: uzun mesajlarda Row'un ekran dışına
+                    // taşmasını (RenderFlex overflow) önler; metin bu
+                    // sınırlar içinde satır kaydırır, 3 satırdan uzunsa
+                    // "..." ile kırpılır.
+                    Flexible(
                       child: Text(
-                        actionLabel,
-                        style: TextStyle(
-                          color: appAccentColor.value,
-                          fontWeight: FontWeight.w700,
+                        message,
+                        softWrap: true,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
+                    if (hasAction) ...[
+                      const SizedBox(width: 14),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          _hideDeletedBar();
+                          onAction();
+                        },
+                        child: Text(
+                          actionLabel,
+                          style: TextStyle(
+                            color: appAccentColor.value,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ),
@@ -1361,8 +1381,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
           backgroundColor: dNoteCardColor(context),
           title: Text(
             isEditing
-                ? 'Kategoriyi Düzenle'
-                : (isSubfolder ? 'Yeni Alt Klasör' : 'Yeni Kategori'),
+                ? 'Klasörü Düzenle'
+                : (isSubfolder ? 'Yeni Alt Klasör' : 'Klasör Ekle'),
             style: TextStyle(color: appAccentColor.value),
           ),
           content: Column(
@@ -1385,7 +1405,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 autofocus: true,
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
-                  labelText: isSubfolder ? 'Alt klasör adı' : 'Kategori adı',
+                  labelText: isSubfolder ? 'Alt klasör adı' : 'Klasör adı',
                   labelStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(context)),
@@ -1615,7 +1635,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               ),
               const SizedBox(height: 14),
               Text(
-                'Sınıflandır',
+                'Klasör Seç',
                 style: TextStyle(
                   color: dNoteTextColor(sheetContext),
                   fontSize: 16,
@@ -1630,7 +1650,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                   color: dNoteTextColor(sheetContext),
                 ),
                 title: Text(
-                  'Kategori Ekle',
+                  'Klasör Ekle',
                   style: TextStyle(
                     color: dNoteTextColor(sheetContext),
                     fontWeight: FontWeight.w500,
@@ -1678,7 +1698,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                     color: Colors.red,
                   ),
                   title: const Text(
-                    'Mevcut Kategoriyi Kaldır',
+                    'Mevcut Klasörü Kaldır',
                     style: TextStyle(
                       color: Colors.red,
                       fontWeight: FontWeight.w500,
@@ -1852,13 +1872,13 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       {
         'icon': Icons.image_outlined,
         'label': 'Görsel Ekle',
-        'color': Colors.blueAccent,
+        'color': Colors.tealAccent,
         'key': 'image',
       },
       {
         'icon': Icons.camera_alt_outlined,
         'label': 'Kamera',
-        'color': Colors.tealAccent,
+        'color': Colors.blueAccent,
         'key': 'camera',
       },
       {
@@ -1882,7 +1902,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       {
         'icon': Icons.document_scanner_outlined,
         'label': 'Belge Tara',
-        'color': Colors.lightGreenAccent,
+        'color': Colors.green.shade700,
         'key': 'scan',
       },
     ];
@@ -1989,6 +2009,13 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     // callback tetiklenir (düzenleyici, kaydetmeden kapanır).
     VoidCallback? onDiscard,
     // Yalnızca not düzenleyicisinden çağrıldığında verilir: dolu olduğunda
+    // "Sınıflandır" eylemiyle klasör değiştirildiğinde, düzenleyicinin
+    // yerel `noteCategory` state'i (setModalState ile) hemen güncellenir.
+    // Verilmezse (ör. not listesinden uzun basmayla çağrıldığında) sadece
+    // _notes listesi ve veritabanı güncellenir; liste zaten dış setState
+    // ile kendiliğinden yenilenir.
+    void Function(String? category)? onCategoryChanged,
+    // Yalnızca not düzenleyicisinden çağrıldığında verilir: dolu olduğunda
     // menüye "Sesi Yazıya Çevir" eylemi eklenir; konuşma tanıma sonucu bu
     // callback ile düzenleyicinin imleç konumundaki metin bloğuna eklenir.
     void Function(String text)? onInsertText,
@@ -2042,10 +2069,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       if (!hasValidNote && onInsertText != null) speechToTextAction,
       if (hasValidNote) ...[
       {
-        'icon': isFavorite ? Icons.star : Icons.star_outline,
-        'label': isFavorite ? 'Favoriden Çıkar' : 'Favori',
-        'color': appAccentColor.value,
-        'key': 'favorite',
+        'icon': isArchived ? Icons.unarchive_outlined : Icons.archive_outlined,
+        'label': isArchived ? 'Arşivden Çıkar' : 'Arşiv',
+        'color': Colors.teal,
+        'key': 'archive',
       },
       {
         'icon': isLocked ? Icons.lock_open : Icons.lock_outline,
@@ -2054,15 +2081,15 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         'key': 'lock',
       },
       {
-        'icon': isArchived ? Icons.unarchive_outlined : Icons.archive_outlined,
-        'label': isArchived ? 'Arşivden Çıkar' : 'Arşiv',
-        'color': Colors.teal,
-        'key': 'archive',
+        'icon': isFavorite ? Icons.star : Icons.star_outline,
+        'label': isFavorite ? 'Favoriden Çıkar' : 'Favori',
+        'color': appAccentColor.value,
+        'key': 'favorite',
       },
       {
         'icon': Icons.folder_outlined,
-        'label': 'Sınıflandır',
-        'color': Colors.purple,
+        'label': 'Klasör Seç',
+        'color': Colors.green,
         'key': 'classify',
       },
       {
@@ -2092,7 +2119,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       {
         'icon': Icons.copy_all_outlined,
         'label': 'Kopya Oluştur',
-        'color': Colors.green,
+        'color': Colors.purple,
         'key': 'duplicate',
       },
       {
@@ -2110,7 +2137,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       {
         'icon': Icons.text_fields,
         'label': 'Metin Boyutu',
-        'color': Colors.pink,
+        'color': Colors.teal,
         'key': 'text_size',
       },
       {
@@ -2131,7 +2158,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         {
           'icon': Icons.check_circle_outline,
           'label': 'Seç',
-          'color': appAccentColor.value,
+          'color': Colors.orange,
           'key': 'select',
         },
     ];
@@ -2335,8 +2362,19 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                         );
                       } else if (key == 'delete') {
                         _deleteNote(noteIndex);
+                        // Bu panel not düzenleyicisinin içinden (üç nokta
+                        // menüsü) açıldıysa onDiscard dolu gelir — not
+                        // silindikten sonra düzenleyici açık kalmaya devam
+                        // etmemeli, ana listeye dönmeli. onDiscard zaten
+                        // düzenleyiciyi kaydetmeden kapatan mantığı
+                        // içeriyor (unfocus + Navigator.pop), burada da
+                        // aynen kullanılıyor.
+                        if (onDiscard != null) onDiscard();
                       } else if (key == 'classify') {
-                        _showClassifyDialog(noteIndex);
+                        _showClassifyDialog(
+                          noteIndex,
+                          onChanged: onCategoryChanged,
+                        );
                       } else if (key == 'duplicate') {
                         await _duplicateNote(noteIndex);
                       } else if (key == 'share') {
@@ -2511,6 +2549,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     // _saveData() ile diske kaydediliyor; çağıran tarafta ekstra kayıt
     // adımına gerek kalmadı.
     int? bgColor,
+    // Not etiketleri: kullanıcı tanımlı serbest metin etiket listesi (bkz.
+    // NoteListNoteDialogMixin > showTagsSheet). attachments/bgColor ile
+    // aynı desen: burada state'e yazılıp _saveData() ile diske kaydedilir.
+    List<String> tags = const [],
   ]) {
     final isValid =
         (noteType == 'text'
@@ -2598,6 +2640,17 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         final oldBgColor = _notes[index]['bgColor'] as int?;
         final bgColorChanged = oldBgColor != bgColor;
 
+        final oldTagsRaw = _notes[index]['tags'];
+        final oldTags = oldTagsRaw is List
+            ? List<String>.from(oldTagsRaw.map((e) => e.toString()))
+            : <String>[];
+        final tagsChanged =
+            oldTags.length != tags.length ||
+            List.generate(
+              tags.length,
+              (i) => i < oldTags.length && oldTags[i] == tags[i],
+            ).any((same) => !same);
+
         final hasChanges =
             newTitle != oldTitle ||
             titleSpansChanged ||
@@ -2607,7 +2660,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             attachmentsChanged ||
             reminderChanged ||
             assignedDateChanged ||
-            bgColorChanged;
+            bgColorChanged ||
+            tagsChanged;
 
         if (!hasChanges) return false;
 
@@ -2627,6 +2681,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             'reminderRepeat': newRepeatRaw,
             'assignedDate': newAssignedRaw,
             'bgColor': bgColor,
+            'tags': tags,
           };
         });
         _saveData();
@@ -2683,6 +2738,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             'reminderDate': reminder?.toIso8601String(),
             'reminderRepeat': savedRepeat,
             'bgColor': bgColor,
+            'tags': tags,
           });
         });
         _saveData();
