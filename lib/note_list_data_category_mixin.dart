@@ -441,7 +441,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
         title: Text(
           cat,
           style: TextStyle(
-            fontSize: isSubfolder ? 16 : 18,
+            fontSize: isSubfolder ? 16 : 17,
             fontWeight: FontWeight.w500,
             color: _activeCategory == cat
                 ? catColor
@@ -452,7 +452,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
           _getCountForCategory(cat).toString(),
           style: const TextStyle(
             color: Colors.grey,
-            fontSize: 18,
+            fontSize: 17,
             fontWeight: FontWeight.w500,
           ),
         ),

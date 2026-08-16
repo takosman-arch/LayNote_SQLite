@@ -547,10 +547,19 @@ Color dNoteEffectiveTextColor(BuildContext context, Color? customColor) {
 // görünüme) sıfırlayabiliyor. Bu yüzden HER çağrıda ikisi birlikte ve o
 // anki temaya göre ayarlanır; ayrı ayrı, birbirini unutan çağrılar
 // yazılmamalıdır.
+// Not düzenleyicisi açıkken, alttaki NoteListScreen bir sebeple yeniden
+// build edilirse (ör. bir setState tetiklenirse), o build içindeki
+// SystemChrome çağrısının düzenleyicinin ayarladığı gezinme çubuğu rengini
+// (açık temada #EDEDED) ezmesini önlemek için kullanılan bayrak. Not
+// düzenleyicisi açılırken true, kapanırken false yapılır (bkz.
+// note_list_note_dialog_mixin.dart).
+final ValueNotifier<bool> dNoteNoteEditorOpen = ValueNotifier<bool>(false);
+
 SystemUiOverlayStyle dNoteSystemBarsStyle(
   BuildContext context, {
   Color? statusBarColor,
   Brightness? statusBarIconBrightnessOverride,
+  Color? navigationBarColor,
 }) {
   final isDark = dNoteIsDark(context);
   return SystemUiOverlayStyle(
@@ -564,9 +573,10 @@ SystemUiOverlayStyle dNoteSystemBarsStyle(
             : (statusBarIconBrightnessOverride == Brightness.light
                   ? Brightness.dark
                   : Brightness.light),
-    systemNavigationBarColor: isDark
-        ? const Color(0xFF121212)
-        : const Color(0xFFF5F5F5),
+    systemNavigationBarColor: navigationBarColor ??
+        (isDark
+            ? const Color(0xFF121212)
+            : const Color(0xFFF5F5F5)),
     systemNavigationBarIconBrightness: isDark
         ? Brightness.light
         : Brightness.dark,

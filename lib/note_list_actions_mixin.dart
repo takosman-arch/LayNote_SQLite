@@ -1909,7 +1909,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
 
     showModalBottomSheet(
       context: ctx,
-      backgroundColor: Theme.of(ctx).cardColor,
+      backgroundColor: dNoteIsDark(ctx)
+          ? Theme.of(ctx).cardColor
+          : dNoteSurfaceVariant(ctx),
       barrierColor: Colors.black.withValues(alpha: 0.55),
       isScrollControlled: true,
       clipBehavior: Clip.antiAlias,
@@ -1959,17 +1961,22 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            color: dNoteSurfaceVariant(ctx),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Icon(
-                            action['icon'] as IconData,
-                            color: action['color'] as Color,
-                            size: 30,
+                        Material(
+                          elevation: dNoteIsDark(ctx) ? 0 : 1,
+                          color: dNoteIsDark(ctx)
+                              ? dNoteSurfaceVariant(ctx)
+                              : Theme.of(ctx).cardColor,
+                          borderRadius: BorderRadius.circular(16),
+                          child: SizedBox(
+                            width: 64,
+                            height: 64,
+                            child: Center(
+                              child: Icon(
+                                action['icon'] as IconData,
+                                color: action['color'] as Color,
+                                size: 30,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 5),
@@ -2165,7 +2172,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
 
     showModalBottomSheet(
       context: ctx,
-      backgroundColor: Theme.of(context).cardColor,
+      backgroundColor: dNoteIsDark(context)
+          ? Theme.of(context).cardColor
+          : dNoteSurfaceVariant(context),
       barrierColor: Colors.black.withValues(alpha: 0.55),
       isScrollControlled: true,
       clipBehavior: Clip.antiAlias,
@@ -2471,17 +2480,22 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            color: dNoteSurfaceVariant(context),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Icon(
-                            action['icon'] as IconData,
-                            color: action['color'] as Color,
-                            size: 30,
+                        Material(
+                          elevation: dNoteIsDark(context) ? 0 : 1,
+                          color: dNoteIsDark(context)
+                              ? dNoteSurfaceVariant(context)
+                              : Theme.of(context).cardColor,
+                          borderRadius: BorderRadius.circular(16),
+                          child: SizedBox(
+                            width: 64,
+                            height: 64,
+                            child: Center(
+                              child: Icon(
+                                action['icon'] as IconData,
+                                color: action['color'] as Color,
+                                size: 30,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 5),

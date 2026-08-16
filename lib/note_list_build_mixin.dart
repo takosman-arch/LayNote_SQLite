@@ -115,7 +115,19 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> filteredNotes;
-    SystemChrome.setSystemUIOverlayStyle(dNoteSystemBarsStyle(context));
+    SystemChrome.setSystemUIOverlayStyle(
+      dNoteSystemBarsStyle(
+        context,
+        // Not düzenleyicisi açıkken bu build tekrar tetiklenirse (ör. bir
+        // setState nedeniyle), gezinme çubuğunu düzenleyicinin ayarladığı
+        // renge (#EDEDED) geri döndürüyoruz; aksi halde varsayılan
+        // (#F5F5F5) rengine sıfırlanıp düzenleyicinin rengini eziyordu.
+        // Yalnızca açık temada uygulanır; koyu tema davranışı değişmez.
+        navigationBarColor: (!dNoteIsDark(context) && dNoteNoteEditorOpen.value)
+            ? const Color(0xFFEDEDED)
+            : null,
+      ),
+    );
     bool isTrash = _activeCategory == '__trash__';
     // Arama modundaki etiket şeridi için: aktif bölümde (Tümü/Notlar,
     // Favoriler, klasör, vb.) hangi etiketlerin bulunduğu build başında bir
@@ -576,7 +588,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       title: const Text(
                         'Notlar',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -584,7 +596,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         _getCountForCategory('Tümü').toString(),
                         style: const TextStyle(
                           color: Colors.grey,
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -607,7 +619,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       title: const Text(
                         'Favori',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -615,7 +627,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         _getCountForCategory('__favorites__').toString(),
                         style: const TextStyle(
                           color: Colors.grey,
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -634,7 +646,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     title: const Text(
                       'Gündem',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -642,7 +654,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       _gundemNoteCount(_notes).toString(),
                       style: const TextStyle(
                         color: Colors.grey,
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -666,7 +678,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       title: const Text(
                         'Hatırlatıcı',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -674,7 +686,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         _getCountForCategory('__reminders__').toString(),
                         style: const TextStyle(
                           color: Colors.grey,
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -697,7 +709,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       title: const Text(
                         'Kilitli',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -705,7 +717,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         _getCountForCategory('__locked__').toString(),
                         style: const TextStyle(
                           color: Colors.grey,
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -724,7 +736,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       title: const Text(
                         'Arşiv',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -732,7 +744,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         _getCountForCategory('__archive__').toString(),
                         style: const TextStyle(
                           color: Colors.grey,
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -755,7 +767,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       title: const Text(
                         'Çöp',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -763,7 +775,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         _deletedNotes.length.toString(),
                         style: const TextStyle(
                           color: Colors.grey,
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -888,7 +900,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     title: const Text(
                       'Klasör Ekle',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -921,7 +933,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     title: const Text(
                       'Takvim',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -941,7 +953,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     title: const Text(
                       'Ayarlar',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -955,7 +967,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     title: const Text(
                       'Yedekle & Geri Yükle',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -977,7 +989,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     title: const Text(
                       'Pro\'ya Yükselt',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -1009,7 +1021,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     title: const Text(
                       'Geliştirme Desteği',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -1023,7 +1035,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     title: const Text(
                       'Geri Bildirim',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -1037,7 +1049,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     title: const Text(
                       'Hakkında',
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

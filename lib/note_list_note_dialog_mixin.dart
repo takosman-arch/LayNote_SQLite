@@ -2808,6 +2808,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           // gibi uzun sürebilen işlemler) tamamlandığında artık var olmayan
           // bir setModalState çağırıp çökmesini engeller.
           bool isEditorOpen = true;
+          dNoteNoteEditorOpen.value = true;
           // Sağ üstteki üç nokta menüsündeki "Dışa Aktar" öğesine basılınca
           // açılan alt menüyü, düğmenin tam altında konumlandırabilmek için
           // düğmenin RenderBox'ına erişmeye yarayan sabit anahtar.
@@ -3866,6 +3867,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   statusBarIconBrightnessOverride: isDark
                       ? Brightness.light
                       : Brightness.dark,
+                  // Not içindeyken gezinme çubuğu, açık temada alt bar ile
+                  // aynı tona (#EDEDED) getirilir; koyu tema davranışı
+                  // değişmez.
+                  navigationBarColor: dNoteIsDark(context)
+                      ? null
+                      : const Color(0xFFEDEDED),
                 ),
               );
               return PopScope(
@@ -3908,6 +3915,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     _showInfoBar('Not kaydedildi', icon: Icons.save);
                   }
                   isEditorOpen = false;
+                  dNoteNoteEditorOpen.value = false;
                   // Sayfa kapatılırken hâlâ odaklı bir TextField (ör. hesap
                   // tablosu tutar hücresi) varsa, önce odağı kaldırıp bir
                   // sonraki frame'e kadar bekliyoruz. Aksi halde o alanın
@@ -3979,6 +3987,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           _showInfoBar('Not kaydedildi', icon: Icons.save);
                         }
                         isEditorOpen = false;
+                        dNoteNoteEditorOpen.value = false;
                         // Bkz. PopScope'taki aynı isimli not: odaklı bir
                         // alan varken hemen pop etmek dependents hatasına
                         // yol açabiliyordu.
@@ -6386,7 +6395,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           return Container(
                             height: 52,
                             decoration: BoxDecoration(
-                              color: dNoteHeaderColor(context),
+                              // Açık temada bu bar artık notun yazı alanıyla
+                              // aynı zemine (cardColor / beyaz) sahip;
+                              // koyu tema davranışı değişmedi
+                              // (dNoteHeaderColor eskisi gibi kullanılıyor).
+                              color: dNoteIsDark(context)
+                                  ? dNoteHeaderColor(context)
+                                  : Theme.of(context).cardColor,
                               border: Border(
                                 top: BorderSide(color: barColor, width: 1.5),
                               ),
@@ -6608,6 +6623,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         dNoteSystemBarsStyle(context),
                                       );
                                       isEditorOpen = false;
+                                      dNoteNoteEditorOpen.value = false;
                                       FocusManager.instance.primaryFocus
                                           ?.unfocus();
                                       WidgetsBinding.instance
