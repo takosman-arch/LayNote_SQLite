@@ -198,6 +198,20 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // italik/vb. araç çubuğu, hangi span listesini değiştireceğini bu ikisi
     // (focusedBlockIndex + focusedItemIndex) ile bulur.
     int focusedItemIndex = -1;
+    // DÜZELTME (checklist eklerken zengin metin barı bir an kaybolup geri
+    // geliyordu): bar görünürlüğü blockFocusNodes[...]?.hasFocus gibi HAM
+    // FocusNode durumuna bakıyor. Checklist oluşturma/madde ekleme
+    // akışlarında eski alanın odağı hemen kaybolurken yeni alana
+    // requestFocus() bir addPostFrameCallback'e ertelendiğinden (widget
+    // henüz o frame'de kurulmadan focus istenemiyor), araya gerçekten
+    // hiçbir alanın odaklı olmadığı bir frame giriyor ve bar o frame'de
+    // SizedBox.shrink()'e düşüp bir sonraki frame'de geri geliyordu. Bu
+    // bayrak, focusedBlockIndex/focusedItemIndex'in (odak isteğinden
+    // ÖNCE, senkron olarak) doğru hedefe ayarlandığı andan gerçek
+    // requestFocus() çağrısına kadarki köprüyü sağlar — o pencerede bar
+    // görünürlüğü ham hasFocus yerine bu bayrağa da bakar. Gerçek odak
+    // gelince (aşağıdaki FocusNode listener'larında) false'a çekilir.
+    bool pendingBlockFocus = false;
     // DÜZELTME (kalın/italik butonuna basıp SONRA yazınca uygulanmıyordu):
     // eskiden _toggleSpanAttribute yalnızca seçili metin varken bir şey
     // yapıyordu; imleç tek noktadaysa (seçim yoksa) sessizce hiçbir şey
@@ -483,6 +497,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
               if (fn.hasFocus) {
                 focusedBlockIndex = capturedIndex;
                 focusedItemIndex = -1;
+                pendingBlockFocus = false;
                 // DÜZELTME: bkz. titleFocusNode listener'ındaki aynı
                 // isimli açıklama — _titleFocused artık yalnızca burada,
                 // gerçek bir gövde bloğu odak KAZANDIĞINDA false'a çekiliyor.
@@ -623,6 +638,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   if (fn.hasFocus) {
                     focusedBlockIndex = capturedBlockIndex;
                     focusedItemIndex  = capturedItemIndex;
+                    pendingBlockFocus = false;
                     _titleFocused = false;
                     requestEditorRebuild?.call(() {});
                   }
@@ -654,6 +670,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 if (fn.hasFocus) {
                   focusedBlockIndex = capturedBlockIndex;
                   focusedItemIndex  = capturedItemIndex;
+                  pendingBlockFocus = false;
                   _titleFocused = false;
                   requestEditorRebuild?.call(() {});
                 }
@@ -1590,6 +1607,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           rebuildBlockControllers();
           final targetIdx = focusedBlockIndex.clamp(0, blocks.length - 1);
           focusedItemIndex = -1;
+          pendingBlockFocus = true;
           // DÜZELTME: eskiden iki kat iç içe addPostFrameCallback kullanılıyordu.
           // rebuildBlockControllers zaten eski (odaklı) FocusNode'un unfocus+dispose
           // işlemini KENDİ postFrameCallback'i içinde, bu callback'ten ÖNCE
@@ -1658,8 +1676,20 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         // checklist'e dönüştürülüyor; alt taraf boşsa hiç blok eklenmiyor
         // (rebuildBlockControllers zaten listenin metinle bitmesini
         // garanti ediyor).
+        // DÜZELTME (checklist bir üst satıra ekleniyordu): eskiden burada
+        // `finalAboveText.isEmpty` kontrol ediliyordu. Ama üstte GERÇEKTEN
+        // hiç satır olmaması ("lineStartIdx == 0") ile üstte BOŞ bir satır
+        // olması (lineStartIdx > 0 ama o satırın içeriği boş olduğundan
+        // finalAboveText da boş çıkması) birbirinden FARKLI durumlar.
+        // İkincisinde eskiden üstteki boş satır sessizce yutulup checklist
+        // onun YERİNE konuyordu — bu da checklist'in görsel olarak bir üst
+        // satıra kaymış gibi görünmesine sebep oluyordu (kullanıcı imleci
+        // ikinci/üçüncü satırda tutup checklist butonuna bastığında, eğer
+        // üstündeki satır boşsa bug tetikleniyordu). Artık üstte gerçekten
+        // bir satır olup olmadığına (lineStartIdx == 0) bakıyoruz; o satır
+        // boş olsa bile ayrı bir (boş) metin bloğu olarak korunuyor.
         final int checklistIdx;
-        if (finalAboveText.isEmpty) {
+        if (lineStartIdx == 0) {
           blocks[idx] = {
             'type': 'checklist',
             'items': [
@@ -1696,6 +1726,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         if (newItemFocusNodes != null && newItemFocusNodes.isNotEmpty) {
           focusedBlockIndex = checklistIdx;
           focusedItemIndex = 0;
+          // DÜZELTME (zengin metin barı bir an kaybolup geri geliyordu):
+          // bkz. pendingBlockFocus tanımındaki açıklama — odak hedefi
+          // burada senkron belirleniyor ama gerçek requestFocus() bir
+          // frame sonra çalışıyor; bar görünürlüğü bu bayrakla o aradaki
+          // frame'de de "odaklı" sayılır.
+          pendingBlockFocus = true;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (newItemFocusNodes.isNotEmpty) {
               newItemFocusNodes[0].requestFocus();
@@ -1727,6 +1763,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       showFontSizeSubToolbar = false;
       showBgColorSubToolbar = false;
       focusedItemIndex = -1;
+      pendingBlockFocus = false;
       // DÜZELTME: _titleFocused artık yalnızca ilgili FocusNode'ların
       // "odak kazanma" listener'larında güncelleniyor (bkz. titleFocusNode
       // listener'ındaki açıklama); klavye burada elle kapatılıp odak
@@ -3471,20 +3508,24 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   focusedBlockIndex = newFocusIdx;
                   final targetIdx = newFocusIdx;
                   final targetOffset = caretOffset;
+                  // DÜZELTME: yukarıdaki onAddItem/onConvertItemToText ile
+                  // aynı kök sebep — çift iç içe addPostFrameCallback,
+                  // rebuildBlockControllers() zaten kendi dispose
+                  // callback'ini sıraya koyduğu için gereksiz bir frame
+                  // daha ekleyip klavyenin/imlecin görünür şekilde
+                  // titremesine sebep oluyordu. Tek callback'e indirildi.
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (targetIdx >= 0 &&
-                          targetIdx < blockControllers.length &&
-                          blockControllers[targetIdx] != null &&
-                          targetIdx < blockFocusNodes.length &&
-                          blockFocusNodes[targetIdx] != null) {
-                        blockFocusNodes[targetIdx]!.requestFocus();
-                        final c = blockControllers[targetIdx]!;
-                        c.selection = TextSelection.collapsed(
-                          offset: targetOffset.clamp(0, c.text.length),
-                        );
-                      }
-                    });
+                    if (targetIdx >= 0 &&
+                        targetIdx < blockControllers.length &&
+                        blockControllers[targetIdx] != null &&
+                        targetIdx < blockFocusNodes.length &&
+                        blockFocusNodes[targetIdx] != null) {
+                      blockFocusNodes[targetIdx]!.requestFocus();
+                      final c = blockControllers[targetIdx]!;
+                      c.selection = TextSelection.collapsed(
+                        offset: targetOffset.clamp(0, c.text.length),
+                      );
+                    }
                   });
                 });
               }
@@ -4878,31 +4919,47 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         if (newFn.hasFocus) {
                                           focusedBlockIndex = capturedBlockIndex;
                                           focusedItemIndex = capturedItemIndex;
+                                          pendingBlockFocus = false;
                                           _titleFocused = false;
                                           requestEditorRebuild?.call(() {});
                                         }
                                       });
                                       itemCtrls.insert(newIndex, newCtrl);
                                       itemFns.insert(newIndex, newFn);
+                                      // DÜZELTME (zengin metin barı bir an
+                                      // kaybolup geri geliyordu): odak
+                                      // hedefi burada (senkron) belirleniyor
+                                      // ama gerçek requestFocus() aşağıda bir
+                                      // frame sonra çalışıyor; bar
+                                      // görünürlüğü ham hasFocus'a
+                                      // baktığından aradaki frame'de kayboluyordu.
+                                      // pendingBlockFocus bu köprüyü sağlıyor.
+                                      pendingBlockFocus = true;
+                                      focusedBlockIndex = capturedBlockIndex;
+                                      focusedItemIndex = capturedItemIndex;
                                     });
-                                    // Çift addPostFrameCallback: ilk frame'de
-                                    // setModalState sonrası widget ağacı
-                                    // (yeni controller/focus node) kurulur,
-                                    // ikinci frame'de requestFocus yapılır —
-                                    // böylece klavye (TextInputConnection)
-                                    // tam olarak yeniden kurulur ve
-                                    // TextCapitalization.sentences ayarı
-                                    // (ilk harf büyük göstergesi) doğru
-                                    // yansır; tek frame'de bazen klavye
-                                    // güncellenmiyordu.
+                                    // DÜZELTME (imleç üst satıra çıkıp
+                                    // tekrar aşağı iniyordu / bazen madde
+                                    // bir üst satırda oluşuyordu): burada
+                                    // da insertChecklistBlock'taki ile
+                                    // AYNI kök sebep vardı — çift iç içe
+                                    // addPostFrameCallback, setModalState
+                                    // ile widget ağacının kurulması ile
+                                    // requestFocus arasına fazladan bir
+                                    // frame sokuyordu. O ara frame boyunca
+                                    // hiçbir alan (ne eski ne yeni madde)
+                                    // gerçek odakta olmuyor, klavye görünür
+                                    // şekilde kapanıp yeniden açılıyor ve
+                                    // o sırada gelen tuş vuruşları/imleç
+                                    // konumu bir üst maddeye gidiyordu. Tek
+                                    // callback'e indirildi: widget ağacı ve
+                                    // requestFocus artık aynı frame sonunda
+                                    // art arda çalışıyor.
                                     WidgetsBinding.instance
                                         .addPostFrameCallback((_) {
-                                      WidgetsBinding.instance
-                                          .addPostFrameCallback((_) {
-                                        if (newIndex < itemFns.length) {
-                                          itemFns[newIndex].requestFocus();
-                                        }
-                                      });
+                                      if (newIndex < itemFns.length) {
+                                        itemFns[newIndex].requestFocus();
+                                      }
                                     });
                                   },
                                   // Madde boşken Backspace'e basıldığında
@@ -4971,26 +5028,48 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       }
                                       rebuildBlockControllers();
                                     });
+                                    // DÜZELTME: insertChecklistBlock'taki
+                                    // toggle yoluyla aynı kalıp —
+                                    // rebuildBlockControllers() zaten eski
+                                    // FocusNode'ların unfocus+dispose
+                                    // işlemini KENDİ postFrameCallback'i
+                                    // içinde sıraya koyuyor; burada AYRICA
+                                    // bir frame daha beklemek klavyenin
+                                    // görünür şekilde kapanıp yeniden
+                                    // açılmasına (ve imlecin bir üst
+                                    // satıra gidip gelmesine) sebep
+                                    // oluyordu. Tek callback'e indirildi.
+                                    // DÜZELTME 2 (çarpıya basıp checklist'i
+                                    // kapatırken zengin metin barı bir an
+                                    // kaybolup geri geliyordu): odak hedefi
+                                    // burada senkron belirlenmiyordu, sadece
+                                    // gerçek requestFocus() bir frame sonra
+                                    // FocusNode listener'ında güncelliyordu
+                                    // — aradaki frame'de bar ham hasFocus'a
+                                    // bakıp kayboluyordu. Diğer checklist
+                                    // akışlarındaki (onAddItem,
+                                    // insertChecklistBlock) aynı pendingBlockFocus
+                                    // köprüsü burada da uygulanıyor.
+                                    focusedBlockIndex = focusBlockIndex;
+                                    focusedItemIndex = -1;
+                                    pendingBlockFocus = true;
                                     WidgetsBinding.instance
                                         .addPostFrameCallback((_) {
-                                      WidgetsBinding.instance
-                                          .addPostFrameCallback((_) {
-                                        final idx = focusBlockIndex.clamp(
-                                          0,
-                                          blockFocusNodes.length - 1,
-                                        );
-                                        final fn = blockFocusNodes[idx];
-                                        if (fn != null) {
-                                          fn.requestFocus();
-                                          final ctrl = blockControllers[idx];
-                                          if (ctrl != null) {
-                                            ctrl.selection =
-                                                TextSelection.collapsed(
-                                              offset: 0,
-                                            );
-                                          }
+                                      final idx = focusBlockIndex.clamp(
+                                        0,
+                                        blockFocusNodes.length - 1,
+                                      );
+                                      final fn = blockFocusNodes[idx];
+                                      if (fn != null) {
+                                        fn.requestFocus();
+                                        final ctrl = blockControllers[idx];
+                                        if (ctrl != null) {
+                                          ctrl.selection =
+                                              TextSelection.collapsed(
+                                            offset: 0,
+                                          );
                                         }
-                                      });
+                                      }
                                     });
                                   },
                                   // Sürükleme tutamacıyla bir madde başka
@@ -5937,8 +6016,17 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           // odaklanmamışken) tıklanabildiğinden, bu satır
                           // odak şartı olmadan da gösterilebilmeli; aksi
                           // halde renk kartelası hiç görünmezdi.
+                          // pendingBlockFocus: bkz. tanımındaki açıklama —
+                          // checklist oluşturma/madde ekleme gibi
+                          // akışlarda odak hedefi senkron belirlenip
+                          // gerçek requestFocus() bir frame sonraya
+                          // ertelendiğinde, aradaki frame'de hiçbir
+                          // FocusNode.hasFocus true olmuyordu ve bar bir an
+                          // kaybolup geri geliyordu. Bu bayrak o pencerede
+                          // barı görünür tutar.
                           if (!hasFocusedTextBlock &&
                               !hasFocusedChecklistItem &&
+                              !pendingBlockFocus &&
                               !showBgColorSubToolbar) {
                             return const SizedBox.shrink();
                           }
