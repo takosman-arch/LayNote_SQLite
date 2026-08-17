@@ -724,7 +724,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
 
   Future<void> _shareBackup(File file) async {
     try {
-      await Share.shareXFiles([XFile(file.path)], text: 'dnote yedek dosyası');
+      await Share.shareXFiles([XFile(file.path)], text: 'layout yedek dosyası');
     } catch (e) {
       _showSnack('Paylaşım başlatılamadı: $e', isError: true);
     }

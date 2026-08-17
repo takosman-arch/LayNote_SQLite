@@ -642,7 +642,7 @@ class DNoteApp extends StatelessWidget {
           valueListenable: appAccentColor,
           builder: (context, accentColor, _) {
             return MaterialApp(
-              title: 'DNote',
+              title: 'Layout',
               debugShowCheckedModeBanner: false,
               localizationsDelegates: const [
                 GlobalMaterialLocalizations.delegate,

@@ -169,7 +169,7 @@ class ReminderService {
         android: AndroidNotificationDetails(
           'dnote_reminders',
           'Not Hatırlatıcıları',
-          channelDescription: 'DNote uygulamasındaki not hatırlatıcıları',
+          channelDescription: 'Layout uygulamasındaki not hatırlatıcıları',
           importance: Importance.max,
           priority: Priority.high,
         ),
@@ -223,7 +223,7 @@ class ReminderService {
           android: AndroidNotificationDetails(
             'dnote_reminders',
             'Not Hatırlatıcıları',
-            channelDescription: 'DNote uygulamasındaki not hatırlatıcıları',
+            channelDescription: 'Layout uygulamasındaki not hatırlatıcıları',
             importance: Importance.max,
             priority: Priority.high,
           ),
@@ -249,7 +249,7 @@ class ReminderService {
               'dnote_reminders',
               'Not Hatırlatıcıları',
               channelDescription:
-                  'DNote uygulamasındaki not hatırlatıcıları',
+                  'Layout uygulamasındaki not hatırlatıcıları',
               importance: Importance.max,
               priority: Priority.high,
             ),
@@ -290,7 +290,7 @@ class ReminderService {
         'dnote_pinned',
         'Sabitlenmiş Notlar',
         channelDescription:
-            'Bildirim paneline sabitlenen DNote notları',
+            'Bildirim paneline sabitlenen Layout notları',
         importance: Importance.low,
         priority: Priority.low,
         ongoing: true,

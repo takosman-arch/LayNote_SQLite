@@ -550,7 +550,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'LayNote',
+                          'Layout',
                           style: TextStyle(
                             color: appAccentColor.value,
                             fontSize: 26,
