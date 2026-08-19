@@ -1,0 +1,3104 @@
+{
+  "@@locale": "tr",
+  "toolbarBoldTooltip": "Kalın",
+  "@toolbarBoldTooltip": {
+    "description": "Metin biçimlendirme araç çubuğunda kalın yapma düğmesinin ipucu metni"
+  },
+  "toolbarItalicTooltip": "İtalik",
+  "@toolbarItalicTooltip": {
+    "description": "Metin biçimlendirme araç çubuğunda italik yapma düğmesinin ipucu metni"
+  },
+  "toolbarUnderlineTooltip": "Altı Çizili",
+  "@toolbarUnderlineTooltip": {
+    "description": "Metin biçimlendirme araç çubuğunda altı çizili yapma düğmesinin ipucu metni"
+  },
+  "toolbarStrikethroughTooltip": "Üzeri Çizili",
+  "@toolbarStrikethroughTooltip": {
+    "description": "Metin biçimlendirme araç çubuğunda üzeri çizili yapma düğmesinin ipucu metni"
+  },
+  "toolbarFontSizeTooltip": "Yazı Boyutu",
+  "@toolbarFontSizeTooltip": {
+    "description": "Metin biçimlendirme araç çubuğunda yazı boyutu seçme düğmesinin ipucu metni"
+  },
+  "toolbarColorTooltip": "Yazı Rengi",
+  "@toolbarColorTooltip": {
+    "description": "Metin biçimlendirme araç çubuğunda yazı rengi seçme düğmesinin ipucu metni"
+  },
+  "toolbarBulletTooltip": "Madde İşareti",
+  "@toolbarBulletTooltip": {
+    "description": "Blok araç çubuğunda madde işaretli liste ekleme düğmesinin ipucu metni"
+  },
+  "toolbarNumberTooltip": "Numara İşareti",
+  "@toolbarNumberTooltip": {
+    "description": "Blok araç çubuğunda numaralı liste ekleme düğmesinin ipucu metni"
+  },
+  "toolbarIndentTooltip": "Paragraf Girintisi",
+  "@toolbarIndentTooltip": {
+    "description": "Blok araç çubuğunda paragraf girintisi uygulama düğmesinin ipucu metni"
+  },
+  "toolbarLinkTooltip": "Link Ekle / Düzenle / Kaldır",
+  "@toolbarLinkTooltip": {
+    "description": "Blok araç çubuğunda link ekleme/düzenleme/kaldırma düğmesinin ipucu metni"
+  },
+  "toolbarDividerTooltip": "Yatay Çizgi Ekle",
+  "@toolbarDividerTooltip": {
+    "description": "Blok araç çubuğunda yatay çizgi (ayraç) ekleme düğmesinin ipucu metni"
+  },
+  "toolbarChecklistTooltip": "Yapılacaklar Listesi Ekle",
+  "@toolbarChecklistTooltip": {
+    "description": "Blok araç çubuğunda yapılacaklar listesi ekleme düğmesinin ipucu metni"
+  },
+  "linkSelectTextSnackbar": "Önce link eklemek istediğiniz metni seçin",
+  "@linkSelectTextSnackbar": {
+    "description": "Kullanıcı metin seçmeden link ekleme düğmesine bastığında gösterilen snackbar uyarı mesajı"
+  },
+  "linkDialogEditTitle": "Linki Düzenle",
+  "@linkDialogEditTitle": {
+    "description": "Seçili metinde zaten bir link varken açılan diyaloğun başlığı"
+  },
+  "linkDialogAddTitle": "Link Ekle",
+  "@linkDialogAddTitle": {
+    "description": "Seçili metinde henüz link yokken açılan diyaloğun başlığı"
+  },
+  "linkDialogRemoveButton": "Linki Kaldır",
+  "@linkDialogRemoveButton": {
+    "description": "Link diyaloğunda var olan linki kaldırma düğmesi (yalnızca link zaten varsa gösterilir)"
+  },
+  "linkDialogCancelButton": "Vazgeç",
+  "@linkDialogCancelButton": {
+    "description": "Link diyaloğunda işlemi iptal etme düğmesi"
+  },
+  "linkDialogConfirmButton": "Ekle",
+  "@linkDialogConfirmButton": {
+    "description": "Link diyaloğunda girilen URL'yi onaylama düğmesi"
+  },
+  "cameraPermissionPermanentlyDeniedMessage": "Kamera izni reddedilmiş. Video çekmek için ayarlardan izin vermen gerekiyor.",
+  "@cameraPermissionPermanentlyDeniedMessage": {
+    "description": "Kullanıcı kamera iznini kalıcı olarak reddettiğinde video çekme denemesinde gösterilen snackbar mesajı"
+  },
+  "cameraPermissionRequiredMessage": "Video çekmek için kamera izni gerekiyor.",
+  "@cameraPermissionRequiredMessage": {
+    "description": "Kamera izni henüz verilmemişken (kalıcı red değil) video çekme denemesinde gösterilen snackbar mesajı"
+  },
+  "openSettingsButtonLabel": "Ayarlar",
+  "@openSettingsButtonLabel": {
+    "description": "İzin kalıcı olarak reddedildiğinde uygulama ayarlarını açan snackbar eylem düğmesi (kamera ve mikrofon izin uyarılarında ortak kullanılır)"
+  },
+  "documentScanStartFailedMessage": "Tarama başlatılamadı: {error}",
+  "@documentScanStartFailedMessage": {
+    "description": "Belge tarama işlemi başlatılamadığında gösterilen snackbar mesajı",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "Metin tanıma başarısız: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "description": "Taranan belge üzerinde OCR (metin tanıma) işlemi başarısız olduğunda gösterilen snackbar mesajı",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "Belgede okunabilir metin bulunamadı",
+  "@ocrNoReadableTextMessage": {
+    "description": "OCR işlemi başarılı olduğu halde taranan belgede okunabilir metin çıkmadığında gösterilen bilgi mesajı"
+  },
+  "scanResultSheetTitle": "Taranan belge nasıl eklensin?",
+  "@scanResultSheetTitle": {
+    "description": "Belge tarandıktan sonra kullanıcıya ekleme şeklini soran bottom sheet'in başlığı"
+  },
+  "scanResultTextOnlyOption": "Sadece metin olarak ekle",
+  "@scanResultTextOnlyOption": {
+    "description": "Tarama sonuç sheet'inde yalnızca tanınan metni nota ekleme seçeneği"
+  },
+  "scanResultTextAndImageOption": "Metin + taranan görseli ekle",
+  "@scanResultTextAndImageOption": {
+    "description": "Tarama sonuç sheet'inde hem tanınan metni hem taranan görseli nota ekleme seçeneği"
+  },
+  "scanResultCancelOption": "Vazgeç",
+  "@scanResultCancelOption": {
+    "description": "Tarama sonuç sheet'inde işlemi iptal etme seçeneği"
+  },
+  "audioPermissionPermanentlyDeniedMessage": "Mikrofon izni reddedilmiş. Ses kaydı için ayarlardan izin vermen gerekiyor.",
+  "@audioPermissionPermanentlyDeniedMessage": {
+    "description": "Kullanıcı mikrofon iznini kalıcı olarak reddettiğinde ses kaydı denemesinde gösterilen snackbar mesajı"
+  },
+  "audioPermissionRequiredMessage": "Ses kaydı için mikrofon izni gerekiyor.",
+  "@audioPermissionRequiredMessage": {
+    "description": "Mikrofon izni henüz verilmemişken (kalıcı red değil) ses kaydı denemesinde gösterilen snackbar mesajı"
+  },
+  "voiceRecordingDefaultLabel": "Ses Kaydı",
+  "@voiceRecordingDefaultLabel": {
+    "description": "Yeni kaydedilen ses notu için otomatik dosya adı öneki ve oynatıcı sheet'inde dosya adı yoksa gösterilen varsayılan başlık"
+  },
+  "blockPreviewCalcTableLabel": "Hesap Tablosu ({count} satır)",
+  "@blockPreviewCalcTableLabel": {
+    "description": "Blokları Sırala listesinde bir hesap tablosu bloğu için gösterilen önizleme metni",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "Çizim",
+  "@blockPreviewDrawingLabel": {
+    "description": "Blokları Sırala listesinde bir çizim bloğu için gösterilen önizleme metni"
+  },
+  "blockPreviewAttachmentsLabel": "{count} ek (fotoğraf/belge)",
+  "@blockPreviewAttachmentsLabel": {
+    "description": "Blokları Sırala listesinde bir ek grubu bloğu için gösterilen önizleme metni",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "Ayırıcı Çizgi",
+  "@blockPreviewDividerLabel": {
+    "description": "Blokları Sırala listesinde bir yatay çizgi (ayraç) bloğu için gösterilen önizleme metni"
+  },
+  "blockPreviewChecklistLabel": "Kontrol Listesi ({count} madde)",
+  "@blockPreviewChecklistLabel": {
+    "description": "Blokları Sırala listesinde bir yapılacaklar listesi bloğu için gösterilen önizleme metni",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(boş metin)",
+  "@blockPreviewEmptyTextLabel": {
+    "description": "Blokları Sırala listesinde içeriği boş olan bir metin bloğu için gösterilen önizleme metni"
+  },
+  "reorderBlocksSheetTitle": "Blokları Sırala",
+  "@reorderBlocksSheetTitle": {
+    "description": "Blokları yeniden sıralama alt menüsünün (bottom sheet) başlığı"
+  },
+  "reorderBlocksMoveUpTooltip": "Yukarı Taşı",
+  "@reorderBlocksMoveUpTooltip": {
+    "description": "Blokları Sırala menüsünde seçili bloğu bir yukarı taşıma düğmesinin ipucu metni"
+  },
+  "reorderBlocksMoveDownTooltip": "Aşağı Taşı",
+  "@reorderBlocksMoveDownTooltip": {
+    "description": "Blokları Sırala menüsünde seçili bloğu bir aşağı taşıma düğmesinin ipucu metni"
+  },
+  "reorderBlocksCloseTooltip": "Kapat",
+  "@reorderBlocksCloseTooltip": {
+    "description": "Blokları Sırala menüsünü kapatma düğmesinin ipucu metni"
+  },
+  "reorderBlocksDescription": "Taşımak istediğiniz bloğa dokunup seçin, sonra yukarı/aşağı ok ile taşıyın.",
+  "@reorderBlocksDescription": {
+    "description": "Blokları Sırala menüsünde kullanıcıya nasıl kullanılacağını açıklayan yardım metni"
+  },
+  "reorderBlocksMenuItemLabel": "Sırala",
+  "@reorderBlocksMenuItemLabel": {
+    "description": "Not üzerindeki ek özellikler menüsünde Blokları Sırala alt menüsünü açan seçenek"
+  },
+  "txtImportPickerDialogTitle": "İçe aktarılacak TXT dosyasını seç",
+  "@txtImportPickerDialogTitle": {
+    "description": "TXT içe aktarma için dosya seçici penceresinin başlığı"
+  },
+  "txtImportReadFailedMessage": "TXT dosyası okunamadı",
+  "@txtImportReadFailedMessage": {
+    "description": "Seçilen TXT dosyası okunamadığında gösterilen bilgi mesajı"
+  },
+  "txtImportEmptyFileMessage": "TXT dosyası boş",
+  "@txtImportEmptyFileMessage": {
+    "description": "Seçilen TXT dosyasının içeriği boş olduğunda gösterilen bilgi mesajı"
+  },
+  "txtImportSuccessMessage": "TXT içe aktarıldı",
+  "@txtImportSuccessMessage": {
+    "description": "TXT dosyası başarıyla içe aktarıldığında gösterilen bilgi mesajı"
+  },
+  "txtImportMenuItemLabel": "İçe Aktar (txt)",
+  "@txtImportMenuItemLabel": {
+    "description": "Not üzerindeki ek özellikler menüsünde TXT dosyası içe aktarma seçeneği"
+  },
+  "exportMenuItemLabel": "Dışa Aktar",
+  "@exportMenuItemLabel": {
+    "description": "Not üzerindeki ek özellikler menüsünde dışa aktarma alt menüsünü açan seçenek"
+  },
+  "editorUndoTooltip": "Geri Al",
+  "@editorUndoTooltip": {
+    "description": "Not düzenleyici üst çubuğunda geri alma düğmesinin ipucu metni"
+  },
+  "editorRedoTooltip": "İleri Al",
+  "@editorRedoTooltip": {
+    "description": "Not düzenleyici üst çubuğunda ileri alma (yinele) düğmesinin ipucu metni"
+  },
+  "noteSavedMessage": "Not kaydedildi",
+  "@noteSavedMessage": {
+    "description": "Not kaydedildiğinde gösterilen bilgi çubuğu mesajı"
+  },
+  "dateAssignPickerHelpText": "Notu bir güne ata",
+  "@dateAssignPickerHelpText": {
+    "description": "Nota tarih atamak için açılan takvim seçicinin yardım metni"
+  },
+  "dateAssignChangeOption": "Tarihi değiştir",
+  "@dateAssignChangeOption": {
+    "description": "Nota zaten atanmış tarih üzerine uzun basıldığında açılan menüde tarihi değiştirme seçeneği"
+  },
+  "dateAssignRemoveOption": "Atamayı kaldır",
+  "@dateAssignRemoveOption": {
+    "description": "Nota zaten atanmış tarih üzerine uzun basıldığında açılan menüde tarih atamasını kaldırma seçeneği"
+  },
+  "editorSubToolbarCloseTooltip": "Kapat",
+  "@editorSubToolbarCloseTooltip": {
+    "description": "Metin biçimlendirme araç çubuğundaki alt araç çubuklarını (liste, stil, renk, yazı boyutu) kapatan düğmenin ipucu metni"
+  },
+  "titleFieldHint": "Başlık",
+  "@titleFieldHint": {
+    "description": "Not başlığı giriş alanının ipucu (placeholder) metni"
+  },
+  "textBlockHint": "Notunuzu buraya yazın...",
+  "@textBlockHint": {
+    "description": "Boş metin bloğu için gösterilen ipucu (placeholder) metni"
+  },
+  "drawingBoardMenuItemLabel": "Çizim Panosu",
+  "@drawingBoardMenuItemLabel": {
+    "description": "Not üzerindeki ek özellikler menüsünde çizim panosu bloğu ekleme seçeneği"
+  },
+  "voiceToTextTextNotesOnlyMessage": "Sesi yazıya çevirme yalnızca metin notlarında kullanılabilir",
+  "@voiceToTextTextNotesOnlyMessage": {
+    "description": "Ses kaydından metne çevirme özelliği metin dışı bir not türünde kullanılmaya çalışıldığında gösterilen bilgi mesajı"
+  },
+  "selectionModeCancelTooltip": "Seçimi İptal Et",
+  "@selectionModeCancelTooltip": {
+    "description": "Not listesi seçim modunda, seçimi iptal edip normal görünüme dönen (X) düğmesinin ipucu metni"
+  },
+  "selectionModeSelectedCountTitle": "{count} seçildi",
+  "@selectionModeSelectedCountTitle": {
+    "description": "Not listesi seçim modunda üst çubukta seçili not sayısını gösteren başlık",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "Sil",
+  "@selectionModeDeleteTooltip": {
+    "description": "Not listesi seçim modunda seçili notları silen düğmenin ipucu metni"
+  },
+  "selectionModeArchiveTooltip": "Arşiv",
+  "@selectionModeArchiveTooltip": {
+    "description": "Not listesi seçim modunda seçili notları arşivleyen düğmenin ipucu metni"
+  },
+  "selectionModeFolderTooltip": "Klasör",
+  "@selectionModeFolderTooltip": {
+    "description": "Not listesi seçim modunda seçili notları bir klasöre taşıma diyaloğunu açan düğmenin ipucu metni"
+  },
+  "searchFieldHint": "Notlarda ara...",
+  "@searchFieldHint": {
+    "description": "Not listesi üst çubuğunda arama modu açıldığında arama kutusunda gösterilen ipucu (placeholder) metni"
+  },
+  "emptyTrashDialogTitle": "Çöpü Boşalt",
+  "@emptyTrashDialogTitle": {
+    "description": "Çöp ekranındaki '...' menüsünde çöpü boşaltma seçeneğinin etiketi ve tıklanınca açılan onay diyaloğunun başlığı (aynı metin her iki yerde de kullanılır)"
+  },
+  "emptyTrashDialogConfirmMessage": "Tüm silinen notlar kalıcı olarak silinecek. Emin misiniz?",
+  "@emptyTrashDialogConfirmMessage": {
+    "description": "Çöpü boşaltma onay diyaloğunda gösterilen uyarı/açıklama metni"
+  },
+  "emptyTrashDialogCancelButton": "İptal",
+  "@emptyTrashDialogCancelButton": {
+    "description": "Çöpü boşaltma onay diyaloğunda işlemi iptal edip diyaloğu kapatan düğme"
+  },
+  "restoreAllMenuItemLabel": "Hepsini Geri Yükle",
+  "@restoreAllMenuItemLabel": {
+    "description": "Çöp ekranındaki '...' menüsünde çöpteki tüm notları geri yükleme seçeneğinin etiketi"
+  },
+  "sortMenuTooltip": "Notları Sırala",
+  "@sortMenuTooltip": {
+    "description": "Not listesi üst çubuğunda sıralama menüsünü açan düğmenin ipucu metni"
+  },
+  "sortMenuAscendingLabel": "Düzen: Artan (A-Z)",
+  "@sortMenuAscendingLabel": {
+    "description": "Sıralama menüsünde notları artan (A-Z) düzende sıralama seçeneği"
+  },
+  "sortMenuDescendingLabel": "Düzen: Azalan (Z-A)",
+  "@sortMenuDescendingLabel": {
+    "description": "Sıralama menüsünde notları azalan (Z-A) düzende sıralama seçeneği"
+  },
+  "sortMenuByTitleLabel": "Sırala: Başlık",
+  "@sortMenuByTitleLabel": {
+    "description": "Sıralama menüsünde notları başlığa göre sıralama ölçütü seçeneği"
+  },
+  "sortMenuByModifiedDateLabel": "Sırala: Son Düzenleme",
+  "@sortMenuByModifiedDateLabel": {
+    "description": "Sıralama menüsünde notları son düzenleme tarihine göre sıralama ölçütü seçeneği"
+  },
+  "sortMenuByCreatedDateLabel": "Sırala: Oluşturulma",
+  "@sortMenuByCreatedDateLabel": {
+    "description": "Sıralama menüsünde notları oluşturulma tarihine göre sıralama ölçütü seçeneği"
+  },
+  "sortMenuByFolderLabel": "Sırala: Klasör",
+  "@sortMenuByFolderLabel": {
+    "description": "Sıralama menüsünde notları klasöre (kategoriye) göre sıralama ölçütü seçeneği"
+  },
+  "viewToggleGridTooltip": "Izgara Görünümü",
+  "@viewToggleGridTooltip": {
+    "description": "Liste görünümündeyken ızgara görünümüne geçiş düğmesinin ipucu metni (o an liste görünümü aktifken gösterilir)"
+  },
+  "viewToggleListTooltip": "Liste Görünümü",
+  "@viewToggleListTooltip": {
+    "description": "Izgara görünümündeyken liste görünümüne geçiş düğmesinin ipucu metni (o an ızgara görünümü aktifken gösterilir)"
+  },
+  "drawerHeaderSubtitle": "Kişisel Not Defteriniz",
+  "@drawerHeaderSubtitle": {
+    "description": "Çekmece (drawer) menüsünün üst başlık alanında uygulama adının altında gösterilen alt başlık metni"
+  },
+  "drawerNotesSectionHeader": "NOTLAR",
+  "@drawerNotesSectionHeader": {
+    "description": "Çekmece menüsünde Notlar/Favori/Gündem/Hatırlatıcı/Kilitli/Arşiv/Çöp satırlarının üstünde yer alan bölüm başlığı"
+  },
+  "drawerAllNotesLabel": "Notlar",
+  "@drawerAllNotesLabel": {
+    "description": "Çekmece menüsünde tüm notları gösteren satırın etiketi"
+  },
+  "drawerFavoritesLabel": "Favori",
+  "@drawerFavoritesLabel": {
+    "description": "Çekmece menüsünde favori notları gösteren satırın etiketi"
+  },
+  "drawerAgendaLabel": "Gündem",
+  "@drawerAgendaLabel": {
+    "description": "Çekmece menüsünde Gündem ekranını açan satırın etiketi"
+  },
+  "drawerRemindersLabel": "Hatırlatıcı",
+  "@drawerRemindersLabel": {
+    "description": "Çekmece menüsünde hatırlatıcılı notları gösteren satırın etiketi"
+  },
+  "drawerLockedLabel": "Kilitli",
+  "@drawerLockedLabel": {
+    "description": "Çekmece menüsünde kilitli notları gösteren satırın etiketi"
+  },
+  "drawerTrashLabel": "Çöp",
+  "@drawerTrashLabel": {
+    "description": "Çekmece menüsünde çöp (silinen notlar) ekranını gösteren satırın etiketi"
+  },
+  "drawerFoldersSectionHeader": "KLASÖRLER",
+  "@drawerFoldersSectionHeader": {
+    "description": "Çekmece menüsünde klasör listesinin üstünde yer alan bölüm başlığı"
+  },
+  "drawerExpandLabel": "Genişlet",
+  "@drawerExpandLabel": {
+    "description": "Çekmece menüsünde tüm alt klasörleri daraltılmışken hepsini birden açan düğmenin etiketi"
+  },
+  "drawerCollapseLabel": "Daralt",
+  "@drawerCollapseLabel": {
+    "description": "Çekmece menüsünde alt klasörü olan kategorilerin en az biri açıkken hepsini birden kapatan düğmenin etiketi"
+  },
+  "drawerAddFolderLabel": "Klasör Ekle",
+  "@drawerAddFolderLabel": {
+    "description": "Çekmece menüsünde klasör listesinin altında yeni klasör ekleme diyaloğunu açan satırın etiketi"
+  },
+  "drawerAppSectionHeader": "UYGULAMA",
+  "@drawerAppSectionHeader": {
+    "description": "Çekmece menüsünde Takvim/Ayarlar/Yedekle/Pro/Destek/Geri Bildirim/Hakkında satırlarının üstünde yer alan bölüm başlığı"
+  },
+  "drawerCalendarLabel": "Takvim",
+  "@drawerCalendarLabel": {
+    "description": "Çekmece menüsünde Takvim ekranını açan satırın etiketi"
+  },
+  "drawerSettingsLabel": "Ayarlar",
+  "@drawerSettingsLabel": {
+    "description": "Çekmece menüsünde Ayarlar ekranını açan satırın etiketi"
+  },
+  "drawerBackupRestoreLabel": "Yedekle & Geri Yükle",
+  "@drawerBackupRestoreLabel": {
+    "description": "Çekmece menüsünde yedekleme/geri yükleme ekranını açan satırın etiketi"
+  },
+  "drawerUpgradeToProLabel": "Pro'ya Yükselt",
+  "@drawerUpgradeToProLabel": {
+    "description": "Çekmece menüsünde Pro sürümüne yükseltme satırının etiketi"
+  },
+  "drawerProBadgeLabel": "PRO",
+  "@drawerProBadgeLabel": {
+    "description": "Çekmece menüsünde Pro'ya Yükselt satırının yanında gösterilen küçük PRO rozeti metni"
+  },
+  "drawerSupportDevelopmentLabel": "Geliştirme Desteği",
+  "@drawerSupportDevelopmentLabel": {
+    "description": "Çekmece menüsünde geliştiriciye destek olma satırının etiketi"
+  },
+  "drawerFeedbackLabel": "Geri Bildirim",
+  "@drawerFeedbackLabel": {
+    "description": "Çekmece menüsünde geri bildirim gönderme satırının etiketi"
+  },
+  "drawerAboutLabel": "Hakkında",
+  "@drawerAboutLabel": {
+    "description": "Çekmece menüsünde uygulama hakkında bilgi ekranını açan satırın etiketi"
+  },
+  "noNotesFoundMessage": "Not bulunamadı.",
+  "@noNotesFoundMessage": {
+    "description": "Not listesi (arama sonucu dahil) boş olduğunda listenin ortasında gösterilen mesaj"
+  },
+  "trashRestoreButtonLabel": "Geri Yükle",
+  "@trashRestoreButtonLabel": {
+    "description": "Çöp ekranında bir nota basılı tutulunca açılan alt menüde notu geri yükleme düğmesinin etiketi (liste ve ızgara görünümünde ortak)"
+  },
+  "trashPermanentDeleteButtonLabel": "Kalıcı Sil",
+  "@trashPermanentDeleteButtonLabel": {
+    "description": "Çöp ekranında bir nota basılı tutulunca açılan alt menüde notu kalıcı olarak silme düğmesinin etiketi (liste ve ızgara görünümünde ortak)"
+  },
+  "tagRenamedInfoMessage": "Etiket yeniden adlandırıldı",
+  "@tagRenamedInfoMessage": {
+    "description": "Bir etiket yeniden adlandırıldığında gösterilen bilgi çubuğu mesajı"
+  },
+  "tagDeletedInfoMessage": "Etiket silindi",
+  "@tagDeletedInfoMessage": {
+    "description": "Bir etiket silindiğinde gösterilen bilgi çubuğu mesajı"
+  },
+  "tagOptionsRenameLabel": "Yeniden Adlandır",
+  "@tagOptionsRenameLabel": {
+    "description": "Etikete basılı tutunca açılan seçenek sheet'indeki yeniden adlandırma öğesi"
+  },
+  "tagOptionsDeleteLabel": "Sil",
+  "@tagOptionsDeleteLabel": {
+    "description": "Etikete basılı tutunca açılan seçenek sheet'indeki silme öğesi"
+  },
+  "renameTagDialogTitle": "Etiketi Yeniden Adlandır",
+  "@renameTagDialogTitle": {
+    "description": "Etiket yeniden adlandırma diyaloğunun başlığı"
+  },
+  "renameTagDialogHint": "Yeni etiket adı",
+  "@renameTagDialogHint": {
+    "description": "Etiket yeniden adlandırma diyaloğundaki metin alanının hint'i"
+  },
+  "renameTagDialogCancelButton": "İptal",
+  "@renameTagDialogCancelButton": {
+    "description": "Etiket yeniden adlandırma diyaloğunu kapatıp işlemi iptal eden düğme"
+  },
+  "renameTagDialogSaveButton": "Kaydet",
+  "@renameTagDialogSaveButton": {
+    "description": "Etiket yeniden adlandırma diyaloğunda yeni adı kaydeden düğme"
+  },
+  "deleteTagDialogMessageWithCount": "\"{tag}\" etiketi {affectedCount} nottan kaldırılacak. Devam edilsin mi?",
+  "@deleteTagDialogMessageWithCount": {
+    "description": "Etiket silme onay diyaloğunda, etiket en az bir notta kullanılıyorsa gösterilen mesaj",
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "\"{tag}\" etiketi silinsin mi?",
+  "@deleteTagDialogMessage": {
+    "description": "Etiket silme onay diyaloğunda, etiket hiçbir notta kullanılmıyorsa gösterilen mesaj",
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "Etiketi Sil",
+  "@deleteTagDialogTitle": {
+    "description": "Etiket silme onay diyaloğunun başlığı"
+  },
+  "deleteTagDialogCancelButton": "İptal",
+  "@deleteTagDialogCancelButton": {
+    "description": "Etiket silme onay diyaloğunu kapatıp işlemi iptal eden düğme"
+  },
+  "deleteTagDialogConfirmButton": "Sil",
+  "@deleteTagDialogConfirmButton": {
+    "description": "Etiket silme onay diyaloğunda silme işlemini onaylayan düğme"
+  },
+  "tagsSheetTitle": "Etiketler",
+  "@tagsSheetTitle": {
+    "description": "Not diyaloğundaki üç nokta menüsünden açılan etiketler sheet'inin başlığı"
+  },
+  "tagsSheetEmptyMessage": "Bu notta henüz etiket yok.",
+  "@tagsSheetEmptyMessage": {
+    "description": "Etiketler sheet'inde, notta hiç etiket yokken gösterilen boş durum metni"
+  },
+  "tagsSheetInputHint": "Yeni etiket yaz...",
+  "@tagsSheetInputHint": {
+    "description": "Etiketler sheet'indeki yeni etiket ekleme alanının hint'i"
+  },
+  "tagsSheetSuggestionsLabel": "Mevcut etiketler",
+  "@tagsSheetSuggestionsLabel": {
+    "description": "Etiketler sheet'inde, girilen metinle eşleşen mevcut etiket önerilerinin üstündeki başlık"
+  },
+  "noteDeletedInfoMessage": "Not silindi",
+  "@noteDeletedInfoMessage": {
+    "description": "Bir not silindiğinde (çöp kutusuna taşındığında) gösterilen bilgi çubuğu mesajı"
+  },
+  "noteDeletedUndoActionLabel": "Geri Getir",
+  "@noteDeletedUndoActionLabel": {
+    "description": "Not silindi bilgi çubuğunda, silme işlemini geri alan eylem düğmesinin etiketi"
+  },
+  "reminderSetInfoMessage": "Hatırlatıcı ayarlandı",
+  "@reminderSetInfoMessage": {
+    "description": "Not listesinden (düzenleyici açılmadan) uzun basma menüsüyle bir nota hatırlatıcı ayarlandığında gösterilen bilgi çubuğu mesajı"
+  },
+  "reminderRemovedInfoMessage": "Hatırlatıcı kaldırıldı",
+  "@reminderRemovedInfoMessage": {
+    "description": "Not listesinden (düzenleyici açılmadan) uzun basma menüsüyle bir notun hatırlatıcısı kaldırıldığında gösterilen bilgi çubuğu mesajı"
+  },
+  "noteDuplicatedInfoMessage": "Kopya oluşturuldu",
+  "@noteDuplicatedInfoMessage": {
+    "description": "Bir notun kopyası oluşturulduğunda gösterilen bilgi çubuğu mesajı"
+  },
+  "speechTextAppendedInfoMessage": "Metin nota eklendi",
+  "@speechTextAppendedInfoMessage": {
+    "description": "Not düzenleyicisi kapalıyken (kart üzerinde uzun basarak) sesli çevrilen metin notun sonuna eklendiğinde gösterilen bilgi çubuğu mesajı"
+  },
+  "pdfPreparingInfoMessage": "PDF hazırlanıyor…",
+  "@pdfPreparingInfoMessage": {
+    "description": "Not PDF olarak dışa aktarılırken, dosya hazırlanırken gösterilen bilgi çubuğu mesajı"
+  },
+  "pdfSavedInfoMessage": "PDF kaydedildi",
+  "@pdfSavedInfoMessage": {
+    "description": "Not PDF olarak başarıyla kaydedildiğinde gösterilen bilgi çubuğu mesajı"
+  },
+  "jpgPreparingInfoMessage": "JPG hazırlanıyor…",
+  "@jpgPreparingInfoMessage": {
+    "description": "Not JPG olarak dışa aktarılırken, görsel hazırlanırken gösterilen bilgi çubuğu mesajı"
+  },
+  "jpgSavedInfoMessage": "JPG kaydedildi",
+  "@jpgSavedInfoMessage": {
+    "description": "Not JPG olarak başarıyla kaydedildiğinde gösterilen bilgi çubuğu mesajı"
+  },
+  "jpgFailedInfoMessage": "JPG oluşturulamadı",
+  "@jpgFailedInfoMessage": {
+    "description": "Not JPG'e dönüştürülürken bir hata oluştuğunda gösterilen bilgi çubuğu mesajı"
+  },
+  "txtPreparingInfoMessage": "TXT hazırlanıyor…",
+  "@txtPreparingInfoMessage": {
+    "description": "Not TXT olarak dışa aktarılırken, dosya hazırlanırken gösterilen bilgi çubuğu mesajı"
+  },
+  "txtSavedInfoMessage": "TXT kaydedildi",
+  "@txtSavedInfoMessage": {
+    "description": "Not TXT olarak başarıyla kaydedildiğinde gösterilen bilgi çubuğu mesajı"
+  },
+  "txtFailedInfoMessage": "TXT oluşturulamadı",
+  "@txtFailedInfoMessage": {
+    "description": "Not TXT'e dönüştürülürken bir hata oluştuğunda gösterilen bilgi çubuğu mesajı"
+  },
+  "exportOpenActionLabel": "Aç",
+  "@exportOpenActionLabel": {
+    "description": "PDF/JPG/TXT dışa aktarma bilgi çubuğunda, kaydedilen dosyayı doğrudan açan eylem düğmesinin etiketi (üç dışa aktarma biçiminde de ortak kullanılır)"
+  },
+  "wrongPasswordInfoMessage": "Parola yanlış.",
+  "@wrongPasswordInfoMessage": {
+    "description": "Kilitli klasöre girerken yanlış parola girildiğinde gösterilen bilgi çubuğu mesajı"
+  },
+  "noteArchivedInfoMessage": "Not arşivlendi",
+  "@noteArchivedInfoMessage": {
+    "description": "Bir not arşive taşındığında gösterilen bilgi çubuğu mesajı"
+  },
+  "noteUnarchivedInfoMessage": "Arşivden çıkarıldı",
+  "@noteUnarchivedInfoMessage": {
+    "description": "Bir not arşivden çıkarıldığında gösterilen bilgi çubuğu mesajı"
+  },
+  "noteUnlockedInfoMessage": "Kilidi kaldırıldı",
+  "@noteUnlockedInfoMessage": {
+    "description": "Bir notun kilidi kaldırıldığında gösterilen bilgi çubuğu mesajı"
+  },
+  "noteLockedInfoMessage": "Not kilitlendi",
+  "@noteLockedInfoMessage": {
+    "description": "Bir not kilitlendiğinde gösterilen bilgi çubuğu mesajı"
+  },
+  "notificationUnpinnedInfoMessage": "Sabitleme kaldırıldı",
+  "@notificationUnpinnedInfoMessage": {
+    "description": "Bir notun bildirim panelindeki sabitlemesi kaldırıldığında gösterilen bilgi çubuğu mesajı"
+  },
+  "emptyNotePinBlockedInfoMessage": "Boş not sabitlenemez.",
+  "@emptyNotePinBlockedInfoMessage": {
+    "description": "Başlığı ve içeriği boş bir not bildirim paneline sabitlenmeye çalışıldığında gösterilen uyarı mesajı"
+  },
+  "notificationPinnedInfoMessage": "Bildirim paneline sabitlendi",
+  "@notificationPinnedInfoMessage": {
+    "description": "Bir not bildirim paneline sabitlendiğinde gösterilen bilgi çubuğu mesajı"
+  },
+  "noContentToReadInfoMessage": "Okunacak bir içerik yok",
+  "@noContentToReadInfoMessage": {
+    "description": "Başlığı ve içeriği boş bir not için Yüksek Sesle Oku eylemi seçildiğinde gösterilen bilgi çubuğu mesajı"
+  },
+  "backPressExitInfoMessage": "Çıkmak için tekrar geri tuşuna basın",
+  "@backPressExitInfoMessage": {
+    "description": "Ana ekranda geri tuşuna ilk kez basıldığında, uygulamadan çıkmak için tekrar basılması gerektiğini bildiren bilgi çubuğu mesajı"
+  },
+  "reminderChannelName": "Not Hatırlatıcıları",
+  "@reminderChannelName": {
+    "description": "Android bildirim kanalı adı — not hatırlatıcı bildirimleri için (sistem ayarlarında görünür)"
+  },
+  "reminderChannelDescription": "Layout uygulamasındaki not hatırlatıcıları",
+  "@reminderChannelDescription": {
+    "description": "Android bildirim kanalı açıklaması — not hatırlatıcı bildirimleri için (sistem ayarlarında görünür)"
+  },
+  "pinnedChannelName": "Sabitlenmiş Notlar",
+  "@pinnedChannelName": {
+    "description": "Android bildirim kanalı adı — bildirim paneline sabitlenmiş notlar için (sistem ayarlarında görünür)"
+  },
+  "pinnedChannelDescription": "Bildirim paneline sabitlenen Layout notları",
+  "@pinnedChannelDescription": {
+    "description": "Android bildirim kanalı açıklaması — bildirim paneline sabitlenmiş notlar için (sistem ayarlarında görünür)"
+  },
+  "notificationUnpinActionLabel": "Kaldır",
+  "@notificationUnpinActionLabel": {
+    "description": "Bildirim paneline sabitlenmiş bir notun bildirimindeki aksiyon butonunun etiketi; dokunulduğunda sabitleme kaldırılır"
+  },
+  "reminderDefaultTitle": "Hatırlatıcı",
+  "@reminderDefaultTitle": {
+    "description": "Notun başlığı boşsa, hatırlatıcı bildiriminde başlık yerine kullanılan varsayılan metin"
+  },
+  "reminderChecklistBodyFallback": "Kontrol listeni kontrol etmeyi unutma",
+  "@reminderChecklistBodyFallback": {
+    "description": "Kontrol listesi tipindeki bir notun hatırlatıcı bildiriminde gösterilen sabit gövde metni"
+  },
+  "reminderTextBodyFallback": "Notunu kontrol etmeyi unutma",
+  "@reminderTextBodyFallback": {
+    "description": "Metin tipindeki bir notun içeriği boşsa, hatırlatıcı bildiriminde gövde yerine kullanılan varsayılan metin"
+  },
+  "pdfSaveDialogTitle": "PDF olarak kaydet",
+  "@pdfSaveDialogTitle": {
+    "description": "Not PDF'e dönüştürüldükten sonra, kayıt konumunu seçmek için açılan native (sistem) dosya kaydetme diyaloğunun başlığı"
+  },
+  "jpgSaveDialogTitle": "JPG olarak kaydet",
+  "@jpgSaveDialogTitle": {
+    "description": "Not JPG'e dönüştürüldükten sonra, kayıt konumunu seçmek için açılan native (sistem) dosya kaydetme diyaloğunun başlığı"
+  },
+  "txtSaveDialogTitle": "TXT olarak kaydet",
+  "@txtSaveDialogTitle": {
+    "description": "Not TXT'e dönüştürüldükten sonra, kayıt konumunu seçmek için açılan native (sistem) dosya kaydetme diyaloğunun başlığı"
+  },
+  "textSizeSheetTitle": "Metin Boyutu",
+  "@textSizeSheetTitle": {
+    "description": "Not için yazı boyutu ayarlama alt menüsünün (bottom sheet) başlığı"
+  },
+  "textSizeSamplePreview": "Örnek metin",
+  "@textSizeSamplePreview": {
+    "description": "Yazı boyutu alt menüsünde, kaydırıcıyla seçilen boyutu önizlemek için gösterilen örnek metin"
+  },
+  "textSizeCancelButton": "İptal",
+  "@textSizeCancelButton": {
+    "description": "Yazı boyutu alt menüsünde, değişikliği uygulamadan menüyü kapatan düğme"
+  },
+  "textSizeApplyButton": "Uygula",
+  "@textSizeApplyButton": {
+    "description": "Yazı boyutu alt menüsünde, seçilen yazı boyutunu nota uygulayıp kaydeden düğme"
+  },
+  "createPasswordDialogTitle": "Şifre Oluştur",
+  "@createPasswordDialogTitle": {
+    "description": "Not kilitleme için henüz parola belirlenmemişken açılan 'yeni parola oluştur' diyaloğunun başlığı"
+  },
+  "createPasswordNewPasswordHint": "Yeni şifre",
+  "@createPasswordNewPasswordHint": {
+    "description": "Şifre oluştur diyaloğunda yeni parolanın girildiği alanın hint metni"
+  },
+  "createPasswordConfirmHint": "Şifreyi tekrar gir",
+  "@createPasswordConfirmHint": {
+    "description": "Şifre oluştur diyaloğunda parolanın doğrulama amacıyla tekrar girildiği alanın hint metni"
+  },
+  "createPasswordHintQuestionDescription": "Şifrenizi unutursanız diye bir güvenlik sorusu belirleyin (zorunlu değildir).",
+  "@createPasswordHintQuestionDescription": {
+    "description": "Şifre oluştur diyaloğunda güvenlik sorusu alanının üstünde gösterilen açıklama metni"
+  },
+  "createPasswordHintQuestionHint": "Güvenlik sorusu seçin",
+  "@createPasswordHintQuestionHint": {
+    "description": "Şifre oluştur diyaloğunda güvenlik sorusu seçimi için açılır menünün (dropdown) hint metni"
+  },
+  "createPasswordHintAnswerHint": "Cevabınız",
+  "@createPasswordHintAnswerHint": {
+    "description": "Şifre oluştur diyaloğunda güvenlik sorusunun cevabının girildiği alanın hint metni"
+  },
+  "createPasswordCancelButton": "İptal",
+  "@createPasswordCancelButton": {
+    "description": "Şifre oluştur diyaloğunu kapatıp işlemi iptal eden düğme"
+  },
+  "createPasswordSaveButton": "Kaydet",
+  "@createPasswordSaveButton": {
+    "description": "Şifre oluştur diyaloğunda girilen parolayı ve güvenlik sorusunu kaydeden düğme"
+  },
+  "passwordMismatchMessage": "Şifreler eşleşmiyor!",
+  "@passwordMismatchMessage": {
+    "description": "Şifre oluştur diyaloğunda iki parola alanı birbiriyle eşleşmediğinde gösterilen snackbar mesajı"
+  },
+  "passwordRequiredDialogTitle": "Şifre Gerekiyor",
+  "@passwordRequiredDialogTitle": {
+    "description": "Kilitli bir not/klasör açılmaya çalışıldığında parola girişini isteyen diyaloğun başlığı"
+  },
+  "passwordRequiredHint": "Şifreyi girin",
+  "@passwordRequiredHint": {
+    "description": "Parola doğrulama diyaloğunda parolanın girildiği alanın hint metni"
+  },
+  "forgotPasswordButtonLabel": "Şifremi unuttum",
+  "@forgotPasswordButtonLabel": {
+    "description": "Parola doğrulama diyaloğunda, güvenlik sorusu akışını başlatan bağlantı tarzı düğme"
+  },
+  "passwordRequiredCancelButton": "İptal",
+  "@passwordRequiredCancelButton": {
+    "description": "Parola doğrulama diyaloğunu kapatıp işlemi iptal eden düğme"
+  },
+  "passwordRequiredConfirmButton": "Doğrula",
+  "@passwordRequiredConfirmButton": {
+    "description": "Parola doğrulama diyaloğunda girilen parolayı kontrol eden düğme"
+  },
+  "securityQuestionDialogTitle": "Güvenlik Sorusu",
+  "@securityQuestionDialogTitle": {
+    "description": "'Şifremi unuttum' akışında güvenlik sorusunun sorulduğu diyaloğun başlığı"
+  },
+  "securityQuestionAnswerHint": "Cevabınız",
+  "@securityQuestionAnswerHint": {
+    "description": "'Şifremi unuttum' diyaloğunda güvenlik sorusu cevabının girildiği alanın hint metni"
+  },
+  "securityQuestionCancelButton": "İptal",
+  "@securityQuestionCancelButton": {
+    "description": "'Şifremi unuttum' diyaloğunu kapatıp işlemi iptal eden düğme"
+  },
+  "securityQuestionConfirmButton": "Onayla",
+  "@securityQuestionConfirmButton": {
+    "description": "'Şifremi unuttum' diyaloğunda girilen cevabı kontrol eden düğme"
+  },
+  "securityQuestionWrongAnswerMessage": "Cevap yanlış. Tekrar deneyin.",
+  "@securityQuestionWrongAnswerMessage": {
+    "description": "'Şifremi unuttum' diyaloğunda girilen güvenlik sorusu cevabı yanlış olduğunda alanın altında gösterilen hata metni"
+  },
+  "revealedPasswordDialogTitle": "Şifreniz",
+  "@revealedPasswordDialogTitle": {
+    "description": "Güvenlik sorusu doğrulandıktan sonra kayıtlı parolanın gösterildiği diyaloğun başlığı"
+  },
+  "revealedPasswordLabel": "Not şifreniz:",
+  "@revealedPasswordLabel": {
+    "description": "Şifre gösterme diyaloğunda gösterilen parolanın üstündeki açıklama etiketi"
+  },
+  "revealedPasswordOkButton": "Tamam",
+  "@revealedPasswordOkButton": {
+    "description": "Şifre gösterme diyaloğunu kapatan düğme"
+  },
+  "securityQuestionPetName": "İlk evcil hayvanınızın adı nedir?",
+  "@securityQuestionPetName": {
+    "description": "Sabit güvenlik sorusu listesindeki seçeneklerden biri (şifre oluştur / şifremi unuttum diyaloglarında kullanılır)"
+  },
+  "securityQuestionFavoriteTeacher": "En sevdiğiniz öğretmeninizin adı nedir?",
+  "@securityQuestionFavoriteTeacher": {
+    "description": "Sabit güvenlik sorusu listesindeki seçeneklerden biri (şifre oluştur / şifremi unuttum diyaloglarında kullanılır)"
+  },
+  "securityQuestionBirthCity": "Doğduğunuz şehir nedir?",
+  "@securityQuestionBirthCity": {
+    "description": "Sabit güvenlik sorusu listesindeki seçeneklerden biri (şifre oluştur / şifremi unuttum diyaloglarında kullanılır)"
+  },
+  "securityQuestionFavoriteFood": "En sevdiğiniz yemek nedir?",
+  "@securityQuestionFavoriteFood": {
+    "description": "Sabit güvenlik sorusu listesindeki seçeneklerden biri (şifre oluştur / şifremi unuttum diyaloglarında kullanılır)"
+  },
+  "securityQuestionMotherMaidenName": "Annenizin kızlık soyadı nedir?",
+  "@securityQuestionMotherMaidenName": {
+    "description": "Sabit güvenlik sorusu listesindeki seçeneklerden biri (şifre oluştur / şifremi unuttum diyaloglarında kullanılır)"
+  },
+  "securityQuestionFirstSchool": "İlk okuduğunuz okulun adı nedir?",
+  "@securityQuestionFirstSchool": {
+    "description": "Sabit güvenlik sorusu listesindeki seçeneklerden biri (şifre oluştur / şifremi unuttum diyaloglarında kullanılır)"
+  },
+  "securityQuestionFavoriteColor": "En sevdiğiniz renk nedir?",
+  "@securityQuestionFavoriteColor": {
+    "description": "Sabit güvenlik sorusu listesindeki seçeneklerden biri (şifre oluştur / şifremi unuttum diyaloglarında kullanılır)"
+  },
+  "editFolderDialogTitle": "Klasörü Düzenle",
+  "@editFolderDialogTitle": {
+    "description": "Mevcut bir klasör/alt klasör düzenlenirken açılan diyaloğun başlığı"
+  },
+  "newSubfolderDialogTitle": "Yeni Alt Klasör",
+  "@newSubfolderDialogTitle": {
+    "description": "Bir üst klasörün altına yeni alt klasör eklenirken açılan diyaloğun başlığı"
+  },
+  "addFolderDialogTitle": "Klasör Ekle",
+  "@addFolderDialogTitle": {
+    "description": "Yeni bir üst düzey klasör eklenirken açılan diyaloğun başlığı"
+  },
+  "subfolderParentInfoMessage": "\"{parentCategory}\" içinde oluşturulacak",
+  "@subfolderParentInfoMessage": {
+    "description": "Yeni alt klasör diyaloğunda, alt klasörün hangi üst klasörün içinde oluşturulacağını belirten bilgi metni",
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "Alt klasör adı",
+  "@subfolderNameFieldLabel": {
+    "description": "Alt klasör diyaloğunda klasör adının girildiği alanın etiketi"
+  },
+  "folderNameFieldLabel": "Klasör adı",
+  "@folderNameFieldLabel": {
+    "description": "Üst düzey klasör diyaloğunda klasör adının girildiği alanın etiketi"
+  },
+  "folderColorLabel": "Renk",
+  "@folderColorLabel": {
+    "description": "Klasör ekle/düzenle diyaloğunda renk paletinin üstünde gösterilen etiket"
+  },
+  "folderDialogCancelButton": "İptal",
+  "@folderDialogCancelButton": {
+    "description": "Klasör ekle/düzenle diyaloğunu kapatıp işlemi iptal eden düğme"
+  },
+  "folderDialogSaveButton": "Kaydet",
+  "@folderDialogSaveButton": {
+    "description": "Klasör düzenleme modunda, yapılan değişiklikleri kaydeden düğme"
+  },
+  "folderDialogAddButton": "Ekle",
+  "@folderDialogAddButton": {
+    "description": "Yeni klasör/alt klasör ekleme modunda, klasörü oluşturan düğme"
+  },
+  "selectFolderSheetTitle": "Klasör Seç",
+  "@selectFolderSheetTitle": {
+    "description": "Bir notu bir klasöre atamak için açılan alt menünün (bottom sheet) başlığı"
+  },
+  "selectFolderAddOptionLabel": "Klasör Ekle",
+  "@selectFolderAddOptionLabel": {
+    "description": "Klasör seç alt menüsünde, yeni klasör oluşturma diyaloğunu açan liste öğesinin etiketi"
+  },
+  "removeCurrentFolderLabel": "Mevcut Klasörü Kaldır",
+  "@removeCurrentFolderLabel": {
+    "description": "Klasör seç alt menüsünde, notun mevcut klasör atamasını kaldıran (klasörsüz bırakan) liste öğesinin etiketi"
+  },
+  "noteDetailsDialogTitle": "Ayrıntılar",
+  "@noteDetailsDialogTitle": {
+    "description": "Bir notun oluşturulma/düzenlenme tarihi, karakter ve kelime sayısını gösteren ayrıntılar diyaloğunun başlığı"
+  },
+  "noteDetailsCreatedLabel": "Oluşturulma",
+  "@noteDetailsCreatedLabel": {
+    "description": "Not ayrıntıları diyaloğunda oluşturulma tarihi satırının etiketi"
+  },
+  "noteDetailsModifiedLabel": "Son Düzenleme",
+  "@noteDetailsModifiedLabel": {
+    "description": "Not ayrıntıları diyaloğunda son düzenlenme tarihi satırının etiketi"
+  },
+  "noteDetailsCharCountLabel": "Karakter Sayısı",
+  "@noteDetailsCharCountLabel": {
+    "description": "Not ayrıntıları diyaloğunda karakter sayısı satırının etiketi"
+  },
+  "noteDetailsCharCountValue": "{count} karakter",
+  "@noteDetailsCharCountValue": {
+    "description": "Not ayrıntıları diyaloğunda karakter sayısı satırının değeri",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "Kelime Sayısı",
+  "@noteDetailsWordCountLabel": {
+    "description": "Not ayrıntıları diyaloğunda kelime sayısı satırının etiketi"
+  },
+  "noteDetailsWordCountValue": "{count} kelime",
+  "@noteDetailsWordCountValue": {
+    "description": "Not ayrıntıları diyaloğunda kelime sayısı satırının değeri",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "Tamam",
+  "@noteDetailsOkButton": {
+    "description": "Not ayrıntıları diyaloğunu kapatan düğme"
+  },
+  "noteDetailsUnknownDateLabel": "Bilinmiyor",
+  "@noteDetailsUnknownDateLabel": {
+    "description": "Not ayrıntıları diyaloğunda oluşturulma/düzenlenme tarihi kayıtlı değilse gösterilen yer tutucu metin"
+  },
+  "addAttachmentSheetTitle": "Ekle",
+  "@addAttachmentSheetTitle": {
+    "description": "Not düzenleyicisinde '+' butonuna basınca açılan ek ekleme alt menüsünün başlığı"
+  },
+  "addAttachmentImageOption": "Görsel Ekle",
+  "@addAttachmentImageOption": {
+    "description": "Ek ekleme alt menüsünde galeriden görsel seçme seçeneğinin etiketi"
+  },
+  "addAttachmentCameraOption": "Kamera",
+  "@addAttachmentCameraOption": {
+    "description": "Ek ekleme alt menüsünde kamerayla fotoğraf çekme seçeneğinin etiketi"
+  },
+  "addAttachmentFileOption": "Dosya Ekle",
+  "@addAttachmentFileOption": {
+    "description": "Ek ekleme alt menüsünde cihazdan dosya seçme seçeneğinin etiketi"
+  },
+  "addAttachmentVoiceOption": "Ses Kaydı",
+  "@addAttachmentVoiceOption": {
+    "description": "Ek ekleme alt menüsünde ses kaydı başlatma seçeneğinin etiketi"
+  },
+  "addAttachmentVideoOption": "Video Çek",
+  "@addAttachmentVideoOption": {
+    "description": "Ek ekleme alt menüsünde kamerayla video çekme seçeneğinin etiketi"
+  },
+  "addAttachmentScanOption": "Belge Tara",
+  "@addAttachmentScanOption": {
+    "description": "Ek ekleme alt menüsünde belge tarama (doküman scanner) seçeneğinin etiketi"
+  },
+  "noteActionsSheetTitle": "Eylem Seç",
+  "@noteActionsSheetTitle": {
+    "description": "Bir not üzerindeki tüm eylemleri (arşivle, kilitle, sil, paylaş vb.) listeleyen büyük aksiyon panelinin başlığı"
+  },
+  "noteActionReminderLabel": "Hatırlatıcı",
+  "@noteActionReminderLabel": {
+    "description": "Eylem panelinde, notta henüz hatırlatıcı yokken gösterilen 'Hatırlatıcı ekle' eyleminin etiketi"
+  },
+  "noteActionEditReminderLabel": "Hatırlatıcıyı Düzenle",
+  "@noteActionEditReminderLabel": {
+    "description": "Eylem panelinde, notta zaten bir hatırlatıcı varken gösterilen eylemin etiketi"
+  },
+  "noteActionSpeechToTextLabel": "Sesi Yazıya Çevir",
+  "@noteActionSpeechToTextLabel": {
+    "description": "Eylem panelinde, konuşmayı metne çeviren eylemin etiketi"
+  },
+  "noteActionArchiveLabel": "Arşiv",
+  "@noteActionArchiveLabel": {
+    "description": "Eylem panelinde, notu arşivleyen eylemin etiketi (not henüz arşivde değilken)"
+  },
+  "noteActionUnarchiveLabel": "Arşivden Çıkar",
+  "@noteActionUnarchiveLabel": {
+    "description": "Eylem panelinde, arşivdeki notu arşivden çıkaran eylemin etiketi"
+  },
+  "noteActionLockLabel": "Kilitle",
+  "@noteActionLockLabel": {
+    "description": "Eylem panelinde, notu parolayla kilitleyen eylemin etiketi (not henüz kilitli değilken)"
+  },
+  "noteActionUnlockLabel": "Kilidi Kaldır",
+  "@noteActionUnlockLabel": {
+    "description": "Eylem panelinde, kilitli notun kilidini kaldıran eylemin etiketi"
+  },
+  "noteActionFavoriteLabel": "Favori",
+  "@noteActionFavoriteLabel": {
+    "description": "Eylem panelinde, notu favorilere ekleyen eylemin etiketi (not henüz favori değilken)"
+  },
+  "noteActionUnfavoriteLabel": "Favoriden Çıkar",
+  "@noteActionUnfavoriteLabel": {
+    "description": "Eylem panelinde, favorideki notu favorilerden çıkaran eylemin etiketi"
+  },
+  "noteActionClassifyLabel": "Klasör Seç",
+  "@noteActionClassifyLabel": {
+    "description": "Eylem panelinde, notun klasörünü değiştiren eylemin etiketi"
+  },
+  "noteActionDeleteLabel": "Sil",
+  "@noteActionDeleteLabel": {
+    "description": "Eylem panelinde, notu çöp kutusuna taşıyan eylemin etiketi"
+  },
+  "noteActionPinToNotificationLabel": "Bildirim Paneline Sabitle",
+  "@noteActionPinToNotificationLabel": {
+    "description": "Eylem panelinde, notu bildirim paneline sabitleyen eylemin etiketi (not henüz sabitlenmemişken)"
+  },
+  "noteActionUnpinFromNotificationLabel": "Sabitlemeyi Kaldır",
+  "@noteActionUnpinFromNotificationLabel": {
+    "description": "Eylem panelinde, bildirim panelindeki notun sabitlemesini kaldıran eylemin etiketi"
+  },
+  "noteActionShareLabel": "Paylaş",
+  "@noteActionShareLabel": {
+    "description": "Eylem panelinde, notu sistem paylaşım menüsüyle paylaşan eylemin etiketi"
+  },
+  "noteActionDuplicateLabel": "Kopya Oluştur",
+  "@noteActionDuplicateLabel": {
+    "description": "Eylem panelinde, notun bir kopyasını oluşturan eylemin etiketi"
+  },
+  "noteActionCopyContentLabel": "İçeriği Kopyala",
+  "@noteActionCopyContentLabel": {
+    "description": "Eylem panelinde, not içeriğini panoya kopyalayan eylemin etiketi"
+  },
+  "noteActionTtsLabel": "Yüksek Sesle Oku",
+  "@noteActionTtsLabel": {
+    "description": "Eylem panelinde, not içeriğini sesli okuyan (text-to-speech) eylemin etiketi"
+  },
+  "noteActionTextSizeLabel": "Metin Boyutu",
+  "@noteActionTextSizeLabel": {
+    "description": "Eylem panelinde, yazı boyutu ayarlama alt menüsünü açan eylemin etiketi"
+  },
+  "noteActionDetailsLabel": "Ayrıntılar",
+  "@noteActionDetailsLabel": {
+    "description": "Eylem panelinde, not ayrıntıları diyaloğunu açan eylemin etiketi"
+  },
+  "noteActionDiscardChangesLabel": "Değişiklikleri Yok Say",
+  "@noteActionDiscardChangesLabel": {
+    "description": "Eylem panelinde, yalnızca not düzenleyicisinden çağrıldığında gösterilen, kaydedilmemiş değişiklikleri yok sayıp düzenleyiciyi kapatan eylemin etiketi"
+  },
+  "noteActionSelectLabel": "Seç",
+  "@noteActionSelectLabel": {
+    "description": "Eylem panelinde, yalnızca not listesinden uzun basmayla çağrıldığında gösterilen, çoklu seçim modunu açan eylemin etiketi"
+  },
+  "reminderEditOptionLabel": "Hatırlatıcıyı değiştir",
+  "@reminderEditOptionLabel": {
+    "description": "Notta zaten hatırlatıcı varken 'Hatırlatıcıyı Düzenle' eylemine basılınca açılan alt seçim sheet'indeki 'düzenle' seçeneğinin etiketi"
+  },
+  "reminderRemoveOptionLabel": "Hatırlatıcıyı kaldır",
+  "@reminderRemoveOptionLabel": {
+    "description": "Notta zaten hatırlatıcı varken 'Hatırlatıcıyı Düzenle' eylemine basılınca açılan alt seçim sheet'indeki 'kaldır' seçeneğinin etiketi"
+  },
+  "discardChangesDialogTitle": "Değişiklikleri Yok Say",
+  "@discardChangesDialogTitle": {
+    "description": "Not düzenleyicisinde kaydedilmemiş değişiklikleri yok sayma onay diyaloğunun başlığı"
+  },
+  "discardChangesDialogMessage": "Bu nottaki kaydedilmemiş değişiklikler kaybolacak. Yok saymak istediğinize emin misiniz?",
+  "@discardChangesDialogMessage": {
+    "description": "Değişiklikleri yok sayma onay diyaloğunun içerik metni"
+  },
+  "discardChangesCancelButton": "Vazgeç",
+  "@discardChangesCancelButton": {
+    "description": "Değişiklikleri yok sayma onay diyaloğunda işlemi iptal edip düzenleyicide kalmayı sağlayan düğme"
+  },
+  "discardChangesConfirmButton": "Yok Say",
+  "@discardChangesConfirmButton": {
+    "description": "Değişiklikleri yok sayma onay diyaloğunda kaydedilmemiş değişiklikleri onaylayarak yok sayan düğme"
+  },
+  "pinnedNotificationDefaultTitle": "Not",
+  "@pinnedNotificationDefaultTitle": {
+    "description": "Bir not bildirim paneline sabitlenirken, notun başlığı boşsa bildirimde kullanılan varsayılan başlık"
+  },
+  "pdfFailedInfoMessage": "PDF oluşturulamadı",
+  "@pdfFailedInfoMessage": {
+    "description": "Not PDF'e dönüştürülürken bir hata oluştuğunda gösterilen bilgi çubuğu mesajı"
+  },
+  "drawingScreenTitle": "Çizim",
+  "@drawingScreenTitle": {
+    "description": "Tam ekran çizim sayfasının AppBar başlığı; çizim tek başına PDF/JPG olarak dışa aktarılırken not başlığı olarak da kullanılır"
+  },
+  "drawingMinimizeTooltip": "Küçült",
+  "@drawingMinimizeTooltip": {
+    "description": "Tam ekran çizim sayfasında, gömülü önizlemeye geri dönen (sayfayı kapatan) düğmenin ipucu metni"
+  },
+  "drawingEmptyExportWarningMessage": "Önce bir çizim yapın",
+  "@drawingEmptyExportWarningMessage": {
+    "description": "Çizim tuvali boşken dışa aktar menüsüne basılırsa gösterilen bilgi çubuğu mesajı"
+  },
+  "drawingEraserPartialModeLabel": "Kısmi",
+  "@drawingEraserPartialModeLabel": {
+    "description": "Silgi aracı seçiliyken görünen mod anahtarında, silginin yalnızca dokunulan noktaları kaldırdığı (piksel bazlı) modun etiketi"
+  },
+  "drawingEraserFullModeLabel": "Tam",
+  "@drawingEraserFullModeLabel": {
+    "description": "Silgi aracı seçiliyken görünen mod anahtarında, silginin dokunulan stroke'un tamamını sildiği modun etiketi"
+  },
+  "drawingClearTooltip": "Temizle",
+  "@drawingClearTooltip": {
+    "description": "Çizim araç çubuğunda, tuvaldeki tüm stroke'ları silen düğmenin ipucu metni"
+  },
+  "drawingZoomOutTooltip": "Uzaklaştır",
+  "@drawingZoomOutTooltip": {
+    "description": "Çizim araç çubuğunda, tuvali uzaklaştıran (zoom out) düğmenin ipucu metni"
+  },
+  "drawingZoomInTooltip": "Yakınlaştır",
+  "@drawingZoomInTooltip": {
+    "description": "Çizim araç çubuğunda, tuvali yakınlaştıran (zoom in) düğmenin ipucu metni"
+  },
+  "drawingDeleteTooltip": "Sil",
+  "@drawingDeleteTooltip": {
+    "description": "Gömülü çizim önizlemesinde uzun basınca çıkan katmanda, bloğun tamamını kaldıran çöp kutusu ikonunun ipucu metni"
+  },
+  "drawingEmptyPreviewHint": "Çizmek için dokunun",
+  "@drawingEmptyPreviewHint": {
+    "description": "Gömülü çizim önizlemesi boşken, tuvalin ortasında gösterilen ipucu metni"
+  },
+  "settingsPageTitle": "Ayarlar",
+  "@settingsPageTitle": {
+    "description": "Ayarlar sayfasının AppBar başlığı"
+  },
+  "settingsSectionSecurity": "Güvenlik",
+  "@settingsSectionSecurity": {
+    "description": "Ayarlar sayfasında Güvenlik bölümünün başlığı"
+  },
+  "settingsSectionTheme": "Tema",
+  "@settingsSectionTheme": {
+    "description": "Ayarlar sayfasında Tema bölümünün başlığı"
+  },
+  "settingsSectionPersonalization": "Kişiselleştirme",
+  "@settingsSectionPersonalization": {
+    "description": "Ayarlar sayfasında Kişiselleştirme bölümünün başlığı"
+  },
+  "settingsSectionWidget": "Widget",
+  "@settingsSectionWidget": {
+    "description": "Ayarlar sayfasında Widget bölümünün başlığı"
+  },
+  "settingsSectionAbout": "Hakkında",
+  "@settingsSectionAbout": {
+    "description": "Ayarlar sayfasında Hakkında bölümünün başlığı"
+  },
+  "settingsHintQuestionPet": "İlk evcil hayvanınızın adı nedir?",
+  "@settingsHintQuestionPet": {
+    "description": "Güvenlik sorusu seçeneklerinden biri"
+  },
+  "settingsHintQuestionTeacher": "En sevdiğiniz öğretmeninizin adı nedir?",
+  "@settingsHintQuestionTeacher": {
+    "description": "Güvenlik sorusu seçeneklerinden biri"
+  },
+  "settingsHintQuestionBirthCity": "Doğduğunuz şehir nedir?",
+  "@settingsHintQuestionBirthCity": {
+    "description": "Güvenlik sorusu seçeneklerinden biri"
+  },
+  "settingsHintQuestionFavoriteFood": "En sevdiğiniz yemek nedir?",
+  "@settingsHintQuestionFavoriteFood": {
+    "description": "Güvenlik sorusu seçeneklerinden biri"
+  },
+  "settingsHintQuestionMotherMaidenName": "Annenizin kızlık soyadı nedir?",
+  "@settingsHintQuestionMotherMaidenName": {
+    "description": "Güvenlik sorusu seçeneklerinden biri"
+  },
+  "settingsHintQuestionFirstSchool": "İlk okuduğunuz okulun adı nedir?",
+  "@settingsHintQuestionFirstSchool": {
+    "description": "Güvenlik sorusu seçeneklerinden biri"
+  },
+  "settingsHintQuestionFavoriteColor": "En sevdiğiniz renk nedir?",
+  "@settingsHintQuestionFavoriteColor": {
+    "description": "Güvenlik sorusu seçeneklerinden biri"
+  },
+  "settingsSecurityQuestionDialogTitle": "Güvenlik Sorusu",
+  "@settingsSecurityQuestionDialogTitle": {
+    "description": "Güvenlik sorusu belirleme diyaloğunun başlığı"
+  },
+  "settingsSecurityQuestionDialogDesc": "Şifrenizi unutursanız, bu soruyu doğru cevaplayarak şifrenizi hatırlayabilirsiniz.",
+  "@settingsSecurityQuestionDialogDesc": {
+    "description": "Güvenlik sorusu diyaloğundaki açıklama metni"
+  },
+  "settingsSecurityQuestionDropdownHint": "Güvenlik sorusu seçin",
+  "@settingsSecurityQuestionDropdownHint": {
+    "description": "Güvenlik sorusu açılır menüsünün ipucu (placeholder) metni"
+  },
+  "settingsSecurityQuestionAnswerHint": "Cevabınız",
+  "@settingsSecurityQuestionAnswerHint": {
+    "description": "Güvenlik sorusu cevabı giriş alanının ipucu metni"
+  },
+  "settingsSecurityQuestionCancelButton": "İptal",
+  "@settingsSecurityQuestionCancelButton": {
+    "description": "Güvenlik sorusu diyaloğunda iptal düğmesi"
+  },
+  "settingsSecurityQuestionEmptyWarning": "Soru ve cevap boş olamaz!",
+  "@settingsSecurityQuestionEmptyWarning": {
+    "description": "Güvenlik sorusu veya cevabı boş bırakılıp kaydedilmeye çalışıldığında gösterilen uyarı"
+  },
+  "settingsSecurityQuestionSaveButton": "Kaydet",
+  "@settingsSecurityQuestionSaveButton": {
+    "description": "Güvenlik sorusu diyaloğunda kaydet düğmesi"
+  },
+  "settingsCreatePasswordTitle": "Şifre Oluştur",
+  "@settingsCreatePasswordTitle": {
+    "description": "Yeni not şifresi oluşturma diyaloğunun başlığı"
+  },
+  "settingsPasswordRequiredTitle": "Şifre Gerekiyor",
+  "@settingsPasswordRequiredTitle": {
+    "description": "Mevcut şifreyi doğrulama/kaldırma diyaloğunun başlığı"
+  },
+  "settingsPasswordEnterHint": "Şifreyi girin",
+  "@settingsPasswordEnterHint": {
+    "description": "Mevcut şifre giriş alanının ipucu metni"
+  },
+  "settingsForgotPasswordButton": "Şifremi unuttum",
+  "@settingsForgotPasswordButton": {
+    "description": "Şifre doğrulama diyaloğunda, güvenlik sorusuyla şifre kurtarma akışını açan düğme"
+  },
+  "settingsNewPasswordHint": "Yeni şifre",
+  "@settingsNewPasswordHint": {
+    "description": "Yeni şifre giriş alanının ipucu metni"
+  },
+  "settingsConfirmPasswordHint": "Şifreyi tekrar gir",
+  "@settingsConfirmPasswordHint": {
+    "description": "Yeni şifre tekrar giriş alanının ipucu metni"
+  },
+  "settingsSecurityQuestionOptionalDesc": "Şifrenizi unutursanız diye bir güvenlik sorusu belirleyin (zorunlu değildir).",
+  "@settingsSecurityQuestionOptionalDesc": {
+    "description": "Yeni şifre oluşturma diyaloğunda güvenlik sorusu bölümünün açıklama metni"
+  },
+  "settingsPasswordDialogCancelButton": "İptal",
+  "@settingsPasswordDialogCancelButton": {
+    "description": "Şifre oluşturma/doğrulama diyaloğunda iptal düğmesi"
+  },
+  "settingsPasswordMismatchWarning": "Şifreler eşleşmiyor!",
+  "@settingsPasswordMismatchWarning": {
+    "description": "Yeni şifre ve tekrarı birbiriyle eşleşmediğinde gösterilen uyarı"
+  },
+  "settingsWrongPasswordWarning": "Yanlış şifre!",
+  "@settingsWrongPasswordWarning": {
+    "description": "Şifre kaldırma sırasında yanlış şifre girildiğinde gösterilen uyarı"
+  },
+  "settingsPasswordSaveButton": "Kaydet",
+  "@settingsPasswordSaveButton": {
+    "description": "Yeni şifre oluşturma diyaloğunda kaydet düğmesi"
+  },
+  "settingsPasswordRemoveButton": "Kaldır",
+  "@settingsPasswordRemoveButton": {
+    "description": "Mevcut şifreyi kaldırma diyaloğunda kaldır düğmesi"
+  },
+  "settingsNotePasswordTitle": "Not Şifresi",
+  "@settingsNotePasswordTitle": {
+    "description": "Güvenlik bölümünde not şifresi ayarı satırının başlığı"
+  },
+  "settingsPasswordSetSubtitle": "Şifre ayarlandı ✓",
+  "@settingsPasswordSetSubtitle": {
+    "description": "Not şifresi satırında, şifre ayarlıyken gösterilen alt metin"
+  },
+  "settingsPasswordNotSetSubtitle": "Şifre ayarlanmadı",
+  "@settingsPasswordNotSetSubtitle": {
+    "description": "Not şifresi satırında, şifre ayarlı değilken gösterilen alt metin"
+  },
+  "settingsSecurityQuestionTileTitle": "Güvenlik Sorusu",
+  "@settingsSecurityQuestionTileTitle": {
+    "description": "Güvenlik bölümünde güvenlik sorusu satırının başlığı"
+  },
+  "settingsSecurityQuestionSetSubtitle": "Belirlendi ✓ — şifreyi unutursanız kullanılır",
+  "@settingsSecurityQuestionSetSubtitle": {
+    "description": "Güvenlik sorusu satırında, soru belirlenmişken gösterilen alt metin"
+  },
+  "settingsSecurityQuestionNotSetSubtitle": "Belirlenmedi — şifrenizi kaybederseniz kurtaramazsınız",
+  "@settingsSecurityQuestionNotSetSubtitle": {
+    "description": "Güvenlik sorusu satırında, soru belirlenmemişken gösterilen alt metin"
+  },
+  "settingsThemeDialogTitle": "Tema Seçin",
+  "@settingsThemeDialogTitle": {
+    "description": "Tema seçim diyaloğunun başlığı"
+  },
+  "settingsThemeSystemDefault": "Sistem Varsayılanı",
+  "@settingsThemeSystemDefault": {
+    "description": "Tema seçim diyaloğunda sistem temasını izleme seçeneği"
+  },
+  "settingsThemeLightOption": "Açık Tema",
+  "@settingsThemeLightOption": {
+    "description": "Tema seçim diyaloğunda açık tema seçeneği"
+  },
+  "settingsThemeDarkOption": "Koyu Tema",
+  "@settingsThemeDarkOption": {
+    "description": "Tema seçim diyaloğunda koyu tema seçeneği"
+  },
+  "settingsLanguageDialogTitle": "Dil Seçin",
+  "@settingsLanguageDialogTitle": {
+    "description": "Dil seçim diyaloğunun başlığı"
+  },
+  "settingsLanguageSystemOption": "Sistem",
+  "@settingsLanguageSystemOption": {
+    "description": "Dil seçim diyaloğunda sistem dilini izleme seçeneği"
+  },
+  "settingsAccentColorDialogTitle": "Vurgu Rengini Seçin",
+  "@settingsAccentColorDialogTitle": {
+    "description": "Vurgu rengi seçim diyaloğunun başlığı"
+  },
+  "settingsThemeChangeTileTitle": "Tema Değiştir",
+  "@settingsThemeChangeTileTitle": {
+    "description": "Tema bölümünde tema değiştirme satırının başlığı"
+  },
+  "settingsThemeLightLabel": "Açık",
+  "@settingsThemeLightLabel": {
+    "description": "Tema değiştir satırında, açık tema seçiliyken gösterilen kısa etiket"
+  },
+  "settingsThemeDarkLabel": "Koyu",
+  "@settingsThemeDarkLabel": {
+    "description": "Tema değiştir satırında, koyu tema seçiliyken gösterilen kısa etiket"
+  },
+  "settingsThemeSystemLabel": "Sistem",
+  "@settingsThemeSystemLabel": {
+    "description": "Tema değiştir satırında, sistem teması seçiliyken gösterilen kısa etiket"
+  },
+  "settingsLanguageTileTitle": "Dil",
+  "@settingsLanguageTileTitle": {
+    "description": "Tema bölümünde dil değiştirme satırının başlığı"
+  },
+  "settingsAccentColorTileTitle": "Vurgu Rengi",
+  "@settingsAccentColorTileTitle": {
+    "description": "Tema bölümünde vurgu rengi satırının başlığı"
+  },
+  "settingsAccentColorTileSubtitle": "AppBar, buton ve anahtarlarda kullanılan renk",
+  "@settingsAccentColorTileSubtitle": {
+    "description": "Vurgu rengi satırının alt metni"
+  },
+  "settingsColorfulNotesTitle": "Değişken Not Renkleri",
+  "@settingsColorfulNotesTitle": {
+    "description": "Tema bölümünde değişken not renkleri anahtarının başlığı"
+  },
+  "settingsColorfulNotesSubtitle": "Her not kartı farklı renk tonu alır.",
+  "@settingsColorfulNotesSubtitle": {
+    "description": "Değişken not renkleri anahtarının alt metni"
+  },
+  "settingsTextColorSheetTitle": "Yazı Rengi",
+  "@settingsTextColorSheetTitle": {
+    "description": "Not içerik metni rengi seçim panelinin başlığı"
+  },
+  "settingsTextColorSheetDesc": "Not içerik metninin rengini belirler.",
+  "@settingsTextColorSheetDesc": {
+    "description": "Yazı rengi seçim panelindeki açıklama metni"
+  },
+  "settingsTextColorOkButton": "Tamam",
+  "@settingsTextColorOkButton": {
+    "description": "Yazı rengi seçim panelini kapatan Tamam düğmesi"
+  },
+  "settingsTextColorTileTitle": "Yazı Rengi",
+  "@settingsTextColorTileTitle": {
+    "description": "Kişiselleştirme bölümünde yazı rengi satırının başlığı"
+  },
+  "settingsTextColorTileSubtitle": "Not içerik metni için renk.",
+  "@settingsTextColorTileSubtitle": {
+    "description": "Yazı rengi satırının alt metni"
+  },
+  "settingsWidgetFontSizeLabel": "Widget Yazı Boyutu",
+  "@settingsWidgetFontSizeLabel": {
+    "description": "Widget yazı boyutu seçim panelinin başlığı ve Widget bölümündeki ilgili satırın başlığı"
+  },
+  "settingsWidgetFontSizeSample": "Örnek başlık - {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "description": "Widget yazı boyutu seçim panelinde seçilen boyutu gösteren örnek metin",
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "İptal",
+  "@settingsWidgetFontSizeCancelButton": {
+    "description": "Widget yazı boyutu panelinde iptal düğmesi"
+  },
+  "settingsWidgetFontSizeApplyButton": "Uygula",
+  "@settingsWidgetFontSizeApplyButton": {
+    "description": "Widget yazı boyutu panelinde uygula düğmesi"
+  },
+  "settingsWidgetOpacityLabel": "Arka Plan Saydamlığı",
+  "@settingsWidgetOpacityLabel": {
+    "description": "Widget arka plan saydamlığı seçim panelinin başlığı ve Widget bölümündeki ilgili satırın başlığı"
+  },
+  "settingsWidgetOpacityValue": "%{percent} saydamlık",
+  "@settingsWidgetOpacityValue": {
+    "description": "Widget saydamlık panelinde seçilen yüzdeyi gösteren metin",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "İptal",
+  "@settingsWidgetOpacityCancelButton": {
+    "description": "Widget saydamlık panelinde iptal düğmesi"
+  },
+  "settingsWidgetOpacityApplyButton": "Uygula",
+  "@settingsWidgetOpacityApplyButton": {
+    "description": "Widget saydamlık panelinde uygula düğmesi"
+  },
+  "settingsWidgetDarkModeTitle": "Koyu Widget",
+  "@settingsWidgetDarkModeTitle": {
+    "description": "Widget bölümünde koyu widget anahtarının başlığı"
+  },
+  "settingsWidgetDarkModeDesc": "Widget için koyu renk şeması.",
+  "@settingsWidgetDarkModeDesc": {
+    "description": "Koyu widget anahtarının alt metni"
+  },
+  "settingsAboutVersionTitle": "Uygulama Sürümü",
+  "@settingsAboutVersionTitle": {
+    "description": "Hakkında bölümünde uygulama sürümü satırının başlığı"
+  },
+  "settingsFontFamilyTileTitle": "Yazı Tipi",
+  "@settingsFontFamilyTileTitle": {
+    "description": "Kişiselleştirme bölümündeki yazı tipi satırının başlığı ve yazı tipi seçim sheet'inin başlığı"
+  },
+  "settingsFontFamilyDefaultLabel": "Varsayılan",
+  "@settingsFontFamilyDefaultLabel": {
+    "description": "Yazı tipi seçim listesindeki varsayılan yazı tipi seçeneğinin adı"
+  },
+  "settingsGlobalFontSizeTileTitle": "Yazı Boyutu",
+  "@settingsGlobalFontSizeTileTitle": {
+    "description": "Kişiselleştirme bölümündeki yazı boyutu satırının başlığı ve yazı boyutu seçim sheet'inin başlığı"
+  },
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt — tüm notlara uygulanır.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "description": "Yazı boyutu satırının alt metni; geçerli genel yazı boyutunu gösterir",
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "Örnek metin - {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "description": "Yazı boyutu seçim sheet'inde seçilen boyutu gösteren örnek metin",
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "Mevcut notlara uygula",
+  "@settingsGlobalFontSizeApplyToAllLabel": {
+    "description": "Yazı boyutu seçim sheet'inde, seçilen boyutun mevcut notlara da uygulanmasını sağlayan onay kutusunun etiketi"
+  },
+  "settingsGlobalFontSizeApplyToAllNote": "Bireysel not boyutu ayarı varsa bu ayar o notları etkilemez.",
+  "@settingsGlobalFontSizeApplyToAllNote": {
+    "description": "Yazı boyutu seçim sheet'inde onay kutusunun altında gösterilen açıklama metni"
+  },
+  "settingsGlobalFontSizeCancelButton": "İptal",
+  "@settingsGlobalFontSizeCancelButton": {
+    "description": "Yazı boyutu seçim sheet'inde iptal düğmesi"
+  },
+  "settingsGlobalFontSizeApplyButton": "Uygula",
+  "@settingsGlobalFontSizeApplyButton": {
+    "description": "Yazı boyutu seçim sheet'inde uygula düğmesi"
+  },
+  "settingsPreviewLinesTileTitle": "Not Önizleme Satırı",
+  "@settingsPreviewLinesTileTitle": {
+    "description": "Kişiselleştirme bölümündeki not önizleme satırı ayarının başlığı ve seçim sheet'inin başlığı"
+  },
+  "settingsPreviewLinesTileSubtitle": "En fazla {lines} satır göster. Not daha kısaysa gerçek satır sayısı görünür.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "description": "Not önizleme satırı ayarının alt metni",
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "Şu an: {lines} satır",
+  "@settingsPreviewLinesCurrentLabel": {
+    "description": "Not önizleme satırı seçim sheet'inde geçerli değeri gösteren etiket",
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "Maksimum önizlenecek satır sayısını belirler. Not daha az satıra sahipse gerçek satır sayısı gösterilir.",
+  "@settingsPreviewLinesDescription": {
+    "description": "Not önizleme satırı seçim sheet'inde kaydırıcının altında gösterilen açıklama metni"
+  },
+  "settingsPreviewLinesCancelButton": "İptal",
+  "@settingsPreviewLinesCancelButton": {
+    "description": "Not önizleme satırı seçim sheet'inde iptal düğmesi"
+  },
+  "settingsPreviewLinesApplyButton": "Uygula",
+  "@settingsPreviewLinesApplyButton": {
+    "description": "Not önizleme satırı seçim sheet'inde uygula düğmesi"
+  },
+  "backupCancelButton": "Vazgeç",
+  "@backupCancelButton": {
+    "description": "Yedekle & Geri Yükle ekranındaki diyaloglarda ortak vazgeç düğmesi"
+  },
+  "backupConnectButton": "Bağlan",
+  "@backupConnectButton": {
+    "description": "Google Drive'a bağlanma diyaloglarında ve durum kartında ortak bağlan düğmesi"
+  },
+  "backupDisconnectButton": "Bağlantıyı Kes",
+  "@backupDisconnectButton": {
+    "description": "Google Drive bağlantısını kesme diyaloğunda ve durum kartında ortak düğme"
+  },
+  "backupContinueButton": "Devam Et",
+  "@backupContinueButton": {
+    "description": "Büyük Yedek uyarı diyaloğunda devam et düğmesi"
+  },
+  "backupCloseButton": "Kapat",
+  "@backupCloseButton": {
+    "description": "Yedek Hazır diyaloğunda kapat düğmesi"
+  },
+  "backupShareButton": "Paylaş",
+  "@backupShareButton": {
+    "description": "Yedek Hazır diyaloğunda paylaş düğmesi"
+  },
+  "backupRestoreButton": "Geri Yükle",
+  "@backupRestoreButton": {
+    "description": "Geri yükleme onay diyaloğunda ve Yedek Geçmişi kartında ortak geri yükle düğmesi"
+  },
+  "backupConfigureButton": "Ayarla",
+  "@backupConfigureButton": {
+    "description": "Otomatik Yedekleme durum kartındaki ayarla düğmesi"
+  },
+  "backupUnknownDateLabel": "Bilinmiyor",
+  "@backupUnknownDateLabel": {
+    "description": "Yedek tarihi okunamadığında gösterilen yer tutucu metin"
+  },
+  "backupProcessingDefaultLabel": "İşleniyor...",
+  "@backupProcessingDefaultLabel": {
+    "description": "İşlem sürerken gösterilen meşgul göstergesinin varsayılan (özel etiket yoksa) metni"
+  },
+  "backupPermissionRequiredTitle": "Depolama İzni Gerekli",
+  "@backupPermissionRequiredTitle": {
+    "description": "Depolama izni istenen diyaloğun başlığı"
+  },
+  "backupPermissionRequiredBodyPermanent": "Bu Android sürümünde yedekleme/geri yükleme için depolama izni gereklidir. İzin kalıcı olarak reddedildiğinden, lütfen uygulama ayarlarından izni elle etkinleştirin.",
+  "@backupPermissionRequiredBodyPermanent": {
+    "description": "Depolama izni kalıcı olarak reddedildiğinde gösterilen diyalog gövde metni"
+  },
+  "backupPermissionRequiredBodyNormal": "Bu Android sürümünde yedekleme/geri yükleme için depolama izni gereklidir. Devam edebilmek için lütfen izni verin.",
+  "@backupPermissionRequiredBodyNormal": {
+    "description": "Depolama izni henüz kalıcı olarak reddedilmemişken gösterilen diyalog gövde metni"
+  },
+  "backupGoToSettingsButton": "Ayarlara Git",
+  "@backupGoToSettingsButton": {
+    "description": "Depolama izni kalıcı olarak reddedildiğinde kullanıcıyı uygulama ayarlarına yönlendiren düğme"
+  },
+  "backupRetryButton": "Tekrar Dene",
+  "@backupRetryButton": {
+    "description": "Depolama izni diyaloğunda ve hata SnackBar'larında ortak tekrar dene düğmesi"
+  },
+  "backupDriveConnectingLabel": "Google hesabına bağlanılıyor...",
+  "@backupDriveConnectingLabel": {
+    "description": "Google Drive'a bağlanma sırasında gösterilen meşgul göstergesi metni"
+  },
+  "backupDriveConnectedWithEmailMessage": "Google Drive hesabına bağlanıldı: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "description": "Google Drive'a başarıyla bağlanıldığında, hesap e-postası biliniyorsa gösterilen mesaj",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Google Drive hesabına bağlanıldı.",
+  "@backupDriveConnectedMessage": {
+    "description": "Google Drive'a başarıyla bağlanıldığında, hesap e-postası bilinmiyorsa gösterilen mesaj"
+  },
+  "backupDriveConnectFailedMessage": "Google hesabına bağlanılamadı veya işlem iptal edildi.",
+  "@backupDriveConnectFailedMessage": {
+    "description": "Google Drive'a bağlanma başarısız olduğunda veya kullanıcı iptal ettiğinde gösterilen hata mesajı"
+  },
+  "backupDriveDisconnectTitle": "Google Drive Bağlantısını Kes",
+  "@backupDriveDisconnectTitle": {
+    "description": "Google Drive bağlantısını kesme onay diyaloğunun başlığı"
+  },
+  "backupDriveDisconnectBody": "Bağlantı kesilirse Drive'a manuel veya otomatik yedekleme yapılamaz. Drive'da halihazırda duran yedekleriniz silinmez, yalnızca bu cihazdan erişim kaldırılır.",
+  "@backupDriveDisconnectBody": {
+    "description": "Google Drive bağlantısını kesme onay diyaloğunun gövde metni"
+  },
+  "backupDriveDisconnectedMessage": "Google Drive bağlantısı kesildi.",
+  "@backupDriveDisconnectedMessage": {
+    "description": "Google Drive bağlantısı başarıyla kesildiğinde gösterilen mesaj"
+  },
+  "backupDriveRequiredTitle": "Google Hesabı Gerekli",
+  "@backupDriveRequiredTitle": {
+    "description": "Drive işlemi için önce hesaba bağlanılması gerektiğinde gösterilen diyaloğun başlığı"
+  },
+  "backupDriveRequiredBody": "Bu işlem için Google hesabınızla bağlanmanız gerekiyor. Şimdi bağlanmak ister misiniz?",
+  "@backupDriveRequiredBody": {
+    "description": "Drive işlemi için önce hesaba bağlanılması gerektiğinde gösterilen diyaloğun gövde metni"
+  },
+  "backupDriveStatusConnectedWithEmail": "Google Drive: bağlı ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "description": "Drive durum kartında, hesap e-postası biliniyorken gösterilen bağlı durumu metni",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: bağlı",
+  "@backupDriveStatusConnected": {
+    "description": "Drive durum kartında, hesap e-postası bilinmiyorken gösterilen bağlı durumu metni"
+  },
+  "backupDriveStatusDisconnected": "Google Drive: bağlı değil",
+  "@backupDriveStatusDisconnected": {
+    "description": "Drive durum kartında gösterilen bağlı değil durumu metni"
+  },
+  "backupDriveAuthenticatingLabel": "Google hesabı doğrulanıyor...",
+  "@backupDriveAuthenticatingLabel": {
+    "description": "Drive'a yükleme/indirme işlemi başlarken, oturum doğrulanırken gösterilen ilerleme metni"
+  },
+  "backupDriveNotSignedInMessage": "Google Drive'a bağlı değilsiniz. Lütfen önce Google hesabınızla giriş yapın.",
+  "@backupDriveNotSignedInMessage": {
+    "description": "Drive işlemi (yükleme/listeleme/indirme/silme) sırasında oturum açılmamışsa fırlatılan hatanın mesajı"
+  },
+  "backupDriveUploadingLabel": "Yedek Drive'a yükleniyor...",
+  "@backupDriveUploadingLabel": {
+    "description": "Yedek dosyası Drive'a yüklenirken gösterilen ilerleme metni"
+  },
+  "backupDriveUploadTimeoutMessage": "Google Drive'a yükleme 120 saniye içinde tamamlanamadı (sunucudan yanıt gelmedi). Lütfen bağlantınızı kontrol edip tekrar deneyin.",
+  "@backupDriveUploadTimeoutMessage": {
+    "description": "Drive'a yükleme isteği 120 saniye içinde sunucudan yanıt alamadığında fırlatılan hatanın mesajı"
+  },
+  "backupDriveOperationCompletedLabel": "Tamamlandı",
+  "@backupDriveOperationCompletedLabel": {
+    "description": "Drive'a yükleme veya Drive'dan indirme işlemi tamamlandığında gösterilen ilerleme metni (%100)"
+  },
+  "backupToDriveActionLabel": "Drive'a yedekleme",
+  "@backupToDriveActionLabel": {
+    "description": "Büyük Yedek uyarı diyaloğunda, Drive'a yedekleme işlemi için kullanılan işlem adı"
+  },
+  "backupToDeviceActionLabel": "yedekleme",
+  "@backupToDeviceActionLabel": {
+    "description": "Büyük Yedek uyarı diyaloğunda, cihaza yedekleme işlemi için kullanılan işlem adı"
+  },
+  "backupCreatingLabel": "Yedek oluşturuluyor...",
+  "@backupCreatingLabel": {
+    "description": "Yedek oluşturulurken gösterilen meşgul göstergesi metni"
+  },
+  "backupCreateFailedMessage": "Yedek oluşturulamadı: {error}",
+  "@backupCreateFailedMessage": {
+    "description": "Yedek oluşturma başarısız olduğunda gösterilen hata mesajı",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Google Drive'a yükleme başarısız: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "description": "Yedeğin Google Drive'a yüklenmesi başarısız olduğunda gösterilen hata mesajı",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "Yedek Google Drive'a başarıyla yüklendi.",
+  "@backupDriveUploadSuccessMessage": {
+    "description": "Yedek Google Drive'a başarıyla yüklendiğinde gösterilen mesaj"
+  },
+  "backupCreatedMessage": "Yedek oluşturuldu: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "description": "Yedek cihaza başarıyla oluşturulduğunda gösterilen mesaj",
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "Yedek Hazır",
+  "@backupOfferShareTitle": {
+    "description": "Yedek oluşturulduktan sonra paylaşım teklif eden diyaloğun başlığı"
+  },
+  "backupOfferShareBody": "Yedek dosyanız cihazınıza kaydedildi. Dosyayı şimdi paylaşmak (örn. bulut depolama, e-posta, başka bir cihaz) ister misiniz?",
+  "@backupOfferShareBody": {
+    "description": "Yedek oluşturulduktan sonra paylaşım teklif eden diyaloğun gövde metni"
+  },
+  "backupShareFileText": "layout yedek dosyası",
+  "@backupShareFileText": {
+    "description": "Yedek dosyası paylaşılırken sistem paylaşım sayfasında gösterilen açıklama metni"
+  },
+  "backupShareFailedMessage": "Paylaşım başlatılamadı: {error}",
+  "@backupShareFailedMessage": {
+    "description": "Yedek dosyası paylaşımı başlatılamadığında gösterilen hata mesajı",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "Büyük Yedek",
+  "@backupLargeOperationTitle": {
+    "description": "Boyut eşiği aşıldığında gösterilen uyarı diyaloğunun başlığı"
+  },
+  "backupLargeOperationBody": "İşlenecek veri boyutu yaklaşık {sizeText}. Bu boyuttaki bir {actionLabel} işlemi cihazınıza bağlı olarak biraz zaman alabilir. İşlem sürerken uygulamadan çıkmamanız yeterlidir, devam etmek ister misiniz?",
+  "@backupLargeOperationBody": {
+    "description": "Boyut eşiği aşıldığında gösterilen uyarı diyaloğunun gövde metni",
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "geri yükleme",
+  "@backupRestoreActionLabel": {
+    "description": "Büyük Yedek uyarı diyaloğunda, geri yükleme işlemi için kullanılan işlem adı"
+  },
+  "backupDriveListingLabel": "Drive yedekleri listeleniyor...",
+  "@backupDriveListingLabel": {
+    "description": "Drive'daki yedekler listelenirken gösterilen meşgul göstergesi metni"
+  },
+  "backupDriveListFailedMessage": "Yedekler listelenemedi: {error}",
+  "@backupDriveListFailedMessage": {
+    "description": "Drive'daki yedekler listelenemediğinde gösterilen hata mesajı",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "Google Drive'da henüz bir yedek bulunmuyor.",
+  "@backupDriveNoBackupsMessage": {
+    "description": "Drive'da hiç yedek bulunamadığında gösterilen mesaj"
+  },
+  "backupDrivePickTitle": "Drive'dan Yedek Seç",
+  "@backupDrivePickTitle": {
+    "description": "Drive'daki yedeklerin listelendiği seçim diyaloğunun başlığı"
+  },
+  "backupDriveDownloadingLabel": "Yedek Drive'dan indiriliyor...",
+  "@backupDriveDownloadingLabel": {
+    "description": "Seçilen yedek Drive'dan indirilirken gösterilen meşgul göstergesi metni"
+  },
+  "backupDriveDownloadingWithSizeLabel": "Yedek Drive'dan indiriliyor... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "description": "Drive'dan indirme sırasında, indirilen ve toplam dosya boyutuyla birlikte gösterilen ilerleme metni",
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "Dosya cihaza kaydediliyor...",
+  "@backupDriveSavingToDeviceLabel": {
+    "description": "Drive'dan indirilen dosya cihaza yazılırken gösterilen ilerleme metni"
+  },
+  "backupDriveUnknownBackupFileName": "bilinmeyen_yedek.zip",
+  "@backupDriveUnknownBackupFileName": {
+    "description": "Drive'daki yedek dosyasının adı API'den gelmemişse kullanılan yedek (fallback) dosya adı"
+  },
+  "backupDriveStorageFullMessage": "Google Drive depolama alanınız dolu. Lütfen Drive'da yer açıp tekrar deneyin.",
+  "@backupDriveStorageFullMessage": {
+    "description": "Drive işlemi sırasında depolama kotası aşıldığında fırlatılan hatanın mesajı"
+  },
+  "backupDriveNetworkErrorMessage": "İnternet bağlantısı sağlanamadı. Lütfen bağlantınızı kontrol edip tekrar deneyin.",
+  "@backupDriveNetworkErrorMessage": {
+    "description": "Drive işlemi sırasında ağ/bağlantı hatası oluştuğunda fırlatılan hatanın mesajı"
+  },
+  "backupDriveBackupNotFoundMessage": "Belirtilen yedek dosyası Drive'da bulunamadı. Silinmiş olabilir.",
+  "@backupDriveBackupNotFoundMessage": {
+    "description": "Belirtilen yedek dosyası Drive'da (404) bulunamadığında fırlatılan hatanın mesajı"
+  },
+  "backupDriveUnknownErrorMessage": "Google Drive işlemi sırasında beklenmeyen bir hata oluştu: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "description": "Drive işlemi sırasında sınıflandırılamayan bir hata oluştuğunda fırlatılan hatanın mesajı",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "İndirme başarısız: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "description": "Yedek Drive'dan indirilemediğinde gösterilen hata mesajı",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "Dosya seçilemedi: {error}",
+  "@backupPickFileFailedMessage": {
+    "description": "Cihazdan yedek dosyası seçilirken hata oluştuğunda gösterilen mesaj",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "Seçilen dosyaya erişilemedi.",
+  "@backupPickedFileUnreachableMessage": {
+    "description": "Seçilen dosyanın yolu alınamadığında gösterilen mesaj"
+  },
+  "backupCheckingLabel": "Yedek kontrol ediliyor...",
+  "@backupCheckingLabel": {
+    "description": "Seçilen yedek dosyası doğrulanırken gösterilen meşgul göstergesi metni"
+  },
+  "backupReadFailedMessage": "Yedek dosyası okunamadı: {error}",
+  "@backupReadFailedMessage": {
+    "description": "Yedek dosyası okunamadığında gösterilen hata mesajı",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Yedeği Geri Yükle",
+  "@backupRestoreConfirmTitle": {
+    "description": "Geri yükleme onay diyaloğunun başlığı"
+  },
+  "backupPreviewContentsHeader": "Seçilen yedeğin içeriği:",
+  "@backupPreviewContentsHeader": {
+    "description": "Geri yükleme onay diyaloğunda önizleme bölümünün üst başlığı"
+  },
+  "backupPreviewNoteCountLabel": "Not sayısı",
+  "@backupPreviewNoteCountLabel": {
+    "description": "Önizlemede not sayısı satırının etiketi"
+  },
+  "backupPreviewTrashCountLabel": "Çöp kutusundaki not",
+  "@backupPreviewTrashCountLabel": {
+    "description": "Önizlemede çöp kutusundaki not sayısı satırının etiketi"
+  },
+  "backupPreviewCategoryCountLabel": "Kategori sayısı",
+  "@backupPreviewCategoryCountLabel": {
+    "description": "Önizlemede kategori sayısı satırının etiketi"
+  },
+  "backupPreviewAttachmentLabel": "Ek dosya",
+  "@backupPreviewAttachmentLabel": {
+    "description": "Önizlemede ek dosya satırının etiketi"
+  },
+  "backupPreviewAttachmentNoneValue": "Yok",
+  "@backupPreviewAttachmentNoneValue": {
+    "description": "Önizlemede hiç ek dosya yoksa gösterilen değer"
+  },
+  "backupPreviewAttachmentCountValue": "{count} dosya ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "description": "Önizlemede ek dosya sayısı ve toplam boyutu gösteren değer",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "Oluşturulma tarihi",
+  "@backupPreviewCreatedAtLabel": {
+    "description": "Önizlemede yedeğin oluşturulma tarihi satırının etiketi"
+  },
+  "backupEmptyPreviewTitle": "Bu yedek boş görünüyor",
+  "@backupEmptyPreviewTitle": {
+    "description": "Seçilen yedek tamamen boş olduğunda gösterilen uyarı kutusunun başlığı"
+  },
+  "backupEmptyPreviewBody": "Seçilen dosyada not, kategori veya ek dosya bulunamadı. Yine de devam ederseniz mevcut verileriniz silinip yerine bu boş yedek yazılır.",
+  "@backupEmptyPreviewBody": {
+    "description": "Seçilen yedek tamamen boş olduğunda gösterilen uyarı kutusunun gövde metni"
+  },
+  "backupMissingAttachmentsTitle": "{count} ek dosya yedekte bulunamadı",
+  "@backupMissingAttachmentsTitle": {
+    "description": "Yedekte eksik ek dosya olduğunda gösterilen uyarı kutusunun başlığı",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "Bu dosyalara sahip notlar geri yüklenecek, ancak ek dosyalar olmadan (yedek alınırken eksik ya da bozuk kalmış olabilirler): {names}",
+  "@backupMissingAttachmentsBody": {
+    "description": "Yedekte eksik ek dosya olduğunda gösterilen uyarı kutusunun gövde metni",
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} ve {remaining} tane daha",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "description": "Eksik ek dosya adları listesi uzun olduğunda gösterilen kısaltılmış özet",
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "Bu işlem; mevcut tüm notlarınızın, çöp kutunuzun, kategorilerinizin, ayarlarınızın ve eklerinizin YERİNE yukarıdaki yedekteki verileri yazacaktır. Mevcut veriler kalıcı olarak kaybolur ve bu işlem geri alınamaz.",
+  "@backupRestoreConfirmBody": {
+    "description": "Geri yükleme onay diyaloğunda, işlemin geri alınamayacağını belirten uyarı metni"
+  },
+  "backupRestoringLabel": "Yedek geri yükleniyor...",
+  "@backupRestoringLabel": {
+    "description": "Geri yükleme işlemi sürerken gösterilen meşgul göstergesi metni"
+  },
+  "backupRestoreSuccessWithMissingMessage": "Yedek geri yüklendi. Ancak {count} ek dosya yedekte bulunamadığı için geri yüklenemedi. Değişikliklerin tam yansıması için uygulamayı yeniden başlatmanız önerilir.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "description": "Geri yükleme, eksik ek dosyalarla birlikte başarıyla tamamlandığında gösterilen mesaj",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "Yedek başarıyla geri yüklendi. Değişikliklerin tam olarak yansıması için uygulamayı yeniden başlatmanız önerilir.",
+  "@backupRestoreSuccessMessage": {
+    "description": "Geri yükleme, eksik ek dosya olmadan başarıyla tamamlandığında gösterilen mesaj"
+  },
+  "backupRestoreFailedMessage": "Geri yükleme sırasında hata oluştu: {error}",
+  "@backupRestoreFailedMessage": {
+    "description": "Geri yükleme sırasında hata oluştuğunda gösterilen mesaj",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "Yedekle & Geri Yükle",
+  "@backupScreenTitle": {
+    "description": "Yedekle & Geri Yükle ekranının AppBar başlığı"
+  },
+  "backupBlockedExitWarningMessage": "İşlem sürüyor, lütfen tamamlanmasını bekleyin.",
+  "@backupBlockedExitWarningMessage": {
+    "description": "İşlem (yedekleme/geri yükleme) sürerken kullanıcı ekrandan çıkmaya çalıştığında gösterilen snackbar uyarı mesajı"
+  },
+  "backupBusyBackTooltip": "İşlem sürüyor",
+  "@backupBusyBackTooltip": {
+    "description": "İşlem sürerken AppBar'daki devre dışı geri düğmesinin ipucu metni"
+  },
+  "backupIntroText": "Notlarınızı, kategorilerinizi, ayarlarınızı ve eklerinizi tek bir .zip dosyası olarak yedekleyebilir veya daha önce aldığınız bir yedeği geri yükleyebilirsiniz.",
+  "@backupIntroText": {
+    "description": "Ekranın en üstünde, durum kartlarının altında gösterilen açıklama metni"
+  },
+  "backupDriveCardTitle": "Google Drive'a Yedekle",
+  "@backupDriveCardTitle": {
+    "description": "Google Drive'a manuel yedekleme action card'ının başlığı"
+  },
+  "backupDriveCardSubtitle": "Yeni bir yedek oluşturup doğrudan Google Drive'ınızın gizli alanına yükleyin.",
+  "@backupDriveCardSubtitle": {
+    "description": "Google Drive'a manuel yedekleme action card'ının açıklama metni"
+  },
+  "backupDriveCardButtonLabel": "Drive'a Yedekle",
+  "@backupDriveCardButtonLabel": {
+    "description": "Google Drive'a manuel yedekleme action card'ının buton etiketi"
+  },
+  "backupDeviceCardTitle": "Cihaza Yedekle",
+  "@backupDeviceCardTitle": {
+    "description": "Cihaza yedekleme action card'ının başlığı"
+  },
+  "backupDeviceCardSubtitle": "Tüm verilerinizi tek bir .zip dosyası olarak cihaza kaydedin ve isterseniz paylaşın.",
+  "@backupDeviceCardSubtitle": {
+    "description": "Cihaza yedekleme action card'ının açıklama metni"
+  },
+  "backupDeviceCardButtonLabel": "Cihaza Yedekle",
+  "@backupDeviceCardButtonLabel": {
+    "description": "Cihaza yedekleme action card'ının buton etiketi"
+  },
+  "backupHistoryCardTitle": "Yedek Geçmişi",
+  "@backupHistoryCardTitle": {
+    "description": "Yedek Geçmişi action card'ının başlığı"
+  },
+  "backupHistoryCardSubtitle": "Cihazda kayıtlı tüm yedekleri tarih ve boyutlarıyla görüntüleyin; buradan doğrudan paylaşabilir, geri yükleyebilir veya silebilirsiniz.",
+  "@backupHistoryCardSubtitle": {
+    "description": "Yedek Geçmişi action card'ının açıklama metni"
+  },
+  "backupHistoryTabDevice": "Cihaz",
+  "@backupHistoryTabDevice": {
+    "description": "Yedek Geçmişi ekranındaki cihaz sekmesinin etiketi"
+  },
+  "backupHistoryTabDrive": "Google Drive",
+  "@backupHistoryTabDrive": {
+    "description": "Yedek Geçmişi ekranındaki Google Drive sekmesinin etiketi"
+  },
+  "backupHistoryDeleteDialogTitle": "Yedeği Sil",
+  "@backupHistoryDeleteDialogTitle": {
+    "description": "Cihazdaki bir yedeği silme onay diyaloğunun başlığı"
+  },
+  "backupHistoryDeleteDialogBody": "\"{fileName}\" adlı yedek dosyasını kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz.",
+  "@backupHistoryDeleteDialogBody": {
+    "description": "Cihazdaki bir yedeği silme onay diyaloğunun içeriği",
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "Yedek silindi.",
+  "@backupHistoryDeviceDeletedMessage": {
+    "description": "Cihazdaki bir yedek başarıyla silindiğinde gösterilen mesaj"
+  },
+  "backupHistoryDriveDeleteDialogTitle": "Drive Yedeğini Sil",
+  "@backupHistoryDriveDeleteDialogTitle": {
+    "description": "Google Drive'daki bir yedeği silme onay diyaloğunun başlığı"
+  },
+  "backupHistoryDriveDeleteDialogBody": "\"{fileName}\" adlı yedeği Google Drive'dan kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz ve dosya çöp kutusuna taşınmaz.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "description": "Google Drive'daki bir yedeği silme onay diyaloğunun içeriği",
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Drive yedeği silindi.",
+  "@backupHistoryDriveDeletedMessage": {
+    "description": "Google Drive'daki bir yedek başarıyla silindiğinde gösterilen mesaj"
+  },
+  "backupHistoryDriveDeleteFailedMessage": "Silinemedi: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "description": "Google Drive'daki bir yedek silinemediğinde gösterilen hata mesajı",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "Henüz cihazda kayıtlı bir yedek yok.",
+  "@backupHistoryDeviceEmptyTitle": {
+    "description": "Cihaz sekmesinde hiç yedek olmadığında gösterilen başlık"
+  },
+  "backupHistoryDeviceEmptySubtitle": "\"Yedek Oluştur\" ile ilk yedeğinizi alabilirsiniz.",
+  "@backupHistoryDeviceEmptySubtitle": {
+    "description": "Cihaz sekmesinde hiç yedek olmadığında gösterilen alt metin"
+  },
+  "backupHistoryDriveEmptySubtitle": "\"Google Drive'a Yedekle\" ile ilk bulut yedeğinizi oluşturabilirsiniz.",
+  "@backupHistoryDriveEmptySubtitle": {
+    "description": "Drive sekmesinde hiç yedek olmadığında gösterilen alt metin"
+  },
+  "backupHistoryDriveSignInPrompt": "Drive yedeklerinizi görmek için Google hesabınızla bağlanın.",
+  "@backupHistoryDriveSignInPrompt": {
+    "description": "Google hesabı bağlı değilken Drive sekmesinde gösterilen davet metni"
+  },
+  "backupHistoryConnectGoogleButton": "Google ile Bağlan",
+  "@backupHistoryConnectGoogleButton": {
+    "description": "Google hesabına bağlanma butonunun etiketi"
+  },
+  "backupHistoryDriveConnectedFallback": "Bağlı",
+  "@backupHistoryDriveConnectedFallback": {
+    "description": "Google hesabı bağlıyken e-posta bilgisi alınamadığında gösterilen yedek metin"
+  },
+  "backupHistoryUnknownErrorFallback": "Bilinmeyen bir hata oluştu.",
+  "@backupHistoryUnknownErrorFallback": {
+    "description": "Drive yedekleri listelenirken hata mesajı alınamadığında gösterilen yedek metin"
+  },
+  "backupHistoryDownloadStartingLabel": "Başlıyor...",
+  "@backupHistoryDownloadStartingLabel": {
+    "description": "Drive'dan yedek indirme işlemi başlarken gösterilen ilerleme etiketi"
+  },
+  "backupAutoBackupEnabledLabel": "Otomatik Yedekleme: açık",
+  "@backupAutoBackupEnabledLabel": {
+    "description": "Otomatik yedekleme durum kartında, otomatik yedekleme açıkken gösterilen metin"
+  },
+  "backupAutoBackupDisabledLabel": "Otomatik Yedekleme: kapalı",
+  "@backupAutoBackupDisabledLabel": {
+    "description": "Otomatik yedekleme durum kartında, otomatik yedekleme kapalıyken gösterilen metin"
+  },
+  "backupOverlayWarningMessage": "Lütfen bekleyin, işlem tamamlanmadan uygulamadan çıkmayın.",
+  "@backupOverlayWarningMessage": {
+    "description": "İşlem sürerken gösterilen meşgul overlay'inde, ilerleme göstergesinin altındaki uyarı metni"
+  },
+  "pdfExportUntitledNoteLabel": "Başlıksız Not",
+  "@pdfExportUntitledNoteLabel": {
+    "description": "PDF dışa aktarımında, notun başlığı boşsa kullanılan yedek başlık"
+  },
+  "pdfExportDefaultAttachmentName": "Ek dosya",
+  "@pdfExportDefaultAttachmentName": {
+    "description": "PDF dışa aktarımında, ekin dosya adı yoksa placeholder kutucuğunda kullanılan yedek isim"
+  },
+  "pdfExportDefaultFileName": "not",
+  "@pdfExportDefaultFileName": {
+    "description": "PDF dışa aktarımında 'Farklı Kaydet' diyaloğunda, notun başlığı boşsa dosya adı olarak kullanılan yedek kelime (uzantısız)"
+  },
+  "screenshotExportBoundaryNotFoundMessage": "Ekran görüntüsü alınamadı (boundary bulunamadı)",
+  "@screenshotExportBoundaryNotFoundMessage": {
+    "description": "Not JPG olarak dışa aktarılırken RepaintBoundary bulunamadığında fırlatılan hatanın mesajı"
+  },
+  "screenshotExportByteDataNullMessage": "Ekran görüntüsü verisi oluşturulamadı",
+  "@screenshotExportByteDataNullMessage": {
+    "description": "Not JPG olarak dışa aktarılırken görüntü byte verisi (byteData) null döndüğünde fırlatılan hatanın mesajı"
+  },
+  "screenshotExportPngDecodeFailedMessage": "Görüntü işlenemedi (PNG çözümlenemedi)",
+  "@screenshotExportPngDecodeFailedMessage": {
+    "description": "Not JPG olarak dışa aktarılırken ara PNG verisi çözümlenemediğinde fırlatılan hatanın mesajı"
+  },
+  "screenshotCalcTableTotalLabel": "Toplam",
+  "@screenshotCalcTableTotalLabel": {
+    "description": "Not ekran görüntüsü (JPG) dışa aktarımında, hesap tablosu bloğunun toplam satırındaki etiket"
+  },
+  "gundemMenuRemoveFromAgenda": "Gündemden kaldır",
+  "@gundemMenuRemoveFromAgenda": {
+    "description": "Gündem ekranında bir satıra basılı tutulunca çıkan menüdeki 'kaldır' seçeneği"
+  },
+  "gundemMenuDeleteNote": "Notu sil",
+  "@gundemMenuDeleteNote": {
+    "description": "Gündem ekranında bir satıra basılı tutulunca çıkan menüdeki 'sil' seçeneği"
+  },
+  "gundemSectionOverdue": "Gecikmiş",
+  "@gundemSectionOverdue": {
+    "description": "Gündem ekranında, tarihi geçmiş notları içeren bölümün başlığı"
+  },
+  "gundemSectionToday": "Bugün",
+  "@gundemSectionToday": {
+    "description": "Gündem ekranında bugüne ait notları içeren bölümün başlığı"
+  },
+  "gundemSectionTomorrow": "Yarın",
+  "@gundemSectionTomorrow": {
+    "description": "Gündem ekranında yarına ait notları içeren bölümün başlığı"
+  },
+  "gundemSectionNextWeek": "Gelecek Hafta",
+  "@gundemSectionNextWeek": {
+    "description": "Gündem ekranında, bugünden itibaren 7-13 gün sonrasına denk gelen notları içeren bölümün başlığı"
+  },
+  "gundemSectionFurther": "Daha İleri",
+  "@gundemSectionFurther": {
+    "description": "Gündem ekranında, bugünden itibaren 14 gün ve sonrasına denk gelen notları içeren bölümün başlığı"
+  },
+  "gundemWeekdayMonday": "Pazartesi",
+  "@gundemWeekdayMonday": {
+    "description": "Gündem ekranında, bu haftanın kalan günlerinden birinin bölüm başlığı olarak kullanılan gün adı"
+  },
+  "gundemWeekdayTuesday": "Salı",
+  "@gundemWeekdayTuesday": {
+    "description": "Gündem ekranında, bu haftanın kalan günlerinden birinin bölüm başlığı olarak kullanılan gün adı"
+  },
+  "gundemWeekdayWednesday": "Çarşamba",
+  "@gundemWeekdayWednesday": {
+    "description": "Gündem ekranında, bu haftanın kalan günlerinden birinin bölüm başlığı olarak kullanılan gün adı"
+  },
+  "gundemWeekdayThursday": "Perşembe",
+  "@gundemWeekdayThursday": {
+    "description": "Gündem ekranında, bu haftanın kalan günlerinden birinin bölüm başlığı olarak kullanılan gün adı"
+  },
+  "gundemWeekdayFriday": "Cuma",
+  "@gundemWeekdayFriday": {
+    "description": "Gündem ekranında, bu haftanın kalan günlerinden birinin bölüm başlığı olarak kullanılan gün adı"
+  },
+  "gundemWeekdaySaturday": "Cumartesi",
+  "@gundemWeekdaySaturday": {
+    "description": "Gündem ekranında, bu haftanın kalan günlerinden birinin bölüm başlığı olarak kullanılan gün adı"
+  },
+  "gundemWeekdaySunday": "Pazar",
+  "@gundemWeekdaySunday": {
+    "description": "Gündem ekranında, bu haftanın kalan günlerinden birinin bölüm başlığı olarak kullanılan gün adı"
+  },
+  "gundemAppBarTitle": "Gündem",
+  "@gundemAppBarTitle": {
+    "description": "Gündem ekranının üst bar (AppBar) başlığı"
+  },
+  "gundemCalendarTooltip": "Takvim",
+  "@gundemCalendarTooltip": {
+    "description": "Gündem ekranının üst barındaki takvim ikonunun tooltip'i"
+  },
+  "gundemEmptyTitle": "Gündeminde bir şey yok",
+  "@gundemEmptyTitle": {
+    "description": "Gündem ekranında hiç satır yokken gösterilen boş durum başlığı"
+  },
+  "gundemEmptySubtitle": "Hatırlatıcı eklediğin veya tarih atadığın notlar burada listelenir.",
+  "@gundemEmptySubtitle": {
+    "description": "Gündem ekranında hiç satır yokken başlığın altında gösterilen açıklama metni"
+  },
+  "gundemUntitledNote": "Adsız not",
+  "@gundemUntitledNote": {
+    "description": "Gündem satırında, notun ne başlığı ne de içerik önizlemesi varsa gösterilen yedek metin"
+  },
+  "gundemRepeatHourly": "Her saat",
+  "@gundemRepeatHourly": {
+    "description": "Gündem satırında, hatırlatıcının tekrar sıklığı 'saatlik' olduğunda gösterilen etiket"
+  },
+  "gundemRepeatDaily": "Her gün",
+  "@gundemRepeatDaily": {
+    "description": "Gündem satırında, hatırlatıcının tekrar sıklığı 'günlük' olduğunda gösterilen etiket"
+  },
+  "gundemRepeatWeekly": "Her hafta",
+  "@gundemRepeatWeekly": {
+    "description": "Gündem satırında, hatırlatıcının tekrar sıklığı 'haftalık' olduğunda gösterilen etiket"
+  },
+  "gundemRepeatMonthly": "Her ay",
+  "@gundemRepeatMonthly": {
+    "description": "Gündem satırında, hatırlatıcının tekrar sıklığı 'aylık' olduğunda gösterilen etiket"
+  },
+  "gundemRepeatYearly": "Her yıl",
+  "@gundemRepeatYearly": {
+    "description": "Gündem satırında, hatırlatıcının tekrar sıklığı 'yıllık' olduğunda gösterilen etiket"
+  },
+  "gundemPreviewCalcTableLabel": "[Hesap Tablosu]",
+  "@gundemPreviewCalcTableLabel": {
+    "description": "Gündem satırında, başlıksız bir notun içerik önizlemesinde hesap tablosu bloğu için gösterilen yer tutucu"
+  },
+  "gundemPreviewDrawingLabel": "[Çizim]",
+  "@gundemPreviewDrawingLabel": {
+    "description": "Gündem satırında, başlıksız bir notun içerik önizlemesinde çizim bloğu için gösterilen yer tutucu"
+  },
+  "gundemPreviewImageLabel": "[Görsel]",
+  "@gundemPreviewImageLabel": {
+    "description": "Gündem satırında, başlıksız bir notun içerik önizlemesinde görsel bloğu için gösterilen yer tutucu"
+  },
+  "gundemMonthShortJan": "Oca",
+  "@gundemMonthShortJan": {
+    "description": "Gündem ekranında 'Bugün'/'Yarın' başlığının yanındaki kısa tarih etiketinde (örn. '9 Ağu') kullanılan kısaltılmış ay adı"
+  },
+  "gundemMonthShortFeb": "Şub",
+  "@gundemMonthShortFeb": {
+    "description": "Gündem ekranındaki kısa tarih etiketinde kullanılan kısaltılmış ay adı"
+  },
+  "gundemMonthShortMar": "Mar",
+  "@gundemMonthShortMar": {
+    "description": "Gündem ekranındaki kısa tarih etiketinde kullanılan kısaltılmış ay adı"
+  },
+  "gundemMonthShortApr": "Nis",
+  "@gundemMonthShortApr": {
+    "description": "Gündem ekranındaki kısa tarih etiketinde kullanılan kısaltılmış ay adı"
+  },
+  "gundemMonthShortMay": "May",
+  "@gundemMonthShortMay": {
+    "description": "Gündem ekranındaki kısa tarih etiketinde kullanılan kısaltılmış ay adı"
+  },
+  "gundemMonthShortJun": "Haz",
+  "@gundemMonthShortJun": {
+    "description": "Gündem ekranındaki kısa tarih etiketinde kullanılan kısaltılmış ay adı"
+  },
+  "gundemMonthShortJul": "Tem",
+  "@gundemMonthShortJul": {
+    "description": "Gündem ekranındaki kısa tarih etiketinde kullanılan kısaltılmış ay adı"
+  },
+  "gundemMonthShortAug": "Ağu",
+  "@gundemMonthShortAug": {
+    "description": "Gündem ekranındaki kısa tarih etiketinde kullanılan kısaltılmış ay adı"
+  },
+  "gundemMonthShortSep": "Eyl",
+  "@gundemMonthShortSep": {
+    "description": "Gündem ekranındaki kısa tarih etiketinde kullanılan kısaltılmış ay adı"
+  },
+  "gundemMonthShortOct": "Eki",
+  "@gundemMonthShortOct": {
+    "description": "Gündem ekranındaki kısa tarih etiketinde kullanılan kısaltılmış ay adı"
+  },
+  "gundemMonthShortNov": "Kas",
+  "@gundemMonthShortNov": {
+    "description": "Gündem ekranındaki kısa tarih etiketinde kullanılan kısaltılmış ay adı"
+  },
+  "gundemMonthShortDec": "Ara",
+  "@gundemMonthShortDec": {
+    "description": "Gündem ekranındaki kısa tarih etiketinde kullanılan kısaltılmış ay adı"
+  },
+  "calendarAppBarTitle": "Takvim",
+  "@calendarAppBarTitle": {
+    "description": "Takvim ekranının AppBar başlığı"
+  },
+  "calendarTodayButton": "Bugün",
+  "@calendarTodayButton": {
+    "description": "Takvim ekranında AppBar'da, görünümü bugünün ayına ve gününe döndüren buton"
+  },
+  "calendarLegendNoteLabel": "Not",
+  "@calendarLegendNoteLabel": {
+    "description": "Takvim ekranındaki lejantta, sarı noktanın anlamını açıklayan etiket"
+  },
+  "calendarLegendReminderLabel": "Hatırlatıcı",
+  "@calendarLegendReminderLabel": {
+    "description": "Takvim ekranındaki lejantta, mavi noktanın anlamını açıklayan etiket"
+  },
+  "calendarTodayBadge": "Bugün",
+  "@calendarTodayBadge": {
+    "description": "Takvim ekranında seçili gün panelinde, seçili gün bugünse tarihin altında gösterilen küçük rozet"
+  },
+  "calendarEmptyDayMessage": "Bu güne ait not veya hatırlatıcı yok.",
+  "@calendarEmptyDayMessage": {
+    "description": "Takvim ekranında seçili günün not/hatırlatıcı listesi boşken gösterilen mesaj"
+  },
+  "calendarReminderHourlyLabel": "Her saat",
+  "@calendarReminderHourlyLabel": {
+    "description": "Takvim ekranında, seçili gün listesinde saatlik tekrar eden bir hatırlatıcı için sabit saat yerine gösterilen etiket"
+  },
+  "calendarMonthJan": "Ocak",
+  "@calendarMonthJan": {
+    "description": "Takvim ekranındaki ay başlığında ve seçili gün panelinde kullanılan tam ay adı"
+  },
+  "calendarMonthFeb": "Şubat",
+  "@calendarMonthFeb": {
+    "description": "Takvim ekranındaki ay başlığında ve seçili gün panelinde kullanılan tam ay adı"
+  },
+  "calendarMonthMar": "Mart",
+  "@calendarMonthMar": {
+    "description": "Takvim ekranındaki ay başlığında ve seçili gün panelinde kullanılan tam ay adı"
+  },
+  "calendarMonthApr": "Nisan",
+  "@calendarMonthApr": {
+    "description": "Takvim ekranındaki ay başlığında ve seçili gün panelinde kullanılan tam ay adı"
+  },
+  "calendarMonthMay": "Mayıs",
+  "@calendarMonthMay": {
+    "description": "Takvim ekranındaki ay başlığında ve seçili gün panelinde kullanılan tam ay adı"
+  },
+  "calendarMonthJun": "Haziran",
+  "@calendarMonthJun": {
+    "description": "Takvim ekranındaki ay başlığında ve seçili gün panelinde kullanılan tam ay adı"
+  },
+  "calendarMonthJul": "Temmuz",
+  "@calendarMonthJul": {
+    "description": "Takvim ekranındaki ay başlığında ve seçili gün panelinde kullanılan tam ay adı"
+  },
+  "calendarMonthAug": "Ağustos",
+  "@calendarMonthAug": {
+    "description": "Takvim ekranındaki ay başlığında ve seçili gün panelinde kullanılan tam ay adı"
+  },
+  "calendarMonthSep": "Eylül",
+  "@calendarMonthSep": {
+    "description": "Takvim ekranındaki ay başlığında ve seçili gün panelinde kullanılan tam ay adı"
+  },
+  "calendarMonthOct": "Ekim",
+  "@calendarMonthOct": {
+    "description": "Takvim ekranındaki ay başlığında ve seçili gün panelinde kullanılan tam ay adı"
+  },
+  "calendarMonthNov": "Kasım",
+  "@calendarMonthNov": {
+    "description": "Takvim ekranındaki ay başlığında ve seçili gün panelinde kullanılan tam ay adı"
+  },
+  "calendarMonthDec": "Aralık",
+  "@calendarMonthDec": {
+    "description": "Takvim ekranındaki ay başlığında ve seçili gün panelinde kullanılan tam ay adı"
+  },
+  "calendarWeekdayShortMon": "Pzt",
+  "@calendarWeekdayShortMon": {
+    "description": "Takvim ekranındaki hafta günleri başlığında kullanılan kısaltılmış gün adı"
+  },
+  "calendarWeekdayShortTue": "Sal",
+  "@calendarWeekdayShortTue": {
+    "description": "Takvim ekranındaki hafta günleri başlığında kullanılan kısaltılmış gün adı"
+  },
+  "calendarWeekdayShortWed": "Çar",
+  "@calendarWeekdayShortWed": {
+    "description": "Takvim ekranındaki hafta günleri başlığında kullanılan kısaltılmış gün adı"
+  },
+  "calendarWeekdayShortThu": "Per",
+  "@calendarWeekdayShortThu": {
+    "description": "Takvim ekranındaki hafta günleri başlığında kullanılan kısaltılmış gün adı"
+  },
+  "calendarWeekdayShortFri": "Cum",
+  "@calendarWeekdayShortFri": {
+    "description": "Takvim ekranındaki hafta günleri başlığında kullanılan kısaltılmış gün adı"
+  },
+  "calendarWeekdayShortSat": "Cmt",
+  "@calendarWeekdayShortSat": {
+    "description": "Takvim ekranındaki hafta günleri başlığında kullanılan kısaltılmış gün adı"
+  },
+  "calendarWeekdayShortSun": "Paz",
+  "@calendarWeekdayShortSun": {
+    "description": "Takvim ekranındaki hafta günleri başlığında kullanılan kısaltılmış gün adı"
+  },
+  "calendarWeekdayFullMonday": "Pazartesi",
+  "@calendarWeekdayFullMonday": {
+    "description": "Takvim ekranındaki seçili gün panelinde kullanılan tam gün adı"
+  },
+  "calendarWeekdayFullTuesday": "Salı",
+  "@calendarWeekdayFullTuesday": {
+    "description": "Takvim ekranındaki seçili gün panelinde kullanılan tam gün adı"
+  },
+  "calendarWeekdayFullWednesday": "Çarşamba",
+  "@calendarWeekdayFullWednesday": {
+    "description": "Takvim ekranındaki seçili gün panelinde kullanılan tam gün adı"
+  },
+  "calendarWeekdayFullThursday": "Perşembe",
+  "@calendarWeekdayFullThursday": {
+    "description": "Takvim ekranındaki seçili gün panelinde kullanılan tam gün adı"
+  },
+  "calendarWeekdayFullFriday": "Cuma",
+  "@calendarWeekdayFullFriday": {
+    "description": "Takvim ekranındaki seçili gün panelinde kullanılan tam gün adı"
+  },
+  "calendarWeekdayFullSaturday": "Cumartesi",
+  "@calendarWeekdayFullSaturday": {
+    "description": "Takvim ekranındaki seçili gün panelinde kullanılan tam gün adı"
+  },
+  "calendarWeekdayFullSunday": "Pazar",
+  "@calendarWeekdayFullSunday": {
+    "description": "Takvim ekranındaki seçili gün panelinde kullanılan tam gün adı"
+  },
+  "wrongPasswordDialogTitle": "Hatalı Parola",
+  "@wrongPasswordDialogTitle": {
+    "description": "Kategori/klasör kilidi için yanlış parola girildiğinde gösterilen uyarı diyaloğunun başlığı"
+  },
+  "wrongPasswordDialogMessage": "Girdiğiniz parola yanlış.",
+  "@wrongPasswordDialogMessage": {
+    "description": "Kategori/klasör kilidi için yanlış parola girildiğinde gösterilen uyarı diyaloğunun içerik metni"
+  },
+  "commonOkButton": "Tamam",
+  "@commonOkButton": {
+    "description": "Genel amaçlı onay/kapatma butonu metni (birden fazla diyalogda ortak kullanılır)"
+  },
+  "unlockCategoryAction": "Kilidi Kaldır",
+  "@unlockCategoryAction": {
+    "description": "Kategori/klasör seçenekleri menüsünde, kilitli bir klasörün kilidini kaldırma seçeneği"
+  },
+  "lockCategoryAction": "Kilitle",
+  "@lockCategoryAction": {
+    "description": "Kategori/klasör seçenekleri menüsünde, kilitli olmayan bir klasörü kilitleme seçeneği"
+  },
+  "categoryUnlockedMessage": "Kilit kaldırıldı",
+  "@categoryUnlockedMessage": {
+    "description": "Bir klasörün kilidi kaldırıldığında gösterilen kısa bilgi mesajı (info bar)"
+  },
+  "categoryLockedMessage": "Klasör kilitlendi",
+  "@categoryLockedMessage": {
+    "description": "Bir klasör kilitlendiğinde gösterilen kısa bilgi mesajı (info bar)"
+  },
+  "deleteFolderMenuItemLabel": "Klasörü Sil",
+  "@deleteFolderMenuItemLabel": {
+    "description": "Kategori/klasör seçenekleri alt menüsünde, klasörü silme seçeneğinin etiketi"
+  },
+  "deleteFolderDialogTitle": "Klasörü Sil",
+  "@deleteFolderDialogTitle": {
+    "description": "Klasör silme onay diyaloğunun başlığı"
+  },
+  "deleteFolderDialogMessageWithSubfolders": "\"{category}\" klasörünü ve içindeki tüm alt klasörleri silmek istediğinize emin misiniz? Bu klasörlerdeki notlar klasörsüz kalacak.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "description": "Alt klasörleri olan bir üst düzey klasör silinirken gösterilen onay mesajı",
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "\"{category}\" klasörünü silmek istediğinize emin misiniz? Bu klasördeki notlar klasörsüz kalacak.",
+  "@deleteFolderDialogMessage": {
+    "description": "Alt klasörü olmayan bir klasör (veya bir alt klasör) silinirken gösterilen onay mesajı",
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "İptal",
+  "@deleteFolderDialogCancelButton": {
+    "description": "Klasör silme onay diyaloğundaki iptal butonu"
+  },
+  "deleteFolderDialogConfirmButton": "Sil",
+  "@deleteFolderDialogConfirmButton": {
+    "description": "Klasör silme onay diyaloğundaki, silmeyi onaylayan buton"
+  },
+  "editCategoryNameColorMenuItemLabel": "Adını Düzenle / Renk",
+  "@editCategoryNameColorMenuItemLabel": {
+    "description": "Kategori/klasör seçenekleri menüsünde, klasörün adını ve rengini düzenleme seçeneğinin etiketi"
+  },
+  "addSubfolderMenuItemLabel": "Alt Klasör Oluştur",
+  "@addSubfolderMenuItemLabel": {
+    "description": "Kategori/klasör seçenekleri menüsünde, yalnızca üst seviye klasörlerde gösterilen alt klasör oluşturma seçeneğinin etiketi"
+  },
+  "expandSubfoldersMenuItemLabel": "Alt Klasörleri Genişlet",
+  "@expandSubfoldersMenuItemLabel": {
+    "description": "Kategori/klasör seçenekleri menüsünde, daraltılmış alt klasörleri genişletme seçeneğinin etiketi"
+  },
+  "collapseSubfoldersMenuItemLabel": "Alt Klasörleri Daralt",
+  "@collapseSubfoldersMenuItemLabel": {
+    "description": "Kategori/klasör seçenekleri menüsünde, genişletilmiş alt klasörleri daraltma seçeneğinin etiketi"
+  },
+  "saveErrorInfoMessage": "Kayıt hatası: {error}",
+  "@saveErrorInfoMessage": {
+    "description": "Veriler veritabanına kaydedilirken bir hata oluştuğunda kullanıcıya gösterilen bilgi çubuğu mesajı",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "DNote'a Hoş Geldiniz! 🚀",
+  "@welcomeNoteTitle": {
+    "description": "Uygulama ilk kez açıldığında otomatik eklenen örnek hoş geldin notunun başlığı"
+  },
+  "welcomeNoteContent": "Yeni özellikler eklendi!",
+  "@welcomeNoteContent": {
+    "description": "Uygulama ilk kez açıldığında otomatik eklenen örnek hoş geldin notunun içeriği"
+  },
+  "noteListDateGroupToday": "Bugün",
+  "@noteListDateGroupToday": {
+    "description": "Not listesinde, tarihe göre sıralamada bugüne ait notların üstünde gösterilen grup başlığı"
+  },
+  "noteListDateGroupYesterday": "Dün",
+  "@noteListDateGroupYesterday": {
+    "description": "Not listesinde, tarihe göre sıralamada düne ait notların üstünde gösterilen grup başlığı"
+  },
+  "noteListDateGroupLast7Days": "Son 7 Gün",
+  "@noteListDateGroupLast7Days": {
+    "description": "Not listesinde, son 7 gün içindeki (bugün/dün hariç) notların üstünde gösterilen grup başlığı"
+  },
+  "noteListDateGroupLast30Days": "Son 30 Gün",
+  "@noteListDateGroupLast30Days": {
+    "description": "Not listesinde, son 30 gün içindeki notların üstünde gösterilen grup başlığı"
+  },
+  "reminderRepeatNoneLabel": "Tekrar yok",
+  "@reminderRepeatNoneLabel": {
+    "description": "Hatırlatıcı tekrar seçeneği 'yok' olduğunda gösterilen etiket"
+  },
+  "voiceRecorderPreparingLabel": "Hazırlanıyor…",
+  "@voiceRecorderPreparingLabel": {
+    "description": "Ses kaydı sheet'inde, kayıt henüz başlamadan (mikrofon hazırlanırken) gösterilen geçici süre etiketi"
+  },
+  "voiceRecorderCancelButton": "İptal",
+  "@voiceRecorderCancelButton": {
+    "description": "Ses kaydı sheet'inde kaydı iptal edip yarım kalan dosyayı silen buton"
+  },
+  "voiceRecorderStopAddButton": "Durdur ve Ekle",
+  "@voiceRecorderStopAddButton": {
+    "description": "Ses kaydı sheet'inde kaydı bitirip dosyayı not ekine ekleyen buton"
+  },
+  "speechToTextMicPermissionDeniedMessage": "Mikrofon izni verilmedi.",
+  "@speechToTextMicPermissionDeniedMessage": {
+    "description": "Sesi yazıya çevir sheet'inde mikrofon izni verilmediğinde gösterilen hata mesajı"
+  },
+  "speechToTextUnavailableMessage": "Bu cihazda ses tanıma özelliği kullanılamıyor.",
+  "@speechToTextUnavailableMessage": {
+    "description": "Sesi yazıya çevir sheet'inde cihaz ses tanımayı desteklemediğinde gösterilen hata mesajı"
+  },
+  "speechToTextPreparingLabel": "Hazırlanıyor…",
+  "@speechToTextPreparingLabel": {
+    "description": "Sesi yazıya çevir sheet'inde dinleme henüz başlamadan gösterilen durum etiketi"
+  },
+  "speechToTextListeningLabel": "Dinleniyor…",
+  "@speechToTextListeningLabel": {
+    "description": "Sesi yazıya çevir sheet'inde aktif olarak dinlenirken gösterilen durum etiketi"
+  },
+  "speechToTextStartSpeakingPlaceholder": "Konuşmaya başlayın…",
+  "@speechToTextStartSpeakingPlaceholder": {
+    "description": "Sesi yazıya çevir sheet'inde henüz hiçbir kelime tanınmamışken gösterilen yer tutucu metin"
+  },
+  "speechToTextCancelButton": "İptal",
+  "@speechToTextCancelButton": {
+    "description": "Sesi yazıya çevir sheet'inde dinlemeyi iptal edip metni atan buton"
+  },
+  "speechToTextStopAddButton": "Durdur ve Ekle",
+  "@speechToTextStopAddButton": {
+    "description": "Sesi yazıya çevir sheet'inde dinlemeyi bitirip tanınan metni not içeriğine ekleyen buton"
+  },
+  "textToSpeechNoContentMessage": "Okunacak bir içerik yok.",
+  "@textToSpeechNoContentMessage": {
+    "description": "Sesli okuma sheet'i açıldığında okunacak metin boş olduğunda gösterilen hata mesajı"
+  },
+  "textToSpeechReadErrorMessage": "Okuma sırasında bir hata oluştu.",
+  "@textToSpeechReadErrorMessage": {
+    "description": "Sesli okuma sheet'inde okuma motoru hata bildirdiğinde gösterilen hata mesajı"
+  },
+  "textToSpeechUnavailableMessage": "Bu cihazda sesli okuma özelliği kullanılamıyor.",
+  "@textToSpeechUnavailableMessage": {
+    "description": "Sesli okuma sheet'inde cihaz sesli okumayı başlatamadığında gösterilen hata mesajı"
+  },
+  "textToSpeechPreparingLabel": "Hazırlanıyor…",
+  "@textToSpeechPreparingLabel": {
+    "description": "Sesli okuma sheet'inde okuma motoru henüz hazırlanırken gösterilen durum etiketi"
+  },
+  "textToSpeechPausedLabel": "Duraklatıldı",
+  "@textToSpeechPausedLabel": {
+    "description": "Sesli okuma sheet'inde okuma duraklatıldığında gösterilen durum etiketi"
+  },
+  "textToSpeechFinishedLabel": "Okuma tamamlandı",
+  "@textToSpeechFinishedLabel": {
+    "description": "Sesli okuma sheet'inde metnin tamamı okunduğunda gösterilen durum etiketi"
+  },
+  "textToSpeechReadingLabel": "Okunuyor…",
+  "@textToSpeechReadingLabel": {
+    "description": "Sesli okuma sheet'inde okuma aktif olarak devam ederken gösterilen durum etiketi"
+  },
+  "textToSpeechCloseErrorButton": "Kapat",
+  "@textToSpeechCloseErrorButton": {
+    "description": "Sesli okuma sheet'inde hata durumunda sheet'i kapatan buton"
+  },
+  "textToSpeechReplayButton": "Tekrar Oku",
+  "@textToSpeechReplayButton": {
+    "description": "Sesli okuma sheet'inde okuma bittiğinde metni baştan tekrar okutan buton"
+  },
+  "textToSpeechCloseFinishedButton": "Kapat",
+  "@textToSpeechCloseFinishedButton": {
+    "description": "Sesli okuma sheet'inde okuma bittiğinde sheet'i kapatan buton"
+  },
+  "textToSpeechPauseButton": "Duraklat",
+  "@textToSpeechPauseButton": {
+    "description": "Sesli okuma sheet'inde okuma devam ederken duraklatan buton"
+  },
+  "textToSpeechResumeButton": "Devam Et",
+  "@textToSpeechResumeButton": {
+    "description": "Sesli okuma sheet'inde okuma duraklatılmışken devam ettiren buton"
+  },
+  "textToSpeechStopButton": "Durdur",
+  "@textToSpeechStopButton": {
+    "description": "Sesli okuma sheet'inde okumayı durdurup sheet'i kapatan buton"
+  },
+  "textToSpeechSpeedSlow": "Yavaş",
+  "@textToSpeechSpeedSlow": {
+    "description": "Sesli okuma sheet'inde okuma hızını yavaş olarak seçen hız çipi"
+  },
+  "textToSpeechSpeedNormal": "Normal",
+  "@textToSpeechSpeedNormal": {
+    "description": "Sesli okuma sheet'inde okuma hızını normal olarak seçen hız çipi"
+  },
+  "textToSpeechSpeedFast": "Hızlı",
+  "@textToSpeechSpeedFast": {
+    "description": "Sesli okuma sheet'inde okuma hızını hızlı olarak seçen hız çipi"
+  },
+  "calendarPickerCancelButton": "Vazgeç",
+  "@calendarPickerCancelButton": {
+    "description": "Takvim tarih seçici dialogunda vazgeç butonu (hem sistem hem özel versiyon)"
+  },
+  "calendarPickerConfirmButton": "Seç",
+  "@calendarPickerConfirmButton": {
+    "description": "Takvim tarih seçici dialogunda seçilen tarihi onaylayan buton (hem sistem hem özel versiyon)"
+  },
+  "calendarPickerClearButton": "İptal",
+  "@calendarPickerClearButton": {
+    "description": "Özel takvim dialogunda (showClearOption:true), zaten atanmış bir tarihi kaldırmak için kullanılan buton"
+  },
+  "reminderPickerDialogTitle": "Hatırlatıcı ekle",
+  "@reminderPickerDialogTitle": {
+    "description": "Hatırlatıcı ekleme/düzenleme dialogunun başlığı"
+  },
+  "reminderPickerDateTodayOption": "Bugün",
+  "@reminderPickerDateTodayOption": {
+    "description": "Hatırlatıcı dialogunda tarih seçimi açılır menüsündeki 'bugün' seçeneği"
+  },
+  "reminderPickerDateTomorrowOption": "Yarın",
+  "@reminderPickerDateTomorrowOption": {
+    "description": "Hatırlatıcı dialogunda tarih seçimi açılır menüsündeki 'yarın' seçeneği"
+  },
+  "reminderPickerDatePickOption": "Tarih seç",
+  "@reminderPickerDatePickOption": {
+    "description": "Hatırlatıcı dialogunda tarih seçimi açılır menüsündeki 'takvimden seç' seçeneği"
+  },
+  "reminderRepeatHourlyLabel": "Her saat",
+  "@reminderRepeatHourlyLabel": {
+    "description": "Hatırlatıcı dialogunda tekrar seçimi açılır menüsündeki 'her saat' seçeneği"
+  },
+  "reminderRepeatDailyLabel": "Her gün",
+  "@reminderRepeatDailyLabel": {
+    "description": "Hatırlatıcı dialogunda tekrar seçimi açılır menüsündeki 'her gün' seçeneği"
+  },
+  "reminderRepeatWeeklyLabel": "Her hafta",
+  "@reminderRepeatWeeklyLabel": {
+    "description": "Hatırlatıcı dialogunda tekrar seçimi açılır menüsündeki 'her hafta' seçeneği"
+  },
+  "reminderRepeatMonthlyLabel": "Her ay",
+  "@reminderRepeatMonthlyLabel": {
+    "description": "Hatırlatıcı dialogunda tekrar seçimi açılır menüsündeki 'her ay' seçeneği"
+  },
+  "reminderRepeatYearlyLabel": "Her yıl",
+  "@reminderRepeatYearlyLabel": {
+    "description": "Hatırlatıcı dialogunda tekrar seçimi açılır menüsündeki 'her yıl' seçeneği"
+  },
+  "reminderPickerCalendarHelpText": "Hatırlatma tarihi seç",
+  "@reminderPickerCalendarHelpText": {
+    "description": "Hatırlatıcı dialogunda 'Tarih seç' seçilince açılan takvim dialogunun başlık metni (helpText)"
+  },
+  "reminderPickerCancelButton": "İPTAL",
+  "@reminderPickerCancelButton": {
+    "description": "Hatırlatıcı ekleme dialogunun alt kısmındaki vazgeç butonu"
+  },
+  "reminderPickerSaveButton": "KAYDET",
+  "@reminderPickerSaveButton": {
+    "description": "Hatırlatıcı ekleme dialogunun alt kısmındaki kaydet butonu"
+  },
+  "reminderPickerPastTimeErrorMessage": "Geçmiş bir zaman seçilemez",
+  "@reminderPickerPastTimeErrorMessage": {
+    "description": "Hatırlatıcı tekrar seçeneği yokken geçmiş bir tarih/saat seçilip kaydedilmeye çalışıldığında gösterilen snackbar hata mesajı"
+  },
+  "calcTableTotalLabel": "Toplam: {amount}",
+  "@calcTableTotalLabel": {
+    "description": "Hesap tablosu bloğunun toplam satırının; arama, kopyalama, paylaşma ve önizleme metinlerinde gösterilen etiketi",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "backupCreatePreparingDataLabel": "Veriler hazırlanıyor...",
+  "@backupCreatePreparingDataLabel": {
+    "description": "Yedek oluşturma işlemi başladığında gösterilen ilerleme mesajı"
+  },
+  "backupCreatePackagingNotesLabel": "Notlar ve kategoriler paketleniyor...",
+  "@backupCreatePackagingNotesLabel": {
+    "description": "Yedek oluşturma sırasında not ve kategori verileri paketlenirken gösterilen ilerleme mesajı"
+  },
+  "backupCreateReadingAttachmentsLabel": "Ek dosyalar okunuyor...",
+  "@backupCreateReadingAttachmentsLabel": {
+    "description": "Yedek oluşturma sırasında ek dosyalar okunmaya başlarken gösterilen ilerleme mesajı"
+  },
+  "backupCreateReadingAttachmentsProgressLabel": "Ek dosyalar okunuyor... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "description": "Yedek oluşturma sırasında ek dosyalar tek tek okunurken gösterilen sayaçlı ilerleme mesajı",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "Zip dosyası sıkıştırılıyor...",
+  "@backupCreateCompressingLabel": {
+    "description": "Yedek oluşturma sırasında veriler zip dosyasına sıkıştırılırken gösterilen ilerleme mesajı"
+  },
+  "backupCreateSavingFileLabel": "Dosya kaydediliyor...",
+  "@backupCreateSavingFileLabel": {
+    "description": "Yedek oluşturma sırasında zip dosyası cihaza kaydedilirken gösterilen ilerleme mesajı"
+  },
+  "backupRestoreValidatingLabel": "Yedek doğrulanıyor...",
+  "@backupRestoreValidatingLabel": {
+    "description": "Yedek geri yükleme işlemi başladığında gösterilen ilerleme mesajı"
+  },
+  "backupRestoreValidatedPreparingDataLabel": "Yedek doğrulandı, veriler hazırlanıyor...",
+  "@backupRestoreValidatedPreparingDataLabel": {
+    "description": "Yedek dosyası doğrulandıktan sonra, verilerin yazılmasına başlanmadan önce gösterilen ilerleme mesajı"
+  },
+  "backupRestoreWritingNotesLabel": "Notlar yazılıyor...",
+  "@backupRestoreWritingNotesLabel": {
+    "description": "Geri yükleme sırasında notlar veritabanına yazılırken gösterilen ilerleme mesajı"
+  },
+  "backupRestoreWritingTrashLabel": "Çöp kutusu yazılıyor...",
+  "@backupRestoreWritingTrashLabel": {
+    "description": "Geri yükleme sırasında çöp kutusundaki (silinmiş) notlar veritabanına yazılırken gösterilen ilerleme mesajı"
+  },
+  "backupRestoreTrashWrittenLabel": "Çöp kutusu yazıldı",
+  "@backupRestoreTrashWrittenLabel": {
+    "description": "Geri yükleme sırasında çöp kutusu yazma işlemi tamamlandığında gösterilen ilerleme mesajı"
+  },
+  "backupRestoreWritingCategoriesLabel": "Kategoriler yazılıyor...",
+  "@backupRestoreWritingCategoriesLabel": {
+    "description": "Geri yükleme sırasında kategoriler ve renkleri veritabanına yazılırken gösterilen ilerleme mesajı"
+  },
+  "backupRestoreCategoriesWrittenLabel": "Kategoriler yazıldı",
+  "@backupRestoreCategoriesWrittenLabel": {
+    "description": "Geri yükleme sırasında kategori yazma işlemi tamamlandığında gösterilen ilerleme mesajı"
+  },
+  "backupRestoreWritingSettingsLabel": "Ayarlar yazılıyor...",
+  "@backupRestoreWritingSettingsLabel": {
+    "description": "Geri yükleme sırasında uygulama ayarları veritabanına yazılırken gösterilen ilerleme mesajı"
+  },
+  "backupRestoreSettingsWrittenLabel": "Ayarlar yazıldı",
+  "@backupRestoreSettingsWrittenLabel": {
+    "description": "Geri yükleme sırasında ayar yazma işlemi tamamlandığında gösterilen ilerleme mesajı"
+  },
+  "backupRestoreCleaningOldAttachmentsLabel": "Eski ek dosyalar temizleniyor...",
+  "@backupRestoreCleaningOldAttachmentsLabel": {
+    "description": "Geri yükleme sırasında, yeni ekler yazılmadan önce cihazdaki eski ek dosyalar silinirken gösterilen ilerleme mesajı"
+  },
+  "backupRestoreNoAttachmentsFinishingLabel": "Ek dosya bulunmuyor, tamamlanıyor...",
+  "@backupRestoreNoAttachmentsFinishingLabel": {
+    "description": "Geri yüklenen yedekte hiç ek dosya yoksa, işlem tamamlanmadan hemen önce gösterilen ilerleme mesajı"
+  },
+  "backupRestoreAttachmentsProgressLabel": "Ekler geri yükleniyor... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "description": "Geri yükleme sırasında ek dosyalar tek tek diske yazılırken gösterilen sayaçlı ilerleme mesajı",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "Tamamlandı",
+  "@backupRestoreCompletedLabel": {
+    "description": "Yedek geri yükleme işlemi tamamen bittiğinde gösterilen son ilerleme mesajı"
+  },
+  "backupValidationCorruptedFileMessage": "Dosya bozuk veya geçerli bir yedek dosyası değil.",
+  "@backupValidationCorruptedFileMessage": {
+    "description": "Seçilen zip dosyası açılamadığında (bozuk arşiv) gösterilen hata mesajı"
+  },
+  "backupValidationMissingDataMessage": "Yedek dosyası içinde veri bulunamadı (backup_data.json eksik).",
+  "@backupValidationMissingDataMessage": {
+    "description": "Zip arşivi içinde backup_data.json dosyası bulunamadığında gösterilen hata mesajı"
+  },
+  "backupValidationInvalidJsonMessage": "Yedek verisi okunamadı (bozuk JSON).",
+  "@backupValidationInvalidJsonMessage": {
+    "description": "backup_data.json içeriği geçerli JSON olarak çözümlenemediğinde gösterilen hata mesajı"
+  },
+  "backupValidationNotDnoteBackupMessage": "Bu dosya dnote uygulamasına ait bir yedek değil.",
+  "@backupValidationNotDnoteBackupMessage": {
+    "description": "Yedek verisindeki appName alanı 'dnote' değilse gösterilen hata mesajı"
+  },
+  "backupValidationVersionUnreadableMessage": "Yedek dosyasının sürüm bilgisi okunamadı.",
+  "@backupValidationVersionUnreadableMessage": {
+    "description": "Yedek verisindeki formatVersion alanı sayı olarak okunamadığında gösterilen hata mesajı"
+  },
+  "backupValidationIncompatibleVersionMessage": "Bu yedek, uygulamanın şu anki sürümünün desteklemediği daha yeni bir formatta. Lütfen uygulamayı güncelleyin.",
+  "@backupValidationIncompatibleVersionMessage": {
+    "description": "Yedeğin formatVersion değeri uygulamanın desteklediği en yüksek sürümden büyükse gösterilen hata mesajı"
+  },
+  "backupValidationInvalidVersionMessage": "Yedek dosyasının sürüm bilgisi geçersiz.",
+  "@backupValidationInvalidVersionMessage": {
+    "description": "Yedeğin formatVersion değeri 1'den küçükse (geçersiz) gösterilen hata mesajı"
+  },
+  "backupValidationMissingNotesFieldMessage": "Yedek verisi beklenen formatta değil (notlar alanı eksik).",
+  "@backupValidationMissingNotesFieldMessage": {
+    "description": "Yedek verisindeki notes alanı liste değilse gösterilen hata mesajı"
+  },
+  "backupValidationMissingTrashFieldMessage": "Yedek verisi beklenen formatta değil (çöp kutusu alanı eksik).",
+  "@backupValidationMissingTrashFieldMessage": {
+    "description": "Yedek verisindeki deletedNotes (çöp kutusu) alanı liste değilse gösterilen hata mesajı"
+  },
+  "backupValidationInvalidCategoriesFieldMessage": "Yedek verisi beklenen formatta değil (kategori listesi geçersiz).",
+  "@backupValidationInvalidCategoriesFieldMessage": {
+    "description": "Yedek verisindeki categories alanı geçerli bir string listesi değilse gösterilen hata mesajı"
+  },
+  "backupValidationInvalidSettingsFieldMessage": "Yedek verisi beklenen formatta değil (ayarlar alanı geçersiz).",
+  "@backupValidationInvalidSettingsFieldMessage": {
+    "description": "Yedek verisindeki settings alanı dolu ama Map değilse gösterilen hata mesajı"
+  },
+  "backupValidationInvalidNoteRecordMessage": "Yedek verisi beklenen formatta değil (bir not kaydı geçersiz).",
+  "@backupValidationInvalidNoteRecordMessage": {
+    "description": "notes veya deletedNotes listesindeki bir öğe Map (obje) değilse gösterilen hata mesajı"
+  },
+  "backupValidationMissingNoteIdMessage": "Yedek verisi beklenen formatta değil (kimliksiz bir not kaydı bulundu).",
+  "@backupValidationMissingNoteIdMessage": {
+    "description": "Bir not kaydının id alanı boş veya eksikse gösterilen hata mesajı"
+  },
+  "backupValidationFileNotFoundMessage": "Yedek dosyası bulunamadı.",
+  "@backupValidationFileNotFoundMessage": {
+    "description": "Geri yüklenmek istenen zip dosyası cihazda bulunamadığında gösterilen hata mesajı"
+  },
+  "backupErrorInsufficientStorageMessage": "Cihazda yeterli boş depolama alanı yok. Lütfen yer açıp tekrar deneyin.",
+  "@backupErrorInsufficientStorageMessage": {
+    "description": "Yedekleme/geri yükleme sırasında cihazda disk alanı yetersiz kaldığında gösterilen hata mesajı"
+  },
+  "backupErrorPermissionDeniedMessage": "Dosya erişim izni reddedildi. Lütfen uygulama izinlerini kontrol edip tekrar deneyin.",
+  "@backupErrorPermissionDeniedMessage": {
+    "description": "Dosya sistemi işlemi izin hatasıyla (permission denied) başarısız olduğunda gösterilen hata mesajı"
+  },
+  "backupErrorFileOperationMessage": "Dosya işlemi sırasında bir hata oluştu: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "description": "Beklenmeyen bir FileSystemException oluştuğunda, sistem hatasının detayıyla birlikte gösterilen mesaj",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "Beklenmeyen bir hata oluştu: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "description": "Yedekleme/geri yükleme sırasında sınıflandırılamayan bir hata oluştuğunda gösterilen genel mesaj",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "Zip arşivi oluşturulamadı (ZipEncoder null döndürdü).",
+  "@backupErrorZipEncodeFailedMessage": {
+    "description": "Yedek oluşturulurken zip kodlama işlemi beklenmedik şekilde null döndürdüğünde gösterilen hata mesajı"
+  },
+  "calcTableMenuItemLabel": "Hesap Tablosu",
+  "tagsMenuItemLabel": "Etiketler",
+  "linkDialogUrlHint": "https://ornek.com",
+  "checklistItemHint": "Madde ekle...",
+  "@checklistItemHint": {
+    "description": "Checklist bloğunda bir maddenin metin alanı boşken gösterilen hint metni"
+  },
+  "toolbarHighlightTooltip": "Vurgula",
+  "toolbarListTooltip": "Liste",
+  "toolbarHideKeyboardTooltip": "Klavyeyi Gizle",
+  "autoBackupLocalSuccessMessage": "Yerel yedekleme başarılı.",
+  "@autoBackupLocalSuccessMessage": {
+    "description": "Arka plan otomatik yedekleme görevinde yerel yedekleme başarıyla tamamlandığında durum mesajına eklenen metin"
+  },
+  "autoBackupLocalFailedMessage": "Yerel yedekleme başarısız: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "description": "Arka plan otomatik yedekleme görevinde yerel yedekleme başarısız olduğunda, hatanın detayıyla birlikte durum mesajına eklenen metin",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Drive yedeklemesi atlandı: Google hesabı bağlı değil veya oturum süresi dolmuş. Lütfen uygulamayı açıp tekrar bağlanın.",
+  "@autoBackupDriveSkippedNotConnectedMessage": {
+    "description": "Arka plan otomatik yedekleme görevinde Google hesabı sessiz oturum açma ile bağlanamadığında durum mesajına eklenen metin"
+  },
+  "autoBackupDriveSuccessMessage": "Drive yedeklemesi başarılı.",
+  "@autoBackupDriveSuccessMessage": {
+    "description": "Arka plan otomatik yedekleme görevinde Drive yedeklemesi başarıyla tamamlandığında durum mesajına eklenen metin"
+  },
+  "autoBackupDriveFailedMessage": "Drive yedeklemesi başarısız: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "description": "Arka plan otomatik yedekleme görevinde Drive yedeklemesi başarısız olduğunda, hatanın detayıyla birlikte durum mesajına eklenen metin",
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "Henüz not yok",
+  "@noteWidgetNoNotesPlaceholder": {
+    "description": "Ana ekran widget'ında hiç görünür not yokken gösterilen placeholder başlık"
+  },
+  "noteWidgetPreviewTotalLabel": "Toplam: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "description": "Widget önizleme metninde hesap tablosu bloğunun toplamı gösterilirken kullanılan etiket",
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ Çizim",
+  "@noteWidgetPreviewDrawingLabel": {
+    "description": "Widget önizleme metninde çizim bloğu varsa gösterilen etiket"
+  },
+  "autoBackupSettingsAppBarTitle": "Otomatik Yedekleme Ayarları",
+  "@autoBackupSettingsAppBarTitle": {
+    "description": "Otomatik yedekleme ayarları ekranının AppBar başlığı"
+  },
+  "autoBackupSettingsMainSwitchTitle": "Otomatik Yedeklemeyi Aktif Et",
+  "@autoBackupSettingsMainSwitchTitle": {
+    "description": "Otomatik yedeklemeyi açıp kapatan ana anahtarın başlığı"
+  },
+  "autoBackupSettingsMainSwitchSubtitle": "Notlarınız arka planda periyodik olarak güvenle yedeklenir.",
+  "@autoBackupSettingsMainSwitchSubtitle": {
+    "description": "Ana açma/kapatma anahtarının altında gösterilen açıklama metni"
+  },
+  "autoBackupSettingsTargetTitle": "Yedekleme Hedefi",
+  "@autoBackupSettingsTargetTitle": {
+    "description": "Yedekleme hedefi (Yerel/Drive/Her İkisi) seçim bölümünün başlığı"
+  },
+  "autoBackupSettingsTargetSubtitle": "Yedeklerin nereye kaydedileceğini seçin.",
+  "@autoBackupSettingsTargetSubtitle": {
+    "description": "Yedekleme hedefi seçim bölümünün alt açıklaması"
+  },
+  "autoBackupSettingsTargetLocalOption": "Yerel",
+  "@autoBackupSettingsTargetLocalOption": {
+    "description": "Yedekleme hedefi segment butonunda 'Yerel' seçeneği etiketi"
+  },
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "@autoBackupSettingsTargetDriveOption": {
+    "description": "Yedekleme hedefi segment butonunda 'Google Drive' seçeneği etiketi"
+  },
+  "autoBackupSettingsTargetBothOption": "Her İkisi",
+  "@autoBackupSettingsTargetBothOption": {
+    "description": "Yedekleme hedefi segment butonunda 'Her İkisi' seçeneği etiketi"
+  },
+  "autoBackupSettingsDriveNotConnectedNote": "Google Drive seçeneklerini kullanmak için önce hesabınızı bağlayın.",
+  "@autoBackupSettingsDriveNotConnectedNote": {
+    "description": "Google Drive bağlı değilken segment butonunun altında gösterilen açıklama notu"
+  },
+  "autoBackupSettingsConnectButton": "Bağlan",
+  "@autoBackupSettingsConnectButton": {
+    "description": "Google Drive hesabına bağlanmayı başlatan düğmenin metni"
+  },
+  "autoBackupSettingsFrequencyTitle": "Yedekleme Sıklığı",
+  "@autoBackupSettingsFrequencyTitle": {
+    "description": "Yedekleme sıklığı seçim bölümünün başlığı"
+  },
+  "autoBackupSettingsFrequencySubtitle": "Her {hours} saatte bir yedek alınır.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "description": "Seçili sıklığı gösteren alt açıklama metni",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 Saat",
+  "@autoBackupSettingsFrequency6h": {
+    "description": "Sıklık dropdown menüsünde 6 saatlik seçenek"
+  },
+  "autoBackupSettingsFrequency12h": "12 Saat",
+  "@autoBackupSettingsFrequency12h": {
+    "description": "Sıklık dropdown menüsünde 12 saatlik seçenek"
+  },
+  "autoBackupSettingsFrequency24h": "24 Saat (Günlük)",
+  "@autoBackupSettingsFrequency24h": {
+    "description": "Sıklık dropdown menüsünde 24 saatlik (günlük) seçenek"
+  },
+  "autoBackupSettingsFrequency48h": "48 Saat (2 Gün)",
+  "@autoBackupSettingsFrequency48h": {
+    "description": "Sıklık dropdown menüsünde 48 saatlik (2 günlük) seçenek"
+  },
+  "autoBackupSettingsFrequency168h": "168 Saat (Haftalık)",
+  "@autoBackupSettingsFrequency168h": {
+    "description": "Sıklık dropdown menüsünde 168 saatlik (haftalık) seçenek"
+  },
+  "autoBackupSettingsWifiOnlySwitchTitle": "Sadece Wi-Fi Kullan",
+  "@autoBackupSettingsWifiOnlySwitchTitle": {
+    "description": "Bulut yüklemesinin yalnızca Wi-Fi bağlantısında yapılmasını sağlayan anahtarın başlığı"
+  },
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "Bulut yüklemesi yalnızca Wi-Fi bağlıyken yapılır mobil veriniz korunur.",
+  "@autoBackupSettingsWifiOnlySwitchSubtitle": {
+    "description": "Sadece Wi-Fi anahtarının altında gösterilen açıklama metni"
+  },
+  "autoBackupSettingsStatusCardTitle": "Sistem Durumu",
+  "@autoBackupSettingsStatusCardTitle": {
+    "description": "Son otomatik yedekleme çalışmasını gösteren durum kartının başlığı"
+  },
+  "autoBackupSettingsNeverRunMessage": "Henüz otomatik yedekleme çalışmadı.",
+  "@autoBackupSettingsNeverRunMessage": {
+    "description": "Otomatik yedekleme hiç çalışmadıysa durum kartında gösterilen metin"
+  },
+  "autoBackupSettingsLastRunInfo": "Son Çalışma: {date} {time} ({status})\nMesaj: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "description": "Durum kartında son otomatik yedekleme çalışmasının tarih, saat, durum ve mesajını gösteren metin",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "Başarılı",
+  "@autoBackupSettingsStatusSuccessLabel": {
+    "description": "Son çalışma başarılıysa durum metninde kullanılan etiket"
+  },
+  "autoBackupSettingsStatusFailedLabel": "Hatalı",
+  "@autoBackupSettingsStatusFailedLabel": {
+    "description": "Son çalışma başarısızsa durum metninde kullanılan etiket"
+  },
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Google hesabına bağlanılamadı.",
+  "@autoBackupSettingsDriveConnectFailedSnackbar": {
+    "description": "Google Drive bağlantısı başarısız olduğunda gösterilen snackbar mesajı"
+  },
+  "autoBackupSettingsSavedSnackbar": "Otomatik yedekleme ayarları güncellendi.",
+  "@autoBackupSettingsSavedSnackbar": {
+    "description": "Ayarlar kaydedildiğinde gösterilen snackbar mesajı"
+  },
+  "selectionModeDeletedMessage": "{count} not silindi",
+  "@selectionModeDeletedMessage": {
+    "description": "Not listesi çoklu seçim modunda, seçili notlar toplu olarak silindiğinde gösterilen bilgi çubuğu mesajı",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "Arşivlendi",
+  "@selectionModeArchivedMessage": {
+    "description": "Not listesi çoklu seçim modunda, seçili notlar toplu olarak arşivlendiğinde gösterilen bilgi çubuğu mesajı"
+  },
+  "selectionModeClassifySheetTitle": "{count} not için kategori seç",
+  "@selectionModeClassifySheetTitle": {
+    "description": "Çoklu seçimdeki notlara toplu kategori atamak için açılan alt menünün (bottom sheet) başlığı",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "Kategori Ekle",
+  "@selectionModeAddCategoryOption": {
+    "description": "Çoklu seçim kategori atama sheet'inde yeni kategori oluşturma seçeneğinin etiketi"
+  },
+  "selectionModeRemoveCategoryOption": "Kategoriyi Kaldır",
+  "@selectionModeRemoveCategoryOption": {
+    "description": "Çoklu seçim kategori atama sheet'inde, seçili notlardan kategori atamasını kaldıran seçeneğin etiketi"
+  },
+  "calcTableItemHint": "Kalem...",
+  "@calcTableItemHint": {
+    "description": "Hesap tablosu bloğunda bir satırın 'Kalem' (etiket) alanı boşken gösterilen hint metni"
+  },
+  "calcTableTotalRowLabel": "Toplam",
+  "@calcTableTotalRowLabel": {
+    "description": "Hesap tablosu bloğunun gömülü not düzenleyicisindeki toplam satırının etiketi"
+  },
+  "textSelectionMenuShareButton": "Paylaş",
+  "@textSelectionMenuShareButton": {
+    "description": "Özel metin seçim menüsünde seçili metni paylaşma düğmesinin etiketi"
+  },
+  "textSelectionMenuTranslateButton": "Çevir",
+  "@textSelectionMenuTranslateButton": {
+    "description": "Özel metin seçim menüsünde seçili metni Google Çeviri'de açma düğmesinin etiketi"
+  },
+  "textSelectionMenuShareFailedSnackbar": "Paylaşım başlatılamadı.",
+  "@textSelectionMenuShareFailedSnackbar": {
+    "description": "Seçili metin paylaşımı başlatılamadığında gösterilen snackbar mesajı"
+  },
+  "textSelectionMenuTranslateFailedSnackbar": "Çeviri açılamadı.",
+  "@textSelectionMenuTranslateFailedSnackbar": {
+    "description": "Seçili metin için çeviri sayfası açılamadığında gösterilen snackbar mesajı"
+  },
+  "lastBackupInfoTodayFormat": "Bugün {time}",
+  "@lastBackupInfoTodayFormat": {
+    "description": "Son yedekleme bilgisi widget'ında, yedek bugün alınmışsa saatin önüne eklenen önek",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}.{month}.{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "description": "Son yedekleme bilgisi widget'ında, yedek bugün alınmamışsa gösterilen tarih ve saat formatı",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "Son yedekleme: {date}",
+  "@lastBackupInfoLabel": {
+    "description": "Son yedekleme bilgisi widget'ında, en az bir yedek varsa gösterilen ana metin",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "Henüz hiç yedek alınmadı.",
+  "@lastBackupInfoNoBackupMessage": {
+    "description": "Son yedekleme bilgisi widget'ında hiç yedek alınmamışsa gösterilen metin"
+  }
+}

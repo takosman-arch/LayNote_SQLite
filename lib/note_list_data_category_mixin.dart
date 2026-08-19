@@ -55,6 +55,8 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
   set _textColor(Color? value);
   ThemeMode get _themeMode;
   set _themeMode(ThemeMode value);
+  String get _appLanguage;
+  set _appLanguage(String value);
   double get _widgetBgOpacity;
   set _widgetBgOpacity(double value);
   bool get _widgetDark;
@@ -98,8 +100,8 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
         _notes = [
           {
             'id': '2026-06-18 22:05:00',
-            'title': 'DNote\'a Hoş Geldiniz! 🚀',
-            'content': 'Yeni özellikler eklendi!',
+            'title': AppLocalizations.of(context)!.welcomeNoteTitle,
+            'content': AppLocalizations.of(context)!.welcomeNoteContent,
             'date': '18.06.2026 22:05',
             'createdDate': '2026-06-18 22:05:00',
             'modifiedDate': '2026-06-18 22:05:00',
@@ -146,6 +148,10 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       // Uygulama genelindeki vurgu rengini de senkronize et (açılışta
       // main() zaten ayarlamıştı; burada tutarlılık için tekrar yapılır).
       appAccentColor.value = _accentColor;
+      // Dil tercihi: kayıtlı ayar yoksa (ilk kurulum) 'system' — cihaz
+      // dilini kullan.
+      _appLanguage = settings['app_language'] ?? 'system';
+      appLanguage.value = _appLanguage;
       _colorfulNotes = (settings['colorful_notes'] ?? 'false') == 'true';
       _fontFamily = settings['font_family'] ?? 'Varsayılan';
       _globalFontSize =
@@ -247,6 +253,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       await db.setSetting('password_hint_answer', _passwordHintAnswer);
       await db.setSetting('theme_mode', themeModeToSettingValue(_themeMode));
       await db.setSetting('accent_color', accentColorToSettingValue(_accentColor));
+      await db.setSetting('app_language', _appLanguage);
       await db.setSetting('colorful_notes', _colorfulNotes.toString());
       await db.setSetting('font_family', _fontFamily);
       await db.setSetting('global_font_size', _globalFontSize.toString());
@@ -265,7 +272,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       debugPrint('[_saveData] stack: $st');
       if (mounted) {
         _showInfoBar(
-          'Kayıt hatası: $e',
+          AppLocalizations.of(context)!.saveErrorInfoMessage(e.toString()),
           icon: Icons.error_outline,
         );
       }
@@ -273,12 +280,19 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
     }
   }
 
-  // Kısa Türkçe tarih biçimi: "Tem 20, 21:17" — alt bardaki ve not
-  // altındaki (hatırlatıcı) tarih gösterimlerinde kullanılır.
-  final List<String> _shortMonthNamesTr = [
-    'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
-    'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara',
-  ];
+  // Kısa tarih biçimi: "Tem 20, 21:17" / "Jul 20, 21:17" — alt bardaki ve
+  // not altındaki (hatırlatıcı) tarih gösterimlerinde kullanılır.
+  // Ay kısaltmaları gundem_screen.dart ile aynı ARB anahtarlarını
+  // (gundemMonthShortJan..Dec) kullanır; tek bir yerde çeviri yeter.
+  List<String> get _shortMonthNamesTr {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      l10n.gundemMonthShortJan, l10n.gundemMonthShortFeb, l10n.gundemMonthShortMar,
+      l10n.gundemMonthShortApr, l10n.gundemMonthShortMay, l10n.gundemMonthShortJun,
+      l10n.gundemMonthShortJul, l10n.gundemMonthShortAug, l10n.gundemMonthShortSep,
+      l10n.gundemMonthShortOct, l10n.gundemMonthShortNov, l10n.gundemMonthShortDec,
+    ];
+  }
 
   String _formatDateTimeShortTr(DateTime dt) {
     final month = _shortMonthNamesTr[dt.month - 1];
@@ -296,21 +310,29 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
   // başlıkları (iOS Notlar uygulamasındaki gibi): "Bugün", "Dün",
   // "Son 7 Gün", "Son 30 Gün", ardından ay adı (aynı yıl içinde) veya
   // "Ay Yıl" (önceki yıllar için).
-  final List<String> _fullMonthNamesTr = [
-    'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-    'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
-  ];
+  // Tam ay isimleri calendar_screen.dart ile aynı ARB anahtarlarını
+  // (calendarMonthJan..Dec) kullanır.
+  List<String> get _fullMonthNamesTr {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      l10n.calendarMonthJan, l10n.calendarMonthFeb, l10n.calendarMonthMar,
+      l10n.calendarMonthApr, l10n.calendarMonthMay, l10n.calendarMonthJun,
+      l10n.calendarMonthJul, l10n.calendarMonthAug, l10n.calendarMonthSep,
+      l10n.calendarMonthOct, l10n.calendarMonthNov, l10n.calendarMonthDec,
+    ];
+  }
 
   String _dateGroupLabel(DateTime date) {
+    final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final target = DateTime(date.year, date.month, date.day);
     final diff = today.difference(target).inDays;
 
-    if (diff <= 0) return 'Bugün';
-    if (diff == 1) return 'Dün';
-    if (diff < 7) return 'Son 7 Gün';
-    if (diff < 30) return 'Son 30 Gün';
+    if (diff <= 0) return l10n.noteListDateGroupToday;
+    if (diff == 1) return l10n.noteListDateGroupYesterday;
+    if (diff < 7) return l10n.noteListDateGroupLast7Days;
+    if (diff < 30) return l10n.noteListDateGroupLast30Days;
     if (date.year == now.year) return _fullMonthNamesTr[date.month - 1];
     return '${_fullMonthNamesTr[date.month - 1]} ${date.year}';
   }
@@ -374,18 +396,19 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
   }
 
   String _getCategoryDisplayName(String category) {
+    final l10n = AppLocalizations.of(context)!;
     if (category == 'Tümü' || category == 'Notlar') {
-      return 'Notlar';
+      return l10n.drawerAllNotesLabel;
     } else if (category == '__favorites__') {
-      return 'Favori';
+      return l10n.drawerFavoritesLabel;
     } else if (category == '__locked__') {
-      return 'Kilitli';
+      return l10n.drawerLockedLabel;
     } else if (category == '__archive__') {
-      return 'Arşiv';
+      return l10n.noteActionArchiveLabel;
     } else if (category == '__trash__') {
-      return 'Çöp';
+      return l10n.drawerTrashLabel;
     } else if (category == '__reminders__') {
-      return 'Hatırlatıcı';
+      return l10n.drawerRemindersLabel;
     } else {
       return category;
     }
@@ -481,20 +504,20 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
               showDialog(
                 context: context,
                 builder: (ctx) => AlertDialog(
-                  title: const Text(
-                    'Hatalı Parola',
-                    style: TextStyle(color: Colors.red),
+                  title: Text(
+                    AppLocalizations.of(ctx)!.wrongPasswordDialogTitle,
+                    style: const TextStyle(color: Colors.red),
                   ),
-                  content: const Text('Girdiğiniz parola yanlış.'),
+                  content: Text(AppLocalizations.of(ctx)!.wrongPasswordDialogMessage),
                   actions: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(ctx).primaryColor,
                       ),
                       onPressed: () => Navigator.pop(ctx),
-                      child: const Text(
-                        'Tamam',
-                        style: TextStyle(
+                      child: Text(
+                        AppLocalizations.of(ctx)!.commonOkButton,
+                        style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
@@ -606,7 +629,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                   color: dNoteTextColor(sheetContext),
                 ),
                 title: Text(
-                  'Adını Düzenle / Renk',
+                  AppLocalizations.of(sheetContext)!.editCategoryNameColorMenuItemLabel,
                   style: TextStyle(color: dNoteTextColor(sheetContext)),
                 ),
                 onTap: () {
@@ -622,7 +645,9 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                     color: Colors.blueGrey,
                   ),
                   title: Text(
-                    isLocked ? 'Kilidi Kaldır' : 'Kilitle',
+                    isLocked
+                        ? AppLocalizations.of(sheetContext)!.unlockCategoryAction
+                        : AppLocalizations.of(sheetContext)!.lockCategoryAction,
                     style: TextStyle(color: dNoteTextColor(sheetContext)),
                   ),
                   onTap: () async {
@@ -646,7 +671,9 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                       });
                       _saveData();
                       _showInfoBar(
-                        isLocked ? 'Kilit kaldırıldı' : 'Klasör kilitlendi',
+                        isLocked
+                            ? AppLocalizations.of(context)!.categoryUnlockedMessage
+                            : AppLocalizations.of(context)!.categoryLockedMessage,
                         icon: isLocked ? Icons.lock_open : Icons.lock,
                       );
                       return;
@@ -666,7 +693,9 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                       });
                       _saveData();
                       _showInfoBar(
-                        isLocked ? 'Kilit kaldırıldı' : 'Klasör kilitlendi',
+                        isLocked
+                            ? AppLocalizations.of(context)!.categoryUnlockedMessage
+                            : AppLocalizations.of(context)!.categoryLockedMessage,
                         icon: isLocked ? Icons.lock_open : Icons.lock,
                       );
                     } else {
@@ -674,12 +703,12 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                         context: context,
                       builder: (ctx) => AlertDialog(
                         backgroundColor: dNoteCardColor(ctx),
-                        title: const Text(
-                          'Hatalı Parola',
-                          style: TextStyle(color: Colors.red),
+                        title: Text(
+                          AppLocalizations.of(ctx)!.wrongPasswordDialogTitle,
+                          style: const TextStyle(color: Colors.red),
                         ),
                         content: Text(
-                          'Girdiğiniz parola yanlış.',
+                          AppLocalizations.of(ctx)!.wrongPasswordDialogMessage,
                           style: TextStyle(color: dNoteTextColor(ctx)),
                         ),
                         actions: [
@@ -688,9 +717,9 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                               backgroundColor: Theme.of(ctx).primaryColor,
                             ),
                             onPressed: () => Navigator.pop(ctx),
-                            child: const Text(
-                              'Tamam',
-                              style: TextStyle(
+                            child: Text(
+                              AppLocalizations.of(ctx)!.commonOkButton,
+                              style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -714,7 +743,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                     color: Theme.of(sheetContext).primaryColor,
                   ),
                   title: Text(
-                    'Alt Klasör Oluştur',
+                    AppLocalizations.of(sheetContext)!.addSubfolderMenuItemLabel,
                     style: TextStyle(color: dNoteTextColor(sheetContext)),
                   ),
                   onTap: () {
@@ -734,8 +763,8 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                   ),
                   title: Text(
                     isCatCollapsed
-                        ? 'Alt Klasörleri Genişlet'
-                        : 'Alt Klasörleri Daralt',
+                        ? AppLocalizations.of(sheetContext)!.expandSubfoldersMenuItemLabel
+                        : AppLocalizations.of(sheetContext)!.collapseSubfoldersMenuItemLabel,
                     style: TextStyle(color: dNoteTextColor(sheetContext)),
                   ),
                   onTap: () {
@@ -753,9 +782,9 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(Icons.delete_outline, color: Colors.red),
-                title: const Text(
-                  'Klasörü Sil',
-                  style: TextStyle(color: Colors.red),
+                title: Text(
+                  AppLocalizations.of(sheetContext)!.deleteFolderMenuItemLabel,
+                  style: const TextStyle(color: Colors.red),
                 ),
                 onTap: () {
                   Navigator.pop(sheetContext);
@@ -764,7 +793,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                     builder: (confirmContext) => AlertDialog(
                       backgroundColor: dNoteCardColor(confirmContext),
                       title: Text(
-                        'Klasörü Sil',
+                        AppLocalizations.of(confirmContext)!.deleteFolderDialogTitle,
                         style: TextStyle(color: Theme.of(confirmContext).primaryColor),
                       ),
                       content: Text(
@@ -772,16 +801,18 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                                 _categories.any(
                                   (c) => _categoryParents[c] == category,
                                 )
-                            ? '"$category" klasörünü ve içindeki tüm alt klasörleri silmek istediğinize emin misiniz? Bu klasörlerdeki notlar klasörsüz kalacak.'
-                            : '"$category" klasörünü silmek istediğinize emin misiniz? Bu klasördeki notlar klasörsüz kalacak.',
+                            ? AppLocalizations.of(confirmContext)!
+                                .deleteFolderDialogMessageWithSubfolders(category)
+                            : AppLocalizations.of(confirmContext)!
+                                .deleteFolderDialogMessage(category),
                         style: TextStyle(color: dNoteTextColor(confirmContext)),
                       ),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(confirmContext),
-                          child: const Text(
-                            'İptal',
-                            style: TextStyle(color: Colors.grey),
+                          child: Text(
+                            AppLocalizations.of(confirmContext)!.deleteFolderDialogCancelButton,
+                            style: const TextStyle(color: Colors.grey),
                           ),
                         ),
                         ElevatedButton(
@@ -792,9 +823,9 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                             Navigator.pop(confirmContext);
                             _deleteCategory(category);
                           },
-                          child: const Text(
-                            'Sil',
-                            style: TextStyle(color: Colors.white),
+                          child: Text(
+                            AppLocalizations.of(confirmContext)!.deleteFolderDialogConfirmButton,
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                       ],

@@ -50,15 +50,18 @@ class _SettingsPageState extends State<SettingsPage> {
   _NoteListScreenState get s => widget.state;
 
   // ── Şifre ipucu soruları (sabit liste) ──────────────────────────────
-  static const List<String> _hintQuestions = [
-    'İlk evcil hayvanınızın adı nedir?',
-    'En sevdiğiniz öğretmeninizin adı nedir?',
-    'Doğduğunuz şehir nedir?',
-    'En sevdiğiniz yemek nedir?',
-    'Annenizin kızlık soyadı nedir?',
-    'İlk okuduğunuz okulun adı nedir?',
-    'En sevdiğiniz renk nedir?',
-  ];
+  List<String> _hintQuestions(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      l10n.settingsHintQuestionPet,
+      l10n.settingsHintQuestionTeacher,
+      l10n.settingsHintQuestionBirthCity,
+      l10n.settingsHintQuestionFavoriteFood,
+      l10n.settingsHintQuestionMotherMaidenName,
+      l10n.settingsHintQuestionFirstSchool,
+      l10n.settingsHintQuestionFavoriteColor,
+    ];
+  }
 
   // ─────────────────────────────────────────────────────────────────
   // ORTAK GÖRSEL YARDIMCILAR (eski tasarımla birebir)
@@ -109,8 +112,8 @@ class _SettingsPageState extends State<SettingsPage> {
   );
 
   // ── Yazı tipi seçici ──────────────────────────────────────────────
-  static const List<String> _fonts = [
-    'Varsayılan',
+  List<String> _fonts(BuildContext context) => [
+    AppLocalizations.of(context)!.settingsFontFamilyDefaultLabel,
     'Monospace',
     'Serif',
     'Cursive',
@@ -161,7 +164,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Widget Yazı Boyutu',
+                  AppLocalizations.of(context)!.settingsWidgetFontSizeLabel,
                   style: TextStyle(
                     color: dNoteTextColor(ctx),
                     fontSize: 16,
@@ -202,7 +205,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Örnek başlık - ${tempSize.round()} pt',
+                  AppLocalizations.of(context)!.settingsWidgetFontSizeSample(tempSize.round()),
                   style: TextStyle(
                     color: dNoteTextColor(ctx).withValues(alpha: 0.7),
                     fontSize: tempSize,
@@ -215,9 +218,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     Expanded(
                       child: TextButton(
                         onPressed: () => Navigator.pop(ctx),
-                        child: const Text(
-                          'İptal',
-                          style: TextStyle(color: Colors.grey),
+                        child: Text(
+                          AppLocalizations.of(context)!.settingsWidgetFontSizeCancelButton,
+                          style: const TextStyle(color: Colors.grey),
                         ),
                       ),
                     ),
@@ -238,9 +241,9 @@ class _SettingsPageState extends State<SettingsPage> {
                           );
                           Navigator.pop(ctx);
                         },
-                        child: const Text(
-                          'Uygula',
-                          style: TextStyle(
+                        child: Text(
+                          AppLocalizations.of(context)!.settingsWidgetFontSizeApplyButton,
+                          style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
@@ -284,7 +287,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Arka Plan Saydamlığı',
+                  AppLocalizations.of(context)!.settingsWidgetOpacityLabel,
                   style: TextStyle(
                     color: dNoteTextColor(ctx),
                     fontSize: 16,
@@ -325,7 +328,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '%${(tempOpacity * 100).round()} saydamlık',
+                  AppLocalizations.of(context)!.settingsWidgetOpacityValue((tempOpacity * 100).round()),
                   style: TextStyle(
                     color: dNoteTextColor(ctx).withValues(alpha: 0.7),
                     fontSize: 13,
@@ -337,9 +340,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     Expanded(
                       child: TextButton(
                         onPressed: () => Navigator.pop(ctx),
-                        child: const Text(
-                          'İptal',
-                          style: TextStyle(color: Colors.grey),
+                        child: Text(
+                          AppLocalizations.of(context)!.settingsWidgetOpacityCancelButton,
+                          style: const TextStyle(color: Colors.grey),
                         ),
                       ),
                     ),
@@ -360,9 +363,9 @@ class _SettingsPageState extends State<SettingsPage> {
                           );
                           Navigator.pop(ctx);
                         },
-                        child: const Text(
-                          'Uygula',
-                          style: TextStyle(
+                        child: Text(
+                          AppLocalizations.of(context)!.settingsWidgetOpacityApplyButton,
+                          style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
@@ -408,7 +411,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 Text(
-                  'Yazı Rengi',
+                  AppLocalizations.of(context)!.settingsTextColorSheetTitle,
                   style: TextStyle(
                     color: dNoteTextColor(ctx),
                     fontSize: 16,
@@ -416,9 +419,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'Not içerik metninin rengini belirler.',
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                Text(
+                  AppLocalizations.of(context)!.settingsTextColorSheetDesc,
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 const SizedBox(height: 20),
                 Wrap(
@@ -483,9 +486,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       backgroundColor: Theme.of(context).primaryColor,
                     ),
                     onPressed: () => Navigator.pop(ctx),
-                    child: const Text(
-                      'Tamam',
-                      style: TextStyle(
+                    child: Text(
+                      AppLocalizations.of(context)!.settingsTextColorOkButton,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                       ),
@@ -515,16 +518,16 @@ class _SettingsPageState extends State<SettingsPage> {
         builder: (ctx, setDlg) => AlertDialog(
           backgroundColor: dNoteCardColor(ctx),
           title: Text(
-            'Güvenlik Sorusu',
+            AppLocalizations.of(context)!.settingsSecurityQuestionDialogTitle,
             style: TextStyle(color: Theme.of(context).primaryColor),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Şifrenizi unutursanız, bu soruyu doğru cevaplayarak şifrenizi hatırlayabilirsiniz.',
-                style: TextStyle(color: Colors.grey, fontSize: 12),
+              Text(
+                AppLocalizations.of(context)!.settingsSecurityQuestionDialogDesc,
+                style: const TextStyle(color: Colors.grey, fontSize: 12),
               ),
               const SizedBox(height: 14),
               DropdownButtonFormField<String>(
@@ -533,7 +536,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 dropdownColor: dNoteSurfaceVariant(ctx),
                 style: TextStyle(color: dNoteTextColor(ctx), fontSize: 14),
                 decoration: InputDecoration(
-                  hintText: 'Güvenlik sorusu seçin',
+                  hintText: AppLocalizations.of(context)!.settingsSecurityQuestionDropdownHint,
                   hintStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx)),
@@ -542,7 +545,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     borderSide: BorderSide(color: Theme.of(context).primaryColor),
                   ),
                 ),
-                items: _hintQuestions
+                items: _hintQuestions(context)
                     .map(
                       (q) => DropdownMenuItem(
                         value: q,
@@ -560,7 +563,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 controller: answerCtrl,
                 style: TextStyle(color: dNoteTextColor(ctx)),
                 decoration: InputDecoration(
-                  hintText: 'Cevabınız',
+                  hintText: AppLocalizations.of(context)!.settingsSecurityQuestionAnswerHint,
                   hintStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx)),
@@ -575,7 +578,10 @@ class _SettingsPageState extends State<SettingsPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('İptal', style: TextStyle(color: Colors.grey)),
+              child: Text(
+                AppLocalizations.of(context)!.settingsSecurityQuestionCancelButton,
+                style: const TextStyle(color: Colors.grey),
+              ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
@@ -583,8 +589,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 if (selectedQuestion == null ||
                     answerCtrl.text.trim().isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Soru ve cevap boş olamaz!'),
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context)!.settingsSecurityQuestionEmptyWarning),
                       backgroundColor: Colors.red,
                     ),
                   );
@@ -598,9 +604,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 Navigator.pop(ctx);
                 setState(() {});
               },
-              child: const Text(
-                'Kaydet',
-                style: TextStyle(
+              child: Text(
+                AppLocalizations.of(context)!.settingsSecurityQuestionSaveButton,
+                style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
@@ -628,7 +634,9 @@ class _SettingsPageState extends State<SettingsPage> {
         builder: (ctx, setDlg) => AlertDialog(
           backgroundColor: dNoteCardColor(ctx),
           title: Text(
-            isNew ? 'Şifre Oluştur' : 'Şifre Gerekiyor',
+            isNew
+                ? AppLocalizations.of(context)!.settingsCreatePasswordTitle
+                : AppLocalizations.of(context)!.settingsPasswordRequiredTitle,
             style: TextStyle(color: Theme.of(context).primaryColor),
           ),
           content: SingleChildScrollView(
@@ -645,7 +653,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     obscureText: obscure1,
                     style: TextStyle(color: dNoteTextColor(ctx)),
                     decoration: InputDecoration(
-                      hintText: 'Şifreyi girin',
+                      hintText: AppLocalizations.of(context)!.settingsPasswordEnterHint,
                       hintStyle: const TextStyle(color: Colors.grey),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: dNoteBorderColor(ctx)),
@@ -674,7 +682,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           s._showForgotPasswordDialog();
                         },
                         child: Text(
-                          'Şifremi unuttum',
+                          AppLocalizations.of(context)!.settingsForgotPasswordButton,
                           style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 13),
                         ),
                       ),
@@ -690,7 +698,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     obscureText: obscure1,
                     style: TextStyle(color: dNoteTextColor(ctx)),
                     decoration: InputDecoration(
-                      hintText: 'Yeni şifre',
+                      hintText: AppLocalizations.of(context)!.settingsNewPasswordHint,
                       hintStyle: const TextStyle(color: Colors.grey),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: dNoteBorderColor(ctx)),
@@ -717,7 +725,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     obscureText: obscure2,
                     style: TextStyle(color: dNoteTextColor(ctx)),
                     decoration: InputDecoration(
-                      hintText: 'Şifreyi tekrar gir',
+                      hintText: AppLocalizations.of(context)!.settingsConfirmPasswordHint,
                       hintStyle: const TextStyle(color: Colors.grey),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: dNoteBorderColor(ctx)),
@@ -737,7 +745,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   Divider(color: Theme.of(ctx).dividerColor, height: 28),
                   Text(
-                    'Şifrenizi unutursanız diye bir güvenlik sorusu belirleyin (zorunlu değildir).',
+                    AppLocalizations.of(context)!.settingsSecurityQuestionOptionalDesc,
                     style: TextStyle(color: dNoteTextColor(ctx), fontSize: 13),
                   ),
                   const SizedBox(height: 10),
@@ -747,7 +755,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     dropdownColor: dNoteSurfaceVariant(ctx),
                     style: TextStyle(color: dNoteTextColor(ctx), fontSize: 14),
                     decoration: InputDecoration(
-                      hintText: 'Güvenlik sorusu seçin',
+                      hintText: AppLocalizations.of(context)!.settingsSecurityQuestionDropdownHint,
                       hintStyle: const TextStyle(color: Colors.grey),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: dNoteBorderColor(ctx)),
@@ -756,7 +764,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         borderSide: BorderSide(color: Theme.of(context).primaryColor),
                       ),
                     ),
-                    items: _hintQuestions
+                    items: _hintQuestions(context)
                         .map(
                           (q) => DropdownMenuItem(
                             value: q,
@@ -775,7 +783,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     controller: hintAnswerCtrl,
                     style: TextStyle(color: dNoteTextColor(ctx)),
                     decoration: InputDecoration(
-                      hintText: 'Cevabınız',
+                      hintText: AppLocalizations.of(context)!.settingsSecurityQuestionAnswerHint,
                       hintStyle: const TextStyle(color: Colors.grey),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: dNoteBorderColor(ctx)),
@@ -792,7 +800,10 @@ class _SettingsPageState extends State<SettingsPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('İptal', style: TextStyle(color: Colors.grey)),
+              child: Text(
+                AppLocalizations.of(context)!.settingsPasswordDialogCancelButton,
+                style: const TextStyle(color: Colors.grey),
+              ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
@@ -801,8 +812,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   if (ctrl1.text.isEmpty) return;
                   if (ctrl1.text != ctrl2.text) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Şifreler eşleşmiyor!'),
+                      SnackBar(
+                        content: Text(AppLocalizations.of(context)!.settingsPasswordMismatchWarning),
                         backgroundColor: Colors.red,
                       ),
                     );
@@ -831,8 +842,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     setState(() {});
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Yanlış şifre!'),
+                      SnackBar(
+                        content: Text(AppLocalizations.of(context)!.settingsWrongPasswordWarning),
                         backgroundColor: Colors.red,
                       ),
                     );
@@ -840,7 +851,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 }
               },
               child: Text(
-                isNew ? 'Kaydet' : 'Kaldır',
+                isNew
+                    ? AppLocalizations.of(context)!.settingsPasswordSaveButton
+                    : AppLocalizations.of(context)!.settingsPasswordRemoveButton,
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -866,24 +879,24 @@ class _SettingsPageState extends State<SettingsPage> {
       builder: (dialogCtx) {
         return StatefulBuilder(
           builder: (ctx, setDlg) => AlertDialog(
-            title: const Text('Tema Seçin'),
+            title: Text(AppLocalizations.of(context)!.settingsThemeDialogTitle),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 RadioListTile<ThemeMode>(
-                  title: const Text('Sistem Varsayılanı'),
+                  title: Text(AppLocalizations.of(context)!.settingsThemeSystemDefault),
                   value: ThemeMode.system,
                   groupValue: s._themeMode,
                   onChanged: (val) => _updateTheme(ctx, val, setDlg),
                 ),
                 RadioListTile<ThemeMode>(
-                  title: const Text('Açık Tema'),
+                  title: Text(AppLocalizations.of(context)!.settingsThemeLightOption),
                   value: ThemeMode.light,
                   groupValue: s._themeMode,
                   onChanged: (val) => _updateTheme(ctx, val, setDlg),
                 ),
                 RadioListTile<ThemeMode>(
-                  title: const Text('Koyu Tema'),
+                  title: Text(AppLocalizations.of(context)!.settingsThemeDarkOption),
                   value: ThemeMode.dark,
                   groupValue: s._themeMode,
                   onChanged: (val) => _updateTheme(ctx, val, setDlg),
@@ -910,6 +923,65 @@ class _SettingsPageState extends State<SettingsPage> {
     s.setState(() => s._themeMode = mode);
     dialogSetState(() {});
     appThemeMode.value = mode;
+    await s._saveData();
+    setState(() {});
+    if (context.mounted) Navigator.pop(context);
+  }
+
+  // ─────────────────────────────────────────────────────────────────
+  // DİL (Sistem / Türkçe / English) — Tema diyaloğuyla birebir aynı kalıp.
+  // Gerçek kaynak appLanguage notifier'ıdır (bkz. theme.dart);
+  // s._appLanguage yalnızca bu ekrandaki seçili durumu göstermek için
+  // tutulur (note_list_lifecycle_mixin.dart).
+  // ─────────────────────────────────────────────────────────────────
+  void _showLanguageDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dialogCtx) {
+        return StatefulBuilder(
+          builder: (ctx, setDlg) => AlertDialog(
+            title: Text(AppLocalizations.of(context)!.settingsLanguageDialogTitle),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RadioListTile<String>(
+                  title: Text(AppLocalizations.of(context)!.settingsLanguageSystemOption),
+                  value: 'system',
+                  groupValue: s._appLanguage,
+                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
+                ),
+                RadioListTile<String>(
+                  title: const Text('Türkçe'),
+                  value: 'tr',
+                  groupValue: s._appLanguage,
+                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
+                ),
+                RadioListTile<String>(
+                  title: const Text('English'),
+                  value: 'en',
+                  groupValue: s._appLanguage,
+                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // [dialogSetState]: bkz. _updateTheme'deki aynı isimli parametrenin
+  // açıklaması — seçili radio, kaydetme beklenirken bile diyalog içinde
+  // hemen güncellensin diye.
+  void _updateLanguage(
+    BuildContext context,
+    String? lang,
+    void Function(void Function()) dialogSetState,
+  ) async {
+    if (lang == null) return;
+    s.setState(() => s._appLanguage = lang);
+    dialogSetState(() {});
+    appLanguage.value = lang;
     await s._saveData();
     setState(() {});
     if (context.mounted) Navigator.pop(context);
@@ -943,7 +1015,7 @@ class _SettingsPageState extends State<SettingsPage> {
       builder: (dialogCtx) {
         return StatefulBuilder(
           builder: (ctx, setDlg) => AlertDialog(
-            title: const Text('Vurgu Rengini Seçin'),
+            title: Text(AppLocalizations.of(context)!.settingsAccentColorDialogTitle),
             content: SizedBox(
               width: double.maxFinite,
               child: Wrap(
@@ -1021,7 +1093,7 @@ class _SettingsPageState extends State<SettingsPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Ayarlar',
+          AppLocalizations.of(context)!.settingsPageTitle,
           style: TextStyle(
             color: Theme.of(context).primaryColor,
             fontWeight: FontWeight.bold,
@@ -1033,7 +1105,7 @@ class _SettingsPageState extends State<SettingsPage> {
         child: ListView(
           children: [
             // ── 1. GÜVENLİK ─────────────────────────────────────────────
-            _sectionHeader('Güvenlik'),
+            _sectionHeader(AppLocalizations.of(context)!.settingsSectionSecurity),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
@@ -1045,10 +1117,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.lock_outline,
                     iconColor: Colors.blueAccent,
-                    title: 'Not Şifresi',
+                    title: AppLocalizations.of(context)!.settingsNotePasswordTitle,
                     subtitle: s._notePasswordEnabled
-                        ? 'Şifre ayarlandı ✓'
-                        : 'Şifre ayarlanmadı',
+                        ? AppLocalizations.of(context)!.settingsPasswordSetSubtitle
+                        : AppLocalizations.of(context)!.settingsPasswordNotSetSubtitle,
                     trailing: Switch(
                       value: s._notePasswordEnabled,
                       activeThumbColor: Theme.of(context).primaryColor,
@@ -1076,10 +1148,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     _settingTile(
                       icon: Icons.help_outline,
                       iconColor: Colors.orangeAccent,
-                      title: 'Güvenlik Sorusu',
+                      title: AppLocalizations.of(context)!.settingsSecurityQuestionTileTitle,
                       subtitle: s._passwordHintQuestion.isNotEmpty
-                          ? 'Belirlendi ✓ — şifreyi unutursanız kullanılır'
-                          : 'Belirlenmedi — şifrenizi kaybederseniz kurtaramazsınız',
+                          ? AppLocalizations.of(context)!.settingsSecurityQuestionSetSubtitle
+                          : AppLocalizations.of(context)!.settingsSecurityQuestionNotSetSubtitle,
                       trailing: null,
                       onTap: () => _showHintQuestionDialog(),
                     ),
@@ -1089,7 +1161,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
 
             // ── 2. TEMA ──────────────────────────────────────────────────
-            _sectionHeader('Tema'),
+            _sectionHeader(AppLocalizations.of(context)!.settingsSectionTheme),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
@@ -1101,14 +1173,31 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.palette_outlined,
                     iconColor: Colors.indigoAccent,
-                    title: 'Tema Değiştir',
+                    title: AppLocalizations.of(context)!.settingsThemeChangeTileTitle,
                     subtitle: switch (s._themeMode) {
-                      ThemeMode.light => 'Açık',
-                      ThemeMode.dark => 'Koyu',
-                      ThemeMode.system => 'Sistem',
+                      ThemeMode.light => AppLocalizations.of(context)!.settingsThemeLightLabel,
+                      ThemeMode.dark => AppLocalizations.of(context)!.settingsThemeDarkLabel,
+                      ThemeMode.system => AppLocalizations.of(context)!.settingsThemeSystemLabel,
                     },
                     trailing: null,
                     onTap: () => _showThemeDialog(context),
+                  ),
+                  Divider(
+                    color: Theme.of(context).dividerColor,
+                    height: 1,
+                    indent: 56,
+                  ),
+                  _settingTile(
+                    icon: Icons.language_outlined,
+                    iconColor: Colors.tealAccent,
+                    title: AppLocalizations.of(context)!.settingsLanguageTileTitle,
+                    subtitle: switch (s._appLanguage) {
+                      'tr' => 'Türkçe',
+                      'en' => 'English',
+                      _ => AppLocalizations.of(context)!.settingsLanguageSystemOption,
+                    },
+                    trailing: null,
+                    onTap: () => _showLanguageDialog(context),
                   ),
                   Divider(
                     color: Theme.of(context).dividerColor,
@@ -1121,8 +1210,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       s._accentColor,
                       Theme.of(context).brightness == Brightness.dark,
                     ),
-                    title: 'Vurgu Rengi',
-                    subtitle: 'AppBar, buton ve anahtarlarda kullanılan renk',
+                    title: AppLocalizations.of(context)!.settingsAccentColorTileTitle,
+                    subtitle: AppLocalizations.of(context)!.settingsAccentColorTileSubtitle,
                     trailing: Container(
                       width: 24,
                       height: 24,
@@ -1147,8 +1236,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.color_lens_outlined,
                     iconColor: Colors.orangeAccent,
-                    title: 'Değişken Not Renkleri',
-                    subtitle: 'Her not kartı farklı renk tonu alır.',
+                    title: AppLocalizations.of(context)!.settingsColorfulNotesTitle,
+                    subtitle: AppLocalizations.of(context)!.settingsColorfulNotesSubtitle,
                     trailing: Switch(
                       value: s._colorfulNotes,
                       activeThumbColor: Theme.of(context).primaryColor,
@@ -1164,7 +1253,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
 
             // ── 3. KİŞİSELLEŞTİRME ──────────────────────────────────────
-            _sectionHeader('Kişiselleştirme'),
+            _sectionHeader(AppLocalizations.of(context)!.settingsSectionPersonalization),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
@@ -1177,7 +1266,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.font_download_outlined,
                     iconColor: Colors.tealAccent,
-                    title: 'Yazı Tipi',
+                    title: AppLocalizations.of(context)!.settingsFontFamilyTileTitle,
                     subtitle: s._fontFamily,
                     trailing: null,
                     onTap: () {
@@ -1197,7 +1286,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Yazı Tipi',
+                                  AppLocalizations.of(context)!.settingsFontFamilyTileTitle,
                                   style: TextStyle(
                                     color: dNoteTextColor(context),
                                     fontSize: 16,
@@ -1205,7 +1294,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                ..._fonts.map(
+                                ..._fonts(context).map(
                                   (f) => ListTile(
                                     contentPadding: EdgeInsets.zero,
                                     title: Text(
@@ -1247,9 +1336,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.text_fields,
                     iconColor: Colors.pinkAccent,
-                    title: 'Yazı Boyutu',
-                    subtitle:
-                        '${s._globalFontSize.round()} pt — tüm notlara uygulanır.',
+                    title: AppLocalizations.of(context)!.settingsGlobalFontSizeTileTitle,
+                    subtitle: AppLocalizations.of(context)!.settingsGlobalFontSizeTileSubtitle(
+                      s._globalFontSize.round(),
+                    ),
                     trailing: null,
                     onTap: () {
                       double tempSize = s._globalFontSize;
@@ -1285,7 +1375,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                   const SizedBox(height: 16),
                                   Text(
-                                    'Yazı Boyutu',
+                                    AppLocalizations.of(context)!.settingsGlobalFontSizeTileTitle,
                                     style: TextStyle(
                                       color: dNoteTextColor(ctx),
                                       fontSize: 16,
@@ -1341,7 +1431,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                   const SizedBox(height: 6),
                                   Text(
-                                    'Örnek metin - ${tempSize.round()} pt',
+                                    AppLocalizations.of(context)!.settingsGlobalFontSizeSamplePreview(
+                                      tempSize.round(),
+                                    ),
                                     style: TextStyle(
                                       color: dNoteTextColor(
                                         ctx,
@@ -1364,7 +1456,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       ),
                                       Expanded(
                                         child: Text(
-                                          'Mevcut notlara uygula',
+                                          AppLocalizations.of(context)!.settingsGlobalFontSizeApplyToAllLabel,
                                           style: TextStyle(
                                             color: dNoteTextColor(
                                               ctx,
@@ -1375,13 +1467,13 @@ class _SettingsPageState extends State<SettingsPage> {
                                       ),
                                     ],
                                   ),
-                                  const Padding(
-                                    padding: EdgeInsets.only(
+                                  Padding(
+                                    padding: const EdgeInsets.only(
                                       left: 12,
                                       bottom: 16,
                                     ),
                                     child: Text(
-                                      'Bireysel not boyutu ayarı varsa bu ayar o notları etkilemez.',
+                                      AppLocalizations.of(context)!.settingsGlobalFontSizeApplyToAllNote,
                                       style: TextStyle(
                                         color: Colors.grey,
                                         fontSize: 11,
@@ -1393,9 +1485,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                       Expanded(
                                         child: TextButton(
                                           onPressed: () => Navigator.pop(ctx),
-                                          child: const Text(
-                                            'İptal',
-                                            style: TextStyle(
+                                          child: Text(
+                                            AppLocalizations.of(context)!.settingsGlobalFontSizeCancelButton,
+                                            style: const TextStyle(
                                               color: Colors.grey,
                                             ),
                                           ),
@@ -1420,9 +1512,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                             s._saveData();
                                             Navigator.pop(ctx);
                                           },
-                                          child: const Text(
-                                            'Uygula',
-                                            style: TextStyle(
+                                          child: Text(
+                                            AppLocalizations.of(context)!.settingsGlobalFontSizeApplyButton,
+                                            style: const TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -1448,8 +1540,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.format_color_text,
                     iconColor: Colors.lightBlueAccent,
-                    title: 'Yazı Rengi',
-                    subtitle: 'Not içerik metni için renk.',
+                    title: AppLocalizations.of(context)!.settingsTextColorTileTitle,
+                    subtitle: AppLocalizations.of(context)!.settingsTextColorTileSubtitle,
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -1475,9 +1567,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.wrap_text,
                     iconColor: Theme.of(context).primaryColor,
-                    title: 'Not Önizleme Satırı',
-                    subtitle:
-                        'En fazla ${s._previewLines} satır göster. Not daha kısaysa gerçek satır sayısı görünür.',
+                    title: AppLocalizations.of(context)!.settingsPreviewLinesTileTitle,
+                    subtitle: AppLocalizations.of(context)!.settingsPreviewLinesTileSubtitle(
+                      s._previewLines,
+                    ),
                     trailing: null,
                     onTap: () {
                       int tempLines = s._previewLines;
@@ -1511,7 +1604,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                   const SizedBox(height: 16),
                                   Text(
-                                    'Not Önizleme Satırı',
+                                    AppLocalizations.of(context)!.settingsPreviewLinesTileTitle,
                                     style: TextStyle(
                                       color: dNoteTextColor(ctx),
                                       fontSize: 16,
@@ -1520,7 +1613,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                   const SizedBox(height: 6),
                                   Text(
-                                    'Şu an: $tempLines satır',
+                                    AppLocalizations.of(context)!.settingsPreviewLinesCurrentLabel(
+                                      tempLines,
+                                    ),
                                     style: TextStyle(
                                       color: Theme.of(context).primaryColor,
                                       fontSize: 13,
@@ -1558,7 +1653,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       bottom: 16,
                                     ),
                                     child: Text(
-                                      'Maksimum önizlenecek satır sayısını belirler. Not daha az satıra sahipse gerçek satır sayısı gösterilir.',
+                                      AppLocalizations.of(context)!.settingsPreviewLinesDescription,
                                       style: TextStyle(
                                         color: Colors.grey[500],
                                         fontSize: 11,
@@ -1571,9 +1666,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                       Expanded(
                                         child: TextButton(
                                           onPressed: () => Navigator.pop(ctx),
-                                          child: const Text(
-                                            'İptal',
-                                            style: TextStyle(
+                                          child: Text(
+                                            AppLocalizations.of(context)!.settingsPreviewLinesCancelButton,
+                                            style: const TextStyle(
                                               color: Colors.grey,
                                             ),
                                           ),
@@ -1593,9 +1688,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                             s._saveData();
                                             Navigator.pop(ctx);
                                           },
-                                          child: const Text(
-                                            'Uygula',
-                                            style: TextStyle(
+                                          child: Text(
+                                            AppLocalizations.of(context)!.settingsPreviewLinesApplyButton,
+                                            style: const TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -1623,7 +1718,7 @@ class _SettingsPageState extends State<SettingsPage> {
             // note_list_build_mixin.dart ve backup_restore_screen.dart.
 
             // ── 5. WİDGET ────────────────────────────────────────────────
-            _sectionHeader('Widget'),
+            _sectionHeader(AppLocalizations.of(context)!.settingsSectionWidget),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
@@ -1635,7 +1730,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.text_fields,
                     iconColor: Colors.cyanAccent,
-                    title: 'Widget Yazı Boyutu',
+                    title: AppLocalizations.of(context)!.settingsWidgetFontSizeLabel,
                     subtitle: '${s._widgetFontSize.round()} pt',
                     trailing: null,
                     onTap: _showWidgetFontSizeSheet,
@@ -1648,7 +1743,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.opacity,
                     iconColor: Colors.lightBlueAccent,
-                    title: 'Arka Plan Saydamlığı',
+                    title: AppLocalizations.of(context)!.settingsWidgetOpacityLabel,
                     subtitle: '%${(s._widgetBgOpacity * 100).round()}',
                     trailing: null,
                     onTap: _showWidgetOpacitySheet,
@@ -1661,8 +1756,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.dark_mode_outlined,
                     iconColor: Colors.deepPurpleAccent,
-                    title: 'Koyu Widget',
-                    subtitle: 'Widget için koyu renk şeması.',
+                    title: AppLocalizations.of(context)!.settingsWidgetDarkModeTitle,
+                    subtitle: AppLocalizations.of(context)!.settingsWidgetDarkModeDesc,
                     trailing: Switch(
                       value: s._widgetDark,
                       activeThumbColor: Theme.of(context).primaryColor,
@@ -1683,7 +1778,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
 
             // ── 6. UYGULAMA HAKKINDA ─────────────────────────────────────
-            _sectionHeader('Hakkında'),
+            _sectionHeader(AppLocalizations.of(context)!.settingsSectionAbout),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
@@ -1695,7 +1790,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _settingTile(
                     icon: Icons.info_outline,
                     iconColor: Colors.grey,
-                    title: 'Uygulama Sürümü',
+                    title: AppLocalizations.of(context)!.settingsAboutVersionTitle,
                     subtitle: 'v1.0.0',
                   ),
                 ],

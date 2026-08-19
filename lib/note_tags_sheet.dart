@@ -101,7 +101,7 @@ void showTagOptionsSheet(
                 color: dNoteTextColor(sheetCtx),
               ),
               title: Text(
-                'Yeniden Adlandır',
+                AppLocalizations.of(sheetCtx)!.tagOptionsRenameLabel,
                 style: TextStyle(color: dNoteTextColor(sheetCtx)),
               ),
               onTap: () {
@@ -111,7 +111,10 @@ void showTagOptionsSheet(
             ),
             ListTile(
               leading: const Icon(Icons.delete_outline, color: Colors.red),
-              title: const Text('Sil', style: TextStyle(color: Colors.red)),
+              title: Text(
+                AppLocalizations.of(sheetCtx)!.tagOptionsDeleteLabel,
+                style: const TextStyle(color: Colors.red),
+              ),
               onTap: () {
                 Navigator.pop(sheetCtx);
                 onDelete();
@@ -138,16 +141,16 @@ Future<String?> showRenameTagDialog(
       return AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
         title: Text(
-          'Etiketi Yeniden Adlandır',
+          AppLocalizations.of(ctx)!.renameTagDialogTitle,
           style: TextStyle(color: dNoteTextColor(ctx)),
         ),
         content: TextField(
           controller: controller,
           autofocus: true,
           style: TextStyle(color: dNoteTextColor(ctx)),
-          decoration: const InputDecoration(
-            hintText: 'Yeni etiket adı',
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(ctx)!.renameTagDialogHint,
+            border: const OutlineInputBorder(),
             isDense: true,
           ),
           onSubmitted: (value) {
@@ -162,7 +165,10 @@ Future<String?> showRenameTagDialog(
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('İptal', style: TextStyle(color: Colors.grey)),
+            child: Text(
+              AppLocalizations.of(ctx)!.renameTagDialogCancelButton,
+              style: const TextStyle(color: Colors.grey),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -176,9 +182,9 @@ Future<String?> showRenameTagDialog(
                 Navigator.pop(ctx, trimmed);
               }
             },
-            child: const Text(
-              'Kaydet',
-              style: TextStyle(color: Colors.black),
+            child: Text(
+              AppLocalizations.of(ctx)!.renameTagDialogSaveButton,
+              style: const TextStyle(color: Colors.black),
             ),
           ),
         ],
@@ -196,16 +202,17 @@ Future<bool> showDeleteTagConfirmDialog(
   required String tag,
   required int affectedCount,
 }) async {
-  final message = affectedCount > 0
-      ? '"$tag" etiketi $affectedCount nottan kaldırılacak. Devam edilsin mi?'
-      : '"$tag" etiketi silinsin mi?';
   final result = await showDialog<bool>(
     context: context,
     builder: (ctx) {
+      final l10n = AppLocalizations.of(ctx)!;
+      final message = affectedCount > 0
+          ? l10n.deleteTagDialogMessageWithCount(tag, affectedCount)
+          : l10n.deleteTagDialogMessage(tag);
       return AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
         title: Text(
-          'Etiketi Sil',
+          l10n.deleteTagDialogTitle,
           style: TextStyle(color: dNoteTextColor(ctx)),
         ),
         content: Text(
@@ -215,12 +222,18 @@ Future<bool> showDeleteTagConfirmDialog(
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('İptal', style: TextStyle(color: Colors.grey)),
+            child: Text(
+              l10n.deleteTagDialogCancelButton,
+              style: const TextStyle(color: Colors.grey),
+            ),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Sil', style: TextStyle(color: Colors.white)),
+            child: Text(
+              l10n.deleteTagDialogConfirmButton,
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ],
       );
@@ -361,7 +374,7 @@ void showNoteTagsSheet(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Etiketler',
+                    AppLocalizations.of(sheetCtx)!.tagsSheetTitle,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -393,7 +406,7 @@ void showNoteTagsSheet(
                     )
                   else
                     Text(
-                      'Bu notta henüz etiket yok.',
+                      AppLocalizations.of(sheetCtx)!.tagsSheetEmptyMessage,
                       style: TextStyle(
                         color: dNoteTextColor(sheetCtx).withOpacity(0.6),
                       ),
@@ -404,7 +417,7 @@ void showNoteTagsSheet(
                     autofocus: true,
                     style: TextStyle(color: dNoteTextColor(sheetCtx)),
                     decoration: InputDecoration(
-                      hintText: 'Yeni etiket yaz...',
+                      hintText: AppLocalizations.of(sheetCtx)!.tagsSheetInputHint,
                       hintStyle: TextStyle(
                         color: dNoteTextColor(sheetCtx).withOpacity(0.5),
                       ),
@@ -424,7 +437,7 @@ void showNoteTagsSheet(
                   if (suggestions.isNotEmpty) ...[
                     const SizedBox(height: 14),
                     Text(
-                      'Mevcut etiketler',
+                      AppLocalizations.of(sheetCtx)!.tagsSheetSuggestionsLabel,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,

@@ -65,6 +65,12 @@ class NoteWidgetService {
   // ne görsel ne de metin ipucu olarak; bilinçli bir tercihtir.
   static const String keyAllNotesLinesJson = 'all_notes_lines_json';
 
+  // Bu serviste BuildContext yok, dolayısıyla AppLocalizations.of(context)
+  // kullanılamıyor. Bunun yerine main.dart'taki locale resolution
+  // callback'i (Aşama 13) her dil değişiminde bu alanı günceller; burada
+  // lookupAppLocalizations(currentLocale) ile çeviri metinlerine erişilir.
+  static Locale currentLocale = const Locale('tr');
+
   bool _isSyncing = false;
   // _isSyncing sırasında gelen istekleri kaybetmemek için: senkronizasyon
   // bitince tekrar çalıştırılacak "bekleyen" not listesi.
@@ -83,6 +89,7 @@ class NoteWidgetService {
     }
     _isSyncing = true;
     try {
+      final l10n = lookupAppLocalizations(currentLocale);
       final visible = notes.where(
         (n) => n['isLocked'] != true && n['isArchived'] != true,
       ).toList();
@@ -103,8 +110,8 @@ class NoteWidgetService {
       // bir durum (placeholder), boş başlıkla karıştırılmamalı.
       final title = (latest?['title']?.toString().trim().isNotEmpty == true)
           ? latest!['title'].toString()
-          : (latest != null ? '' : 'Henüz not yok');
-      final preview = latest != null ? _buildPreview(latest) : '';
+          : (latest != null ? '' : l10n.noteWidgetNoNotesPlaceholder);
+      final preview = latest != null ? _buildPreview(latest, l10n) : '';
 
       // Widget yapılandırma ekranının (not seçici) listeleyebilmesi ve her
       // widget örneğinin kendi seçtiği notun güncel içeriğini native
@@ -122,7 +129,7 @@ class NoteWidgetService {
             : '';
         allNotesMap[id] = {
           'title': nTitle,
-          'preview': _buildPreview(n),
+          'preview': _buildPreview(n, l10n),
           'modifiedDate': n['modifiedDate']?.toString() ?? '',
         };
         allNotesLinesMap[id] = _buildStructuredLines(n);
@@ -184,7 +191,7 @@ class NoteWidgetService {
   /// Checklist maddeleri, işaretli olup olmadığını widget'ta da
   /// görülebilir kılmak için ✓ (işaretli) / ☐ (işaretsiz) sembolüyle
   /// başlar.
-  String _buildPreview(Map<String, dynamic> note) {
+  String _buildPreview(Map<String, dynamic> note, AppLocalizations l10n) {
     final lines = <String>[];
 
     void addChecklistItems(List items) {
@@ -211,7 +218,11 @@ class NoteWidgetService {
         }
       }
       if (any) {
-        lines.add('Toplam: ${ContentBlocks.formatCalcNumber(total)}');
+        lines.add(
+          l10n.noteWidgetPreviewTotalLabel(
+            ContentBlocks.formatCalcNumber(total),
+          ),
+        );
       }
     }
 
@@ -241,7 +252,7 @@ class NoteWidgetService {
           case 'drawing':
             final strokes = (b['strokes'] as List? ?? const []);
             if (strokes.isNotEmpty) {
-              lines.add('✏️ Çizim');
+              lines.add(l10n.noteWidgetPreviewDrawingLabel);
             }
             break;
         }

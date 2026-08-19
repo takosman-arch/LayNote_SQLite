@@ -1345,7 +1345,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
               borderRadius: BorderRadius.circular(8),
             ),
             content: Text(
-              'Önce link eklemek istediğiniz metni seçin',
+              AppLocalizations.of(context)!.linkSelectTextSnackbar,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onSurface,
               ),
@@ -1385,30 +1385,42 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       final url = await showDialog<String>(
         context: context,
         builder: (dialogContext) => AlertDialog(
-          title: Text(existingLink != null ? 'Linki Düzenle' : 'Link Ekle'),
+          title: Text(
+            existingLink != null
+                ? AppLocalizations.of(dialogContext)!.linkDialogEditTitle
+                : AppLocalizations.of(dialogContext)!.linkDialogAddTitle,
+          ),
           content: TextField(
             controller: urlFieldController,
             autofocus: true,
             keyboardType: TextInputType.url,
             textInputAction: TextInputAction.done,
-            decoration: const InputDecoration(hintText: 'https://ornek.com'),
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.linkDialogUrlHint,
+            ),
             onSubmitted: (v) => Navigator.of(dialogContext).pop(v.trim()),
           ),
           actions: [
             if (existingLink != null)
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(''),
-                child: const Text('Linki Kaldır'),
+                child: Text(
+                  AppLocalizations.of(dialogContext)!.linkDialogRemoveButton,
+                ),
               ),
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Vazgeç'),
+              child: Text(
+                AppLocalizations.of(dialogContext)!.linkDialogCancelButton,
+              ),
             ),
             TextButton(
               onPressed: () => Navigator.of(
                 dialogContext,
               ).pop(urlFieldController.text.trim()),
-              child: const Text('Ekle'),
+              child: Text(
+                AppLocalizations.of(dialogContext)!.linkDialogConfirmButton,
+              ),
             ),
           ],
         ),
@@ -3053,13 +3065,18 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                       SnackBar(
                         content: Text(
                           permanentlyDenied
-                              ? 'Kamera izni reddedilmiş. Video çekmek için '
-                                  'ayarlardan izin vermen gerekiyor.'
-                              : 'Video çekmek için kamera izni gerekiyor.',
+                              ? AppLocalizations.of(
+                                  context,
+                                )!.cameraPermissionPermanentlyDeniedMessage
+                              : AppLocalizations.of(
+                                  context,
+                                )!.cameraPermissionRequiredMessage,
                         ),
                         action: permanentlyDenied
                             ? SnackBarAction(
-                                label: 'Ayarlar',
+                                label: AppLocalizations.of(
+                                  context,
+                                )!.openSettingsButtonLabel,
                                 onPressed: () => openAppSettings(),
                               )
                             : null,
@@ -3096,7 +3113,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 } catch (e) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Tarama başlatılamadı: $e')),
+                      SnackBar(
+                        content: Text(
+                          AppLocalizations.of(
+                            context,
+                          )!.documentScanStartFailedMessage(e.toString()),
+                        ),
+                      ),
                     );
                   }
                   return;
@@ -3130,7 +3153,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   if (context.mounted) {
                     Navigator.of(context, rootNavigator: true).pop();
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Metin tanıma başarısız: $e')),
+                      SnackBar(
+                        content: Text(
+                          AppLocalizations.of(
+                            context,
+                          )!.ocrRecognitionFailedMessage(e.toString()),
+                        ),
+                      ),
                     );
                   }
                   return;
@@ -3143,7 +3172,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 final recognizedText = pageTexts.join('\n\n');
                 if (recognizedText.trim().isEmpty) {
                   _showInfoBar(
-                    'Belgede okunabilir metin bulunamadı',
+                    AppLocalizations.of(context)!.ocrNoReadableTextMessage,
                     icon: Icons.info_outline,
                   );
                   return;
@@ -3176,9 +3205,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                             ),
                           ),
                           const SizedBox(height: 14),
-                          const Text(
-                            'Taranan belge nasıl eklensin?',
-                            style: TextStyle(
+                          Text(
+                            AppLocalizations.of(sheetCtx)!.scanResultSheetTitle,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
@@ -3187,14 +3216,20 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           ListTile(
                             contentPadding: EdgeInsets.zero,
                             leading: const Icon(Icons.text_snippet_outlined),
-                            title: const Text('Sadece metin olarak ekle'),
+                            title: Text(
+                              AppLocalizations.of(
+                                sheetCtx,
+                              )!.scanResultTextOnlyOption,
+                            ),
                             onTap: () => Navigator.pop(sheetCtx, 'text_only'),
                           ),
                           ListTile(
                             contentPadding: EdgeInsets.zero,
                             leading: const Icon(Icons.image_outlined),
-                            title: const Text(
-                              'Metin + taranan görseli ekle',
+                            title: Text(
+                              AppLocalizations.of(
+                                sheetCtx,
+                              )!.scanResultTextAndImageOption,
                             ),
                             onTap: () =>
                                 Navigator.pop(sheetCtx, 'text_and_image'),
@@ -3202,7 +3237,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           ListTile(
                             contentPadding: EdgeInsets.zero,
                             leading: const Icon(Icons.close),
-                            title: const Text('Vazgeç'),
+                            title: Text(
+                              AppLocalizations.of(
+                                sheetCtx,
+                              )!.scanResultCancelOption,
+                            ),
                             onTap: () => Navigator.pop(sheetCtx, null),
                           ),
                         ],
@@ -3298,13 +3337,18 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                       SnackBar(
                         content: Text(
                           permanentlyDenied
-                              ? 'Mikrofon izni reddedilmiş. Ses kaydı için '
-                                  'ayarlardan izin vermen gerekiyor.'
-                              : 'Ses kaydı için mikrofon izni gerekiyor.',
+                              ? AppLocalizations.of(
+                                  context,
+                                )!.audioPermissionPermanentlyDeniedMessage
+                              : AppLocalizations.of(
+                                  context,
+                                )!.audioPermissionRequiredMessage,
                         ),
                         action: permanentlyDenied
                             ? SnackBarAction(
-                                label: 'Ayarlar',
+                                label: AppLocalizations.of(
+                                  context,
+                                )!.openSettingsButtonLabel,
                                 onPressed: () => openAppSettings(),
                               )
                             : null,
@@ -3330,7 +3374,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 if (recordedPath == null || recordedPath.isEmpty) return;
                 final now = DateTime.now();
                 final label =
-                    'Ses Kaydı ${now.hour.toString().padLeft(2, '0')}.'
+                    '${AppLocalizations.of(context)!.voiceRecordingDefaultLabel} '
+                    '${now.hour.toString().padLeft(2, '0')}.'
                     '${now.minute.toString().padLeft(2, '0')}.m4a';
                 await addFilesAsAttachments([
                   {'path': recordedPath, 'name': label},
@@ -3580,7 +3625,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     ),
                     builder: (_) => _VoicePlayerSheet(
                       path: path,
-                      title: (att['fileName'] ?? 'Ses Kaydı').toString(),
+                      title: (att['fileName'] ??
+                              AppLocalizations.of(context)!
+                                  .voiceRecordingDefaultLabel)
+                          .toString(),
                     ),
                   );
                 } else {
@@ -3602,22 +3650,27 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     final rows = List<Map<String, dynamic>>.from(
                       b['rows'] ?? const [],
                     );
-                    return 'Hesap Tablosu (${rows.length} satır)';
+                    return AppLocalizations.of(context)!
+                        .blockPreviewCalcTableLabel(rows.length);
                   case 'drawing':
-                    return 'Çizim';
+                    return AppLocalizations.of(context)!.blockPreviewDrawingLabel;
                   case 'attachments':
                     final ids = List.from(b['ids'] ?? const []);
-                    return '${ids.length} ek (fotoğraf/belge)';
+                    return AppLocalizations.of(context)!
+                        .blockPreviewAttachmentsLabel(ids.length);
                   case 'divider':
-                    return 'Ayırıcı Çizgi';
+                    return AppLocalizations.of(context)!.blockPreviewDividerLabel;
                   case 'checklist':
                     final items = List<Map<String, dynamic>>.from(
                       b['items'] ?? const [],
                     );
-                    return 'Kontrol Listesi (${items.length} madde)';
+                    return AppLocalizations.of(context)!
+                        .blockPreviewChecklistLabel(items.length);
                   default:
                     final t = (b['text'] ?? '').toString().trim();
-                    return t.isEmpty ? '(boş metin)' : t;
+                    return t.isEmpty
+                        ? AppLocalizations.of(context)!.blockPreviewEmptyTextLabel
+                        : t;
                 }
               }
 
@@ -3761,7 +3814,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          'Blokları Sırala',
+                                          AppLocalizations.of(context)!
+                                              .reorderBlocksSheetTitle,
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
@@ -3770,7 +3824,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         ),
                                       ),
                                       IconButton(
-                                        tooltip: 'Yukarı Taşı',
+                                        tooltip: AppLocalizations.of(context)!
+                                            .reorderBlocksMoveUpTooltip,
                                         icon: Icon(
                                           Icons.keyboard_arrow_up,
                                           color:
@@ -3784,7 +3839,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             : null,
                                       ),
                                       IconButton(
-                                        tooltip: 'Aşağı Taşı',
+                                        tooltip: AppLocalizations.of(context)!
+                                            .reorderBlocksMoveDownTooltip,
                                         icon: Icon(
                                           Icons.keyboard_arrow_down,
                                           color:
@@ -3801,7 +3857,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             : null,
                                       ),
                                       IconButton(
-                                        tooltip: 'Kapat',
+                                        tooltip: AppLocalizations.of(context)!
+                                            .reorderBlocksCloseTooltip,
                                         icon: const Icon(Icons.close),
                                         onPressed: () =>
                                             Navigator.pop(sheetCtx),
@@ -3809,11 +3866,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     ],
                                   ),
                                 ),
-                                const Padding(
-                                  padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                                   child: Text(
-                                    'Taşımak istediğiniz bloğa dokunup seçin, '
-                                    'sonra yukarı/aşağı ok ile taşıyın.',
+                                    AppLocalizations.of(context)!
+                                        .reorderBlocksDescription,
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 12,
@@ -3953,7 +4010,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     dNoteSystemBarsStyle(context),
                   );
                   if (saved) {
-                    _showInfoBar('Not kaydedildi', icon: Icons.save);
+                    _showInfoBar(
+                      AppLocalizations.of(context)!.noteSavedMessage,
+                      icon: Icons.save,
+                    );
                   }
                   isEditorOpen = false;
                   dNoteNoteEditorOpen.value = false;
@@ -4025,7 +4085,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           dNoteSystemBarsStyle(context),
                         );
                         if (saved) {
-                          _showInfoBar('Not kaydedildi', icon: Icons.save);
+                          _showInfoBar(
+                            AppLocalizations.of(context)!.noteSavedMessage,
+                            icon: Icons.save,
+                          );
                         }
                         isEditorOpen = false;
                         dNoteNoteEditorOpen.value = false;
@@ -4040,7 +4103,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     ),
                     actions: [
                       IconButton(
-                        tooltip: 'Geri Al',
+                        tooltip: AppLocalizations.of(context)!.editorUndoTooltip,
                         icon: Icon(
                           Icons.undo,
                           color: editHistory.canUndo
@@ -4070,7 +4133,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                             : null,
                       ),
                       IconButton(
-                        tooltip: 'İleri Al',
+                        tooltip: AppLocalizations.of(context)!.editorRedoTooltip,
                         icon: Icon(
                           Icons.redo,
                           color: editHistory.canRedo
@@ -4243,8 +4306,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     .pickFiles(
                                       type: FileType.custom,
                                       allowedExtensions: ['txt'],
-                                      dialogTitle:
-                                          'İçe aktarılacak TXT dosyasını seç',
+                                      dialogTitle: AppLocalizations.of(
+                                        context,
+                                      )!.txtImportPickerDialogTitle,
                                     );
                                 final pickedPath = result?.files.single.path;
                                 if (pickedPath == null) return;
@@ -4266,7 +4330,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               } catch (_) {
                                 if (mounted) {
                                   _showInfoBar(
-                                    'TXT dosyası okunamadı',
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.txtImportReadFailedMessage,
                                     icon: Icons.error_outline,
                                   );
                                 }
@@ -4276,7 +4342,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               if (txtContent.isEmpty) {
                                 if (mounted) {
                                   _showInfoBar(
-                                    'TXT dosyası boş',
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.txtImportEmptyFileMessage,
                                     icon: Icons.error_outline,
                                   );
                                 }
@@ -4367,7 +4435,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
 
                               if (mounted) {
                                 _showInfoBar(
-                                  'TXT içe aktarıldı',
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.txtImportSuccessMessage,
                                   icon: Icons.check_circle_outline,
                                 );
                               }
@@ -4422,7 +4492,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     size: 24,
                                   ),
                                   SizedBox(width: 10),
-                                  Text('Hesap Tablosu'),
+                                  Text(AppLocalizations.of(context)!.calcTableMenuItemLabel),
                                 ],
                               ),
                             ),
@@ -4437,7 +4507,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     size: 24,
                                   ),
                                   SizedBox(width: 10),
-                                  Text('Çizim Panosu'),
+                                  Text(
+                                    AppLocalizations.of(context)!.drawingBoardMenuItemLabel,
+                                  ),
                                 ],
                               ),
                             ),
@@ -4452,7 +4524,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     size: 24,
                                   ),
                                   SizedBox(width: 10),
-                                  Text('Sırala'),
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .reorderBlocksMenuItemLabel,
+                                  ),
                                 ],
                               ),
                             ),
@@ -4466,7 +4541,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   size: 24,
                                 ),
                                 SizedBox(width: 10),
-                                Expanded(child: Text('Etiketler')),
+                                Expanded(child: Text(AppLocalizations.of(context)!.tagsMenuItemLabel)),
                               ],
                             ),
                           ),
@@ -4481,7 +4556,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   size: 24,
                                 ),
                                 SizedBox(width: 10),
-                                Expanded(child: Text('İçe Aktar (txt)')),
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.txtImportMenuItemLabel,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -4495,7 +4576,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   size: 24,
                                 ),
                                 SizedBox(width: 10),
-                                Expanded(child: Text('Dışa Aktar')),
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.exportMenuItemLabel,
+                                  ),
+                                ),
                                 Icon(
                                   Icons.chevron_right,
                                   size: 18,
@@ -4553,7 +4640,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               titleModel = v;
                             },
                             decoration: InputDecoration(
-                              hintText: 'Başlık',
+                              hintText: AppLocalizations.of(context)!.titleFieldHint,
                               hintStyle: const TextStyle(color: Colors.grey),
                               enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
@@ -5240,7 +5327,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   keyboardType: TextInputType.multiline,
                                   decoration: InputDecoration(
                                     hintText: showHint
-                                        ? 'Notunuzu buraya yazın...'
+                                        ? AppLocalizations.of(context)!.textBlockHint
                                         : null,
                                     hintStyle: const TextStyle(
                                       color: Colors.grey,
@@ -5557,9 +5644,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         // Ayarlar > Kişiselleştirme > Yazı Tipi.
                                         fontFamily: dNoteFontFamilyValue(_fontFamily),
                                       ),
-                                      decoration: const InputDecoration(
-                                        hintText: 'Madde...',
-                                        hintStyle: TextStyle(color: Colors.grey),
+                                      decoration: InputDecoration(
+                                        hintText: AppLocalizations.of(context)!.checklistItemHint,
+                                        hintStyle: const TextStyle(color: Colors.grey),
                                         border: InputBorder.none,
                                       ),
                                       onChanged: (val) {
@@ -5833,7 +5920,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                                       ? _formatDateTimeShortTr(
                                                           noteReminder!,
                                                         )
-                                                      : '${_formatDateTimeShortTr(noteReminder!)} · ${_reminderRepeatLabelTr(noteReminderRepeat)}',
+                                                      : '${_formatDateTimeShortTr(noteReminder!)} · ${_reminderRepeatLabelTr(context, noteReminderRepeat)}',
                                                   style: tagTextStyle,
                                                   maxLines: 1,
                                                   overflow: TextOverflow.ellipsis,
@@ -6055,7 +6142,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             icon: const Icon(
                                               Icons.format_list_bulleted,
                                             ),
-                                            tooltip: 'Madde İşareti',
+                                            tooltip:
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.toolbarBulletTooltip,
                                             onPressed:
                                                 toggleBulletForFocusedBlock,
                                           ),
@@ -6065,7 +6155,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             icon: const Icon(
                                               Icons.format_list_numbered,
                                             ),
-                                            tooltip: 'Numara İşareti',
+                                            tooltip:
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.toolbarNumberTooltip,
                                             onPressed:
                                                 toggleNumberForFocusedBlock,
                                           ),
@@ -6075,7 +6168,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             icon: const Icon(
                                               Icons.format_indent_increase,
                                             ),
-                                            tooltip: 'Paragraf Girintisi',
+                                            tooltip:
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.toolbarIndentTooltip,
                                             onPressed: indentFocusedBlock,
                                           ),
                                         ),
@@ -6083,7 +6179,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                           child: IconButton(
                                             icon: const Icon(Icons.link),
                                             tooltip:
-                                                'Link Ekle / Düzenle / Kaldır',
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.toolbarLinkTooltip,
                                             onPressed: applyLinkForFocusedBlock,
                                           ),
                                         ),
@@ -6092,13 +6190,18 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             icon: const Icon(
                                               Icons.horizontal_rule,
                                             ),
-                                            tooltip: 'Yatay Çizgi Ekle',
+                                            tooltip:
+                                                AppLocalizations.of(
+                                                  context,
+                                                )!.toolbarDividerTooltip,
                                             onPressed: insertDividerBlock,
                                           ),
                                         ),
                                         IconButton(
                                           icon: const Icon(Icons.close),
-                                          tooltip: 'Kapat',
+                                          tooltip: AppLocalizations.of(
+                                            context,
+                                          )!.editorSubToolbarCloseTooltip,
                                           onPressed: () {
                                             showListSubToolbar = false;
                                             requestEditorRebuild?.call(() {});
@@ -6125,7 +6228,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             icon: const Icon(
                                               Icons.format_bold,
                                             ),
-                                            tooltip: 'Kalın',
+                                            tooltip: AppLocalizations.of(
+                                              context,
+                                            )!.toolbarBoldTooltip,
                                             color: _effectiveBoldForToolbar()
                                                 ? appAccentColor.value
                                                 : null,
@@ -6138,7 +6243,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             icon: const Icon(
                                               Icons.format_italic,
                                             ),
-                                            tooltip: 'İtalik',
+                                            tooltip: AppLocalizations.of(
+                                              context,
+                                            )!.toolbarItalicTooltip,
                                             color: _effectiveItalicForToolbar()
                                                 ? appAccentColor.value
                                                 : null,
@@ -6151,7 +6258,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             icon: const Icon(
                                               Icons.format_underlined,
                                             ),
-                                            tooltip: 'Altı Çizili',
+                                            tooltip: AppLocalizations.of(
+                                              context,
+                                            )!.toolbarUnderlineTooltip,
                                             color: _effectiveUnderlineForToolbar()
                                                 ? appAccentColor.value
                                                 : null,
@@ -6164,7 +6273,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             icon: const Icon(
                                               Icons.format_strikethrough,
                                             ),
-                                            tooltip: 'Üzeri Çizili',
+                                            tooltip: AppLocalizations.of(
+                                              context,
+                                            )!.toolbarStrikethroughTooltip,
                                             color: _effectiveStrikethroughForToolbar()
                                                 ? appAccentColor.value
                                                 : null,
@@ -6177,7 +6288,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             icon: const Icon(
                                               Icons.format_color_fill,
                                             ),
-                                            tooltip: 'Vurgula',
+                                            tooltip: AppLocalizations.of(context)!.toolbarHighlightTooltip,
                                             color: _effectiveHighlightForToolbar()
                                                 ? appAccentColor.value
                                                 : null,
@@ -6187,7 +6298,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         ),
                                         IconButton(
                                           icon: const Icon(Icons.close),
-                                          tooltip: 'Kapat',
+                                          tooltip: AppLocalizations.of(
+                                            context,
+                                          )!.editorSubToolbarCloseTooltip,
                                           onPressed: () {
                                             showStyleSubToolbar = false;
                                             requestEditorRebuild?.call(() {});
@@ -6229,7 +6342,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         ),
                                         IconButton(
                                           icon: const Icon(Icons.close),
-                                          tooltip: 'Kapat',
+                                          tooltip: AppLocalizations.of(
+                                            context,
+                                          )!.editorSubToolbarCloseTooltip,
                                           onPressed: () {
                                             showColorSubToolbar = false;
                                             requestEditorRebuild?.call(() {});
@@ -6331,7 +6446,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         ),
                                         IconButton(
                                           icon: const Icon(Icons.close),
-                                          tooltip: 'Kapat',
+                                          tooltip: AppLocalizations.of(
+                                            context,
+                                          )!.editorSubToolbarCloseTooltip,
                                           padding: EdgeInsets.zero,
                                           constraints: const BoxConstraints(
                                             minWidth: 36,
@@ -6358,7 +6475,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         Icons.format_bold,
                                         size: 25,
                                       ),
-                                      tooltip: 'Kalın',
+                                      tooltip: AppLocalizations.of(
+                                        context,
+                                      )!.toolbarBoldTooltip,
                                       color:
                                           (_effectiveBoldForToolbar() ||
                                                   _effectiveItalicForToolbar() ||
@@ -6380,7 +6499,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   Expanded(
                                     child: IconButton(
                                       icon: const Icon(Icons.text_fields),
-                                      tooltip: 'Yazı Boyutu',
+                                      tooltip: AppLocalizations.of(
+                                        context,
+                                      )!.toolbarFontSizeTooltip,
                                       // pendingFontSize yerine
                                       // _effectiveFontSizeForToolbar()
                                       // kullanılıyor: seçim yokken davranış
@@ -6412,7 +6533,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         Icons.format_color_text,
                                         size: 20,
                                       ),
-                                      tooltip: 'Yazı Rengi',
+                                      tooltip: AppLocalizations.of(
+                                        context,
+                                      )!.toolbarColorTooltip,
                                       color: _effectiveColorForToolbar() != null
                                           ? Color(_effectiveColorForToolbar()!)
                                           : null,
@@ -6434,7 +6557,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       icon: const Icon(
                                         Icons.format_list_bulleted,
                                       ),
-                                      tooltip: 'Liste',
+                                      tooltip: AppLocalizations.of(context)!.toolbarListTooltip,
                                       onPressed: () {
                                         showListSubToolbar = true;
                                         showStyleSubToolbar = false;
@@ -6451,14 +6574,16 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         Icons.checklist_rounded,
                                         size: 26,
                                       ),
-                                      tooltip: 'Yapılacaklar Listesi Ekle',
+                                      tooltip: AppLocalizations.of(
+                                        context,
+                                      )!.toolbarChecklistTooltip,
                                       onPressed: insertChecklistBlock,
                                     ),
                                   ),
                                   Expanded(
                                     child: IconButton(
                                       icon: const Icon(Icons.keyboard_hide),
-                                      tooltip: 'Klavyeyi Gizle',
+                                      tooltip: AppLocalizations.of(context)!.toolbarHideKeyboardTooltip,
                                       onPressed:
                                           dismissKeyboardForFocusedBlock,
                                     ),
@@ -6535,7 +6660,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                               lastDate: now.add(
                                                 const Duration(days: 3650),
                                               ),
-                                              helpText: 'Notu bir güne ata',
+                                              helpText: AppLocalizations.of(
+                                                context,
+                                              )!.dateAssignPickerHelpText,
                                             );
                                             if (picked == null) return;
                                             pushUndoCheckpoint();
@@ -6589,8 +6716,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                                                 color: Colors
                                                                     .blue,
                                                               ),
-                                                              title: const Text(
-                                                                  'Tarihi değiştir'),
+                                                              title: Text(
+                                                                  AppLocalizations.of(
+                                                                          sheetCtx)!
+                                                                      .dateAssignChangeOption),
                                                               onTap: () =>
                                                                   Navigator.pop(
                                                                       sheetCtx,
@@ -6603,8 +6732,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                                                 color: Colors
                                                                     .redAccent,
                                                               ),
-                                                              title: const Text(
-                                                                  'Atamayı kaldır'),
+                                                              title: Text(
+                                                                  AppLocalizations.of(
+                                                                          sheetCtx)!
+                                                                      .dateAssignRemoveOption),
                                                               onTap: () =>
                                                                   Navigator.pop(
                                                                       sheetCtx,
@@ -6651,7 +6782,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                                   Flexible(
                                                     child: Text(
                                                       noteAssignedDateSet
-                                                          ? '${_gundemMonthNamesShortTr[noteAssignedDate.month - 1]} ${noteAssignedDate.day}, ${_gundemWeekDayFullTr[noteAssignedDate.weekday - 1]}'
+                                                          ? '${_gundemMonthNamesShortTr(context)[noteAssignedDate.month - 1]} ${noteAssignedDate.day}, ${_gundemWeekDayFullTr(context)[noteAssignedDate.weekday - 1]}'
                                                           : _getFormattedDate(
                                                               noteAssignedDate,
                                                             ),
@@ -6724,7 +6855,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     onInsertText: (text) {
                                       if (noteType != 'text') {
                                         _showInfoBar(
-                                          'Sesi yazıya çevirme yalnızca metin notlarında kullanılabilir',
+                                          AppLocalizations.of(context)!
+                                              .voiceToTextTextNotesOnlyMessage,
                                           icon: Icons.info_outline,
                                         );
                                         return;

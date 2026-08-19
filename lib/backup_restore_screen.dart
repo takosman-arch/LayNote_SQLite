@@ -152,7 +152,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         action: (retryable && onRetry != null)
             ? SnackBarAction(
-                label: 'Tekrar Dene',
+                label: AppLocalizations.of(context)!.backupRetryButton,
                 textColor: appAccentColor.value,
                 onPressed: onRetry,
               )
@@ -182,24 +182,19 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
         title: Text(
-          'Depolama İzni Gerekli',
+          AppLocalizations.of(ctx)!.backupPermissionRequiredTitle,
           style: TextStyle(color: appAccentColor.value),
         ),
         content: Text(
           permanentlyDenied
-              ? 'Bu Android sürümünde yedekleme/geri yükleme için '
-                  'depolama izni gereklidir. İzin kalıcı olarak '
-                  'reddedildiğinden, lütfen uygulama ayarlarından izni '
-                  'elle etkinleştirin.'
-              : 'Bu Android sürümünde yedekleme/geri yükleme için '
-                  'depolama izni gereklidir. Devam edebilmek için lütfen '
-                  'izni verin.',
+              ? AppLocalizations.of(ctx)!.backupPermissionRequiredBodyPermanent
+              : AppLocalizations.of(ctx)!.backupPermissionRequiredBodyNormal,
           style: TextStyle(color: dNoteTextColor(ctx)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Vazgeç'),
+            child: Text(AppLocalizations.of(ctx)!.backupCancelButton),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
@@ -207,7 +202,11 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
               foregroundColor: Colors.black,
             ),
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(permanentlyDenied ? 'Ayarlara Git' : 'Tekrar Dene'),
+            child: Text(
+              permanentlyDenied
+                  ? AppLocalizations.of(ctx)!.backupGoToSettingsButton
+                  : AppLocalizations.of(ctx)!.backupRetryButton,
+            ),
           ),
         ],
       ),
@@ -229,7 +228,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   // olursa bağlantı durumu tazelenir ve kullanıcıya bilgi verilir.
   Future<void> _connectGoogleDrive() async {
     if (_busy) return;
-    _setBusy(true, label: 'Google hesabına bağlanılıyor...');
+    _setBusy(true, label: AppLocalizations.of(context)!.backupDriveConnectingLabel);
     final ok = await GoogleDriveHelper.instance.signIn();
     _setBusy(false);
     if (!mounted) return;
@@ -239,12 +238,14 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         _driveAccountEmail = GoogleDriveHelper.instance.accountEmail;
       });
       _showSnack(
-        'Google Drive hesabına bağlanıldı'
-        '${_driveAccountEmail != null ? ': $_driveAccountEmail' : '.'}',
+        _driveAccountEmail != null
+            ? AppLocalizations.of(context)!
+                .backupDriveConnectedWithEmailMessage(_driveAccountEmail!)
+            : AppLocalizations.of(context)!.backupDriveConnectedMessage,
       );
     } else {
       _showSnack(
-        'Google hesabına bağlanılamadı veya işlem iptal edildi.',
+        AppLocalizations.of(context)!.backupDriveConnectFailedMessage,
         isError: true,
       );
     }
@@ -259,24 +260,22 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
         title: Text(
-          'Google Drive Bağlantısını Kes',
+          AppLocalizations.of(ctx)!.backupDriveDisconnectTitle,
           style: TextStyle(color: appAccentColor.value),
         ),
         content: Text(
-          'Bağlantı kesilirse Drive\'a manuel veya otomatik yedekleme '
-          'yapılamaz. Drive\'da halihazırda duran yedekleriniz silinmez, '
-          'yalnızca bu cihazdan erişim kaldırılır.',
+          AppLocalizations.of(ctx)!.backupDriveDisconnectBody,
           style: TextStyle(color: dNoteTextColor(ctx)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Vazgeç'),
+            child: Text(AppLocalizations.of(ctx)!.backupCancelButton),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Bağlantıyı Kes'),
+            child: Text(AppLocalizations.of(ctx)!.backupDisconnectButton),
           ),
         ],
       ),
@@ -289,7 +288,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       _driveSignedIn = false;
       _driveAccountEmail = null;
     });
-    _showSnack('Google Drive bağlantısı kesildi.');
+    _showSnack(AppLocalizations.of(context)!.backupDriveDisconnectedMessage);
   }
 
   // Henüz Google'a bağlı değilken "Drive'a Yedekle" / "Drive'dan Geri
@@ -302,18 +301,17 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
         title: Text(
-          'Google Hesabı Gerekli',
+          AppLocalizations.of(ctx)!.backupDriveRequiredTitle,
           style: TextStyle(color: appAccentColor.value),
         ),
         content: Text(
-          'Bu işlem için Google hesabınızla bağlanmanız gerekiyor. Şimdi '
-          'bağlanmak ister misiniz?',
+          AppLocalizations.of(ctx)!.backupDriveRequiredBody,
           style: TextStyle(color: dNoteTextColor(ctx)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Vazgeç'),
+            child: Text(AppLocalizations.of(ctx)!.backupCancelButton),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
@@ -321,7 +319,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
               foregroundColor: Colors.black,
             ),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Bağlan'),
+            child: Text(AppLocalizations.of(ctx)!.backupConnectButton),
           ),
         ],
       ),
@@ -354,15 +352,16 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       if (!mounted) return;
       final proceed = await _confirmLargeOperation(
         sizeText: BackupHelper.instance.formatFileSize(estimatedSize),
-        actionLabel: 'Drive\'a yedekleme',
+        actionLabel: AppLocalizations.of(context)!.backupToDriveActionLabel,
       );
       if (proceed != true) return;
     }
 
-    _setBusy(true, label: 'Yedek oluşturuluyor...');
+    _setBusy(true, label: AppLocalizations.of(context)!.backupCreatingLabel);
     File localFile;
     try {
       localFile = await BackupHelper.instance.createBackup(
+        l10n: AppLocalizations.of(context)!,
         onProgress: (progress, step) {
           if (mounted) {
             // Yerel oluşturma adımına toplam ilerlemenin ilk yarısı
@@ -378,9 +377,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       );
     } catch (e) {
       _setBusy(false);
-      final ex = BackupOperationException.fromError(e);
+      final ex = BackupOperationException.fromError(e, AppLocalizations.of(context)!);
       _showErrorSnack(
-        'Yedek oluşturulamadı: ${ex.message}',
+        AppLocalizations.of(context)!.backupCreateFailedMessage(ex.message),
         retryable: ex.retryable,
         onRetry: _backupToDrive,
       );
@@ -408,7 +407,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       _setBusy(false);
       final ex = GoogleDriveException.fromError(e);
       _showErrorSnack(
-        'Google Drive\'a yükleme başarısız: ${ex.message}',
+        AppLocalizations.of(context)!.backupDriveUploadFailedMessage(ex.message),
         retryable: ex.retryable,
         onRetry: _backupToDrive,
       );
@@ -434,7 +433,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
 
     _setBusy(false);
     if (!mounted) return;
-    _showSnack('Yedek Google Drive\'a başarıyla yüklendi.');
+    _showSnack(AppLocalizations.of(context)!.backupDriveUploadSuccessMessage);
     // AŞAMA 5.2 ile aynı mantık: son yedekleme bilgisini anında yenile.
     _lastBackupKey.currentState?.refresh();
   }
@@ -459,7 +458,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       if (!_driveSignedIn) return;
     }
 
-    _setBusy(true, label: 'Drive yedekleri listeleniyor...');
+    _setBusy(true, label: AppLocalizations.of(context)!.backupDriveListingLabel);
     List<GoogleDriveBackupFile> backups;
     try {
       backups = await GoogleDriveHelper.instance.listBackups();
@@ -467,7 +466,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       _setBusy(false);
       final ex = GoogleDriveException.fromError(e);
       _showErrorSnack(
-        'Yedekler listelenemedi: ${ex.message}',
+        AppLocalizations.of(context)!.backupDriveListFailedMessage(ex.message),
         retryable: ex.retryable,
         onRetry: _restoreFromDrive,
       );
@@ -476,7 +475,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     _setBusy(false);
 
     if (backups.isEmpty) {
-      _showSnack('Google Drive\'da henüz bir yedek bulunmuyor.');
+      _showSnack(AppLocalizations.of(context)!.backupDriveNoBackupsMessage);
       return;
     }
 
@@ -486,7 +485,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
         title: Text(
-          'Drive\'dan Yedek Seç',
+          AppLocalizations.of(ctx)!.backupDrivePickTitle,
           style: TextStyle(color: appAccentColor.value),
         ),
         content: SizedBox(
@@ -527,14 +526,14 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Vazgeç'),
+            child: Text(AppLocalizations.of(ctx)!.backupCancelButton),
           ),
         ],
       ),
     );
     if (selected == null) return;
 
-    _setBusy(true, label: 'Yedek Drive\'dan indiriliyor...');
+    _setBusy(true, label: AppLocalizations.of(context)!.backupDriveDownloadingLabel);
     File localFile;
     try {
       localFile = await GoogleDriveHelper.instance.downloadBackup(
@@ -552,7 +551,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       _setBusy(false);
       final ex = GoogleDriveException.fromError(e);
       _showErrorSnack(
-        'İndirme başarısız: ${ex.message}',
+        AppLocalizations.of(context)!.backupDriveDownloadFailedMessage(ex.message),
         retryable: ex.retryable,
         onRetry: _restoreFromDrive,
       );
@@ -569,7 +568,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   // Drive'dan gelen değiştirilme tarihini (DateTime?) ekrandaki diğer
   // tarih formatlarıyla (bkz. _formatPreviewDate) tutarlı biçimde yazar.
   String _formatDriveDate(DateTime? dt) {
-    if (dt == null) return 'Bilinmiyor';
+    if (dt == null) return AppLocalizations.of(context)!.backupUnknownDateLabel;
     String two(int n) => n.toString().padLeft(2, '0');
     return '${two(dt.day)}.${two(dt.month)}.${dt.year} '
         '${two(dt.hour)}:${two(dt.minute)}';
@@ -592,15 +591,16 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       if (!mounted) return;
       final proceed = await _confirmLargeOperation(
         sizeText: BackupHelper.instance.formatFileSize(estimatedSize),
-        actionLabel: 'yedekleme',
+        actionLabel: AppLocalizations.of(context)!.backupToDeviceActionLabel,
       );
       if (proceed != true) return;
     }
 
-    _setBusy(true, label: 'Yedek oluşturuluyor...');
+    _setBusy(true, label: AppLocalizations.of(context)!.backupCreatingLabel);
     File? file;
     try {
       file = await BackupHelper.instance.createBackup(
+        l10n: AppLocalizations.of(context)!,
         onProgress: (progress, step) {
           if (mounted) {
             setState(() {
@@ -615,9 +615,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       // AŞAMA 4.3b: ham hata BackupOperationException'a çevrilerek hem
       // kullanıcı dostu bir mesaj hem de "tekrar denemek anlamlı mı"
       // bilgisi (retryable) elde edilir.
-      final ex = BackupOperationException.fromError(e);
+      final ex = BackupOperationException.fromError(e, AppLocalizations.of(context)!);
       _showErrorSnack(
-        'Yedek oluşturulamadı: ${ex.message}',
+        AppLocalizations.of(context)!.backupCreateFailedMessage(ex.message),
         retryable: ex.retryable,
         onRetry: _createBackup,
       );
@@ -644,7 +644,10 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     final sizeText = BackupHelper.instance.formatFileSize(
       await file.length(),
     );
-    _showSnack('Yedek oluşturuldu: ${p.basename(file.path)} ($sizeText)');
+    _showSnack(
+      AppLocalizations.of(context)!
+          .backupCreatedMessage(p.basename(file.path), sizeText),
+    );
     // AŞAMA 5.2: yeni yedek başarıyla oluşturulduğunda üstteki "son
     // yedekleme" bilgisini anında yenile (ekrandan çıkıp geri girmeye
     // gerek kalmadan).
@@ -663,18 +666,18 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: Text('Büyük Yedek', style: TextStyle(color: appAccentColor.value)),
+        title: Text(
+          AppLocalizations.of(ctx)!.backupLargeOperationTitle,
+          style: TextStyle(color: appAccentColor.value),
+        ),
         content: Text(
-          'İşlenecek veri boyutu yaklaşık $sizeText. Bu boyuttaki bir '
-          '$actionLabel işlemi cihazınıza bağlı olarak biraz zaman '
-          'alabilir. İşlem sürerken uygulamadan çıkmamanız yeterlidir, '
-          'devam etmek ister misiniz?',
+          AppLocalizations.of(ctx)!.backupLargeOperationBody(sizeText, actionLabel),
           style: TextStyle(color: dNoteTextColor(ctx)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Vazgeç'),
+            child: Text(AppLocalizations.of(ctx)!.backupCancelButton),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
@@ -682,7 +685,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
               foregroundColor: Colors.black,
             ),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Devam Et'),
+            child: Text(AppLocalizations.of(ctx)!.backupContinueButton),
           ),
         ],
       ),
@@ -695,16 +698,18 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: Text('Yedek Hazır', style: TextStyle(color: appAccentColor.value)),
+        title: Text(
+          AppLocalizations.of(ctx)!.backupOfferShareTitle,
+          style: TextStyle(color: appAccentColor.value),
+        ),
         content: Text(
-          'Yedek dosyanız cihazınıza kaydedildi. Dosyayı şimdi paylaşmak '
-          '(örn. bulut depolama, e-posta, başka bir cihaz) ister misiniz?',
+          AppLocalizations.of(ctx)!.backupOfferShareBody,
           style: TextStyle(color: dNoteTextColor(ctx)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Kapat'),
+            child: Text(AppLocalizations.of(ctx)!.backupCloseButton),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
@@ -712,7 +717,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
               foregroundColor: Colors.black,
             ),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Paylaş'),
+            child: Text(AppLocalizations.of(ctx)!.backupShareButton),
           ),
         ],
       ),
@@ -724,9 +729,15 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
 
   Future<void> _shareBackup(File file) async {
     try {
-      await Share.shareXFiles([XFile(file.path)], text: 'layout yedek dosyası');
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: AppLocalizations.of(context)!.backupShareFileText,
+      );
     } catch (e) {
-      _showSnack('Paylaşım başlatılamadı: $e', isError: true);
+      _showSnack(
+        AppLocalizations.of(context)!.backupShareFailedMessage('$e'),
+        isError: true,
+      );
     }
   }
 
@@ -785,14 +796,20 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         allowedExtensions: ['zip'],
       );
     } catch (e) {
-      _showSnack('Dosya seçilemedi: $e', isError: true);
+      _showSnack(
+        AppLocalizations.of(context)!.backupPickFileFailedMessage('$e'),
+        isError: true,
+      );
       return;
     }
     if (result == null || result.files.isEmpty) return;
 
     final path = result.files.single.path;
     if (path == null) {
-      _showSnack('Seçilen dosyaya erişilemedi.', isError: true);
+      _showSnack(
+        AppLocalizations.of(context)!.backupPickedFileUnreachableMessage,
+        isError: true,
+      );
       return;
     }
     await _restoreFromFile(File(path));
@@ -819,7 +836,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       if (!mounted) return;
       final proceed = await _confirmLargeOperation(
         sizeText: BackupHelper.instance.formatFileSize(fileSize),
-        actionLabel: 'geri yükleme',
+        actionLabel: AppLocalizations.of(context)!.backupRestoreActionLabel,
       );
       if (proceed != true) return;
     }
@@ -828,10 +845,13 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     // önizle. Böylece kullanıcı onay vermeden önce bozuk/uyumsuz bir
     // dosyayı seçtiğini hemen öğrenir; ayrıca onay diyaloğunda yedeğin
     // içeriği (kaç not, ne zaman alınmış vb.) gösterilebilir.
-    _setBusy(true, label: 'Yedek kontrol ediliyor...');
+    _setBusy(true, label: AppLocalizations.of(context)!.backupCheckingLabel);
     BackupPreview preview;
     try {
-      preview = await BackupHelper.instance.loadBackupPreview(zipFile);
+      preview = await BackupHelper.instance.loadBackupPreview(
+        zipFile,
+        AppLocalizations.of(context)!,
+      );
     } on BackupValidationException catch (e) {
       _setBusy(false);
       // Bozuk dosya / dnote'a ait olmayan yedek / uyumsuz sürüm gibi
@@ -848,9 +868,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       return;
     } catch (e) {
       _setBusy(false);
-      final ex = BackupOperationException.fromError(e);
+      final ex = BackupOperationException.fromError(e, AppLocalizations.of(context)!);
       _showErrorSnack(
-        'Yedek dosyası okunamadı: ${ex.message}',
+        AppLocalizations.of(context)!.backupReadFailedMessage(ex.message),
         retryable: ex.retryable,
         onRetry: () => _restoreFromFile(zipFile),
       );
@@ -864,7 +884,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
         title: Text(
-          'Yedeği Geri Yükle',
+          AppLocalizations.of(ctx)!.backupRestoreConfirmTitle,
           style: TextStyle(color: appAccentColor.value),
         ),
         content: SingleChildScrollView(
@@ -873,7 +893,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Seçilen yedeğin içeriği:',
+                AppLocalizations.of(ctx)!.backupPreviewContentsHeader,
                 style: TextStyle(
                   color: dNoteTextColor(ctx),
                   fontWeight: FontWeight.bold,
@@ -883,34 +903,37 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
               _previewRow(
                 ctx,
                 Icons.description_outlined,
-                'Not sayısı',
+                AppLocalizations.of(ctx)!.backupPreviewNoteCountLabel,
                 '${preview.noteCount}',
               ),
               _previewRow(
                 ctx,
                 Icons.delete_outline,
-                'Çöp kutusundaki not',
+                AppLocalizations.of(ctx)!.backupPreviewTrashCountLabel,
                 '${preview.deletedNoteCount}',
               ),
               _previewRow(
                 ctx,
                 Icons.folder_outlined,
-                'Kategori sayısı',
+                AppLocalizations.of(ctx)!.backupPreviewCategoryCountLabel,
                 '${preview.categoryCount}',
               ),
               _previewRow(
                 ctx,
                 Icons.attach_file,
-                'Ek dosya',
+                AppLocalizations.of(ctx)!.backupPreviewAttachmentLabel,
                 preview.attachmentCount == 0
-                    ? 'Yok'
-                    : '${preview.attachmentCount} dosya '
-                        '(${BackupHelper.instance.formatFileSize(preview.attachmentBytesTotal)})',
+                    ? AppLocalizations.of(ctx)!.backupPreviewAttachmentNoneValue
+                    : AppLocalizations.of(ctx)!.backupPreviewAttachmentCountValue(
+                        preview.attachmentCount,
+                        BackupHelper.instance
+                            .formatFileSize(preview.attachmentBytesTotal),
+                      ),
               ),
               _previewRow(
                 ctx,
                 Icons.schedule,
-                'Oluşturulma tarihi',
+                AppLocalizations.of(ctx)!.backupPreviewCreatedAtLabel,
                 _formatPreviewDate(preview.createdAt),
               ),
 
@@ -925,11 +948,8 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                   ctx,
                   icon: Icons.info_outline,
                   color: Colors.blueGrey,
-                  title: 'Bu yedek boş görünüyor',
-                  body:
-                      'Seçilen dosyada not, kategori veya ek dosya '
-                      'bulunamadı. Yine de devam ederseniz mevcut '
-                      'verileriniz silinip yerine bu boş yedek yazılır.',
+                  title: AppLocalizations.of(ctx)!.backupEmptyPreviewTitle,
+                  body: AppLocalizations.of(ctx)!.backupEmptyPreviewBody,
                 ),
               ],
 
@@ -944,23 +964,21 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                   ctx,
                   icon: Icons.warning_amber_rounded,
                   color: Colors.orange,
-                  title:
-                      '${preview.missingAttachmentNames.length} ek dosya '
-                      'yedekte bulunamadı',
-                  body:
-                      'Bu dosyalara sahip notlar geri yüklenecek, ancak '
-                      'ek dosyalar olmadan (yedek alınırken eksik ya da '
-                      'bozuk kalmış olabilirler): '
-                      '${_missingAttachmentsSummary(preview.missingAttachmentNames)}',
+                  title: AppLocalizations.of(ctx)!.backupMissingAttachmentsTitle(
+                    preview.missingAttachmentNames.length,
+                  ),
+                  body: AppLocalizations.of(ctx)!.backupMissingAttachmentsBody(
+                    _missingAttachmentsSummary(
+                      ctx,
+                      preview.missingAttachmentNames,
+                    ),
+                  ),
                 ),
               ],
 
               const Divider(height: 26),
               Text(
-                'Bu işlem; mevcut tüm notlarınızın, çöp kutunuzun, '
-                'kategorilerinizin, ayarlarınızın ve eklerinizin YERİNE '
-                'yukarıdaki yedekteki verileri yazacaktır. Mevcut veriler '
-                'kalıcı olarak kaybolur ve bu işlem geri alınamaz.',
+                AppLocalizations.of(ctx)!.backupRestoreConfirmBody,
                 style: TextStyle(
                   color: dNoteTextColor(ctx).withValues(alpha: 0.85),
                   fontSize: 13,
@@ -972,12 +990,12 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Vazgeç'),
+            child: Text(AppLocalizations.of(ctx)!.backupCancelButton),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Geri Yükle'),
+            child: Text(AppLocalizations.of(ctx)!.backupRestoreButton),
           ),
         ],
       ),
@@ -992,10 +1010,11 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   // yeniden seçmek ve onay diyaloğunu tekrar geçmek zorunda kalmadan,
   // zaten doğrulanmış aynı `preview` ile işlemi tek dokunuşla tekrarlar.
   Future<void> _executeRestore(File zipFile, BackupPreview preview) async {
-    _setBusy(true, label: 'Yedek geri yükleniyor...');
+    _setBusy(true, label: AppLocalizations.of(context)!.backupRestoringLabel);
     try {
       await BackupHelper.instance.restoreBackup(
         zipFile,
+        l10n: AppLocalizations.of(context)!,
         preloaded: preview,
         onProgress: (progress, step) {
           if (mounted) {
@@ -1014,16 +1033,12 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       // hatırlatılarak "eklerim nerede?" karışıklığı önlenir.
       if (preview.hasMissingAttachments) {
         _showSnack(
-          'Yedek geri yüklendi. Ancak ${preview.missingAttachmentNames.length} '
-          'ek dosya yedekte bulunamadığı için geri yüklenemedi. '
-          'Değişikliklerin tam yansıması için uygulamayı yeniden '
-          'başlatmanız önerilir.',
+          AppLocalizations.of(context)!.backupRestoreSuccessWithMissingMessage(
+            preview.missingAttachmentNames.length,
+          ),
         );
       } else {
-        _showSnack(
-          'Yedek başarıyla geri yüklendi. Değişikliklerin tam olarak '
-          'yansıması için uygulamayı yeniden başlatmanız önerilir.',
-        );
+        _showSnack(AppLocalizations.of(context)!.backupRestoreSuccessMessage);
       }
     } on BackupValidationException catch (e) {
       _setBusy(false);
@@ -1037,9 +1052,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       // Notlar/kategoriler kısmen yazılmış olsa bile (bkz. BackupHelper
       // içindeki try/catch'ler), hata sınıflandırılıp kullanıcıya net bir
       // mesajla ve — anlamlıysa — "Tekrar Dene" aksiyonu ile sunulur.
-      final ex = BackupOperationException.fromError(e);
+      final ex = BackupOperationException.fromError(e, AppLocalizations.of(context)!);
       _showErrorSnack(
-        'Geri yükleme sırasında hata oluştu: ${ex.message}',
+        AppLocalizations.of(context)!.backupRestoreFailedMessage(ex.message),
         retryable: ex.retryable,
         onRetry: () => _executeRestore(zipFile, preview),
       );
@@ -1093,12 +1108,15 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   // AŞAMA 4.3c: eksik ek dosya adlarından kısa, okunabilir bir özet
   // metni üretir. Liste uzunsa ilk birkaç ad gösterilip geri kalanı
   // "ve N tane daha" olarak özetlenir (diyalog taşmasın diye).
-  String _missingAttachmentsSummary(List<String> names) {
+  String _missingAttachmentsSummary(BuildContext ctx, List<String> names) {
     if (names.isEmpty) return '';
     const maxShown = 3;
     final shown = names.take(maxShown).join(', ');
     if (names.length > maxShown) {
-      return '$shown ve ${names.length - maxShown} tane daha';
+      return AppLocalizations.of(ctx)!.backupMissingAttachmentsMoreSuffix(
+        shown,
+        names.length - maxShown,
+      );
     }
     return shown;
   }
@@ -1156,7 +1174,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   // Önizlemedeki oluşturulma tarihini "16.07.2026 14:32" biçiminde,
   // tarih okunamıyorsa "Bilinmiyor" olarak döner.
   String _formatPreviewDate(DateTime? dt) {
-    if (dt == null) return 'Bilinmiyor';
+    if (dt == null) return AppLocalizations.of(context)!.backupUnknownDateLabel;
     String two(int n) => n.toString().padLeft(2, '0');
     return '${two(dt.day)}.${two(dt.month)}.${dt.year} '
         '${two(dt.hour)}:${two(dt.minute)}';
@@ -1169,7 +1187,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   // tutarsız bir durumda kalabilir.
   void _blockedExitWarning() {
     _showSnack(
-      'İşlem sürüyor, lütfen tamamlanmasını bekleyin.',
+      AppLocalizations.of(context)!.backupBlockedExitWarningMessage,
       isError: true,
     );
   }
@@ -1185,12 +1203,12 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Yedekle & Geri Yükle'),
+          title: Text(AppLocalizations.of(context)!.backupScreenTitle),
           automaticallyImplyLeading: !_busy,
           leading: _busy
               ? IconButton(
                   icon: const Icon(Icons.arrow_back),
-                  tooltip: 'İşlem sürüyor',
+                  tooltip: AppLocalizations.of(context)!.backupBusyBackTooltip,
                   onPressed: _blockedExitWarning,
                 )
               : null,
@@ -1215,9 +1233,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                   // buraya taşındı.
                   _autoBackupStatusCard(context),
                   Text(
-                    'Notlarınızı, kategorilerinizi, ayarlarınızı ve eklerinizi '
-                    'tek bir .zip dosyası olarak yedekleyebilir veya daha '
-                    'önce aldığınız bir yedeği geri yükleyebilirsiniz.',
+                    AppLocalizations.of(context)!.backupIntroText,
                     style: TextStyle(
                       color: dNoteTextColor(context).withValues(alpha: 0.8),
                     ),
@@ -1227,22 +1243,22 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                   _actionCard(
                     context,
                     icon: Icons.cloud_upload_outlined,
-                    title: 'Google Drive\'a Yedekle',
+                    title: AppLocalizations.of(context)!.backupDriveCardTitle,
                     subtitle:
-                        'Yeni bir yedek oluşturup doğrudan Google Drive\'ınızın '
-                        'gizli alanına yükleyin.',
-                    buttonLabel: 'Drive\'a Yedekle',
+                        AppLocalizations.of(context)!.backupDriveCardSubtitle,
+                    buttonLabel:
+                        AppLocalizations.of(context)!.backupDriveCardButtonLabel,
                     onPressed: _backupToDrive,
                   ),
                   const SizedBox(height: 16),
                   _actionCard(
                     context,
                     icon: Icons.backup_outlined,
-                    title: 'Cihaza Yedekle',
+                    title: AppLocalizations.of(context)!.backupDeviceCardTitle,
                     subtitle:
-                        'Tüm verilerinizi tek bir .zip dosyası olarak cihaza '
-                        'kaydedin ve isterseniz paylaşın.',
-                    buttonLabel: 'Cihaza Yedekle',
+                        AppLocalizations.of(context)!.backupDeviceCardSubtitle,
+                    buttonLabel:
+                        AppLocalizations.of(context)!.backupDeviceCardButtonLabel,
                     onPressed: _createBackup,
                   ),
                   const SizedBox(height: 16),
@@ -1253,12 +1269,10 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                   _actionCard(
                     context,
                     icon: Icons.history_outlined,
-                    title: 'Yedek Geçmişi',
+                    title: AppLocalizations.of(context)!.backupHistoryCardTitle,
                     subtitle:
-                        'Cihazda kayıtlı tüm yedekleri tarih ve boyutlarıyla '
-                        'görüntüleyin; buradan doğrudan paylaşabilir, geri '
-                        'yükleyebilir veya silebilirsiniz.',
-                    buttonLabel: 'Geri Yükle',
+                        AppLocalizations.of(context)!.backupHistoryCardSubtitle,
+                    buttonLabel: AppLocalizations.of(context)!.backupRestoreButton,
                     onPressed: _openHistory,
                     outlined: true,
                   ),
@@ -1305,7 +1319,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                               ),
                               const SizedBox(height: 12),
                               Text(
-                                _busyLabel ?? 'İşleniyor...',
+                                _busyLabel ?? AppLocalizations.of(context)!.backupProcessingDefaultLabel,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: dNoteTextColor(context),
@@ -1314,8 +1328,8 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                               ),
                               const SizedBox(height: 14),
                               Text(
-                                'Lütfen bekleyin, işlem tamamlanmadan '
-                                'uygulamadan çıkmayın.',
+                                AppLocalizations.of(context)!
+                                    .backupOverlayWarningMessage,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: dNoteTextColor(context)
@@ -1362,9 +1376,12 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           Expanded(
             child: Text(
               _driveSignedIn
-                  ? 'Google Drive: bağlı'
-                      '${_driveAccountEmail != null ? ' ($_driveAccountEmail)' : ''}'
-                  : 'Google Drive: bağlı değil',
+                  ? (_driveAccountEmail != null
+                      ? AppLocalizations.of(context)!
+                          .backupDriveStatusConnectedWithEmail(
+                              _driveAccountEmail!)
+                      : AppLocalizations.of(context)!.backupDriveStatusConnected)
+                  : AppLocalizations.of(context)!.backupDriveStatusDisconnected,
               style: TextStyle(
                 color: dNoteTextColor(context).withValues(alpha: 0.85),
                 fontSize: 13,
@@ -1377,7 +1394,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
             onPressed:
                 _driveSignedIn ? _disconnectGoogleDrive : _connectGoogleDrive,
             child: Text(
-              _driveSignedIn ? 'Bağlantıyı Kes' : 'Bağlan',
+              _driveSignedIn ? AppLocalizations.of(context)!.backupDisconnectButton : AppLocalizations.of(context)!.backupConnectButton,
               style: TextStyle(
                 color: _driveSignedIn ? Colors.red : appAccentColor.value,
                 fontWeight: FontWeight.w600,
@@ -1415,8 +1432,8 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           Expanded(
             child: Text(
               _autoBackupEnabled
-                  ? 'Otomatik Yedekleme: açık'
-                  : 'Otomatik Yedekleme: kapalı',
+                  ? AppLocalizations.of(context)!.backupAutoBackupEnabledLabel
+                  : AppLocalizations.of(context)!.backupAutoBackupDisabledLabel,
               style: TextStyle(
                 color: dNoteTextColor(context).withValues(alpha: 0.85),
                 fontSize: 13,
@@ -1428,7 +1445,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           TextButton(
             onPressed: _openAutoBackupSettings,
             child: Text(
-              'Ayarla',
+              AppLocalizations.of(context)!.backupConfigureButton,
               style: TextStyle(
                 color: appAccentColor.value,
                 fontWeight: FontWeight.w600,

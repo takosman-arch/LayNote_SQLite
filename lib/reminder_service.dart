@@ -158,6 +158,7 @@ class ReminderService {
     String? repeat,
   }) async {
     if (!_initialized) await init();
+    final l10n = AppLocalizations.of(navigatorKey.currentContext!)!;
     final id = _notificationIdFor(noteId);
     await _plugin.cancel(id);
 
@@ -165,20 +166,20 @@ class ReminderService {
     // (yalnızca saat/gün/ay eşleştirir) kullanılamaz; bunun yerine sabit
     // aralıklı tekrar API'si kullanılır.
     if (repeat == 'hourly') {
-      const details = NotificationDetails(
+      final details = NotificationDetails(
         android: AndroidNotificationDetails(
           'dnote_reminders',
-          'Not Hatırlatıcıları',
-          channelDescription: 'Layout uygulamasındaki not hatırlatıcıları',
+          l10n.reminderChannelName,
+          channelDescription: l10n.reminderChannelDescription,
           importance: Importance.max,
           priority: Priority.high,
         ),
-        iOS: DarwinNotificationDetails(),
+        iOS: const DarwinNotificationDetails(),
       );
       try {
         await _plugin.periodicallyShow(
           id,
-          title.isEmpty ? 'Hatırlatıcı' : title,
+          title.isEmpty ? l10n.reminderDefaultTitle : title,
           body,
           RepeatInterval.hourly,
           details,
@@ -216,18 +217,18 @@ class ReminderService {
     try {
       await _plugin.zonedSchedule(
         id,
-        title.isEmpty ? 'Hatırlatıcı' : title,
+        title.isEmpty ? l10n.reminderDefaultTitle : title,
         body,
         scheduledDate,
-        const NotificationDetails(
+        NotificationDetails(
           android: AndroidNotificationDetails(
             'dnote_reminders',
-            'Not Hatırlatıcıları',
-            channelDescription: 'Layout uygulamasındaki not hatırlatıcıları',
+            l10n.reminderChannelName,
+            channelDescription: l10n.reminderChannelDescription,
             importance: Importance.max,
             priority: Priority.high,
           ),
-          iOS: DarwinNotificationDetails(),
+          iOS: const DarwinNotificationDetails(),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
@@ -241,19 +242,18 @@ class ReminderService {
       try {
         await _plugin.zonedSchedule(
           id,
-          title.isEmpty ? 'Hatırlatıcı' : title,
+          title.isEmpty ? l10n.reminderDefaultTitle : title,
           body,
           scheduledDate,
-          const NotificationDetails(
+          NotificationDetails(
             android: AndroidNotificationDetails(
               'dnote_reminders',
-              'Not Hatırlatıcıları',
-              channelDescription:
-                  'Layout uygulamasındaki not hatırlatıcıları',
+              l10n.reminderChannelName,
+              channelDescription: l10n.reminderChannelDescription,
               importance: Importance.max,
               priority: Priority.high,
             ),
-            iOS: DarwinNotificationDetails(),
+            iOS: const DarwinNotificationDetails(),
           ),
           androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
           uiLocalNotificationDateInterpretation:
@@ -284,13 +284,13 @@ class ReminderService {
     required String body,
   }) async {
     if (!_initialized) await init();
+    final l10n = AppLocalizations.of(navigatorKey.currentContext!)!;
     final id = _pinNotificationIdFor(noteId);
     final details = NotificationDetails(
       android: AndroidNotificationDetails(
         'dnote_pinned',
-        'Sabitlenmiş Notlar',
-        channelDescription:
-            'Bildirim paneline sabitlenen Layout notları',
+        l10n.pinnedChannelName,
+        channelDescription: l10n.pinnedChannelDescription,
         importance: Importance.low,
         priority: Priority.low,
         ongoing: true,
@@ -307,10 +307,10 @@ class ReminderService {
         // (Dart kodu hiç çalışmasa bile) otomatik olarak kapatılır; Dart
         // tarafındaki işleyiciler (bkz. yukarısı) yalnızca veritabanındaki
         // 'isPinnedToNotification' bayrağını senkronize etmek için vardır.
-        actions: const [
+        actions: [
           AndroidNotificationAction(
             _dNoteUnpinActionId,
-            'Kaldır',
+            l10n.notificationUnpinActionLabel,
             showsUserInterface: false,
             cancelNotification: true,
           ),
@@ -321,7 +321,7 @@ class ReminderService {
     try {
       await _plugin.show(
         id,
-        title.isEmpty ? 'Not' : title,
+        title.isEmpty ? l10n.pinnedNotificationDefaultTitle : title,
         body,
         details,
         payload: noteId,
@@ -342,6 +342,7 @@ class ReminderService {
   // yeniden gösterir.
   Future<void> restorePinnedNotes(List<Map<String, dynamic>> notes) async {
     if (!_initialized) await init();
+    final l10n = AppLocalizations.of(navigatorKey.currentContext!)!;
     for (final note in notes) {
       if (note['isPinnedToNotification'] != true) continue;
       final noteId = note['id']?.toString();
@@ -350,7 +351,7 @@ class ReminderService {
       final content = ContentBlocks.plainText(note['content'] as String?);
       await pinToNotificationPanel(
         noteId: noteId,
-        title: title.isEmpty ? 'Not' : title,
+        title: title.isEmpty ? l10n.pinnedNotificationDefaultTitle : title,
         body: content,
       );
     }

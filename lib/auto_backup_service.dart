@@ -161,6 +161,35 @@ class AutoBackupService {
     await DBHelper.instance.setSetting(_maxLocalBackupsKey, count.toString());
   }
 
+  // ── Arka Plan İçin Dil Çözümleme (Aşama 7 → manuel dil seçici) ───────
+  //
+  // _runBackupTask() BuildContext OLMAYAN ayrı bir isolate'te çalıştığı
+  // için AppLocalizations.of(context) burada kullanılamaz. Bunun yerine
+  // AppLocalizations.delegate.load(locale) ile context'siz bir örnek
+  // üretilir. Locale kaynağı artık cihaz dili DEĞİL, kullanıcının Ayarlar
+  // ekranında elle seçtiği 'app_language' ayarıdır (DBHelper.setSetting
+  // ile theme_mode/accent_color ile aynı depoda tutulur) — böylece ön
+  // planda (settings_page.dart) ve arka planda (burada) aynı kaynak
+  // kullanılır ve dil tutarsızlığı ihtimali kalmaz.
+  // 'tr'/'en' ise doğrudan o dil kullanılır; ayar yoksa veya 'system' ise
+  // (henüz seçim yapılmamış / kullanıcı sistem dilini takip etmeyi
+  // seçmiş) cihaz dili kontrol edilir, desteklenmiyorsa Türkçe'ye düşülür.
+  Future<AppLocalizations> _resolveL10n() async {
+    final settings = await DBHelper.instance.getAllSettings();
+    final lang = settings['app_language'] ?? 'system';
+
+    late final Locale locale;
+    if (lang == 'tr' || lang == 'en') {
+      locale = Locale(lang);
+    } else {
+      final deviceLocale = ui.PlatformDispatcher.instance.locale;
+      locale = AppLocalizations.delegate.isSupported(deviceLocale)
+          ? deviceLocale
+          : const Locale('tr');
+    }
+    return AppLocalizations.delegate.load(locale);
+  }
+
   Future<void> _saveLastRun({required bool success, required String message}) async {
     await DBHelper.instance.setSetting(_lastRunAtKey, DateTime.now().toIso8601String());
     await DBHelper.instance.setSetting(_lastStatusKey, success ? 'success' : 'error');
@@ -253,6 +282,7 @@ class AutoBackupService {
 
     final target = await getTarget();
     final maxLocalBackups = await getMaxLocalBackups();
+    final l10n = await _resolveL10n();
 
     final messages = <String>[];
     var anySuccess = false;
@@ -260,12 +290,12 @@ class AutoBackupService {
     // 2. Yerel yedekleme (target: local veya both)
     if (target == AutoBackupTarget.local || target == AutoBackupTarget.both) {
       try {
-        await BackupHelper.instance.createBackup();
+        await BackupHelper.instance.createBackup(l10n: l10n);
         await BackupHelper.enforceLocalRetention(maxLocalBackups);
-        messages.add('Yerel yedekleme başarılı.');
+        messages.add(l10n.autoBackupLocalSuccessMessage);
         anySuccess = true;
       } catch (e) {
-        messages.add('Yerel yedekleme başarısız: $e');
+        messages.add(l10n.autoBackupLocalFailedMessage(e.toString()));
       }
     }
 
@@ -277,10 +307,7 @@ class AutoBackupService {
         // oturumun sessizce (token yenileyerek) devam ettirilmesi denenir.
         final signedIn = await GoogleDriveHelper.instance.trySilentSignIn();
         if (!signedIn) {
-          messages.add(
-            'Drive yedeklemesi atlandı: Google hesabı bağlı değil veya '
-            'oturum süresi dolmuş. Lütfen uygulamayı açıp tekrar bağlanın.',
-          );
+          messages.add(l10n.autoBackupDriveSkippedNotConnectedMessage);
         } else {
           // Drive'a yüklenecek zip'i önce yerel olarak üretmemiz gerekir
           // (target sadece 'drive' ise 2. adımda hiç oluşturulmamış
@@ -298,12 +325,12 @@ class AutoBackupService {
             final backups = await BackupHelper.instance.listBackups();
             zipFile = backups.first;
           } else {
-            zipFile = await BackupHelper.instance.createBackup();
+            zipFile = await BackupHelper.instance.createBackup(l10n: l10n);
           }
           try {
             await GoogleDriveHelper.instance.uploadBackup(zipFile);
             await GoogleDriveHelper.instance.enforceRetention();
-            messages.add('Drive yedeklemesi başarılı.');
+            messages.add(l10n.autoBackupDriveSuccessMessage);
             anySuccess = true;
           } catch (e) {
             rethrow;
@@ -322,7 +349,7 @@ class AutoBackupService {
         }
       } catch (e) {
         final ex = GoogleDriveException.fromError(e);
-        messages.add('Drive yedeklemesi başarısız: ${ex.message}');
+        messages.add(l10n.autoBackupDriveFailedMessage(ex.message));
       }
     }
 

@@ -117,16 +117,12 @@ DateTime? _effectiveReminderOn(Map<String, dynamic> note, DateTime day) {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  static const List<String> _monthNamesTr = [
-    'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-    'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
-  ];
-  static const List<String> _weekDayShortTr = [
-    'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz',
-  ];
-  static const List<String> _weekDayFullTr = [
-    'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar',
-  ];
+  // Ay adları l10n.calendarMonthJan..Dec anahtarlarından okunuyor (bkz.
+  // _monthName). Liste burada tutulmuyor çünkü BuildContext gerektiriyor.
+  // Hafta günü adları l10n.calendarWeekdayShortMon..Sun ve
+  // l10n.calendarWeekdayFullMonday..Sunday anahtarlarından okunuyor (bkz.
+  // _weekdayShort / _weekdayFull). Liste burada tutulmuyor çünkü
+  // BuildContext gerektiriyor.
 
   // Ay sayfaları bu merkez indeksten itibaren (bugünün ayı = merkez) hem
   // ileriye hem geriye doğru üretilir; PageView.builder sonsuz gibi davranır.
@@ -232,6 +228,81 @@ class _CalendarScreenState extends State<CalendarScreen> {
   bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
 
+  // 1-12 arası ay numarasını l10n.calendarMonthJan..Dec anahtarlarından
+  // gelen tam ay adına çevirir.
+  String _monthName(AppLocalizations l10n, int month) {
+    switch (month) {
+      case 1:
+        return l10n.calendarMonthJan;
+      case 2:
+        return l10n.calendarMonthFeb;
+      case 3:
+        return l10n.calendarMonthMar;
+      case 4:
+        return l10n.calendarMonthApr;
+      case 5:
+        return l10n.calendarMonthMay;
+      case 6:
+        return l10n.calendarMonthJun;
+      case 7:
+        return l10n.calendarMonthJul;
+      case 8:
+        return l10n.calendarMonthAug;
+      case 9:
+        return l10n.calendarMonthSep;
+      case 10:
+        return l10n.calendarMonthOct;
+      case 11:
+        return l10n.calendarMonthNov;
+      default:
+        return l10n.calendarMonthDec;
+    }
+  }
+
+  // 1-7 arası hafta günü numarasını (DateTime.weekday: Pzt=1..Paz=7)
+  // l10n.calendarWeekdayShortMon..Sun anahtarlarından gelen kısaltılmış
+  // gün adına çevirir.
+  String _weekdayShort(AppLocalizations l10n, int weekday) {
+    switch (weekday) {
+      case 1:
+        return l10n.calendarWeekdayShortMon;
+      case 2:
+        return l10n.calendarWeekdayShortTue;
+      case 3:
+        return l10n.calendarWeekdayShortWed;
+      case 4:
+        return l10n.calendarWeekdayShortThu;
+      case 5:
+        return l10n.calendarWeekdayShortFri;
+      case 6:
+        return l10n.calendarWeekdayShortSat;
+      default:
+        return l10n.calendarWeekdayShortSun;
+    }
+  }
+
+  // 1-7 arası hafta günü numarasını (DateTime.weekday: Pzt=1..Paz=7)
+  // l10n.calendarWeekdayFullMonday..Sunday anahtarlarından gelen tam gün
+  // adına çevirir.
+  String _weekdayFull(AppLocalizations l10n, int weekday) {
+    switch (weekday) {
+      case 1:
+        return l10n.calendarWeekdayFullMonday;
+      case 2:
+        return l10n.calendarWeekdayFullTuesday;
+      case 3:
+        return l10n.calendarWeekdayFullWednesday;
+      case 4:
+        return l10n.calendarWeekdayFullThursday;
+      case 5:
+        return l10n.calendarWeekdayFullFriday;
+      case 6:
+        return l10n.calendarWeekdayFullSaturday;
+      default:
+        return l10n.calendarWeekdayFullSunday;
+    }
+  }
+
   void _goToToday() {
     setState(() {
       _selectedDay = DateTime.now();
@@ -247,6 +318,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -255,7 +327,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         titleSpacing: 0,
         iconTheme: IconThemeData(color: appAccentColor.value),
         title: Text(
-          'Takvim',
+          l10n.calendarAppBarTitle,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: appAccentColor.value,
@@ -266,7 +338,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           TextButton(
             onPressed: _goToToday,
             child: Text(
-              'Bugün',
+              l10n.calendarTodayButton,
               style: TextStyle(color: appAccentColor.value, fontWeight: FontWeight.w600),
             ),
           ),
@@ -276,7 +348,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            _buildMonthHeader(),
+            _buildMonthHeader(l10n),
             _buildLegend(context),
             const SizedBox(height: 4),
             _buildWeekDayHeader(context),
@@ -327,7 +399,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildMonthHeader() {
+  Widget _buildMonthHeader(AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
       child: Row(
@@ -359,7 +431,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       ),
                     ),
                     child: Text(
-                      '${_monthNamesTr[focusedMonth.month - 1]} ${focusedMonth.year}',
+                      '${_monthName(l10n, focusedMonth.month)} ${focusedMonth.year}',
                       key: ValueKey('${focusedMonth.year}-${focusedMonth.month}'),
                       style: TextStyle(
                         fontSize: 20,
@@ -387,6 +459,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildLegend(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final subtleColor = dNoteTextColor(context).withValues(alpha: 0.55);
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 4, 8, 2),
@@ -395,12 +468,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
         children: [
           _MarkerDot(color: appAccentColor.value),
           const SizedBox(width: 5),
-          Text('Not', style: TextStyle(fontSize: 12, color: subtleColor)),
+          Text(l10n.calendarLegendNoteLabel, style: TextStyle(fontSize: 12, color: subtleColor)),
           const SizedBox(width: 14),
           const _MarkerDot(color: Colors.lightBlueAccent),
           const SizedBox(width: 5),
           Text(
-            'Hatırlatıcı',
+            l10n.calendarLegendReminderLabel,
             style: TextStyle(fontSize: 12, color: subtleColor),
           ),
         ],
@@ -409,6 +482,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildWeekDayHeader(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -417,7 +491,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           return Expanded(
             child: Center(
               child: Text(
-                _weekDayShortTr[i],
+                _weekdayShort(l10n, i + 1),
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -463,9 +537,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildSelectedDayNotesPanel(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final label =
-        '${_selectedDay.day} ${_monthNamesTr[_selectedDay.month - 1]} ${_selectedDay.year}, '
-        '${_weekDayFullTr[_selectedDay.weekday - 1]}';
+        '${_selectedDay.day} ${_monthName(l10n, _selectedDay.month)} ${_selectedDay.year}, '
+        '${_weekdayFull(l10n, _selectedDay.weekday)}';
     final isToday = _isSameDay(_selectedDay, _today);
     final dayNotes = _notesForSelectedDay();
 
@@ -514,7 +589,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         Padding(
                           padding: EdgeInsets.only(top: 2),
                           child: Text(
-                            'Bugün',
+                            l10n.calendarTodayBadge,
                             style: TextStyle(
                               color: appAccentColor.value,
                               fontSize: 12,
@@ -554,7 +629,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Text(
-                        'Bu güne ait not veya hatırlatıcı yok.',
+                        l10n.calendarEmptyDayMessage,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: dNoteTextColor(context).withValues(alpha: 0.5),
@@ -658,6 +733,7 @@ class _DayNoteTile extends StatelessWidget {
       primaryRenderSpans = contentRenderSpans;
     }
 
+    final l10n = AppLocalizations.of(context)!;
     String? reminderLabel;
     bool isRepeatingOccurrence = false;
     final effectiveReminder = _effectiveReminderOn(note, day);
@@ -667,7 +743,7 @@ class _DayNoteTile extends StatelessWidget {
       if (repeat == 'hourly') {
         // Saatlik tekrarda tek bir saat göstermek yanıltıcı olur (o gün
         // boyunca her saat başı tetiklenir); sabit saat yerine bunu belirtiriz.
-        reminderLabel = 'Her saat';
+        reminderLabel = l10n.calendarReminderHourlyLabel;
       } else {
         final hh = effectiveReminder.hour.toString().padLeft(2, '0');
         final mm = effectiveReminder.minute.toString().padLeft(2, '0');

@@ -16,7 +16,8 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
   bool _wifiOnly = true;
 
   bool _isLoading = true;
-  String _lastRunInfo = 'Henüz otomatik yedekleme çalışmadı.';
+  DateTime? _lastRunAt;
+  String? _lastRunMessage;
   bool? _lastRunSuccess;
 
   // Google Drive bağlantı durumu. Segment butonlarındaki "Google Drive" ve
@@ -44,9 +45,9 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
     final lastMessage = await _backupService.getLastMessage();
 
     if (lastRun != null) {
-      final statusText = lastStatus == 'success' ? 'Başarılı' : 'Hatalı';
       _lastRunSuccess = lastStatus == 'success';
-      _lastRunInfo = 'Son Çalışma: ${lastRun.day}.${lastRun.month}.${lastRun.year} ${lastRun.hour.toString().padLeft(2, '0')}:${lastRun.minute.toString().padLeft(2, '0')} ($statusText)\nMesaj: $lastMessage';
+      _lastRunAt = lastRun;
+      _lastRunMessage = lastMessage;
     }
 
     // Google Drive bağlantısını kontrol et. isSignedIn anlık (senkron)
@@ -89,7 +90,7 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
     if (!success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Google hesabına bağlanılamadı.'),
+          content: Text(AppLocalizations.of(context)!.autoBackupSettingsDriveConnectFailedSnackbar),
           backgroundColor: Colors.red.shade700,
           behavior: SnackBarBehavior.floating,
         ),
@@ -109,7 +110,7 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Otomatik yedekleme ayarları güncellendi.'),
+        content: Text(AppLocalizations.of(context)!.autoBackupSettingsSavedSnackbar),
         backgroundColor: Colors.green.shade700,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
@@ -118,6 +119,19 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
         margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       ),
     );
+  }
+
+  String _buildLastRunInfoText(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    if (_lastRunAt == null) {
+      return l10n.autoBackupSettingsNeverRunMessage;
+    }
+    final date = '${_lastRunAt!.day}.${_lastRunAt!.month}.${_lastRunAt!.year}';
+    final time = '${_lastRunAt!.hour.toString().padLeft(2, '0')}:${_lastRunAt!.minute.toString().padLeft(2, '0')}';
+    final status = _lastRunSuccess == true
+        ? l10n.autoBackupSettingsStatusSuccessLabel
+        : l10n.autoBackupSettingsStatusFailedLabel;
+    return l10n.autoBackupSettingsLastRunInfo(date, time, status, _lastRunMessage ?? '');
   }
 
   @override
@@ -130,15 +144,15 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Otomatik Yedekleme Ayarları'),
+        title: Text(AppLocalizations.of(context)!.autoBackupSettingsAppBarTitle),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
           // 1. Ana Açma/Kapatma Anahtarı
           SwitchListTile(
-            title: const Text('Otomatik Yedeklemeyi Aktif Et'),
-            subtitle: const Text('Notlarınız arka planda periyodik olarak güvenle yedeklenir.'),
+            title: Text(AppLocalizations.of(context)!.autoBackupSettingsMainSwitchTitle),
+            subtitle: Text(AppLocalizations.of(context)!.autoBackupSettingsMainSwitchSubtitle),
             value: _isEnabled,
             onChanged: (val) {
               setState(() => _isEnabled = val);
@@ -151,22 +165,25 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
           if (_isEnabled) ...[
             // 2. Yedekleme Hedefi Seçimi
             ListTile(
-              title: const Text('Yedekleme Hedefi'),
-              subtitle: const Text('Yedeklerin nereye kaydedileceğini seçin.'),
+              title: Text(AppLocalizations.of(context)!.autoBackupSettingsTargetTitle),
+              subtitle: Text(AppLocalizations.of(context)!.autoBackupSettingsTargetSubtitle),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: SegmentedButton<AutoBackupTarget>(
                 segments: [
-                  const ButtonSegment(value: AutoBackupTarget.local, label: Text('Yerel')),
+                  ButtonSegment(
+                    value: AutoBackupTarget.local,
+                    label: Text(AppLocalizations.of(context)!.autoBackupSettingsTargetLocalOption),
+                  ),
                   ButtonSegment(
                     value: AutoBackupTarget.drive,
-                    label: const Text('Google Drive'),
+                    label: Text(AppLocalizations.of(context)!.autoBackupSettingsTargetDriveOption),
                     enabled: _driveConnected,
                   ),
                   ButtonSegment(
                     value: AutoBackupTarget.both,
-                    label: const Text('Her İkisi'),
+                    label: Text(AppLocalizations.of(context)!.autoBackupSettingsTargetBothOption),
                     enabled: _driveConnected,
                   ),
                 ],
@@ -187,7 +204,7 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        'Google Drive seçeneklerini kullanmak için önce hesabınızı bağlayın.',
+                        AppLocalizations.of(context)!.autoBackupSettingsDriveNotConnectedNote,
                         style: TextStyle(
                           fontSize: 12,
                           color: dNoteTextColor(context).withValues(alpha: 0.6),
@@ -203,7 +220,7 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
                           )
                         : TextButton(
                             onPressed: _connectGoogleDrive,
-                            child: const Text('Bağlan'),
+                            child: Text(AppLocalizations.of(context)!.autoBackupSettingsConnectButton),
                           ),
                   ],
                 ),
@@ -212,16 +229,16 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
 
             // 3. Yedekleme Sıklığı (Frekans)
             ListTile(
-              title: const Text('Yedekleme Sıklığı'),
-              subtitle: Text('Her $_frequencyHours saatte bir yedek alınır.'),
+              title: Text(AppLocalizations.of(context)!.autoBackupSettingsFrequencyTitle),
+              subtitle: Text(AppLocalizations.of(context)!.autoBackupSettingsFrequencySubtitle(_frequencyHours)),
               trailing: DropdownButton<int>(
                 value: _frequencyHours,
-                items: const [
-                  DropdownMenuItem(value: 6, child: Text('6 Saat')),
-                  DropdownMenuItem(value: 12, child: Text('12 Saat')),
-                  DropdownMenuItem(value: 24, child: Text('24 Saat (Günlük)')),
-                  DropdownMenuItem(value: 48, child: Text('48 Saat (2 Gün)')),
-                  DropdownMenuItem(value: 168, child: Text('168 Saat (Haftalık)')),
+                items: [
+                  DropdownMenuItem(value: 6, child: Text(AppLocalizations.of(context)!.autoBackupSettingsFrequency6h)),
+                  DropdownMenuItem(value: 12, child: Text(AppLocalizations.of(context)!.autoBackupSettingsFrequency12h)),
+                  DropdownMenuItem(value: 24, child: Text(AppLocalizations.of(context)!.autoBackupSettingsFrequency24h)),
+                  DropdownMenuItem(value: 48, child: Text(AppLocalizations.of(context)!.autoBackupSettingsFrequency48h)),
+                  DropdownMenuItem(value: 168, child: Text(AppLocalizations.of(context)!.autoBackupSettingsFrequency168h)),
                 ],
                 onChanged: (val) {
                   if (val != null) {
@@ -235,8 +252,8 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
             // 4. Sadece Wi-Fi Kontrolü (Eğer Drive veya Her İkisi seçiliyse anlamlı)
             if (_target != AutoBackupTarget.local)
               SwitchListTile(
-                title: const Text('Sadece Wi-Fi Kullan'),
-                subtitle: const Text('Bulut yüklemesi yalnızca Wi-Fi bağlıyken yapılır mobil veriniz korunur.'),
+                title: Text(AppLocalizations.of(context)!.autoBackupSettingsWifiOnlySwitchTitle),
+                subtitle: Text(AppLocalizations.of(context)!.autoBackupSettingsWifiOnlySwitchSubtitle),
                 value: _wifiOnly,
                 onChanged: (val) {
                   setState(() => _wifiOnly = val);
@@ -285,7 +302,7 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Sistem Durumu',
+                        AppLocalizations.of(context)!.autoBackupSettingsStatusCardTitle,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: titleColor,
@@ -293,7 +310,7 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        _lastRunInfo,
+                        _buildLastRunInfoText(context),
                         style: TextStyle(color: bodyColor),
                       ),
                     ],

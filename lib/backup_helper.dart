@@ -50,16 +50,17 @@ class BackupHelper {
   }
 
   Future<File> createBackup({
+    required AppLocalizations l10n,
     void Function(double progress, String step)? onProgress,
   }) async {
-    onProgress?.call(0.05, 'Veriler hazırlanıyor...');
+    onProgress?.call(0.05, l10n.backupCreatePreparingDataLabel);
 
     final backupData = await _collectBackupData();
-    onProgress?.call(0.15, 'Notlar ve kategoriler paketleniyor...');
+    onProgress?.call(0.15, l10n.backupCreatePackagingNotesLabel);
 
     final jsonBytes = utf8.encode(jsonEncode(backupData));
 
-    onProgress?.call(0.2, 'Ek dosyalar okunuyor...');
+    onProgress?.call(0.2, l10n.backupCreateReadingAttachmentsLabel);
     final attDir = await DBHelper.instance.attachmentsDir();
     final attachmentNames = <String>[];
     final attachmentBytesList = <Uint8List>[];
@@ -73,20 +74,28 @@ class BackupHelper {
         if (files.isNotEmpty) {
           onProgress?.call(
             0.2 + 0.35 * ((i + 1) / files.length),
-            'Ek dosyalar okunuyor... (${i + 1}/${files.length})',
+            l10n.backupCreateReadingAttachmentsProgressLabel(i + 1, files.length),
           );
         }
       }
     }
 
-    onProgress?.call(0.6, 'Zip dosyası sıkıştırılıyor...');
-    final zipBytes = await compute(_encodeZipIsolate, {
-      'dataFileName': _dataFileName,
-      'jsonBytes': jsonBytes,
-      'attachmentNames': attachmentNames,
-      'attachmentBytesList': attachmentBytesList,
-    });
-    onProgress?.call(0.9, 'Dosya kaydediliyor...');
+    onProgress?.call(0.6, l10n.backupCreateCompressingLabel);
+    Uint8List zipBytes;
+    try {
+      zipBytes = await compute(_encodeZipIsolate, {
+        'dataFileName': _dataFileName,
+        'jsonBytes': jsonBytes,
+        'attachmentNames': attachmentNames,
+        'attachmentBytesList': attachmentBytesList,
+      });
+    } catch (_) {
+      throw BackupOperationException(
+        BackupErrorType.unknown,
+        l10n.backupErrorZipEncodeFailedMessage,
+      );
+    }
+    onProgress?.call(0.9, l10n.backupCreateSavingFileLabel);
 
     final dir = await backupsDir();
     final fileName = 'dnote_yedek_${_timestampForFileName(DateTime.now())}.zip';
@@ -94,12 +103,12 @@ class BackupHelper {
     try {
       await zipFile.writeAsBytes(zipBytes, flush: true);
     } catch (e) {
-      throw BackupOperationException.fromError(e);
+      throw BackupOperationException.fromError(e, l10n);
     }
 
     await _saveLastBackupDate(DateTime.now());
 
-    onProgress?.call(1.0, 'Tamamlandı');
+    onProgress?.call(1.0, l10n.backupDriveOperationCompletedLabel);
     return zipFile;
   }
 
@@ -118,7 +127,7 @@ class BackupHelper {
 
     final encoded = ZipEncoder().encode(archive);
     if (encoded == null) {
-      throw Exception('Zip arşivi oluşturulamadı (ZipEncoder null döndürdü).');
+      throw Exception('ZipEncoder returned null');
     }
     return encoded is Uint8List ? encoded : Uint8List.fromList(encoded);
   }
@@ -208,12 +217,12 @@ class BackupHelper {
     }
   }
 
-  Future<Archive> _decodeArchive(Uint8List bytes) async {
+  Future<Archive> _decodeArchive(Uint8List bytes, AppLocalizations l10n) async {
     try {
       return await compute(_decodeZipIsolate, bytes);
     } catch (_) {
       throw BackupValidationException(
-        'Dosya bozuk veya geçerli bir yedek dosyası değil.',
+        l10n.backupValidationCorruptedFileMessage,
         type: BackupErrorType.corruptedFile,
       );
     }
@@ -223,11 +232,11 @@ class BackupHelper {
     return ZipDecoder().decodeBytes(bytes);
   }
 
-  Map<String, dynamic> _validateAndParseData(Archive archive) {
+  Map<String, dynamic> _validateAndParseData(Archive archive, AppLocalizations l10n) {
     final dataEntry = archive.files.where((f) => f.isFile && f.name == _dataFileName);
     if (dataEntry.isEmpty) {
       throw BackupValidationException(
-        'Yedek dosyası içinde veri bulunamadı (backup_data.json eksik).',
+        l10n.backupValidationMissingDataMessage,
         type: BackupErrorType.notDnoteBackup,
       );
     }
@@ -242,33 +251,33 @@ class BackupHelper {
       data = decoded;
     } catch (_) {
       throw BackupValidationException(
-        'Yedek verisi okunamadı (bozuk JSON).',
+        l10n.backupValidationInvalidJsonMessage,
         type: BackupErrorType.corruptedFile,
       );
     }
 
     if (data['appName'] != 'dnote') {
       throw BackupValidationException(
-        'Bu dosya dnote uygulamasına ait bir yedek değil.',
+        l10n.backupValidationNotDnoteBackupMessage,
         type: BackupErrorType.notDnoteBackup,
       );
     }
     final formatVersion = data['formatVersion'];
     if (formatVersion is! int) {
       throw BackupValidationException(
-        'Yedek dosyasının sürüm bilgisi okunamadı.',
+        l10n.backupValidationVersionUnreadableMessage,
         type: BackupErrorType.corruptedFile,
       );
     }
     if (formatVersion > backupFormatVersion) {
       throw BackupValidationException(
-        'Bu yedek, uygulamanın şu anki sürümünün desteklemediği daha yeni bir formatta. Lütfen uygulamayı güncelleyin.',
+        l10n.backupValidationIncompatibleVersionMessage,
         type: BackupErrorType.incompatibleVersion,
       );
     }
     if (formatVersion < 1) {
       throw BackupValidationException(
-        'Yedek dosyasının sürüm bilgisi geçersiz.',
+        l10n.backupValidationInvalidVersionMessage,
         type: BackupErrorType.corruptedFile,
       );
     }
@@ -277,25 +286,25 @@ class BackupHelper {
 
     if (data['notes'] is! List) {
       throw BackupValidationException(
-        'Yedek verisi beklenen formatta değil (notlar alanı eksik).',
+        l10n.backupValidationMissingNotesFieldMessage,
         type: BackupErrorType.corruptedFile,
       );
     }
     if (data['deletedNotes'] is! List) {
       throw BackupValidationException(
-        'Yedek verisi beklenen formatta değil (çöp kutusu alanı eksik).',
+        l10n.backupValidationMissingTrashFieldMessage,
         type: BackupErrorType.corruptedFile,
       );
     }
     if (data['categories'] is! List || !isListOf<String>(data['categories'])) {
       throw BackupValidationException(
-        'Yedek verisi beklenen formatta değil (kategori listesi geçersiz).',
+        l10n.backupValidationInvalidCategoriesFieldMessage,
         type: BackupErrorType.corruptedFile,
       );
     }
     if (data['settings'] != null && data['settings'] is! Map) {
       throw BackupValidationException(
-        'Yedek verisi beklenen formatta değil (ayarlar alanı geçersiz).',
+        l10n.backupValidationInvalidSettingsFieldMessage,
         type: BackupErrorType.corruptedFile,
       );
     }
@@ -303,14 +312,14 @@ class BackupHelper {
       for (final item in (list as List)) {
         if (item is! Map) {
           throw BackupValidationException(
-            'Yedek verisi beklenen formatta değil (bir not kaydı geçersiz).',
+            l10n.backupValidationInvalidNoteRecordMessage,
             type: BackupErrorType.corruptedFile,
           );
         }
         final id = item['id'];
         if (id == null || id.toString().trim().isEmpty) {
           throw BackupValidationException(
-            'Yedek verisi beklenen formatta değil (kimliksiz bir not kaydı bulundu).',
+            l10n.backupValidationMissingNoteIdMessage,
             type: BackupErrorType.corruptedFile,
           );
         }
@@ -320,13 +329,13 @@ class BackupHelper {
     return data;
   }
 
-  Future<Map<String, dynamic>> readBackupData(File zipFile) async {
+  Future<Map<String, dynamic>> readBackupData(File zipFile, AppLocalizations l10n) async {
     if (!await zipFile.exists()) {
-      throw BackupValidationException('Yedek dosyası bulunamadı.', type: BackupErrorType.fileNotFound);
+      throw BackupValidationException(l10n.backupValidationFileNotFoundMessage, type: BackupErrorType.fileNotFound);
     }
     final bytes = await zipFile.readAsBytes();
-    final archive = await _decodeArchive(bytes);
-    return _validateAndParseData(archive);
+    final archive = await _decodeArchive(bytes, l10n);
+    return _validateAndParseData(archive, l10n);
   }
 
   Set<String> _referencedAttachmentNames(List<dynamic> notes) {
@@ -345,9 +354,9 @@ class BackupHelper {
     return names;
   }
 
-  Future<BackupPreview> loadBackupPreview(File zipFile) async {
+  Future<BackupPreview> loadBackupPreview(File zipFile, AppLocalizations l10n) async {
     if (!await zipFile.exists()) {
-      throw BackupValidationException('Yedek dosyası bulunamadı.', type: BackupErrorType.fileNotFound);
+      throw BackupValidationException(l10n.backupValidationFileNotFoundMessage, type: BackupErrorType.fileNotFound);
     }
 
     Uint8List bytes;
@@ -356,11 +365,11 @@ class BackupHelper {
     } on BackupValidationException {
       rethrow;
     } catch (e) {
-      throw BackupOperationException.fromError(e);
+      throw BackupOperationException.fromError(e, l10n);
     }
 
-    final archive = await _decodeArchive(bytes);
-    final data = _validateAndParseData(archive);
+    final archive = await _decodeArchive(bytes, l10n);
+    final data = _validateAndParseData(archive, l10n);
 
     final notes = (data['notes'] as List?) ?? const [];
     final deletedNotes = (data['deletedNotes'] as List?) ?? const [];
@@ -396,14 +405,15 @@ class BackupHelper {
 
   Future<void> restoreBackup(
     File zipFile, {
+    required AppLocalizations l10n,
     void Function(double progress, String step)? onProgress,
     BackupPreview? preloaded,
   }) async {
-    onProgress?.call(0.05, 'Yedek doğrulanıyor...');
-    final preview = preloaded ?? await loadBackupPreview(zipFile);
+    onProgress?.call(0.05, l10n.backupRestoreValidatingLabel);
+    final preview = preloaded ?? await loadBackupPreview(zipFile, l10n);
     final data = preview.data;
     final archive = preview.archive;
-    onProgress?.call(0.15, 'Yedek doğrulandı, veriler hazırlanıyor...');
+    onProgress?.call(0.15, l10n.backupRestoreValidatedPreparingDataLabel);
 
     final db = DBHelper.instance;
 
@@ -413,35 +423,35 @@ class BackupHelper {
     final deletedNotes = List<Map<String, dynamic>>.from(
       (data['deletedNotes'] as List? ?? []).map((n) => Map<String, dynamic>.from(n)),
     );
-    onProgress?.call(0.25, 'Notlar yazılıyor...');
+    onProgress?.call(0.25, l10n.backupRestoreWritingNotesLabel);
     try {
       await db.replaceNotes(notes);
-      onProgress?.call(0.35, 'Çöp kutusu yazılıyor...');
+      onProgress?.call(0.35, l10n.backupRestoreWritingTrashLabel);
       await db.replaceDeletedNotes(deletedNotes);
     } catch (e) {
-      throw BackupOperationException.fromError(e);
+      throw BackupOperationException.fromError(e, l10n);
     }
-    onProgress?.call(0.4, 'Çöp kutusu yazıldı');
+    onProgress?.call(0.4, l10n.backupRestoreTrashWrittenLabel);
 
     final categories = List<String>.from((data['categories'] as List? ?? []).map((e) => e.toString()));
     final categoryColors = Map<String, String>.from(
       (data['categoryColors'] as Map? ?? {}).map((k, v) => MapEntry(k.toString(), v.toString())),
     );
     final lockedCategories = Set<String>.from((data['lockedCategories'] as List? ?? []).map((e) => e.toString()));
-    onProgress?.call(0.48, 'Kategoriler yazılıyor...');
+    onProgress?.call(0.48, l10n.backupRestoreWritingCategoriesLabel);
     await db.replaceCategories(categories, categoryColors, lockedCategories);
-    onProgress?.call(0.55, 'Kategoriler yazıldı');
+    onProgress?.call(0.55, l10n.backupRestoreCategoriesWrittenLabel);
 
     final settings = Map<String, String>.from(
       (data['settings'] as Map? ?? {}).map((k, v) => MapEntry(k.toString(), v.toString())),
     );
-    onProgress?.call(0.58, 'Ayarlar yazılıyor...');
+    onProgress?.call(0.58, l10n.backupRestoreWritingSettingsLabel);
     for (final entry in settings.entries) {
       await db.setSetting(entry.key, entry.value);
     }
-    onProgress?.call(0.62, 'Ayarlar yazıldı');
+    onProgress?.call(0.62, l10n.backupRestoreSettingsWrittenLabel);
 
-    onProgress?.call(0.65, 'Eski ek dosyalar temizleniyor...');
+    onProgress?.call(0.65, l10n.backupRestoreCleaningOldAttachmentsLabel);
     final attDir = await db.attachmentsDir();
     if (await attDir.exists()) {
       final existing = attDir.listSync().whereType<File>();
@@ -454,7 +464,7 @@ class BackupHelper {
 
     final attachmentEntries = archive.files.where((f) => f.isFile && f.name.startsWith('attachments/')).toList();
     if (attachmentEntries.isEmpty) {
-      onProgress?.call(0.95, 'Ek dosya bulunmuyor, tamamlanıyor...');
+      onProgress?.call(0.95, l10n.backupRestoreNoAttachmentsFinishingLabel);
     }
     for (var i = 0; i < attachmentEntries.length; i++) {
       final entry = attachmentEntries[i];
@@ -464,17 +474,17 @@ class BackupHelper {
       try {
         await outFile.writeAsBytes(entry.content as List<int>, flush: true);
       } catch (e) {
-        throw BackupOperationException.fromError(e);
+        throw BackupOperationException.fromError(e, l10n);
       }
       if (attachmentEntries.isNotEmpty) {
         onProgress?.call(
           0.65 + 0.3 * ((i + 1) / attachmentEntries.length),
-          'Ekler geri yükleniyor... (${i + 1}/${attachmentEntries.length})',
+          l10n.backupRestoreAttachmentsProgressLabel(i + 1, attachmentEntries.length),
         );
       }
     }
 
-    onProgress?.call(1.0, 'Tamamlandı');
+    onProgress?.call(1.0, l10n.backupRestoreCompletedLabel);
   }
 
   static Future<void> enforceLocalRetention(int maxBackups) async {
@@ -534,7 +544,7 @@ class BackupOperationException implements Exception {
   @override
   String toString() => message;
 
-  factory BackupOperationException.fromError(Object error) {
+  factory BackupOperationException.fromError(Object error, AppLocalizations l10n) {
     if (error is BackupOperationException) return error;
     if (error is BackupValidationException) {
       return BackupOperationException(error.type, error.message, retryable: error.retryable);
@@ -544,18 +554,24 @@ class BackupOperationException implements Exception {
       if (errno == 28) {
         return BackupOperationException(
           BackupErrorType.insufficientStorage,
-          'Cihazda yeterli boş depolama alanı yok. Lütfen yer açıp tekrar deneyin.',
+          l10n.backupErrorInsufficientStorageMessage,
         );
       }
       if (errno == 13 || errno == 1) {
         return BackupOperationException(
           BackupErrorType.permissionDenied,
-          'Dosya erişim izni reddedildi. Lütfen uygulama izinlerini kontrol edip tekrar deneyin.',
+          l10n.backupErrorPermissionDeniedMessage,
         );
       }
-      return BackupOperationException(BackupErrorType.unknown, 'Dosya işlemi sırasında bir hata oluştu: ${error.message}');
+      return BackupOperationException(
+        BackupErrorType.unknown,
+        l10n.backupErrorFileOperationMessage(error.message),
+      );
     }
-    return BackupOperationException(BackupErrorType.unknown, 'Beklenmeyen bir hata oluştu: $error');
+    return BackupOperationException(
+      BackupErrorType.unknown,
+      l10n.backupErrorUnexpectedMessage(error.toString()),
+    );
   }
 }
 

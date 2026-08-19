@@ -163,7 +163,7 @@ class NoteChecklistBlock extends StatelessWidget {
                             decorationStyle: TextDecorationStyle.solid,
                           ),
                           decoration: InputDecoration(
-                            hintText: 'Madde ekle...',
+                            hintText: AppLocalizations.of(context)!.checklistItemHint,
                             hintStyle: const TextStyle(color: Colors.grey),
                             border: InputBorder.none,
                             isDense: true,

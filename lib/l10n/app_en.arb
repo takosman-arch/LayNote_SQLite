@@ -1,0 +1,1135 @@
+{
+  "@@locale": "en",
+  "toolbarBoldTooltip": "Bold",
+  "toolbarItalicTooltip": "Italic",
+  "toolbarUnderlineTooltip": "Underline",
+  "toolbarStrikethroughTooltip": "Strikethrough",
+  "toolbarFontSizeTooltip": "Font Size",
+  "toolbarColorTooltip": "Text Color",
+  "toolbarBulletTooltip": "Bullet List",
+  "toolbarNumberTooltip": "Numbered List",
+  "toolbarIndentTooltip": "Paragraph Indent",
+  "toolbarLinkTooltip": "Add / Edit / Remove Link",
+  "toolbarDividerTooltip": "Insert Divider",
+  "toolbarChecklistTooltip": "Add Checklist",
+  "linkSelectTextSnackbar": "Select the text you want to link first",
+  "linkDialogEditTitle": "Edit Link",
+  "linkDialogAddTitle": "Add Link",
+  "linkDialogRemoveButton": "Remove Link",
+  "linkDialogCancelButton": "Cancel",
+  "linkDialogConfirmButton": "Add",
+  "cameraPermissionPermanentlyDeniedMessage": "Camera permission denied. You need to allow it from settings to record video.",
+  "cameraPermissionRequiredMessage": "Camera permission is required to record video.",
+  "openSettingsButtonLabel": "Settings",
+  "documentScanStartFailedMessage": "Scan could not be started: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "Text recognition failed: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "No readable text was found in the document",
+  "scanResultSheetTitle": "How should the scanned document be added?",
+  "scanResultTextOnlyOption": "Add as text only",
+  "scanResultTextAndImageOption": "Add text + scanned image",
+  "scanResultCancelOption": "Cancel",
+  "audioPermissionPermanentlyDeniedMessage": "Microphone permission denied. You need to allow it from settings to record audio.",
+  "audioPermissionRequiredMessage": "Microphone permission is required to record audio.",
+  "voiceRecordingDefaultLabel": "Voice Recording",
+  "blockPreviewCalcTableLabel": "Table ({count} rows)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "Drawing",
+  "blockPreviewAttachmentsLabel": "{count} attachments (photo/document)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "Divider",
+  "blockPreviewChecklistLabel": "Checklist ({count} items)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(empty text)",
+  "reorderBlocksSheetTitle": "Reorder Blocks",
+  "reorderBlocksMoveUpTooltip": "Move Up",
+  "reorderBlocksMoveDownTooltip": "Move Down",
+  "reorderBlocksCloseTooltip": "Close",
+  "reorderBlocksDescription": "Tap a block to select it, then use the up/down arrows to move it.",
+  "reorderBlocksMenuItemLabel": "Reorder",
+  "txtImportPickerDialogTitle": "Select the TXT file to import",
+  "txtImportReadFailedMessage": "The TXT file could not be read",
+  "txtImportEmptyFileMessage": "The TXT file is empty",
+  "txtImportSuccessMessage": "TXT imported",
+  "txtImportMenuItemLabel": "Import (txt)",
+  "exportMenuItemLabel": "Export",
+  "editorUndoTooltip": "Undo",
+  "editorRedoTooltip": "Redo",
+  "noteSavedMessage": "Note saved",
+  "dateAssignPickerHelpText": "Assign note to a day",
+  "dateAssignChangeOption": "Change date",
+  "dateAssignRemoveOption": "Remove assignment",
+  "editorSubToolbarCloseTooltip": "Close",
+  "titleFieldHint": "Title",
+  "textBlockHint": "Write your note here...",
+  "drawingBoardMenuItemLabel": "Drawing Board",
+  "voiceToTextTextNotesOnlyMessage": "Voice-to-text is only available for text notes",
+  "selectionModeCancelTooltip": "Cancel Selection",
+  "selectionModeSelectedCountTitle": "{count} selected",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "Delete",
+  "selectionModeArchiveTooltip": "Archive",
+  "selectionModeFolderTooltip": "Folder",
+  "searchFieldHint": "Search notes...",
+  "emptyTrashDialogTitle": "Empty Trash",
+  "emptyTrashDialogConfirmMessage": "All deleted notes will be permanently removed. Are you sure?",
+  "emptyTrashDialogCancelButton": "Cancel",
+  "restoreAllMenuItemLabel": "Restore All",
+  "sortMenuTooltip": "Sort Notes",
+  "sortMenuAscendingLabel": "Order: Ascending (A-Z)",
+  "sortMenuDescendingLabel": "Order: Descending (Z-A)",
+  "sortMenuByTitleLabel": "Sort by: Title",
+  "sortMenuByModifiedDateLabel": "Sort by: Last Modified",
+  "sortMenuByCreatedDateLabel": "Sort by: Date Created",
+  "sortMenuByFolderLabel": "Sort by: Folder",
+  "viewToggleGridTooltip": "Grid View",
+  "viewToggleListTooltip": "List View",
+  "drawerHeaderSubtitle": "Your Personal Notebook",
+  "drawerNotesSectionHeader": "NOTES",
+  "drawerAllNotesLabel": "Notes",
+  "drawerFavoritesLabel": "Favorite",
+  "drawerAgendaLabel": "Agenda",
+  "drawerRemindersLabel": "Reminder",
+  "drawerLockedLabel": "Locked",
+  "drawerTrashLabel": "Trash",
+  "drawerFoldersSectionHeader": "FOLDERS",
+  "drawerExpandLabel": "Expand",
+  "drawerCollapseLabel": "Collapse",
+  "drawerAddFolderLabel": "Add Folder",
+  "drawerAppSectionHeader": "APP",
+  "drawerCalendarLabel": "Calendar",
+  "drawerSettingsLabel": "Settings",
+  "drawerBackupRestoreLabel": "Backup & Restore",
+  "drawerUpgradeToProLabel": "Upgrade to Pro",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "Support Development",
+  "drawerFeedbackLabel": "Feedback",
+  "drawerAboutLabel": "About",
+  "noNotesFoundMessage": "No notes found.",
+  "trashRestoreButtonLabel": "Restore",
+  "trashPermanentDeleteButtonLabel": "Delete Permanently",
+  "tagRenamedInfoMessage": "Tag renamed",
+  "tagDeletedInfoMessage": "Tag deleted",
+  "tagOptionsRenameLabel": "Rename",
+  "tagOptionsDeleteLabel": "Delete",
+  "renameTagDialogTitle": "Rename Tag",
+  "renameTagDialogHint": "New tag name",
+  "renameTagDialogCancelButton": "Cancel",
+  "renameTagDialogSaveButton": "Save",
+  "deleteTagDialogMessageWithCount": "\"{tag}\" will be removed from {affectedCount} notes. Continue?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "Delete the \"{tag}\" tag?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "Delete Tag",
+  "deleteTagDialogCancelButton": "Cancel",
+  "deleteTagDialogConfirmButton": "Delete",
+  "tagsSheetTitle": "Tags",
+  "tagsSheetEmptyMessage": "No tags on this note yet.",
+  "tagsSheetInputHint": "Write a new tag...",
+  "tagsSheetSuggestionsLabel": "Existing tags",
+  "noteDeletedInfoMessage": "Note deleted",
+  "noteDeletedUndoActionLabel": "Undo",
+  "reminderSetInfoMessage": "Reminder set",
+  "reminderRemovedInfoMessage": "Reminder removed",
+  "noteDuplicatedInfoMessage": "Copy created",
+  "speechTextAppendedInfoMessage": "Text added to note",
+  "pdfPreparingInfoMessage": "Preparing PDF…",
+  "pdfSavedInfoMessage": "PDF saved",
+  "jpgPreparingInfoMessage": "Preparing JPG…",
+  "jpgSavedInfoMessage": "JPG saved",
+  "jpgFailedInfoMessage": "Could not create JPG",
+  "txtPreparingInfoMessage": "Preparing TXT…",
+  "txtSavedInfoMessage": "TXT saved",
+  "txtFailedInfoMessage": "Could not create TXT",
+  "exportOpenActionLabel": "Open",
+  "wrongPasswordInfoMessage": "Wrong password.",
+  "noteArchivedInfoMessage": "Note archived",
+  "noteUnarchivedInfoMessage": "Removed from archive",
+  "noteUnlockedInfoMessage": "Unlocked",
+  "noteLockedInfoMessage": "Note locked",
+  "notificationUnpinnedInfoMessage": "Unpinned",
+  "emptyNotePinBlockedInfoMessage": "An empty note cannot be pinned.",
+  "notificationPinnedInfoMessage": "Pinned to notification panel",
+  "noContentToReadInfoMessage": "There is no content to read",
+  "backPressExitInfoMessage": "Press back again to exit",
+  "reminderChannelName": "Note Reminders",
+  "reminderChannelDescription": "Note reminders in the Layout app",
+  "pinnedChannelName": "Pinned Notes",
+  "pinnedChannelDescription": "Layout notes pinned to the notification panel",
+  "notificationUnpinActionLabel": "Remove",
+  "reminderDefaultTitle": "Reminder",
+  "reminderChecklistBodyFallback": "Don't forget to check your checklist",
+  "reminderTextBodyFallback": "Don't forget to check your note",
+  "pdfSaveDialogTitle": "Save as PDF",
+  "jpgSaveDialogTitle": "Save as JPG",
+  "txtSaveDialogTitle": "Save as TXT",
+  "textSizeSheetTitle": "Text Size",
+  "textSizeSamplePreview": "Sample text",
+  "textSizeCancelButton": "Cancel",
+  "textSizeApplyButton": "Apply",
+  "createPasswordDialogTitle": "Create Password",
+  "createPasswordNewPasswordHint": "New password",
+  "createPasswordConfirmHint": "Re-enter password",
+  "createPasswordHintQuestionDescription": "Set a security question in case you forget your password (optional).",
+  "createPasswordHintQuestionHint": "Choose a security question",
+  "createPasswordHintAnswerHint": "Your answer",
+  "createPasswordCancelButton": "Cancel",
+  "createPasswordSaveButton": "Save",
+  "passwordMismatchMessage": "Passwords don't match!",
+  "passwordRequiredDialogTitle": "Password Required",
+  "passwordRequiredHint": "Enter password",
+  "forgotPasswordButtonLabel": "Forgot my password",
+  "passwordRequiredCancelButton": "Cancel",
+  "passwordRequiredConfirmButton": "Verify",
+  "securityQuestionDialogTitle": "Security Question",
+  "securityQuestionAnswerHint": "Your answer",
+  "securityQuestionCancelButton": "Cancel",
+  "securityQuestionConfirmButton": "Confirm",
+  "securityQuestionWrongAnswerMessage": "Wrong answer. Try again.",
+  "revealedPasswordDialogTitle": "Your Password",
+  "revealedPasswordLabel": "Your note password:",
+  "revealedPasswordOkButton": "OK",
+  "securityQuestionPetName": "What is the name of your first pet?",
+  "securityQuestionFavoriteTeacher": "What is the name of your favorite teacher?",
+  "securityQuestionBirthCity": "What city were you born in?",
+  "securityQuestionFavoriteFood": "What is your favorite food?",
+  "securityQuestionMotherMaidenName": "What is your mother's maiden name?",
+  "securityQuestionFirstSchool": "What is the name of the first school you attended?",
+  "securityQuestionFavoriteColor": "What is your favorite color?",
+  "editFolderDialogTitle": "Edit Folder",
+  "newSubfolderDialogTitle": "New Subfolder",
+  "addFolderDialogTitle": "Add Folder",
+  "subfolderParentInfoMessage": "Will be created inside \"{parentCategory}\"",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "Subfolder name",
+  "folderNameFieldLabel": "Folder name",
+  "folderColorLabel": "Color",
+  "folderDialogCancelButton": "Cancel",
+  "folderDialogSaveButton": "Save",
+  "folderDialogAddButton": "Add",
+  "selectFolderSheetTitle": "Select Folder",
+  "selectFolderAddOptionLabel": "Add Folder",
+  "removeCurrentFolderLabel": "Remove Current Folder",
+  "noteDetailsDialogTitle": "Details",
+  "noteDetailsCreatedLabel": "Created",
+  "noteDetailsModifiedLabel": "Last Modified",
+  "noteDetailsCharCountLabel": "Character Count",
+  "noteDetailsCharCountValue": "{count} characters",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "Word Count",
+  "noteDetailsWordCountValue": "{count} words",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "OK",
+  "noteDetailsUnknownDateLabel": "Unknown",
+  "addAttachmentSheetTitle": "Add",
+  "addAttachmentImageOption": "Add Image",
+  "addAttachmentCameraOption": "Camera",
+  "addAttachmentFileOption": "Add File",
+  "addAttachmentVoiceOption": "Voice Recording",
+  "addAttachmentVideoOption": "Record Video",
+  "addAttachmentScanOption": "Scan Document",
+  "noteActionsSheetTitle": "Choose Action",
+  "noteActionReminderLabel": "Reminder",
+  "noteActionEditReminderLabel": "Edit Reminder",
+  "noteActionSpeechToTextLabel": "Speech to Text",
+  "noteActionArchiveLabel": "Archive",
+  "noteActionUnarchiveLabel": "Remove from Archive",
+  "noteActionLockLabel": "Lock",
+  "noteActionUnlockLabel": "Unlock",
+  "noteActionFavoriteLabel": "Favorite",
+  "noteActionUnfavoriteLabel": "Remove from Favorites",
+  "noteActionClassifyLabel": "Select Folder",
+  "noteActionDeleteLabel": "Delete",
+  "noteActionPinToNotificationLabel": "Pin to Notification Panel",
+  "noteActionUnpinFromNotificationLabel": "Remove Pin",
+  "noteActionShareLabel": "Share",
+  "noteActionDuplicateLabel": "Create Copy",
+  "noteActionCopyContentLabel": "Copy Content",
+  "noteActionTtsLabel": "Read Aloud",
+  "noteActionTextSizeLabel": "Text Size",
+  "noteActionDetailsLabel": "Details",
+  "noteActionDiscardChangesLabel": "Discard Changes",
+  "noteActionSelectLabel": "Select",
+  "reminderEditOptionLabel": "Change reminder",
+  "reminderRemoveOptionLabel": "Remove reminder",
+  "discardChangesDialogTitle": "Discard Changes",
+  "discardChangesDialogMessage": "Unsaved changes to this note will be lost. Are you sure you want to discard them?",
+  "discardChangesCancelButton": "Cancel",
+  "discardChangesConfirmButton": "Discard",
+  "pinnedNotificationDefaultTitle": "Note",
+  "pdfFailedInfoMessage": "Failed to create PDF",
+  "drawingScreenTitle": "Drawing",
+  "drawingMinimizeTooltip": "Minimize",
+  "drawingEmptyExportWarningMessage": "Draw something first",
+  "drawingEraserPartialModeLabel": "Partial",
+  "drawingEraserFullModeLabel": "Full",
+  "drawingClearTooltip": "Clear",
+  "drawingZoomOutTooltip": "Zoom Out",
+  "drawingZoomInTooltip": "Zoom In",
+  "drawingDeleteTooltip": "Delete",
+  "drawingEmptyPreviewHint": "Tap to draw",
+  "settingsPageTitle": "Settings",
+  "settingsSectionSecurity": "Security",
+  "settingsSectionTheme": "Theme",
+  "settingsSectionPersonalization": "Personalization",
+  "settingsSectionWidget": "Widget",
+  "settingsSectionAbout": "About",
+  "settingsHintQuestionPet": "What is the name of your first pet?",
+  "settingsHintQuestionTeacher": "What is the name of your favorite teacher?",
+  "settingsHintQuestionBirthCity": "What city were you born in?",
+  "settingsHintQuestionFavoriteFood": "What is your favorite food?",
+  "settingsHintQuestionMotherMaidenName": "What is your mother's maiden name?",
+  "settingsHintQuestionFirstSchool": "What was the first school you attended?",
+  "settingsHintQuestionFavoriteColor": "What is your favorite color?",
+  "settingsSecurityQuestionDialogTitle": "Security Question",
+  "settingsSecurityQuestionDialogDesc": "If you forget your password, you can recover it by answering this question correctly.",
+  "settingsSecurityQuestionDropdownHint": "Choose a security question",
+  "settingsSecurityQuestionAnswerHint": "Your answer",
+  "settingsSecurityQuestionCancelButton": "Cancel",
+  "settingsSecurityQuestionEmptyWarning": "Question and answer cannot be empty!",
+  "settingsSecurityQuestionSaveButton": "Save",
+  "settingsCreatePasswordTitle": "Create Password",
+  "settingsPasswordRequiredTitle": "Password Required",
+  "settingsPasswordEnterHint": "Enter password",
+  "settingsForgotPasswordButton": "Forgot my password",
+  "settingsNewPasswordHint": "New password",
+  "settingsConfirmPasswordHint": "Re-enter password",
+  "settingsSecurityQuestionOptionalDesc": "Set a security question in case you forget your password (optional).",
+  "settingsPasswordDialogCancelButton": "Cancel",
+  "settingsPasswordMismatchWarning": "Passwords do not match!",
+  "settingsWrongPasswordWarning": "Wrong password!",
+  "settingsPasswordSaveButton": "Save",
+  "settingsPasswordRemoveButton": "Remove",
+  "settingsNotePasswordTitle": "Note Password",
+  "settingsPasswordSetSubtitle": "Password set ✓",
+  "settingsPasswordNotSetSubtitle": "Password not set",
+  "settingsSecurityQuestionTileTitle": "Security Question",
+  "settingsSecurityQuestionSetSubtitle": "Set ✓ — used if you forget your password",
+  "settingsSecurityQuestionNotSetSubtitle": "Not set — you won't be able to recover your password if lost",
+  "settingsThemeDialogTitle": "Select Theme",
+  "settingsThemeSystemDefault": "System Default",
+  "settingsThemeLightOption": "Light Theme",
+  "settingsThemeDarkOption": "Dark Theme",
+  "settingsAccentColorDialogTitle": "Choose Accent Color",
+  "settingsThemeChangeTileTitle": "Change Theme",
+  "settingsThemeLightLabel": "Light",
+  "settingsThemeDarkLabel": "Dark",
+  "settingsThemeSystemLabel": "System",
+  "settingsLanguageTileTitle": "Language",
+  "settingsLanguageDialogTitle": "Select Language",
+  "settingsLanguageSystemOption": "System",
+  "settingsAccentColorTileTitle": "Accent Color",
+  "settingsAccentColorTileSubtitle": "Color used in the app bar, buttons and switches",
+  "settingsColorfulNotesTitle": "Varied Note Colors",
+  "settingsColorfulNotesSubtitle": "Each note card gets a different color tone.",
+  "settingsTextColorSheetTitle": "Text Color",
+  "settingsTextColorSheetDesc": "Sets the color of the note content text.",
+  "settingsTextColorOkButton": "OK",
+  "settingsTextColorTileTitle": "Text Color",
+  "settingsTextColorTileSubtitle": "Color for note content text.",
+  "settingsWidgetFontSizeLabel": "Widget Font Size",
+  "settingsWidgetFontSizeSample": "Sample heading - {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "Cancel",
+  "settingsWidgetFontSizeApplyButton": "Apply",
+  "settingsWidgetOpacityLabel": "Background Transparency",
+  "settingsWidgetOpacityValue": "{percent}% transparency",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "Cancel",
+  "settingsWidgetOpacityApplyButton": "Apply",
+  "settingsWidgetDarkModeTitle": "Dark Widget",
+  "settingsWidgetDarkModeDesc": "Dark color scheme for the widget.",
+  "settingsAboutVersionTitle": "App Version",
+  "settingsFontFamilyTileTitle": "Font",
+  "settingsFontFamilyDefaultLabel": "Default",
+  "settingsGlobalFontSizeTileTitle": "Font Size",
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt — applied to all notes.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "Sample text - {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "Apply to existing notes",
+  "settingsGlobalFontSizeApplyToAllNote": "If a note has an individual font size set, this setting will not affect it.",
+  "settingsGlobalFontSizeCancelButton": "Cancel",
+  "settingsGlobalFontSizeApplyButton": "Apply",
+  "settingsPreviewLinesTileTitle": "Note Preview Lines",
+  "settingsPreviewLinesTileSubtitle": "Show up to {lines} lines. If the note is shorter, the actual number of lines is shown.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "Current: {lines} lines",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "Sets the maximum number of lines to preview. If the note has fewer lines, the actual number of lines is shown.",
+  "settingsPreviewLinesCancelButton": "Cancel",
+  "settingsPreviewLinesApplyButton": "Apply",
+  "backupCancelButton": "Cancel",
+  "backupConnectButton": "Connect",
+  "backupDisconnectButton": "Disconnect",
+  "backupContinueButton": "Continue",
+  "backupCloseButton": "Close",
+  "backupShareButton": "Share",
+  "backupRestoreButton": "Restore",
+  "backupConfigureButton": "Configure",
+  "backupUnknownDateLabel": "Unknown",
+  "backupProcessingDefaultLabel": "Processing...",
+  "backupPermissionRequiredTitle": "Storage Permission Required",
+  "backupPermissionRequiredBodyPermanent": "This Android version requires storage permission for backup/restore. Since permission was permanently denied, please enable it manually from the app settings.",
+  "backupPermissionRequiredBodyNormal": "This Android version requires storage permission for backup/restore. Please grant permission to continue.",
+  "backupGoToSettingsButton": "Go to Settings",
+  "backupRetryButton": "Retry",
+  "backupDriveConnectingLabel": "Connecting to Google account...",
+  "backupDriveConnectedWithEmailMessage": "Connected to Google Drive account: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Connected to Google Drive account.",
+  "backupDriveConnectFailedMessage": "Could not connect to Google account, or the operation was cancelled.",
+  "backupDriveDisconnectTitle": "Disconnect Google Drive",
+  "backupDriveDisconnectBody": "If you disconnect, manual or automatic backups to Drive won't be possible. Backups already stored on Drive won't be deleted — only access from this device will be removed.",
+  "backupDriveDisconnectedMessage": "Google Drive connection removed.",
+  "backupDriveRequiredTitle": "Google Account Required",
+  "backupDriveRequiredBody": "This action requires you to connect your Google account. Would you like to connect now?",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: connected ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: connected",
+  "backupDriveStatusDisconnected": "Google Drive: not connected",
+  "backupDriveAuthenticatingLabel": "Verifying Google account...",
+  "backupDriveNotSignedInMessage": "You are not connected to Google Drive. Please sign in with your Google account first.",
+  "backupDriveUploadingLabel": "Uploading backup to Drive...",
+  "backupDriveUploadTimeoutMessage": "Upload to Google Drive did not complete within 120 seconds (no response from server). Please check your connection and try again.",
+  "backupDriveOperationCompletedLabel": "Completed",
+  "backupToDriveActionLabel": "backup to Drive",
+  "backupToDeviceActionLabel": "backup",
+  "backupCreatingLabel": "Creating backup...",
+  "backupCreateFailedMessage": "Backup could not be created: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Upload to Google Drive failed: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "Backup successfully uploaded to Google Drive.",
+  "backupCreatedMessage": "Backup created: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "Backup Ready",
+  "backupOfferShareBody": "Your backup file has been saved to your device. Would you like to share it now (e.g. cloud storage, email, another device)?",
+  "backupShareFileText": "layout backup file",
+  "backupShareFailedMessage": "Sharing could not be started: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "Large Backup",
+  "backupLargeOperationBody": "The data to be processed is approximately {sizeText}. A {actionLabel} of this size may take a while depending on your device. Just don't leave the app while it's in progress — would you like to continue?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "restore",
+  "backupDriveListingLabel": "Listing Drive backups...",
+  "backupDriveListFailedMessage": "Backups could not be listed: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "There are no backups on Google Drive yet.",
+  "backupDrivePickTitle": "Choose a Backup from Drive",
+  "backupDriveDownloadingLabel": "Downloading backup from Drive...",
+  "backupDriveDownloadingWithSizeLabel": "Downloading backup from Drive... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "Saving file to device...",
+  "backupDriveUnknownBackupFileName": "unknown_backup.zip",
+  "backupDriveStorageFullMessage": "Your Google Drive storage is full. Please free up space on Drive and try again.",
+  "backupDriveNetworkErrorMessage": "Could not establish an internet connection. Please check your connection and try again.",
+  "backupDriveBackupNotFoundMessage": "The specified backup file could not be found on Drive. It may have been deleted.",
+  "backupDriveUnknownErrorMessage": "An unexpected error occurred during the Google Drive operation: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "Download failed: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "File could not be selected: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "The selected file could not be accessed.",
+  "backupCheckingLabel": "Checking backup...",
+  "backupReadFailedMessage": "Backup file could not be read: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Restore Backup",
+  "backupPreviewContentsHeader": "Contents of the selected backup:",
+  "backupPreviewNoteCountLabel": "Note count",
+  "backupPreviewTrashCountLabel": "Notes in trash",
+  "backupPreviewCategoryCountLabel": "Category count",
+  "backupPreviewAttachmentLabel": "Attachments",
+  "backupPreviewAttachmentNoneValue": "None",
+  "backupPreviewAttachmentCountValue": "{count} files ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "Created on",
+  "backupEmptyPreviewTitle": "This backup looks empty",
+  "backupEmptyPreviewBody": "No notes, categories, or attachments were found in the selected file. If you continue, your current data will still be deleted and replaced with this empty backup.",
+  "backupMissingAttachmentsTitle": "{count} attachments not found in the backup",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "Notes with these files will be restored, but without the attachments (they may have been missing or corrupted when the backup was taken): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} and {remaining} more",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "This will REPLACE all your current notes, trash, categories, settings, and attachments with the data in the backup above. Your current data will be permanently lost and this action cannot be undone.",
+  "backupRestoringLabel": "Restoring backup...",
+  "backupRestoreSuccessWithMissingMessage": "Backup restored. However, {count} attachments were not found in the backup and could not be restored. Restarting the app is recommended for the changes to fully take effect.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "Backup restored successfully. Restarting the app is recommended for the changes to fully take effect.",
+  "backupRestoreFailedMessage": "An error occurred while restoring: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "Backup & Restore",
+  "backupBlockedExitWarningMessage": "An operation is in progress, please wait for it to finish.",
+  "backupBusyBackTooltip": "Operation in progress",
+  "backupIntroText": "You can back up your notes, categories, settings, and attachments as a single .zip file, or restore a backup you took earlier.",
+  "backupDriveCardTitle": "Back Up to Google Drive",
+  "backupDriveCardSubtitle": "Create a new backup and upload it directly to the private area of your Google Drive.",
+  "backupDriveCardButtonLabel": "Back Up to Drive",
+  "backupDeviceCardTitle": "Back Up to Device",
+  "backupDeviceCardSubtitle": "Save all your data as a single .zip file to your device and share it if you'd like.",
+  "backupDeviceCardButtonLabel": "Back Up to Device",
+  "backupHistoryCardTitle": "Backup History",
+  "backupHistoryCardSubtitle": "View all backups stored on your device with their date and size; you can share, restore, or delete them directly from here.",
+  "backupHistoryTabDevice": "Device",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "Delete Backup",
+  "backupHistoryDeleteDialogBody": "Are you sure you want to permanently delete the backup file \"{fileName}\"? This action cannot be undone.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "Backup deleted.",
+  "backupHistoryDriveDeleteDialogTitle": "Delete Drive Backup",
+  "backupHistoryDriveDeleteDialogBody": "Are you sure you want to permanently delete the backup \"{fileName}\" from Google Drive? This action cannot be undone and the file will not be moved to trash.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Drive backup deleted.",
+  "backupHistoryDriveDeleteFailedMessage": "Could not delete: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "No backups saved on this device yet.",
+  "backupHistoryDeviceEmptySubtitle": "Use \"Back Up to Device\" to create your first backup.",
+  "backupHistoryDriveEmptySubtitle": "Use \"Back Up to Google Drive\" to create your first cloud backup.",
+  "backupHistoryDriveSignInPrompt": "Connect your Google account to see your Drive backups.",
+  "backupHistoryConnectGoogleButton": "Connect with Google",
+  "backupHistoryDriveConnectedFallback": "Connected",
+  "backupHistoryUnknownErrorFallback": "An unknown error occurred.",
+  "backupHistoryDownloadStartingLabel": "Starting...",
+  "backupAutoBackupEnabledLabel": "Automatic Backup: on",
+  "backupAutoBackupDisabledLabel": "Automatic Backup: off",
+  "backupOverlayWarningMessage": "Please wait, don't leave the app until the operation completes.",
+  "pdfExportUntitledNoteLabel": "Untitled Note",
+  "pdfExportDefaultAttachmentName": "Attachment",
+  "pdfExportDefaultFileName": "note",
+  "screenshotExportBoundaryNotFoundMessage": "Screenshot could not be captured (boundary not found)",
+  "screenshotExportByteDataNullMessage": "Screenshot data could not be generated",
+  "screenshotExportPngDecodeFailedMessage": "Image could not be processed (PNG decode failed)",
+  "screenshotCalcTableTotalLabel": "Total",
+  "gundemMenuRemoveFromAgenda": "Remove from agenda",
+  "gundemMenuDeleteNote": "Delete note",
+  "gundemSectionOverdue": "Overdue",
+  "gundemSectionToday": "Today",
+  "gundemSectionTomorrow": "Tomorrow",
+  "gundemSectionNextWeek": "Next Week",
+  "gundemSectionFurther": "Further Ahead",
+  "gundemWeekdayMonday": "Monday",
+  "gundemWeekdayTuesday": "Tuesday",
+  "gundemWeekdayWednesday": "Wednesday",
+  "gundemWeekdayThursday": "Thursday",
+  "gundemWeekdayFriday": "Friday",
+  "gundemWeekdaySaturday": "Saturday",
+  "gundemWeekdaySunday": "Sunday",
+  "gundemAppBarTitle": "Agenda",
+  "gundemCalendarTooltip": "Calendar",
+  "gundemEmptyTitle": "Nothing on your agenda",
+  "gundemEmptySubtitle": "Notes with a reminder or an assigned date will appear here.",
+  "gundemUntitledNote": "Untitled note",
+  "gundemRepeatHourly": "Hourly",
+  "gundemRepeatDaily": "Daily",
+  "gundemRepeatWeekly": "Weekly",
+  "gundemRepeatMonthly": "Monthly",
+  "gundemRepeatYearly": "Yearly",
+  "gundemPreviewCalcTableLabel": "[Calc Table]",
+  "gundemPreviewDrawingLabel": "[Drawing]",
+  "gundemPreviewImageLabel": "[Image]",
+  "gundemMonthShortJan": "Jan",
+  "gundemMonthShortFeb": "Feb",
+  "gundemMonthShortMar": "Mar",
+  "gundemMonthShortApr": "Apr",
+  "gundemMonthShortMay": "May",
+  "gundemMonthShortJun": "Jun",
+  "gundemMonthShortJul": "Jul",
+  "gundemMonthShortAug": "Aug",
+  "gundemMonthShortSep": "Sep",
+  "gundemMonthShortOct": "Oct",
+  "gundemMonthShortNov": "Nov",
+  "gundemMonthShortDec": "Dec",
+  "calendarAppBarTitle": "Calendar",
+  "calendarTodayButton": "Today",
+  "calendarLegendNoteLabel": "Note",
+  "calendarLegendReminderLabel": "Reminder",
+  "calendarTodayBadge": "Today",
+  "calendarEmptyDayMessage": "No notes or reminders for this day.",
+  "calendarReminderHourlyLabel": "Hourly",
+  "calendarMonthJan": "January",
+  "calendarMonthFeb": "February",
+  "calendarMonthMar": "March",
+  "calendarMonthApr": "April",
+  "calendarMonthMay": "May",
+  "calendarMonthJun": "June",
+  "calendarMonthJul": "July",
+  "calendarMonthAug": "August",
+  "calendarMonthSep": "September",
+  "calendarMonthOct": "October",
+  "calendarMonthNov": "November",
+  "calendarMonthDec": "December",
+  "calendarWeekdayShortMon": "Mon",
+  "calendarWeekdayShortTue": "Tue",
+  "calendarWeekdayShortWed": "Wed",
+  "calendarWeekdayShortThu": "Thu",
+  "calendarWeekdayShortFri": "Fri",
+  "calendarWeekdayShortSat": "Sat",
+  "calendarWeekdayShortSun": "Sun",
+  "calendarWeekdayFullMonday": "Monday",
+  "calendarWeekdayFullTuesday": "Tuesday",
+  "calendarWeekdayFullWednesday": "Wednesday",
+  "calendarWeekdayFullThursday": "Thursday",
+  "calendarWeekdayFullFriday": "Friday",
+  "calendarWeekdayFullSaturday": "Saturday",
+  "calendarWeekdayFullSunday": "Sunday",
+  "wrongPasswordDialogTitle": "Wrong Password",
+  "wrongPasswordDialogMessage": "The password you entered is incorrect.",
+  "commonOkButton": "OK",
+  "unlockCategoryAction": "Unlock",
+  "lockCategoryAction": "Lock",
+  "categoryUnlockedMessage": "Unlocked",
+  "categoryLockedMessage": "Folder locked",
+  "deleteFolderMenuItemLabel": "Delete Folder",
+  "deleteFolderDialogTitle": "Delete Folder",
+  "deleteFolderDialogMessageWithSubfolders": "Are you sure you want to delete the folder \"{category}\" and all its subfolders? Notes in these folders will become uncategorized.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "Are you sure you want to delete the folder \"{category}\"? Notes in this folder will become uncategorized.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "Cancel",
+  "deleteFolderDialogConfirmButton": "Delete",
+  "editCategoryNameColorMenuItemLabel": "Edit Name / Color",
+  "addSubfolderMenuItemLabel": "Create Subfolder",
+  "expandSubfoldersMenuItemLabel": "Expand Subfolders",
+  "collapseSubfoldersMenuItemLabel": "Collapse Subfolders",
+  "saveErrorInfoMessage": "Save error: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "Welcome to DNote! 🚀",
+  "welcomeNoteContent": "New features added!",
+  "noteListDateGroupToday": "Today",
+  "noteListDateGroupYesterday": "Yesterday",
+  "noteListDateGroupLast7Days": "Last 7 Days",
+  "noteListDateGroupLast30Days": "Last 30 Days",
+  "reminderRepeatNoneLabel": "No repeat",
+  "voiceRecorderPreparingLabel": "Preparing…",
+  "voiceRecorderCancelButton": "Cancel",
+  "voiceRecorderStopAddButton": "Stop and Add",
+  "speechToTextMicPermissionDeniedMessage": "Microphone permission was not granted.",
+  "speechToTextUnavailableMessage": "Speech recognition is not available on this device.",
+  "speechToTextPreparingLabel": "Preparing…",
+  "speechToTextListeningLabel": "Listening…",
+  "speechToTextStartSpeakingPlaceholder": "Start speaking…",
+  "speechToTextCancelButton": "Cancel",
+  "speechToTextStopAddButton": "Stop and Add",
+  "textToSpeechNoContentMessage": "There's no content to read.",
+  "textToSpeechReadErrorMessage": "An error occurred while reading.",
+  "textToSpeechUnavailableMessage": "Text-to-speech is not available on this device.",
+  "textToSpeechPreparingLabel": "Preparing…",
+  "textToSpeechPausedLabel": "Paused",
+  "textToSpeechFinishedLabel": "Reading completed",
+  "textToSpeechReadingLabel": "Reading…",
+  "textToSpeechCloseErrorButton": "Close",
+  "textToSpeechReplayButton": "Read Again",
+  "textToSpeechCloseFinishedButton": "Close",
+  "textToSpeechPauseButton": "Pause",
+  "textToSpeechResumeButton": "Resume",
+  "textToSpeechStopButton": "Stop",
+  "textToSpeechSpeedSlow": "Slow",
+  "textToSpeechSpeedNormal": "Normal",
+  "textToSpeechSpeedFast": "Fast",
+  "calendarPickerCancelButton": "Cancel",
+  "calendarPickerConfirmButton": "Select",
+  "calendarPickerClearButton": "Clear",
+  "reminderPickerDialogTitle": "Add reminder",
+  "reminderPickerDateTodayOption": "Today",
+  "reminderPickerDateTomorrowOption": "Tomorrow",
+  "reminderPickerDatePickOption": "Pick date",
+  "reminderRepeatHourlyLabel": "Every hour",
+  "reminderRepeatDailyLabel": "Every day",
+  "reminderRepeatWeeklyLabel": "Every week",
+  "reminderRepeatMonthlyLabel": "Every month",
+  "reminderRepeatYearlyLabel": "Every year",
+  "reminderPickerCalendarHelpText": "Select reminder date",
+  "reminderPickerCancelButton": "CANCEL",
+  "reminderPickerSaveButton": "SAVE",
+  "reminderPickerPastTimeErrorMessage": "A past time cannot be selected",
+  "calcTableTotalLabel": "Total: {amount}",
+  "backupCreatePreparingDataLabel": "Preparing data...",
+  "backupCreatePackagingNotesLabel": "Packaging notes and categories...",
+  "backupCreateReadingAttachmentsLabel": "Reading attachments...",
+  "backupCreateReadingAttachmentsProgressLabel": "Reading attachments... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "Compressing zip file...",
+  "backupCreateSavingFileLabel": "Saving file...",
+  "backupRestoreValidatingLabel": "Validating backup...",
+  "backupRestoreValidatedPreparingDataLabel": "Backup validated, preparing data...",
+  "backupRestoreWritingNotesLabel": "Writing notes...",
+  "backupRestoreWritingTrashLabel": "Writing trash...",
+  "backupRestoreTrashWrittenLabel": "Trash written",
+  "backupRestoreWritingCategoriesLabel": "Writing categories...",
+  "backupRestoreCategoriesWrittenLabel": "Categories written",
+  "backupRestoreWritingSettingsLabel": "Writing settings...",
+  "backupRestoreSettingsWrittenLabel": "Settings written",
+  "backupRestoreCleaningOldAttachmentsLabel": "Cleaning up old attachments...",
+  "backupRestoreNoAttachmentsFinishingLabel": "No attachments found, finishing...",
+  "backupRestoreAttachmentsProgressLabel": "Restoring attachments... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "Completed",
+  "backupValidationCorruptedFileMessage": "The file is corrupted or is not a valid backup file.",
+  "backupValidationMissingDataMessage": "No data found inside the backup file (backup_data.json is missing).",
+  "backupValidationInvalidJsonMessage": "Backup data could not be read (corrupted JSON).",
+  "backupValidationNotDnoteBackupMessage": "This file is not a backup from the dnote app.",
+  "backupValidationVersionUnreadableMessage": "The backup file's version information could not be read.",
+  "backupValidationIncompatibleVersionMessage": "This backup is in a newer format that the current app version doesn't support. Please update the app.",
+  "backupValidationInvalidVersionMessage": "The backup file's version information is invalid.",
+  "backupValidationMissingNotesFieldMessage": "Backup data is not in the expected format (notes field is missing).",
+  "backupValidationMissingTrashFieldMessage": "Backup data is not in the expected format (trash field is missing).",
+  "backupValidationInvalidCategoriesFieldMessage": "Backup data is not in the expected format (category list is invalid).",
+  "backupValidationInvalidSettingsFieldMessage": "Backup data is not in the expected format (settings field is invalid).",
+  "backupValidationInvalidNoteRecordMessage": "Backup data is not in the expected format (a note record is invalid).",
+  "backupValidationMissingNoteIdMessage": "Backup data is not in the expected format (a note record without an ID was found).",
+  "backupValidationFileNotFoundMessage": "Backup file not found.",
+  "backupErrorInsufficientStorageMessage": "Not enough free storage on the device. Please free up space and try again.",
+  "backupErrorPermissionDeniedMessage": "File access permission was denied. Please check the app's permissions and try again.",
+  "backupErrorFileOperationMessage": "An error occurred during the file operation: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "An unexpected error occurred: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "Could not create the zip archive (ZipEncoder returned null).",
+  "calcTableMenuItemLabel": "Table",
+  "tagsMenuItemLabel": "Tags",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "Add item...",
+  "toolbarHighlightTooltip": "Highlight",
+  "toolbarListTooltip": "List",
+  "toolbarHideKeyboardTooltip": "Hide Keyboard",
+  "autoBackupLocalSuccessMessage": "Local backup successful.",
+  "autoBackupLocalFailedMessage": "Local backup failed: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Drive backup skipped: Google account is not connected or the session has expired. Please open the app and reconnect.",
+  "autoBackupDriveSuccessMessage": "Drive backup successful.",
+  "autoBackupDriveFailedMessage": "Drive backup failed: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "No notes yet",
+  "noteWidgetPreviewTotalLabel": "Total: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ Drawing",
+  "autoBackupSettingsAppBarTitle": "Auto Backup Settings",
+  "autoBackupSettingsMainSwitchTitle": "Enable Automatic Backup",
+  "autoBackupSettingsMainSwitchSubtitle": "Your notes are securely backed up periodically in the background.",
+  "autoBackupSettingsTargetTitle": "Backup Target",
+  "autoBackupSettingsTargetSubtitle": "Choose where backups are saved.",
+  "autoBackupSettingsTargetLocalOption": "Local",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "Both",
+  "autoBackupSettingsDriveNotConnectedNote": "Connect your account first to use Google Drive options.",
+  "autoBackupSettingsConnectButton": "Connect",
+  "autoBackupSettingsFrequencyTitle": "Backup Frequency",
+  "autoBackupSettingsFrequencySubtitle": "A backup is taken every {hours} hours.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 Hours",
+  "autoBackupSettingsFrequency12h": "12 Hours",
+  "autoBackupSettingsFrequency24h": "24 Hours (Daily)",
+  "autoBackupSettingsFrequency48h": "48 Hours (2 Days)",
+  "autoBackupSettingsFrequency168h": "168 Hours (Weekly)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "Use Wi-Fi Only",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "Cloud upload only happens over Wi-Fi to protect your mobile data.",
+  "autoBackupSettingsStatusCardTitle": "System Status",
+  "autoBackupSettingsNeverRunMessage": "Automatic backup hasn't run yet.",
+  "autoBackupSettingsLastRunInfo": "Last Run: {date} {time} ({status})\nMessage: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "Successful",
+  "autoBackupSettingsStatusFailedLabel": "Failed",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Could not connect to Google account.",
+  "autoBackupSettingsSavedSnackbar": "Automatic backup settings updated.",
+  "selectionModeDeletedMessage": "{count} notes deleted",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "Archived",
+  "selectionModeClassifySheetTitle": "Choose category for {count} notes",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "Add Category",
+  "selectionModeRemoveCategoryOption": "Remove Category",
+  "calcTableItemHint": "Item...",
+  "calcTableTotalRowLabel": "Total",
+  "textSelectionMenuShareButton": "Share",
+  "textSelectionMenuTranslateButton": "Translate",
+  "textSelectionMenuShareFailedSnackbar": "Sharing could not be started.",
+  "textSelectionMenuTranslateFailedSnackbar": "Translation could not be opened.",
+  "lastBackupInfoTodayFormat": "Today {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{month}/{day}/{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "Last backup: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "No backup has been taken yet."
+}

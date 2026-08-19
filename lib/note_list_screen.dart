@@ -206,7 +206,9 @@ class _VoiceRecorderSheetState extends State<_VoiceRecorderSheet> {
               ),
               const SizedBox(height: 16),
               Text(
-                _starting ? 'Hazırlanıyor…' : _formatElapsed(_elapsed),
+                _starting
+                    ? AppLocalizations.of(context)!.voiceRecorderPreparingLabel
+                    : _formatElapsed(_elapsed),
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -220,9 +222,9 @@ class _VoiceRecorderSheetState extends State<_VoiceRecorderSheet> {
                   TextButton.icon(
                     onPressed: _starting ? null : () => _stop(save: false),
                     icon: const Icon(Icons.close, color: Colors.grey),
-                    label: const Text(
-                      'İptal',
-                      style: TextStyle(color: Colors.grey),
+                    label: Text(
+                      AppLocalizations.of(context)!.voiceRecorderCancelButton,
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -233,7 +235,9 @@ class _VoiceRecorderSheetState extends State<_VoiceRecorderSheet> {
                       foregroundColor: Colors.black,
                     ),
                     icon: const Icon(Icons.stop),
-                    label: const Text('Durdur ve Ekle'),
+                    label: Text(
+                      AppLocalizations.of(context)!.voiceRecorderStopAddButton,
+                    ),
                   ),
                 ],
               ),
@@ -287,7 +291,8 @@ class _SpeechToTextSheetState extends State<_SpeechToTextSheet> {
     if (!micStatus.isGranted) {
       setState(() {
         _starting = false;
-        _errorMessage = 'Mikrofon izni verilmedi.';
+        _errorMessage =
+            AppLocalizations.of(context)!.speechToTextMicPermissionDeniedMessage;
       });
       return;
     }
@@ -301,7 +306,7 @@ class _SpeechToTextSheetState extends State<_SpeechToTextSheet> {
     if (!available) {
       setState(() {
         _starting = false;
-        _errorMessage = 'Bu cihazda ses tanıma özelliği kullanılamıyor.';
+        _errorMessage = AppLocalizations.of(context)!.speechToTextUnavailableMessage;
       });
       return;
     }
@@ -340,7 +345,9 @@ class _SpeechToTextSheetState extends State<_SpeechToTextSheet> {
           }
         });
       },
-      localeId: 'tr_TR',
+      localeId: Localizations.localeOf(context).languageCode == 'tr'
+          ? 'tr_TR'
+          : 'en_US',
       listenFor: const Duration(minutes: 5),
       pauseFor: const Duration(seconds: 10),
       listenOptions: stt.SpeechListenOptions(
@@ -428,7 +435,9 @@ class _SpeechToTextSheetState extends State<_SpeechToTextSheet> {
               const SizedBox(height: 12),
               Text(
                 _errorMessage ??
-                    (_starting ? 'Hazırlanıyor…' : 'Dinleniyor…'),
+                    (_starting
+                        ? AppLocalizations.of(context)!.speechToTextPreparingLabel
+                        : AppLocalizations.of(context)!.speechToTextListeningLabel),
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
@@ -453,7 +462,8 @@ class _SpeechToTextSheetState extends State<_SpeechToTextSheet> {
                     reverse: true,
                     child: Text(
                       displayText.isEmpty
-                          ? 'Konuşmaya başlayın…'
+                          ? AppLocalizations.of(context)!
+                                .speechToTextStartSpeakingPlaceholder
                           : displayText,
                       style: TextStyle(
                         fontSize: 15,
@@ -472,9 +482,9 @@ class _SpeechToTextSheetState extends State<_SpeechToTextSheet> {
                   TextButton.icon(
                     onPressed: () => _stop(save: false),
                     icon: const Icon(Icons.close, color: Colors.grey),
-                    label: const Text(
-                      'İptal',
-                      style: TextStyle(color: Colors.grey),
+                    label: Text(
+                      AppLocalizations.of(context)!.speechToTextCancelButton,
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -487,7 +497,9 @@ class _SpeechToTextSheetState extends State<_SpeechToTextSheet> {
                       foregroundColor: Colors.black,
                     ),
                     icon: const Icon(Icons.check),
-                    label: const Text('Durdur ve Ekle'),
+                    label: Text(
+                      AppLocalizations.of(context)!.speechToTextStopAddButton,
+                    ),
                   ),
                 ],
               ),
@@ -543,7 +555,7 @@ class _TextToSpeechSheetState extends State<_TextToSpeechSheet> {
     if (_fullText.trim().isEmpty) {
       setState(() {
         _state = _TtsPlaybackState.error;
-        _errorMessage = 'Okunacak bir içerik yok.';
+        _errorMessage = AppLocalizations.of(context)!.textToSpeechNoContentMessage;
       });
       return;
     }
@@ -559,17 +571,21 @@ class _TextToSpeechSheetState extends State<_TextToSpeechSheet> {
       if (!mounted) return;
       setState(() {
         _state = _TtsPlaybackState.error;
-        _errorMessage = 'Okuma sırasında bir hata oluştu.';
+        _errorMessage = AppLocalizations.of(context)!.textToSpeechReadErrorMessage;
       });
     });
     try {
-      await _tts.setLanguage('tr-TR');
+      await _tts.setLanguage(
+        Localizations.localeOf(context).languageCode == 'tr'
+            ? 'tr-TR'
+            : 'en-US',
+      );
       await _tts.setSpeechRate(_speechRate);
       await _tts.setPitch(1.0);
       await _tts.setVolume(1.0);
     } catch (_) {
-      // Türkçe dil paketi kurulu değilse cihaz varsayılan dille okumaya
-      // devam eder; bu durumda ayrıca hata gösterilmez.
+      // Seçilen dil paketi cihazda kurulu değilse cihaz varsayılan dille
+      // okumaya devam eder; bu durumda ayrıca hata gösterilmez.
     }
     _play();
   }
@@ -582,14 +598,16 @@ class _TextToSpeechSheetState extends State<_TextToSpeechSheet> {
       if (result != 1 && mounted) {
         setState(() {
           _state = _TtsPlaybackState.error;
-          _errorMessage = 'Bu cihazda sesli okuma özelliği kullanılamıyor.';
+          _errorMessage =
+              AppLocalizations.of(context)!.textToSpeechUnavailableMessage;
         });
       }
     } catch (_) {
       if (!mounted) return;
       setState(() {
         _state = _TtsPlaybackState.error;
-        _errorMessage = 'Bu cihazda sesli okuma özelliği kullanılamıyor.';
+        _errorMessage =
+            AppLocalizations.of(context)!.textToSpeechUnavailableMessage;
       });
     }
   }
@@ -642,7 +660,10 @@ class _TextToSpeechSheetState extends State<_TextToSpeechSheet> {
     if (_state == _TtsPlaybackState.error) {
       return SizedBox(
         width: double.infinity,
-        child: FilledButton(onPressed: _close, child: const Text('Kapat')),
+        child: FilledButton(
+          onPressed: _close,
+          child: Text(AppLocalizations.of(context)!.textToSpeechCloseErrorButton),
+        ),
       );
     }
     if (_state == _TtsPlaybackState.finished) {
@@ -652,7 +673,7 @@ class _TextToSpeechSheetState extends State<_TextToSpeechSheet> {
             child: OutlinedButton.icon(
               onPressed: _play,
               icon: const Icon(Icons.replay),
-              label: const Text('Tekrar Oku'),
+              label: Text(AppLocalizations.of(context)!.textToSpeechReplayButton),
             ),
           ),
           const SizedBox(width: 12),
@@ -660,7 +681,9 @@ class _TextToSpeechSheetState extends State<_TextToSpeechSheet> {
             child: FilledButton.icon(
               onPressed: _close,
               icon: const Icon(Icons.check),
-              label: const Text('Kapat'),
+              label: Text(
+                AppLocalizations.of(context)!.textToSpeechCloseFinishedButton,
+              ),
             ),
           ),
         ],
@@ -676,7 +699,11 @@ class _TextToSpeechSheetState extends State<_TextToSpeechSheet> {
           child: OutlinedButton.icon(
             onPressed: isPlaying ? _pause : _resume,
             icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-            label: Text(isPlaying ? 'Duraklat' : 'Devam Et'),
+            label: Text(
+              isPlaying
+                  ? AppLocalizations.of(context)!.textToSpeechPauseButton
+                  : AppLocalizations.of(context)!.textToSpeechResumeButton,
+            ),
           ),
         ),
         const SizedBox(width: 12),
@@ -684,7 +711,7 @@ class _TextToSpeechSheetState extends State<_TextToSpeechSheet> {
           child: FilledButton.icon(
             onPressed: _close,
             icon: const Icon(Icons.stop),
-            label: const Text('Durdur'),
+            label: Text(AppLocalizations.of(context)!.textToSpeechStopButton),
           ),
         ),
       ],
@@ -744,12 +771,12 @@ class _TextToSpeechSheetState extends State<_TextToSpeechSheet> {
               Text(
                 _errorMessage ??
                     (isPreparing
-                        ? 'Hazırlanıyor…'
+                        ? AppLocalizations.of(context)!.textToSpeechPreparingLabel
                         : isPaused
-                        ? 'Duraklatıldı'
+                        ? AppLocalizations.of(context)!.textToSpeechPausedLabel
                         : _state == _TtsPlaybackState.finished
-                        ? 'Okuma tamamlandı'
-                        : 'Okunuyor…'),
+                        ? AppLocalizations.of(context)!.textToSpeechFinishedLabel
+                        : AppLocalizations.of(context)!.textToSpeechReadingLabel),
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
@@ -761,11 +788,20 @@ class _TextToSpeechSheetState extends State<_TextToSpeechSheet> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _rateChip('Yavaş', 0.35),
+                    _rateChip(
+                      AppLocalizations.of(context)!.textToSpeechSpeedSlow,
+                      0.35,
+                    ),
                     const SizedBox(width: 8),
-                    _rateChip('Normal', 0.5),
+                    _rateChip(
+                      AppLocalizations.of(context)!.textToSpeechSpeedNormal,
+                      0.5,
+                    ),
                     const SizedBox(width: 8),
-                    _rateChip('Hızlı', 0.75),
+                    _rateChip(
+                      AppLocalizations.of(context)!.textToSpeechSpeedFast,
+                      0.75,
+                    ),
                   ],
                 ),
               ],

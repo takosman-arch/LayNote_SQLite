@@ -49,9 +49,11 @@ Future<void> _shareSelectedText(BuildContext context, String text) async {
     await SharePlus.instance.share(ShareParams(text: text));
   } catch (_) {
     if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Paylaşım başlatılamadı.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.textSelectionMenuShareFailedSnackbar),
+        ),
+      );
     }
   }
 }
@@ -64,15 +66,19 @@ Future<void> _openInTranslate(BuildContext context, String text) async {
   try {
     final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!launched && context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Çeviri açılamadı.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.textSelectionMenuTranslateFailedSnackbar),
+        ),
+      );
     }
   } catch (_) {
     if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Çeviri açılamadı.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.textSelectionMenuTranslateFailedSnackbar),
+        ),
+      );
     }
   }
 }
@@ -116,7 +122,7 @@ Widget buildCustomContextMenu(
   ContextMenuButtonItem? shareBtn;
   if (hasSelection) {
     shareBtn = ContextMenuButtonItem(
-      label: 'Paylaş',
+      label: AppLocalizations.of(context)!.textSelectionMenuShareButton,
       onPressed: () {
         editableTextState.hideToolbar();
         _shareSelectedText(context, selectedText);
@@ -128,7 +134,7 @@ Widget buildCustomContextMenu(
   ContextMenuButtonItem? translateBtn;
   if (hasSelection) {
     translateBtn = ContextMenuButtonItem(
-      label: 'Çevir',
+      label: AppLocalizations.of(context)!.textSelectionMenuTranslateButton,
       onPressed: () {
         editableTextState.hideToolbar();
         _openInTranslate(context, selectedText);

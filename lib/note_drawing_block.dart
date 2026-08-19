@@ -1011,15 +1011,15 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
           return Scaffold(
             appBar: AppBar(
               leading: IconButton(
-                tooltip: 'Küçült',
+                tooltip: AppLocalizations.of(routeContext)!.drawingMinimizeTooltip,
                 icon: const Icon(Icons.close_fullscreen),
                 onPressed: () => Navigator.of(routeContext).pop(),
               ),
-              title: const Text('Çizim'),
+              title: Text(AppLocalizations.of(routeContext)!.drawingScreenTitle),
               actions: [
                 IconButton(
                   key: exportButtonKey,
-                  tooltip: 'Dışa Aktar',
+                  tooltip: AppLocalizations.of(routeContext)!.exportMenuItemLabel,
                   icon: Icon(
                     Icons.ios_share,
                     // Koyu temada beyaz, açık temada siyah: her iki temada
@@ -1063,7 +1063,11 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
     final strokes = canvasKey.currentState?.currentStrokesSnapshot ??
         const <Map<String, dynamic>>[];
     if (strokes.isEmpty) {
-      _showExportInfoBar(context, 'Önce bir çizim yapın', icon: Icons.info_outline);
+      _showExportInfoBar(
+        context,
+        AppLocalizations.of(context)!.drawingEmptyExportWarningMessage,
+        icon: Icons.info_outline,
+      );
       return;
     }
 
@@ -1139,11 +1143,15 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
     required BuildContext context,
     required List<Map<String, dynamic>> strokes,
   }) async {
-    _showExportInfoBar(context, 'PDF hazırlanıyor…', icon: Icons.picture_as_pdf);
+    _showExportInfoBar(
+      context,
+      AppLocalizations.of(context)!.pdfPreparingInfoMessage,
+      icon: Icons.picture_as_pdf,
+    );
     try {
       final phoneScreenWidth = MediaQuery.of(context).size.width;
       final file = await PdfExportService.exportNoteToPdf(
-        title: 'Çizim',
+        title: AppLocalizations.of(context)!.drawingScreenTitle,
         noteType: 'text',
         blocks: [
           {'type': 'drawing', 'strokes': strokes},
@@ -1154,7 +1162,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
       );
       final bytes = await file.readAsBytes();
       final savedPath = await FilePicker.platform.saveFile(
-        dialogTitle: 'PDF olarak kaydet',
+        dialogTitle: AppLocalizations.of(context)!.pdfSaveDialogTitle,
         fileName: 'cizim_${DateTime.now().millisecondsSinceEpoch}.pdf',
         type: FileType.custom,
         allowedExtensions: ['pdf'],
@@ -1164,9 +1172,9 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
       if (savedPath != null) {
         _showExportInfoBar(
           context,
-          'PDF kaydedildi',
+          AppLocalizations.of(context)!.pdfSavedInfoMessage,
           icon: Icons.picture_as_pdf,
-          actionLabel: 'Aç',
+          actionLabel: AppLocalizations.of(context)!.exportOpenActionLabel,
           onAction: () => OpenFile.open(file.path),
         );
       }
@@ -1176,7 +1184,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
       if (context.mounted) {
         _showExportInfoBar(
           context,
-          'PDF oluşturulamadı',
+          AppLocalizations.of(context)!.pdfFailedInfoMessage,
           icon: Icons.error_outline,
         );
       }
@@ -1191,11 +1199,15 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
     required BuildContext context,
     required List<Map<String, dynamic>> strokes,
   }) async {
-    _showExportInfoBar(context, 'JPG hazırlanıyor…', icon: Icons.image_outlined);
+    _showExportInfoBar(
+      context,
+      AppLocalizations.of(context)!.jpgPreparingInfoMessage,
+      icon: Icons.image_outlined,
+    );
     try {
       final jpgFile = await NoteScreenshotService.exportNoteAsScreenshotJpg(
         context: context,
-        title: 'Çizim',
+        title: AppLocalizations.of(context)!.drawingScreenTitle,
         noteType: 'text',
         blocks: [
           {'type': 'drawing', 'strokes': strokes},
@@ -1209,7 +1221,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
       );
       final bytes = await jpgFile.readAsBytes();
       final savedPath = await FilePicker.platform.saveFile(
-        dialogTitle: 'JPG olarak kaydet',
+        dialogTitle: AppLocalizations.of(context)!.jpgSaveDialogTitle,
         fileName: p.basename(jpgFile.path),
         type: FileType.custom,
         allowedExtensions: ['jpg'],
@@ -1219,9 +1231,9 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
       if (savedPath != null) {
         _showExportInfoBar(
           context,
-          'JPG kaydedildi',
+          AppLocalizations.of(context)!.jpgSavedInfoMessage,
           icon: Icons.image_outlined,
-          actionLabel: 'Aç',
+          actionLabel: AppLocalizations.of(context)!.exportOpenActionLabel,
           onAction: () => OpenFile.open(jpgFile.path),
         );
       }
@@ -1231,7 +1243,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
       if (context.mounted) {
         _showExportInfoBar(
           context,
-          'JPG oluşturulamadı',
+          AppLocalizations.of(context)!.jpgFailedInfoMessage,
           icon: Icons.error_outline,
         );
       }
@@ -1395,7 +1407,9 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
   // (piksel bazlı); tam modda ise dokunulan stroke'un tamamını siler
   // (eski davranış). Bkz. _eraseAt.
   Widget _eraserModeToggleButton() {
-    final label = _partialEraser ? 'Kısmi' : 'Tam';
+    final label = _partialEraser
+        ? AppLocalizations.of(context)!.drawingEraserPartialModeLabel
+        : AppLocalizations.of(context)!.drawingEraserFullModeLabel;
     final icon = _partialEraser ? Icons.auto_fix_high : Icons.delete_sweep;
     return InkWell(
       onTap: () => setState(() => _partialEraser = !_partialEraser),
@@ -1542,7 +1556,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
                   ),
                   _divider(),
                   IconButton(
-                    tooltip: 'Geri Al',
+                    tooltip: AppLocalizations.of(context)!.editorUndoTooltip,
                     visualDensity: VisualDensity.compact,
                     icon: Icon(
                       Icons.undo,
@@ -1552,7 +1566,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
                     onPressed: _history.canUndo ? _undo : null,
                   ),
                   IconButton(
-                    tooltip: 'İleri Al',
+                    tooltip: AppLocalizations.of(context)!.editorRedoTooltip,
                     visualDensity: VisualDensity.compact,
                     icon: Icon(
                       Icons.redo,
@@ -1562,7 +1576,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
                     onPressed: _history.canRedo ? _redo : null,
                   ),
                   IconButton(
-                    tooltip: 'Temizle',
+                    tooltip: AppLocalizations.of(context)!.drawingClearTooltip,
                     visualDensity: VisualDensity.compact,
                     icon: Icon(
                       Icons.delete_outline,
@@ -1579,7 +1593,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
                   for (final w in kDrawingWidthPresets) _widthDot(w),
                   _divider(),
                   IconButton(
-                    tooltip: 'Uzaklaştır',
+                    tooltip: AppLocalizations.of(context)!.drawingZoomOutTooltip,
                     visualDensity: VisualDensity.compact,
                     icon: const Icon(
                       Icons.zoom_out,
@@ -1601,7 +1615,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
                     ),
                   ),
                   IconButton(
-                    tooltip: 'Yakınlaştır',
+                    tooltip: AppLocalizations.of(context)!.drawingZoomInTooltip,
                     visualDensity: VisualDensity.compact,
                     icon: const Icon(
                       Icons.zoom_in,
@@ -1667,7 +1681,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
                       color: Colors.black.withValues(alpha: 0.45),
                       child: Center(
                         child: IconButton(
-                          tooltip: 'Sil',
+                          tooltip: AppLocalizations.of(context)!.drawingDeleteTooltip,
                           icon: const Icon(Icons.delete, color: Colors.white),
                           onPressed: widget.onDelete,
                         ),
@@ -1687,7 +1701,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Çizmek için dokunun',
+                            AppLocalizations.of(context)!.drawingEmptyPreviewHint,
                             style: TextStyle(
                               color: widget.borderColor,
                               fontSize: 12,

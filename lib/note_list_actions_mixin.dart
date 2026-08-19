@@ -69,9 +69,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     _saveData();
 
     _showInfoBar(
-      'Not silindi',
+      AppLocalizations.of(context)!.noteDeletedInfoMessage,
       icon: Icons.delete_outline,
-      actionLabel: 'Geri Getir',
+      actionLabel: AppLocalizations.of(context)!.noteDeletedUndoActionLabel,
       onAction: () {
         setState(() {
           _notes.add(deletedNote);
@@ -102,10 +102,14 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     final preview = ContentBlocks.plainText(note['content']?.toString());
     ReminderService.instance.schedule(
       noteId: noteId,
-      title: title.isEmpty ? 'Hatırlatıcı' : title,
+      title: title.isEmpty
+          ? AppLocalizations.of(context)!.reminderDefaultTitle
+          : title,
       body: (note['type'] == 'checklist')
-          ? 'Kontrol listeni kontrol etmeyi unutma'
-          : (preview.isEmpty ? 'Notunu kontrol etmeyi unutma' : preview),
+          ? AppLocalizations.of(context)!.reminderChecklistBodyFallback
+          : (preview.isEmpty
+                ? AppLocalizations.of(context)!.reminderTextBodyFallback
+                : preview),
       dateTime: reminder,
       repeat: repeat,
     );
@@ -131,17 +135,27 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       final preview = ContentBlocks.plainText(note['content']?.toString());
       ReminderService.instance.schedule(
         noteId: noteId,
-        title: title.isEmpty ? 'Hatırlatıcı' : title,
+        title: title.isEmpty
+            ? AppLocalizations.of(context)!.reminderDefaultTitle
+            : title,
         body: (note['type'] == 'checklist')
-            ? 'Kontrol listeni kontrol etmeyi unutma'
-            : (preview.isEmpty ? 'Notunu kontrol etmeyi unutma' : preview),
+            ? AppLocalizations.of(context)!.reminderChecklistBodyFallback
+            : (preview.isEmpty
+                  ? AppLocalizations.of(context)!.reminderTextBodyFallback
+                  : preview),
         dateTime: reminder,
         repeat: savedRepeat,
       );
-      _showInfoBar('Hatırlatıcı ayarlandı', icon: Icons.alarm);
+      _showInfoBar(
+        AppLocalizations.of(context)!.reminderSetInfoMessage,
+        icon: Icons.alarm,
+      );
     } else {
       ReminderService.instance.cancel(noteId);
-      _showInfoBar('Hatırlatıcı kaldırıldı', icon: Icons.alarm_off);
+      _showInfoBar(
+        AppLocalizations.of(context)!.reminderRemovedInfoMessage,
+        icon: Icons.alarm_off,
+      );
     }
   }
 
@@ -232,7 +246,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     setState(() => _notes.insert(index + 1, duplicate));
     _saveData();
     _rescheduleNoteReminder(duplicate);
-    _showInfoBar('Kopya oluşturuldu', icon: Icons.copy_all);
+    _showInfoBar(
+      AppLocalizations.of(context)!.noteDuplicatedInfoMessage,
+      icon: Icons.copy_all,
+    );
   }
 
   // ContentBlocks'u çözüp, 'attachments' bloklarındaki id listesini verilen
@@ -289,7 +306,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     }
     await _saveData();
     if (mounted) {
-      _showInfoBar('Metin nota eklendi', icon: Icons.graphic_eq);
+      _showInfoBar(
+        AppLocalizations.of(context)!.speechTextAppendedInfoMessage,
+        icon: Icons.graphic_eq,
+      );
     }
   }
 
@@ -427,7 +447,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     String? fontFamily,
   }) async {
     debugPrint('[PDF] export başladı, attachments: ${attachments.length}');
-    _showInfoBar('PDF hazırlanıyor…', icon: Icons.picture_as_pdf);
+    _showInfoBar(
+      AppLocalizations.of(context)!.pdfPreparingInfoMessage,
+      icon: Icons.picture_as_pdf,
+    );
     try {
       // Not editöründeki satır kırılmalarıyla (ve görünen yazı boyutuyla)
       // PDF'in birebir aynı görünmesi için, PDF servisine telefonun gerçek
@@ -447,11 +470,15 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         fontSize: fontSize,
         fontFamily: fontFamily,
         phoneScreenWidth: phoneScreenWidth,
+        untitledNoteLabel: AppLocalizations.of(context)!.pdfExportUntitledNoteLabel,
+        defaultAttachmentName: AppLocalizations.of(context)!.pdfExportDefaultAttachmentName,
       );
       debugPrint('[PDF] dosya oluştu: ${file.path}');
 
       final bytes = await file.readAsBytes();
-      final safeTitle = title.trim().isEmpty ? 'not' : title.trim();
+      final safeTitle = title.trim().isEmpty
+          ? AppLocalizations.of(context)!.pdfExportDefaultFileName
+          : title.trim();
 
       // bytes: verildiğinde file_picker, Android'de SAF (Storage Access
       // Framework) üzerinden seçilen konuma dosyayı kendisi yazar; bu
@@ -460,7 +487,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       // savedPath yerine, uygulamanın kendi oluşturduğu ve her zaman
       // doğrudan açılabilen geçici dosyayı (file.path) kullanır.
       final savedPath = await FilePicker.platform.saveFile(
-        dialogTitle: 'PDF olarak kaydet',
+        dialogTitle: AppLocalizations.of(context)!.pdfSaveDialogTitle,
         fileName: '$safeTitle.pdf',
         type: FileType.custom,
         allowedExtensions: ['pdf'],
@@ -469,9 +496,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
 
       if (mounted && savedPath != null) {
         _showInfoBar(
-          'PDF kaydedildi',
+          AppLocalizations.of(context)!.pdfSavedInfoMessage,
           icon: Icons.check_circle_outline,
-          actionLabel: 'Aç',
+          actionLabel: AppLocalizations.of(context)!.exportOpenActionLabel,
           onAction: () => OpenFile.open(file.path),
         );
       }
@@ -479,7 +506,13 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       // bu yüzden herhangi bir bildirim gösterilmez.
     } catch (e, st) {
       debugPrint('[PDF] genel hata: $e\n$st');
-      if (mounted) {
+      if (!mounted) return;
+      // Üretimde kullanıcıya ham stack trace göstermek yerine diğer dışa
+      // aktarma akışlarıyla (JPG/TXT) tutarlı, sade bir bildirim gösterilir.
+      // Teknik detaylı diyalog sadece debug build'de (geliştirici için)
+      // görünür kalır — bu yüzden Türkçe sabit metinler kasıtlı olarak
+      // localize edilmedi.
+      if (kDebugMode) {
         showDialog(
           context: context,
           builder: (_) => AlertDialog(
@@ -494,6 +527,11 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               ),
             ],
           ),
+        );
+      } else {
+        _showInfoBar(
+          AppLocalizations.of(context)!.pdfFailedInfoMessage,
+          icon: Icons.error_outline,
         );
       }
     }
@@ -648,7 +686,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     double fontSize = 16.0,
     String? fontFamily,
   }) async {
-    _showInfoBar('JPG hazırlanıyor…', icon: Icons.image_outlined);
+    _showInfoBar(
+      AppLocalizations.of(context)!.jpgPreparingInfoMessage,
+      icon: Icons.image_outlined,
+    );
     try {
       final jpgFile = await NoteScreenshotService.exportNoteAsScreenshotJpg(
         context: context,
@@ -667,7 +708,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
 
       final bytes = await jpgFile.readAsBytes();
       final savedPath = await FilePicker.platform.saveFile(
-        dialogTitle: 'JPG olarak kaydet',
+        dialogTitle: AppLocalizations.of(context)!.jpgSaveDialogTitle,
         fileName: p.basename(jpgFile.path),
         type: FileType.custom,
         allowedExtensions: ['jpg'],
@@ -676,9 +717,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
 
       if (mounted && savedPath != null) {
         _showInfoBar(
-          'JPG kaydedildi',
+          AppLocalizations.of(context)!.jpgSavedInfoMessage,
           icon: Icons.check_circle_outline,
-          actionLabel: 'Aç',
+          actionLabel: AppLocalizations.of(context)!.exportOpenActionLabel,
           onAction: () => OpenFile.open(jpgFile.path),
         );
       }
@@ -686,7 +727,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     } catch (e, st) {
       debugPrint('[JPG] genel hata: $e\n$st');
       if (mounted) {
-        _showInfoBar('JPG oluşturulamadı', icon: Icons.error_outline);
+        _showInfoBar(
+          AppLocalizations.of(context)!.jpgFailedInfoMessage,
+          icon: Icons.error_outline,
+        );
       }
     }
   }
@@ -702,7 +746,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     required List<Map<String, dynamic>> blocks,
     required List<Map<String, dynamic>> checkItems,
   }) async {
-    _showInfoBar('TXT hazırlanıyor…', icon: Icons.description_outlined);
+    _showInfoBar(
+      AppLocalizations.of(context)!.txtPreparingInfoMessage,
+      icon: Icons.description_outlined,
+    );
     try {
       final String body;
       if (noteType == 'checklist') {
@@ -734,7 +781,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
 
       final bytes = await outFile.readAsBytes();
       final savedPath = await FilePicker.platform.saveFile(
-        dialogTitle: 'TXT olarak kaydet',
+        dialogTitle: AppLocalizations.of(context)!.txtSaveDialogTitle,
         fileName: '$safeName.txt',
         type: FileType.custom,
         allowedExtensions: ['txt'],
@@ -743,15 +790,18 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
 
       if (mounted && savedPath != null) {
         _showInfoBar(
-          'TXT kaydedildi',
+          AppLocalizations.of(context)!.txtSavedInfoMessage,
           icon: Icons.check_circle_outline,
-          actionLabel: 'Aç',
+          actionLabel: AppLocalizations.of(context)!.exportOpenActionLabel,
           onAction: () => OpenFile.open(outFile.path),
         );
       }
     } catch (_) {
       if (mounted) {
-        _showInfoBar('TXT oluşturulamadı', icon: Icons.error_outline);
+        _showInfoBar(
+          AppLocalizations.of(context)!.txtFailedInfoMessage,
+          icon: Icons.error_outline,
+        );
       }
     }
   }
@@ -785,7 +835,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Metin Boyutu',
+                  AppLocalizations.of(context)!.textSizeSheetTitle,
                   style: TextStyle(
                     color: dNoteTextColor(context),
                     fontSize: 16,
@@ -826,7 +876,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Örnek metin',
+                  AppLocalizations.of(context)!.textSizeSamplePreview,
                   style: TextStyle(
                     color: dNoteTextColor(context).withValues(alpha: 0.7),
                     fontSize: tempSize,
@@ -838,9 +888,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                     Expanded(
                       child: TextButton(
                         onPressed: () => Navigator.pop(sheetCtx),
-                        child: const Text(
-                          'İptal',
-                          style: TextStyle(color: Colors.grey),
+                        child: Text(
+                          AppLocalizations.of(context)!.textSizeCancelButton,
+                          style: const TextStyle(color: Colors.grey),
                         ),
                       ),
                     ),
@@ -857,9 +907,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                           _saveData();
                           Navigator.pop(sheetCtx);
                         },
-                        child: const Text(
-                          'Uygula',
-                          style: TextStyle(
+                        child: Text(
+                          AppLocalizations.of(context)!.textSizeApplyButton,
+                          style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
@@ -882,15 +932,18 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
   // belirleyebilir. true dönerse parola başarıyla oluşturulup kaydedilmiştir
   // (_notePasswordEnabled otomatik olarak açılır).
   // ── Şifre ipucu soruları (sabit liste) ──────────────────────────────
-  static const List<String> _hintQuestions = [
-    'İlk evcil hayvanınızın adı nedir?',
-    'En sevdiğiniz öğretmeninizin adı nedir?',
-    'Doğduğunuz şehir nedir?',
-    'En sevdiğiniz yemek nedir?',
-    'Annenizin kızlık soyadı nedir?',
-    'İlk okuduğunuz okulun adı nedir?',
-    'En sevdiğiniz renk nedir?',
-  ];
+  List<String> _hintQuestions(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return [
+      l10n.securityQuestionPetName,
+      l10n.securityQuestionFavoriteTeacher,
+      l10n.securityQuestionBirthCity,
+      l10n.securityQuestionFavoriteFood,
+      l10n.securityQuestionMotherMaidenName,
+      l10n.securityQuestionFirstSchool,
+      l10n.securityQuestionFavoriteColor,
+    ];
+  }
 
   Future<bool> _showCreatePasswordDialog() async {
     final passCtrl = TextEditingController();
@@ -906,7 +959,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         builder: (ctx2, setDlg) => AlertDialog(
           backgroundColor: dNoteCardColor(ctx2),
           title: Text(
-            'Şifre Oluştur',
+            AppLocalizations.of(context)!.createPasswordDialogTitle,
             style: TextStyle(color: appAccentColor.value),
           ),
           content: SingleChildScrollView(
@@ -923,7 +976,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 autofocus: true,
                 style: TextStyle(color: dNoteTextColor(ctx2)),
                 decoration: InputDecoration(
-                  hintText: 'Yeni şifre',
+                  hintText: AppLocalizations.of(context)!.createPasswordNewPasswordHint,
                   hintStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
@@ -942,7 +995,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 obscureText: true,
                 style: TextStyle(color: dNoteTextColor(ctx2)),
                 decoration: InputDecoration(
-                  hintText: 'Şifreyi tekrar gir',
+                  hintText: AppLocalizations.of(context)!.createPasswordConfirmHint,
                   hintStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
@@ -954,7 +1007,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               ),
               const SizedBox(height: 14),
               Text(
-                'Şifrenizi unutursanız diye bir güvenlik sorusu belirleyin (zorunlu değildir).',
+                AppLocalizations.of(context)!.createPasswordHintQuestionDescription,
                 style: TextStyle(color: dNoteTextColor(ctx2), fontSize: 13),
               ),
               const SizedBox(height: 8),
@@ -964,7 +1017,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 dropdownColor: dNoteCardColor(ctx2),
                 style: TextStyle(color: dNoteTextColor(ctx2), fontSize: 14),
                 decoration: InputDecoration(
-                  hintText: 'Güvenlik sorusu seçin',
+                  hintText: AppLocalizations.of(context)!.createPasswordHintQuestionHint,
                   hintStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
@@ -973,7 +1026,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                     borderSide: BorderSide(color: appAccentColor.value),
                   ),
                 ),
-                items: _hintQuestions
+                items: _hintQuestions(context)
                     .map(
                       (q) => DropdownMenuItem(
                         value: q,
@@ -992,7 +1045,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 controller: hintAnswerCtrl,
                 style: TextStyle(color: dNoteTextColor(ctx2)),
                 decoration: InputDecoration(
-                  hintText: 'Cevabınız',
+                  hintText: AppLocalizations.of(context)!.createPasswordHintAnswerHint,
                   hintStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
@@ -1011,7 +1064,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 Navigator.pop(ctx);
                 completer.complete(false);
               },
-              child: const Text('İptal', style: TextStyle(color: Colors.grey)),
+              child: Text(
+                AppLocalizations.of(context)!.createPasswordCancelButton,
+                style: const TextStyle(color: Colors.grey),
+              ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: appAccentColor.value),
@@ -1020,8 +1076,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 if (pass.isEmpty) return;
                 if (pass != confirmCtrl.text) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Şifreler eşleşmiyor!'),
+                    SnackBar(
+                      content: Text(
+                        AppLocalizations.of(context)!.passwordMismatchMessage,
+                      ),
                       backgroundColor: Colors.red,
                     ),
                   );
@@ -1037,9 +1095,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 Navigator.pop(ctx);
                 completer.complete(true);
               },
-              child: const Text(
-                'Kaydet',
-                style: TextStyle(color: Colors.black),
+              child: Text(
+                AppLocalizations.of(context)!.createPasswordSaveButton,
+                style: const TextStyle(color: Colors.black),
               ),
             ),
           ],
@@ -1063,7 +1121,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         builder: (ctx2, setDlg) => AlertDialog(
           backgroundColor: dNoteCardColor(ctx2),
           title: Text(
-            'Şifre Gerekiyor',
+            AppLocalizations.of(context)!.passwordRequiredDialogTitle,
             style: TextStyle(color: appAccentColor.value),
           ),
           content: SingleChildScrollView(
@@ -1079,7 +1137,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 obscureText: true,
                 style: TextStyle(color: dNoteTextColor(ctx2)),
                 decoration: InputDecoration(
-                  hintText: 'Şifreyi girin',
+                  hintText: AppLocalizations.of(context)!.passwordRequiredHint,
                   hintStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
@@ -1101,7 +1159,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                       _showForgotPasswordDialog();
                     },
                     child: Text(
-                      'Şifremi unuttum',
+                      AppLocalizations.of(context)!.forgotPasswordButtonLabel,
                       style: TextStyle(color: appAccentColor.value, fontSize: 13),
                     ),
                   ),
@@ -1116,7 +1174,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 Navigator.pop(ctx);
                 completer.complete(false);
               },
-              child: const Text('İptal', style: TextStyle(color: Colors.grey)),
+              child: Text(
+                AppLocalizations.of(context)!.passwordRequiredCancelButton,
+                style: const TextStyle(color: Colors.grey),
+              ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: appAccentColor.value),
@@ -1125,9 +1186,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 Navigator.pop(ctx);
                 completer.complete(ok);
               },
-              child: const Text(
-                'Doğrula',
-                style: TextStyle(color: Colors.black),
+              child: Text(
+                AppLocalizations.of(context)!.passwordRequiredConfirmButton,
+                style: const TextStyle(color: Colors.black),
               ),
             ),
           ],
@@ -1149,7 +1210,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         builder: (ctx2, setDlg) => AlertDialog(
           backgroundColor: dNoteCardColor(ctx2),
           title: Text(
-            'Güvenlik Sorusu',
+            AppLocalizations.of(context)!.securityQuestionDialogTitle,
             style: TextStyle(color: appAccentColor.value),
           ),
           content: SingleChildScrollView(
@@ -1172,7 +1233,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 controller: answerCtrl,
                 style: TextStyle(color: dNoteTextColor(ctx2)),
                 decoration: InputDecoration(
-                  hintText: 'Cevabınız',
+                  hintText: AppLocalizations.of(context)!.securityQuestionAnswerHint,
                   hintStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(ctx2)),
@@ -1190,7 +1251,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('İptal', style: TextStyle(color: Colors.grey)),
+              child: Text(
+                AppLocalizations.of(context)!.securityQuestionCancelButton,
+                style: const TextStyle(color: Colors.grey),
+              ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: appAccentColor.value),
@@ -1202,12 +1266,15 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                   Navigator.pop(ctx);
                   _showRevealedPasswordDialog();
                 } else {
-                  setDlg(() => errorText = 'Cevap yanlış. Tekrar deneyin.');
+                  setDlg(
+                    () => errorText = AppLocalizations.of(context)!
+                        .securityQuestionWrongAnswerMessage,
+                  );
                 }
               },
-              child: const Text(
-                'Onayla',
-                style: TextStyle(color: Colors.black),
+              child: Text(
+                AppLocalizations.of(context)!.securityQuestionConfirmButton,
+                style: const TextStyle(color: Colors.black),
               ),
             ),
           ],
@@ -1222,14 +1289,17 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: Text('Şifreniz', style: TextStyle(color: appAccentColor.value)),
+        title: Text(
+          AppLocalizations.of(context)!.revealedPasswordDialogTitle,
+          style: TextStyle(color: appAccentColor.value),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Not şifreniz:',
-              style: TextStyle(color: Colors.grey, fontSize: 13),
+            Text(
+              AppLocalizations.of(context)!.revealedPasswordLabel,
+              style: const TextStyle(color: Colors.grey, fontSize: 13),
             ),
             const SizedBox(height: 8),
             Container(
@@ -1254,9 +1324,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: appAccentColor.value),
             onPressed: () => Navigator.pop(ctx),
-            child: const Text(
-              'Tamam',
-              style: TextStyle(
+            child: Text(
+              AppLocalizations.of(context)!.revealedPasswordOkButton,
+              style: const TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
@@ -1315,7 +1385,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       _saveData();
     } else {
       _showInfoBar(
-        'Parola yanlış.',
+        AppLocalizations.of(context)!.wrongPasswordInfoMessage,
         icon: Icons.lock_outline,
         backgroundColor: Colors.red,
       );
@@ -1381,8 +1451,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
           backgroundColor: dNoteCardColor(context),
           title: Text(
             isEditing
-                ? 'Klasörü Düzenle'
-                : (isSubfolder ? 'Yeni Alt Klasör' : 'Klasör Ekle'),
+                ? AppLocalizations.of(context)!.editFolderDialogTitle
+                : (isSubfolder
+                      ? AppLocalizations.of(context)!.newSubfolderDialogTitle
+                      : AppLocalizations.of(context)!.addFolderDialogTitle),
             style: TextStyle(color: appAccentColor.value),
           ),
           content: Column(
@@ -1393,7 +1465,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Text(
-                    '"$parentCategory" içinde oluşturulacak',
+                    AppLocalizations.of(context)!.subfolderParentInfoMessage(
+                      parentCategory,
+                    ),
                     style: const TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                 ),
@@ -1405,7 +1479,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 autofocus: true,
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
-                  labelText: isSubfolder ? 'Alt klasör adı' : 'Klasör adı',
+                  labelText: isSubfolder
+                      ? AppLocalizations.of(context)!.subfolderNameFieldLabel
+                      : AppLocalizations.of(context)!.folderNameFieldLabel,
                   labelStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: dNoteBorderColor(context)),
@@ -1417,11 +1493,11 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 style: TextStyle(color: dNoteTextColor(context)),
               ),
               const SizedBox(height: 18),
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Renk',
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                  AppLocalizations.of(context)!.folderColorLabel,
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
               ),
               const SizedBox(height: 8),
@@ -1463,7 +1539,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('İptal', style: TextStyle(color: Colors.grey)),
+              child: Text(
+                AppLocalizations.of(context)!.folderDialogCancelButton,
+                style: const TextStyle(color: Colors.grey),
+              ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: appAccentColor.value),
@@ -1538,7 +1617,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 Navigator.pop(context);
               },
               child: Text(
-                isEditing ? 'Kaydet' : 'Ekle',
+                isEditing
+                    ? AppLocalizations.of(context)!.folderDialogSaveButton
+                    : AppLocalizations.of(context)!.folderDialogAddButton,
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -1635,7 +1716,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               ),
               const SizedBox(height: 14),
               Text(
-                'Klasör Seç',
+                AppLocalizations.of(context)!.selectFolderSheetTitle,
                 style: TextStyle(
                   color: dNoteTextColor(sheetContext),
                   fontSize: 16,
@@ -1650,7 +1731,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                   color: dNoteTextColor(sheetContext),
                 ),
                 title: Text(
-                  'Klasör Ekle',
+                  AppLocalizations.of(context)!.selectFolderAddOptionLabel,
                   style: TextStyle(
                     color: dNoteTextColor(sheetContext),
                     fontWeight: FontWeight.w500,
@@ -1697,9 +1778,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                     Icons.label_off_outlined,
                     color: Colors.red,
                   ),
-                  title: const Text(
-                    'Mevcut Klasörü Kaldır',
-                    style: TextStyle(
+                  title: Text(
+                    AppLocalizations.of(context)!.removeCurrentFolderLabel,
+                    style: const TextStyle(
                       color: Colors.red,
                       fontWeight: FontWeight.w500,
                     ),
@@ -1724,7 +1805,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     final note = _notes[noteIndex];
 
     String formatDetailDate(String? rawDate) {
-      if (rawDate == null || rawDate.isEmpty) return 'Bilinmiyor';
+      if (rawDate == null || rawDate.isEmpty) {
+        return AppLocalizations.of(context)!.noteDetailsUnknownDateLabel;
+      }
       try {
         final dt = DateTime.parse(rawDate);
         final day = dt.day.toString().padLeft(2, '0');
@@ -1757,7 +1840,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             const Icon(Icons.info_outline, color: Colors.lightBlueAccent, size: 22),
             const SizedBox(width: 10),
             Text(
-              'Ayrıntılar',
+              AppLocalizations.of(context)!.noteDetailsDialogTitle,
               style: TextStyle(
                 color: dNoteTextColor(ctx),
                 fontSize: 17,
@@ -1773,29 +1856,29 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               _detailRow(
                 Icons.calendar_today_outlined,
                 appAccentColor.value,
-                'Oluşturulma',
+                AppLocalizations.of(context)!.noteDetailsCreatedLabel,
                 createdStr,
               ),
               const SizedBox(height: 14),
               _detailRow(
                 Icons.edit_calendar_outlined,
                 Colors.greenAccent,
-                'Son Düzenleme',
+                AppLocalizations.of(context)!.noteDetailsModifiedLabel,
                 modifiedStr,
               ),
               const SizedBox(height: 14),
               _detailRow(
                 Icons.abc_outlined,
                 Colors.purpleAccent,
-                'Karakter Sayısı',
-                '$charCount karakter',
+                AppLocalizations.of(context)!.noteDetailsCharCountLabel,
+                AppLocalizations.of(context)!.noteDetailsCharCountValue(charCount),
               ),
               const SizedBox(height: 14),
               _detailRow(
                 Icons.text_fields_outlined,
                 Colors.cyanAccent,
-                'Kelime Sayısı',
-                '$wordCount kelime',
+                AppLocalizations.of(context)!.noteDetailsWordCountLabel,
+                AppLocalizations.of(context)!.noteDetailsWordCountValue(wordCount),
               ),
             ],
           ),
@@ -1807,9 +1890,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               foregroundColor: Colors.black,
             ),
             onPressed: () => Navigator.pop(ctx),
-            child: const Text(
-              'Tamam',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            child: Text(
+              AppLocalizations.of(context)!.noteDetailsOkButton,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -1871,37 +1954,37 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     final actions = [
       {
         'icon': Icons.image_outlined,
-        'label': 'Görsel Ekle',
+        'label': AppLocalizations.of(ctx)!.addAttachmentImageOption,
         'color': Colors.tealAccent,
         'key': 'image',
       },
       {
         'icon': Icons.camera_alt_outlined,
-        'label': 'Kamera',
+        'label': AppLocalizations.of(ctx)!.addAttachmentCameraOption,
         'color': Colors.blueAccent,
         'key': 'camera',
       },
       {
         'icon': Icons.attach_file,
-        'label': 'Dosya Ekle',
+        'label': AppLocalizations.of(ctx)!.addAttachmentFileOption,
         'color': Colors.orange,
         'key': 'file',
       },
       {
         'icon': Icons.mic,
-        'label': 'Ses Kaydı',
+        'label': AppLocalizations.of(ctx)!.addAttachmentVoiceOption,
         'color': Colors.deepPurpleAccent,
         'key': 'record',
       },
       {
         'icon': Icons.videocam_outlined,
-        'label': 'Video Çek',
+        'label': AppLocalizations.of(ctx)!.addAttachmentVideoOption,
         'color': Colors.redAccent,
         'key': 'video',
       },
       {
         'icon': Icons.document_scanner_outlined,
-        'label': 'Belge Tara',
+        'label': AppLocalizations.of(ctx)!.addAttachmentScanOption,
         'color': Colors.green.shade700,
         'key': 'scan',
       },
@@ -1933,9 +2016,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
-                'Ekle',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(ctx)!.addAttachmentSheetTitle,
+                style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                 ),
@@ -2059,14 +2142,16 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       'icon': effectiveReminder != null
           ? Icons.notifications_active
           : Icons.notifications_none,
-      'label': effectiveReminder != null ? 'Hatırlatıcıyı Düzenle' : 'Hatırlatıcı',
+      'label': effectiveReminder != null
+          ? AppLocalizations.of(context)!.noteActionEditReminderLabel
+          : AppLocalizations.of(context)!.noteActionReminderLabel,
       'color': Colors.blue,
       'key': 'reminder',
     };
 
     final speechToTextAction = {
       'icon': Icons.graphic_eq,
-      'label': 'Sesi Yazıya Çevir',
+      'label': AppLocalizations.of(context)!.noteActionSpeechToTextLabel,
       'color': Colors.deepPurpleAccent,
       'key': 'speech_to_text',
     };
@@ -2077,31 +2162,37 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       if (hasValidNote) ...[
       {
         'icon': isArchived ? Icons.unarchive_outlined : Icons.archive_outlined,
-        'label': isArchived ? 'Arşivden Çıkar' : 'Arşiv',
+        'label': isArchived
+            ? AppLocalizations.of(context)!.noteActionUnarchiveLabel
+            : AppLocalizations.of(context)!.noteActionArchiveLabel,
         'color': Colors.teal,
         'key': 'archive',
       },
       {
         'icon': isLocked ? Icons.lock_open : Icons.lock_outline,
-        'label': isLocked ? 'Kilidi Kaldır' : 'Kilitle',
+        'label': isLocked
+            ? AppLocalizations.of(context)!.noteActionUnlockLabel
+            : AppLocalizations.of(context)!.noteActionLockLabel,
         'color': Colors.blueGrey,
         'key': 'lock',
       },
       {
         'icon': isFavorite ? Icons.star : Icons.star_outline,
-        'label': isFavorite ? 'Favoriden Çıkar' : 'Favori',
+        'label': isFavorite
+            ? AppLocalizations.of(context)!.noteActionUnfavoriteLabel
+            : AppLocalizations.of(context)!.noteActionFavoriteLabel,
         'color': appAccentColor.value,
         'key': 'favorite',
       },
       {
         'icon': Icons.folder_outlined,
-        'label': 'Klasör Seç',
+        'label': AppLocalizations.of(context)!.noteActionClassifyLabel,
         'color': Colors.green,
         'key': 'classify',
       },
       {
         'icon': Icons.delete_outline,
-        'label': 'Sil',
+        'label': AppLocalizations.of(context)!.noteActionDeleteLabel,
         'color': Colors.red,
         'key': 'delete',
       },
@@ -2110,8 +2201,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             ? Icons.push_pin
             : Icons.push_pin_outlined,
         'label': isPinnedToNotification
-            ? 'Sabitlemeyi Kaldır'
-            : 'Bildirim Paneline Sabitle',
+            ? AppLocalizations.of(context)!.noteActionUnpinFromNotificationLabel
+            : AppLocalizations.of(context)!.noteActionPinToNotificationLabel,
         'color': Colors.indigo,
         'key': 'pin_notification',
       },
@@ -2119,37 +2210,37 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       if (onInsertText != null) speechToTextAction,
       {
         'icon': Icons.share_outlined,
-        'label': 'Paylaş',
+        'label': AppLocalizations.of(context)!.noteActionShareLabel,
         'color': Colors.blue,
         'key': 'share',
       },
       {
         'icon': Icons.copy_all_outlined,
-        'label': 'Kopya Oluştur',
+        'label': AppLocalizations.of(context)!.noteActionDuplicateLabel,
         'color': Colors.purple,
         'key': 'duplicate',
       },
       {
         'icon': Icons.content_paste,
-        'label': 'İçeriği Kopyala',
+        'label': AppLocalizations.of(context)!.noteActionCopyContentLabel,
         'color': Colors.cyan,
         'key': 'copy_text',
       },
       {
         'icon': Icons.volume_up,
-        'label': 'Yüksek Sesle Oku',
+        'label': AppLocalizations.of(context)!.noteActionTtsLabel,
         'color': Colors.deepPurple,
         'key': 'tts',
       },
       {
         'icon': Icons.text_fields,
-        'label': 'Metin Boyutu',
+        'label': AppLocalizations.of(context)!.noteActionTextSizeLabel,
         'color': Colors.teal,
         'key': 'text_size',
       },
       {
         'icon': Icons.info_outline,
-        'label': 'Ayrıntılar',
+        'label': AppLocalizations.of(context)!.noteActionDetailsLabel,
         'color': Colors.lightBlueAccent,
         'key': 'details',
       },
@@ -2157,14 +2248,14 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       if (onDiscard != null)
         {
           'icon': Icons.close,
-          'label': 'Değişiklikleri Yok Say',
+          'label': AppLocalizations.of(context)!.noteActionDiscardChangesLabel,
           'color': Colors.red,
           'key': 'discard',
         },
       if (showSelectAction && hasValidNote)
         {
           'icon': Icons.check_circle_outline,
-          'label': 'Seç',
+          'label': AppLocalizations.of(context)!.noteActionSelectLabel,
           'color': Colors.orange,
           'key': 'select',
         },
@@ -2196,9 +2287,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
-                'Eylem Seç',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(ctx)!.noteActionsSheetTitle,
+                style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                 ),
@@ -2244,7 +2335,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                                       Icons.edit_calendar,
                                       color: Colors.blue,
                                     ),
-                                    title: const Text('Hatırlatıcıyı değiştir'),
+                                    title: Text(
+                                      AppLocalizations.of(context)!
+                                          .reminderEditOptionLabel,
+                                    ),
                                     onTap: () =>
                                         Navigator.pop(sheetCtx, 'edit'),
                                   ),
@@ -2253,7 +2347,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                                       Icons.notifications_off,
                                       color: Colors.redAccent,
                                     ),
-                                    title: const Text('Hatırlatıcıyı kaldır'),
+                                    title: Text(
+                                      AppLocalizations.of(context)!
+                                          .reminderRemoveOptionLabel,
+                                    ),
                                     onTap: () =>
                                         Navigator.pop(sheetCtx, 'remove'),
                                   ),
@@ -2298,22 +2395,30 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                         final confirmed = await showDialog<bool>(
                           context: context,
                           builder: (dialogCtx) => AlertDialog(
-                            title: const Text('Değişiklikleri Yok Say'),
-                            content: const Text(
-                              'Bu nottaki kaydedilmemiş değişiklikler kaybolacak. Yok saymak istediğinize emin misiniz?',
+                            title: Text(
+                              AppLocalizations.of(context)!
+                                  .discardChangesDialogTitle,
+                            ),
+                            content: Text(
+                              AppLocalizations.of(context)!
+                                  .discardChangesDialogMessage,
                             ),
                             actions: [
                               TextButton(
                                 onPressed: () =>
                                     Navigator.pop(dialogCtx, false),
-                                child: const Text('Vazgeç'),
+                                child: Text(
+                                  AppLocalizations.of(context)!
+                                      .discardChangesCancelButton,
+                                ),
                               ),
                               TextButton(
                                 onPressed: () =>
                                     Navigator.pop(dialogCtx, true),
-                                child: const Text(
-                                  'Yok Say',
-                                  style: TextStyle(color: Colors.red),
+                                child: Text(
+                                  AppLocalizations.of(context)!
+                                      .discardChangesConfirmButton,
+                                  style: const TextStyle(color: Colors.red),
                                 ),
                               ),
                             ],
@@ -2364,7 +2469,13 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                         });
                         _saveData();
                         _showInfoBar(
-                          willArchive ? 'Not arşivlendi' : 'Arşivden çıkarıldı',
+                          willArchive
+                              ? AppLocalizations.of(
+                                  context,
+                                )!.noteArchivedInfoMessage
+                              : AppLocalizations.of(
+                                  context,
+                                )!.noteUnarchivedInfoMessage,
                           icon: willArchive
                               ? Icons.archive_outlined
                               : Icons.unarchive_outlined,
@@ -2413,7 +2524,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                         if (currentlyLocked) {
                           setState(() => _notes[noteIndex]['isLocked'] = false);
                           _saveData();
-                          _showInfoBar('Kilidi kaldırıldı', icon: Icons.lock_open);
+                          _showInfoBar(
+                            AppLocalizations.of(context)!.noteUnlockedInfoMessage,
+                            icon: Icons.lock_open,
+                          );
                         } else {
                           if (!_notePasswordEnabled) {
                             // Parola belirlenmemişse artık alttan kırmızı
@@ -2425,7 +2539,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                           }
                           setState(() => _notes[noteIndex]['isLocked'] = true);
                           _saveData();
-                          _showInfoBar('Not kilitlendi', icon: Icons.lock);
+                          _showInfoBar(
+                            AppLocalizations.of(context)!.noteLockedInfoMessage,
+                            icon: Icons.lock,
+                          );
                         }
                       } else if (key == 'details') {
                         _showNoteDetails(noteIndex);
@@ -2443,7 +2560,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                           await ReminderService.instance
                               .unpinFromNotificationPanel(noteId);
                           _showInfoBar(
-                            'Sabitleme kaldırıldı',
+                            AppLocalizations.of(
+                              context,
+                            )!.notificationUnpinnedInfoMessage,
                             icon: Icons.push_pin_outlined,
                           );
                         } else {
@@ -2454,7 +2573,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                           if (title.isEmpty && content.isEmpty) {
                             if (!context.mounted) return;
                             _showInfoBar(
-                              'Boş not sabitlenemez.',
+                              AppLocalizations.of(
+                                context,
+                              )!.emptyNotePinBlockedInfoMessage,
                               icon: Icons.push_pin_outlined,
                               backgroundColor: Colors.red,
                             );
@@ -2467,11 +2588,16 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                           _saveData();
                           await ReminderService.instance.pinToNotificationPanel(
                             noteId: noteId,
-                            title: title.isEmpty ? 'Not' : title,
+                            title: title.isEmpty
+                                ? AppLocalizations.of(context)!
+                                      .pinnedNotificationDefaultTitle
+                                : title,
                             body: content,
                           );
                           _showInfoBar(
-                            'Bildirim paneline sabitlendi',
+                            AppLocalizations.of(
+                              context,
+                            )!.notificationPinnedInfoMessage,
                             icon: Icons.push_pin,
                           );
                         }
@@ -2529,7 +2655,10 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     final title = (note['title'] ?? '').toString().trim();
     final content = ContentBlocks.plainText(note['content'] as String?);
     if (title.isEmpty && content.isEmpty) {
-      _showInfoBar('Okunacak bir içerik yok', icon: Icons.info_outline);
+      _showInfoBar(
+        AppLocalizations.of(context)!.noContentToReadInfoMessage,
+        icon: Icons.info_outline,
+      );
       return;
     }
     showModalBottomSheet(
@@ -2704,10 +2833,14 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             final preview = ContentBlocks.plainText(newContent);
             ReminderService.instance.schedule(
               noteId: noteId,
-              title: newTitle.isEmpty ? 'Hatırlatıcı' : newTitle,
+              title: newTitle.isEmpty
+                  ? AppLocalizations.of(context)!.reminderDefaultTitle
+                  : newTitle,
               body: noteType == 'checklist'
-                  ? 'Kontrol listeni kontrol etmeyi unutma'
-                  : (preview.isEmpty ? 'Notunu kontrol etmeyi unutma' : preview),
+                  ? AppLocalizations.of(context)!.reminderChecklistBodyFallback
+                  : (preview.isEmpty
+                        ? AppLocalizations.of(context)!.reminderTextBodyFallback
+                        : preview),
               dateTime: reminder,
               repeat: newRepeatRaw,
             );
@@ -2762,10 +2895,14 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
           );
           ReminderService.instance.schedule(
             noteId: currentRawTime,
-            title: newTitle.isEmpty ? 'Hatırlatıcı' : newTitle,
+            title: newTitle.isEmpty
+                ? AppLocalizations.of(context)!.reminderDefaultTitle
+                : newTitle,
             body: noteType == 'checklist'
-                ? 'Kontrol listeni kontrol etmeyi unutma'
-                : (preview.isEmpty ? 'Notunu kontrol etmeyi unutma' : preview),
+                ? AppLocalizations.of(context)!.reminderChecklistBodyFallback
+                : (preview.isEmpty
+                      ? AppLocalizations.of(context)!.reminderTextBodyFallback
+                      : preview),
             dateTime: reminder,
             repeat: savedRepeat,
           );
@@ -2783,7 +2920,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       _lastBackPressTime = now;
       if (mounted) {
         _showInfoBar(
-          'Çıkmak için tekrar geri tuşuna basın',
+          AppLocalizations.of(context)!.backPressExitInfoMessage,
           icon: Icons.arrow_back,
         );
       }

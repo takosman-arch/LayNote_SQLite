@@ -96,8 +96,8 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
         '${two(dt.hour)}:${two(dt.minute)}';
   }
 
-  String _formatDriveDate(DateTime? dt) {
-    if (dt == null) return 'Bilinmiyor';
+  String _formatDriveDate(BuildContext context, DateTime? dt) {
+    if (dt == null) return AppLocalizations.of(context)!.backupUnknownDateLabel;
     return _formatDate(dt);
   }
 
@@ -122,34 +122,35 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
   }
 
   Future<void> _shareBackup(File file) async {
+    final l10n = AppLocalizations.of(context)!;
     try {
-      await Share.shareXFiles([XFile(file.path)], text: 'dnote yedek dosyası');
+      await Share.shareXFiles([XFile(file.path)], text: l10n.backupShareFileText);
     } catch (e) {
-      _showSnack('Paylaşım başlatılamadı: $e', isError: true);
+      _showSnack(l10n.backupShareFailedMessage(e.toString()), isError: true);
     }
   }
 
   Future<void> _deleteBackup(File file) async {
     if (_busyDevice) return;
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: dNoteCardColor(ctx),
-        title: Text('Yedeği Sil', style: TextStyle(color: appAccentColor.value)),
+        title: Text(l10n.backupHistoryDeleteDialogTitle, style: TextStyle(color: appAccentColor.value)),
         content: Text(
-          '"${p.basename(file.path)}" adlı yedek dosyasını kalıcı olarak '
-          'silmek istediğinize emin misiniz? Bu işlem geri alınamaz.',
+          l10n.backupHistoryDeleteDialogBody(p.basename(file.path)),
           style: TextStyle(color: dNoteTextColor(ctx)),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Vazgeç'),
+            child: Text(l10n.backupCancelButton),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Sil'),
+            child: Text(l10n.deleteFolderDialogConfirmButton),
           ),
         ],
       ),
@@ -163,7 +164,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
       _deviceBackups.removeWhere((f) => f.path == file.path);
       _busyDevice = false;
     });
-    _showSnack('Yedek silindi.');
+    _showSnack(l10n.backupHistoryDeviceDeletedMessage);
   }
 
   // Seçilen dosyayı BackupRestoreScreen'e geri döndürür; asıl önizleme/
@@ -236,7 +237,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
     } else {
       setState(() => _busyDrive = false);
       _showSnack(
-        'Google hesabına bağlanılamadı veya işlem iptal edildi.',
+        AppLocalizations.of(context)!.backupDriveConnectFailedMessage,
         isError: true,
       );
     }
@@ -246,30 +247,31 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
     if (_busyDrive) return;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: dNoteCardColor(ctx),
-        title: Text(
-          'Google Drive Bağlantısını Kes',
-          style: TextStyle(color: appAccentColor.value),
-        ),
-        content: Text(
-          'Bağlantı kesilirse Drive\'a manuel veya otomatik yedekleme '
-          'yapılamaz. Drive\'da halihazırda duran yedekleriniz silinmez, '
-          'yalnızca bu cihazdan erişim kaldırılır.',
-          style: TextStyle(color: dNoteTextColor(ctx)),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Vazgeç'),
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
+        return AlertDialog(
+          backgroundColor: dNoteCardColor(ctx),
+          title: Text(
+            l10n.backupDriveDisconnectTitle,
+            style: TextStyle(color: appAccentColor.value),
           ),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Bağlantıyı Kes'),
+          content: Text(
+            l10n.backupDriveDisconnectBody,
+            style: TextStyle(color: dNoteTextColor(ctx)),
           ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l10n.backupCancelButton),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(backgroundColor: Colors.red),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l10n.backupDisconnectButton),
+            ),
+          ],
+        );
+      },
     );
     if (confirmed != true) return;
 
@@ -282,7 +284,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
       _driveBackups = [];
       _busyDrive = false;
     });
-    _showSnack('Google Drive bağlantısı kesildi.');
+    _showSnack(AppLocalizations.of(context)!.backupDriveDisconnectedMessage);
   }
 
   // Ortak indirme yardımcısı: hem "Geri Yükle" hem "Paylaş" aksiyonu,
@@ -293,7 +295,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
     setState(() {
       _busyDrive = true;
       _driveProgress = 0;
-      _driveProgressLabel = 'Başlıyor...';
+      _driveProgressLabel = AppLocalizations.of(context)!.backupHistoryDownloadStartingLabel;
     });
     try {
       final localFile = await GoogleDriveHelper.instance.downloadBackup(
@@ -309,7 +311,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
       return localFile;
     } catch (e) {
       final ex = GoogleDriveException.fromError(e);
-      _showSnack('İndirme başarısız: ${ex.message}', isError: true);
+      _showSnack(AppLocalizations.of(context)!.backupDriveDownloadFailedMessage(ex.message), isError: true);
       return null;
     } finally {
       if (mounted) {
@@ -336,10 +338,11 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
     if (_busyDrive) return;
     final localFile = await _downloadDriveBackup(file);
     if (localFile == null || !mounted) return;
+    final l10n = AppLocalizations.of(context)!;
     try {
-      await Share.shareXFiles([XFile(localFile.path)], text: 'dnote yedek dosyası');
+      await Share.shareXFiles([XFile(localFile.path)], text: l10n.backupShareFileText);
     } catch (e) {
-      _showSnack('Paylaşım başlatılamadı: $e', isError: true);
+      _showSnack(l10n.backupShareFailedMessage(e.toString()), isError: true);
     }
   }
 
@@ -350,30 +353,31 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
     if (_busyDrive) return;
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: dNoteCardColor(ctx),
-        title: Text(
-          'Drive Yedeğini Sil',
-          style: TextStyle(color: appAccentColor.value),
-        ),
-        content: Text(
-          '"${file.name}" adlı yedeği Google Drive\'dan kalıcı olarak '
-          'silmek istediğinize emin misiniz? Bu işlem geri alınamaz ve '
-          'dosya çöp kutusuna taşınmaz.',
-          style: TextStyle(color: dNoteTextColor(ctx)),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Vazgeç'),
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
+        return AlertDialog(
+          backgroundColor: dNoteCardColor(ctx),
+          title: Text(
+            l10n.backupHistoryDriveDeleteDialogTitle,
+            style: TextStyle(color: appAccentColor.value),
           ),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Sil'),
+          content: Text(
+            l10n.backupHistoryDriveDeleteDialogBody(file.name),
+            style: TextStyle(color: dNoteTextColor(ctx)),
           ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l10n.backupCancelButton),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(backgroundColor: Colors.red),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l10n.deleteFolderDialogConfirmButton),
+            ),
+          ],
+        );
+      },
     );
     if (confirmed != true) return;
 
@@ -385,12 +389,12 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
         _driveBackups.removeWhere((f) => f.id == file.id);
         _busyDrive = false;
       });
-      _showSnack('Drive yedeği silindi.');
+      _showSnack(AppLocalizations.of(context)!.backupHistoryDriveDeletedMessage);
     } catch (e) {
       if (!mounted) return;
       final ex = GoogleDriveException.fromError(e);
       setState(() => _busyDrive = false);
-      _showSnack('Silinemedi: ${ex.message}', isError: true);
+      _showSnack(AppLocalizations.of(context)!.backupHistoryDriveDeleteFailedMessage(ex.message), isError: true);
     }
   }
 
@@ -400,17 +404,18 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Yedek Geçmişi'),
+        title: Text(l10n.backupHistoryCardTitle),
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: appAccentColor.value,
           labelColor: appAccentColor.value,
           unselectedLabelColor: dNoteTextColor(context).withValues(alpha: 0.6),
-          tabs: const [
-            Tab(icon: Icon(Icons.smartphone_outlined), text: 'Cihaz'),
-            Tab(icon: Icon(Icons.cloud_outlined), text: 'Google Drive'),
+          tabs: [
+            Tab(icon: const Icon(Icons.smartphone_outlined), text: l10n.backupHistoryTabDevice),
+            Tab(icon: const Icon(Icons.cloud_outlined), text: l10n.backupHistoryTabDrive),
           ],
         ),
       ),
@@ -434,8 +439,8 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
               ? _emptyState(
                   context,
                   icon: Icons.history_outlined,
-                  title: 'Henüz cihazda kayıtlı bir yedek yok.',
-                  subtitle: '"Yedek Oluştur" ile ilk yedeğinizi alabilirsiniz.',
+                  title: AppLocalizations.of(context)!.backupHistoryDeviceEmptyTitle,
+                  subtitle: AppLocalizations.of(context)!.backupHistoryDeviceEmptySubtitle,
                 )
               : RefreshIndicator(
                   onRefresh: _loadDeviceBackups,
@@ -473,10 +478,8 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
                     ? _emptyState(
                         context,
                         icon: Icons.cloud_off_outlined,
-                        title: 'Google Drive\'da henüz bir yedek yok.',
-                        subtitle:
-                            '"Google Drive\'a Yedekle" ile ilk bulut '
-                            'yedeğinizi oluşturabilirsiniz.',
+                        title: AppLocalizations.of(context)!.backupDriveNoBackupsMessage,
+                        subtitle: AppLocalizations.of(context)!.backupHistoryDriveEmptySubtitle,
                       )
                     : RefreshIndicator(
                         onRefresh: _loadDriveStatusAndBackups,
@@ -509,7 +512,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
             ),
             const SizedBox(height: 12),
             Text(
-              'Drive yedeklerinizi görmek için Google hesabınızla bağlanın.',
+              AppLocalizations.of(context)!.backupHistoryDriveSignInPrompt,
               textAlign: TextAlign.center,
               style: TextStyle(color: dNoteTextColor(context).withValues(alpha: 0.7)),
             ),
@@ -523,7 +526,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
                     ),
                     onPressed: _connectDrive,
                     icon: const Icon(Icons.login),
-                    label: const Text('Google ile Bağlan'),
+                    label: Text(AppLocalizations.of(context)!.backupHistoryConnectGoogleButton),
                   ),
           ],
         ),
@@ -542,7 +545,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              _driveAccountEmail ?? 'Bağlı',
+              _driveAccountEmail ?? AppLocalizations.of(context)!.backupHistoryDriveConnectedFallback,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -553,9 +556,9 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
           ),
           TextButton(
             onPressed: _busyDrive ? null : _disconnectDrive,
-            child: const Text(
-              'Bağlantıyı Kes',
-              style: TextStyle(color: Colors.red, fontSize: 12),
+            child: Text(
+              AppLocalizations.of(context)!.backupDisconnectButton,
+              style: const TextStyle(color: Colors.red, fontSize: 12),
             ),
           ),
         ],
@@ -603,7 +606,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
             Icon(Icons.error_outline, size: 40, color: Colors.red.shade400),
             const SizedBox(height: 12),
             Text(
-              _driveErrorMessage ?? 'Bilinmeyen bir hata oluştu.',
+              _driveErrorMessage ?? AppLocalizations.of(context)!.backupHistoryUnknownErrorFallback,
               textAlign: TextAlign.center,
               style: TextStyle(color: dNoteTextColor(context).withValues(alpha: 0.8)),
             ),
@@ -616,7 +619,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
                 ),
                 onPressed: _loadDriveStatusAndBackups,
                 icon: const Icon(Icons.refresh),
-                label: const Text('Tekrar Dene'),
+                label: Text(AppLocalizations.of(context)!.backupRetryButton),
               ),
             ],
           ],
@@ -688,7 +691,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
       context,
       icon: Icons.cloud_outlined,
       title: file.name,
-      subtitle: '${_formatDriveDate(file.modifiedTime)} · '
+      subtitle: '${_formatDriveDate(context, file.modifiedTime)} · '
           '${BackupHelper.instance.formatFileSize(file.sizeBytes)}',
       onSelected: (value) {
         switch (value) {
@@ -756,38 +759,41 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
             icon: Icon(Icons.more_vert, color: dNoteTextColor(context)),
             color: dNoteCardColor(context),
             onSelected: onSelected,
-            itemBuilder: (ctx) => [
-              PopupMenuItem(
-                value: 'restore',
-                child: Row(
-                  children: [
-                    Icon(Icons.restore_outlined, size: 18, color: appAccentColor.value),
-                    const SizedBox(width: 8),
-                    Text('Geri Yükle', style: TextStyle(color: dNoteTextColor(ctx))),
-                  ],
+            itemBuilder: (ctx) {
+              final l10n = AppLocalizations.of(ctx)!;
+              return [
+                PopupMenuItem(
+                  value: 'restore',
+                  child: Row(
+                    children: [
+                      Icon(Icons.restore_outlined, size: 18, color: appAccentColor.value),
+                      const SizedBox(width: 8),
+                      Text(l10n.backupRestoreButton, style: TextStyle(color: dNoteTextColor(ctx))),
+                    ],
+                  ),
                 ),
-              ),
-              PopupMenuItem(
-                value: 'share',
-                child: Row(
-                  children: [
-                    Icon(Icons.share_outlined, size: 18, color: dNoteTextColor(ctx)),
-                    const SizedBox(width: 8),
-                    Text('Paylaş', style: TextStyle(color: dNoteTextColor(ctx))),
-                  ],
+                PopupMenuItem(
+                  value: 'share',
+                  child: Row(
+                    children: [
+                      Icon(Icons.share_outlined, size: 18, color: dNoteTextColor(ctx)),
+                      const SizedBox(width: 8),
+                      Text(l10n.backupShareButton, style: TextStyle(color: dNoteTextColor(ctx))),
+                    ],
+                  ),
                 ),
-              ),
-              const PopupMenuItem(
-                value: 'delete',
-                child: Row(
-                  children: [
-                    Icon(Icons.delete_outline, size: 18, color: Colors.red),
-                    SizedBox(width: 8),
-                    Text('Sil', style: TextStyle(color: Colors.red)),
-                  ],
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      const Icon(Icons.delete_outline, size: 18, color: Colors.red),
+                      const SizedBox(width: 8),
+                      Text(l10n.noteActionDeleteLabel, style: const TextStyle(color: Colors.red)),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ];
+            },
           ),
         ],
       ),

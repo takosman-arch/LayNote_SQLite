@@ -144,6 +144,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         final title = (note['title'] ?? '').toString().toLowerCase();
         final content = ContentBlocks.plainText(
           note['content'] as String?,
+          totalLabelBuilder: (amount) =>
+              AppLocalizations.of(context)!.calcTableTotalLabel(amount),
         ).toLowerCase();
         final query = _searchQuery.toLowerCase();
         // Etiketler de arama kapsamına dahil: notun etiketlerinden biri
@@ -159,6 +161,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         final title = (note['title'] ?? '').toString().toLowerCase();
         final content = ContentBlocks.plainText(
           note['content'] as String?,
+          totalLabelBuilder: (amount) =>
+              AppLocalizations.of(context)!.calcTableTotalLabel(amount),
         ).toLowerCase();
         final query = _searchQuery.toLowerCase();
         final tagsRaw = note['tags'];
@@ -294,13 +298,15 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
           leading: _isSelectionMode
               ? IconButton(
                   icon: Icon(Icons.close, color: appAccentColor.value),
-                  tooltip: 'Seçimi İptal Et',
+                  tooltip: AppLocalizations.of(context)!.selectionModeCancelTooltip,
                   onPressed: _exitSelectionMode,
                 )
               : null,
           title: _isSelectionMode
               ? Text(
-                  '${_selectedNoteKeys.length} seçildi',
+                  AppLocalizations.of(context)!.selectionModeSelectedCountTitle(
+                    _selectedNoteKeys.length,
+                  ),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: appAccentColor.value,
@@ -314,10 +320,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                   autofocus: true,
                   contextMenuBuilder: buildCustomContextMenu,
                   selectionHeightStyle: ui.BoxHeightStyle.max,
-                  decoration: const InputDecoration(
-                    hintText: 'Notlarda ara...',
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context)!.searchFieldHint,
                     border: InputBorder.none,
-                    hintStyle: TextStyle(color: Colors.grey),
+                    hintStyle: const TextStyle(color: Colors.grey),
                   ),
                   style: const TextStyle(fontSize: 18),
                   onChanged: (value) {
@@ -342,17 +348,17 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
               ? [
                   IconButton(
                     icon: const Icon(Icons.delete_outline, color: Colors.red),
-                    tooltip: 'Sil',
+                    tooltip: AppLocalizations.of(context)!.selectionModeDeleteTooltip,
                     onPressed: _deleteSelectedNotes,
                   ),
                   IconButton(
                     icon: Icon(Icons.archive_outlined, color: appAccentColor.value),
-                    tooltip: 'Arşiv',
+                    tooltip: AppLocalizations.of(context)!.selectionModeArchiveTooltip,
                     onPressed: _archiveSelectedNotes,
                   ),
                   IconButton(
                     icon: Icon(Icons.folder_outlined, color: appAccentColor.value),
-                    tooltip: 'Klasör',
+                    tooltip: AppLocalizations.of(context)!.selectionModeFolderTooltip,
                     onPressed: _showClassifyDialogForSelection,
                   ),
                 ]
@@ -383,18 +389,20 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       context: context,
                       builder: (context) => AlertDialog(
                         title: Text(
-                          'Çöpü Boşalt',
+                          AppLocalizations.of(context)!.emptyTrashDialogTitle,
                           style: TextStyle(color: appAccentColor.value),
                         ),
-                        content: const Text(
-                          'Tüm silinen notlar kalıcı olarak silinecek. Emin misiniz?',
+                        content: Text(
+                          AppLocalizations.of(context)!
+                              .emptyTrashDialogConfirmMessage,
                         ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: const Text(
-                              'İptal',
-                              style: TextStyle(color: Colors.grey),
+                            child: Text(
+                              AppLocalizations.of(context)!
+                                  .emptyTrashDialogCancelButton,
+                              style: const TextStyle(color: Colors.grey),
                             ),
                           ),
                           ElevatedButton(
@@ -411,9 +419,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                               _saveData();
                               Navigator.pop(context);
                             },
-                            child: const Text(
-                              'Sil',
-                              style: TextStyle(color: Colors.white),
+                            child: Text(
+                              AppLocalizations.of(context)!
+                                  .selectionModeDeleteTooltip,
+                              style: const TextStyle(color: Colors.white),
                             ),
                           ),
                         ],
@@ -439,17 +448,17 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                 },
                 itemBuilder: (BuildContext context) {
                   return [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'empty',
                       child: Text(
-                        'Çöpü Boşalt',
-                        style: TextStyle(color: Colors.red),
+                        AppLocalizations.of(context)!.emptyTrashDialogTitle,
+                        style: const TextStyle(color: Colors.red),
                       ),
                     ),
                     PopupMenuItem(
                       value: 'restore_all',
                       child: Text(
-                        'Hepsini Geri Yükle',
+                        AppLocalizations.of(context)!.restoreAllMenuItemLabel,
                         style: TextStyle(color: appAccentColor.value),
                       ),
                     ),
@@ -460,7 +469,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
               PopupMenuButton<String>(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 icon: Icon(Icons.sort, color: appAccentColor.value),
-                tooltip: 'Notları Sırala',
+                tooltip: AppLocalizations.of(context)!.sortMenuTooltip,
                 onSelected: (String choice) {
                   setState(() {
                     if (choice == "Artan") {
@@ -478,33 +487,47 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     CheckedPopupMenuItem<String>(
                       value: 'Artan',
                       checked: _isAscending,
-                      child: const Text('Düzen: Artan (A-Z)'),
+                      child: Text(
+                        AppLocalizations.of(context)!.sortMenuAscendingLabel,
+                      ),
                     ),
                     CheckedPopupMenuItem<String>(
                       value: 'Azalan',
                       checked: !_isAscending,
-                      child: const Text('Düzen: Azalan (Z-A)'),
+                      child: Text(
+                        AppLocalizations.of(context)!.sortMenuDescendingLabel,
+                      ),
                     ),
                     const PopupMenuDivider(),
                     CheckedPopupMenuItem<String>(
                       value: 'Başlık',
                       checked: _sortCriteria == 'Başlık',
-                      child: const Text('Sırala: Başlık'),
+                      child: Text(
+                        AppLocalizations.of(context)!.sortMenuByTitleLabel,
+                      ),
                     ),
                     CheckedPopupMenuItem<String>(
                       value: 'Son Düzenleme',
                       checked: _sortCriteria == 'Son Düzenleme',
-                      child: const Text('Sırala: Son Düzenleme'),
+                      child: Text(
+                        AppLocalizations.of(context)!
+                            .sortMenuByModifiedDateLabel,
+                      ),
                     ),
                     CheckedPopupMenuItem<String>(
                       value: 'Oluşturulma',
                       checked: _sortCriteria == 'Oluşturulma',
-                      child: const Text('Sırala: Oluşturulma'),
+                      child: Text(
+                        AppLocalizations.of(context)!
+                            .sortMenuByCreatedDateLabel,
+                      ),
                     ),
                     CheckedPopupMenuItem<String>(
                       value: 'Kategori',
                       checked: _sortCriteria == 'Kategori',
-                      child: const Text('Sırala: Klasör'),
+                      child: Text(
+                        AppLocalizations.of(context)!.sortMenuByFolderLabel,
+                      ),
                     ),
                   ];
                 },
@@ -514,7 +537,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                 _isListView ? Icons.grid_view : Icons.view_list,
                 color: appAccentColor.value,
               ),
-              tooltip: _isListView ? 'Izgara Görünümü' : 'Liste Görünümü',
+              tooltip: _isListView
+                  ? AppLocalizations.of(context)!.viewToggleGridTooltip
+                  : AppLocalizations.of(context)!.viewToggleListTooltip,
               onPressed: () {
                 setState(() {
                   _isListView = !_isListView;
@@ -559,18 +584,18 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ),
                         SizedBox(height: 6),
                         Text(
-                          'Kişisel Not Defteriniz',
+                          AppLocalizations.of(context)!.drawerHeaderSubtitle,
                           style: TextStyle(color: Colors.grey, fontSize: 13),
                         ),
                       ],
                     ),
                   ),
 
-                  const Padding(
-                    padding: EdgeInsets.only(left: 16, top: 8, bottom: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
                     child: Text(
-                      'NOTLAR',
-                      style: TextStyle(
+                      AppLocalizations.of(context)!.drawerNotesSectionHeader,
+                      style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 12,
                         letterSpacing: 1.2,
@@ -585,8 +610,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         : Colors.transparent,
                     child: ListTile(
                       leading: Icon(Icons.notes, color: appAccentColor.value),
-                      title: const Text(
-                        'Notlar',
+                      title: Text(
+                        AppLocalizations.of(context)!.drawerAllNotesLabel,
                         style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
@@ -616,8 +641,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         Icons.star_outline,
                         color: appAccentColor.value,
                       ),
-                      title: const Text(
-                        'Favori',
+                      title: Text(
+                        AppLocalizations.of(context)!.drawerFavoritesLabel,
                         style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
@@ -643,8 +668,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       Icons.event_note_outlined,
                       color: appAccentColor.value,
                     ),
-                    title: const Text(
-                      'Gündem',
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerAgendaLabel,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
@@ -675,8 +700,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         Icons.notifications_active_outlined,
                         color: appAccentColor.value,
                       ),
-                      title: const Text(
-                        'Hatırlatıcı',
+                      title: Text(
+                        AppLocalizations.of(context)!.drawerRemindersLabel,
                         style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
@@ -706,8 +731,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         Icons.lock_outline,
                         color: appAccentColor.value,
                       ),
-                      title: const Text(
-                        'Kilitli',
+                      title: Text(
+                        AppLocalizations.of(context)!.drawerLockedLabel,
                         style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
@@ -733,8 +758,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         Icons.archive_outlined,
                         color: appAccentColor.value,
                       ),
-                      title: const Text(
-                        'Arşiv',
+                      title: Text(
+                        AppLocalizations.of(context)!.selectionModeArchiveTooltip,
                         style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
@@ -764,8 +789,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         Icons.delete_outline,
                         color: appAccentColor.value,
                       ),
-                      title: const Text(
-                        'Çöp',
+                      title: Text(
+                        AppLocalizations.of(context)!.drawerTrashLabel,
                         style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.w500,
@@ -821,9 +846,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              'KLASÖRLER',
-                              style: TextStyle(
+                            Text(
+                              AppLocalizations.of(context)!.drawerFoldersSectionHeader,
+                              style: const TextStyle(
                                 color: Colors.grey,
                                 fontSize: 12,
                                 letterSpacing: 1.2,
@@ -854,7 +879,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                   _saveData();
                                 },
                                 child: Text(
-                                  allCollapsed ? 'Genişlet' : 'Daralt',
+                                  allCollapsed
+                                      ? AppLocalizations.of(context)!.drawerExpandLabel
+                                      : AppLocalizations.of(context)!.drawerCollapseLabel,
                                   style: TextStyle(
                                     color: appAccentColor.value,
                                     fontSize: 12,
@@ -897,8 +924,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       Icons.add_circle_outline,
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
-                    title: const Text(
-                      'Klasör Ekle',
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerAddFolderLabel,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
@@ -914,11 +941,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     thickness: 1,
                     height: 24,
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 16, top: 4, bottom: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, top: 4, bottom: 4),
                     child: Text(
-                      'UYGULAMA',
-                      style: TextStyle(
+                      AppLocalizations.of(context)!.drawerAppSectionHeader,
+                      style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 12,
                         letterSpacing: 1.2,
@@ -930,8 +957,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       Icons.calendar_month,
                       color: appAccentColor.value,
                     ),
-                    title: const Text(
-                      'Takvim',
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerCalendarLabel,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
@@ -950,8 +977,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       Icons.settings_outlined,
                       color: appAccentColor.value,
                     ),
-                    title: const Text(
-                      'Ayarlar',
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerSettingsLabel,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
@@ -964,8 +991,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       Icons.backup_outlined,
                       color: appAccentColor.value,
                     ),
-                    title: const Text(
-                      'Yedekle & Geri Yükle',
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerBackupRestoreLabel,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
@@ -986,8 +1013,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       Icons.workspace_premium_outlined,
                       color: appAccentColor.value,
                     ),
-                    title: const Text(
-                      'Pro\'ya Yükselt',
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerUpgradeToProLabel,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
@@ -1002,9 +1029,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         color: appAccentColor.value,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Text(
-                        'PRO',
-                        style: TextStyle(
+                      child: Text(
+                        AppLocalizations.of(context)!.drawerProBadgeLabel,
+                        style: const TextStyle(
                           color: Colors.black,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
@@ -1018,8 +1045,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       Icons.volunteer_activism_outlined,
                       color: appAccentColor.value,
                     ),
-                    title: const Text(
-                      'Geliştirme Desteği',
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerSupportDevelopmentLabel,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
@@ -1032,8 +1059,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       Icons.rate_review_outlined,
                       color: appAccentColor.value,
                     ),
-                    title: const Text(
-                      'Geri Bildirim',
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerFeedbackLabel,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
@@ -1046,8 +1073,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       Icons.info_outline,
                       color: appAccentColor.value,
                     ),
-                    title: const Text(
-                      'Hakkında',
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerAboutLabel,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
@@ -1125,9 +1152,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                 ),
                 Expanded(
                   child: filteredNotes.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
-                      'Not bulunamadı.',
+                      AppLocalizations.of(context)!.noNotesFoundMessage,
                       style: TextStyle(color: Colors.grey, fontSize: 16),
                     ),
                   )
@@ -1241,6 +1268,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                           ? const ('', <Map<String, dynamic>>[])
                           : ContentBlocks.previewTextWithSpans(
                               note['content'] as String?,
+                              totalLabelBuilder: (amount) =>
+                                  AppLocalizations.of(context)!
+                                      .calcTableTotalLabel(amount),
                             );
                       final previewContentText = previewTextData.$1;
                       final previewContentSpans = previewTextData.$2;
@@ -1292,8 +1322,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                               Icons.restore_outlined,
                                               color: Colors.black,
                                             ),
-                                            label: const Text(
-                                              'Geri Yükle',
+                                            label: Text(
+                                              AppLocalizations.of(context)!.trashRestoreButtonLabel,
                                               style: TextStyle(
                                                 color: Colors.black,
                                               ),
@@ -1325,8 +1355,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                               Icons.delete_forever,
                                               color: Colors.white,
                                             ),
-                                            label: const Text(
-                                              'Kalıcı Sil',
+                                            label: Text(
+                                              AppLocalizations.of(context)!.trashPermanentDeleteButtonLabel,
                                               style: TextStyle(
                                                 color: Colors.white,
                                               ),
@@ -1401,8 +1431,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                     Icons.restore_outlined,
                                                     color: Colors.black,
                                                   ),
-                                                  label: const Text(
-                                                    'Geri Yükle',
+                                                  label: Text(
+                                                    AppLocalizations.of(context)!.trashRestoreButtonLabel,
                                                     style: TextStyle(
                                                       color: Colors.black,
                                                     ),
@@ -1442,8 +1472,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                                     Icons.delete_forever,
                                                     color: Colors.white,
                                                   ),
-                                                  label: const Text(
-                                                    'Kalıcı Sil',
+                                                  label: Text(
+                                                    AppLocalizations.of(context)!.trashPermanentDeleteButtonLabel,
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                     ),
@@ -1741,7 +1771,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                           const SizedBox(width: 4),
                                           Flexible(
                                             child: Text(
-                                              _gundemBadgeDateLabel(note)!,
+                                              _gundemBadgeDateLabel(context, note)!,
                                               style: TextStyle(
                                                 color: dNoteEffectiveTextColor(
                                                   context,
@@ -2041,7 +2071,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
           )
           .toList();
     }
-    return ContentBlocks.previewLines(note['content'] as String?);
+    return ContentBlocks.previewLines(
+      note['content'] as String?,
+      totalLabelBuilder: (amount) =>
+          AppLocalizations.of(context)!.calcTableTotalLabel(amount),
+    );
   }
 
   // Kart önizlemesinde göstermek üzere, notun içeriğindeki ilk dolu çizim
@@ -2140,7 +2174,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     // "yazılı" kabul edilir, mevcut davranış korunur).
     final bool hasText = isMixedChecklist
         ? true
-        : ContentBlocks.plainText(note['content'] as String?).isNotEmpty;
+        : ContentBlocks.plainText(
+            note['content'] as String?,
+            totalLabelBuilder: (amount) =>
+                AppLocalizations.of(context)!.calcTableTotalLabel(amount),
+          ).isNotEmpty;
     // Fotoğraf yoksa, notun ilk çizim bloğuna bakılır (bkz. _gridPreviewDrawingTile);
     // bir not hem fotoğraf hem çizim içeriyorsa fotoğraf önceliklidir.
     final drawingStrokes = images.isEmpty ? _firstDrawingStrokes(note) : null;
@@ -2181,7 +2219,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       // satır + altında 4px boşluk.
       height += itemCount * ((12 * fontScale) * 1.3 + 4.0);
     } else {
-      final content = ContentBlocks.plainText(note['content'] as String?);
+      final content = ContentBlocks.plainText(
+        note['content'] as String?,
+        totalLabelBuilder: (amount) =>
+            AppLocalizations.of(context)!.calcTableTotalLabel(amount),
+      );
       if (content.isNotEmpty) {
         final noteFontSize =
             (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize;
@@ -2250,7 +2292,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     // kullanılmıyor, boş bırakılıyor.
     final previewTextData = showMixedPreview
         ? const ('', <Map<String, dynamic>>[])
-        : ContentBlocks.previewTextWithSpans(note['content'] as String?);
+        : ContentBlocks.previewTextWithSpans(
+            note['content'] as String?,
+            totalLabelBuilder: (amount) =>
+                AppLocalizations.of(context)!.calcTableTotalLabel(amount),
+          );
     final previewContentText = previewTextData.$1;
     final previewContentSpans = previewTextData.$2;
     // Yazısız (sadece foto) notlarda kart tamamen foto(lar)dan ibarettir;
@@ -2286,8 +2332,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             Icons.restore_outlined,
                             color: Colors.black,
                           ),
-                          label: const Text(
-                            'Geri Yükle',
+                          label: Text(
+                            AppLocalizations.of(context)!.trashRestoreButtonLabel,
                             style: TextStyle(color: Colors.black),
                           ),
                           onPressed: () {
@@ -2313,8 +2359,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             Icons.delete_forever,
                             color: Colors.white,
                           ),
-                          label: const Text(
-                            'Kalıcı Sil',
+                          label: Text(
+                            AppLocalizations.of(context)!.trashPermanentDeleteButtonLabel,
                             style: TextStyle(color: Colors.white),
                           ),
                           onPressed: () {
@@ -2376,8 +2422,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                 Icons.restore_outlined,
                                 color: Colors.black,
                               ),
-                              label: const Text(
-                                'Geri Yükle',
+                              label: Text(
+                                AppLocalizations.of(context)!.trashRestoreButtonLabel,
                                 style: TextStyle(color: Colors.black),
                               ),
                               onPressed: () {
@@ -2407,8 +2453,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                 Icons.delete_forever,
                                 color: Colors.white,
                               ),
-                              label: const Text(
-                                'Kalıcı Sil',
+                              label: Text(
+                                AppLocalizations.of(context)!.trashPermanentDeleteButtonLabel,
                                 style: TextStyle(color: Colors.white),
                               ),
                               onPressed: () {
@@ -2677,7 +2723,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                               const SizedBox(width: 4),
                               Flexible(
                                 child: Text(
-                                  _gundemBadgeDateLabel(note)!,
+                                  _gundemBadgeDateLabel(context, note)!,
                                   style: TextStyle(
                                     color: dNoteEffectiveTextColor(
                                       context,
@@ -2842,7 +2888,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       if (_searchQuery == oldTag) _searchQuery = newTag;
     });
     _saveData();
-    _showInfoBar('Etiket yeniden adlandırıldı', icon: Icons.edit_outlined);
+    _showInfoBar(AppLocalizations.of(context)!.tagRenamedInfoMessage, icon: Icons.edit_outlined);
     return newTag;
   }
 
@@ -2883,7 +2929,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       }
     });
     _saveData();
-    _showInfoBar('Etiket silindi', icon: Icons.delete_outline);
+    _showInfoBar(AppLocalizations.of(context)!.tagDeletedInfoMessage, icon: Icons.delete_outline);
     return true;
   }
 
@@ -2942,13 +2988,38 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   }
 
   // Gündem rozetinin yanında gösterilecek tarih metni, "Ağu 9, Pazar"
-  // biçiminde (bkz. gundem_screen.dart -> _gundemMonthNamesShortTr /
-  // _gundemWeekDayFullTr, aynı top-level listeler burada da kullanılıyor).
+  // biçiminde. Ay/gün adları AppLocalizations üzerinden lokalize edilir
+  // (bkz. gundem_screen.dart -> _gundemShortDateLabel / weekDayFull, aynı
+  // ARB anahtarları burada da kullanılıyor).
   // _showsGundemBadge true dönmüyorsa null döner.
-  String? _gundemBadgeDateLabel(Map<String, dynamic> note) {
+  String? _gundemBadgeDateLabel(BuildContext context, Map<String, dynamic> note) {
     final day = _reminderAgendaDay(note) ?? _assignedAgendaDay(note);
     if (day == null) return null;
-    return '${_gundemMonthNamesShortTr[day.month - 1]} ${day.day}, ${_gundemWeekDayFullTr[day.weekday - 1]}';
+    final l10n = AppLocalizations.of(context)!;
+    final monthNamesShort = [
+      l10n.gundemMonthShortJan,
+      l10n.gundemMonthShortFeb,
+      l10n.gundemMonthShortMar,
+      l10n.gundemMonthShortApr,
+      l10n.gundemMonthShortMay,
+      l10n.gundemMonthShortJun,
+      l10n.gundemMonthShortJul,
+      l10n.gundemMonthShortAug,
+      l10n.gundemMonthShortSep,
+      l10n.gundemMonthShortOct,
+      l10n.gundemMonthShortNov,
+      l10n.gundemMonthShortDec,
+    ];
+    final weekDayFull = [
+      l10n.gundemWeekdayMonday,
+      l10n.gundemWeekdayTuesday,
+      l10n.gundemWeekdayWednesday,
+      l10n.gundemWeekdayThursday,
+      l10n.gundemWeekdayFriday,
+      l10n.gundemWeekdaySaturday,
+      l10n.gundemWeekdaySunday,
+    ];
+    return '${monthNamesShort[day.month - 1]} ${day.day}, ${weekDayFull[day.weekday - 1]}';
   }
 
   String? _formattedReminderText(Map<String, dynamic> note) {

@@ -55,14 +55,20 @@ class _LastBackupInfoTileState extends State<LastBackupInfoTile> {
   // Bkz. BackupRestoreScreen._createBackup() içindeki kullanımı.
   Future<void> refresh() => _load();
 
-  String _formatDate(DateTime dt) {
+  String _formatDate(BuildContext context, DateTime dt) {
+    final loc = AppLocalizations.of(context)!;
     String two(int n) => n.toString().padLeft(2, '0');
     final now = DateTime.now();
     final sameDay =
         now.year == dt.year && now.month == dt.month && now.day == dt.day;
     final timeStr = '${two(dt.hour)}:${two(dt.minute)}';
-    if (sameDay) return 'Bugün $timeStr';
-    return '${two(dt.day)}.${two(dt.month)}.${dt.year} $timeStr';
+    if (sameDay) return loc.lastBackupInfoTodayFormat(timeStr);
+    return loc.lastBackupInfoDateFormat(
+      two(dt.day),
+      two(dt.month),
+      dt.year,
+      timeStr,
+    );
   }
 
   @override
@@ -71,6 +77,7 @@ class _LastBackupInfoTileState extends State<LastBackupInfoTile> {
     // ilk açılışta anlık bir "boş kutu" titremesi yaratmamak için.
     if (_loading) return const SizedBox.shrink();
 
+    final loc = AppLocalizations.of(context)!;
     final hasBackup = _lastBackup != null;
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
@@ -91,8 +98,8 @@ class _LastBackupInfoTileState extends State<LastBackupInfoTile> {
           Expanded(
             child: Text(
               hasBackup
-                  ? 'Son yedekleme: ${_formatDate(_lastBackup!)}'
-                  : 'Henüz hiç yedek alınmadı.',
+                  ? loc.lastBackupInfoLabel(_formatDate(context, _lastBackup!))
+                  : loc.lastBackupInfoNoBackupMessage,
               style: TextStyle(
                 color: dNoteTextColor(context).withValues(alpha: 0.85),
                 fontSize: 13,

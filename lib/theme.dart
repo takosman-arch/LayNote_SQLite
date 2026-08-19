@@ -35,6 +35,19 @@ String themeModeToSettingValue(ThemeMode mode) {
 }
 
 // ════════════════════════════════════════════════════════════════════════
+// DİL TERCİHİ (Ayarlar > Dil: Sistem / Türkçe / English)
+// Değerleri 'system' | 'tr' | 'en'. Varsayılan 'system' — cihaz dili
+// desteklenen bir dilse onu, değilse main.dart'taki AppLocalizations
+// fallback'ini (tr) kullanır. Ayarlar ekranındaki seçim değiştiğinde
+// appLanguage.value güncellenir; bunu dinleyen DNoteApp, MaterialApp'in
+// locale: parametresini otomatik olarak yeniden kurar. Aynı ayar,
+// arka planda auto_backup_service.dart -> _resolveL10n() tarafından da
+// (DBHelper üzerinden) okunur; böylece ön plan ve arka plan hep aynı
+// dili kullanır.
+// ════════════════════════════════════════════════════════════════════════
+final ValueNotifier<String> appLanguage = ValueNotifier<String>('system');
+
+// ════════════════════════════════════════════════════════════════════════
 // VURGU RENGİ (Ayarlar > Tema > Vurgu Rengi)
 // Uygulama genelinde "primary" rengi (AppBar başlıkları, switch'ler,
 // butonlar, seçili öğeler vb.) bu global ValueNotifier üzerinden yönetilir.

@@ -59,9 +59,18 @@ part of 'main.dart';
 // Bu adımlar kod dışıdır; kodun kendisi bu aşamada bağımsız çalışır ama
 // yukarıdaki Console yapılandırması yapılmadan giriş denemesi hata verir.
 // ════════════════════════════════════════════════════════════════════════
+// Context almayan sınıflar (GoogleDriveHelper, GoogleDriveException) için
+// global navigatorKey üzerinden AppLocalizations'a erişim.
+AppLocalizations get _driveL10n =>
+    AppLocalizations.of(navigatorKey.currentContext!)!;
+
 class GoogleDriveHelper {
   GoogleDriveHelper._internal();
   static final GoogleDriveHelper instance = GoogleDriveHelper._internal();
+
+  // Bu sınıf context almadığı için (widget değil, servis sınıfı),
+  // global navigatorKey üzerinden AppLocalizations'a erişilir.
+  AppLocalizations get _l10n => _driveL10n;
 
   // Sadece "Uygulama Verileri" (gizli) alanına erişim isteniyor — bkz.
   // yukarıdaki not. Kullanıcının görünür Drive dosyalarına erişim YOK.
@@ -201,12 +210,11 @@ class GoogleDriveHelper {
     File localZipFile, {
     void Function(double progress, String step)? onProgress,
   }) async {
-    onProgress?.call(0.05, 'Google hesabı doğrulanıyor...');
+    onProgress?.call(0.05, _l10n.backupDriveAuthenticatingLabel);
     final session = await getDriveApi();
     if (session == null) {
       throw GoogleDriveException(
-        'Google Drive\'a bağlı değilsiniz. Lütfen önce Google hesabınızla '
-        'giriş yapın.',
+        _l10n.backupDriveNotSignedInMessage,
         type: GoogleDriveErrorType.notSignedIn,
         retryable: false,
       );
@@ -214,7 +222,7 @@ class GoogleDriveHelper {
     final driveApi = session.api;
 
     try {
-      onProgress?.call(0.2, 'Yedek Drive\'a yükleniyor...');
+      onProgress?.call(0.2, _l10n.backupDriveUploadingLabel);
 
       // NOT: Dosya artık STREAM olarak (localZipFile.openRead()) değil,
       // tamamı belleğe okunup (readAsBytes()) SABİT UZUNLUKLU bir byte
@@ -249,9 +257,7 @@ class GoogleDriveHelper {
             onTimeout: () {
               debugPrint('[DRIVE DEBUG] files.create() 120 saniyede CEVAP VERMEDİ (timeout)');
               throw GoogleDriveException(
-                'Google Drive\'a yükleme 120 saniye içinde tamamlanamadı '
-                '(sunucudan yanıt gelmedi). Lütfen bağlantınızı kontrol edip '
-                'tekrar deneyin.',
+                _l10n.backupDriveUploadTimeoutMessage,
                 type: GoogleDriveErrorType.network,
                 retryable: true,
               );
@@ -259,7 +265,7 @@ class GoogleDriveHelper {
           );
 
       debugPrint('[DRIVE DEBUG] files.create() BAŞARILI: id=${created.id}, name=${created.name}');
-      onProgress?.call(1.0, 'Tamamlandı');
+      onProgress?.call(1.0, _l10n.backupDriveOperationCompletedLabel);
       return GoogleDriveBackupFile.fromDriveFile(created);
     } catch (e, stack) {
       debugPrint('[DRIVE DEBUG] uploadBackup HATASI: $e');
@@ -291,8 +297,7 @@ class GoogleDriveHelper {
     final session = await getDriveApi();
     if (session == null) {
       throw GoogleDriveException(
-        'Google Drive\'a bağlı değilsiniz. Lütfen önce Google hesabınızla '
-        'giriş yapın.',
+        _l10n.backupDriveNotSignedInMessage,
         type: GoogleDriveErrorType.notSignedIn,
         retryable: false,
       );
@@ -358,12 +363,11 @@ class GoogleDriveHelper {
     GoogleDriveBackupFile driveFile, {
     void Function(double progress, String step)? onProgress,
   }) async {
-    onProgress?.call(0.05, 'Google hesabı doğrulanıyor...');
+    onProgress?.call(0.05, _l10n.backupDriveAuthenticatingLabel);
     final session = await getDriveApi();
     if (session == null) {
       throw GoogleDriveException(
-        'Google Drive\'a bağlı değilsiniz. Lütfen önce Google hesabınızla '
-        'giriş yapın.',
+        _l10n.backupDriveNotSignedInMessage,
         type: GoogleDriveErrorType.notSignedIn,
         retryable: false,
       );
@@ -371,7 +375,7 @@ class GoogleDriveHelper {
     final driveApi = session.api;
 
     try {
-      onProgress?.call(0.1, 'Yedek Drive\'dan indiriliyor...');
+      onProgress?.call(0.1, _l10n.backupDriveDownloadingLabel);
       final media = await driveApi.files.get(
         driveFile.id,
         downloadOptions: drive.DownloadOptions.fullMedia,
@@ -390,19 +394,20 @@ class GoogleDriveHelper {
           // %10 doğrulama, sonundaki %10 diske yazma için bırakılır.
           onProgress?.call(
             0.1 + 0.8 * (downloaded / totalBytes).clamp(0.0, 1.0),
-            'Yedek Drive\'dan indiriliyor... '
-            '(${BackupHelper.instance.formatFileSize(downloaded)} / '
-            '${BackupHelper.instance.formatFileSize(totalBytes)})',
+            _l10n.backupDriveDownloadingWithSizeLabel(
+              BackupHelper.instance.formatFileSize(downloaded),
+              BackupHelper.instance.formatFileSize(totalBytes),
+            ),
           );
         }
       }
 
-      onProgress?.call(0.95, 'Dosya cihaza kaydediliyor...');
+      onProgress?.call(0.95, _l10n.backupDriveSavingToDeviceLabel);
       final localDir = await BackupHelper.instance.backupsDir();
       final localFile = File(p.join(localDir.path, driveFile.name));
       await localFile.writeAsBytes(buffer, flush: true);
 
-      onProgress?.call(1.0, 'Tamamlandı');
+      onProgress?.call(1.0, _l10n.backupDriveOperationCompletedLabel);
       return localFile;
     } catch (e) {
       throw GoogleDriveException.fromError(e);
@@ -426,8 +431,7 @@ class GoogleDriveHelper {
     final session = await getDriveApi();
     if (session == null) {
       throw GoogleDriveException(
-        'Google Drive\'a bağlı değilsiniz. Lütfen önce Google hesabınızla '
-        'giriş yapın.',
+        _l10n.backupDriveNotSignedInMessage,
         type: GoogleDriveErrorType.notSignedIn,
         retryable: false,
       );
@@ -522,7 +526,7 @@ class GoogleDriveBackupFile {
   factory GoogleDriveBackupFile.fromDriveFile(drive.File f) {
     return GoogleDriveBackupFile(
       id: f.id ?? '',
-      name: f.name ?? 'bilinmeyen_yedek.zip',
+      name: f.name ?? _driveL10n.backupDriveUnknownBackupFileName,
       sizeBytes: int.tryParse(f.size ?? '') ?? 0,
       modifiedTime: f.modifiedTime,
     );
@@ -561,8 +565,7 @@ class GoogleDriveException implements Exception {
     final text = error.toString().toLowerCase();
     if (text.contains('storagequotaexceeded') || text.contains('quota')) {
       return GoogleDriveException(
-        'Google Drive depolama alanınız dolu. Lütfen Drive\'da yer açıp '
-        'tekrar deneyin.',
+        _driveL10n.backupDriveStorageFullMessage,
         type: GoogleDriveErrorType.quotaExceeded,
         retryable: false,
       );
@@ -571,21 +574,20 @@ class GoogleDriveException implements Exception {
         text.contains('failed host lookup') ||
         text.contains('network')) {
       return GoogleDriveException(
-        'İnternet bağlantısı sağlanamadı. Lütfen bağlantınızı kontrol edip '
-        'tekrar deneyin.',
+        _driveL10n.backupDriveNetworkErrorMessage,
         type: GoogleDriveErrorType.network,
         retryable: true,
       );
     }
     if (text.contains('404') || text.contains('not found')) {
       return GoogleDriveException(
-        'Belirtilen yedek dosyası Drive\'da bulunamadı. Silinmiş olabilir.',
+        _driveL10n.backupDriveBackupNotFoundMessage,
         type: GoogleDriveErrorType.notFound,
         retryable: false,
       );
     }
     return GoogleDriveException(
-      'Google Drive işlemi sırasında beklenmeyen bir hata oluştu: $error',
+      _driveL10n.backupDriveUnknownErrorMessage(error.toString()),
       type: GoogleDriveErrorType.unknown,
       retryable: true,
     );

@@ -342,12 +342,13 @@ class PdfExportService {
     Map<String, pw.MemoryImage> imageCache,
     pw.Font regular,
     double placeholderFontSize,
+    String defaultAttachmentName,
   ) {
     const spacing = 6.0;
     final pageContentWidth = PdfPageFormat.a4.width - (32 * 2);
 
     pw.Widget docPlaceholder(Map<String, dynamic> att, double size) {
-      final name = (att['fileName'] ?? 'Ek dosya').toString();
+      final name = (att['fileName'] ?? defaultAttachmentName).toString();
       return pw.Container(
         width: size,
         height: size,
@@ -443,6 +444,13 @@ class PdfExportService {
     // algılanan yazı boyutu) editördekiyle aynı kalır. Değer verilmezse
     // (ör. eski çağrılar), yaygın bir telefon genişliği varsayılır.
     double? phoneScreenWidth,
+    // Lokalize edilmiş yedek metinler — çağıran taraf (BuildContext'e
+    // erişimi olan yer) AppLocalizations üzerinden geçer. Bu servis static
+    // olduğu ve context almadığı için varsayılan olarak Türkçe değerler
+    // kullanılır (bkz. app_tr.arb: pdfExportUntitledNoteLabel,
+    // pdfExportDefaultAttachmentName).
+    String untitledNoteLabel = 'Başlıksız Not',
+    String defaultAttachmentName = 'Ek dosya',
   }) async {
     final fonts = await _ensureFonts(fontFamily);
     final regular = fonts.regular;
@@ -555,7 +563,7 @@ class PdfExportService {
     final content = <pw.Widget>[
       if (!isDrawingOnlyNote) ...[
         _buildRichTextWidget(
-          title.trim().isEmpty ? 'Başlıksız Not' : title.trim(),
+          title.trim().isEmpty ? untitledNoteLabel : title.trim(),
           RichTextSpans.parse(titleSpans),
           regular,
           bold,
@@ -757,7 +765,7 @@ class PdfExportService {
           final validIds = ids.where((id) => attachmentsById[id] != null).toList();
           if (validIds.isNotEmpty) {
             content.add(
-              _buildAttachmentGrid(validIds, attachmentsById, imageCache, regular, placeholderFontSize),
+              _buildAttachmentGrid(validIds, attachmentsById, imageCache, regular, placeholderFontSize, defaultAttachmentName),
             );
           }
         } else if (type == 'drawing') {

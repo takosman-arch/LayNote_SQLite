@@ -12,6 +12,7 @@ import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart'; // TapGestureRecognizer için (link tıklama)
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart'; // AppLocalizations için — paket adınız farklıysa 'package:PAKET_ADINIZ/l10n/app_localizations.dart' olarak değiştirin
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:sqflite/sqflite.dart';
@@ -82,6 +83,11 @@ part 'note_checklist_block.dart';
 
 
 
+// google_drive_helper.dart gibi BuildContext almayan servis sınıflarının
+// AppLocalizations'a erişebilmesi için global bir navigatorKey. MaterialApp'a
+// aşağıda (DNoteApp) verilir.
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -116,6 +122,9 @@ void main() async {
   // Vurgu rengi tercihini de aynı şekilde ilk çizimden önce oku; böylece
   // açılışta bir an için eski (varsayılan) renk yanıp sönmez.
   appAccentColor.value = accentColorFromSettingValue(settings['accent_color']);
+
+  // Dil tercihi: kayıtlı ayar yoksa (ilk kurulum) 'system' kalır.
+  appLanguage.value = settings['app_language'] ?? 'system';
 
   SystemChrome.setSystemUIOverlayStyle(
     dNoteSystemBarsStyleForMode(appThemeMode.value),
@@ -191,40 +200,49 @@ String _formatDateTimeTr(DateTime dt) {
   return '$day.$month.${dt.year} $hour:$minute';
 }
 
-// Hatırlatıcı tekrar seçeneğinin Türkçe etiketi. Hem yeni hatırlatıcı
-// dialogunda hem de not kartlarındaki hatırlatıcı rozetinde ortak kullanılır.
-String _reminderRepeatLabelTr(String? repeat) {
+// Hatırlatıcı tekrar seçeneğinin etiketi. Hem yeni hatırlatıcı dialogunda
+// hem de not kartlarındaki hatırlatıcı rozetinde ortak kullanılır.
+String _reminderRepeatLabelTr(BuildContext context, String? repeat) {
+  final l10n = AppLocalizations.of(context)!;
   switch (repeat) {
     case 'hourly':
-      return 'Her saat';
+      return l10n.gundemRepeatHourly;
     case 'daily':
-      return 'Her gün';
+      return l10n.gundemRepeatDaily;
     case 'weekly':
-      return 'Her hafta';
+      return l10n.gundemRepeatWeekly;
     case 'monthly':
-      return 'Her ay';
+      return l10n.gundemRepeatMonthly;
     case 'yearly':
-      return 'Her yıl';
+      return l10n.gundemRepeatYearly;
     default:
-      return 'Tekrar yok';
+      return l10n.reminderRepeatNoneLabel;
   }
 }
 
-const List<String> _dNoteMonthNamesTr = [
-  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
-];
+// Tam ay isimleri calendar_screen.dart / note_list_data_category_mixin.dart
+// ile aynı ARB anahtarlarını (calendarMonthJan..Dec) kullanır.
+List<String> _dNoteMonthNamesTr(BuildContext context) {
+  final l10n = AppLocalizations.of(context)!;
+  return [
+    l10n.calendarMonthJan, l10n.calendarMonthFeb, l10n.calendarMonthMar,
+    l10n.calendarMonthApr, l10n.calendarMonthMay, l10n.calendarMonthJun,
+    l10n.calendarMonthJul, l10n.calendarMonthAug, l10n.calendarMonthSep,
+    l10n.calendarMonthOct, l10n.calendarMonthNov, l10n.calendarMonthDec,
+  ];
+}
 
 // Hatırlatıcı dialogundaki tarih satırının etiketi: bugünse "Bugün",
 // yarınsa "Yarın", değilse "16 Temmuz" gibi gün + ay adı biçimi.
-String _reminderDateLabelTr(DateTime date) {
+String _reminderDateLabelTr(BuildContext context, DateTime date) {
+  final l10n = AppLocalizations.of(context)!;
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
   final tomorrow = today.add(const Duration(days: 1));
   final target = DateTime(date.year, date.month, date.day);
-  if (target == today) return 'Bugün';
-  if (target == tomorrow) return 'Yarın';
-  return '${date.day} ${_dNoteMonthNamesTr[date.month - 1]}';
+  if (target == today) return l10n.gundemSectionToday;
+  if (target == tomorrow) return l10n.gundemSectionTomorrow;
+  return '${date.day} ${_dNoteMonthNamesTr(context)[date.month - 1]}';
 }
 
 // ── Not içi otomatik matematik hesaplayıcı ──────────────────────────────
@@ -641,20 +659,48 @@ class DNoteApp extends StatelessWidget {
         return ValueListenableBuilder<Color>(
           valueListenable: appAccentColor,
           builder: (context, accentColor, _) {
-            return MaterialApp(
-              title: 'Layout',
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: const [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: const [Locale('tr', 'TR'), Locale('en', 'US')],
-              locale: const Locale('tr', 'TR'),
-              themeMode: mode,
-              theme: _dNoteLightTheme.copyWith(primaryColor: accentColor),
-              darkTheme: _dNoteDarkTheme.copyWith(primaryColor: accentColor),
-              home: const NoteListScreen(),
+            // Dil tercihi (Sistem/Türkçe/English) — Ayarlar ekranında elle
+            // seçilir ve appLanguage.value üzerinden anında uygulanır.
+            return ValueListenableBuilder<String>(
+              valueListenable: appLanguage,
+              builder: (context, lang, _) {
+                return MaterialApp(
+                  navigatorKey: navigatorKey,
+                  title: 'Layout',
+                  debugShowCheckedModeBanner: false,
+                  localizationsDelegates: const [
+                    AppLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  supportedLocales: const [Locale('tr', 'TR'), Locale('en', 'US')],
+                  // 'system' ise locale: null verilir ve aşağıdaki
+                  // localeResolutionCallback devreye girer: cihaz dili
+                  // supportedLocales içinde varsa o dil seçilir, yoksa
+                  // (desteklenmeyen bir dilse) İngilizce'ye düşülür.
+                  localeResolutionCallback: (deviceLocale, supportedLocales) {
+                    if (deviceLocale != null) {
+                      for (final supported in supportedLocales) {
+                        if (supported.languageCode ==
+                            deviceLocale.languageCode) {
+                          return supported;
+                        }
+                      }
+                    }
+                    return const Locale('en', 'US');
+                  },
+                  locale: lang == 'en'
+                      ? const Locale('en', 'US')
+                      : lang == 'tr'
+                          ? const Locale('tr', 'TR')
+                          : null,
+                  themeMode: mode,
+                  theme: _dNoteLightTheme.copyWith(primaryColor: accentColor),
+                  darkTheme: _dNoteDarkTheme.copyWith(primaryColor: accentColor),
+                  home: const NoteListScreen(),
+                );
+              },
             );
           },
         );

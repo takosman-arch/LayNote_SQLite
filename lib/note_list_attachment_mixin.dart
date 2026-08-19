@@ -242,8 +242,8 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
         firstDate: firstDate,
         lastDate: lastDate,
         helpText: helpText,
-        cancelText: 'Vazgeç',
-        confirmText: 'Seç',
+        cancelText: AppLocalizations.of(context)!.calendarPickerCancelButton,
+        confirmText: AppLocalizations.of(context)!.calendarPickerConfirmButton,
       );
     }
 
@@ -286,17 +286,23 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                           dialogContext,
                           _clearAssignedDateSentinel,
                         ),
-                        child: const Text('İptal'),
+                        child: Text(
+                          AppLocalizations.of(dialogContext)!.calendarPickerClearButton,
+                        ),
                       ),
                       const Spacer(),
                       TextButton(
                         onPressed: () => Navigator.pop(dialogContext, null),
-                        child: const Text('Vazgeç'),
+                        child: Text(
+                          AppLocalizations.of(dialogContext)!.calendarPickerCancelButton,
+                        ),
                       ),
                       TextButton(
                         onPressed: () =>
                             Navigator.pop(dialogContext, selected),
-                        child: const Text('Seç'),
+                        child: Text(
+                          AppLocalizations.of(dialogContext)!.calendarPickerConfirmButton,
+                        ),
                       ),
                     ],
                   ),
@@ -339,7 +345,9 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
             children: [
               ListTile(
                 leading: const Icon(Icons.edit_calendar, color: Colors.blue),
-                title: const Text('Hatırlatıcıyı değiştir'),
+                title: Text(
+                  AppLocalizations.of(sheetCtx)!.reminderEditOptionLabel,
+                ),
                 onTap: () => Navigator.pop(sheetCtx, 'edit'),
               ),
               ListTile(
@@ -347,7 +355,9 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                   Icons.notifications_off,
                   color: Colors.redAccent,
                 ),
-                title: const Text('Hatırlatıcıyı kaldır'),
+                title: Text(
+                  AppLocalizations.of(sheetCtx)!.reminderRemoveOptionLabel,
+                ),
                 onTap: () => Navigator.pop(sheetCtx, 'remove'),
               ),
             ],
@@ -439,7 +449,7 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Hatırlatıcı ekle',
+                      AppLocalizations.of(context)!.reminderPickerDialogTitle,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -450,11 +460,26 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                     // Tarih satırı: Bugün / Yarın / Tarih seç.
                     dropdownRow(
                       icon: Icons.calendar_today_outlined,
-                      label: _reminderDateLabelTr(selectedDate),
-                      items: const [
-                        PopupMenuItem(value: 'today', child: Text('Bugün')),
-                        PopupMenuItem(value: 'tomorrow', child: Text('Yarın')),
-                        PopupMenuItem(value: 'pick', child: Text('Tarih seç')),
+                      label: _reminderDateLabelTr(context, selectedDate),
+                      items: [
+                        PopupMenuItem(
+                          value: 'today',
+                          child: Text(
+                            AppLocalizations.of(context)!.reminderPickerDateTodayOption,
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'tomorrow',
+                          child: Text(
+                            AppLocalizations.of(context)!.reminderPickerDateTomorrowOption,
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'pick',
+                          child: Text(
+                            AppLocalizations.of(context)!.reminderPickerDatePickOption,
+                          ),
+                        ),
                       ],
                       onSelected: (value) async {
                         final now = DateTime.now();
@@ -474,7 +499,7 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                                 : selectedDate,
                             firstDate: today,
                             lastDate: now.add(const Duration(days: 3650)),
-                            helpText: 'Hatırlatma tarihi seç',
+                            helpText: AppLocalizations.of(context)!.reminderPickerCalendarHelpText,
                           );
                           if (picked != null) {
                             setDlgState(
@@ -529,23 +554,44 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                     // Her hafta / Her ay / Her yıl.
                     dropdownRow(
                       icon: Icons.repeat,
-                      label: _reminderRepeatLabelTr(selectedRepeat),
-                      items: const [
+                      label: _reminderRepeatLabelTr(context, selectedRepeat),
+                      items: [
                         PopupMenuItem(
                           value: 'none',
-                          child: Text('Tekrar yok'),
+                          child: Text(
+                            AppLocalizations.of(context)!.reminderRepeatNoneLabel,
+                          ),
                         ),
                         PopupMenuItem(
                           value: 'hourly',
-                          child: Text('Her saat'),
+                          child: Text(
+                            AppLocalizations.of(context)!.reminderRepeatHourlyLabel,
+                          ),
                         ),
-                        PopupMenuItem(value: 'daily', child: Text('Her gün')),
+                        PopupMenuItem(
+                          value: 'daily',
+                          child: Text(
+                            AppLocalizations.of(context)!.reminderRepeatDailyLabel,
+                          ),
+                        ),
                         PopupMenuItem(
                           value: 'weekly',
-                          child: Text('Her hafta'),
+                          child: Text(
+                            AppLocalizations.of(context)!.reminderRepeatWeeklyLabel,
+                          ),
                         ),
-                        PopupMenuItem(value: 'monthly', child: Text('Her ay')),
-                        PopupMenuItem(value: 'yearly', child: Text('Her yıl')),
+                        PopupMenuItem(
+                          value: 'monthly',
+                          child: Text(
+                            AppLocalizations.of(context)!.reminderRepeatMonthlyLabel,
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'yearly',
+                          child: Text(
+                            AppLocalizations.of(context)!.reminderRepeatYearlyLabel,
+                          ),
+                        ),
                       ],
                       onSelected: (value) {
                         setDlgState(
@@ -561,7 +607,9 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                       children: [
                         TextButton(
                           onPressed: () => Navigator.pop(dialogContext),
-                          child: const Text('İPTAL'),
+                          child: Text(
+                            AppLocalizations.of(context)!.reminderPickerCancelButton,
+                          ),
                         ),
                         TextButton(
                           onPressed: () {
@@ -575,9 +623,9 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                             if (selectedRepeat == null &&
                                 combined.isBefore(DateTime.now())) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
+                                SnackBar(
                                   content: Text(
-                                    'Geçmiş bir zaman seçilemez',
+                                    AppLocalizations.of(context)!.reminderPickerPastTimeErrorMessage,
                                   ),
                                 ),
                               );
@@ -588,9 +636,9 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                               _ReminderPickResult(combined, selectedRepeat),
                             );
                           },
-                          child: const Text(
-                            'KAYDET',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          child: Text(
+                            AppLocalizations.of(context)!.reminderPickerSaveButton,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],

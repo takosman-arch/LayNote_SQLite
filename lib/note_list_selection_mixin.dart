@@ -91,7 +91,11 @@ mixin NoteListSelectionMixin on State<NoteListScreen> {
       _selectedNoteKeys.clear();
     });
     _saveData();
-    _showInfoBar('${selected.length} not silindi', icon: Icons.delete_outline);
+    _showInfoBar(
+      AppLocalizations.of(context)!
+          .selectionModeDeletedMessage(selected.length),
+      icon: Icons.delete_outline,
+    );
   }
 
   // Seçili notların tümü zaten arşivliyse arşivden çıkarır, aksi halde
@@ -114,7 +118,9 @@ mixin NoteListSelectionMixin on State<NoteListScreen> {
     });
     _saveData();
     _showInfoBar(
-      allArchived ? 'Arşivden çıkarıldı' : 'Arşivlendi',
+      allArchived
+          ? AppLocalizations.of(context)!.noteUnarchivedInfoMessage
+          : AppLocalizations.of(context)!.selectionModeArchivedMessage,
       icon: allArchived ? Icons.unarchive_outlined : Icons.archive_outlined,
     );
   }
@@ -168,7 +174,8 @@ mixin NoteListSelectionMixin on State<NoteListScreen> {
               ),
               const SizedBox(height: 14),
               Text(
-                '${selectedKeys.length} not için kategori seç',
+                AppLocalizations.of(sheetContext)!
+                    .selectionModeClassifySheetTitle(selectedKeys.length),
                 style: TextStyle(
                   color: dNoteTextColor(sheetContext),
                   fontSize: 16,
@@ -183,7 +190,8 @@ mixin NoteListSelectionMixin on State<NoteListScreen> {
                   color: dNoteTextColor(sheetContext),
                 ),
                 title: Text(
-                  'Kategori Ekle',
+                  AppLocalizations.of(sheetContext)!
+                      .selectionModeAddCategoryOption,
                   style: TextStyle(
                     color: dNoteTextColor(sheetContext),
                     fontWeight: FontWeight.w500,
@@ -232,9 +240,10 @@ mixin NoteListSelectionMixin on State<NoteListScreen> {
                   Icons.label_off_outlined,
                   color: Colors.red,
                 ),
-                title: const Text(
-                  'Kategoriyi Kaldır',
-                  style: TextStyle(
+                title: Text(
+                  AppLocalizations.of(sheetContext)!
+                      .selectionModeRemoveCategoryOption,
+                  style: const TextStyle(
                     color: Colors.red,
                     fontWeight: FontWeight.w500,
                   ),

@@ -101,9 +101,9 @@ class NoteCalcTableBlock extends StatelessWidget {
                           fontSize: fontSize,
                           fontFamily: fontFamily,
                         ),
-                        decoration: const InputDecoration(
-                          hintText: 'Kalem...',
-                          hintStyle: TextStyle(color: Colors.grey),
+                        decoration: InputDecoration(
+                          hintText: AppLocalizations.of(context)!.calcTableItemHint,
+                          hintStyle: const TextStyle(color: Colors.grey),
                           border: InputBorder.none,
                         ),
                         onChanged: (val) => onLabelChanged(j, val),
@@ -172,7 +172,7 @@ class NoteCalcTableBlock extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: Text(
-                  'Toplam',
+                  AppLocalizations.of(context)!.calcTableTotalRowLabel,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: dNoteEffectiveTextColor(context, textColor),

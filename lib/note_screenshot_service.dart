@@ -96,13 +96,13 @@ class NoteScreenshotService {
 
       final renderObject = boundaryKey.currentContext?.findRenderObject();
       if (renderObject is! RenderRepaintBoundary) {
-        throw Exception('Ekran görüntüsü alınamadı (boundary bulunamadı)');
+        throw Exception(AppLocalizations.of(context)!.screenshotExportBoundaryNotFoundMessage);
       }
       final image = await renderObject.toImage(pixelRatio: 2.5);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       image.dispose();
       if (byteData == null) {
-        throw Exception('Ekran görüntüsü verisi oluşturulamadı');
+        throw Exception(AppLocalizations.of(context)!.screenshotExportByteDataNullMessage);
       }
       pngBytes = byteData.buffer.asUint8List();
     } finally {
@@ -113,13 +113,13 @@ class NoteScreenshotService {
     // amacıyla "image" paketiyle decode/encode ediyoruz.
     final decoded = img.decodePng(pngBytes);
     if (decoded == null) {
-      throw Exception('Görüntü işlenemedi (PNG çözümlenemedi)');
+      throw Exception(AppLocalizations.of(context)!.screenshotExportPngDecodeFailedMessage);
     }
     final jpgBytes = img.encodeJpg(decoded, quality: 92);
 
     final tempDir = await getTemporaryDirectory();
     final safeTitle = title.trim().isEmpty
-        ? 'not'
+        ? AppLocalizations.of(context)!.pdfExportDefaultFileName
         : title.trim().replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
     final filePath = p.join(
       tempDir.path,
@@ -192,7 +192,7 @@ class _NoteScreenshotContent extends StatelessWidget {
     );
   }
 
-  Widget _attachmentGrid(List<String> ids) {
+  Widget _attachmentGrid(BuildContext context, List<String> ids) {
     final byId = {for (final a in attachments) a['id'].toString(): a};
     final items = ids.where((id) => byId[id] != null).toList();
     if (items.isEmpty) return const SizedBox.shrink();
@@ -231,7 +231,7 @@ class _NoteScreenshotContent extends StatelessWidget {
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(6),
                   child: Text(
-                    '📎 ${(att['fileName'] ?? 'Ek dosya').toString()}',
+                    '📎 ${(att['fileName'] ?? AppLocalizations.of(context)!.pdfExportDefaultAttachmentName).toString()}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.grey, fontSize: 11),
                   ),
@@ -263,7 +263,9 @@ class _NoteScreenshotContent extends StatelessWidget {
       if (!isDrawingOnlyNote) ...[
         Text.rich(
           RichTextSpans.buildStaticSpan(
-            text: title.trim().isEmpty ? 'Başlıksız Not' : title.trim(),
+            text: title.trim().isEmpty
+                ? AppLocalizations.of(context)!.pdfExportUntitledNoteLabel
+                : title.trim(),
             rawSpans: titleSpans,
             style: TextStyle(
               fontSize: 20,
@@ -387,7 +389,7 @@ class _NoteScreenshotContent extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
                     child: Text(
-                      'Toplam',
+                      AppLocalizations.of(context)!.screenshotCalcTableTotalLabel,
                       style: TextStyle(
                         fontSize: fontSize,
                         fontFamily: fontFamily,
@@ -434,7 +436,7 @@ class _NoteScreenshotContent extends StatelessWidget {
           final ids = List<String>.from(
             (block['ids'] as List? ?? const []).map((e) => e.toString()),
           );
-          children.add(_attachmentGrid(ids));
+          children.add(_attachmentGrid(context, ids));
         } else if (type == 'drawing') {
           // Düzenleyicideki NoteDrawingBlock ile birebir aynı görünüm için
           // aynı _DrawingPainter doğrudan kullanılıyor (etkileşimsiz,

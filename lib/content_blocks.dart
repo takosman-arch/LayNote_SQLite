@@ -185,8 +185,21 @@ class ContentBlocks {
     return jsonEncode(cleaned);
   }
 
+  // Hesap tablosu toplam satırının etiketini üretir. Bu sınıftaki metotlar
+  // static olduğundan (ve bazıları BuildContext olmayan yerlerden de
+  // çağrılabildiğinden, bkz. plainText'in arama/kopyalama/paylaşma
+  // kullanımı) etiketi doğrudan AppLocalizations ile üretemezler. Çağıran
+  // taraf isterse [totalLabelBuilder] ile kendi (yerelleştirilmiş) etiketini
+  // sağlayabilir; sağlamazsa geriye dönük uyumluluk için eski sabit metin
+  // kullanılır.
+  static String _defaultTotalLabel(String amount) => 'Toplam: $amount';
+
   // Aramada, kopyalamada, paylaşmada ve önizlemede kullanılacak düz metin.
-  static String plainText(String? raw) {
+  static String plainText(
+    String? raw, {
+    String Function(String amount)? totalLabelBuilder,
+  }) {
+    final buildTotalLabel = totalLabelBuilder ?? _defaultTotalLabel;
     final blocks = parse(raw);
     return blocks
         .where((b) =>
@@ -219,7 +232,7 @@ class ContentBlocks {
               }
             }
             if (lines.isEmpty) return '';
-            lines.add('Toplam: ${formatCalcNumber(total)}');
+            lines.add(buildTotalLabel(formatCalcNumber(total)));
             return lines.join('\n');
           }
           return (b['text'] ?? '').toString();
@@ -245,8 +258,10 @@ class ContentBlocks {
   // _parseChecklistItems), dolayısıyla onlar için sadece metin uzunluğu
   // kadar offset ilerletmek yeterli.
   static (String, List<Map<String, dynamic>>) previewTextWithSpans(
-    String? raw,
-  ) {
+    String? raw, {
+    String Function(String amount)? totalLabelBuilder,
+  }) {
+    final buildTotalLabel = totalLabelBuilder ?? _defaultTotalLabel;
     final blocks = parse(raw);
     final relevant = blocks
         .where((b) =>
@@ -282,7 +297,7 @@ class ContentBlocks {
         }
         segmentText = lines.isEmpty
             ? ''
-            : (lines..add('Toplam: ${formatCalcNumber(total)}')).join('\n');
+            : (lines..add(buildTotalLabel(formatCalcNumber(total)))).join('\n');
       } else {
         // 'text' bloğu: hem metni hem de o bloğun kendi span'larını
         // (offset'lenerek) al.
@@ -333,7 +348,11 @@ class ContentBlocks {
   // üretir. Blok sırası korunur: metin ve hesap tablosu blokları satır
   // satır (yeni satıra göre) düz metne çevrilir. Boş metin satırları
   // atlanır.
-  static List<Map<String, dynamic>> previewLines(String? raw) {
+  static List<Map<String, dynamic>> previewLines(
+    String? raw, {
+    String Function(String amount)? totalLabelBuilder,
+  }) {
+    final buildTotalLabel = totalLabelBuilder ?? _defaultTotalLabel;
     final blocks = parse(raw);
     final lines = <Map<String, dynamic>>[];
     for (final b in blocks) {
@@ -368,7 +387,7 @@ class ContentBlocks {
         if (any) {
           lines.add({
             'checklist': false,
-            'text': 'Toplam: ${formatCalcNumber(total)}',
+            'text': buildTotalLabel(formatCalcNumber(total)),
           });
         }
       }

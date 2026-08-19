@@ -83,6 +83,9 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
   // Tema (Açık / Koyu / Sistem) — gerçek kaynak appThemeMode notifier'ıdır,
   // burada sadece Ayarlar ekranındaki seçili seçeneği göstermek için tutulur.
   ThemeMode _themeMode = ThemeMode.dark;
+  // Dil (Sistem / Türkçe / English) — gerçek kaynak appLanguage notifier'ıdır,
+  // burada sadece Ayarlar ekranındaki seçili seçeneği göstermek için tutulur.
+  String _appLanguage = 'system';
   bool _colorfulNotes = false;
   // Vurgu Rengi — gerçek kaynak appAccentColor notifier'ıdır, burada sadece
   // Ayarlar ekranındaki seçili rengi göstermek için tutulur (bkz. theme.dart).

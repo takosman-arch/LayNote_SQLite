@@ -31,27 +31,67 @@ part of 'main.dart';
 // kod tekrarı olmadan paylaşabilir.
 // ════════════════════════════════════════════════════════════════════════
 
-const List<String> _gundemWeekDayFullTr = [
-  'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar',
-];
-
-const List<String> _gundemMonthNamesTr = [
-  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
-];
-
-const List<String> _gundemMonthNamesShortTr = [
-  'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
-  'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara',
-];
-
 bool _gundemIsSameDay(DateTime a, DateTime b) =>
     a.year == b.year && a.month == b.month && a.day == b.day;
 
+// Kısa ay isimleri listesi (1 Ocak = index 0). _gundemShortDateLabel
+// içindeki tanımla AYNI ARB anahtarlarını kullanır; note_list_note_dialog_
+// mixin.dart gibi başka dosyaların da aynı listeyi kod tekrarı olmadan
+// kullanabilmesi için üst seviyeye (paylaşılabilir) çıkarıldı.
+List<String> _gundemMonthNamesShortTr(BuildContext context) {
+  final l10n = AppLocalizations.of(context)!;
+  return [
+    l10n.gundemMonthShortJan,
+    l10n.gundemMonthShortFeb,
+    l10n.gundemMonthShortMar,
+    l10n.gundemMonthShortApr,
+    l10n.gundemMonthShortMay,
+    l10n.gundemMonthShortJun,
+    l10n.gundemMonthShortJul,
+    l10n.gundemMonthShortAug,
+    l10n.gundemMonthShortSep,
+    l10n.gundemMonthShortOct,
+    l10n.gundemMonthShortNov,
+    l10n.gundemMonthShortDec,
+  ];
+}
+
+// Tam gün isimleri listesi (Pazartesi = index 0). build() içindeki
+// weekDayFull tanımıyla AYNI ARB anahtarlarını kullanır; aynı paylaşım
+// gerekçesiyle üst seviyeye çıkarıldı.
+List<String> _gundemWeekDayFullTr(BuildContext context) {
+  final l10n = AppLocalizations.of(context)!;
+  return [
+    l10n.gundemWeekdayMonday,
+    l10n.gundemWeekdayTuesday,
+    l10n.gundemWeekdayWednesday,
+    l10n.gundemWeekdayThursday,
+    l10n.gundemWeekdayFriday,
+    l10n.gundemWeekdaySaturday,
+    l10n.gundemWeekdaySunday,
+  ];
+}
+
 // "Bugün"/"Yarın" başlıklarının yanında gösterilecek kısa tarih etiketi,
-// örn. "9 Ağu".
-String _gundemShortDateLabel(DateTime d) =>
-    '${d.day} ${_gundemMonthNamesShortTr[d.month - 1]}';
+// örn. "9 Ağu". Ay kısaltması AppLocalizations üzerinden lokalize edilir.
+String _gundemShortDateLabel(BuildContext context, DateTime d) {
+  final l10n = AppLocalizations.of(context)!;
+  final monthNamesShort = [
+    l10n.gundemMonthShortJan,
+    l10n.gundemMonthShortFeb,
+    l10n.gundemMonthShortMar,
+    l10n.gundemMonthShortApr,
+    l10n.gundemMonthShortMay,
+    l10n.gundemMonthShortJun,
+    l10n.gundemMonthShortJul,
+    l10n.gundemMonthShortAug,
+    l10n.gundemMonthShortSep,
+    l10n.gundemMonthShortOct,
+    l10n.gundemMonthShortNov,
+    l10n.gundemMonthShortDec,
+  ];
+  return '${d.day} ${monthNamesShort[d.month - 1]}';
+}
 
 // Bir notun hatırlatıcısının "gündemdeki günü"nü belirler:
 // - Tekrarsız hatırlatıcılarda doğrudan kurulu tarihin günüdür (geçmişte
@@ -268,12 +308,12 @@ class _GundemScreenState extends State<GundemScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.event_busy, color: Colors.blueGrey),
-              title: const Text('Gündemden kaldır'),
+              title: Text(AppLocalizations.of(context)!.gundemMenuRemoveFromAgenda),
               onTap: () => Navigator.pop(sheetCtx, 'remove'),
             ),
             ListTile(
               leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
-              title: const Text('Notu sil'),
+              title: Text(AppLocalizations.of(context)!.gundemMenuDeleteNote),
               onTap: () => Navigator.pop(sheetCtx, 'delete'),
             ),
           ],
@@ -405,49 +445,60 @@ class _GundemScreenState extends State<GundemScreen> {
     sortEntries(nextWeekEntries);
     sortEntries(furtherEntries);
 
+    final l10n = AppLocalizations.of(context)!;
+    final weekDayFull = [
+      l10n.gundemWeekdayMonday,
+      l10n.gundemWeekdayTuesday,
+      l10n.gundemWeekdayWednesday,
+      l10n.gundemWeekdayThursday,
+      l10n.gundemWeekdayFriday,
+      l10n.gundemWeekdaySaturday,
+      l10n.gundemWeekdaySunday,
+    ];
+
     final futureColor = Colors.grey;
     final sections = <_AgendaSection>[
       _AgendaSection(
-        title: 'Gecikmiş',
+        title: l10n.gundemSectionOverdue,
         icon: Icons.error_outline,
         headerColor: Colors.redAccent,
         showFullDate: true,
         entries: _lastThree(overdueEntries),
       ),
       _AgendaSection(
-        title: 'Bugün',
+        title: l10n.gundemSectionToday,
         icon: Icons.today_outlined,
         headerColor: Colors.green,
         showFullDate: false,
         entries: todayEntries,
-        dateLabel: _gundemShortDateLabel(todayDay),
+        dateLabel: _gundemShortDateLabel(context, todayDay),
       ),
       _AgendaSection(
-        title: 'Yarın',
+        title: l10n.gundemSectionTomorrow,
         icon: Icons.wb_twilight,
         headerColor: futureColor,
         showFullDate: false,
         entries: tomorrowEntries,
-        dateLabel: _gundemShortDateLabel(tomorrow),
+        dateLabel: _gundemShortDateLabel(context, tomorrow),
       ),
       for (final d in restOfWeekDays)
         _AgendaSection(
-          title: _gundemWeekDayFullTr[d.weekday - 1],
+          title: weekDayFull[d.weekday - 1],
           icon: Icons.calendar_today_outlined,
           headerColor: futureColor,
           showFullDate: false,
           entries: restOfWeekEntries[d]!,
-          dateLabel: _gundemShortDateLabel(d),
+          dateLabel: _gundemShortDateLabel(context, d),
         ),
       _AgendaSection(
-        title: 'Gelecek Hafta',
+        title: l10n.gundemSectionNextWeek,
         icon: Icons.date_range_outlined,
         headerColor: futureColor,
         showFullDate: true,
         entries: nextWeekEntries,
       ),
       _AgendaSection(
-        title: 'Daha İleri',
+        title: l10n.gundemSectionFurther,
         icon: Icons.more_horiz,
         headerColor: futureColor,
         showFullDate: true,
@@ -461,11 +512,14 @@ class _GundemScreenState extends State<GundemScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final sections = _buildSections();
-    final overdueSection = sections.where((s) => s.title == 'Gecikmiş').isEmpty
+    final overdueSection =
+        sections.where((s) => s.title == l10n.gundemSectionOverdue).isEmpty
         ? null
-        : sections.firstWhere((s) => s.title == 'Gecikmiş');
-    final restSections = sections.where((s) => s.title != 'Gecikmiş').toList();
+        : sections.firstWhere((s) => s.title == l10n.gundemSectionOverdue);
+    final restSections =
+        sections.where((s) => s.title != l10n.gundemSectionOverdue).toList();
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -474,7 +528,7 @@ class _GundemScreenState extends State<GundemScreen> {
         centerTitle: false,
         iconTheme: IconThemeData(color: appAccentColor.value),
         title: Text(
-          'Gündem',
+          l10n.gundemAppBarTitle,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: appAccentColor.value,
@@ -485,7 +539,7 @@ class _GundemScreenState extends State<GundemScreen> {
           if (widget.onOpenCalendar != null)
             IconButton(
               icon: const Icon(Icons.calendar_month),
-              tooltip: 'Takvim',
+              tooltip: l10n.gundemCalendarTooltip,
               onPressed: () => widget.onOpenCalendar!(context),
             ),
         ],
@@ -604,7 +658,7 @@ class _GundemScreenState extends State<GundemScreen> {
             ),
             const SizedBox(height: 12),
             Text(
-              'Gündeminde bir şey yok',
+              AppLocalizations.of(context)!.gundemEmptyTitle,
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
@@ -613,7 +667,7 @@ class _GundemScreenState extends State<GundemScreen> {
             ),
             const SizedBox(height: 4),
             Text(
-              'Hatırlatıcı eklediğin veya tarih atadığın notlar burada listelenir.',
+              AppLocalizations.of(context)!.gundemEmptySubtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12,
@@ -704,9 +758,10 @@ class _GundemScreenState extends State<GundemScreen> {
 // Başlık boşken bu alanı doğrudan ekrana basmak yerine, bloklardan okunabilir
 // bir önizleme metni üretir. content JSON değilse (eski/düz metin notlar)
 // olduğu gibi döner.
-String _gundemPreviewFromContent(String raw) {
+String _gundemPreviewFromContent(BuildContext context, String raw) {
   final trimmed = raw.trim();
   if (trimmed.isEmpty) return '';
+  final l10n = AppLocalizations.of(context)!;
   try {
     final decoded = jsonDecode(trimmed);
     if (decoded is! List) return trimmed;
@@ -734,13 +789,13 @@ String _gundemPreviewFromContent(String raw) {
           }
           break;
         case 'calc_table':
-          addPart('[Hesap Tablosu]');
+          addPart(l10n.gundemPreviewCalcTableLabel);
           break;
         case 'drawing':
-          addPart('[Çizim]');
+          addPart(l10n.gundemPreviewDrawingLabel);
           break;
         case 'image':
-          addPart('[Görsel]');
+          addPart(l10n.gundemPreviewImageLabel);
           break;
         default:
           break;
@@ -767,9 +822,13 @@ String _gundemPreviewFromContent(String raw) {
 // uyuşmaz. Yalnızca 'text' tipi bloklar span taşıyabilir (checklist
 // öğeleri, hesap tablosu/çizim/görsel yer tutucuları hiç span
 // taşımıyor), dolayısıyla span kaydırma sadece o bloklar için yapılır.
-(String, List<Map<String, dynamic>>) _gundemPreviewWithSpans(String raw) {
+(String, List<Map<String, dynamic>>) _gundemPreviewWithSpans(
+  BuildContext context,
+  String raw,
+) {
   final trimmed = raw.trim();
   if (trimmed.isEmpty) return ('', const []);
+  final l10n = AppLocalizations.of(context)!;
   try {
     final decoded = jsonDecode(trimmed);
     if (decoded is! List) return (trimmed, const []);
@@ -826,13 +885,13 @@ String _gundemPreviewFromContent(String raw) {
           }
           break;
         case 'calc_table':
-          addPart('[Hesap Tablosu]');
+          addPart(l10n.gundemPreviewCalcTableLabel);
           break;
         case 'drawing':
-          addPart('[Çizim]');
+          addPart(l10n.gundemPreviewDrawingLabel);
           break;
         case 'image':
-          addPart('[Görsel]');
+          addPart(l10n.gundemPreviewImageLabel);
           break;
         default:
           break;
@@ -867,13 +926,16 @@ class _AgendaTile extends StatelessWidget {
     this.onLongPress,
   });
 
-  static const Map<String, String> _repeatLabels = {
-    'hourly': 'Her saat',
-    'daily': 'Her gün',
-    'weekly': 'Her hafta',
-    'monthly': 'Her ay',
-    'yearly': 'Her yıl',
-  };
+  static Map<String, String> _repeatLabels(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return {
+      'hourly': l10n.gundemRepeatHourly,
+      'daily': l10n.gundemRepeatDaily,
+      'weekly': l10n.gundemRepeatWeekly,
+      'monthly': l10n.gundemRepeatMonthly,
+      'yearly': l10n.gundemRepeatYearly,
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -888,12 +950,15 @@ class _AgendaTile extends StatelessWidget {
       title = note['title'].toString();
       titleRenderSpans = RichTextSpans.parse(note['titleSpans'] as List?);
     } else {
-      final preview = _gundemPreviewWithSpans(note['content']?.toString() ?? '');
+      final preview = _gundemPreviewWithSpans(
+        context,
+        note['content']?.toString() ?? '',
+      );
       if (preview.$1.isNotEmpty) {
         title = preview.$1;
         titleRenderSpans = preview.$2;
       } else {
-        title = 'Adsız not';
+        title = AppLocalizations.of(context)!.gundemUntitledNote;
         titleRenderSpans = const [];
       }
     }
@@ -918,7 +983,7 @@ class _AgendaTile extends StatelessWidget {
         : '';
     final repeat = isAssigned ? null : note['reminderRepeat']?.toString();
     final repeatLabel = (repeat != null && repeat.isNotEmpty)
-        ? _repeatLabels[repeat]
+        ? _repeatLabels(context)[repeat]
         : null;
 
     return Container(
