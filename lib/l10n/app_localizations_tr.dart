@@ -112,7 +112,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String blockPreviewCalcTableLabel(int count) {
-    return 'Hesap Tablosu ($count satır)';
+    return 'Hesap Listesi ($count satır)';
   }
 
   @override
@@ -278,7 +278,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get drawerFavoritesLabel => 'Favori';
 
   @override
-  String get drawerAgendaLabel => 'Gündem';
+  String get drawerAgendaLabel => 'Ajanda';
 
   @override
   String get drawerRemindersLabel => 'Hatırlatıcı';
@@ -1581,13 +1581,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get gundemWeekdaySunday => 'Pazar';
 
   @override
-  String get gundemAppBarTitle => 'Gündem';
+  String get gundemAppBarTitle => 'Ajanda';
 
   @override
   String get gundemCalendarTooltip => 'Takvim';
 
   @override
-  String get gundemEmptyTitle => 'Gündeminde bir şey yok';
+  String get gundemEmptyTitle => 'Ajandanda bir şey yok';
 
   @override
   String get gundemEmptySubtitle =>
@@ -1612,7 +1612,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get gundemRepeatYearly => 'Her yıl';
 
   @override
-  String get gundemPreviewCalcTableLabel => '[Hesap Tablosu]';
+  String get gundemPreviewCalcTableLabel => '[Hesap Listesi]';
 
   @override
   String get gundemPreviewDrawingLabel => '[Çizim]';
@@ -2113,7 +2113,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Zip arşivi oluşturulamadı (ZipEncoder null döndürdü).';
 
   @override
-  String get calcTableMenuItemLabel => 'Hesap Tablosu';
+  String get calcTableMenuItemLabel => 'Hesap Listesi';
 
   @override
   String get tagsMenuItemLabel => 'Etiketler';

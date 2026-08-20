@@ -13,7 +13,7 @@ class _NoteListScreenState extends State<NoteListScreen>
         NoteListSelectionMixin,
         NoteListLifecycleMixin,
         NoteListDataCategoryMixin,
-        NoteListActionsMixin,
+        NoteListActionsMixin,w
         NoteListAttachmentMixin,
         NoteListNoteDialogMixin,
         NoteListBuildMixin {}

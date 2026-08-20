@@ -4486,13 +4486,18 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               value: 'calc_table',
                               child: Row(
                                 children: [
+                                  Expanded(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.calcTableMenuItemLabel,
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
                                   Icon(
                                     Icons.calculate,
                                     color: appAccentColor.value,
                                     size: 24,
                                   ),
-                                  SizedBox(width: 10),
-                                  Text(AppLocalizations.of(context)!.calcTableMenuItemLabel),
                                 ],
                               ),
                             ),
@@ -4501,14 +4506,17 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               value: 'drawing',
                               child: Row(
                                 children: [
+                                  Expanded(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.drawingBoardMenuItemLabel,
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
                                   Icon(
                                     Icons.draw,
                                     color: appAccentColor.value,
                                     size: 24,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    AppLocalizations.of(context)!.drawingBoardMenuItemLabel,
                                   ),
                                 ],
                               ),
@@ -4518,15 +4526,18 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               value: 'reorder_blocks',
                               child: Row(
                                 children: [
+                                  Expanded(
+                                    child: Text(
+                                      AppLocalizations.of(context)!
+                                          .reorderBlocksMenuItemLabel,
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
                                   Icon(
                                     Icons.swap_vert,
                                     color: appAccentColor.value,
                                     size: 24,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    AppLocalizations.of(context)!
-                                        .reorderBlocksMenuItemLabel,
                                   ),
                                 ],
                               ),
@@ -4535,13 +4546,18 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                             value: 'tags',
                             child: Row(
                               children: [
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.tagsMenuItemLabel,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
                                 Icon(
                                   Icons.sell_outlined,
                                   color: appAccentColor.value,
                                   size: 24,
                                 ),
-                                SizedBox(width: 10),
-                                Expanded(child: Text(AppLocalizations.of(context)!.tagsMenuItemLabel)),
                               ],
                             ),
                           ),
@@ -4550,18 +4566,19 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                             value: 'import_txt',
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.upload_file,
-                                  color: appAccentColor.value,
-                                  size: 24,
-                                ),
-                                SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     AppLocalizations.of(
                                       context,
                                     )!.txtImportMenuItemLabel,
+                                    style: const TextStyle(fontSize: 16),
                                   ),
+                                ),
+                                SizedBox(width: 10),
+                                Icon(
+                                  Icons.upload_file,
+                                  color: appAccentColor.value,
+                                  size: 24,
                                 ),
                               ],
                             ),
@@ -4570,23 +4587,19 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                             value: 'export_menu',
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.ios_share,
-                                  color: appAccentColor.value,
-                                  size: 24,
-                                ),
-                                SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     AppLocalizations.of(
                                       context,
                                     )!.exportMenuItemLabel,
+                                    style: const TextStyle(fontSize: 16),
                                   ),
                                 ),
+                                SizedBox(width: 10),
                                 Icon(
-                                  Icons.chevron_right,
-                                  size: 18,
-                                  color: Colors.grey,
+                                  Icons.ios_share,
+                                  color: appAccentColor.value,
+                                  size: 24,
                                 ),
                               ],
                             ),

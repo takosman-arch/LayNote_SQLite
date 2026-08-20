@@ -170,3 +170,23 @@ flutter:
         - asset: assets/fonts/DancingScript-Regular.ttf
         - asset: assets/fonts/DancingScript-Bold.ttf
           weight: 700
+
+    # ── Yeni eklenen fontlar (Ayarlar > Kişiselleştirme > Yazı Tipi) ──
+    - family: DNoteSans
+      fonts:
+        - asset: assets/fonts/Inter-VariableFont_opsz,wght.ttf
+    - family: DNoteSansAlt
+      fonts:
+        - asset: assets/fonts/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf
+    - family: DNoteGeometric
+      fonts:
+        - asset: assets/fonts/Geom-VariableFont_wght.ttf
+    - family: DNoteHandDE
+      fonts:
+        - asset: assets/fonts/PlaywriteDEGrund-VariableFont_wght.ttf
+    - family: DNoteHandUS
+      fonts:
+        - asset: assets/fonts/PlaywriteUSTrad-VariableFont_wght.ttf
+    - family: DNoteElegant
+      fonts:
+        - asset: assets/fonts/ElmsSans-VariableFont_wght.ttf

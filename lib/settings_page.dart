@@ -41,6 +41,18 @@ String? dNoteFontFamilyValue(String? name) {
       return 'DNoteSerif';
     case 'Cursive':
       return 'DNoteCursive';
+    case 'Sans':
+      return 'DNoteSans';
+    case 'Sans Alt':
+      return 'DNoteSansAlt';
+    case 'Geometric':
+      return 'DNoteGeometric';
+    case 'El Yazısı DE':
+      return 'DNoteHandDE';
+    case 'El Yazısı US':
+      return 'DNoteHandUS';
+    case 'Elegant':
+      return 'DNoteElegant';
     default:
       return null;
   }
@@ -114,9 +126,15 @@ class _SettingsPageState extends State<SettingsPage> {
   // ── Yazı tipi seçici ──────────────────────────────────────────────
   List<String> _fonts(BuildContext context) => [
     AppLocalizations.of(context)!.settingsFontFamilyDefaultLabel,
-    'Monospace',
+    'Sans',
     'Serif',
     'Cursive',
+    'Elegant',
+    'Sans Alt',
+    'Geometric',
+    'Monospace',
+    'El Yazısı DE',
+    'El Yazısı US',
   ];
 
   static String? _fontFamilyValue(String name) => dNoteFontFamilyValue(name);
@@ -962,6 +980,30 @@ class _SettingsPageState extends State<SettingsPage> {
                   groupValue: s._appLanguage,
                   onChanged: (val) => _updateLanguage(ctx, val, setDlg),
                 ),
+                RadioListTile<String>(
+                  title: const Text('Deutsch'),
+                  value: 'de',
+                  groupValue: s._appLanguage,
+                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
+                ),
+                RadioListTile<String>(
+                  title: const Text('Français'),
+                  value: 'fr',
+                  groupValue: s._appLanguage,
+                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
+                ),
+                RadioListTile<String>(
+                  title: const Text('Italiano'),
+                  value: 'it',
+                  groupValue: s._appLanguage,
+                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
+                ),
+                RadioListTile<String>(
+                  title: const Text('Español'),
+                  value: 'es',
+                  groupValue: s._appLanguage,
+                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
+                ),
               ],
             ),
           ),
@@ -1194,6 +1236,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     subtitle: switch (s._appLanguage) {
                       'tr' => 'Türkçe',
                       'en' => 'English',
+                      'de' => 'Deutsch',
+                      'fr' => 'Français',
+                      'it' => 'Italiano',
+                      'es' => 'Español',
                       _ => AppLocalizations.of(context)!.settingsLanguageSystemOption,
                     },
                     trailing: null,
@@ -1278,49 +1324,68 @@ class _SettingsPageState extends State<SettingsPage> {
                             top: Radius.circular(20),
                           ),
                         ),
+                        // Font listesi 10 öğeye çıktığı için (6 yeni font
+                        // eklendi) sabit yükseklikli Column artık küçük
+                        // ekranlarda taşabilir. isScrollControlled + ekran
+                        // yüksekliğine oranlı bir üst sınır ile liste
+                        // kendi içinde kaydırılabilir hale getirildi.
+                        isScrollControlled: true,
                         builder: (_) => SafeArea(
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.settingsFontFamilyTileTitle,
-                                  style: TextStyle(
-                                    color: dNoteTextColor(context),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                ..._fonts(context).map(
-                                  (f) => ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Text(
-                                      f,
-                                      style: TextStyle(
-                                        color: s._fontFamily == f
-                                            ? Theme.of(context).primaryColor
-                                            : dNoteTextColor(context),
-                                        fontFamily: _fontFamilyValue(f),
-                                      ),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxHeight:
+                                    MediaQuery.of(context).size.height * 0.7,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.settingsFontFamilyTileTitle,
+                                    style: TextStyle(
+                                      color: dNoteTextColor(context),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    trailing: s._fontFamily == f
-                                        ? Icon(
-                                            Icons.check_circle,
-                                            color: Theme.of(context).primaryColor,
-                                          )
-                                        : null,
-                                    onTap: () {
-                                      s.setState(() => s._fontFamily = f);
-                                      setState(() {});
-                                      s._saveData();
-                                      Navigator.pop(context);
-                                    },
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 8),
+                                  Flexible(
+                                    child: ListView(
+                                      shrinkWrap: true,
+                                      children: _fonts(context)
+                                          .map(
+                                            (f) => ListTile(
+                                              contentPadding: EdgeInsets.zero,
+                                              title: Text(
+                                                f,
+                                                style: TextStyle(
+                                                  color: s._fontFamily == f
+                                                      ? Theme.of(context).primaryColor
+                                                      : dNoteTextColor(context),
+                                                  fontFamily: _fontFamilyValue(f),
+                                                ),
+                                              ),
+                                              trailing: s._fontFamily == f
+                                                  ? Icon(
+                                                      Icons.check_circle,
+                                                      color: Theme.of(context).primaryColor,
+                                                    )
+                                                  : null,
+                                              onTap: () {
+                                                s.setState(() => s._fontFamily = f);
+                                                setState(() {});
+                                                s._saveData();
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          )
+                                          .toList(),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),

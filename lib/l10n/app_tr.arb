@@ -134,7 +134,7 @@
   "@voiceRecordingDefaultLabel": {
     "description": "Yeni kaydedilen ses notu için otomatik dosya adı öneki ve oynatıcı sheet'inde dosya adı yoksa gösterilen varsayılan başlık"
   },
-  "blockPreviewCalcTableLabel": "Hesap Tablosu ({count} satır)",
+  "blockPreviewCalcTableLabel": "Hesap Listesi ({count} satır)",
   "@blockPreviewCalcTableLabel": {
     "description": "Blokları Sırala listesinde bir hesap tablosu bloğu için gösterilen önizleme metni",
     "placeholders": {
@@ -362,7 +362,7 @@
   "@drawerFavoritesLabel": {
     "description": "Çekmece menüsünde favori notları gösteren satırın etiketi"
   },
-  "drawerAgendaLabel": "Gündem",
+  "drawerAgendaLabel": "Ajanda",
   "@drawerAgendaLabel": {
     "description": "Çekmece menüsünde Gündem ekranını açan satırın etiketi"
   },
@@ -2125,7 +2125,7 @@
   "@gundemWeekdaySunday": {
     "description": "Gündem ekranında, bu haftanın kalan günlerinden birinin bölüm başlığı olarak kullanılan gün adı"
   },
-  "gundemAppBarTitle": "Gündem",
+  "gundemAppBarTitle": "Ajanda",
   "@gundemAppBarTitle": {
     "description": "Gündem ekranının üst bar (AppBar) başlığı"
   },
@@ -2133,7 +2133,7 @@
   "@gundemCalendarTooltip": {
     "description": "Gündem ekranının üst barındaki takvim ikonunun tooltip'i"
   },
-  "gundemEmptyTitle": "Gündeminde bir şey yok",
+  "gundemEmptyTitle": "Ajandanda bir şey yok",
   "@gundemEmptyTitle": {
     "description": "Gündem ekranında hiç satır yokken gösterilen boş durum başlığı"
   },
@@ -2165,7 +2165,7 @@
   "@gundemRepeatYearly": {
     "description": "Gündem satırında, hatırlatıcının tekrar sıklığı 'yıllık' olduğunda gösterilen etiket"
   },
-  "gundemPreviewCalcTableLabel": "[Hesap Tablosu]",
+  "gundemPreviewCalcTableLabel": "[Hesap Listesi]",
   "@gundemPreviewCalcTableLabel": {
     "description": "Gündem satırında, başlıksız bir notun içerik önizlemesinde hesap tablosu bloğu için gösterilen yer tutucu"
   },
@@ -2827,7 +2827,7 @@
   "@backupErrorZipEncodeFailedMessage": {
     "description": "Yedek oluşturulurken zip kodlama işlemi beklenmedik şekilde null döndürdüğünde gösterilen hata mesajı"
   },
-  "calcTableMenuItemLabel": "Hesap Tablosu",
+  "calcTableMenuItemLabel": "Hesap Listesi",
   "tagsMenuItemLabel": "Etiketler",
   "linkDialogUrlHint": "https://ornek.com",
   "checklistItemHint": "Madde ekle...",

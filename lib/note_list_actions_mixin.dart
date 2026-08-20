@@ -593,9 +593,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
           value: 'export_pdf',
           child: Row(
             children: [
-              Icon(Icons.picture_as_pdf, color: Colors.redAccent, size: 20),
+              Expanded(child: Text('PDF')),
               SizedBox(width: 10),
-              Text('PDF'),
+              Icon(Icons.picture_as_pdf, color: Colors.redAccent, size: 20),
             ],
           ),
         ),
@@ -603,9 +603,9 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
           value: 'export_jpg',
           child: Row(
             children: [
-              Icon(Icons.image_outlined, color: Colors.blueAccent, size: 20),
+              Expanded(child: Text('JPG')),
               SizedBox(width: 10),
-              Text('JPG'),
+              Icon(Icons.image_outlined, color: Colors.blueAccent, size: 20),
             ],
           ),
         ),
@@ -613,13 +613,13 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
           value: 'export_txt',
           child: Row(
             children: [
+              Expanded(child: Text('TXT')),
+              SizedBox(width: 10),
               Icon(
                 Icons.description_outlined,
                 color: Colors.greenAccent,
                 size: 20,
               ),
-              SizedBox(width: 10),
-              Text('TXT'),
             ],
           ),
         ),

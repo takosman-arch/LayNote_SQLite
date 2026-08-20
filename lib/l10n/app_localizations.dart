@@ -5,7 +5,11 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
+import 'app_localizations_it.dart';
 import 'app_localizations_tr.dart';
 
 // ignore_for_file: type=lint
@@ -94,7 +98,11 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('de'),
     Locale('en'),
+    Locale('es'),
+    Locale('fr'),
+    Locale('it'),
     Locale('tr'),
   ];
 
@@ -287,7 +295,7 @@ abstract class AppLocalizations {
   /// Blokları Sırala listesinde bir hesap tablosu bloğu için gösterilen önizleme metni
   ///
   /// In tr, this message translates to:
-  /// **'Hesap Tablosu ({count} satır)'**
+  /// **'Hesap Listesi ({count} satır)'**
   String blockPreviewCalcTableLabel(int count);
 
   /// Blokları Sırala listesinde bir çizim bloğu için gösterilen önizleme metni
@@ -599,7 +607,7 @@ abstract class AppLocalizations {
   /// Çekmece menüsünde Gündem ekranını açan satırın etiketi
   ///
   /// In tr, this message translates to:
-  /// **'Gündem'**
+  /// **'Ajanda'**
   String get drawerAgendaLabel;
 
   /// Çekmece menüsünde hatırlatıcılı notları gösteren satırın etiketi
@@ -2969,7 +2977,7 @@ abstract class AppLocalizations {
   /// Gündem ekranının üst bar (AppBar) başlığı
   ///
   /// In tr, this message translates to:
-  /// **'Gündem'**
+  /// **'Ajanda'**
   String get gundemAppBarTitle;
 
   /// Gündem ekranının üst barındaki takvim ikonunun tooltip'i
@@ -2981,7 +2989,7 @@ abstract class AppLocalizations {
   /// Gündem ekranında hiç satır yokken gösterilen boş durum başlığı
   ///
   /// In tr, this message translates to:
-  /// **'Gündeminde bir şey yok'**
+  /// **'Ajandanda bir şey yok'**
   String get gundemEmptyTitle;
 
   /// Gündem ekranında hiç satır yokken başlığın altında gösterilen açıklama metni
@@ -3029,7 +3037,7 @@ abstract class AppLocalizations {
   /// Gündem satırında, başlıksız bir notun içerik önizlemesinde hesap tablosu bloğu için gösterilen yer tutucu
   ///
   /// In tr, this message translates to:
-  /// **'[Hesap Tablosu]'**
+  /// **'[Hesap Listesi]'**
   String get gundemPreviewCalcTableLabel;
 
   /// Gündem satırında, başlıksız bir notun içerik önizlemesinde çizim bloğu için gösterilen yer tutucu
@@ -3953,7 +3961,7 @@ abstract class AppLocalizations {
   /// No description provided for @calcTableMenuItemLabel.
   ///
   /// In tr, this message translates to:
-  /// **'Hesap Tablosu'**
+  /// **'Hesap Listesi'**
   String get calcTableMenuItemLabel;
 
   /// No description provided for @tagsMenuItemLabel.
@@ -4307,8 +4315,14 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'tr'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+    'de',
+    'en',
+    'es',
+    'fr',
+    'it',
+    'tr',
+  ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -4317,8 +4331,16 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'de':
+      return AppLocalizationsDe();
     case 'en':
       return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
+    case 'it':
+      return AppLocalizationsIt();
     case 'tr':
       return AppLocalizationsTr();
   }

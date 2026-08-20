@@ -113,7 +113,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String blockPreviewCalcTableLabel(int count) {
-    return 'Table ($count rows)';
+    return 'Calculation List ($count rows)';
   }
 
   @override
@@ -1616,7 +1616,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gundemRepeatYearly => 'Yearly';
 
   @override
-  String get gundemPreviewCalcTableLabel => '[Calc Table]';
+  String get gundemPreviewCalcTableLabel => '[Calculation List]';
 
   @override
   String get gundemPreviewDrawingLabel => '[Drawing]';
@@ -2119,7 +2119,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not create the zip archive (ZipEncoder returned null).';
 
   @override
-  String get calcTableMenuItemLabel => 'Table';
+  String get calcTableMenuItemLabel => 'Calculation List';
 
   @override
   String get tagsMenuItemLabel => 'Tags';

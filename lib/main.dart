@@ -674,7 +674,14 @@ class DNoteApp extends StatelessWidget {
                     GlobalWidgetsLocalizations.delegate,
                     GlobalCupertinoLocalizations.delegate,
                   ],
-                  supportedLocales: const [Locale('tr', 'TR'), Locale('en', 'US')],
+                  supportedLocales: const [
+                    Locale('tr', 'TR'),
+                    Locale('en', 'US'),
+                    Locale('de', 'DE'),
+                    Locale('fr', 'FR'),
+                    Locale('it', 'IT'),
+                    Locale('es', 'ES'),
+                  ],
                   // 'system' ise locale: null verilir ve aşağıdaki
                   // localeResolutionCallback devreye girer: cihaz dili
                   // supportedLocales içinde varsa o dil seçilir, yoksa
@@ -694,7 +701,15 @@ class DNoteApp extends StatelessWidget {
                       ? const Locale('en', 'US')
                       : lang == 'tr'
                           ? const Locale('tr', 'TR')
-                          : null,
+                          : lang == 'de'
+                              ? const Locale('de', 'DE')
+                              : lang == 'fr'
+                                  ? const Locale('fr', 'FR')
+                                  : lang == 'it'
+                                      ? const Locale('it', 'IT')
+                                      : lang == 'es'
+                                          ? const Locale('es', 'ES')
+                                          : null,
                   themeMode: mode,
                   theme: _dNoteLightTheme.copyWith(primaryColor: accentColor),
                   darkTheme: _dNoteDarkTheme.copyWith(primaryColor: accentColor),

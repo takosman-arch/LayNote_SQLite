@@ -45,7 +45,7 @@
   "audioPermissionPermanentlyDeniedMessage": "Microphone permission denied. You need to allow it from settings to record audio.",
   "audioPermissionRequiredMessage": "Microphone permission is required to record audio.",
   "voiceRecordingDefaultLabel": "Voice Recording",
-  "blockPreviewCalcTableLabel": "Table ({count} rows)",
+  "blockPreviewCalcTableLabel": "Calculation List ({count} rows)",
   "@blockPreviewCalcTableLabel": {
     "placeholders": {
       "count": {
@@ -779,7 +779,7 @@
   "gundemRepeatWeekly": "Weekly",
   "gundemRepeatMonthly": "Monthly",
   "gundemRepeatYearly": "Yearly",
-  "gundemPreviewCalcTableLabel": "[Calc Table]",
+  "gundemPreviewCalcTableLabel": "[Calculation List]",
   "gundemPreviewDrawingLabel": "[Drawing]",
   "gundemPreviewImageLabel": "[Image]",
   "gundemMonthShortJan": "Jan",
@@ -988,7 +988,7 @@
     }
   },
   "backupErrorZipEncodeFailedMessage": "Could not create the zip archive (ZipEncoder returned null).",
-  "calcTableMenuItemLabel": "Table",
+  "calcTableMenuItemLabel": "Calculation List",
   "tagsMenuItemLabel": "Tags",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "Add item...",
