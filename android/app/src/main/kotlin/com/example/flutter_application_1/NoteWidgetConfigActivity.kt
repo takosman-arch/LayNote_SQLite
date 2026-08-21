@@ -55,15 +55,55 @@ class NoteWidgetConfigActivity : Activity() {
         private const val TAG = "NOTEWIDGET_DEBUG"
         private const val PREFS_NAME = "HomeWidgetPreferences"
         private const val KEY_ALL_NOTES_JSON = "all_notes_json"
+        // theme.dart -> dNoteSyncThemeToWidgetStorage tarafından yazılır
+        // (main() içinde açılışta bir kez, ve appThemeMode her
+        // değiştiğinde tekrar). Anahtar bulunamazsa (widget'ı hiç
+        // güncellenmemiş çok eski bir kurulum) uygulamanın varsayılan
+        // teması olan Koyu'ya (appThemeMode = ThemeMode.dark) düşülür.
+        private const val KEY_IS_DARK_THEME = "is_dark_theme"
 
-        // Uygulamanın not kartlarıyla aynı renk paleti (bkz.
-        // note_list_build_mixin.dart _buildGridNoteCard).
-        private const val COLOR_BG = "#1E1E1E"
-        private const val COLOR_CARD = "#2D2D2D"
-        private const val COLOR_TITLE = "#FFFFFF"
-        private const val COLOR_PREVIEW = "#B0B0B0"
+        // ── Koyu tema paleti (bkz. main.dart _dNoteDarkTheme /
+        // dNoteCardColor / dNoteTextColor ve note_list_build_mixin.dart
+        // _buildGridNoteCard'daki gerçek grid kart rengi) ──
+        private const val COLOR_BG_DARK = "#1E1E1E"
+        private const val COLOR_CARD_DARK = "#2D2D2D"
+        private const val COLOR_TITLE_DARK = "#FFFFFF"
+        private const val COLOR_CARD_PREVIEW_TEXT_DARK = "#FFFFFF"
+        // Boş durum mesajı için soluk/muted metin — bilgilendirme metni,
+        // not kartı önizlemesi değil, bu yüzden diğerlerinden ayrı tutulur.
+        private const val COLOR_MUTED_TEXT_DARK = "#B0B0B0"
+
+        // ── Açık tema paleti (bkz. main.dart _dNoteLightTheme:
+        // scaffoldBackgroundColor #F5F5F5, cardTheme Colors.white,
+        // dNoteTextColor light #1A1A1A, dNoteBorderColor light #DADADA) ──
+        private const val COLOR_BG_LIGHT = "#F5F5F5"
+        private const val COLOR_CARD_LIGHT = "#FFFFFF"
+        private const val COLOR_TITLE_LIGHT = "#1A1A1A"
+        private const val COLOR_CARD_PREVIEW_TEXT_LIGHT = "#1A1A1A"
+        private const val COLOR_MUTED_TEXT_LIGHT = "#6B6B6B"
+        // Açık temada beyaz kart, açık gri (#F5F5F5) zemin üzerinde
+        // kendiliğinden ayırt edilmiyor; ince bir kenarlık eklenir (bkz.
+        // main.dart dNoteBorderColor light değeriyle aynı ton).
+        private const val COLOR_CARD_BORDER_LIGHT = "#DADADA"
+
+        // Vurgu (amber) rengi her iki temada da aynı — uygulamanın
+        // appAccentColor varsayılanıyla (Colors.amber) birebir aynı.
+        // NOT: Kullanıcı Ayarlar > Tema > Vurgu Rengi'nden bunu
+        // değiştirebiliyor ama o tercih de (appThemeMode gibi) native
+        // tarafa henüz yazılmıyor; bu yüzden burada sabit tutuluyor.
         private const val COLOR_AMBER = "#FFC107"
     }
+
+    // Bu widget örneğine özel değil, tüm uygulamanın o anki Açık/Koyu tema
+    // tercihine göre karar verilir (bkz. KEY_IS_DARK_THEME açıklaması).
+    private var isDarkTheme = true
+    private fun colorBg() = if (isDarkTheme) COLOR_BG_DARK else COLOR_BG_LIGHT
+    private fun colorCard() = if (isDarkTheme) COLOR_CARD_DARK else COLOR_CARD_LIGHT
+    private fun colorTitle() = if (isDarkTheme) COLOR_TITLE_DARK else COLOR_TITLE_LIGHT
+    private fun colorCardPreviewText() =
+        if (isDarkTheme) COLOR_CARD_PREVIEW_TEXT_DARK else COLOR_CARD_PREVIEW_TEXT_LIGHT
+    private fun colorMutedText() =
+        if (isDarkTheme) COLOR_MUTED_TEXT_DARK else COLOR_MUTED_TEXT_LIGHT
 
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
@@ -86,11 +126,15 @@ class NoteWidgetConfigActivity : Activity() {
         }
 
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        // KEY_IS_DARK_THEME anahtarı yoksa (Boolean için getBoolean 2.
+        // parametre olarak varsayılan alır) uygulamanın varsayılan teması
+        // olan Koyu'ya düşülür — bkz. theme.dart appThemeMode = ThemeMode.dark.
+        isDarkTheme = prefs.getBoolean(KEY_IS_DARK_THEME, true)
         val notes = readNotes(prefs)
 
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundColor(Color.parseColor(COLOR_BG))
+            setBackgroundColor(Color.parseColor(colorBg()))
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -99,7 +143,7 @@ class NoteWidgetConfigActivity : Activity() {
 
         val heading = TextView(this).apply {
             text = "Widget'ta gösterilecek notu seç"
-            setTextColor(Color.WHITE)
+            setTextColor(Color.parseColor(colorTitle()))
             textSize = 18f
             setPadding(dp(20), dp(24), dp(20), dp(12))
         }
@@ -122,7 +166,7 @@ class NoteWidgetConfigActivity : Activity() {
                     "widget'ı tekrar eklemeyi deneyin.\n\n" +
                     "Ya da widget'ı şimdilik notsuz ekleyebilirsiniz; " +
                     "ilk not oluşturulduğunda otomatik güncellenecektir."
-                setTextColor(Color.parseColor(COLOR_PREVIEW))
+                setTextColor(Color.parseColor(colorMutedText()))
                 textSize = 14f
                 setPadding(dp(20), dp(8), dp(20), dp(12))
             }
@@ -143,10 +187,10 @@ class NoteWidgetConfigActivity : Activity() {
                 dividerHeight = 0
                 clipToPadding = false
                 setPadding(dp(12), dp(4), dp(12), dp(16))
-                setBackgroundColor(Color.parseColor(COLOR_BG))
+                setBackgroundColor(Color.parseColor(colorBg()))
                 selector = ColorDrawable(Color.TRANSPARENT)
             }
-            listView.adapter = NoteCardAdapter(this, notes)
+            listView.adapter = NoteCardAdapter(this, notes, isDarkTheme)
             listView.onItemClickListener =
                 AdapterView.OnItemClickListener { _, _: View, position: Int, _ ->
                     onNoteSelected(prefs, notes[position].id)
@@ -188,7 +232,11 @@ class NoteWidgetConfigActivity : Activity() {
             while (keys.hasNext()) {
                 val id = keys.next()
                 val note = obj.optJSONObject(id) ?: continue
-                val noteTitle = note.optString("title", "Başlıksız not")
+                // NoteWidgetService.syncFromNotes bilinçli olarak boş
+                // başlığı "Başlıksız not" ile doldurmuyor (bkz. o
+                // dosyadaki açıklama); burada da aynı davranış korunur ki
+                // getView()'daki boş-başlık gizleme mantığı doğru çalışsın.
+                val noteTitle = note.optString("title", "")
                 val preview = note.optString("preview", "")
                 val modifiedDate = note.optString("modifiedDate", "")
                 items.add(NoteEntry(id, noteTitle, preview, modifiedDate))
@@ -230,10 +278,16 @@ class NoteWidgetConfigActivity : Activity() {
     private class NoteCardAdapter(
         private val ctx: Context,
         private val items: List<NoteEntry>,
+        private val isDarkTheme: Boolean,
     ) : BaseAdapter() {
 
         private fun dp(value: Int): Int =
             (value * ctx.resources.displayMetrics.density).toInt()
+
+        private fun colorCard() = if (isDarkTheme) COLOR_CARD_DARK else COLOR_CARD_LIGHT
+        private fun colorTitle() = if (isDarkTheme) COLOR_TITLE_DARK else COLOR_TITLE_LIGHT
+        private fun colorCardPreviewText() =
+            if (isDarkTheme) COLOR_CARD_PREVIEW_TEXT_DARK else COLOR_CARD_PREVIEW_TEXT_LIGHT
 
         override fun getCount(): Int = items.size
         override fun getItem(position: Int): NoteEntry = items[position]
@@ -253,7 +307,18 @@ class NoteWidgetConfigActivity : Activity() {
             }
 
             val entry = items[position]
-            holder.title.text = entry.title
+            // DÜZELTME: Başlık boşsa (bkz. NoteWidgetService.syncFromNotes —
+            // boş başlık artık "Başlıksız not" ile doldurulmuyor, olduğu
+            // gibi boş string yazılıyor) satır tamamen gizlenir; aksi halde
+            // kartın üstünde boş bir satır/boşluk kalıyordu. Aynı mantık
+            // zaten preview için burada uygulanıyordu, title için de
+            // eşitlendi.
+            if (entry.title.isNotEmpty()) {
+                holder.title.text = entry.title
+                holder.title.visibility = View.VISIBLE
+            } else {
+                holder.title.visibility = View.GONE
+            }
             if (entry.preview.isNotEmpty()) {
                 holder.preview.text = entry.preview
                 holder.preview.visibility = View.VISIBLE
@@ -282,7 +347,13 @@ class NoteWidgetConfigActivity : Activity() {
 
             val cardBackground = GradientDrawable().apply {
                 cornerRadius = dp(12).toFloat()
-                setColor(Color.parseColor(COLOR_CARD))
+                setColor(Color.parseColor(colorCard()))
+                // Açık temada beyaz kart, #F5F5F5 zemin üzerinde neredeyse
+                // hiç ayırt edilmiyor; ince bir kenarlıkla belirginleştirilir.
+                // Koyu temada zaten yeterli kontrast olduğundan eklenmez.
+                if (!isDarkTheme) {
+                    setStroke(dp(1), Color.parseColor(COLOR_CARD_BORDER_LIGHT))
+                }
             }
             val ripple = RippleDrawable(
                 ColorStateList.valueOf(Color.parseColor(COLOR_AMBER)).withAlpha(60),
@@ -301,8 +372,8 @@ class NoteWidgetConfigActivity : Activity() {
             }
 
             val title = TextView(ctx).apply {
-                setTextColor(Color.parseColor(COLOR_TITLE))
-                textSize = 16f
+                setTextColor(Color.parseColor(colorTitle()))
+                textSize = 18f
                 setTypeface(typeface, android.graphics.Typeface.BOLD)
                 maxLines = 1
                 ellipsize = TextUtils.TruncateAt.END
@@ -310,8 +381,8 @@ class NoteWidgetConfigActivity : Activity() {
             card.addView(title)
 
             val preview = TextView(ctx).apply {
-                setTextColor(Color.parseColor(COLOR_PREVIEW))
-                textSize = 13f
+                setTextColor(Color.parseColor(colorCardPreviewText()))
+                textSize = 16f
                 maxLines = 2
                 ellipsize = TextUtils.TruncateAt.END
                 setPadding(0, dp(6), 0, 0)

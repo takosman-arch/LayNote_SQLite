@@ -758,17 +758,17 @@ class _DayNoteTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              width: 4,
-              height: 34,
-              decoration: BoxDecoration(
-                color: reminderLabel != null
-                    ? Colors.lightBlueAccent
-                    : appAccentColor.value,
-                borderRadius: BorderRadius.circular(2),
+            if (reminderLabel != null) ...[
+              Container(
+                width: 4,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: Colors.lightBlueAccent,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
-            ),
-            const SizedBox(width: 10),
+              const SizedBox(width: 10),
+            ],
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -987,19 +987,20 @@ class _DayCellWidget extends StatelessWidget {
     }
 
     // İşaretleyici noktaları: amber = not var, açık mavi = hatırlatıcı var.
-    // Seçili günde daire zaten amber olduğu için nokta rengi kontrastlı
-    // (koyu) tutulur; diğer durumlarda normal renkler kullanılır.
+    // Noktalar, gün dairesinin ÜSTÜNDE değil ALTINDA (ayrı bir satırda),
+    // hücrenin normal arka planı üzerinde çiziliyor — bu yüzden seçili
+    // günde bile amber daire ile hiç çakışmıyorlar. Önceden isSelected
+    // durumunda nokta rengi siyaha çevriliyordu; bu, koyu temada arka
+    // plan da koyu olduğundan noktanın tamamen görünmez olmasına, açık
+    // temada da renk şemasının (amber/mavi) bozulmasına yol açıyordu.
+    // Bu yüzden noktalar her zaman kendi normal renklerini kullanır.
     final dots = <Widget>[];
     if (hasNote) {
-      dots.add(_MarkerDot(color: isSelected ? Colors.black87 : appAccentColor.value));
+      dots.add(_MarkerDot(color: appAccentColor.value));
     }
     if (hasReminder) {
       if (dots.isNotEmpty) dots.add(const SizedBox(width: 3));
-      dots.add(
-        _MarkerDot(
-          color: isSelected ? Colors.black54 : Colors.lightBlueAccent,
-        ),
-      );
+      dots.add(const _MarkerDot(color: Colors.lightBlueAccent));
     }
 
     return Padding(

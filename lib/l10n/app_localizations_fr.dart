@@ -838,6 +838,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsPageTitle => 'Paramètres';
 
   @override
+  String get settingsSectionGeneral => 'Général';
+
+  @override
   String get settingsSectionSecurity => 'Sécurité';
 
   @override

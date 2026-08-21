@@ -60,11 +60,22 @@ Future<void> _shareSelectedText(BuildContext context, String text) async {
 
 Future<void> _openInTranslate(BuildContext context, String text) async {
   if (text.trim().isEmpty) return;
+  // NOT: Google Translate uygulaması yüklüyse, Android App Links sayesinde
+  // 'translate.google.com' linki tarayıcı yerine doğrudan Translate
+  // uygulamasına yönleniyor — ama uygulama web sitesinin aksine
+  // 'text=' query parametresini işlemiyor, sadece boş açılıyor. Bu yüzden
+  // önce metni panoya kopyalayıp (uygulama boş açılsa bile kullanıcı
+  // yapıştırabilsin diye), ardından linki AÇIKÇA TARAYICIDA açıyoruz ki
+  // sl/tl/text parametreleri web sürümünde garanti çalışsın.
+  await Clipboard.setData(ClipboardData(text: text));
   final uri = Uri.parse(
     'https://translate.google.com/?sl=auto&tl=tr&text=${Uri.encodeComponent(text)}&op=translate',
   );
   try {
-    final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    // inAppBrowserView: Translate uygulamasına yönlenmeyi engeller, Chrome
+    // Custom Tab (ya da eşdeğeri) içinde açar; böylece text parametresi
+    // web sayfasınca okunup çeviri kutusuna otomatik dolar.
+    final launched = await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
     if (!launched && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -144,7 +155,7 @@ Widget buildCustomContextMenu(
 
   // Sıra: Çevir, Paylaş — metin Türkçe değilse Çevir en başa alınır
   if (translateBtn != null) {
-    if (_looksTurkish(fullText)) {
+    if (_looksTurkish(selectedText)) {
       ordered.add(translateBtn);
       if (shareBtn != null) ordered.add(shareBtn);
     } else {

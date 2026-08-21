@@ -1,0 +1,1136 @@
+{
+  "@@locale": "pl",
+  "toolbarBoldTooltip": "Pogrubienie",
+  "toolbarItalicTooltip": "Kursywa",
+  "toolbarUnderlineTooltip": "Podkreślenie",
+  "toolbarStrikethroughTooltip": "Przekreślenie",
+  "toolbarFontSizeTooltip": "Rozmiar czcionki",
+  "toolbarColorTooltip": "Kolor tekstu",
+  "toolbarBulletTooltip": "Lista punktowana",
+  "toolbarNumberTooltip": "Lista numerowana",
+  "toolbarIndentTooltip": "Wcięcie akapitu",
+  "toolbarLinkTooltip": "Dodaj / edytuj / usuń link",
+  "toolbarDividerTooltip": "Wstaw separator",
+  "toolbarChecklistTooltip": "Dodaj listę kontrolną",
+  "linkSelectTextSnackbar": "Najpierw zaznacz tekst, który chcesz połączyć",
+  "linkDialogEditTitle": "Edytuj link",
+  "linkDialogAddTitle": "Dodaj link",
+  "linkDialogRemoveButton": "Usuń link",
+  "linkDialogCancelButton": "Anuluj",
+  "linkDialogConfirmButton": "Dodaj",
+  "cameraPermissionPermanentlyDeniedMessage": "Odmówiono uprawnień do aparatu. Aby nagrywać wideo, musisz zezwolić na to w ustawieniach.",
+  "cameraPermissionRequiredMessage": "Aby nagrywać wideo, wymagane jest uprawnienie do aparatu.",
+  "openSettingsButtonLabel": "Ustawienia",
+  "documentScanStartFailedMessage": "Nie udało się rozpocząć skanowania: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "Rozpoznawanie tekstu nie powiodło się: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "W dokumencie nie znaleziono czytelnego tekstu",
+  "scanResultSheetTitle": "Jak dodać zeskanowany dokument?",
+  "scanResultTextOnlyOption": "Dodaj tylko jako tekst",
+  "scanResultTextAndImageOption": "Dodaj tekst + zeskanowany obraz",
+  "scanResultCancelOption": "Anuluj",
+  "audioPermissionPermanentlyDeniedMessage": "Odmówiono uprawnień do mikrofonu. Aby nagrywać dźwięk, musisz zezwolić na to w ustawieniach.",
+  "audioPermissionRequiredMessage": "Aby nagrywać dźwięk, wymagane jest uprawnienie do mikrofonu.",
+  "voiceRecordingDefaultLabel": "Nagranie głosowe",
+  "blockPreviewCalcTableLabel": "Lista obliczeniowa ({count} wierszy)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "Rysunek",
+  "blockPreviewAttachmentsLabel": "{count} załączników (zdjęcie/dokument)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "Separator",
+  "blockPreviewChecklistLabel": "Lista kontrolna ({count} elementów)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(pusty tekst)",
+  "reorderBlocksSheetTitle": "Zmień kolejność bloków",
+  "reorderBlocksMoveUpTooltip": "Przesuń w górę",
+  "reorderBlocksMoveDownTooltip": "Przesuń w dół",
+  "reorderBlocksCloseTooltip": "Zamknij",
+  "reorderBlocksDescription": "Dotknij bloku, aby go zaznaczyć, a następnie użyj strzałek w górę/w dół, aby go przesunąć.",
+  "reorderBlocksMenuItemLabel": "Zmień kolejność",
+  "txtImportPickerDialogTitle": "Wybierz plik TXT do zaimportowania",
+  "txtImportReadFailedMessage": "Nie udało się odczytać pliku TXT",
+  "txtImportEmptyFileMessage": "Plik TXT jest pusty",
+  "txtImportSuccessMessage": "Zaimportowano TXT",
+  "txtImportMenuItemLabel": "Importuj (txt)",
+  "exportMenuItemLabel": "Eksportuj",
+  "editorUndoTooltip": "Cofnij",
+  "editorRedoTooltip": "Ponów",
+  "noteSavedMessage": "Notatka zapisana",
+  "dateAssignPickerHelpText": "Przypisz notatkę do dnia",
+  "dateAssignChangeOption": "Zmień datę",
+  "dateAssignRemoveOption": "Usuń przypisanie",
+  "editorSubToolbarCloseTooltip": "Zamknij",
+  "titleFieldHint": "Tytuł",
+  "textBlockHint": "Napisz tutaj swoją notatkę...",
+  "drawingBoardMenuItemLabel": "Tablica rysunkowa",
+  "voiceToTextTextNotesOnlyMessage": "Zamiana mowy na tekst jest dostępna tylko dla notatek tekstowych",
+  "selectionModeCancelTooltip": "Anuluj zaznaczenie",
+  "selectionModeSelectedCountTitle": "Zaznaczono: {count}",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "Usuń",
+  "selectionModeArchiveTooltip": "Archiwizuj",
+  "selectionModeFolderTooltip": "Folder",
+  "searchFieldHint": "Szukaj notatek...",
+  "emptyTrashDialogTitle": "Opróżnij kosz",
+  "emptyTrashDialogConfirmMessage": "Wszystkie usunięte notatki zostaną trwale usunięte. Czy na pewno?",
+  "emptyTrashDialogCancelButton": "Anuluj",
+  "restoreAllMenuItemLabel": "Przywróć wszystko",
+  "sortMenuTooltip": "Sortuj notatki",
+  "sortMenuAscendingLabel": "Kolejność: rosnąco (A-Z)",
+  "sortMenuDescendingLabel": "Kolejność: malejąco (Z-A)",
+  "sortMenuByTitleLabel": "Sortuj według: tytułu",
+  "sortMenuByModifiedDateLabel": "Sortuj według: ostatniej modyfikacji",
+  "sortMenuByCreatedDateLabel": "Sortuj według: daty utworzenia",
+  "sortMenuByFolderLabel": "Sortuj według: folderu",
+  "viewToggleGridTooltip": "Widok siatki",
+  "viewToggleListTooltip": "Widok listy",
+  "drawerHeaderSubtitle": "Twój osobisty notatnik",
+  "drawerNotesSectionHeader": "NOTATKI",
+  "drawerAllNotesLabel": "Notatki",
+  "drawerFavoritesLabel": "Ulubione",
+  "drawerAgendaLabel": "Plan dnia",
+  "drawerRemindersLabel": "Przypomnienie",
+  "drawerLockedLabel": "Zablokowane",
+  "drawerTrashLabel": "Kosz",
+  "drawerFoldersSectionHeader": "FOLDERY",
+  "drawerExpandLabel": "Rozwiń",
+  "drawerCollapseLabel": "Zwiń",
+  "drawerAddFolderLabel": "Dodaj folder",
+  "drawerAppSectionHeader": "APLIKACJA",
+  "drawerCalendarLabel": "Kalendarz",
+  "drawerSettingsLabel": "Ustawienia",
+  "drawerBackupRestoreLabel": "Kopia zapasowa i przywracanie",
+  "drawerUpgradeToProLabel": "Przejdź na Pro",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "Wesprzyj rozwój",
+  "drawerFeedbackLabel": "Opinia",
+  "drawerAboutLabel": "O aplikacji",
+  "noNotesFoundMessage": "Nie znaleziono notatek.",
+  "trashRestoreButtonLabel": "Przywróć",
+  "trashPermanentDeleteButtonLabel": "Usuń trwale",
+  "tagRenamedInfoMessage": "Zmieniono nazwę tagu",
+  "tagDeletedInfoMessage": "Tag usunięty",
+  "tagOptionsRenameLabel": "Zmień nazwę",
+  "tagOptionsDeleteLabel": "Usuń",
+  "renameTagDialogTitle": "Zmień nazwę tagu",
+  "renameTagDialogHint": "Nowa nazwa tagu",
+  "renameTagDialogCancelButton": "Anuluj",
+  "renameTagDialogSaveButton": "Zapisz",
+  "deleteTagDialogMessageWithCount": "Tag „{tag}” zostanie usunięty z {affectedCount} notatek. Kontynuować?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "Usunąć tag „{tag}”?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "Usuń tag",
+  "deleteTagDialogCancelButton": "Anuluj",
+  "deleteTagDialogConfirmButton": "Usuń",
+  "tagsSheetTitle": "Tagi",
+  "tagsSheetEmptyMessage": "Ta notatka nie ma jeszcze tagów.",
+  "tagsSheetInputHint": "Wpisz nowy tag...",
+  "tagsSheetSuggestionsLabel": "Istniejące tagi",
+  "noteDeletedInfoMessage": "Notatka usunięta",
+  "noteDeletedUndoActionLabel": "Cofnij",
+  "reminderSetInfoMessage": "Ustawiono przypomnienie",
+  "reminderRemovedInfoMessage": "Usunięto przypomnienie",
+  "noteDuplicatedInfoMessage": "Utworzono kopię",
+  "speechTextAppendedInfoMessage": "Tekst dodany do notatki",
+  "pdfPreparingInfoMessage": "Przygotowywanie PDF…",
+  "pdfSavedInfoMessage": "Zapisano PDF",
+  "jpgPreparingInfoMessage": "Przygotowywanie JPG…",
+  "jpgSavedInfoMessage": "Zapisano JPG",
+  "jpgFailedInfoMessage": "Nie udało się utworzyć pliku JPG",
+  "txtPreparingInfoMessage": "Przygotowywanie TXT…",
+  "txtSavedInfoMessage": "Zapisano TXT",
+  "txtFailedInfoMessage": "Nie udało się utworzyć pliku TXT",
+  "exportOpenActionLabel": "Otwórz",
+  "wrongPasswordInfoMessage": "Nieprawidłowe hasło.",
+  "noteArchivedInfoMessage": "Notatka zarchiwizowana",
+  "noteUnarchivedInfoMessage": "Usunięto z archiwum",
+  "noteUnlockedInfoMessage": "Odblokowano",
+  "noteLockedInfoMessage": "Notatka zablokowana",
+  "notificationUnpinnedInfoMessage": "Odpięto",
+  "emptyNotePinBlockedInfoMessage": "Nie można przypiąć pustej notatki.",
+  "notificationPinnedInfoMessage": "Przypięto do panelu powiadomień",
+  "noContentToReadInfoMessage": "Brak treści do odczytania",
+  "backPressExitInfoMessage": "Naciśnij wstecz ponownie, aby wyjść",
+  "reminderChannelName": "Przypomnienia o notatkach",
+  "reminderChannelDescription": "Przypomnienia o notatkach w aplikacji Layout",
+  "pinnedChannelName": "Przypięte notatki",
+  "pinnedChannelDescription": "Notatki Layout przypięte do panelu powiadomień",
+  "notificationUnpinActionLabel": "Usuń",
+  "reminderDefaultTitle": "Przypomnienie",
+  "reminderChecklistBodyFallback": "Nie zapomnij sprawdzić swojej listy kontrolnej",
+  "reminderTextBodyFallback": "Nie zapomnij sprawdzić swojej notatki",
+  "pdfSaveDialogTitle": "Zapisz jako PDF",
+  "jpgSaveDialogTitle": "Zapisz jako JPG",
+  "txtSaveDialogTitle": "Zapisz jako TXT",
+  "textSizeSheetTitle": "Rozmiar tekstu",
+  "textSizeSamplePreview": "Przykładowy tekst",
+  "textSizeCancelButton": "Anuluj",
+  "textSizeApplyButton": "Zastosuj",
+  "createPasswordDialogTitle": "Utwórz hasło",
+  "createPasswordNewPasswordHint": "Nowe hasło",
+  "createPasswordConfirmHint": "Powtórz hasło",
+  "createPasswordHintQuestionDescription": "Ustaw pytanie zabezpieczające na wypadek zapomnienia hasła (opcjonalnie).",
+  "createPasswordHintQuestionHint": "Wybierz pytanie zabezpieczające",
+  "createPasswordHintAnswerHint": "Twoja odpowiedź",
+  "createPasswordCancelButton": "Anuluj",
+  "createPasswordSaveButton": "Zapisz",
+  "passwordMismatchMessage": "Hasła nie są zgodne!",
+  "passwordRequiredDialogTitle": "Wymagane hasło",
+  "passwordRequiredHint": "Wprowadź hasło",
+  "forgotPasswordButtonLabel": "Nie pamiętam hasła",
+  "passwordRequiredCancelButton": "Anuluj",
+  "passwordRequiredConfirmButton": "Zweryfikuj",
+  "securityQuestionDialogTitle": "Pytanie zabezpieczające",
+  "securityQuestionAnswerHint": "Twoja odpowiedź",
+  "securityQuestionCancelButton": "Anuluj",
+  "securityQuestionConfirmButton": "Potwierdź",
+  "securityQuestionWrongAnswerMessage": "Błędna odpowiedź. Spróbuj ponownie.",
+  "revealedPasswordDialogTitle": "Twoje hasło",
+  "revealedPasswordLabel": "Hasło do Twojej notatki:",
+  "revealedPasswordOkButton": "OK",
+  "securityQuestionPetName": "Jak nazywa się Twój pierwszy zwierzak?",
+  "securityQuestionFavoriteTeacher": "Jak nazywa się Twój ulubiony nauczyciel?",
+  "securityQuestionBirthCity": "W jakim mieście się urodziłeś/aś?",
+  "securityQuestionFavoriteFood": "Jakie jest Twoje ulubione jedzenie?",
+  "securityQuestionMotherMaidenName": "Jakie jest panieńskie nazwisko Twojej matki?",
+  "securityQuestionFirstSchool": "Jak nazywała się Twoja pierwsza szkoła?",
+  "securityQuestionFavoriteColor": "Jaki jest Twój ulubiony kolor?",
+  "editFolderDialogTitle": "Edytuj folder",
+  "newSubfolderDialogTitle": "Nowy podfolder",
+  "addFolderDialogTitle": "Dodaj folder",
+  "subfolderParentInfoMessage": "Zostanie utworzony wewnątrz „{parentCategory}”",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "Nazwa podfolderu",
+  "folderNameFieldLabel": "Nazwa folderu",
+  "folderColorLabel": "Kolor",
+  "folderDialogCancelButton": "Anuluj",
+  "folderDialogSaveButton": "Zapisz",
+  "folderDialogAddButton": "Dodaj",
+  "selectFolderSheetTitle": "Wybierz folder",
+  "selectFolderAddOptionLabel": "Dodaj folder",
+  "removeCurrentFolderLabel": "Usuń bieżący folder",
+  "noteDetailsDialogTitle": "Szczegóły",
+  "noteDetailsCreatedLabel": "Utworzono",
+  "noteDetailsModifiedLabel": "Ostatnia modyfikacja",
+  "noteDetailsCharCountLabel": "Liczba znaków",
+  "noteDetailsCharCountValue": "{count} znaków",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "Liczba słów",
+  "noteDetailsWordCountValue": "{count} słów",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "OK",
+  "noteDetailsUnknownDateLabel": "Nieznana",
+  "addAttachmentSheetTitle": "Dodaj",
+  "addAttachmentImageOption": "Dodaj zdjęcie",
+  "addAttachmentCameraOption": "Aparat",
+  "addAttachmentFileOption": "Dodaj plik",
+  "addAttachmentVoiceOption": "Nagranie głosowe",
+  "addAttachmentVideoOption": "Nagraj wideo",
+  "addAttachmentScanOption": "Skanuj dokument",
+  "noteActionsSheetTitle": "Wybierz działanie",
+  "noteActionReminderLabel": "Przypomnienie",
+  "noteActionEditReminderLabel": "Edytuj przypomnienie",
+  "noteActionSpeechToTextLabel": "Mowa na tekst",
+  "noteActionArchiveLabel": "Archiwizuj",
+  "noteActionUnarchiveLabel": "Usuń z archiwum",
+  "noteActionLockLabel": "Zablokuj",
+  "noteActionUnlockLabel": "Odblokuj",
+  "noteActionFavoriteLabel": "Ulubione",
+  "noteActionUnfavoriteLabel": "Usuń z ulubionych",
+  "noteActionClassifyLabel": "Wybierz folder",
+  "noteActionDeleteLabel": "Usuń",
+  "noteActionPinToNotificationLabel": "Przypnij do panelu powiadomień",
+  "noteActionUnpinFromNotificationLabel": "Usuń przypięcie",
+  "noteActionShareLabel": "Udostępnij",
+  "noteActionDuplicateLabel": "Utwórz kopię",
+  "noteActionCopyContentLabel": "Kopiuj treść",
+  "noteActionTtsLabel": "Czytaj na głos",
+  "noteActionTextSizeLabel": "Rozmiar tekstu",
+  "noteActionDetailsLabel": "Szczegóły",
+  "noteActionDiscardChangesLabel": "Odrzuć zmiany",
+  "noteActionSelectLabel": "Zaznacz",
+  "reminderEditOptionLabel": "Zmień przypomnienie",
+  "reminderRemoveOptionLabel": "Usuń przypomnienie",
+  "discardChangesDialogTitle": "Odrzuć zmiany",
+  "discardChangesDialogMessage": "Niezapisane zmiany w tej notatce zostaną utracone. Czy na pewno chcesz je odrzucić?",
+  "discardChangesCancelButton": "Anuluj",
+  "discardChangesConfirmButton": "Odrzuć",
+  "pinnedNotificationDefaultTitle": "Notatka",
+  "pdfFailedInfoMessage": "Nie udało się utworzyć pliku PDF",
+  "drawingScreenTitle": "Rysunek",
+  "drawingMinimizeTooltip": "Minimalizuj",
+  "drawingEmptyExportWarningMessage": "Najpierw coś narysuj",
+  "drawingEraserPartialModeLabel": "Częściowa",
+  "drawingEraserFullModeLabel": "Pełna",
+  "drawingClearTooltip": "Wyczyść",
+  "drawingZoomOutTooltip": "Pomniejsz",
+  "drawingZoomInTooltip": "Powiększ",
+  "drawingDeleteTooltip": "Usuń",
+  "drawingEmptyPreviewHint": "Dotknij, aby rysować",
+  "settingsPageTitle": "Ustawienia",
+  "settingsSectionGeneral": "Ogólne",
+  "settingsSectionSecurity": "Bezpieczeństwo",
+  "settingsSectionTheme": "Motyw",
+  "settingsSectionPersonalization": "Personalizacja",
+  "settingsSectionWidget": "Widżet",
+  "settingsSectionAbout": "O aplikacji",
+  "settingsHintQuestionPet": "Jak nazywa się Twój pierwszy zwierzak?",
+  "settingsHintQuestionTeacher": "Jak nazywa się Twój ulubiony nauczyciel?",
+  "settingsHintQuestionBirthCity": "W jakim mieście się urodziłeś/aś?",
+  "settingsHintQuestionFavoriteFood": "Jakie jest Twoje ulubione jedzenie?",
+  "settingsHintQuestionMotherMaidenName": "Jakie jest panieńskie nazwisko Twojej matki?",
+  "settingsHintQuestionFirstSchool": "Jak nazywała się pierwsza szkoła, do której uczęszczałeś/aś?",
+  "settingsHintQuestionFavoriteColor": "Jaki jest Twój ulubiony kolor?",
+  "settingsSecurityQuestionDialogTitle": "Pytanie zabezpieczające",
+  "settingsSecurityQuestionDialogDesc": "Jeśli zapomnisz hasła, będziesz mógł/mogła je odzyskać, odpowiadając poprawnie na to pytanie.",
+  "settingsSecurityQuestionDropdownHint": "Wybierz pytanie zabezpieczające",
+  "settingsSecurityQuestionAnswerHint": "Twoja odpowiedź",
+  "settingsSecurityQuestionCancelButton": "Anuluj",
+  "settingsSecurityQuestionEmptyWarning": "Pytanie i odpowiedź nie mogą być puste!",
+  "settingsSecurityQuestionSaveButton": "Zapisz",
+  "settingsCreatePasswordTitle": "Utwórz hasło",
+  "settingsPasswordRequiredTitle": "Wymagane hasło",
+  "settingsPasswordEnterHint": "Wprowadź hasło",
+  "settingsForgotPasswordButton": "Nie pamiętam hasła",
+  "settingsNewPasswordHint": "Nowe hasło",
+  "settingsConfirmPasswordHint": "Powtórz hasło",
+  "settingsSecurityQuestionOptionalDesc": "Ustaw pytanie zabezpieczające na wypadek zapomnienia hasła (opcjonalnie).",
+  "settingsPasswordDialogCancelButton": "Anuluj",
+  "settingsPasswordMismatchWarning": "Hasła nie są zgodne!",
+  "settingsWrongPasswordWarning": "Nieprawidłowe hasło!",
+  "settingsPasswordSaveButton": "Zapisz",
+  "settingsPasswordRemoveButton": "Usuń",
+  "settingsNotePasswordTitle": "Hasło notatki",
+  "settingsPasswordSetSubtitle": "Hasło ustawione ✓",
+  "settingsPasswordNotSetSubtitle": "Hasło nieustawione",
+  "settingsSecurityQuestionTileTitle": "Pytanie zabezpieczające",
+  "settingsSecurityQuestionSetSubtitle": "Ustawione ✓ — używane w razie zapomnienia hasła",
+  "settingsSecurityQuestionNotSetSubtitle": "Nieustawione — nie będziesz mógł/mogła odzyskać hasła w razie jego utraty",
+  "settingsThemeDialogTitle": "Wybierz motyw",
+  "settingsThemeSystemDefault": "Domyślny systemowy",
+  "settingsThemeLightOption": "Jasny motyw",
+  "settingsThemeDarkOption": "Ciemny motyw",
+  "settingsAccentColorDialogTitle": "Wybierz kolor akcentu",
+  "settingsThemeChangeTileTitle": "Zmień motyw",
+  "settingsThemeLightLabel": "Jasny",
+  "settingsThemeDarkLabel": "Ciemny",
+  "settingsThemeSystemLabel": "Systemowy",
+  "settingsLanguageTileTitle": "Język",
+  "settingsLanguageDialogTitle": "Wybierz język",
+  "settingsLanguageSystemOption": "Systemowy",
+  "settingsAccentColorTileTitle": "Kolor akcentu",
+  "settingsAccentColorTileSubtitle": "Kolor używany na pasku aplikacji, przyciskach i przełącznikach",
+  "settingsColorfulNotesTitle": "Różnorodne kolory notatek",
+  "settingsColorfulNotesSubtitle": "Każda karta notatki ma inny odcień koloru.",
+  "settingsTextColorSheetTitle": "Kolor tekstu",
+  "settingsTextColorSheetDesc": "Ustawia kolor treści notatki.",
+  "settingsTextColorOkButton": "OK",
+  "settingsTextColorTileTitle": "Kolor tekstu",
+  "settingsTextColorTileSubtitle": "Kolor treści notatki.",
+  "settingsWidgetFontSizeLabel": "Rozmiar czcionki widżetu",
+  "settingsWidgetFontSizeSample": "Przykładowy nagłówek - {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "Anuluj",
+  "settingsWidgetFontSizeApplyButton": "Zastosuj",
+  "settingsWidgetOpacityLabel": "Przezroczystość tła",
+  "settingsWidgetOpacityValue": "Przezroczystość: {percent}%",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "Anuluj",
+  "settingsWidgetOpacityApplyButton": "Zastosuj",
+  "settingsWidgetDarkModeTitle": "Ciemny widżet",
+  "settingsWidgetDarkModeDesc": "Ciemny schemat kolorów widżetu.",
+  "settingsAboutVersionTitle": "Wersja aplikacji",
+  "settingsFontFamilyTileTitle": "Czcionka",
+  "settingsFontFamilyDefaultLabel": "Domyślna",
+  "settingsGlobalFontSizeTileTitle": "Rozmiar czcionki",
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt — zastosowano do wszystkich notatek.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "Przykładowy tekst - {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "Zastosuj do istniejących notatek",
+  "settingsGlobalFontSizeApplyToAllNote": "Jeśli notatka ma ustawiony indywidualny rozmiar czcionki, to ustawienie jej nie dotyczy.",
+  "settingsGlobalFontSizeCancelButton": "Anuluj",
+  "settingsGlobalFontSizeApplyButton": "Zastosuj",
+  "settingsPreviewLinesTileTitle": "Liczba linii podglądu notatki",
+  "settingsPreviewLinesTileSubtitle": "Pokaż do {lines} linii. Jeśli notatka jest krótsza, wyświetlana jest rzeczywista liczba linii.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "Bieżąca: {lines} linii",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "Ustawia maksymalną liczbę linii podglądu. Jeśli notatka ma mniej linii, wyświetlana jest rzeczywista ich liczba.",
+  "settingsPreviewLinesCancelButton": "Anuluj",
+  "settingsPreviewLinesApplyButton": "Zastosuj",
+  "backupCancelButton": "Anuluj",
+  "backupConnectButton": "Połącz",
+  "backupDisconnectButton": "Rozłącz",
+  "backupContinueButton": "Kontynuuj",
+  "backupCloseButton": "Zamknij",
+  "backupShareButton": "Udostępnij",
+  "backupRestoreButton": "Przywróć",
+  "backupConfigureButton": "Konfiguruj",
+  "backupUnknownDateLabel": "Nieznana",
+  "backupProcessingDefaultLabel": "Przetwarzanie...",
+  "backupPermissionRequiredTitle": "Wymagane uprawnienie do pamięci",
+  "backupPermissionRequiredBodyPermanent": "Ta wersja Androida wymaga uprawnienia do pamięci dla kopii zapasowej/przywracania. Ponieważ uprawnienie zostało trwale odrzucone, włącz je ręcznie w ustawieniach aplikacji.",
+  "backupPermissionRequiredBodyNormal": "Ta wersja Androida wymaga uprawnienia do pamięci dla kopii zapasowej/przywracania. Przyznaj uprawnienie, aby kontynuować.",
+  "backupGoToSettingsButton": "Przejdź do ustawień",
+  "backupRetryButton": "Ponów",
+  "backupDriveConnectingLabel": "Łączenie z kontem Google...",
+  "backupDriveConnectedWithEmailMessage": "Połączono z kontem Google Drive: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Połączono z kontem Google Drive.",
+  "backupDriveConnectFailedMessage": "Nie udało się połączyć z kontem Google lub operacja została anulowana.",
+  "backupDriveDisconnectTitle": "Rozłącz Google Drive",
+  "backupDriveDisconnectBody": "Po rozłączeniu ręczne i automatyczne kopie zapasowe na Dysku nie będą możliwe. Kopie zapasowe już zapisane na Dysku nie zostaną usunięte — usunięty zostanie tylko dostęp z tego urządzenia.",
+  "backupDriveDisconnectedMessage": "Połączenie z Google Drive usunięte.",
+  "backupDriveRequiredTitle": "Wymagane konto Google",
+  "backupDriveRequiredBody": "Ta czynność wymaga połączenia konta Google. Czy chcesz połączyć się teraz?",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: połączono ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: połączono",
+  "backupDriveStatusDisconnected": "Google Drive: niepołączono",
+  "backupDriveAuthenticatingLabel": "Weryfikacja konta Google...",
+  "backupDriveNotSignedInMessage": "Nie jesteś połączony/a z Google Drive. Najpierw zaloguj się na konto Google.",
+  "backupDriveUploadingLabel": "Przesyłanie kopii zapasowej na Dysk...",
+  "backupDriveUploadTimeoutMessage": "Przesyłanie na Google Drive nie zakończyło się w ciągu 120 sekund (brak odpowiedzi z serwera). Sprawdź połączenie i spróbuj ponownie.",
+  "backupDriveOperationCompletedLabel": "Zakończono",
+  "backupToDriveActionLabel": "kopia zapasowa na Dysk",
+  "backupToDeviceActionLabel": "kopia zapasowa",
+  "backupCreatingLabel": "Tworzenie kopii zapasowej...",
+  "backupCreateFailedMessage": "Nie udało się utworzyć kopii zapasowej: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Przesyłanie na Google Drive nie powiodło się: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "Kopia zapasowa pomyślnie przesłana na Google Drive.",
+  "backupCreatedMessage": "Utworzono kopię zapasową: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "Kopia zapasowa gotowa",
+  "backupOfferShareBody": "Plik kopii zapasowej został zapisany na Twoim urządzeniu. Czy chcesz go teraz udostępnić (np. w chmurze, e-mailem, na innym urządzeniu)?",
+  "backupShareFileText": "plik kopii zapasowej layout",
+  "backupShareFailedMessage": "Nie udało się rozpocząć udostępniania: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "Duża kopia zapasowa",
+  "backupLargeOperationBody": "Dane do przetworzenia mają rozmiar około {sizeText}. {actionLabel} tego rozmiaru może chwilę potrwać, zależnie od urządzenia. Po prostu nie opuszczaj aplikacji podczas trwania operacji — czy chcesz kontynuować?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "przywracanie",
+  "backupDriveListingLabel": "Wyświetlanie kopii zapasowych z Dysku...",
+  "backupDriveListFailedMessage": "Nie udało się wyświetlić kopii zapasowych: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "Na Google Drive nie ma jeszcze żadnych kopii zapasowych.",
+  "backupDrivePickTitle": "Wybierz kopię zapasową z Dysku",
+  "backupDriveDownloadingLabel": "Pobieranie kopii zapasowej z Dysku...",
+  "backupDriveDownloadingWithSizeLabel": "Pobieranie kopii zapasowej z Dysku... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "Zapisywanie pliku na urządzeniu...",
+  "backupDriveUnknownBackupFileName": "nieznana_kopia_zapasowa.zip",
+  "backupDriveStorageFullMessage": "Pamięć Google Drive jest pełna. Zwolnij miejsce na Dysku i spróbuj ponownie.",
+  "backupDriveNetworkErrorMessage": "Nie udało się nawiązać połączenia internetowego. Sprawdź połączenie i spróbuj ponownie.",
+  "backupDriveBackupNotFoundMessage": "Nie znaleziono podanego pliku kopii zapasowej na Dysku. Mógł zostać usunięty.",
+  "backupDriveUnknownErrorMessage": "Wystąpił nieoczekiwany błąd podczas operacji Google Drive: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "Pobieranie nie powiodło się: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "Nie udało się wybrać pliku: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "Nie udało się uzyskać dostępu do wybranego pliku.",
+  "backupCheckingLabel": "Sprawdzanie kopii zapasowej...",
+  "backupReadFailedMessage": "Nie udało się odczytać pliku kopii zapasowej: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Przywróć kopię zapasową",
+  "backupPreviewContentsHeader": "Zawartość wybranej kopii zapasowej:",
+  "backupPreviewNoteCountLabel": "Liczba notatek",
+  "backupPreviewTrashCountLabel": "Notatki w koszu",
+  "backupPreviewCategoryCountLabel": "Liczba kategorii",
+  "backupPreviewAttachmentLabel": "Załączniki",
+  "backupPreviewAttachmentNoneValue": "Brak",
+  "backupPreviewAttachmentCountValue": "{count} plików ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "Utworzono",
+  "backupEmptyPreviewTitle": "Ta kopia zapasowa wygląda na pustą",
+  "backupEmptyPreviewBody": "W wybranym pliku nie znaleziono żadnych notatek, kategorii ani załączników. Jeśli będziesz kontynuować, Twoje bieżące dane zostaną i tak usunięte i zastąpione tą pustą kopią zapasową.",
+  "backupMissingAttachmentsTitle": "Nie znaleziono {count} załączników w kopii zapasowej",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "Notatki z tymi plikami zostaną przywrócone, ale bez załączników (mogły brakować lub być uszkodzone w momencie tworzenia kopii zapasowej): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} i {remaining} więcej",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "Spowoduje to ZASTĄPIENIE wszystkich bieżących notatek, kosza, kategorii, ustawień i załączników danymi z powyższej kopii zapasowej. Bieżące dane zostaną trwale utracone, a tej czynności nie można cofnąć.",
+  "backupRestoringLabel": "Przywracanie kopii zapasowej...",
+  "backupRestoreSuccessWithMissingMessage": "Kopia zapasowa przywrócona. Jednak {count} załączników nie znaleziono w kopii zapasowej i nie można ich było przywrócić. Zaleca się ponowne uruchomienie aplikacji, aby zmiany w pełni zaczęły obowiązywać.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "Kopia zapasowa przywrócona pomyślnie. Zaleca się ponowne uruchomienie aplikacji, aby zmiany w pełni zaczęły obowiązywać.",
+  "backupRestoreFailedMessage": "Wystąpił błąd podczas przywracania: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "Kopia zapasowa i przywracanie",
+  "backupBlockedExitWarningMessage": "Trwa operacja, poczekaj na jej zakończenie.",
+  "backupBusyBackTooltip": "Operacja w toku",
+  "backupIntroText": "Możesz utworzyć kopię zapasową swoich notatek, kategorii, ustawień i załączników jako pojedynczy plik .zip lub przywrócić wcześniej utworzoną kopię zapasową.",
+  "backupDriveCardTitle": "Utwórz kopię zapasową na Google Drive",
+  "backupDriveCardSubtitle": "Utwórz nową kopię zapasową i prześlij ją bezpośrednio do prywatnego obszaru Twojego Google Drive.",
+  "backupDriveCardButtonLabel": "Kopia zapasowa na Dysk",
+  "backupDeviceCardTitle": "Utwórz kopię zapasową na urządzeniu",
+  "backupDeviceCardSubtitle": "Zapisz wszystkie swoje dane jako pojedynczy plik .zip na urządzeniu i udostępnij go, jeśli chcesz.",
+  "backupDeviceCardButtonLabel": "Kopia zapasowa na urządzenie",
+  "backupHistoryCardTitle": "Historia kopii zapasowych",
+  "backupHistoryCardSubtitle": "Wyświetl wszystkie kopie zapasowe zapisane na urządzeniu wraz z ich datą i rozmiarem; możesz je stąd udostępniać, przywracać lub usuwać.",
+  "backupHistoryTabDevice": "Urządzenie",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "Usuń kopię zapasową",
+  "backupHistoryDeleteDialogBody": "Czy na pewno chcesz trwale usunąć plik kopii zapasowej „{fileName}”? Tej czynności nie można cofnąć.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "Kopia zapasowa usunięta.",
+  "backupHistoryDriveDeleteDialogTitle": "Usuń kopię zapasową z Dysku",
+  "backupHistoryDriveDeleteDialogBody": "Czy na pewno chcesz trwale usunąć kopię zapasową „{fileName}” z Google Drive? Tej czynności nie można cofnąć, a plik nie zostanie przeniesiony do kosza.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Kopia zapasowa na Dysku usunięta.",
+  "backupHistoryDriveDeleteFailedMessage": "Nie udało się usunąć: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "Na tym urządzeniu nie zapisano jeszcze żadnych kopii zapasowych.",
+  "backupHistoryDeviceEmptySubtitle": "Użyj opcji „Kopia zapasowa na urządzenie”, aby utworzyć pierwszą kopię zapasową.",
+  "backupHistoryDriveEmptySubtitle": "Użyj opcji „Kopia zapasowa na Google Drive”, aby utworzyć pierwszą kopię zapasową w chmurze.",
+  "backupHistoryDriveSignInPrompt": "Połącz konto Google, aby zobaczyć swoje kopie zapasowe na Dysku.",
+  "backupHistoryConnectGoogleButton": "Połącz z Google",
+  "backupHistoryDriveConnectedFallback": "Połączono",
+  "backupHistoryUnknownErrorFallback": "Wystąpił nieznany błąd.",
+  "backupHistoryDownloadStartingLabel": "Rozpoczynanie...",
+  "backupAutoBackupEnabledLabel": "Automatyczna kopia zapasowa: włączona",
+  "backupAutoBackupDisabledLabel": "Automatyczna kopia zapasowa: wyłączona",
+  "backupOverlayWarningMessage": "Poczekaj, nie opuszczaj aplikacji, aż operacja się zakończy.",
+  "pdfExportUntitledNoteLabel": "Notatka bez tytułu",
+  "pdfExportDefaultAttachmentName": "Załącznik",
+  "pdfExportDefaultFileName": "notatka",
+  "screenshotExportBoundaryNotFoundMessage": "Nie udało się przechwycić zrzutu ekranu (nie znaleziono granicy)",
+  "screenshotExportByteDataNullMessage": "Nie udało się wygenerować danych zrzutu ekranu",
+  "screenshotExportPngDecodeFailedMessage": "Nie udało się przetworzyć obrazu (błąd dekodowania PNG)",
+  "screenshotCalcTableTotalLabel": "Suma",
+  "gundemMenuRemoveFromAgenda": "Usuń z planu dnia",
+  "gundemMenuDeleteNote": "Usuń notatkę",
+  "gundemSectionOverdue": "Zaległe",
+  "gundemSectionToday": "Dzisiaj",
+  "gundemSectionTomorrow": "Jutro",
+  "gundemSectionNextWeek": "Przyszły tydzień",
+  "gundemSectionFurther": "W dalszej przyszłości",
+  "gundemWeekdayMonday": "Poniedziałek",
+  "gundemWeekdayTuesday": "Wtorek",
+  "gundemWeekdayWednesday": "Środa",
+  "gundemWeekdayThursday": "Czwartek",
+  "gundemWeekdayFriday": "Piątek",
+  "gundemWeekdaySaturday": "Sobota",
+  "gundemWeekdaySunday": "Niedziela",
+  "gundemAppBarTitle": "Plan dnia",
+  "gundemCalendarTooltip": "Kalendarz",
+  "gundemEmptyTitle": "Brak wpisów w planie dnia",
+  "gundemEmptySubtitle": "Tutaj pojawią się notatki z przypomnieniem lub przypisaną datą.",
+  "gundemUntitledNote": "Notatka bez tytułu",
+  "gundemRepeatHourly": "Co godzinę",
+  "gundemRepeatDaily": "Codziennie",
+  "gundemRepeatWeekly": "Co tydzień",
+  "gundemRepeatMonthly": "Co miesiąc",
+  "gundemRepeatYearly": "Co rok",
+  "gundemPreviewCalcTableLabel": "[Lista obliczeniowa]",
+  "gundemPreviewDrawingLabel": "[Rysunek]",
+  "gundemPreviewImageLabel": "[Obraz]",
+  "gundemMonthShortJan": "Sty",
+  "gundemMonthShortFeb": "Lut",
+  "gundemMonthShortMar": "Mar",
+  "gundemMonthShortApr": "Kwi",
+  "gundemMonthShortMay": "Maj",
+  "gundemMonthShortJun": "Cze",
+  "gundemMonthShortJul": "Lip",
+  "gundemMonthShortAug": "Sie",
+  "gundemMonthShortSep": "Wrz",
+  "gundemMonthShortOct": "Paź",
+  "gundemMonthShortNov": "Lis",
+  "gundemMonthShortDec": "Gru",
+  "calendarAppBarTitle": "Kalendarz",
+  "calendarTodayButton": "Dzisiaj",
+  "calendarLegendNoteLabel": "Notatka",
+  "calendarLegendReminderLabel": "Przypomnienie",
+  "calendarTodayBadge": "Dzisiaj",
+  "calendarEmptyDayMessage": "Brak notatek ani przypomnień na ten dzień.",
+  "calendarReminderHourlyLabel": "Co godzinę",
+  "calendarMonthJan": "Styczeń",
+  "calendarMonthFeb": "Luty",
+  "calendarMonthMar": "Marzec",
+  "calendarMonthApr": "Kwiecień",
+  "calendarMonthMay": "Maj",
+  "calendarMonthJun": "Czerwiec",
+  "calendarMonthJul": "Lipiec",
+  "calendarMonthAug": "Sierpień",
+  "calendarMonthSep": "Wrzesień",
+  "calendarMonthOct": "Październik",
+  "calendarMonthNov": "Listopad",
+  "calendarMonthDec": "Grudzień",
+  "calendarWeekdayShortMon": "Pon",
+  "calendarWeekdayShortTue": "Wt",
+  "calendarWeekdayShortWed": "Śr",
+  "calendarWeekdayShortThu": "Czw",
+  "calendarWeekdayShortFri": "Pt",
+  "calendarWeekdayShortSat": "Sob",
+  "calendarWeekdayShortSun": "Nd",
+  "calendarWeekdayFullMonday": "Poniedziałek",
+  "calendarWeekdayFullTuesday": "Wtorek",
+  "calendarWeekdayFullWednesday": "Środa",
+  "calendarWeekdayFullThursday": "Czwartek",
+  "calendarWeekdayFullFriday": "Piątek",
+  "calendarWeekdayFullSaturday": "Sobota",
+  "calendarWeekdayFullSunday": "Niedziela",
+  "wrongPasswordDialogTitle": "Nieprawidłowe hasło",
+  "wrongPasswordDialogMessage": "Wprowadzone hasło jest nieprawidłowe.",
+  "commonOkButton": "OK",
+  "unlockCategoryAction": "Odblokuj",
+  "lockCategoryAction": "Zablokuj",
+  "categoryUnlockedMessage": "Odblokowano",
+  "categoryLockedMessage": "Folder zablokowany",
+  "deleteFolderMenuItemLabel": "Usuń folder",
+  "deleteFolderDialogTitle": "Usuń folder",
+  "deleteFolderDialogMessageWithSubfolders": "Czy na pewno chcesz usunąć folder „{category}” i wszystkie jego podfoldery? Notatki w tych folderach staną się nieskategoryzowane.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "Czy na pewno chcesz usunąć folder „{category}”? Notatki w tym folderze staną się nieskategoryzowane.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "Anuluj",
+  "deleteFolderDialogConfirmButton": "Usuń",
+  "editCategoryNameColorMenuItemLabel": "Edytuj nazwę / kolor",
+  "addSubfolderMenuItemLabel": "Utwórz podfolder",
+  "expandSubfoldersMenuItemLabel": "Rozwiń podfoldery",
+  "collapseSubfoldersMenuItemLabel": "Zwiń podfoldery",
+  "saveErrorInfoMessage": "Błąd zapisu: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "Witaj w DNote! 🚀",
+  "welcomeNoteContent": "Dodano nowe funkcje!",
+  "noteListDateGroupToday": "Dzisiaj",
+  "noteListDateGroupYesterday": "Wczoraj",
+  "noteListDateGroupLast7Days": "Ostatnie 7 dni",
+  "noteListDateGroupLast30Days": "Ostatnie 30 dni",
+  "reminderRepeatNoneLabel": "Bez powtarzania",
+  "voiceRecorderPreparingLabel": "Przygotowywanie…",
+  "voiceRecorderCancelButton": "Anuluj",
+  "voiceRecorderStopAddButton": "Zatrzymaj i dodaj",
+  "speechToTextMicPermissionDeniedMessage": "Nie przyznano uprawnienia do mikrofonu.",
+  "speechToTextUnavailableMessage": "Rozpoznawanie mowy jest niedostępne na tym urządzeniu.",
+  "speechToTextPreparingLabel": "Przygotowywanie…",
+  "speechToTextListeningLabel": "Słucham…",
+  "speechToTextStartSpeakingPlaceholder": "Zacznij mówić…",
+  "speechToTextCancelButton": "Anuluj",
+  "speechToTextStopAddButton": "Zatrzymaj i dodaj",
+  "textToSpeechNoContentMessage": "Brak treści do odczytania.",
+  "textToSpeechReadErrorMessage": "Wystąpił błąd podczas odczytu.",
+  "textToSpeechUnavailableMessage": "Zamiana tekstu na mowę jest niedostępna na tym urządzeniu.",
+  "textToSpeechPreparingLabel": "Przygotowywanie…",
+  "textToSpeechPausedLabel": "Wstrzymano",
+  "textToSpeechFinishedLabel": "Odczyt zakończony",
+  "textToSpeechReadingLabel": "Czytanie…",
+  "textToSpeechCloseErrorButton": "Zamknij",
+  "textToSpeechReplayButton": "Czytaj ponownie",
+  "textToSpeechCloseFinishedButton": "Zamknij",
+  "textToSpeechPauseButton": "Wstrzymaj",
+  "textToSpeechResumeButton": "Wznów",
+  "textToSpeechStopButton": "Zatrzymaj",
+  "textToSpeechSpeedSlow": "Wolno",
+  "textToSpeechSpeedNormal": "Normalnie",
+  "textToSpeechSpeedFast": "Szybko",
+  "calendarPickerCancelButton": "Anuluj",
+  "calendarPickerConfirmButton": "Wybierz",
+  "calendarPickerClearButton": "Wyczyść",
+  "reminderPickerDialogTitle": "Dodaj przypomnienie",
+  "reminderPickerDateTodayOption": "Dzisiaj",
+  "reminderPickerDateTomorrowOption": "Jutro",
+  "reminderPickerDatePickOption": "Wybierz datę",
+  "reminderRepeatHourlyLabel": "Co godzinę",
+  "reminderRepeatDailyLabel": "Codziennie",
+  "reminderRepeatWeeklyLabel": "Co tydzień",
+  "reminderRepeatMonthlyLabel": "Co miesiąc",
+  "reminderRepeatYearlyLabel": "Co rok",
+  "reminderPickerCalendarHelpText": "Wybierz datę przypomnienia",
+  "reminderPickerCancelButton": "ANULUJ",
+  "reminderPickerSaveButton": "ZAPISZ",
+  "reminderPickerPastTimeErrorMessage": "Nie można wybrać czasu w przeszłości",
+  "calcTableTotalLabel": "Suma: {amount}",
+  "backupCreatePreparingDataLabel": "Przygotowywanie danych...",
+  "backupCreatePackagingNotesLabel": "Pakowanie notatek i kategorii...",
+  "backupCreateReadingAttachmentsLabel": "Odczytywanie załączników...",
+  "backupCreateReadingAttachmentsProgressLabel": "Odczytywanie załączników... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "Kompresowanie pliku zip...",
+  "backupCreateSavingFileLabel": "Zapisywanie pliku...",
+  "backupRestoreValidatingLabel": "Sprawdzanie kopii zapasowej...",
+  "backupRestoreValidatedPreparingDataLabel": "Kopia zapasowa zweryfikowana, przygotowywanie danych...",
+  "backupRestoreWritingNotesLabel": "Zapisywanie notatek...",
+  "backupRestoreWritingTrashLabel": "Zapisywanie kosza...",
+  "backupRestoreTrashWrittenLabel": "Kosz zapisany",
+  "backupRestoreWritingCategoriesLabel": "Zapisywanie kategorii...",
+  "backupRestoreCategoriesWrittenLabel": "Kategorie zapisane",
+  "backupRestoreWritingSettingsLabel": "Zapisywanie ustawień...",
+  "backupRestoreSettingsWrittenLabel": "Ustawienia zapisane",
+  "backupRestoreCleaningOldAttachmentsLabel": "Czyszczenie starych załączników...",
+  "backupRestoreNoAttachmentsFinishingLabel": "Nie znaleziono załączników, kończenie...",
+  "backupRestoreAttachmentsProgressLabel": "Przywracanie załączników... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "Zakończono",
+  "backupValidationCorruptedFileMessage": "Plik jest uszkodzony lub nie jest prawidłowym plikiem kopii zapasowej.",
+  "backupValidationMissingDataMessage": "Nie znaleziono danych w pliku kopii zapasowej (brak pliku backup_data.json).",
+  "backupValidationInvalidJsonMessage": "Nie udało się odczytać danych kopii zapasowej (uszkodzony JSON).",
+  "backupValidationNotDnoteBackupMessage": "Ten plik nie jest kopią zapasową z aplikacji dnote.",
+  "backupValidationVersionUnreadableMessage": "Nie udało się odczytać informacji o wersji pliku kopii zapasowej.",
+  "backupValidationIncompatibleVersionMessage": "Ta kopia zapasowa jest w nowszym formacie, którego nie obsługuje bieżąca wersja aplikacji. Zaktualizuj aplikację.",
+  "backupValidationInvalidVersionMessage": "Informacja o wersji pliku kopii zapasowej jest nieprawidłowa.",
+  "backupValidationMissingNotesFieldMessage": "Dane kopii zapasowej nie mają oczekiwanego formatu (brak pola notes).",
+  "backupValidationMissingTrashFieldMessage": "Dane kopii zapasowej nie mają oczekiwanego formatu (brak pola trash).",
+  "backupValidationInvalidCategoriesFieldMessage": "Dane kopii zapasowej nie mają oczekiwanego formatu (lista kategorii jest nieprawidłowa).",
+  "backupValidationInvalidSettingsFieldMessage": "Dane kopii zapasowej nie mają oczekiwanego formatu (pole ustawień jest nieprawidłowe).",
+  "backupValidationInvalidNoteRecordMessage": "Dane kopii zapasowej nie mają oczekiwanego formatu (rekord notatki jest nieprawidłowy).",
+  "backupValidationMissingNoteIdMessage": "Dane kopii zapasowej nie mają oczekiwanego formatu (znaleziono rekord notatki bez ID).",
+  "backupValidationFileNotFoundMessage": "Nie znaleziono pliku kopii zapasowej.",
+  "backupErrorInsufficientStorageMessage": "Za mało wolnego miejsca na urządzeniu. Zwolnij miejsce i spróbuj ponownie.",
+  "backupErrorPermissionDeniedMessage": "Odmówiono uprawnienia dostępu do plików. Sprawdź uprawnienia aplikacji i spróbuj ponownie.",
+  "backupErrorFileOperationMessage": "Wystąpił błąd podczas operacji na pliku: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "Wystąpił nieoczekiwany błąd: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "Nie udało się utworzyć archiwum zip (ZipEncoder zwrócił null).",
+  "calcTableMenuItemLabel": "Lista obliczeniowa",
+  "tagsMenuItemLabel": "Tagi",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "Dodaj element...",
+  "toolbarHighlightTooltip": "Wyróżnienie",
+  "toolbarListTooltip": "Lista",
+  "toolbarHideKeyboardTooltip": "Ukryj klawiaturę",
+  "autoBackupLocalSuccessMessage": "Lokalna kopia zapasowa zakończona sukcesem.",
+  "autoBackupLocalFailedMessage": "Lokalna kopia zapasowa nie powiodła się: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Pominięto kopię zapasową na Dysku: konto Google nie jest połączone lub sesja wygasła. Otwórz aplikację i połącz się ponownie.",
+  "autoBackupDriveSuccessMessage": "Kopia zapasowa na Dysku zakończona sukcesem.",
+  "autoBackupDriveFailedMessage": "Kopia zapasowa na Dysku nie powiodła się: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "Brak notatek",
+  "noteWidgetPreviewTotalLabel": "Suma: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ Rysunek",
+  "autoBackupSettingsAppBarTitle": "Ustawienia automatycznej kopii zapasowej",
+  "autoBackupSettingsMainSwitchTitle": "Włącz automatyczną kopię zapasową",
+  "autoBackupSettingsMainSwitchSubtitle": "Twoje notatki są bezpiecznie tworzone jako kopia zapasowa okresowo w tle.",
+  "autoBackupSettingsTargetTitle": "Cel kopii zapasowej",
+  "autoBackupSettingsTargetSubtitle": "Wybierz, gdzie zapisywane są kopie zapasowe.",
+  "autoBackupSettingsTargetLocalOption": "Lokalnie",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "Oba",
+  "autoBackupSettingsDriveNotConnectedNote": "Najpierw połącz konto, aby korzystać z opcji Google Drive.",
+  "autoBackupSettingsConnectButton": "Połącz",
+  "autoBackupSettingsFrequencyTitle": "Częstotliwość kopii zapasowej",
+  "autoBackupSettingsFrequencySubtitle": "Kopia zapasowa jest tworzona co {hours} godzin.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 godzin",
+  "autoBackupSettingsFrequency12h": "12 godzin",
+  "autoBackupSettingsFrequency24h": "24 godziny (codziennie)",
+  "autoBackupSettingsFrequency48h": "48 godzin (2 dni)",
+  "autoBackupSettingsFrequency168h": "168 godzin (co tydzień)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "Używaj tylko Wi-Fi",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "Przesyłanie do chmury odbywa się tylko przez Wi-Fi, aby chronić Twoje dane mobilne.",
+  "autoBackupSettingsStatusCardTitle": "Stan systemu",
+  "autoBackupSettingsNeverRunMessage": "Automatyczna kopia zapasowa nie została jeszcze uruchomiona.",
+  "autoBackupSettingsLastRunInfo": "Ostatnie uruchomienie: {date} {time} ({status})\nWiadomość: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "Sukces",
+  "autoBackupSettingsStatusFailedLabel": "Niepowodzenie",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Nie udało się połączyć z kontem Google.",
+  "autoBackupSettingsSavedSnackbar": "Zaktualizowano ustawienia automatycznej kopii zapasowej.",
+  "selectionModeDeletedMessage": "Usunięto {count} notatek",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "Zarchiwizowano",
+  "selectionModeClassifySheetTitle": "Wybierz kategorię dla {count} notatek",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "Dodaj kategorię",
+  "selectionModeRemoveCategoryOption": "Usuń kategorię",
+  "calcTableItemHint": "Element...",
+  "calcTableTotalRowLabel": "Suma",
+  "textSelectionMenuShareButton": "Udostępnij",
+  "textSelectionMenuTranslateButton": "Przetłumacz",
+  "textSelectionMenuShareFailedSnackbar": "Nie udało się rozpocząć udostępniania.",
+  "textSelectionMenuTranslateFailedSnackbar": "Nie udało się otworzyć tłumaczenia.",
+  "lastBackupInfoTodayFormat": "Dzisiaj {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}.{month}.{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "Ostatnia kopia zapasowa: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "Nie utworzono jeszcze żadnej kopii zapasowej."
+}

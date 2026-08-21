@@ -1,0 +1,1136 @@
+{
+  "@@locale": "ja",
+  "toolbarBoldTooltip": "太字",
+  "toolbarItalicTooltip": "斜体",
+  "toolbarUnderlineTooltip": "下線",
+  "toolbarStrikethroughTooltip": "取り消し線",
+  "toolbarFontSizeTooltip": "文字サイズ",
+  "toolbarColorTooltip": "文字色",
+  "toolbarBulletTooltip": "箇条書きリスト",
+  "toolbarNumberTooltip": "番号付きリスト",
+  "toolbarIndentTooltip": "段落インデント",
+  "toolbarLinkTooltip": "リンクの追加・編集・削除",
+  "toolbarDividerTooltip": "区切り線を挿入",
+  "toolbarChecklistTooltip": "チェックリストを追加",
+  "linkSelectTextSnackbar": "まずリンクにしたいテキストを選択してください",
+  "linkDialogEditTitle": "リンクを編集",
+  "linkDialogAddTitle": "リンクを追加",
+  "linkDialogRemoveButton": "リンクを削除",
+  "linkDialogCancelButton": "キャンセル",
+  "linkDialogConfirmButton": "追加",
+  "cameraPermissionPermanentlyDeniedMessage": "カメラの権限が拒否されています。動画を録画するには設定から許可してください。",
+  "cameraPermissionRequiredMessage": "動画を録画するにはカメラの権限が必要です。",
+  "openSettingsButtonLabel": "設定",
+  "documentScanStartFailedMessage": "スキャンを開始できませんでした: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "文字認識に失敗しました: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "文書内に読み取れるテキストが見つかりませんでした",
+  "scanResultSheetTitle": "スキャンした文書をどのように追加しますか？",
+  "scanResultTextOnlyOption": "テキストのみ追加",
+  "scanResultTextAndImageOption": "テキスト＋スキャン画像を追加",
+  "scanResultCancelOption": "キャンセル",
+  "audioPermissionPermanentlyDeniedMessage": "マイクの権限が拒否されています。音声を録音するには設定から許可してください。",
+  "audioPermissionRequiredMessage": "音声を録音するにはマイクの権限が必要です。",
+  "voiceRecordingDefaultLabel": "ボイスレコーディング",
+  "blockPreviewCalcTableLabel": "計算リスト（{count}行）",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "図形描画",
+  "blockPreviewAttachmentsLabel": "添付ファイル{count}件（写真・文書）",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "区切り線",
+  "blockPreviewChecklistLabel": "チェックリスト（{count}項目）",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "（テキストなし）",
+  "reorderBlocksSheetTitle": "ブロックの並べ替え",
+  "reorderBlocksMoveUpTooltip": "上に移動",
+  "reorderBlocksMoveDownTooltip": "下に移動",
+  "reorderBlocksCloseTooltip": "閉じる",
+  "reorderBlocksDescription": "ブロックをタップして選択し、上下の矢印で移動してください。",
+  "reorderBlocksMenuItemLabel": "並べ替え",
+  "txtImportPickerDialogTitle": "インポートするTXTファイルを選択",
+  "txtImportReadFailedMessage": "TXTファイルを読み込めませんでした",
+  "txtImportEmptyFileMessage": "TXTファイルが空です",
+  "txtImportSuccessMessage": "TXTをインポートしました",
+  "txtImportMenuItemLabel": "インポート（txt）",
+  "exportMenuItemLabel": "エクスポート",
+  "editorUndoTooltip": "元に戻す",
+  "editorRedoTooltip": "やり直す",
+  "noteSavedMessage": "メモを保存しました",
+  "dateAssignPickerHelpText": "メモを日付に割り当て",
+  "dateAssignChangeOption": "日付を変更",
+  "dateAssignRemoveOption": "割り当てを解除",
+  "editorSubToolbarCloseTooltip": "閉じる",
+  "titleFieldHint": "タイトル",
+  "textBlockHint": "ここにメモを入力してください...",
+  "drawingBoardMenuItemLabel": "お絵描きボード",
+  "voiceToTextTextNotesOnlyMessage": "音声入力はテキストメモでのみ利用できます",
+  "selectionModeCancelTooltip": "選択を解除",
+  "selectionModeSelectedCountTitle": "{count}件選択中",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "削除",
+  "selectionModeArchiveTooltip": "アーカイブ",
+  "selectionModeFolderTooltip": "フォルダ",
+  "searchFieldHint": "メモを検索...",
+  "emptyTrashDialogTitle": "ゴミ箱を空にする",
+  "emptyTrashDialogConfirmMessage": "削除したメモはすべて完全に削除されます。よろしいですか？",
+  "emptyTrashDialogCancelButton": "キャンセル",
+  "restoreAllMenuItemLabel": "すべて復元",
+  "sortMenuTooltip": "メモを並べ替え",
+  "sortMenuAscendingLabel": "順序：昇順（A-Z）",
+  "sortMenuDescendingLabel": "順序：降順（Z-A）",
+  "sortMenuByTitleLabel": "並べ替え：タイトル",
+  "sortMenuByModifiedDateLabel": "並べ替え：更新日時",
+  "sortMenuByCreatedDateLabel": "並べ替え：作成日",
+  "sortMenuByFolderLabel": "並べ替え：フォルダ",
+  "viewToggleGridTooltip": "グリッド表示",
+  "viewToggleListTooltip": "リスト表示",
+  "drawerHeaderSubtitle": "あなた専用のノート",
+  "drawerNotesSectionHeader": "メモ",
+  "drawerAllNotesLabel": "メモ",
+  "drawerFavoritesLabel": "お気に入り",
+  "drawerAgendaLabel": "予定",
+  "drawerRemindersLabel": "リマインダー",
+  "drawerLockedLabel": "ロック済み",
+  "drawerTrashLabel": "ゴミ箱",
+  "drawerFoldersSectionHeader": "フォルダ",
+  "drawerExpandLabel": "展開",
+  "drawerCollapseLabel": "折りたたむ",
+  "drawerAddFolderLabel": "フォルダを追加",
+  "drawerAppSectionHeader": "アプリ",
+  "drawerCalendarLabel": "カレンダー",
+  "drawerSettingsLabel": "設定",
+  "drawerBackupRestoreLabel": "バックアップと復元",
+  "drawerUpgradeToProLabel": "Proにアップグレード",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "開発を応援する",
+  "drawerFeedbackLabel": "フィードバック",
+  "drawerAboutLabel": "アプリについて",
+  "noNotesFoundMessage": "メモが見つかりません。",
+  "trashRestoreButtonLabel": "復元",
+  "trashPermanentDeleteButtonLabel": "完全に削除",
+  "tagRenamedInfoMessage": "タグ名を変更しました",
+  "tagDeletedInfoMessage": "タグを削除しました",
+  "tagOptionsRenameLabel": "名前を変更",
+  "tagOptionsDeleteLabel": "削除",
+  "renameTagDialogTitle": "タグ名を変更",
+  "renameTagDialogHint": "新しいタグ名",
+  "renameTagDialogCancelButton": "キャンセル",
+  "renameTagDialogSaveButton": "保存",
+  "deleteTagDialogMessageWithCount": "「{tag}」は{affectedCount}件のメモから削除されます。続けますか？",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "「{tag}」タグを削除しますか？",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "タグを削除",
+  "deleteTagDialogCancelButton": "キャンセル",
+  "deleteTagDialogConfirmButton": "削除",
+  "tagsSheetTitle": "タグ",
+  "tagsSheetEmptyMessage": "このメモにはまだタグがありません。",
+  "tagsSheetInputHint": "新しいタグを入力...",
+  "tagsSheetSuggestionsLabel": "既存のタグ",
+  "noteDeletedInfoMessage": "メモを削除しました",
+  "noteDeletedUndoActionLabel": "元に戻す",
+  "reminderSetInfoMessage": "リマインダーを設定しました",
+  "reminderRemovedInfoMessage": "リマインダーを削除しました",
+  "noteDuplicatedInfoMessage": "コピーを作成しました",
+  "speechTextAppendedInfoMessage": "メモにテキストを追加しました",
+  "pdfPreparingInfoMessage": "PDFを準備中…",
+  "pdfSavedInfoMessage": "PDFを保存しました",
+  "jpgPreparingInfoMessage": "JPGを準備中…",
+  "jpgSavedInfoMessage": "JPGを保存しました",
+  "jpgFailedInfoMessage": "JPGを作成できませんでした",
+  "txtPreparingInfoMessage": "TXTを準備中…",
+  "txtSavedInfoMessage": "TXTを保存しました",
+  "txtFailedInfoMessage": "TXTを作成できませんでした",
+  "exportOpenActionLabel": "開く",
+  "wrongPasswordInfoMessage": "パスワードが違います。",
+  "noteArchivedInfoMessage": "メモをアーカイブしました",
+  "noteUnarchivedInfoMessage": "アーカイブから解除しました",
+  "noteUnlockedInfoMessage": "ロックを解除しました",
+  "noteLockedInfoMessage": "メモをロックしました",
+  "notificationUnpinnedInfoMessage": "ピン留めを解除しました",
+  "emptyNotePinBlockedInfoMessage": "空のメモはピン留めできません。",
+  "notificationPinnedInfoMessage": "通知パネルにピン留めしました",
+  "noContentToReadInfoMessage": "読み上げる内容がありません",
+  "backPressExitInfoMessage": "もう一度戻るボタンを押すと終了します",
+  "reminderChannelName": "メモのリマインダー",
+  "reminderChannelDescription": "Layoutアプリのメモリマインダー",
+  "pinnedChannelName": "ピン留めされたメモ",
+  "pinnedChannelDescription": "通知パネルにピン留めされたLayoutのメモ",
+  "notificationUnpinActionLabel": "削除",
+  "reminderDefaultTitle": "リマインダー",
+  "reminderChecklistBodyFallback": "チェックリストの確認を忘れずに",
+  "reminderTextBodyFallback": "メモの確認を忘れずに",
+  "pdfSaveDialogTitle": "PDFとして保存",
+  "jpgSaveDialogTitle": "JPGとして保存",
+  "txtSaveDialogTitle": "TXTとして保存",
+  "textSizeSheetTitle": "文字サイズ",
+  "textSizeSamplePreview": "サンプルテキスト",
+  "textSizeCancelButton": "キャンセル",
+  "textSizeApplyButton": "適用",
+  "createPasswordDialogTitle": "パスワードを作成",
+  "createPasswordNewPasswordHint": "新しいパスワード",
+  "createPasswordConfirmHint": "パスワードを再入力",
+  "createPasswordHintQuestionDescription": "パスワードを忘れた場合に備えて秘密の質問を設定します（任意）。",
+  "createPasswordHintQuestionHint": "秘密の質問を選択",
+  "createPasswordHintAnswerHint": "あなたの答え",
+  "createPasswordCancelButton": "キャンセル",
+  "createPasswordSaveButton": "保存",
+  "passwordMismatchMessage": "パスワードが一致しません！",
+  "passwordRequiredDialogTitle": "パスワードが必要です",
+  "passwordRequiredHint": "パスワードを入力",
+  "forgotPasswordButtonLabel": "パスワードを忘れた場合",
+  "passwordRequiredCancelButton": "キャンセル",
+  "passwordRequiredConfirmButton": "確認",
+  "securityQuestionDialogTitle": "秘密の質問",
+  "securityQuestionAnswerHint": "あなたの答え",
+  "securityQuestionCancelButton": "キャンセル",
+  "securityQuestionConfirmButton": "確定",
+  "securityQuestionWrongAnswerMessage": "答えが違います。もう一度お試しください。",
+  "revealedPasswordDialogTitle": "あなたのパスワード",
+  "revealedPasswordLabel": "メモのパスワード：",
+  "revealedPasswordOkButton": "OK",
+  "securityQuestionPetName": "初めて飼ったペットの名前は？",
+  "securityQuestionFavoriteTeacher": "好きな先生の名前は？",
+  "securityQuestionBirthCity": "生まれた都市はどこですか？",
+  "securityQuestionFavoriteFood": "好きな食べ物は何ですか？",
+  "securityQuestionMotherMaidenName": "母親の旧姓は何ですか？",
+  "securityQuestionFirstSchool": "最初に通った学校の名前は？",
+  "securityQuestionFavoriteColor": "好きな色は何ですか？",
+  "editFolderDialogTitle": "フォルダを編集",
+  "newSubfolderDialogTitle": "新しいサブフォルダ",
+  "addFolderDialogTitle": "フォルダを追加",
+  "subfolderParentInfoMessage": "「{parentCategory}」の中に作成されます",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "サブフォルダ名",
+  "folderNameFieldLabel": "フォルダ名",
+  "folderColorLabel": "色",
+  "folderDialogCancelButton": "キャンセル",
+  "folderDialogSaveButton": "保存",
+  "folderDialogAddButton": "追加",
+  "selectFolderSheetTitle": "フォルダを選択",
+  "selectFolderAddOptionLabel": "フォルダを追加",
+  "removeCurrentFolderLabel": "現在のフォルダを解除",
+  "noteDetailsDialogTitle": "詳細",
+  "noteDetailsCreatedLabel": "作成日",
+  "noteDetailsModifiedLabel": "更新日",
+  "noteDetailsCharCountLabel": "文字数",
+  "noteDetailsCharCountValue": "{count}文字",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "単語数",
+  "noteDetailsWordCountValue": "{count}単語",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "OK",
+  "noteDetailsUnknownDateLabel": "不明",
+  "addAttachmentSheetTitle": "追加",
+  "addAttachmentImageOption": "画像を追加",
+  "addAttachmentCameraOption": "カメラ",
+  "addAttachmentFileOption": "ファイルを追加",
+  "addAttachmentVoiceOption": "ボイスレコーディング",
+  "addAttachmentVideoOption": "動画を録画",
+  "addAttachmentScanOption": "文書をスキャン",
+  "noteActionsSheetTitle": "操作を選択",
+  "noteActionReminderLabel": "リマインダー",
+  "noteActionEditReminderLabel": "リマインダーを編集",
+  "noteActionSpeechToTextLabel": "音声をテキストに変換",
+  "noteActionArchiveLabel": "アーカイブ",
+  "noteActionUnarchiveLabel": "アーカイブから解除",
+  "noteActionLockLabel": "ロック",
+  "noteActionUnlockLabel": "ロック解除",
+  "noteActionFavoriteLabel": "お気に入り",
+  "noteActionUnfavoriteLabel": "お気に入りから解除",
+  "noteActionClassifyLabel": "フォルダを選択",
+  "noteActionDeleteLabel": "削除",
+  "noteActionPinToNotificationLabel": "通知パネルにピン留め",
+  "noteActionUnpinFromNotificationLabel": "ピン留めを解除",
+  "noteActionShareLabel": "共有",
+  "noteActionDuplicateLabel": "コピーを作成",
+  "noteActionCopyContentLabel": "内容をコピー",
+  "noteActionTtsLabel": "読み上げ",
+  "noteActionTextSizeLabel": "文字サイズ",
+  "noteActionDetailsLabel": "詳細",
+  "noteActionDiscardChangesLabel": "変更を破棄",
+  "noteActionSelectLabel": "選択",
+  "reminderEditOptionLabel": "リマインダーを変更",
+  "reminderRemoveOptionLabel": "リマインダーを削除",
+  "discardChangesDialogTitle": "変更を破棄",
+  "discardChangesDialogMessage": "このメモの未保存の変更は失われます。破棄してもよろしいですか？",
+  "discardChangesCancelButton": "キャンセル",
+  "discardChangesConfirmButton": "破棄",
+  "pinnedNotificationDefaultTitle": "メモ",
+  "pdfFailedInfoMessage": "PDFの作成に失敗しました",
+  "drawingScreenTitle": "図形描画",
+  "drawingMinimizeTooltip": "最小化",
+  "drawingEmptyExportWarningMessage": "まず何か描いてください",
+  "drawingEraserPartialModeLabel": "部分消去",
+  "drawingEraserFullModeLabel": "全消去",
+  "drawingClearTooltip": "クリア",
+  "drawingZoomOutTooltip": "縮小",
+  "drawingZoomInTooltip": "拡大",
+  "drawingDeleteTooltip": "削除",
+  "drawingEmptyPreviewHint": "タップして描画",
+  "settingsPageTitle": "設定",
+  "settingsSectionGeneral": "一般",
+  "settingsSectionSecurity": "セキュリティ",
+  "settingsSectionTheme": "テーマ",
+  "settingsSectionPersonalization": "パーソナライズ",
+  "settingsSectionWidget": "ウィジェット",
+  "settingsSectionAbout": "アプリについて",
+  "settingsHintQuestionPet": "初めて飼ったペットの名前は？",
+  "settingsHintQuestionTeacher": "好きな先生の名前は？",
+  "settingsHintQuestionBirthCity": "生まれた都市はどこですか？",
+  "settingsHintQuestionFavoriteFood": "好きな食べ物は何ですか？",
+  "settingsHintQuestionMotherMaidenName": "母親の旧姓は何ですか？",
+  "settingsHintQuestionFirstSchool": "最初に通った学校はどこですか？",
+  "settingsHintQuestionFavoriteColor": "好きな色は何ですか？",
+  "settingsSecurityQuestionDialogTitle": "秘密の質問",
+  "settingsSecurityQuestionDialogDesc": "パスワードを忘れた場合、この質問に正しく答えることで復元できます。",
+  "settingsSecurityQuestionDropdownHint": "秘密の質問を選択",
+  "settingsSecurityQuestionAnswerHint": "あなたの答え",
+  "settingsSecurityQuestionCancelButton": "キャンセル",
+  "settingsSecurityQuestionEmptyWarning": "質問と答えは空にできません！",
+  "settingsSecurityQuestionSaveButton": "保存",
+  "settingsCreatePasswordTitle": "パスワードを作成",
+  "settingsPasswordRequiredTitle": "パスワードが必要です",
+  "settingsPasswordEnterHint": "パスワードを入力",
+  "settingsForgotPasswordButton": "パスワードを忘れた場合",
+  "settingsNewPasswordHint": "新しいパスワード",
+  "settingsConfirmPasswordHint": "パスワードを再入力",
+  "settingsSecurityQuestionOptionalDesc": "パスワードを忘れた場合に備えて秘密の質問を設定します（任意）。",
+  "settingsPasswordDialogCancelButton": "キャンセル",
+  "settingsPasswordMismatchWarning": "パスワードが一致しません！",
+  "settingsWrongPasswordWarning": "パスワードが違います！",
+  "settingsPasswordSaveButton": "保存",
+  "settingsPasswordRemoveButton": "削除",
+  "settingsNotePasswordTitle": "メモのパスワード",
+  "settingsPasswordSetSubtitle": "パスワード設定済み ✓",
+  "settingsPasswordNotSetSubtitle": "パスワード未設定",
+  "settingsSecurityQuestionTileTitle": "秘密の質問",
+  "settingsSecurityQuestionSetSubtitle": "設定済み ✓ — パスワードを忘れた場合に使用",
+  "settingsSecurityQuestionNotSetSubtitle": "未設定 — 紛失時にパスワードを復元できません",
+  "settingsThemeDialogTitle": "テーマを選択",
+  "settingsThemeSystemDefault": "システム標準",
+  "settingsThemeLightOption": "ライトテーマ",
+  "settingsThemeDarkOption": "ダークテーマ",
+  "settingsAccentColorDialogTitle": "アクセントカラーを選択",
+  "settingsThemeChangeTileTitle": "テーマを変更",
+  "settingsThemeLightLabel": "ライト",
+  "settingsThemeDarkLabel": "ダーク",
+  "settingsThemeSystemLabel": "システム",
+  "settingsLanguageTileTitle": "言語",
+  "settingsLanguageDialogTitle": "言語を選択",
+  "settingsLanguageSystemOption": "システム",
+  "settingsAccentColorTileTitle": "アクセントカラー",
+  "settingsAccentColorTileSubtitle": "アプリバー、ボタン、スイッチに使用する色",
+  "settingsColorfulNotesTitle": "メモの色を変える",
+  "settingsColorfulNotesSubtitle": "各メモカードに異なる色調が適用されます。",
+  "settingsTextColorSheetTitle": "文字色",
+  "settingsTextColorSheetDesc": "メモ本文の文字色を設定します。",
+  "settingsTextColorOkButton": "OK",
+  "settingsTextColorTileTitle": "文字色",
+  "settingsTextColorTileSubtitle": "メモ本文の文字色。",
+  "settingsWidgetFontSizeLabel": "ウィジェットの文字サイズ",
+  "settingsWidgetFontSizeSample": "見出しサンプル - {size}pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "キャンセル",
+  "settingsWidgetFontSizeApplyButton": "適用",
+  "settingsWidgetOpacityLabel": "背景の透明度",
+  "settingsWidgetOpacityValue": "透明度{percent}%",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "キャンセル",
+  "settingsWidgetOpacityApplyButton": "適用",
+  "settingsWidgetDarkModeTitle": "ダークウィジェット",
+  "settingsWidgetDarkModeDesc": "ウィジェット用のダークカラースキーム。",
+  "settingsAboutVersionTitle": "アプリバージョン",
+  "settingsFontFamilyTileTitle": "フォント",
+  "settingsFontFamilyDefaultLabel": "デフォルト",
+  "settingsGlobalFontSizeTileTitle": "文字サイズ",
+  "settingsGlobalFontSizeTileSubtitle": "{size}pt — 全てのメモに適用されます。",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "サンプルテキスト - {size}pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "既存のメモにも適用",
+  "settingsGlobalFontSizeApplyToAllNote": "メモ個別に文字サイズが設定されている場合、この設定は影響しません。",
+  "settingsGlobalFontSizeCancelButton": "キャンセル",
+  "settingsGlobalFontSizeApplyButton": "適用",
+  "settingsPreviewLinesTileTitle": "メモのプレビュー行数",
+  "settingsPreviewLinesTileSubtitle": "最大{lines}行まで表示します。メモがそれより短い場合は実際の行数が表示されます。",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "現在：{lines}行",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "プレビューする最大行数を設定します。メモの行数がそれより少ない場合は実際の行数が表示されます。",
+  "settingsPreviewLinesCancelButton": "キャンセル",
+  "settingsPreviewLinesApplyButton": "適用",
+  "backupCancelButton": "キャンセル",
+  "backupConnectButton": "接続",
+  "backupDisconnectButton": "切断",
+  "backupContinueButton": "続行",
+  "backupCloseButton": "閉じる",
+  "backupShareButton": "共有",
+  "backupRestoreButton": "復元",
+  "backupConfigureButton": "設定",
+  "backupUnknownDateLabel": "不明",
+  "backupProcessingDefaultLabel": "処理中...",
+  "backupPermissionRequiredTitle": "ストレージ権限が必要です",
+  "backupPermissionRequiredBodyPermanent": "このAndroidバージョンではバックアップ・復元にストレージ権限が必要です。権限が完全に拒否されているため、アプリの設定から手動で許可してください。",
+  "backupPermissionRequiredBodyNormal": "このAndroidバージョンではバックアップ・復元にストレージ権限が必要です。続行するには権限を許可してください。",
+  "backupGoToSettingsButton": "設定を開く",
+  "backupRetryButton": "再試行",
+  "backupDriveConnectingLabel": "Googleアカウントに接続中...",
+  "backupDriveConnectedWithEmailMessage": "Googleドライブアカウントに接続しました：{email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Googleドライブアカウントに接続しました。",
+  "backupDriveConnectFailedMessage": "Googleアカウントに接続できなかったか、操作がキャンセルされました。",
+  "backupDriveDisconnectTitle": "Googleドライブを切断",
+  "backupDriveDisconnectBody": "切断すると、手動または自動でのドライブへのバックアップができなくなります。すでにドライブに保存されているバックアップは削除されず、このデバイスからのアクセスのみが解除されます。",
+  "backupDriveDisconnectedMessage": "Googleドライブの接続を解除しました。",
+  "backupDriveRequiredTitle": "Googleアカウントが必要です",
+  "backupDriveRequiredBody": "この操作にはGoogleアカウントへの接続が必要です。今すぐ接続しますか？",
+  "backupDriveStatusConnectedWithEmail": "Googleドライブ：接続済み（{email}）",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Googleドライブ：接続済み",
+  "backupDriveStatusDisconnected": "Googleドライブ：未接続",
+  "backupDriveAuthenticatingLabel": "Googleアカウントを確認中...",
+  "backupDriveNotSignedInMessage": "Googleドライブに接続されていません。まずGoogleアカウントでサインインしてください。",
+  "backupDriveUploadingLabel": "バックアップをドライブにアップロード中...",
+  "backupDriveUploadTimeoutMessage": "Googleドライブへのアップロードが120秒以内に完了しませんでした（サーバーからの応答なし）。接続を確認してもう一度お試しください。",
+  "backupDriveOperationCompletedLabel": "完了",
+  "backupToDriveActionLabel": "ドライブへのバックアップ",
+  "backupToDeviceActionLabel": "バックアップ",
+  "backupCreatingLabel": "バックアップを作成中...",
+  "backupCreateFailedMessage": "バックアップを作成できませんでした: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Googleドライブへのアップロードに失敗しました: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "バックアップをGoogleドライブに正常にアップロードしました。",
+  "backupCreatedMessage": "バックアップを作成しました：{fileName}（{size}）",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "バックアップ完了",
+  "backupOfferShareBody": "バックアップファイルがデバイスに保存されました。今すぐ共有しますか？（クラウドストレージ、メール、他のデバイスなど）",
+  "backupShareFileText": "layoutバックアップファイル",
+  "backupShareFailedMessage": "共有を開始できませんでした: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "大容量バックアップ",
+  "backupLargeOperationBody": "処理するデータは約{sizeText}です。このサイズの{actionLabel}はデバイスによって時間がかかる場合があります。処理中はアプリを閉じないでください — 続行しますか？",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "復元",
+  "backupDriveListingLabel": "ドライブのバックアップを取得中...",
+  "backupDriveListFailedMessage": "バックアップを取得できませんでした: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "Googleドライブにバックアップはまだありません。",
+  "backupDrivePickTitle": "ドライブからバックアップを選択",
+  "backupDriveDownloadingLabel": "ドライブからバックアップをダウンロード中...",
+  "backupDriveDownloadingWithSizeLabel": "ドライブからバックアップをダウンロード中... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "ファイルをデバイスに保存中...",
+  "backupDriveUnknownBackupFileName": "unknown_backup.zip",
+  "backupDriveStorageFullMessage": "Googleドライブの容量が不足しています。ドライブの空き容量を確保してからもう一度お試しください。",
+  "backupDriveNetworkErrorMessage": "インターネット接続を確立できませんでした。接続を確認してもう一度お試しください。",
+  "backupDriveBackupNotFoundMessage": "指定されたバックアップファイルがドライブで見つかりませんでした。削除された可能性があります。",
+  "backupDriveUnknownErrorMessage": "Googleドライブの操作中に予期しないエラーが発生しました: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "ダウンロードに失敗しました: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "ファイルを選択できませんでした: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "選択したファイルにアクセスできませんでした。",
+  "backupCheckingLabel": "バックアップを確認中...",
+  "backupReadFailedMessage": "バックアップファイルを読み込めませんでした: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "バックアップを復元",
+  "backupPreviewContentsHeader": "選択したバックアップの内容：",
+  "backupPreviewNoteCountLabel": "メモ件数",
+  "backupPreviewTrashCountLabel": "ゴミ箱内のメモ",
+  "backupPreviewCategoryCountLabel": "カテゴリ数",
+  "backupPreviewAttachmentLabel": "添付ファイル",
+  "backupPreviewAttachmentNoneValue": "なし",
+  "backupPreviewAttachmentCountValue": "{count}件（{size}）",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "作成日",
+  "backupEmptyPreviewTitle": "このバックアップは空のようです",
+  "backupEmptyPreviewBody": "選択したファイル内にメモ、カテゴリ、添付ファイルが見つかりませんでした。続行すると、現在のデータは削除され、この空のバックアップに置き換えられます。",
+  "backupMissingAttachmentsTitle": "バックアップ内に{count}件の添付ファイルが見つかりません",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "これらのファイルを含むメモは、添付ファイルなしで復元されます（バックアップ作成時に欠落または破損していた可能性があります）：{names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown}、他{remaining}件",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "この操作により、現在のメモ、ゴミ箱、カテゴリ、設定、添付ファイルはすべて上記のバックアップデータに置き換えられます。現在のデータは完全に失われ、元に戻すことはできません。",
+  "backupRestoringLabel": "バックアップを復元中...",
+  "backupRestoreSuccessWithMissingMessage": "バックアップを復元しました。ただし{count}件の添付ファイルがバックアップ内に見つからず復元できませんでした。変更を完全に反映するにはアプリの再起動をおすすめします。",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "バックアップを正常に復元しました。変更を完全に反映するにはアプリの再起動をおすすめします。",
+  "backupRestoreFailedMessage": "復元中にエラーが発生しました: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "バックアップと復元",
+  "backupBlockedExitWarningMessage": "処理が進行中です。完了までお待ちください。",
+  "backupBusyBackTooltip": "処理進行中",
+  "backupIntroText": "メモ、カテゴリ、設定、添付ファイルを1つのzipファイルとしてバックアップしたり、以前作成したバックアップから復元したりできます。",
+  "backupDriveCardTitle": "Googleドライブにバックアップ",
+  "backupDriveCardSubtitle": "新しいバックアップを作成し、Googleドライブの非公開領域に直接アップロードします。",
+  "backupDriveCardButtonLabel": "ドライブにバックアップ",
+  "backupDeviceCardTitle": "デバイスにバックアップ",
+  "backupDeviceCardSubtitle": "すべてのデータを1つのzipファイルとしてデバイスに保存し、必要に応じて共有できます。",
+  "backupDeviceCardButtonLabel": "デバイスにバックアップ",
+  "backupHistoryCardTitle": "バックアップ履歴",
+  "backupHistoryCardSubtitle": "デバイスに保存されているすべてのバックアップを日付とサイズとともに確認できます。ここから直接共有・復元・削除ができます。",
+  "backupHistoryTabDevice": "デバイス",
+  "backupHistoryTabDrive": "Googleドライブ",
+  "backupHistoryDeleteDialogTitle": "バックアップを削除",
+  "backupHistoryDeleteDialogBody": "バックアップファイル「{fileName}」を完全に削除してもよろしいですか？この操作は元に戻せません。",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "バックアップを削除しました。",
+  "backupHistoryDriveDeleteDialogTitle": "ドライブのバックアップを削除",
+  "backupHistoryDriveDeleteDialogBody": "Googleドライブ上のバックアップ「{fileName}」を完全に削除してもよろしいですか？この操作は元に戻せず、ファイルはゴミ箱に移動されません。",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "ドライブのバックアップを削除しました。",
+  "backupHistoryDriveDeleteFailedMessage": "削除できませんでした: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "このデバイスにはまだバックアップが保存されていません。",
+  "backupHistoryDeviceEmptySubtitle": "「デバイスにバックアップ」を使って最初のバックアップを作成してください。",
+  "backupHistoryDriveEmptySubtitle": "「Googleドライブにバックアップ」を使って最初のクラウドバックアップを作成してください。",
+  "backupHistoryDriveSignInPrompt": "ドライブのバックアップを表示するにはGoogleアカウントに接続してください。",
+  "backupHistoryConnectGoogleButton": "Googleで接続",
+  "backupHistoryDriveConnectedFallback": "接続済み",
+  "backupHistoryUnknownErrorFallback": "不明なエラーが発生しました。",
+  "backupHistoryDownloadStartingLabel": "開始中...",
+  "backupAutoBackupEnabledLabel": "自動バックアップ：オン",
+  "backupAutoBackupDisabledLabel": "自動バックアップ：オフ",
+  "backupOverlayWarningMessage": "処理が完了するまでアプリを閉じずにお待ちください。",
+  "pdfExportUntitledNoteLabel": "無題のメモ",
+  "pdfExportDefaultAttachmentName": "添付ファイル",
+  "pdfExportDefaultFileName": "note",
+  "screenshotExportBoundaryNotFoundMessage": "スクリーンショットを取得できませんでした（境界が見つかりません）",
+  "screenshotExportByteDataNullMessage": "スクリーンショットデータを生成できませんでした",
+  "screenshotExportPngDecodeFailedMessage": "画像を処理できませんでした（PNGのデコードに失敗）",
+  "screenshotCalcTableTotalLabel": "合計",
+  "gundemMenuRemoveFromAgenda": "予定から削除",
+  "gundemMenuDeleteNote": "メモを削除",
+  "gundemSectionOverdue": "期限切れ",
+  "gundemSectionToday": "今日",
+  "gundemSectionTomorrow": "明日",
+  "gundemSectionNextWeek": "来週",
+  "gundemSectionFurther": "それ以降",
+  "gundemWeekdayMonday": "月曜日",
+  "gundemWeekdayTuesday": "火曜日",
+  "gundemWeekdayWednesday": "水曜日",
+  "gundemWeekdayThursday": "木曜日",
+  "gundemWeekdayFriday": "金曜日",
+  "gundemWeekdaySaturday": "土曜日",
+  "gundemWeekdaySunday": "日曜日",
+  "gundemAppBarTitle": "予定",
+  "gundemCalendarTooltip": "カレンダー",
+  "gundemEmptyTitle": "予定はありません",
+  "gundemEmptySubtitle": "リマインダーや日付が割り当てられたメモがここに表示されます。",
+  "gundemUntitledNote": "無題のメモ",
+  "gundemRepeatHourly": "毎時",
+  "gundemRepeatDaily": "毎日",
+  "gundemRepeatWeekly": "毎週",
+  "gundemRepeatMonthly": "毎月",
+  "gundemRepeatYearly": "毎年",
+  "gundemPreviewCalcTableLabel": "[計算リスト]",
+  "gundemPreviewDrawingLabel": "[図形描画]",
+  "gundemPreviewImageLabel": "[画像]",
+  "gundemMonthShortJan": "1月",
+  "gundemMonthShortFeb": "2月",
+  "gundemMonthShortMar": "3月",
+  "gundemMonthShortApr": "4月",
+  "gundemMonthShortMay": "5月",
+  "gundemMonthShortJun": "6月",
+  "gundemMonthShortJul": "7月",
+  "gundemMonthShortAug": "8月",
+  "gundemMonthShortSep": "9月",
+  "gundemMonthShortOct": "10月",
+  "gundemMonthShortNov": "11月",
+  "gundemMonthShortDec": "12月",
+  "calendarAppBarTitle": "カレンダー",
+  "calendarTodayButton": "今日",
+  "calendarLegendNoteLabel": "メモ",
+  "calendarLegendReminderLabel": "リマインダー",
+  "calendarTodayBadge": "今日",
+  "calendarEmptyDayMessage": "この日にはメモやリマインダーがありません。",
+  "calendarReminderHourlyLabel": "毎時",
+  "calendarMonthJan": "1月",
+  "calendarMonthFeb": "2月",
+  "calendarMonthMar": "3月",
+  "calendarMonthApr": "4月",
+  "calendarMonthMay": "5月",
+  "calendarMonthJun": "6月",
+  "calendarMonthJul": "7月",
+  "calendarMonthAug": "8月",
+  "calendarMonthSep": "9月",
+  "calendarMonthOct": "10月",
+  "calendarMonthNov": "11月",
+  "calendarMonthDec": "12月",
+  "calendarWeekdayShortMon": "月",
+  "calendarWeekdayShortTue": "火",
+  "calendarWeekdayShortWed": "水",
+  "calendarWeekdayShortThu": "木",
+  "calendarWeekdayShortFri": "金",
+  "calendarWeekdayShortSat": "土",
+  "calendarWeekdayShortSun": "日",
+  "calendarWeekdayFullMonday": "月曜日",
+  "calendarWeekdayFullTuesday": "火曜日",
+  "calendarWeekdayFullWednesday": "水曜日",
+  "calendarWeekdayFullThursday": "木曜日",
+  "calendarWeekdayFullFriday": "金曜日",
+  "calendarWeekdayFullSaturday": "土曜日",
+  "calendarWeekdayFullSunday": "日曜日",
+  "wrongPasswordDialogTitle": "パスワードが違います",
+  "wrongPasswordDialogMessage": "入力されたパスワードが正しくありません。",
+  "commonOkButton": "OK",
+  "unlockCategoryAction": "ロック解除",
+  "lockCategoryAction": "ロック",
+  "categoryUnlockedMessage": "ロックを解除しました",
+  "categoryLockedMessage": "フォルダをロックしました",
+  "deleteFolderMenuItemLabel": "フォルダを削除",
+  "deleteFolderDialogTitle": "フォルダを削除",
+  "deleteFolderDialogMessageWithSubfolders": "フォルダ「{category}」とそのすべてのサブフォルダを削除してもよろしいですか？これらのフォルダ内のメモは未分類になります。",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "フォルダ「{category}」を削除してもよろしいですか？このフォルダ内のメモは未分類になります。",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "キャンセル",
+  "deleteFolderDialogConfirmButton": "削除",
+  "editCategoryNameColorMenuItemLabel": "名前・色を編集",
+  "addSubfolderMenuItemLabel": "サブフォルダを作成",
+  "expandSubfoldersMenuItemLabel": "サブフォルダを展開",
+  "collapseSubfoldersMenuItemLabel": "サブフォルダを折りたたむ",
+  "saveErrorInfoMessage": "保存エラー: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "DNoteへようこそ！🚀",
+  "welcomeNoteContent": "新機能が追加されました！",
+  "noteListDateGroupToday": "今日",
+  "noteListDateGroupYesterday": "昨日",
+  "noteListDateGroupLast7Days": "過去7日間",
+  "noteListDateGroupLast30Days": "過去30日間",
+  "reminderRepeatNoneLabel": "繰り返しなし",
+  "voiceRecorderPreparingLabel": "準備中…",
+  "voiceRecorderCancelButton": "キャンセル",
+  "voiceRecorderStopAddButton": "停止して追加",
+  "speechToTextMicPermissionDeniedMessage": "マイクの権限が許可されていません。",
+  "speechToTextUnavailableMessage": "この端末では音声認識を利用できません。",
+  "speechToTextPreparingLabel": "準備中…",
+  "speechToTextListeningLabel": "聞き取り中…",
+  "speechToTextStartSpeakingPlaceholder": "話し始めてください…",
+  "speechToTextCancelButton": "キャンセル",
+  "speechToTextStopAddButton": "停止して追加",
+  "textToSpeechNoContentMessage": "読み上げる内容がありません。",
+  "textToSpeechReadErrorMessage": "読み上げ中にエラーが発生しました。",
+  "textToSpeechUnavailableMessage": "この端末では読み上げ機能を利用できません。",
+  "textToSpeechPreparingLabel": "準備中…",
+  "textToSpeechPausedLabel": "一時停止",
+  "textToSpeechFinishedLabel": "読み上げが完了しました",
+  "textToSpeechReadingLabel": "読み上げ中…",
+  "textToSpeechCloseErrorButton": "閉じる",
+  "textToSpeechReplayButton": "もう一度読み上げる",
+  "textToSpeechCloseFinishedButton": "閉じる",
+  "textToSpeechPauseButton": "一時停止",
+  "textToSpeechResumeButton": "再開",
+  "textToSpeechStopButton": "停止",
+  "textToSpeechSpeedSlow": "遅い",
+  "textToSpeechSpeedNormal": "普通",
+  "textToSpeechSpeedFast": "速い",
+  "calendarPickerCancelButton": "キャンセル",
+  "calendarPickerConfirmButton": "選択",
+  "calendarPickerClearButton": "クリア",
+  "reminderPickerDialogTitle": "リマインダーを追加",
+  "reminderPickerDateTodayOption": "今日",
+  "reminderPickerDateTomorrowOption": "明日",
+  "reminderPickerDatePickOption": "日付を選択",
+  "reminderRepeatHourlyLabel": "1時間ごと",
+  "reminderRepeatDailyLabel": "毎日",
+  "reminderRepeatWeeklyLabel": "毎週",
+  "reminderRepeatMonthlyLabel": "毎月",
+  "reminderRepeatYearlyLabel": "毎年",
+  "reminderPickerCalendarHelpText": "リマインダーの日付を選択",
+  "reminderPickerCancelButton": "キャンセル",
+  "reminderPickerSaveButton": "保存",
+  "reminderPickerPastTimeErrorMessage": "過去の時刻は選択できません",
+  "calcTableTotalLabel": "合計: {amount}",
+  "backupCreatePreparingDataLabel": "データを準備中...",
+  "backupCreatePackagingNotesLabel": "メモとカテゴリをまとめています...",
+  "backupCreateReadingAttachmentsLabel": "添付ファイルを読み込み中...",
+  "backupCreateReadingAttachmentsProgressLabel": "添付ファイルを読み込み中... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "zipファイルを圧縮中...",
+  "backupCreateSavingFileLabel": "ファイルを保存中...",
+  "backupRestoreValidatingLabel": "バックアップを検証中...",
+  "backupRestoreValidatedPreparingDataLabel": "バックアップを検証しました。データを準備中...",
+  "backupRestoreWritingNotesLabel": "メモを書き込み中...",
+  "backupRestoreWritingTrashLabel": "ゴミ箱を書き込み中...",
+  "backupRestoreTrashWrittenLabel": "ゴミ箱を書き込みました",
+  "backupRestoreWritingCategoriesLabel": "カテゴリを書き込み中...",
+  "backupRestoreCategoriesWrittenLabel": "カテゴリを書き込みました",
+  "backupRestoreWritingSettingsLabel": "設定を書き込み中...",
+  "backupRestoreSettingsWrittenLabel": "設定を書き込みました",
+  "backupRestoreCleaningOldAttachmentsLabel": "古い添付ファイルを削除中...",
+  "backupRestoreNoAttachmentsFinishingLabel": "添付ファイルが見つかりません。終了処理中...",
+  "backupRestoreAttachmentsProgressLabel": "添付ファイルを復元中... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "完了",
+  "backupValidationCorruptedFileMessage": "ファイルが破損しているか、有効なバックアップファイルではありません。",
+  "backupValidationMissingDataMessage": "バックアップファイル内にデータが見つかりません（backup_data.jsonがありません）。",
+  "backupValidationInvalidJsonMessage": "バックアップデータを読み込めませんでした（JSONが破損しています）。",
+  "backupValidationNotDnoteBackupMessage": "このファイルはdnoteアプリのバックアップではありません。",
+  "backupValidationVersionUnreadableMessage": "バックアップファイルのバージョン情報を読み込めませんでした。",
+  "backupValidationIncompatibleVersionMessage": "このバックアップは現在のアプリバージョンがサポートしていない新しい形式です。アプリを更新してください。",
+  "backupValidationInvalidVersionMessage": "バックアップファイルのバージョン情報が無効です。",
+  "backupValidationMissingNotesFieldMessage": "バックアップデータの形式が正しくありません（notesフィールドがありません）。",
+  "backupValidationMissingTrashFieldMessage": "バックアップデータの形式が正しくありません（trashフィールドがありません）。",
+  "backupValidationInvalidCategoriesFieldMessage": "バックアップデータの形式が正しくありません（カテゴリ一覧が無効です）。",
+  "backupValidationInvalidSettingsFieldMessage": "バックアップデータの形式が正しくありません（settingsフィールドが無効です）。",
+  "backupValidationInvalidNoteRecordMessage": "バックアップデータの形式が正しくありません（無効なメモレコードがあります）。",
+  "backupValidationMissingNoteIdMessage": "バックアップデータの形式が正しくありません（IDのないメモレコードが見つかりました）。",
+  "backupValidationFileNotFoundMessage": "バックアップファイルが見つかりません。",
+  "backupErrorInsufficientStorageMessage": "デバイスの空き容量が不足しています。空き容量を確保してからもう一度お試しください。",
+  "backupErrorPermissionDeniedMessage": "ファイルアクセスの権限が拒否されました。アプリの権限設定を確認してもう一度お試しください。",
+  "backupErrorFileOperationMessage": "ファイル操作中にエラーが発生しました: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "予期しないエラーが発生しました: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "zipアーカイブを作成できませんでした（ZipEncoderがnullを返しました）。",
+  "calcTableMenuItemLabel": "計算リスト",
+  "tagsMenuItemLabel": "タグ",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "項目を追加...",
+  "toolbarHighlightTooltip": "マーカー",
+  "toolbarListTooltip": "リスト",
+  "toolbarHideKeyboardTooltip": "キーボードを隠す",
+  "autoBackupLocalSuccessMessage": "ローカルバックアップが完了しました。",
+  "autoBackupLocalFailedMessage": "ローカルバックアップに失敗しました: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "ドライブへのバックアップをスキップしました：Googleアカウントが接続されていないか、セッションの期限が切れています。アプリを開いて再接続してください。",
+  "autoBackupDriveSuccessMessage": "ドライブへのバックアップが完了しました。",
+  "autoBackupDriveFailedMessage": "ドライブへのバックアップに失敗しました: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "まだメモがありません",
+  "noteWidgetPreviewTotalLabel": "合計: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ 図形描画",
+  "autoBackupSettingsAppBarTitle": "自動バックアップ設定",
+  "autoBackupSettingsMainSwitchTitle": "自動バックアップを有効にする",
+  "autoBackupSettingsMainSwitchSubtitle": "バックグラウンドで定期的にメモが安全にバックアップされます。",
+  "autoBackupSettingsTargetTitle": "バックアップ先",
+  "autoBackupSettingsTargetSubtitle": "バックアップの保存先を選択します。",
+  "autoBackupSettingsTargetLocalOption": "ローカル",
+  "autoBackupSettingsTargetDriveOption": "Googleドライブ",
+  "autoBackupSettingsTargetBothOption": "両方",
+  "autoBackupSettingsDriveNotConnectedNote": "Googleドライブのオプションを使用するには、まずアカウントを接続してください。",
+  "autoBackupSettingsConnectButton": "接続",
+  "autoBackupSettingsFrequencyTitle": "バックアップ頻度",
+  "autoBackupSettingsFrequencySubtitle": "{hours}時間ごとにバックアップが実行されます。",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6時間",
+  "autoBackupSettingsFrequency12h": "12時間",
+  "autoBackupSettingsFrequency24h": "24時間（毎日）",
+  "autoBackupSettingsFrequency48h": "48時間（2日ごと）",
+  "autoBackupSettingsFrequency168h": "168時間（毎週）",
+  "autoBackupSettingsWifiOnlySwitchTitle": "Wi-Fiのみ使用",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "モバイルデータを保護するため、クラウドへのアップロードはWi-Fi接続時のみ行われます。",
+  "autoBackupSettingsStatusCardTitle": "システム状態",
+  "autoBackupSettingsNeverRunMessage": "自動バックアップはまだ実行されていません。",
+  "autoBackupSettingsLastRunInfo": "最終実行: {date} {time}（{status}）\nメッセージ: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "成功",
+  "autoBackupSettingsStatusFailedLabel": "失敗",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Googleアカウントに接続できませんでした。",
+  "autoBackupSettingsSavedSnackbar": "自動バックアップ設定を更新しました。",
+  "selectionModeDeletedMessage": "{count}件のメモを削除しました",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "アーカイブしました",
+  "selectionModeClassifySheetTitle": "{count}件のメモのカテゴリを選択",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "カテゴリを追加",
+  "selectionModeRemoveCategoryOption": "カテゴリを削除",
+  "calcTableItemHint": "項目...",
+  "calcTableTotalRowLabel": "合計",
+  "textSelectionMenuShareButton": "共有",
+  "textSelectionMenuTranslateButton": "翻訳",
+  "textSelectionMenuShareFailedSnackbar": "共有を開始できませんでした。",
+  "textSelectionMenuTranslateFailedSnackbar": "翻訳を開けませんでした。",
+  "lastBackupInfoTodayFormat": "今日 {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{year}/{month}/{day} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "最終バックアップ: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "まだバックアップが取得されていません。"
+}

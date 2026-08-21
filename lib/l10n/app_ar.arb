@@ -1,0 +1,1136 @@
+{
+  "@@locale": "ar",
+  "toolbarBoldTooltip": "غامق",
+  "toolbarItalicTooltip": "مائل",
+  "toolbarUnderlineTooltip": "تسطير",
+  "toolbarStrikethroughTooltip": "يتوسطه خط",
+  "toolbarFontSizeTooltip": "حجم الخط",
+  "toolbarColorTooltip": "لون النص",
+  "toolbarBulletTooltip": "قائمة نقطية",
+  "toolbarNumberTooltip": "قائمة مرقمة",
+  "toolbarIndentTooltip": "إزاحة الفقرة",
+  "toolbarLinkTooltip": "إضافة / تعديل / إزالة رابط",
+  "toolbarDividerTooltip": "إدراج فاصل",
+  "toolbarChecklistTooltip": "إضافة قائمة مهام",
+  "linkSelectTextSnackbar": "حدد النص الذي تريد ربطه أولاً",
+  "linkDialogEditTitle": "تعديل الرابط",
+  "linkDialogAddTitle": "إضافة رابط",
+  "linkDialogRemoveButton": "إزالة الرابط",
+  "linkDialogCancelButton": "إلغاء",
+  "linkDialogConfirmButton": "إضافة",
+  "cameraPermissionPermanentlyDeniedMessage": "تم رفض إذن الكاميرا. يجب السماح به من الإعدادات لتسجيل الفيديو.",
+  "cameraPermissionRequiredMessage": "إذن الكاميرا مطلوب لتسجيل الفيديو.",
+  "openSettingsButtonLabel": "الإعدادات",
+  "documentScanStartFailedMessage": "تعذر بدء المسح: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "فشل التعرف على النص: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "لم يتم العثور على نص قابل للقراءة في المستند",
+  "scanResultSheetTitle": "كيف تريد إضافة المستند الممسوح؟",
+  "scanResultTextOnlyOption": "إضافة كنص فقط",
+  "scanResultTextAndImageOption": "إضافة النص + الصورة الممسوحة",
+  "scanResultCancelOption": "إلغاء",
+  "audioPermissionPermanentlyDeniedMessage": "تم رفض إذن الميكروفون. يجب السماح به من الإعدادات لتسجيل الصوت.",
+  "audioPermissionRequiredMessage": "إذن الميكروفون مطلوب لتسجيل الصوت.",
+  "voiceRecordingDefaultLabel": "تسجيل صوتي",
+  "blockPreviewCalcTableLabel": "قائمة حسابية ({count} صفوف)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "رسم",
+  "blockPreviewAttachmentsLabel": "{count} مرفقات (صورة/مستند)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "فاصل",
+  "blockPreviewChecklistLabel": "قائمة مهام ({count} عناصر)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(نص فارغ)",
+  "reorderBlocksSheetTitle": "إعادة ترتيب العناصر",
+  "reorderBlocksMoveUpTooltip": "تحريك لأعلى",
+  "reorderBlocksMoveDownTooltip": "تحريك لأسفل",
+  "reorderBlocksCloseTooltip": "إغلاق",
+  "reorderBlocksDescription": "اضغط على عنصر لتحديده، ثم استخدم سهمي الأعلى/الأسفل لتحريكه.",
+  "reorderBlocksMenuItemLabel": "إعادة ترتيب",
+  "txtImportPickerDialogTitle": "اختر ملف TXT لاستيراده",
+  "txtImportReadFailedMessage": "تعذر قراءة ملف TXT",
+  "txtImportEmptyFileMessage": "ملف TXT فارغ",
+  "txtImportSuccessMessage": "تم استيراد TXT",
+  "txtImportMenuItemLabel": "استيراد (txt)",
+  "exportMenuItemLabel": "تصدير",
+  "editorUndoTooltip": "تراجع",
+  "editorRedoTooltip": "إعادة",
+  "noteSavedMessage": "تم حفظ الملاحظة",
+  "dateAssignPickerHelpText": "تعيين الملاحظة ليوم معين",
+  "dateAssignChangeOption": "تغيير التاريخ",
+  "dateAssignRemoveOption": "إزالة التعيين",
+  "editorSubToolbarCloseTooltip": "إغلاق",
+  "titleFieldHint": "العنوان",
+  "textBlockHint": "اكتب ملاحظتك هنا...",
+  "drawingBoardMenuItemLabel": "لوحة الرسم",
+  "voiceToTextTextNotesOnlyMessage": "التحويل من الصوت إلى النص متاح فقط للملاحظات النصية",
+  "selectionModeCancelTooltip": "إلغاء التحديد",
+  "selectionModeSelectedCountTitle": "تم تحديد {count}",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "حذف",
+  "selectionModeArchiveTooltip": "أرشفة",
+  "selectionModeFolderTooltip": "مجلد",
+  "searchFieldHint": "بحث في الملاحظات...",
+  "emptyTrashDialogTitle": "إفراغ سلة المهملات",
+  "emptyTrashDialogConfirmMessage": "سيتم حذف جميع الملاحظات المحذوفة نهائيًا. هل أنت متأكد؟",
+  "emptyTrashDialogCancelButton": "إلغاء",
+  "restoreAllMenuItemLabel": "استعادة الكل",
+  "sortMenuTooltip": "ترتيب الملاحظات",
+  "sortMenuAscendingLabel": "الترتيب: تصاعدي (أ-ي)",
+  "sortMenuDescendingLabel": "الترتيب: تنازلي (ي-أ)",
+  "sortMenuByTitleLabel": "ترتيب حسب: العنوان",
+  "sortMenuByModifiedDateLabel": "ترتيب حسب: آخر تعديل",
+  "sortMenuByCreatedDateLabel": "ترتيب حسب: تاريخ الإنشاء",
+  "sortMenuByFolderLabel": "ترتيب حسب: المجلد",
+  "viewToggleGridTooltip": "عرض شبكي",
+  "viewToggleListTooltip": "عرض قائمة",
+  "drawerHeaderSubtitle": "دفترك الشخصي",
+  "drawerNotesSectionHeader": "الملاحظات",
+  "drawerAllNotesLabel": "الملاحظات",
+  "drawerFavoritesLabel": "المفضلة",
+  "drawerAgendaLabel": "الأجندة",
+  "drawerRemindersLabel": "التذكير",
+  "drawerLockedLabel": "مقفلة",
+  "drawerTrashLabel": "سلة المهملات",
+  "drawerFoldersSectionHeader": "المجلدات",
+  "drawerExpandLabel": "توسيع",
+  "drawerCollapseLabel": "طي",
+  "drawerAddFolderLabel": "إضافة مجلد",
+  "drawerAppSectionHeader": "التطبيق",
+  "drawerCalendarLabel": "التقويم",
+  "drawerSettingsLabel": "الإعدادات",
+  "drawerBackupRestoreLabel": "النسخ الاحتياطي والاستعادة",
+  "drawerUpgradeToProLabel": "الترقية إلى Pro",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "دعم التطوير",
+  "drawerFeedbackLabel": "ملاحظات وآراء",
+  "drawerAboutLabel": "حول التطبيق",
+  "noNotesFoundMessage": "لم يتم العثور على ملاحظات.",
+  "trashRestoreButtonLabel": "استعادة",
+  "trashPermanentDeleteButtonLabel": "حذف نهائي",
+  "tagRenamedInfoMessage": "تمت إعادة تسمية الوسم",
+  "tagDeletedInfoMessage": "تم حذف الوسم",
+  "tagOptionsRenameLabel": "إعادة تسمية",
+  "tagOptionsDeleteLabel": "حذف",
+  "renameTagDialogTitle": "إعادة تسمية الوسم",
+  "renameTagDialogHint": "اسم الوسم الجديد",
+  "renameTagDialogCancelButton": "إلغاء",
+  "renameTagDialogSaveButton": "حفظ",
+  "deleteTagDialogMessageWithCount": "سيتم إزالة \"{tag}\" من {affectedCount} ملاحظة. هل تريد المتابعة؟",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "هل تريد حذف الوسم \"{tag}\"؟",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "حذف الوسم",
+  "deleteTagDialogCancelButton": "إلغاء",
+  "deleteTagDialogConfirmButton": "حذف",
+  "tagsSheetTitle": "الوسوم",
+  "tagsSheetEmptyMessage": "لا توجد وسوم على هذه الملاحظة بعد.",
+  "tagsSheetInputHint": "اكتب وسمًا جديدًا...",
+  "tagsSheetSuggestionsLabel": "الوسوم الحالية",
+  "noteDeletedInfoMessage": "تم حذف الملاحظة",
+  "noteDeletedUndoActionLabel": "تراجع",
+  "reminderSetInfoMessage": "تم تعيين التذكير",
+  "reminderRemovedInfoMessage": "تمت إزالة التذكير",
+  "noteDuplicatedInfoMessage": "تم إنشاء نسخة",
+  "speechTextAppendedInfoMessage": "تمت إضافة النص إلى الملاحظة",
+  "pdfPreparingInfoMessage": "جارٍ تجهيز PDF…",
+  "pdfSavedInfoMessage": "تم حفظ PDF",
+  "jpgPreparingInfoMessage": "جارٍ تجهيز JPG…",
+  "jpgSavedInfoMessage": "تم حفظ JPG",
+  "jpgFailedInfoMessage": "تعذر إنشاء JPG",
+  "txtPreparingInfoMessage": "جارٍ تجهيز TXT…",
+  "txtSavedInfoMessage": "تم حفظ TXT",
+  "txtFailedInfoMessage": "تعذر إنشاء TXT",
+  "exportOpenActionLabel": "فتح",
+  "wrongPasswordInfoMessage": "كلمة المرور خاطئة.",
+  "noteArchivedInfoMessage": "تمت أرشفة الملاحظة",
+  "noteUnarchivedInfoMessage": "تمت الإزالة من الأرشيف",
+  "noteUnlockedInfoMessage": "تم إلغاء القفل",
+  "noteLockedInfoMessage": "تم قفل الملاحظة",
+  "notificationUnpinnedInfoMessage": "تم إلغاء التثبيت",
+  "emptyNotePinBlockedInfoMessage": "لا يمكن تثبيت ملاحظة فارغة.",
+  "notificationPinnedInfoMessage": "تم التثبيت في لوحة الإشعارات",
+  "noContentToReadInfoMessage": "لا يوجد محتوى لقراءته",
+  "backPressExitInfoMessage": "اضغط رجوع مرة أخرى للخروج",
+  "reminderChannelName": "تذكيرات الملاحظات",
+  "reminderChannelDescription": "تذكيرات الملاحظات في تطبيق Layout",
+  "pinnedChannelName": "الملاحظات المثبتة",
+  "pinnedChannelDescription": "ملاحظات Layout المثبتة في لوحة الإشعارات",
+  "notificationUnpinActionLabel": "إزالة",
+  "reminderDefaultTitle": "تذكير",
+  "reminderChecklistBodyFallback": "لا تنسَ مراجعة قائمة مهامك",
+  "reminderTextBodyFallback": "لا تنسَ مراجعة ملاحظتك",
+  "pdfSaveDialogTitle": "حفظ كملف PDF",
+  "jpgSaveDialogTitle": "حفظ كملف JPG",
+  "txtSaveDialogTitle": "حفظ كملف TXT",
+  "textSizeSheetTitle": "حجم النص",
+  "textSizeSamplePreview": "نص تجريبي",
+  "textSizeCancelButton": "إلغاء",
+  "textSizeApplyButton": "تطبيق",
+  "createPasswordDialogTitle": "إنشاء كلمة مرور",
+  "createPasswordNewPasswordHint": "كلمة مرور جديدة",
+  "createPasswordConfirmHint": "إعادة إدخال كلمة المرور",
+  "createPasswordHintQuestionDescription": "عيّن سؤال أمان في حال نسيت كلمة المرور (اختياري).",
+  "createPasswordHintQuestionHint": "اختر سؤال أمان",
+  "createPasswordHintAnswerHint": "إجابتك",
+  "createPasswordCancelButton": "إلغاء",
+  "createPasswordSaveButton": "حفظ",
+  "passwordMismatchMessage": "كلمتا المرور غير متطابقتين!",
+  "passwordRequiredDialogTitle": "كلمة المرور مطلوبة",
+  "passwordRequiredHint": "أدخل كلمة المرور",
+  "forgotPasswordButtonLabel": "نسيت كلمة المرور",
+  "passwordRequiredCancelButton": "إلغاء",
+  "passwordRequiredConfirmButton": "تحقق",
+  "securityQuestionDialogTitle": "سؤال الأمان",
+  "securityQuestionAnswerHint": "إجابتك",
+  "securityQuestionCancelButton": "إلغاء",
+  "securityQuestionConfirmButton": "تأكيد",
+  "securityQuestionWrongAnswerMessage": "إجابة خاطئة. حاول مرة أخرى.",
+  "revealedPasswordDialogTitle": "كلمة المرور الخاصة بك",
+  "revealedPasswordLabel": "كلمة مرور ملاحظتك:",
+  "revealedPasswordOkButton": "موافق",
+  "securityQuestionPetName": "ما اسم حيوانك الأليف الأول؟",
+  "securityQuestionFavoriteTeacher": "ما اسم معلمك المفضل؟",
+  "securityQuestionBirthCity": "في أي مدينة وُلدت؟",
+  "securityQuestionFavoriteFood": "ما هو طعامك المفضل؟",
+  "securityQuestionMotherMaidenName": "ما هو اسم عائلة والدتك قبل الزواج؟",
+  "securityQuestionFirstSchool": "ما اسم أول مدرسة التحقت بها؟",
+  "securityQuestionFavoriteColor": "ما هو لونك المفضل؟",
+  "editFolderDialogTitle": "تعديل المجلد",
+  "newSubfolderDialogTitle": "مجلد فرعي جديد",
+  "addFolderDialogTitle": "إضافة مجلد",
+  "subfolderParentInfoMessage": "سيتم إنشاؤه داخل \"{parentCategory}\"",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "اسم المجلد الفرعي",
+  "folderNameFieldLabel": "اسم المجلد",
+  "folderColorLabel": "اللون",
+  "folderDialogCancelButton": "إلغاء",
+  "folderDialogSaveButton": "حفظ",
+  "folderDialogAddButton": "إضافة",
+  "selectFolderSheetTitle": "اختيار مجلد",
+  "selectFolderAddOptionLabel": "إضافة مجلد",
+  "removeCurrentFolderLabel": "إزالة المجلد الحالي",
+  "noteDetailsDialogTitle": "التفاصيل",
+  "noteDetailsCreatedLabel": "تاريخ الإنشاء",
+  "noteDetailsModifiedLabel": "آخر تعديل",
+  "noteDetailsCharCountLabel": "عدد الأحرف",
+  "noteDetailsCharCountValue": "{count} حرفًا",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "عدد الكلمات",
+  "noteDetailsWordCountValue": "{count} كلمة",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "موافق",
+  "noteDetailsUnknownDateLabel": "غير معروف",
+  "addAttachmentSheetTitle": "إضافة",
+  "addAttachmentImageOption": "إضافة صورة",
+  "addAttachmentCameraOption": "الكاميرا",
+  "addAttachmentFileOption": "إضافة ملف",
+  "addAttachmentVoiceOption": "تسجيل صوتي",
+  "addAttachmentVideoOption": "تسجيل فيديو",
+  "addAttachmentScanOption": "مسح مستند",
+  "noteActionsSheetTitle": "اختر إجراءً",
+  "noteActionReminderLabel": "تذكير",
+  "noteActionEditReminderLabel": "تعديل التذكير",
+  "noteActionSpeechToTextLabel": "تحويل الكلام إلى نص",
+  "noteActionArchiveLabel": "أرشفة",
+  "noteActionUnarchiveLabel": "إزالة من الأرشيف",
+  "noteActionLockLabel": "قفل",
+  "noteActionUnlockLabel": "إلغاء القفل",
+  "noteActionFavoriteLabel": "إضافة إلى المفضلة",
+  "noteActionUnfavoriteLabel": "إزالة من المفضلة",
+  "noteActionClassifyLabel": "اختيار مجلد",
+  "noteActionDeleteLabel": "حذف",
+  "noteActionPinToNotificationLabel": "تثبيت في لوحة الإشعارات",
+  "noteActionUnpinFromNotificationLabel": "إزالة التثبيت",
+  "noteActionShareLabel": "مشاركة",
+  "noteActionDuplicateLabel": "إنشاء نسخة",
+  "noteActionCopyContentLabel": "نسخ المحتوى",
+  "noteActionTtsLabel": "قراءة بصوت عالٍ",
+  "noteActionTextSizeLabel": "حجم النص",
+  "noteActionDetailsLabel": "التفاصيل",
+  "noteActionDiscardChangesLabel": "تجاهل التغييرات",
+  "noteActionSelectLabel": "تحديد",
+  "reminderEditOptionLabel": "تغيير التذكير",
+  "reminderRemoveOptionLabel": "إزالة التذكير",
+  "discardChangesDialogTitle": "تجاهل التغييرات",
+  "discardChangesDialogMessage": "ستُفقد التغييرات غير المحفوظة في هذه الملاحظة. هل أنت متأكد أنك تريد تجاهلها؟",
+  "discardChangesCancelButton": "إلغاء",
+  "discardChangesConfirmButton": "تجاهل",
+  "pinnedNotificationDefaultTitle": "ملاحظة",
+  "pdfFailedInfoMessage": "فشل إنشاء PDF",
+  "drawingScreenTitle": "رسم",
+  "drawingMinimizeTooltip": "تصغير",
+  "drawingEmptyExportWarningMessage": "ارسم شيئًا أولاً",
+  "drawingEraserPartialModeLabel": "جزئي",
+  "drawingEraserFullModeLabel": "كامل",
+  "drawingClearTooltip": "مسح",
+  "drawingZoomOutTooltip": "تصغير التكبير",
+  "drawingZoomInTooltip": "تكبير",
+  "drawingDeleteTooltip": "حذف",
+  "drawingEmptyPreviewHint": "اضغط للرسم",
+  "settingsPageTitle": "الإعدادات",
+  "settingsSectionGeneral": "عام",
+  "settingsSectionSecurity": "الأمان",
+  "settingsSectionTheme": "المظهر",
+  "settingsSectionPersonalization": "التخصيص",
+  "settingsSectionWidget": "الودجت",
+  "settingsSectionAbout": "حول التطبيق",
+  "settingsHintQuestionPet": "ما اسم حيوانك الأليف الأول؟",
+  "settingsHintQuestionTeacher": "ما اسم معلمك المفضل؟",
+  "settingsHintQuestionBirthCity": "في أي مدينة وُلدت؟",
+  "settingsHintQuestionFavoriteFood": "ما هو طعامك المفضل؟",
+  "settingsHintQuestionMotherMaidenName": "ما هو اسم عائلة والدتك قبل الزواج؟",
+  "settingsHintQuestionFirstSchool": "ما هي أول مدرسة التحقت بها؟",
+  "settingsHintQuestionFavoriteColor": "ما هو لونك المفضل؟",
+  "settingsSecurityQuestionDialogTitle": "سؤال الأمان",
+  "settingsSecurityQuestionDialogDesc": "إذا نسيت كلمة المرور، يمكنك استعادتها بالإجابة الصحيحة على هذا السؤال.",
+  "settingsSecurityQuestionDropdownHint": "اختر سؤال أمان",
+  "settingsSecurityQuestionAnswerHint": "إجابتك",
+  "settingsSecurityQuestionCancelButton": "إلغاء",
+  "settingsSecurityQuestionEmptyWarning": "لا يمكن ترك السؤال والإجابة فارغين!",
+  "settingsSecurityQuestionSaveButton": "حفظ",
+  "settingsCreatePasswordTitle": "إنشاء كلمة مرور",
+  "settingsPasswordRequiredTitle": "كلمة المرور مطلوبة",
+  "settingsPasswordEnterHint": "أدخل كلمة المرور",
+  "settingsForgotPasswordButton": "نسيت كلمة المرور",
+  "settingsNewPasswordHint": "كلمة مرور جديدة",
+  "settingsConfirmPasswordHint": "إعادة إدخال كلمة المرور",
+  "settingsSecurityQuestionOptionalDesc": "عيّن سؤال أمان في حال نسيت كلمة المرور (اختياري).",
+  "settingsPasswordDialogCancelButton": "إلغاء",
+  "settingsPasswordMismatchWarning": "كلمتا المرور غير متطابقتين!",
+  "settingsWrongPasswordWarning": "كلمة المرور خاطئة!",
+  "settingsPasswordSaveButton": "حفظ",
+  "settingsPasswordRemoveButton": "إزالة",
+  "settingsNotePasswordTitle": "كلمة مرور الملاحظة",
+  "settingsPasswordSetSubtitle": "تم تعيين كلمة المرور ✓",
+  "settingsPasswordNotSetSubtitle": "لم يتم تعيين كلمة مرور",
+  "settingsSecurityQuestionTileTitle": "سؤال الأمان",
+  "settingsSecurityQuestionSetSubtitle": "تم التعيين ✓ — يُستخدم في حال نسيان كلمة المرور",
+  "settingsSecurityQuestionNotSetSubtitle": "غير معيّن — لن تتمكن من استعادة كلمة المرور في حال فقدانها",
+  "settingsThemeDialogTitle": "اختيار المظهر",
+  "settingsThemeSystemDefault": "افتراضي النظام",
+  "settingsThemeLightOption": "المظهر الفاتح",
+  "settingsThemeDarkOption": "المظهر الداكن",
+  "settingsAccentColorDialogTitle": "اختيار لون التمييز",
+  "settingsThemeChangeTileTitle": "تغيير المظهر",
+  "settingsThemeLightLabel": "فاتح",
+  "settingsThemeDarkLabel": "داكن",
+  "settingsThemeSystemLabel": "النظام",
+  "settingsLanguageTileTitle": "اللغة",
+  "settingsLanguageDialogTitle": "اختيار اللغة",
+  "settingsLanguageSystemOption": "النظام",
+  "settingsAccentColorTileTitle": "لون التمييز",
+  "settingsAccentColorTileSubtitle": "اللون المستخدم في شريط التطبيق والأزرار والمفاتيح",
+  "settingsColorfulNotesTitle": "ألوان متنوعة للملاحظات",
+  "settingsColorfulNotesSubtitle": "تحصل كل بطاقة ملاحظة على درجة لون مختلفة.",
+  "settingsTextColorSheetTitle": "لون النص",
+  "settingsTextColorSheetDesc": "يحدد لون نص محتوى الملاحظة.",
+  "settingsTextColorOkButton": "موافق",
+  "settingsTextColorTileTitle": "لون النص",
+  "settingsTextColorTileSubtitle": "لون نص محتوى الملاحظة.",
+  "settingsWidgetFontSizeLabel": "حجم خط الودجت",
+  "settingsWidgetFontSizeSample": "عنوان تجريبي - {size} نقطة",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "إلغاء",
+  "settingsWidgetFontSizeApplyButton": "تطبيق",
+  "settingsWidgetOpacityLabel": "شفافية الخلفية",
+  "settingsWidgetOpacityValue": "شفافية {percent}٪",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "إلغاء",
+  "settingsWidgetOpacityApplyButton": "تطبيق",
+  "settingsWidgetDarkModeTitle": "ودجت داكن",
+  "settingsWidgetDarkModeDesc": "نظام ألوان داكن للودجت.",
+  "settingsAboutVersionTitle": "إصدار التطبيق",
+  "settingsFontFamilyTileTitle": "الخط",
+  "settingsFontFamilyDefaultLabel": "افتراضي",
+  "settingsGlobalFontSizeTileTitle": "حجم الخط",
+  "settingsGlobalFontSizeTileSubtitle": "{size} نقطة — مطبق على جميع الملاحظات.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "نص تجريبي - {size} نقطة",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "تطبيق على الملاحظات الحالية",
+  "settingsGlobalFontSizeApplyToAllNote": "إذا كانت الملاحظة تحتوي على حجم خط مخصص، فلن يؤثر هذا الإعداد عليها.",
+  "settingsGlobalFontSizeCancelButton": "إلغاء",
+  "settingsGlobalFontSizeApplyButton": "تطبيق",
+  "settingsPreviewLinesTileTitle": "أسطر معاينة الملاحظة",
+  "settingsPreviewLinesTileSubtitle": "عرض حتى {lines} سطرًا. إذا كانت الملاحظة أقصر، يُعرض العدد الفعلي للأسطر.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "الحالي: {lines} سطرًا",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "يحدد الحد الأقصى لعدد أسطر المعاينة. إذا كانت الملاحظة تحتوي على أسطر أقل، يُعرض العدد الفعلي.",
+  "settingsPreviewLinesCancelButton": "إلغاء",
+  "settingsPreviewLinesApplyButton": "تطبيق",
+  "backupCancelButton": "إلغاء",
+  "backupConnectButton": "اتصال",
+  "backupDisconnectButton": "قطع الاتصال",
+  "backupContinueButton": "متابعة",
+  "backupCloseButton": "إغلاق",
+  "backupShareButton": "مشاركة",
+  "backupRestoreButton": "استعادة",
+  "backupConfigureButton": "تهيئة",
+  "backupUnknownDateLabel": "غير معروف",
+  "backupProcessingDefaultLabel": "جارٍ المعالجة...",
+  "backupPermissionRequiredTitle": "إذن التخزين مطلوب",
+  "backupPermissionRequiredBodyPermanent": "يتطلب إصدار أندرويد هذا إذن التخزين للنسخ الاحتياطي/الاستعادة. بما أن الإذن رُفض بشكل دائم، يرجى تفعيله يدويًا من إعدادات التطبيق.",
+  "backupPermissionRequiredBodyNormal": "يتطلب إصدار أندرويد هذا إذن التخزين للنسخ الاحتياطي/الاستعادة. يرجى منح الإذن للمتابعة.",
+  "backupGoToSettingsButton": "الذهاب إلى الإعدادات",
+  "backupRetryButton": "إعادة المحاولة",
+  "backupDriveConnectingLabel": "جارٍ الاتصال بحساب Google...",
+  "backupDriveConnectedWithEmailMessage": "تم الاتصال بحساب Google Drive: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "تم الاتصال بحساب Google Drive.",
+  "backupDriveConnectFailedMessage": "تعذر الاتصال بحساب Google، أو تم إلغاء العملية.",
+  "backupDriveDisconnectTitle": "قطع الاتصال بـ Google Drive",
+  "backupDriveDisconnectBody": "في حال قطع الاتصال، لن تتمكن من إجراء نسخ احتياطية يدوية أو تلقائية إلى Drive. النسخ الاحتياطية المخزنة بالفعل على Drive لن تُحذف — ستتم إزالة الوصول من هذا الجهاز فقط.",
+  "backupDriveDisconnectedMessage": "تمت إزالة الاتصال بـ Google Drive.",
+  "backupDriveRequiredTitle": "حساب Google مطلوب",
+  "backupDriveRequiredBody": "يتطلب هذا الإجراء ربط حساب Google الخاص بك. هل تريد الاتصال الآن؟",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: متصل ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: متصل",
+  "backupDriveStatusDisconnected": "Google Drive: غير متصل",
+  "backupDriveAuthenticatingLabel": "جارٍ التحقق من حساب Google...",
+  "backupDriveNotSignedInMessage": "أنت غير متصل بـ Google Drive. يرجى تسجيل الدخول بحساب Google أولاً.",
+  "backupDriveUploadingLabel": "جارٍ رفع النسخة الاحتياطية إلى Drive...",
+  "backupDriveUploadTimeoutMessage": "لم يكتمل الرفع إلى Google Drive خلال 120 ثانية (لا يوجد رد من الخادم). يرجى التحقق من اتصالك والمحاولة مرة أخرى.",
+  "backupDriveOperationCompletedLabel": "اكتمل",
+  "backupToDriveActionLabel": "النسخ الاحتياطي إلى Drive",
+  "backupToDeviceActionLabel": "النسخ الاحتياطي",
+  "backupCreatingLabel": "جارٍ إنشاء النسخة الاحتياطية...",
+  "backupCreateFailedMessage": "تعذر إنشاء النسخة الاحتياطية: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "فشل الرفع إلى Google Drive: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "تم رفع النسخة الاحتياطية بنجاح إلى Google Drive.",
+  "backupCreatedMessage": "تم إنشاء النسخة الاحتياطية: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "النسخة الاحتياطية جاهزة",
+  "backupOfferShareBody": "تم حفظ ملف النسخة الاحتياطية على جهازك. هل تريد مشاركته الآن (مثل التخزين السحابي أو البريد الإلكتروني أو جهاز آخر)؟",
+  "backupShareFileText": "ملف نسخة احتياطية من layout",
+  "backupShareFailedMessage": "تعذر بدء المشاركة: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "نسخة احتياطية كبيرة",
+  "backupLargeOperationBody": "حجم البيانات المراد معالجتها حوالي {sizeText}. قد تستغرق عملية {actionLabel} بهذا الحجم بعض الوقت حسب جهازك. فقط لا تغادر التطبيق أثناء التقدم — هل تريد المتابعة؟",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "الاستعادة",
+  "backupDriveListingLabel": "جارٍ سرد النسخ الاحتياطية على Drive...",
+  "backupDriveListFailedMessage": "تعذر سرد النسخ الاحتياطية: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "لا توجد نسخ احتياطية على Google Drive بعد.",
+  "backupDrivePickTitle": "اختر نسخة احتياطية من Drive",
+  "backupDriveDownloadingLabel": "جارٍ تنزيل النسخة الاحتياطية من Drive...",
+  "backupDriveDownloadingWithSizeLabel": "جارٍ تنزيل النسخة الاحتياطية من Drive... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "جارٍ حفظ الملف على الجهاز...",
+  "backupDriveUnknownBackupFileName": "unknown_backup.zip",
+  "backupDriveStorageFullMessage": "مساحة تخزين Google Drive ممتلئة. يرجى تحرير مساحة على Drive والمحاولة مرة أخرى.",
+  "backupDriveNetworkErrorMessage": "تعذر إنشاء اتصال بالإنترنت. يرجى التحقق من اتصالك والمحاولة مرة أخرى.",
+  "backupDriveBackupNotFoundMessage": "تعذر العثور على ملف النسخة الاحتياطية المحدد على Drive. ربما تم حذفه.",
+  "backupDriveUnknownErrorMessage": "حدث خطأ غير متوقع أثناء عملية Google Drive: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "فشل التنزيل: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "تعذر اختيار الملف: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "تعذر الوصول إلى الملف المحدد.",
+  "backupCheckingLabel": "جارٍ فحص النسخة الاحتياطية...",
+  "backupReadFailedMessage": "تعذر قراءة ملف النسخة الاحتياطية: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "استعادة النسخة الاحتياطية",
+  "backupPreviewContentsHeader": "محتويات النسخة الاحتياطية المحددة:",
+  "backupPreviewNoteCountLabel": "عدد الملاحظات",
+  "backupPreviewTrashCountLabel": "الملاحظات في سلة المهملات",
+  "backupPreviewCategoryCountLabel": "عدد الفئات",
+  "backupPreviewAttachmentLabel": "المرفقات",
+  "backupPreviewAttachmentNoneValue": "لا يوجد",
+  "backupPreviewAttachmentCountValue": "{count} ملفات ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "تاريخ الإنشاء",
+  "backupEmptyPreviewTitle": "تبدو هذه النسخة الاحتياطية فارغة",
+  "backupEmptyPreviewBody": "لم يتم العثور على ملاحظات أو فئات أو مرفقات في الملف المحدد. إذا تابعت، ستُحذف بياناتك الحالية وتُستبدل بهذه النسخة الاحتياطية الفارغة.",
+  "backupMissingAttachmentsTitle": "{count} مرفقات غير موجودة في النسخة الاحتياطية",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "سيتم استعادة الملاحظات التي تحتوي على هذه الملفات، ولكن بدون المرفقات (قد تكون مفقودة أو تالفة وقت أخذ النسخة الاحتياطية): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} و{remaining} أخرى",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "سيؤدي هذا إلى استبدال جميع ملاحظاتك الحالية وسلة المهملات والفئات والإعدادات والمرفقات بالبيانات الموجودة في النسخة الاحتياطية أعلاه. ستُفقد بياناتك الحالية نهائيًا ولا يمكن التراجع عن هذا الإجراء.",
+  "backupRestoringLabel": "جارٍ استعادة النسخة الاحتياطية...",
+  "backupRestoreSuccessWithMissingMessage": "تمت استعادة النسخة الاحتياطية. مع ذلك، لم يتم العثور على {count} مرفقات في النسخة الاحتياطية ولم يتم استعادتها. يُنصح بإعادة تشغيل التطبيق لتفعيل التغييرات بالكامل.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "تمت استعادة النسخة الاحتياطية بنجاح. يُنصح بإعادة تشغيل التطبيق لتفعيل التغييرات بالكامل.",
+  "backupRestoreFailedMessage": "حدث خطأ أثناء الاستعادة: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "النسخ الاحتياطي والاستعادة",
+  "backupBlockedExitWarningMessage": "هناك عملية قيد التنفيذ، يرجى الانتظار حتى تنتهي.",
+  "backupBusyBackTooltip": "العملية قيد التنفيذ",
+  "backupIntroText": "يمكنك نسخ ملاحظاتك وفئاتك وإعداداتك ومرفقاتك احتياطيًا كملف .zip واحد، أو استعادة نسخة احتياطية أخذتها سابقًا.",
+  "backupDriveCardTitle": "نسخ احتياطي إلى Google Drive",
+  "backupDriveCardSubtitle": "أنشئ نسخة احتياطية جديدة وارفعها مباشرة إلى المنطقة الخاصة في Google Drive الخاص بك.",
+  "backupDriveCardButtonLabel": "نسخ احتياطي إلى Drive",
+  "backupDeviceCardTitle": "نسخ احتياطي إلى الجهاز",
+  "backupDeviceCardSubtitle": "احفظ جميع بياناتك كملف .zip واحد على جهازك وشاركه إذا أردت.",
+  "backupDeviceCardButtonLabel": "نسخ احتياطي إلى الجهاز",
+  "backupHistoryCardTitle": "سجل النسخ الاحتياطي",
+  "backupHistoryCardSubtitle": "اعرض جميع النسخ الاحتياطية المخزنة على جهازك مع تاريخها وحجمها؛ يمكنك مشاركتها أو استعادتها أو حذفها مباشرة من هنا.",
+  "backupHistoryTabDevice": "الجهاز",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "حذف النسخة الاحتياطية",
+  "backupHistoryDeleteDialogBody": "هل أنت متأكد أنك تريد حذف ملف النسخة الاحتياطية \"{fileName}\" نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "تم حذف النسخة الاحتياطية.",
+  "backupHistoryDriveDeleteDialogTitle": "حذف نسخة Drive الاحتياطية",
+  "backupHistoryDriveDeleteDialogBody": "هل أنت متأكد أنك تريد حذف النسخة الاحتياطية \"{fileName}\" نهائيًا من Google Drive؟ لا يمكن التراجع عن هذا الإجراء ولن يُنقل الملف إلى سلة المهملات.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "تم حذف نسخة Drive الاحتياطية.",
+  "backupHistoryDriveDeleteFailedMessage": "تعذر الحذف: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "لا توجد نسخ احتياطية محفوظة على هذا الجهاز بعد.",
+  "backupHistoryDeviceEmptySubtitle": "استخدم \"نسخ احتياطي إلى الجهاز\" لإنشاء أول نسخة احتياطية لك.",
+  "backupHistoryDriveEmptySubtitle": "استخدم \"نسخ احتياطي إلى Google Drive\" لإنشاء أول نسخة احتياطية سحابية لك.",
+  "backupHistoryDriveSignInPrompt": "اربط حساب Google الخاص بك لرؤية نسخ Drive الاحتياطية.",
+  "backupHistoryConnectGoogleButton": "الاتصال بـ Google",
+  "backupHistoryDriveConnectedFallback": "متصل",
+  "backupHistoryUnknownErrorFallback": "حدث خطأ غير معروف.",
+  "backupHistoryDownloadStartingLabel": "جارٍ البدء...",
+  "backupAutoBackupEnabledLabel": "النسخ الاحتياطي التلقائي: مفعّل",
+  "backupAutoBackupDisabledLabel": "النسخ الاحتياطي التلقائي: معطّل",
+  "backupOverlayWarningMessage": "يرجى الانتظار، لا تغادر التطبيق حتى تكتمل العملية.",
+  "pdfExportUntitledNoteLabel": "ملاحظة بلا عنوان",
+  "pdfExportDefaultAttachmentName": "مرفق",
+  "pdfExportDefaultFileName": "ملاحظة",
+  "screenshotExportBoundaryNotFoundMessage": "تعذر التقاط لقطة الشاشة (لم يتم العثور على الحدود)",
+  "screenshotExportByteDataNullMessage": "تعذر إنشاء بيانات لقطة الشاشة",
+  "screenshotExportPngDecodeFailedMessage": "تعذرت معالجة الصورة (فشل فك ترميز PNG)",
+  "screenshotCalcTableTotalLabel": "الإجمالي",
+  "gundemMenuRemoveFromAgenda": "إزالة من الأجندة",
+  "gundemMenuDeleteNote": "حذف الملاحظة",
+  "gundemSectionOverdue": "متأخر",
+  "gundemSectionToday": "اليوم",
+  "gundemSectionTomorrow": "غدًا",
+  "gundemSectionNextWeek": "الأسبوع القادم",
+  "gundemSectionFurther": "لاحقًا",
+  "gundemWeekdayMonday": "الاثنين",
+  "gundemWeekdayTuesday": "الثلاثاء",
+  "gundemWeekdayWednesday": "الأربعاء",
+  "gundemWeekdayThursday": "الخميس",
+  "gundemWeekdayFriday": "الجمعة",
+  "gundemWeekdaySaturday": "السبت",
+  "gundemWeekdaySunday": "الأحد",
+  "gundemAppBarTitle": "الأجندة",
+  "gundemCalendarTooltip": "التقويم",
+  "gundemEmptyTitle": "لا يوجد شيء في أجندتك",
+  "gundemEmptySubtitle": "ستظهر هنا الملاحظات التي تحتوي على تذكير أو تاريخ محدد.",
+  "gundemUntitledNote": "ملاحظة بلا عنوان",
+  "gundemRepeatHourly": "كل ساعة",
+  "gundemRepeatDaily": "يوميًا",
+  "gundemRepeatWeekly": "أسبوعيًا",
+  "gundemRepeatMonthly": "شهريًا",
+  "gundemRepeatYearly": "سنويًا",
+  "gundemPreviewCalcTableLabel": "[قائمة حسابية]",
+  "gundemPreviewDrawingLabel": "[رسم]",
+  "gundemPreviewImageLabel": "[صورة]",
+  "gundemMonthShortJan": "ينا",
+  "gundemMonthShortFeb": "فبر",
+  "gundemMonthShortMar": "مار",
+  "gundemMonthShortApr": "أبر",
+  "gundemMonthShortMay": "ماي",
+  "gundemMonthShortJun": "يون",
+  "gundemMonthShortJul": "يول",
+  "gundemMonthShortAug": "أغس",
+  "gundemMonthShortSep": "سبت",
+  "gundemMonthShortOct": "أكت",
+  "gundemMonthShortNov": "نوف",
+  "gundemMonthShortDec": "ديس",
+  "calendarAppBarTitle": "التقويم",
+  "calendarTodayButton": "اليوم",
+  "calendarLegendNoteLabel": "ملاحظة",
+  "calendarLegendReminderLabel": "تذكير",
+  "calendarTodayBadge": "اليوم",
+  "calendarEmptyDayMessage": "لا توجد ملاحظات أو تذكيرات لهذا اليوم.",
+  "calendarReminderHourlyLabel": "كل ساعة",
+  "calendarMonthJan": "يناير",
+  "calendarMonthFeb": "فبراير",
+  "calendarMonthMar": "مارس",
+  "calendarMonthApr": "أبريل",
+  "calendarMonthMay": "مايو",
+  "calendarMonthJun": "يونيو",
+  "calendarMonthJul": "يوليو",
+  "calendarMonthAug": "أغسطس",
+  "calendarMonthSep": "سبتمبر",
+  "calendarMonthOct": "أكتوبر",
+  "calendarMonthNov": "نوفمبر",
+  "calendarMonthDec": "ديسمبر",
+  "calendarWeekdayShortMon": "اثن",
+  "calendarWeekdayShortTue": "ثلا",
+  "calendarWeekdayShortWed": "أرب",
+  "calendarWeekdayShortThu": "خمي",
+  "calendarWeekdayShortFri": "جمع",
+  "calendarWeekdayShortSat": "سبت",
+  "calendarWeekdayShortSun": "أحد",
+  "calendarWeekdayFullMonday": "الاثنين",
+  "calendarWeekdayFullTuesday": "الثلاثاء",
+  "calendarWeekdayFullWednesday": "الأربعاء",
+  "calendarWeekdayFullThursday": "الخميس",
+  "calendarWeekdayFullFriday": "الجمعة",
+  "calendarWeekdayFullSaturday": "السبت",
+  "calendarWeekdayFullSunday": "الأحد",
+  "wrongPasswordDialogTitle": "كلمة مرور خاطئة",
+  "wrongPasswordDialogMessage": "كلمة المرور التي أدخلتها غير صحيحة.",
+  "commonOkButton": "موافق",
+  "unlockCategoryAction": "إلغاء القفل",
+  "lockCategoryAction": "قفل",
+  "categoryUnlockedMessage": "تم إلغاء القفل",
+  "categoryLockedMessage": "تم قفل المجلد",
+  "deleteFolderMenuItemLabel": "حذف المجلد",
+  "deleteFolderDialogTitle": "حذف المجلد",
+  "deleteFolderDialogMessageWithSubfolders": "هل أنت متأكد أنك تريد حذف المجلد \"{category}\" وجميع مجلداته الفرعية؟ ستصبح الملاحظات في هذه المجلدات غير مصنّفة.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "هل أنت متأكد أنك تريد حذف المجلد \"{category}\"؟ ستصبح الملاحظات في هذا المجلد غير مصنّفة.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "إلغاء",
+  "deleteFolderDialogConfirmButton": "حذف",
+  "editCategoryNameColorMenuItemLabel": "تعديل الاسم / اللون",
+  "addSubfolderMenuItemLabel": "إنشاء مجلد فرعي",
+  "expandSubfoldersMenuItemLabel": "توسيع المجلدات الفرعية",
+  "collapseSubfoldersMenuItemLabel": "طي المجلدات الفرعية",
+  "saveErrorInfoMessage": "خطأ في الحفظ: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "مرحبًا بك في DNote! 🚀",
+  "welcomeNoteContent": "تمت إضافة ميزات جديدة!",
+  "noteListDateGroupToday": "اليوم",
+  "noteListDateGroupYesterday": "أمس",
+  "noteListDateGroupLast7Days": "آخر 7 أيام",
+  "noteListDateGroupLast30Days": "آخر 30 يومًا",
+  "reminderRepeatNoneLabel": "بلا تكرار",
+  "voiceRecorderPreparingLabel": "جارٍ التجهيز…",
+  "voiceRecorderCancelButton": "إلغاء",
+  "voiceRecorderStopAddButton": "إيقاف وإضافة",
+  "speechToTextMicPermissionDeniedMessage": "لم يتم منح إذن الميكروفون.",
+  "speechToTextUnavailableMessage": "التعرف على الكلام غير متاح على هذا الجهاز.",
+  "speechToTextPreparingLabel": "جارٍ التجهيز…",
+  "speechToTextListeningLabel": "جارٍ الاستماع…",
+  "speechToTextStartSpeakingPlaceholder": "ابدأ الحديث…",
+  "speechToTextCancelButton": "إلغاء",
+  "speechToTextStopAddButton": "إيقاف وإضافة",
+  "textToSpeechNoContentMessage": "لا يوجد محتوى لقراءته.",
+  "textToSpeechReadErrorMessage": "حدث خطأ أثناء القراءة.",
+  "textToSpeechUnavailableMessage": "تحويل النص إلى كلام غير متاح على هذا الجهاز.",
+  "textToSpeechPreparingLabel": "جارٍ التجهيز…",
+  "textToSpeechPausedLabel": "متوقف مؤقتًا",
+  "textToSpeechFinishedLabel": "اكتملت القراءة",
+  "textToSpeechReadingLabel": "جارٍ القراءة…",
+  "textToSpeechCloseErrorButton": "إغلاق",
+  "textToSpeechReplayButton": "إعادة القراءة",
+  "textToSpeechCloseFinishedButton": "إغلاق",
+  "textToSpeechPauseButton": "إيقاف مؤقت",
+  "textToSpeechResumeButton": "استئناف",
+  "textToSpeechStopButton": "إيقاف",
+  "textToSpeechSpeedSlow": "بطيء",
+  "textToSpeechSpeedNormal": "عادي",
+  "textToSpeechSpeedFast": "سريع",
+  "calendarPickerCancelButton": "إلغاء",
+  "calendarPickerConfirmButton": "اختيار",
+  "calendarPickerClearButton": "مسح",
+  "reminderPickerDialogTitle": "إضافة تذكير",
+  "reminderPickerDateTodayOption": "اليوم",
+  "reminderPickerDateTomorrowOption": "غدًا",
+  "reminderPickerDatePickOption": "اختيار تاريخ",
+  "reminderRepeatHourlyLabel": "كل ساعة",
+  "reminderRepeatDailyLabel": "كل يوم",
+  "reminderRepeatWeeklyLabel": "كل أسبوع",
+  "reminderRepeatMonthlyLabel": "كل شهر",
+  "reminderRepeatYearlyLabel": "كل سنة",
+  "reminderPickerCalendarHelpText": "اختر تاريخ التذكير",
+  "reminderPickerCancelButton": "إلغاء",
+  "reminderPickerSaveButton": "حفظ",
+  "reminderPickerPastTimeErrorMessage": "لا يمكن اختيار وقت في الماضي",
+  "calcTableTotalLabel": "الإجمالي: {amount}",
+  "backupCreatePreparingDataLabel": "جارٍ تجهيز البيانات...",
+  "backupCreatePackagingNotesLabel": "جارٍ تجميع الملاحظات والفئات...",
+  "backupCreateReadingAttachmentsLabel": "جارٍ قراءة المرفقات...",
+  "backupCreateReadingAttachmentsProgressLabel": "جارٍ قراءة المرفقات... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "جارٍ ضغط ملف zip...",
+  "backupCreateSavingFileLabel": "جارٍ حفظ الملف...",
+  "backupRestoreValidatingLabel": "جارٍ التحقق من النسخة الاحتياطية...",
+  "backupRestoreValidatedPreparingDataLabel": "تم التحقق من النسخة الاحتياطية، جارٍ تجهيز البيانات...",
+  "backupRestoreWritingNotesLabel": "جارٍ كتابة الملاحظات...",
+  "backupRestoreWritingTrashLabel": "جارٍ كتابة سلة المهملات...",
+  "backupRestoreTrashWrittenLabel": "تمت كتابة سلة المهملات",
+  "backupRestoreWritingCategoriesLabel": "جارٍ كتابة الفئات...",
+  "backupRestoreCategoriesWrittenLabel": "تمت كتابة الفئات",
+  "backupRestoreWritingSettingsLabel": "جارٍ كتابة الإعدادات...",
+  "backupRestoreSettingsWrittenLabel": "تمت كتابة الإعدادات",
+  "backupRestoreCleaningOldAttachmentsLabel": "جارٍ تنظيف المرفقات القديمة...",
+  "backupRestoreNoAttachmentsFinishingLabel": "لم يتم العثور على مرفقات، جارٍ الإنهاء...",
+  "backupRestoreAttachmentsProgressLabel": "جارٍ استعادة المرفقات... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "اكتمل",
+  "backupValidationCorruptedFileMessage": "الملف تالف أو ليس ملف نسخة احتياطية صالحًا.",
+  "backupValidationMissingDataMessage": "لم يتم العثور على بيانات داخل ملف النسخة الاحتياطية (backup_data.json مفقود).",
+  "backupValidationInvalidJsonMessage": "تعذرت قراءة بيانات النسخة الاحتياطية (JSON تالف).",
+  "backupValidationNotDnoteBackupMessage": "هذا الملف ليس نسخة احتياطية من تطبيق dnote.",
+  "backupValidationVersionUnreadableMessage": "تعذرت قراءة معلومات إصدار ملف النسخة الاحتياطية.",
+  "backupValidationIncompatibleVersionMessage": "هذه النسخة الاحتياطية بتنسيق أحدث لا يدعمه إصدار التطبيق الحالي. يرجى تحديث التطبيق.",
+  "backupValidationInvalidVersionMessage": "معلومات إصدار ملف النسخة الاحتياطية غير صالحة.",
+  "backupValidationMissingNotesFieldMessage": "بيانات النسخة الاحتياطية ليست بالتنسيق المتوقع (حقل الملاحظات مفقود).",
+  "backupValidationMissingTrashFieldMessage": "بيانات النسخة الاحتياطية ليست بالتنسيق المتوقع (حقل سلة المهملات مفقود).",
+  "backupValidationInvalidCategoriesFieldMessage": "بيانات النسخة الاحتياطية ليست بالتنسيق المتوقع (قائمة الفئات غير صالحة).",
+  "backupValidationInvalidSettingsFieldMessage": "بيانات النسخة الاحتياطية ليست بالتنسيق المتوقع (حقل الإعدادات غير صالح).",
+  "backupValidationInvalidNoteRecordMessage": "بيانات النسخة الاحتياطية ليست بالتنسيق المتوقع (سجل ملاحظة غير صالح).",
+  "backupValidationMissingNoteIdMessage": "بيانات النسخة الاحتياطية ليست بالتنسيق المتوقع (تم العثور على سجل ملاحظة بدون معرّف).",
+  "backupValidationFileNotFoundMessage": "ملف النسخة الاحتياطية غير موجود.",
+  "backupErrorInsufficientStorageMessage": "لا توجد مساحة تخزين كافية على الجهاز. يرجى تحرير مساحة والمحاولة مرة أخرى.",
+  "backupErrorPermissionDeniedMessage": "تم رفض إذن الوصول إلى الملفات. يرجى التحقق من أذونات التطبيق والمحاولة مرة أخرى.",
+  "backupErrorFileOperationMessage": "حدث خطأ أثناء عملية الملف: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "حدث خطأ غير متوقع: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "تعذر إنشاء أرشيف zip (أعاد ZipEncoder قيمة null).",
+  "calcTableMenuItemLabel": "قائمة حسابية",
+  "tagsMenuItemLabel": "الوسوم",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "إضافة عنصر...",
+  "toolbarHighlightTooltip": "تمييز",
+  "toolbarListTooltip": "قائمة",
+  "toolbarHideKeyboardTooltip": "إخفاء لوحة المفاتيح",
+  "autoBackupLocalSuccessMessage": "نجح النسخ الاحتياطي المحلي.",
+  "autoBackupLocalFailedMessage": "فشل النسخ الاحتياطي المحلي: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "تم تخطي النسخ الاحتياطي إلى Drive: حساب Google غير متصل أو انتهت صلاحية الجلسة. يرجى فتح التطبيق وإعادة الاتصال.",
+  "autoBackupDriveSuccessMessage": "نجح النسخ الاحتياطي إلى Drive.",
+  "autoBackupDriveFailedMessage": "فشل النسخ الاحتياطي إلى Drive: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "لا توجد ملاحظات بعد",
+  "noteWidgetPreviewTotalLabel": "الإجمالي: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ رسم",
+  "autoBackupSettingsAppBarTitle": "إعدادات النسخ الاحتياطي التلقائي",
+  "autoBackupSettingsMainSwitchTitle": "تفعيل النسخ الاحتياطي التلقائي",
+  "autoBackupSettingsMainSwitchSubtitle": "يتم نسخ ملاحظاتك احتياطيًا بأمان بشكل دوري في الخلفية.",
+  "autoBackupSettingsTargetTitle": "وجهة النسخ الاحتياطي",
+  "autoBackupSettingsTargetSubtitle": "اختر مكان حفظ النسخ الاحتياطية.",
+  "autoBackupSettingsTargetLocalOption": "محلي",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "كلاهما",
+  "autoBackupSettingsDriveNotConnectedNote": "اربط حسابك أولاً لاستخدام خيارات Google Drive.",
+  "autoBackupSettingsConnectButton": "اتصال",
+  "autoBackupSettingsFrequencyTitle": "تكرار النسخ الاحتياطي",
+  "autoBackupSettingsFrequencySubtitle": "يتم أخذ نسخة احتياطية كل {hours} ساعة.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 ساعات",
+  "autoBackupSettingsFrequency12h": "12 ساعة",
+  "autoBackupSettingsFrequency24h": "24 ساعة (يوميًا)",
+  "autoBackupSettingsFrequency48h": "48 ساعة (يومان)",
+  "autoBackupSettingsFrequency168h": "168 ساعة (أسبوعيًا)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "استخدام Wi-Fi فقط",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "يتم الرفع السحابي عبر Wi-Fi فقط لحماية بيانات الجوال الخاصة بك.",
+  "autoBackupSettingsStatusCardTitle": "حالة النظام",
+  "autoBackupSettingsNeverRunMessage": "لم يتم تشغيل النسخ الاحتياطي التلقائي بعد.",
+  "autoBackupSettingsLastRunInfo": "آخر تشغيل: {date} {time} ({status})\nالرسالة: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "ناجح",
+  "autoBackupSettingsStatusFailedLabel": "فاشل",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "تعذر الاتصال بحساب Google.",
+  "autoBackupSettingsSavedSnackbar": "تم تحديث إعدادات النسخ الاحتياطي التلقائي.",
+  "selectionModeDeletedMessage": "تم حذف {count} ملاحظة",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "تمت الأرشفة",
+  "selectionModeClassifySheetTitle": "اختر فئة لـ {count} ملاحظة",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "إضافة فئة",
+  "selectionModeRemoveCategoryOption": "إزالة الفئة",
+  "calcTableItemHint": "عنصر...",
+  "calcTableTotalRowLabel": "الإجمالي",
+  "textSelectionMenuShareButton": "مشاركة",
+  "textSelectionMenuTranslateButton": "ترجمة",
+  "textSelectionMenuShareFailedSnackbar": "تعذر بدء المشاركة.",
+  "textSelectionMenuTranslateFailedSnackbar": "تعذر فتح الترجمة.",
+  "lastBackupInfoTodayFormat": "اليوم {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}/{month}/{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "آخر نسخة احتياطية: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "لم يتم أخذ أي نسخة احتياطية بعد."
+}

@@ -23,6 +23,48 @@ ThemeMode themeModeFromSettingValue(String? value) {
   }
 }
 
+// ════════════════════════════════════════════════════════════════════════
+// WIDGET YAPILANDIRMA EKRANI İÇİN TEMA BİLGİSİ SENKRONİZASYONU
+// appThemeMode SADECE DBHelper (SQLite) üzerinden saklanır; native tarafın
+// (NoteWidgetConfigActivity.kt, "not seç" ekranı) SQLite'a erişimi yok,
+// yalnızca HomeWidgetPreferences (SharedPreferences) dosyasını okuyabiliyor.
+// Widget eklerken açılan not seçim ekranının uygulamanın Açık/Koyu tema
+// tercihiyle tutarlı görünebilmesi için, geçerli (efektif) parlaklığı
+// burada "is_dark_theme" anahtarıyla o depoya da yazıyoruz. Çağrı yerleri:
+// main() (açılışta bir kez) ve appThemeMode üzerine eklenen dinleyici
+// (tema Ayarlar'dan değiştirildiğinde) — bkz. main.dart.
+//
+// 'system' modunda geçerli parlaklık, context'siz olarak
+// PlatformDispatcher üzerinden okunur (bu noktada bir widget ağacı henüz
+// kurulmamış/kapalı olabilir, context gerektiren MediaQuery kullanılamaz).
+// NOT: 'system' modundayken uygulama arka plandayken sistem teması
+// değişirse (ör. gece yarısı otomatik koyu tema), bu değer uygulamanın
+// bir sonraki açılışına/tema değişikliğine kadar güncellenmez; widget
+// ekleme akışı zaten uygulamayı kısaca öne aldığından bu pratikte gözle
+// görülür bir sorun yaratmaz.
+bool dNoteResolveEffectiveDark(ThemeMode mode) {
+  switch (mode) {
+    case ThemeMode.dark:
+      return true;
+    case ThemeMode.light:
+      return false;
+    case ThemeMode.system:
+      return ui.PlatformDispatcher.instance.platformBrightness ==
+          Brightness.dark;
+  }
+}
+
+Future<void> dNoteSyncThemeToWidgetStorage() async {
+  try {
+    final isDark = dNoteResolveEffectiveDark(appThemeMode.value);
+    await HomeWidget.saveWidgetData<bool>('is_dark_theme', isDark);
+  } catch (_) {
+    // Widget tarafı (Aşama 2) henüz kurulmamışsa veya HomeWidget çağrısı
+    // başka bir nedenle başarısız olursa sessizce yutulur; syncFromNotes
+    // ve syncAppearanceSettings'teki aynı davranışla tutarlıdır.
+  }
+}
+
 String themeModeToSettingValue(ThemeMode mode) {
   switch (mode) {
     case ThemeMode.light:

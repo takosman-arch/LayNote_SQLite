@@ -52,6 +52,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   void _cleanupAttachmentFiles(Map<String, dynamic> note);
   Set<String> get _collapsedCategories;
   set _collapsedCategories(Set<String> value);
+  Set<String> get _collapsedDateGroups;
+  set _collapsedDateGroups(Set<String> value);
   bool get _colorfulNotes;
   set _colorfulNotes(bool value);
   void _deleteSelectedNotes();
@@ -246,9 +248,31 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         !isTrash &&
         _activeCategory != '__reminders__' &&
         (_sortCriteria == 'Son Düzenleme' || _sortCriteria == 'Oluşturulma');
-    final List<dynamic> listItems = showDateGroups
+    final List<dynamic> rawListItems = showDateGroups
         ? _buildDateGroupedItems(filteredNotes)
         : filteredNotes;
+    // Daraltılmış (kapalı) tarih gruplarının altındaki not kartlarını
+    // görünümden çıkarır; grup başlığının (String) kendisi her zaman
+    // görünür kalır, sadece bir sonraki başlığa kadar olan notlar
+    // (Map<String, dynamic>) gizlenir. Tarih grupları kapalıyken bile
+    // sırayla işlendiği için birden fazla grup aynı anda bağımsız
+    // şekilde daraltılmış/açık olabilir.
+    final List<dynamic> listItems = showDateGroups
+        ? (() {
+            final List<dynamic> filtered = [];
+            String? currentLabel;
+            for (final item in rawListItems) {
+              if (item is String) {
+                currentLabel = item;
+                filtered.add(item);
+              } else if (currentLabel == null ||
+                  !_collapsedDateGroups.contains(currentLabel)) {
+                filtered.add(item);
+              }
+            }
+            return filtered;
+          })()
+        : rawListItems;
 
     return PopScope(
       canPop: false,
@@ -691,6 +715,41 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       );
                     },
                   ),
+                  // DÜZELTME: Takvim satırı önceden "Uygulama" bölümünde,
+                  // Ayarlar'ın hemen üstünde duruyordu. Gündem'le içerik
+                  // olarak yakından ilişkili olduğundan (ikisi de tarihe
+                  // bağlı notları gösterir, üst barlarından birbirlerine
+                  // geçiş yapılabiliyor — bkz. _buildGundemScreen /
+                  // _buildCalendarScreen içindeki onOpenCalendar /
+                  // onOpenGundem) buraya, Gündem'in hemen altına taşındı.
+                  ListTile(
+                    leading: Icon(
+                      Icons.calendar_month,
+                      color: appAccentColor.value,
+                    ),
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerCalendarLabel,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    trailing: Text(
+                      _assignedNotesCount(_notes).toString(),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => _buildCalendarScreen()),
+                      );
+                    },
+                  ),
                   Container(
                     color: _activeCategory == '__reminders__'
                         ? dNoteHighlight(context)
@@ -954,26 +1013,6 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                   ),
                   ListTile(
                     leading: Icon(
-                      Icons.calendar_month,
-                      color: appAccentColor.value,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.drawerCalendarLabel,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => _buildCalendarScreen()),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(
                       Icons.settings_outlined,
                       color: appAccentColor.value,
                     ),
@@ -1188,6 +1227,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         // olmadığından bu fazlalık orada yoktu). Sadece en
                         // baştaki başlık için üst boşluğu küçültüyoruz; sonraki
                         // gruplar arasındaki ayraç boşluğu aynı kalıyor.
+                        final bool isDateGroupCollapsed =
+                            _collapsedDateGroups.contains(listItem);
                         return Padding(
                           padding: EdgeInsets.fromLTRB(
                             14,
@@ -1195,14 +1236,47 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             14,
                             6,
                           ),
-                          child: Text(
-                            listItem,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: dNoteIsDark(context)
-                                  ? Colors.grey[400]
-                                  : Colors.grey[700],
+                          // Başlığın tamamına dokununca (metin + ikon) bu
+                          // tarih grubunun altındaki not kartları
+                          // gizlenir/tekrar gösterilir; durum kalıcıdır
+                          // (bkz. note_list_data_category_mixin.dart ->
+                          // _loadData / _saveData, 'collapsed_date_groups').
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(6),
+                            onTap: () {
+                              setState(() {
+                                if (isDateGroupCollapsed) {
+                                  _collapsedDateGroups.remove(listItem);
+                                } else {
+                                  _collapsedDateGroups.add(listItem);
+                                }
+                              });
+                              _saveData();
+                            },
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    listItem,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: dNoteIsDark(context)
+                                          ? Colors.grey[400]
+                                          : Colors.grey[700],
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  isDateGroupCollapsed
+                                      ? Icons.chevron_right
+                                      : Icons.expand_more,
+                                  size: 22,
+                                  color: dNoteIsDark(context)
+                                      ? Colors.grey[400]
+                                      : Colors.grey[700],
+                                ),
+                              ],
                             ),
                           ),
                         );
@@ -2972,6 +3046,22 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     if (raw == null || raw.isEmpty) return false;
     final dt = DateTime.tryParse(raw);
     return dt != null && dt.isAfter(DateTime.now());
+  }
+
+  // Takvim satırının sağındaki rozet için: bir tarihe atanmış (assignedDate
+  // dolu) TÜM notların toplam sayısı — aynı güne birden fazla not
+  // atanmışsa her biri ayrı sayılır (Gündem/Hatırlatıcılar rozetleriyle
+  // aynı "not sayısı" mantığı, "farklı gün sayısı" değil). Kilitli ve
+  // arşivlenmiş notlar diğer çekmece rozetleriyle tutarlı olacak şekilde
+  // hariç tutulur.
+  int _assignedNotesCount(List<Map<String, dynamic>> notes) {
+    return notes.where((note) {
+      if (note['isLocked'] == true || note['isArchived'] == true) {
+        return false;
+      }
+      final raw = note['assignedDate']?.toString();
+      return raw != null && raw.isNotEmpty;
+    }).length;
   }
 
   // Hatırlatıcı tarihini "gg.aa.yyyy ss:dd" biçiminde döndürür (kartlarda ve

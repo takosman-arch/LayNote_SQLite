@@ -835,6 +835,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsPageTitle => 'Impostazioni';
 
   @override
+  String get settingsSectionGeneral => 'Generale';
+
+  @override
   String get settingsSectionSecurity => 'Sicurezza';
 
   @override

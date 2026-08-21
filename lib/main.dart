@@ -123,6 +123,16 @@ void main() async {
   // açılışta bir an için eski (varsayılan) renk yanıp sönmez.
   appAccentColor.value = accentColorFromSettingValue(settings['accent_color']);
 
+  // Widget yapılandırma (not seçim) ekranının Açık/Koyu tema tercihiyle
+  // tutarlı açılabilmesi için geçerli parlaklığı native tarafa yaz (bkz.
+  // theme.dart -> dNoteSyncThemeToWidgetStorage). appThemeMode her
+  // değiştiğinde (ör. Ayarlar sayfasından) de tekrar yazılması için bir
+  // dinleyici eklenir; bu dinleyici uygulama ömrü boyunca kalır.
+  unawaited(dNoteSyncThemeToWidgetStorage());
+  appThemeMode.addListener(() {
+    unawaited(dNoteSyncThemeToWidgetStorage());
+  });
+
   // Dil tercihi: kayıtlı ayar yoksa (ilk kurulum) 'system' kalır.
   appLanguage.value = settings['app_language'] ?? 'system';
 
@@ -681,6 +691,22 @@ class DNoteApp extends StatelessWidget {
                     Locale('fr', 'FR'),
                     Locale('it', 'IT'),
                     Locale('es', 'ES'),
+                    Locale('pt', 'PT'),
+                    Locale('ru', 'RU'),
+                    Locale('ja', 'JP'),
+                    Locale('zh', 'CN'),
+                    Locale('ko', 'KR'),
+                    Locale('hi', 'IN'),
+                    Locale('id', 'ID'),
+                    Locale('vi', 'VN'),
+                    Locale('th', 'TH'),
+                    Locale('pl', 'PL'),
+                    Locale('nl', 'NL'),
+                    Locale('sv', 'SE'),
+                    Locale('ar', 'SA'),
+                    Locale('he', 'IL'),
+                    Locale('uk', 'UA'),
+                    Locale('ro', 'RO'),
                   ],
                   // 'system' ise locale: null verilir ve aşağıdaki
                   // localeResolutionCallback devreye girer: cihaz dili
@@ -709,7 +735,39 @@ class DNoteApp extends StatelessWidget {
                                       ? const Locale('it', 'IT')
                                       : lang == 'es'
                                           ? const Locale('es', 'ES')
-                                          : null,
+                                          : lang == 'pt'
+                                              ? const Locale('pt', 'PT')
+                                              : lang == 'ru'
+                                                  ? const Locale('ru', 'RU')
+                                                  : lang == 'ja'
+                                                      ? const Locale('ja', 'JP')
+                                                      : lang == 'zh'
+                                                          ? const Locale('zh', 'CN')
+                                                          : lang == 'ko'
+                                                              ? const Locale('ko', 'KR')
+                                                              : lang == 'hi'
+                                                                  ? const Locale('hi', 'IN')
+                                                                  : lang == 'id'
+                                                                      ? const Locale('id', 'ID')
+                                                                      : lang == 'vi'
+                                                                          ? const Locale('vi', 'VN')
+                                                                          : lang == 'th'
+                                                                              ? const Locale('th', 'TH')
+                                                                              : lang == 'pl'
+                                                                                  ? const Locale('pl', 'PL')
+                                                                                  : lang == 'nl'
+                                                                                      ? const Locale('nl', 'NL')
+                                                                                      : lang == 'sv'
+                                                                                          ? const Locale('sv', 'SE')
+                                                                                          : lang == 'ar'
+                                                                                              ? const Locale('ar', 'SA')
+                                                                                              : lang == 'he'
+                                                                                                  ? const Locale('he', 'IL')
+                                                                                              : lang == 'uk'
+                                                                                                  ? const Locale('uk', 'UA')
+                                                                                              : lang == 'ro'
+                                                                                                  ? const Locale('ro', 'RO')
+                                                                                                  : null,
                   themeMode: mode,
                   theme: _dNoteLightTheme.copyWith(primaryColor: accentColor),
                   darkTheme: _dNoteDarkTheme.copyWith(primaryColor: accentColor),

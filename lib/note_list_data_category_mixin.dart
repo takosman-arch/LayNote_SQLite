@@ -17,6 +17,8 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
   Future<bool> _checkPasswordPrompt();
   Set<String> get _collapsedCategories;
   set _collapsedCategories(Set<String> value);
+  Set<String> get _collapsedDateGroups;
+  set _collapsedDateGroups(Set<String> value);
   bool get _colorfulNotes;
   set _colorfulNotes(bool value);
   List<Map<String, dynamic>> get _deletedNotes;
@@ -93,6 +95,13 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       _collapsedCategories = collapsedRaw.isEmpty
           ? <String>{}
           : collapsedRaw.split('\u0001').toSet();
+      // Liste görünümündeki tarih grubu başlıklarının (ör. "Bugün",
+      // "Yarın") daralt/genişlet durumu; kategori daraltma ile aynı
+      // kalıp — '\u0001' ile ayrılmış string olarak saklanır.
+      final collapsedDateRaw = settings['collapsed_date_groups'] ?? '';
+      _collapsedDateGroups = collapsedDateRaw.isEmpty
+          ? <String>{}
+          : collapsedDateRaw.split('\u0001').toSet();
 
       if (notes.isNotEmpty || !neverInitialized) {
         _notes = notes;
@@ -241,6 +250,10 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       await db.setSetting(
         'collapsed_categories',
         _collapsedCategories.join('\u0001'),
+      );
+      await db.setSetting(
+        'collapsed_date_groups',
+        _collapsedDateGroups.join('\u0001'),
       );
 
       // Ayarlar

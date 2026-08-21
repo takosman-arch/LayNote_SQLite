@@ -1,0 +1,1136 @@
+{
+  "@@locale": "th",
+  "toolbarBoldTooltip": "ตัวหนา",
+  "toolbarItalicTooltip": "ตัวเอียง",
+  "toolbarUnderlineTooltip": "ขีดเส้นใต้",
+  "toolbarStrikethroughTooltip": "ขีดฆ่า",
+  "toolbarFontSizeTooltip": "ขนาดตัวอักษร",
+  "toolbarColorTooltip": "สีตัวอักษร",
+  "toolbarBulletTooltip": "รายการหัวข้อย่อย",
+  "toolbarNumberTooltip": "รายการลำดับเลข",
+  "toolbarIndentTooltip": "ย่อหน้า",
+  "toolbarLinkTooltip": "เพิ่ม/แก้ไข/ลบลิงก์",
+  "toolbarDividerTooltip": "แทรกเส้นแบ่ง",
+  "toolbarChecklistTooltip": "เพิ่มรายการตรวจสอบ",
+  "linkSelectTextSnackbar": "กรุณาเลือกข้อความที่ต้องการใส่ลิงก์ก่อน",
+  "linkDialogEditTitle": "แก้ไขลิงก์",
+  "linkDialogAddTitle": "เพิ่มลิงก์",
+  "linkDialogRemoveButton": "ลบลิงก์",
+  "linkDialogCancelButton": "ยกเลิก",
+  "linkDialogConfirmButton": "เพิ่ม",
+  "cameraPermissionPermanentlyDeniedMessage": "การเข้าถึงกล้องถูกปฏิเสธ คุณต้องอนุญาตจากการตั้งค่าเพื่อบันทึกวิดีโอ",
+  "cameraPermissionRequiredMessage": "จำเป็นต้องได้รับสิทธิ์เข้าถึงกล้องเพื่อบันทึกวิดีโอ",
+  "openSettingsButtonLabel": "การตั้งค่า",
+  "documentScanStartFailedMessage": "ไม่สามารถเริ่มการสแกนได้: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "การรู้จำข้อความล้มเหลว: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "ไม่พบข้อความที่อ่านได้ในเอกสาร",
+  "scanResultSheetTitle": "ต้องการเพิ่มเอกสารที่สแกนอย่างไร?",
+  "scanResultTextOnlyOption": "เพิ่มเป็นข้อความเท่านั้น",
+  "scanResultTextAndImageOption": "เพิ่มข้อความ + ภาพที่สแกน",
+  "scanResultCancelOption": "ยกเลิก",
+  "audioPermissionPermanentlyDeniedMessage": "การเข้าถึงไมโครโฟนถูกปฏิเสธ คุณต้องอนุญาตจากการตั้งค่าเพื่อบันทึกเสียง",
+  "audioPermissionRequiredMessage": "จำเป็นต้องได้รับสิทธิ์เข้าถึงไมโครโฟนเพื่อบันทึกเสียง",
+  "voiceRecordingDefaultLabel": "การบันทึกเสียง",
+  "blockPreviewCalcTableLabel": "รายการคำนวณ ({count} แถว)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "ภาพวาด",
+  "blockPreviewAttachmentsLabel": "ไฟล์แนบ {count} รายการ (รูปภาพ/เอกสาร)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "เส้นแบ่ง",
+  "blockPreviewChecklistLabel": "รายการตรวจสอบ ({count} รายการ)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(ข้อความว่าง)",
+  "reorderBlocksSheetTitle": "จัดเรียงบล็อกใหม่",
+  "reorderBlocksMoveUpTooltip": "เลื่อนขึ้น",
+  "reorderBlocksMoveDownTooltip": "เลื่อนลง",
+  "reorderBlocksCloseTooltip": "ปิด",
+  "reorderBlocksDescription": "แตะบล็อกเพื่อเลือก จากนั้นใช้ลูกศรขึ้น/ลงเพื่อย้าย",
+  "reorderBlocksMenuItemLabel": "จัดเรียงใหม่",
+  "txtImportPickerDialogTitle": "เลือกไฟล์ TXT ที่ต้องการนำเข้า",
+  "txtImportReadFailedMessage": "ไม่สามารถอ่านไฟล์ TXT ได้",
+  "txtImportEmptyFileMessage": "ไฟล์ TXT ว่างเปล่า",
+  "txtImportSuccessMessage": "นำเข้าไฟล์ TXT แล้ว",
+  "txtImportMenuItemLabel": "นำเข้า (txt)",
+  "exportMenuItemLabel": "ส่งออก",
+  "editorUndoTooltip": "เลิกทำ",
+  "editorRedoTooltip": "ทำซ้ำ",
+  "noteSavedMessage": "บันทึกโน้ตแล้ว",
+  "dateAssignPickerHelpText": "กำหนดโน้ตให้กับวัน",
+  "dateAssignChangeOption": "เปลี่ยนวันที่",
+  "dateAssignRemoveOption": "ยกเลิกการกำหนด",
+  "editorSubToolbarCloseTooltip": "ปิด",
+  "titleFieldHint": "ชื่อเรื่อง",
+  "textBlockHint": "เขียนโน้ตของคุณที่นี่...",
+  "drawingBoardMenuItemLabel": "กระดานวาดภาพ",
+  "voiceToTextTextNotesOnlyMessage": "การแปลงเสียงเป็นข้อความใช้ได้เฉพาะกับโน้ตข้อความเท่านั้น",
+  "selectionModeCancelTooltip": "ยกเลิกการเลือก",
+  "selectionModeSelectedCountTitle": "เลือกแล้ว {count} รายการ",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "ลบ",
+  "selectionModeArchiveTooltip": "เก็บถาวร",
+  "selectionModeFolderTooltip": "โฟลเดอร์",
+  "searchFieldHint": "ค้นหาโน้ต...",
+  "emptyTrashDialogTitle": "ล้างถังขยะ",
+  "emptyTrashDialogConfirmMessage": "โน้ตที่ถูกลบทั้งหมดจะถูกลบอย่างถาวร คุณแน่ใจหรือไม่?",
+  "emptyTrashDialogCancelButton": "ยกเลิก",
+  "restoreAllMenuItemLabel": "กู้คืนทั้งหมด",
+  "sortMenuTooltip": "จัดเรียงโน้ต",
+  "sortMenuAscendingLabel": "ลำดับ: จากน้อยไปมาก (A-Z)",
+  "sortMenuDescendingLabel": "ลำดับ: จากมากไปน้อย (Z-A)",
+  "sortMenuByTitleLabel": "จัดเรียงตาม: ชื่อเรื่อง",
+  "sortMenuByModifiedDateLabel": "จัดเรียงตาม: แก้ไขล่าสุด",
+  "sortMenuByCreatedDateLabel": "จัดเรียงตาม: วันที่สร้าง",
+  "sortMenuByFolderLabel": "จัดเรียงตาม: โฟลเดอร์",
+  "viewToggleGridTooltip": "มุมมองตาราง",
+  "viewToggleListTooltip": "มุมมองรายการ",
+  "drawerHeaderSubtitle": "สมุดบันทึกส่วนตัวของคุณ",
+  "drawerNotesSectionHeader": "โน้ต",
+  "drawerAllNotesLabel": "โน้ต",
+  "drawerFavoritesLabel": "รายการโปรด",
+  "drawerAgendaLabel": "กำหนดการ",
+  "drawerRemindersLabel": "การแจ้งเตือน",
+  "drawerLockedLabel": "ล็อกไว้",
+  "drawerTrashLabel": "ถังขยะ",
+  "drawerFoldersSectionHeader": "โฟลเดอร์",
+  "drawerExpandLabel": "ขยาย",
+  "drawerCollapseLabel": "ย่อ",
+  "drawerAddFolderLabel": "เพิ่มโฟลเดอร์",
+  "drawerAppSectionHeader": "แอป",
+  "drawerCalendarLabel": "ปฏิทิน",
+  "drawerSettingsLabel": "การตั้งค่า",
+  "drawerBackupRestoreLabel": "สำรองข้อมูลและกู้คืน",
+  "drawerUpgradeToProLabel": "อัปเกรดเป็น Pro",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "สนับสนุนการพัฒนา",
+  "drawerFeedbackLabel": "ความคิดเห็น",
+  "drawerAboutLabel": "เกี่ยวกับ",
+  "noNotesFoundMessage": "ไม่พบโน้ต",
+  "trashRestoreButtonLabel": "กู้คืน",
+  "trashPermanentDeleteButtonLabel": "ลบอย่างถาวร",
+  "tagRenamedInfoMessage": "เปลี่ยนชื่อแท็กแล้ว",
+  "tagDeletedInfoMessage": "ลบแท็กแล้ว",
+  "tagOptionsRenameLabel": "เปลี่ยนชื่อ",
+  "tagOptionsDeleteLabel": "ลบ",
+  "renameTagDialogTitle": "เปลี่ยนชื่อแท็ก",
+  "renameTagDialogHint": "ชื่อแท็กใหม่",
+  "renameTagDialogCancelButton": "ยกเลิก",
+  "renameTagDialogSaveButton": "บันทึก",
+  "deleteTagDialogMessageWithCount": "\"{tag}\" จะถูกลบออกจากโน้ต {affectedCount} รายการ ดำเนินการต่อหรือไม่?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "ลบแท็ก \"{tag}\" หรือไม่?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "ลบแท็ก",
+  "deleteTagDialogCancelButton": "ยกเลิก",
+  "deleteTagDialogConfirmButton": "ลบ",
+  "tagsSheetTitle": "แท็ก",
+  "tagsSheetEmptyMessage": "โน้ตนี้ยังไม่มีแท็ก",
+  "tagsSheetInputHint": "พิมพ์แท็กใหม่...",
+  "tagsSheetSuggestionsLabel": "แท็กที่มีอยู่",
+  "noteDeletedInfoMessage": "ลบโน้ตแล้ว",
+  "noteDeletedUndoActionLabel": "เลิกทำ",
+  "reminderSetInfoMessage": "ตั้งการแจ้งเตือนแล้ว",
+  "reminderRemovedInfoMessage": "ลบการแจ้งเตือนแล้ว",
+  "noteDuplicatedInfoMessage": "สร้างสำเนาแล้ว",
+  "speechTextAppendedInfoMessage": "เพิ่มข้อความลงในโน้ตแล้ว",
+  "pdfPreparingInfoMessage": "กำลังเตรียม PDF…",
+  "pdfSavedInfoMessage": "บันทึก PDF แล้ว",
+  "jpgPreparingInfoMessage": "กำลังเตรียม JPG…",
+  "jpgSavedInfoMessage": "บันทึก JPG แล้ว",
+  "jpgFailedInfoMessage": "ไม่สามารถสร้าง JPG ได้",
+  "txtPreparingInfoMessage": "กำลังเตรียม TXT…",
+  "txtSavedInfoMessage": "บันทึก TXT แล้ว",
+  "txtFailedInfoMessage": "ไม่สามารถสร้าง TXT ได้",
+  "exportOpenActionLabel": "เปิด",
+  "wrongPasswordInfoMessage": "รหัสผ่านไม่ถูกต้อง",
+  "noteArchivedInfoMessage": "เก็บโน้ตเข้าคลังแล้ว",
+  "noteUnarchivedInfoMessage": "นำออกจากคลังแล้ว",
+  "noteUnlockedInfoMessage": "ปลดล็อกแล้ว",
+  "noteLockedInfoMessage": "ล็อกโน้ตแล้ว",
+  "notificationUnpinnedInfoMessage": "ยกเลิกการปักหมุดแล้ว",
+  "emptyNotePinBlockedInfoMessage": "ไม่สามารถปักหมุดโน้ตที่ว่างเปล่าได้",
+  "notificationPinnedInfoMessage": "ปักหมุดไปยังแผงการแจ้งเตือนแล้ว",
+  "noContentToReadInfoMessage": "ไม่มีเนื้อหาให้อ่าน",
+  "backPressExitInfoMessage": "กดย้อนกลับอีกครั้งเพื่อออก",
+  "reminderChannelName": "การแจ้งเตือนโน้ต",
+  "reminderChannelDescription": "การแจ้งเตือนโน้ตในแอป Layout",
+  "pinnedChannelName": "โน้ตที่ปักหมุด",
+  "pinnedChannelDescription": "โน้ต Layout ที่ปักหมุดไว้ในแผงการแจ้งเตือน",
+  "notificationUnpinActionLabel": "ลบ",
+  "reminderDefaultTitle": "การแจ้งเตือน",
+  "reminderChecklistBodyFallback": "อย่าลืมตรวจสอบรายการตรวจสอบของคุณ",
+  "reminderTextBodyFallback": "อย่าลืมตรวจสอบโน้ตของคุณ",
+  "pdfSaveDialogTitle": "บันทึกเป็น PDF",
+  "jpgSaveDialogTitle": "บันทึกเป็น JPG",
+  "txtSaveDialogTitle": "บันทึกเป็น TXT",
+  "textSizeSheetTitle": "ขนาดตัวอักษร",
+  "textSizeSamplePreview": "ข้อความตัวอย่าง",
+  "textSizeCancelButton": "ยกเลิก",
+  "textSizeApplyButton": "ใช้",
+  "createPasswordDialogTitle": "สร้างรหัสผ่าน",
+  "createPasswordNewPasswordHint": "รหัสผ่านใหม่",
+  "createPasswordConfirmHint": "ป้อนรหัสผ่านอีกครั้ง",
+  "createPasswordHintQuestionDescription": "ตั้งคำถามเพื่อความปลอดภัยไว้ในกรณีที่ลืมรหัสผ่าน (ไม่บังคับ)",
+  "createPasswordHintQuestionHint": "เลือกคำถามเพื่อความปลอดภัย",
+  "createPasswordHintAnswerHint": "คำตอบของคุณ",
+  "createPasswordCancelButton": "ยกเลิก",
+  "createPasswordSaveButton": "บันทึก",
+  "passwordMismatchMessage": "รหัสผ่านไม่ตรงกัน!",
+  "passwordRequiredDialogTitle": "ต้องใช้รหัสผ่าน",
+  "passwordRequiredHint": "ป้อนรหัสผ่าน",
+  "forgotPasswordButtonLabel": "ลืมรหัสผ่าน",
+  "passwordRequiredCancelButton": "ยกเลิก",
+  "passwordRequiredConfirmButton": "ยืนยัน",
+  "securityQuestionDialogTitle": "คำถามเพื่อความปลอดภัย",
+  "securityQuestionAnswerHint": "คำตอบของคุณ",
+  "securityQuestionCancelButton": "ยกเลิก",
+  "securityQuestionConfirmButton": "ยืนยัน",
+  "securityQuestionWrongAnswerMessage": "คำตอบไม่ถูกต้อง ลองอีกครั้ง",
+  "revealedPasswordDialogTitle": "รหัสผ่านของคุณ",
+  "revealedPasswordLabel": "รหัสผ่านโน้ตของคุณ:",
+  "revealedPasswordOkButton": "ตกลง",
+  "securityQuestionPetName": "สัตว์เลี้ยงตัวแรกของคุณชื่ออะไร?",
+  "securityQuestionFavoriteTeacher": "ครูคนโปรดของคุณชื่ออะไร?",
+  "securityQuestionBirthCity": "คุณเกิดที่เมืองอะไร?",
+  "securityQuestionFavoriteFood": "อาหารโปรดของคุณคืออะไร?",
+  "securityQuestionMotherMaidenName": "นามสกุลเดิมของแม่คุณคืออะไร?",
+  "securityQuestionFirstSchool": "โรงเรียนแรกที่คุณเข้าเรียนชื่ออะไร?",
+  "securityQuestionFavoriteColor": "สีโปรดของคุณคืออะไร?",
+  "editFolderDialogTitle": "แก้ไขโฟลเดอร์",
+  "newSubfolderDialogTitle": "โฟลเดอร์ย่อยใหม่",
+  "addFolderDialogTitle": "เพิ่มโฟลเดอร์",
+  "subfolderParentInfoMessage": "จะถูกสร้างขึ้นภายใน \"{parentCategory}\"",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "ชื่อโฟลเดอร์ย่อย",
+  "folderNameFieldLabel": "ชื่อโฟลเดอร์",
+  "folderColorLabel": "สี",
+  "folderDialogCancelButton": "ยกเลิก",
+  "folderDialogSaveButton": "บันทึก",
+  "folderDialogAddButton": "เพิ่ม",
+  "selectFolderSheetTitle": "เลือกโฟลเดอร์",
+  "selectFolderAddOptionLabel": "เพิ่มโฟลเดอร์",
+  "removeCurrentFolderLabel": "ลบโฟลเดอร์ปัจจุบัน",
+  "noteDetailsDialogTitle": "รายละเอียด",
+  "noteDetailsCreatedLabel": "สร้างเมื่อ",
+  "noteDetailsModifiedLabel": "แก้ไขล่าสุด",
+  "noteDetailsCharCountLabel": "จำนวนตัวอักษร",
+  "noteDetailsCharCountValue": "{count} ตัวอักษร",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "จำนวนคำ",
+  "noteDetailsWordCountValue": "{count} คำ",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "ตกลง",
+  "noteDetailsUnknownDateLabel": "ไม่ทราบ",
+  "addAttachmentSheetTitle": "เพิ่ม",
+  "addAttachmentImageOption": "เพิ่มรูปภาพ",
+  "addAttachmentCameraOption": "กล้อง",
+  "addAttachmentFileOption": "เพิ่มไฟล์",
+  "addAttachmentVoiceOption": "การบันทึกเสียง",
+  "addAttachmentVideoOption": "บันทึกวิดีโอ",
+  "addAttachmentScanOption": "สแกนเอกสาร",
+  "noteActionsSheetTitle": "เลือกการกระทำ",
+  "noteActionReminderLabel": "การแจ้งเตือน",
+  "noteActionEditReminderLabel": "แก้ไขการแจ้งเตือน",
+  "noteActionSpeechToTextLabel": "เสียงเป็นข้อความ",
+  "noteActionArchiveLabel": "เก็บถาวร",
+  "noteActionUnarchiveLabel": "นำออกจากคลัง",
+  "noteActionLockLabel": "ล็อก",
+  "noteActionUnlockLabel": "ปลดล็อก",
+  "noteActionFavoriteLabel": "รายการโปรด",
+  "noteActionUnfavoriteLabel": "นำออกจากรายการโปรด",
+  "noteActionClassifyLabel": "เลือกโฟลเดอร์",
+  "noteActionDeleteLabel": "ลบ",
+  "noteActionPinToNotificationLabel": "ปักหมุดไปยังแผงการแจ้งเตือน",
+  "noteActionUnpinFromNotificationLabel": "ยกเลิกการปักหมุด",
+  "noteActionShareLabel": "แชร์",
+  "noteActionDuplicateLabel": "สร้างสำเนา",
+  "noteActionCopyContentLabel": "คัดลอกเนื้อหา",
+  "noteActionTtsLabel": "อ่านออกเสียง",
+  "noteActionTextSizeLabel": "ขนาดตัวอักษร",
+  "noteActionDetailsLabel": "รายละเอียด",
+  "noteActionDiscardChangesLabel": "ยกเลิกการเปลี่ยนแปลง",
+  "noteActionSelectLabel": "เลือก",
+  "reminderEditOptionLabel": "เปลี่ยนการแจ้งเตือน",
+  "reminderRemoveOptionLabel": "ลบการแจ้งเตือน",
+  "discardChangesDialogTitle": "ยกเลิกการเปลี่ยนแปลง",
+  "discardChangesDialogMessage": "การเปลี่ยนแปลงที่ยังไม่ได้บันทึกในโน้ตนี้จะสูญหาย คุณแน่ใจหรือไม่ว่าต้องการยกเลิก?",
+  "discardChangesCancelButton": "ยกเลิก",
+  "discardChangesConfirmButton": "ละทิ้ง",
+  "pinnedNotificationDefaultTitle": "โน้ต",
+  "pdfFailedInfoMessage": "ไม่สามารถสร้าง PDF ได้",
+  "drawingScreenTitle": "ภาพวาด",
+  "drawingMinimizeTooltip": "ย่อ",
+  "drawingEmptyExportWarningMessage": "กรุณาวาดอะไรบางอย่างก่อน",
+  "drawingEraserPartialModeLabel": "บางส่วน",
+  "drawingEraserFullModeLabel": "ทั้งหมด",
+  "drawingClearTooltip": "ล้าง",
+  "drawingZoomOutTooltip": "ซูมออก",
+  "drawingZoomInTooltip": "ซูมเข้า",
+  "drawingDeleteTooltip": "ลบ",
+  "drawingEmptyPreviewHint": "แตะเพื่อวาด",
+  "settingsPageTitle": "การตั้งค่า",
+  "settingsSectionGeneral": "ทั่วไป",
+  "settingsSectionSecurity": "ความปลอดภัย",
+  "settingsSectionTheme": "ธีม",
+  "settingsSectionPersonalization": "การปรับแต่ง",
+  "settingsSectionWidget": "วิดเจ็ต",
+  "settingsSectionAbout": "เกี่ยวกับ",
+  "settingsHintQuestionPet": "สัตว์เลี้ยงตัวแรกของคุณชื่ออะไร?",
+  "settingsHintQuestionTeacher": "ครูคนโปรดของคุณชื่ออะไร?",
+  "settingsHintQuestionBirthCity": "คุณเกิดที่เมืองอะไร?",
+  "settingsHintQuestionFavoriteFood": "อาหารโปรดของคุณคืออะไร?",
+  "settingsHintQuestionMotherMaidenName": "นามสกุลเดิมของแม่คุณคืออะไร?",
+  "settingsHintQuestionFirstSchool": "โรงเรียนแรกที่คุณเข้าเรียนคือโรงเรียนอะไร?",
+  "settingsHintQuestionFavoriteColor": "สีโปรดของคุณคืออะไร?",
+  "settingsSecurityQuestionDialogTitle": "คำถามเพื่อความปลอดภัย",
+  "settingsSecurityQuestionDialogDesc": "หากคุณลืมรหัสผ่าน คุณสามารถกู้คืนได้โดยการตอบคำถามนี้ให้ถูกต้อง",
+  "settingsSecurityQuestionDropdownHint": "เลือกคำถามเพื่อความปลอดภัย",
+  "settingsSecurityQuestionAnswerHint": "คำตอบของคุณ",
+  "settingsSecurityQuestionCancelButton": "ยกเลิก",
+  "settingsSecurityQuestionEmptyWarning": "คำถามและคำตอบต้องไม่ว่างเปล่า!",
+  "settingsSecurityQuestionSaveButton": "บันทึก",
+  "settingsCreatePasswordTitle": "สร้างรหัสผ่าน",
+  "settingsPasswordRequiredTitle": "ต้องใช้รหัสผ่าน",
+  "settingsPasswordEnterHint": "ป้อนรหัสผ่าน",
+  "settingsForgotPasswordButton": "ลืมรหัสผ่าน",
+  "settingsNewPasswordHint": "รหัสผ่านใหม่",
+  "settingsConfirmPasswordHint": "ป้อนรหัสผ่านอีกครั้ง",
+  "settingsSecurityQuestionOptionalDesc": "ตั้งคำถามเพื่อความปลอดภัยไว้ในกรณีที่ลืมรหัสผ่าน (ไม่บังคับ)",
+  "settingsPasswordDialogCancelButton": "ยกเลิก",
+  "settingsPasswordMismatchWarning": "รหัสผ่านไม่ตรงกัน!",
+  "settingsWrongPasswordWarning": "รหัสผ่านไม่ถูกต้อง!",
+  "settingsPasswordSaveButton": "บันทึก",
+  "settingsPasswordRemoveButton": "ลบ",
+  "settingsNotePasswordTitle": "รหัสผ่านโน้ต",
+  "settingsPasswordSetSubtitle": "ตั้งรหัสผ่านแล้ว ✓",
+  "settingsPasswordNotSetSubtitle": "ยังไม่ได้ตั้งรหัสผ่าน",
+  "settingsSecurityQuestionTileTitle": "คำถามเพื่อความปลอดภัย",
+  "settingsSecurityQuestionSetSubtitle": "ตั้งค่าแล้ว ✓ — ใช้ในกรณีที่คุณลืมรหัสผ่าน",
+  "settingsSecurityQuestionNotSetSubtitle": "ยังไม่ได้ตั้งค่า — คุณจะไม่สามารถกู้คืนรหัสผ่านได้หากลืม",
+  "settingsThemeDialogTitle": "เลือกธีม",
+  "settingsThemeSystemDefault": "ค่าเริ่มต้นของระบบ",
+  "settingsThemeLightOption": "ธีมสว่าง",
+  "settingsThemeDarkOption": "ธีมมืด",
+  "settingsAccentColorDialogTitle": "เลือกสีเน้น",
+  "settingsThemeChangeTileTitle": "เปลี่ยนธีม",
+  "settingsThemeLightLabel": "สว่าง",
+  "settingsThemeDarkLabel": "มืด",
+  "settingsThemeSystemLabel": "ระบบ",
+  "settingsLanguageTileTitle": "ภาษา",
+  "settingsLanguageDialogTitle": "เลือกภาษา",
+  "settingsLanguageSystemOption": "ระบบ",
+  "settingsAccentColorTileTitle": "สีเน้น",
+  "settingsAccentColorTileSubtitle": "สีที่ใช้ในแถบแอป ปุ่ม และสวิตช์",
+  "settingsColorfulNotesTitle": "สีโน้ตหลากหลาย",
+  "settingsColorfulNotesSubtitle": "การ์ดโน้ตแต่ละใบจะได้รับโทนสีที่แตกต่างกัน",
+  "settingsTextColorSheetTitle": "สีตัวอักษร",
+  "settingsTextColorSheetDesc": "กำหนดสีของข้อความเนื้อหาโน้ต",
+  "settingsTextColorOkButton": "ตกลง",
+  "settingsTextColorTileTitle": "สีตัวอักษร",
+  "settingsTextColorTileSubtitle": "สีสำหรับข้อความเนื้อหาโน้ต",
+  "settingsWidgetFontSizeLabel": "ขนาดตัวอักษรวิดเจ็ต",
+  "settingsWidgetFontSizeSample": "หัวข้อตัวอย่าง - {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "ยกเลิก",
+  "settingsWidgetFontSizeApplyButton": "ใช้",
+  "settingsWidgetOpacityLabel": "ความโปร่งใสพื้นหลัง",
+  "settingsWidgetOpacityValue": "ความโปร่งใส {percent}%",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "ยกเลิก",
+  "settingsWidgetOpacityApplyButton": "ใช้",
+  "settingsWidgetDarkModeTitle": "วิดเจ็ตมืด",
+  "settingsWidgetDarkModeDesc": "โทนสีมืดสำหรับวิดเจ็ต",
+  "settingsAboutVersionTitle": "เวอร์ชันแอป",
+  "settingsFontFamilyTileTitle": "แบบอักษร",
+  "settingsFontFamilyDefaultLabel": "ค่าเริ่มต้น",
+  "settingsGlobalFontSizeTileTitle": "ขนาดตัวอักษร",
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt — ใช้กับโน้ตทั้งหมด",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "ข้อความตัวอย่าง - {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "ใช้กับโน้ตที่มีอยู่",
+  "settingsGlobalFontSizeApplyToAllNote": "หากโน้ตมีการตั้งค่าขนาดตัวอักษรเฉพาะไว้ การตั้งค่านี้จะไม่มีผลกับโน้ตนั้น",
+  "settingsGlobalFontSizeCancelButton": "ยกเลิก",
+  "settingsGlobalFontSizeApplyButton": "ใช้",
+  "settingsPreviewLinesTileTitle": "จำนวนบรรทัดตัวอย่างโน้ต",
+  "settingsPreviewLinesTileSubtitle": "แสดงสูงสุด {lines} บรรทัด หากโน้ตสั้นกว่านั้น จะแสดงจำนวนบรรทัดจริง",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "ปัจจุบัน: {lines} บรรทัด",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "กำหนดจำนวนบรรทัดสูงสุดที่แสดงตัวอย่าง หากโน้ตมีจำนวนบรรทัดน้อยกว่า จะแสดงจำนวนบรรทัดจริง",
+  "settingsPreviewLinesCancelButton": "ยกเลิก",
+  "settingsPreviewLinesApplyButton": "ใช้",
+  "backupCancelButton": "ยกเลิก",
+  "backupConnectButton": "เชื่อมต่อ",
+  "backupDisconnectButton": "ยกเลิกการเชื่อมต่อ",
+  "backupContinueButton": "ดำเนินการต่อ",
+  "backupCloseButton": "ปิด",
+  "backupShareButton": "แชร์",
+  "backupRestoreButton": "กู้คืน",
+  "backupConfigureButton": "กำหนดค่า",
+  "backupUnknownDateLabel": "ไม่ทราบ",
+  "backupProcessingDefaultLabel": "กำลังประมวลผล...",
+  "backupPermissionRequiredTitle": "ต้องได้รับสิทธิ์เข้าถึงพื้นที่จัดเก็บ",
+  "backupPermissionRequiredBodyPermanent": "Android เวอร์ชันนี้ต้องการสิทธิ์เข้าถึงพื้นที่จัดเก็บสำหรับการสำรอง/กู้คืนข้อมูล เนื่องจากสิทธิ์ถูกปฏิเสธถาวร กรุณาเปิดใช้งานด้วยตนเองจากการตั้งค่าแอป",
+  "backupPermissionRequiredBodyNormal": "Android เวอร์ชันนี้ต้องการสิทธิ์เข้าถึงพื้นที่จัดเก็บสำหรับการสำรอง/กู้คืนข้อมูล กรุณาอนุญาตเพื่อดำเนินการต่อ",
+  "backupGoToSettingsButton": "ไปที่การตั้งค่า",
+  "backupRetryButton": "ลองใหม่",
+  "backupDriveConnectingLabel": "กำลังเชื่อมต่อกับบัญชี Google...",
+  "backupDriveConnectedWithEmailMessage": "เชื่อมต่อกับบัญชี Google Drive แล้ว: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "เชื่อมต่อกับบัญชี Google Drive แล้ว",
+  "backupDriveConnectFailedMessage": "ไม่สามารถเชื่อมต่อกับบัญชี Google ได้ หรือการดำเนินการถูกยกเลิก",
+  "backupDriveDisconnectTitle": "ยกเลิกการเชื่อมต่อ Google Drive",
+  "backupDriveDisconnectBody": "หากยกเลิกการเชื่อมต่อ จะไม่สามารถสำรองข้อมูลไปยัง Drive ได้ทั้งแบบอัตโนมัติหรือด้วยตนเอง ข้อมูลสำรองที่มีอยู่บน Drive แล้วจะไม่ถูกลบ — เพียงแต่จะลบการเข้าถึงจากอุปกรณ์นี้เท่านั้น",
+  "backupDriveDisconnectedMessage": "ลบการเชื่อมต่อ Google Drive แล้ว",
+  "backupDriveRequiredTitle": "ต้องมีบัญชี Google",
+  "backupDriveRequiredBody": "การดำเนินการนี้ต้องเชื่อมต่อบัญชี Google ของคุณ ต้องการเชื่อมต่อตอนนี้หรือไม่?",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: เชื่อมต่อแล้ว ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: เชื่อมต่อแล้ว",
+  "backupDriveStatusDisconnected": "Google Drive: ยังไม่ได้เชื่อมต่อ",
+  "backupDriveAuthenticatingLabel": "กำลังตรวจสอบบัญชี Google...",
+  "backupDriveNotSignedInMessage": "คุณยังไม่ได้เชื่อมต่อกับ Google Drive กรุณาเข้าสู่ระบบด้วยบัญชี Google ของคุณก่อน",
+  "backupDriveUploadingLabel": "กำลังอัปโหลดข้อมูลสำรองไปยัง Drive...",
+  "backupDriveUploadTimeoutMessage": "การอัปโหลดไปยัง Google Drive ไม่เสร็จสมบูรณ์ภายใน 120 วินาที (ไม่มีการตอบสนองจากเซิร์ฟเวอร์) กรุณาตรวจสอบการเชื่อมต่อของคุณแล้วลองอีกครั้ง",
+  "backupDriveOperationCompletedLabel": "เสร็จสมบูรณ์",
+  "backupToDriveActionLabel": "สำรองข้อมูลไปยัง Drive",
+  "backupToDeviceActionLabel": "สำรองข้อมูล",
+  "backupCreatingLabel": "กำลังสร้างข้อมูลสำรอง...",
+  "backupCreateFailedMessage": "ไม่สามารถสร้างข้อมูลสำรองได้: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "การอัปโหลดไปยัง Google Drive ล้มเหลว: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "อัปโหลดข้อมูลสำรองไปยัง Google Drive สำเร็จแล้ว",
+  "backupCreatedMessage": "สร้างข้อมูลสำรองแล้ว: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "ข้อมูลสำรองพร้อมแล้ว",
+  "backupOfferShareBody": "ไฟล์สำรองข้อมูลของคุณถูกบันทึกลงในอุปกรณ์แล้ว ต้องการแชร์ตอนนี้หรือไม่ (เช่น พื้นที่จัดเก็บบนคลาวด์ อีเมล หรืออุปกรณ์อื่น)?",
+  "backupShareFileText": "ไฟล์สำรองข้อมูล layout",
+  "backupShareFailedMessage": "ไม่สามารถเริ่มการแชร์ได้: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "ข้อมูลสำรองขนาดใหญ่",
+  "backupLargeOperationBody": "ข้อมูลที่จะประมวลผลมีขนาดประมาณ {sizeText} การ{actionLabel}ขนาดนี้อาจใช้เวลาสักครู่ขึ้นอยู่กับอุปกรณ์ของคุณ เพียงอย่าออกจากแอประหว่างดำเนินการ — ต้องการดำเนินการต่อหรือไม่?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "กู้คืนข้อมูล",
+  "backupDriveListingLabel": "กำลังแสดงรายการข้อมูลสำรองบน Drive...",
+  "backupDriveListFailedMessage": "ไม่สามารถแสดงรายการข้อมูลสำรองได้: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "ยังไม่มีข้อมูลสำรองบน Google Drive",
+  "backupDrivePickTitle": "เลือกข้อมูลสำรองจาก Drive",
+  "backupDriveDownloadingLabel": "กำลังดาวน์โหลดข้อมูลสำรองจาก Drive...",
+  "backupDriveDownloadingWithSizeLabel": "กำลังดาวน์โหลดข้อมูลสำรองจาก Drive... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "กำลังบันทึกไฟล์ลงในอุปกรณ์...",
+  "backupDriveUnknownBackupFileName": "unknown_backup.zip",
+  "backupDriveStorageFullMessage": "พื้นที่จัดเก็บ Google Drive ของคุณเต็ม กรุณาเพิ่มพื้นที่ว่างบน Drive แล้วลองอีกครั้ง",
+  "backupDriveNetworkErrorMessage": "ไม่สามารถเชื่อมต่ออินเทอร์เน็ตได้ กรุณาตรวจสอบการเชื่อมต่อของคุณแล้วลองอีกครั้ง",
+  "backupDriveBackupNotFoundMessage": "ไม่พบไฟล์สำรองข้อมูลที่ระบุบน Drive อาจถูกลบไปแล้ว",
+  "backupDriveUnknownErrorMessage": "เกิดข้อผิดพลาดที่ไม่คาดคิดระหว่างการดำเนินการกับ Google Drive: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "การดาวน์โหลดล้มเหลว: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "ไม่สามารถเลือกไฟล์ได้: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "ไม่สามารถเข้าถึงไฟล์ที่เลือกได้",
+  "backupCheckingLabel": "กำลังตรวจสอบข้อมูลสำรอง...",
+  "backupReadFailedMessage": "ไม่สามารถอ่านไฟล์สำรองข้อมูลได้: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "กู้คืนข้อมูลสำรอง",
+  "backupPreviewContentsHeader": "เนื้อหาของข้อมูลสำรองที่เลือก:",
+  "backupPreviewNoteCountLabel": "จำนวนโน้ต",
+  "backupPreviewTrashCountLabel": "โน้ตในถังขยะ",
+  "backupPreviewCategoryCountLabel": "จำนวนหมวดหมู่",
+  "backupPreviewAttachmentLabel": "ไฟล์แนบ",
+  "backupPreviewAttachmentNoneValue": "ไม่มี",
+  "backupPreviewAttachmentCountValue": "{count} ไฟล์ ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "สร้างเมื่อ",
+  "backupEmptyPreviewTitle": "ข้อมูลสำรองนี้ดูเหมือนจะว่างเปล่า",
+  "backupEmptyPreviewBody": "ไม่พบโน้ต หมวดหมู่ หรือไฟล์แนบในไฟล์ที่เลือก หากดำเนินการต่อ ข้อมูลปัจจุบันของคุณจะยังคงถูกลบและแทนที่ด้วยข้อมูลสำรองที่ว่างเปล่านี้",
+  "backupMissingAttachmentsTitle": "ไม่พบไฟล์แนบ {count} รายการในข้อมูลสำรอง",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "โน้ตที่มีไฟล์เหล่านี้จะถูกกู้คืน แต่ไม่มีไฟล์แนบ (อาจสูญหายหรือเสียหายในขณะที่ทำการสำรองข้อมูล): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} และอีก {remaining} รายการ",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "การดำเนินการนี้จะแทนที่โน้ต ถังขยะ หมวดหมู่ การตั้งค่า และไฟล์แนบทั้งหมดที่คุณมีอยู่ ด้วยข้อมูลในไฟล์สำรองข้างต้น ข้อมูลปัจจุบันของคุณจะสูญหายอย่างถาวรและไม่สามารถย้อนกลับได้",
+  "backupRestoringLabel": "กำลังกู้คืนข้อมูลสำรอง...",
+  "backupRestoreSuccessWithMissingMessage": "กู้คืนข้อมูลสำรองแล้ว อย่างไรก็ตาม ไม่พบไฟล์แนบ {count} รายการในข้อมูลสำรองและไม่สามารถกู้คืนได้ ขอแนะนำให้รีสตาร์ทแอปเพื่อให้การเปลี่ยนแปลงมีผลอย่างสมบูรณ์",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "กู้คืนข้อมูลสำรองสำเร็จแล้ว ขอแนะนำให้รีสตาร์ทแอปเพื่อให้การเปลี่ยนแปลงมีผลอย่างสมบูรณ์",
+  "backupRestoreFailedMessage": "เกิดข้อผิดพลาดขณะกู้คืนข้อมูล: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "สำรองข้อมูลและกู้คืน",
+  "backupBlockedExitWarningMessage": "กำลังดำเนินการอยู่ กรุณารอจนกว่าจะเสร็จสิ้น",
+  "backupBusyBackTooltip": "กำลังดำเนินการ",
+  "backupIntroText": "คุณสามารถสำรองโน้ต หมวดหมู่ การตั้งค่า และไฟล์แนบเป็นไฟล์ .zip ไฟล์เดียว หรือกู้คืนข้อมูลสำรองที่เคยทำไว้ก่อนหน้านี้",
+  "backupDriveCardTitle": "สำรองข้อมูลไปยัง Google Drive",
+  "backupDriveCardSubtitle": "สร้างข้อมูลสำรองใหม่และอัปโหลดไปยังพื้นที่ส่วนตัวใน Google Drive ของคุณโดยตรง",
+  "backupDriveCardButtonLabel": "สำรองไปยัง Drive",
+  "backupDeviceCardTitle": "สำรองไปยังอุปกรณ์",
+  "backupDeviceCardSubtitle": "บันทึกข้อมูลทั้งหมดของคุณเป็นไฟล์ .zip ไฟล์เดียวลงในอุปกรณ์ และแชร์ได้หากต้องการ",
+  "backupDeviceCardButtonLabel": "สำรองไปยังอุปกรณ์",
+  "backupHistoryCardTitle": "ประวัติการสำรองข้อมูล",
+  "backupHistoryCardSubtitle": "ดูข้อมูลสำรองทั้งหมดที่จัดเก็บบนอุปกรณ์ของคุณพร้อมวันที่และขนาด คุณสามารถแชร์ กู้คืน หรือลบได้โดยตรงจากที่นี่",
+  "backupHistoryTabDevice": "อุปกรณ์",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "ลบข้อมูลสำรอง",
+  "backupHistoryDeleteDialogBody": "คุณแน่ใจหรือไม่ว่าต้องการลบไฟล์สำรองข้อมูล \"{fileName}\" อย่างถาวร? การดำเนินการนี้ไม่สามารถย้อนกลับได้",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "ลบข้อมูลสำรองแล้ว",
+  "backupHistoryDriveDeleteDialogTitle": "ลบข้อมูลสำรองบน Drive",
+  "backupHistoryDriveDeleteDialogBody": "คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลสำรอง \"{fileName}\" จาก Google Drive อย่างถาวร? การดำเนินการนี้ไม่สามารถย้อนกลับได้ และไฟล์จะไม่ถูกย้ายไปยังถังขยะ",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "ลบข้อมูลสำรองบน Drive แล้ว",
+  "backupHistoryDriveDeleteFailedMessage": "ไม่สามารถลบได้: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "ยังไม่มีข้อมูลสำรองที่บันทึกไว้บนอุปกรณ์นี้",
+  "backupHistoryDeviceEmptySubtitle": "ใช้ \"สำรองไปยังอุปกรณ์\" เพื่อสร้างข้อมูลสำรองแรกของคุณ",
+  "backupHistoryDriveEmptySubtitle": "ใช้ \"สำรองข้อมูลไปยัง Google Drive\" เพื่อสร้างข้อมูลสำรองบนคลาวด์แรกของคุณ",
+  "backupHistoryDriveSignInPrompt": "เชื่อมต่อบัญชี Google ของคุณเพื่อดูข้อมูลสำรองบน Drive",
+  "backupHistoryConnectGoogleButton": "เชื่อมต่อด้วย Google",
+  "backupHistoryDriveConnectedFallback": "เชื่อมต่อแล้ว",
+  "backupHistoryUnknownErrorFallback": "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ",
+  "backupHistoryDownloadStartingLabel": "กำลังเริ่ม...",
+  "backupAutoBackupEnabledLabel": "การสำรองข้อมูลอัตโนมัติ: เปิด",
+  "backupAutoBackupDisabledLabel": "การสำรองข้อมูลอัตโนมัติ: ปิด",
+  "backupOverlayWarningMessage": "กรุณารอสักครู่ อย่าออกจากแอปจนกว่าการดำเนินการจะเสร็จสิ้น",
+  "pdfExportUntitledNoteLabel": "โน้ตไม่มีชื่อ",
+  "pdfExportDefaultAttachmentName": "ไฟล์แนบ",
+  "pdfExportDefaultFileName": "โน้ต",
+  "screenshotExportBoundaryNotFoundMessage": "ไม่สามารถจับภาพหน้าจอได้ (ไม่พบขอบเขต)",
+  "screenshotExportByteDataNullMessage": "ไม่สามารถสร้างข้อมูลภาพหน้าจอได้",
+  "screenshotExportPngDecodeFailedMessage": "ไม่สามารถประมวลผลภาพได้ (การถอดรหัส PNG ล้มเหลว)",
+  "screenshotCalcTableTotalLabel": "รวม",
+  "gundemMenuRemoveFromAgenda": "ลบออกจากกำหนดการ",
+  "gundemMenuDeleteNote": "ลบโน้ต",
+  "gundemSectionOverdue": "เลยกำหนด",
+  "gundemSectionToday": "วันนี้",
+  "gundemSectionTomorrow": "พรุ่งนี้",
+  "gundemSectionNextWeek": "สัปดาห์หน้า",
+  "gundemSectionFurther": "ในอนาคต",
+  "gundemWeekdayMonday": "วันจันทร์",
+  "gundemWeekdayTuesday": "วันอังคาร",
+  "gundemWeekdayWednesday": "วันพุธ",
+  "gundemWeekdayThursday": "วันพฤหัสบดี",
+  "gundemWeekdayFriday": "วันศุกร์",
+  "gundemWeekdaySaturday": "วันเสาร์",
+  "gundemWeekdaySunday": "วันอาทิตย์",
+  "gundemAppBarTitle": "กำหนดการ",
+  "gundemCalendarTooltip": "ปฏิทิน",
+  "gundemEmptyTitle": "ไม่มีรายการในกำหนดการของคุณ",
+  "gundemEmptySubtitle": "โน้ตที่มีการแจ้งเตือนหรือกำหนดวันที่จะปรากฏที่นี่",
+  "gundemUntitledNote": "โน้ตไม่มีชื่อ",
+  "gundemRepeatHourly": "รายชั่วโมง",
+  "gundemRepeatDaily": "รายวัน",
+  "gundemRepeatWeekly": "รายสัปดาห์",
+  "gundemRepeatMonthly": "รายเดือน",
+  "gundemRepeatYearly": "รายปี",
+  "gundemPreviewCalcTableLabel": "[รายการคำนวณ]",
+  "gundemPreviewDrawingLabel": "[ภาพวาด]",
+  "gundemPreviewImageLabel": "[รูปภาพ]",
+  "gundemMonthShortJan": "ม.ค.",
+  "gundemMonthShortFeb": "ก.พ.",
+  "gundemMonthShortMar": "มี.ค.",
+  "gundemMonthShortApr": "เม.ย.",
+  "gundemMonthShortMay": "พ.ค.",
+  "gundemMonthShortJun": "มิ.ย.",
+  "gundemMonthShortJul": "ก.ค.",
+  "gundemMonthShortAug": "ส.ค.",
+  "gundemMonthShortSep": "ก.ย.",
+  "gundemMonthShortOct": "ต.ค.",
+  "gundemMonthShortNov": "พ.ย.",
+  "gundemMonthShortDec": "ธ.ค.",
+  "calendarAppBarTitle": "ปฏิทิน",
+  "calendarTodayButton": "วันนี้",
+  "calendarLegendNoteLabel": "โน้ต",
+  "calendarLegendReminderLabel": "การแจ้งเตือน",
+  "calendarTodayBadge": "วันนี้",
+  "calendarEmptyDayMessage": "ไม่มีโน้ตหรือการแจ้งเตือนสำหรับวันนี้",
+  "calendarReminderHourlyLabel": "รายชั่วโมง",
+  "calendarMonthJan": "มกราคม",
+  "calendarMonthFeb": "กุมภาพันธ์",
+  "calendarMonthMar": "มีนาคม",
+  "calendarMonthApr": "เมษายน",
+  "calendarMonthMay": "พฤษภาคม",
+  "calendarMonthJun": "มิถุนายน",
+  "calendarMonthJul": "กรกฎาคม",
+  "calendarMonthAug": "สิงหาคม",
+  "calendarMonthSep": "กันยายน",
+  "calendarMonthOct": "ตุลาคม",
+  "calendarMonthNov": "พฤศจิกายน",
+  "calendarMonthDec": "ธันวาคม",
+  "calendarWeekdayShortMon": "จ.",
+  "calendarWeekdayShortTue": "อ.",
+  "calendarWeekdayShortWed": "พ.",
+  "calendarWeekdayShortThu": "พฤ.",
+  "calendarWeekdayShortFri": "ศ.",
+  "calendarWeekdayShortSat": "ส.",
+  "calendarWeekdayShortSun": "อา.",
+  "calendarWeekdayFullMonday": "วันจันทร์",
+  "calendarWeekdayFullTuesday": "วันอังคาร",
+  "calendarWeekdayFullWednesday": "วันพุธ",
+  "calendarWeekdayFullThursday": "วันพฤหัสบดี",
+  "calendarWeekdayFullFriday": "วันศุกร์",
+  "calendarWeekdayFullSaturday": "วันเสาร์",
+  "calendarWeekdayFullSunday": "วันอาทิตย์",
+  "wrongPasswordDialogTitle": "รหัสผ่านไม่ถูกต้อง",
+  "wrongPasswordDialogMessage": "รหัสผ่านที่คุณป้อนไม่ถูกต้อง",
+  "commonOkButton": "ตกลง",
+  "unlockCategoryAction": "ปลดล็อก",
+  "lockCategoryAction": "ล็อก",
+  "categoryUnlockedMessage": "ปลดล็อกแล้ว",
+  "categoryLockedMessage": "ล็อกโฟลเดอร์แล้ว",
+  "deleteFolderMenuItemLabel": "ลบโฟลเดอร์",
+  "deleteFolderDialogTitle": "ลบโฟลเดอร์",
+  "deleteFolderDialogMessageWithSubfolders": "คุณแน่ใจหรือไม่ว่าต้องการลบโฟลเดอร์ \"{category}\" และโฟลเดอร์ย่อยทั้งหมด? โน้ตในโฟลเดอร์เหล่านี้จะไม่มีหมวดหมู่",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "คุณแน่ใจหรือไม่ว่าต้องการลบโฟลเดอร์ \"{category}\"? โน้ตในโฟลเดอร์นี้จะไม่มีหมวดหมู่",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "ยกเลิก",
+  "deleteFolderDialogConfirmButton": "ลบ",
+  "editCategoryNameColorMenuItemLabel": "แก้ไขชื่อ/สี",
+  "addSubfolderMenuItemLabel": "สร้างโฟลเดอร์ย่อย",
+  "expandSubfoldersMenuItemLabel": "ขยายโฟลเดอร์ย่อย",
+  "collapseSubfoldersMenuItemLabel": "ย่อโฟลเดอร์ย่อย",
+  "saveErrorInfoMessage": "ข้อผิดพลาดในการบันทึก: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "ยินดีต้อนรับสู่ DNote! 🚀",
+  "welcomeNoteContent": "เพิ่มฟีเจอร์ใหม่แล้ว!",
+  "noteListDateGroupToday": "วันนี้",
+  "noteListDateGroupYesterday": "เมื่อวาน",
+  "noteListDateGroupLast7Days": "7 วันที่ผ่านมา",
+  "noteListDateGroupLast30Days": "30 วันที่ผ่านมา",
+  "reminderRepeatNoneLabel": "ไม่ทำซ้ำ",
+  "voiceRecorderPreparingLabel": "กำลังเตรียม…",
+  "voiceRecorderCancelButton": "ยกเลิก",
+  "voiceRecorderStopAddButton": "หยุดและเพิ่ม",
+  "speechToTextMicPermissionDeniedMessage": "ไม่ได้รับสิทธิ์เข้าถึงไมโครโฟน",
+  "speechToTextUnavailableMessage": "การรู้จำเสียงไม่พร้อมใช้งานบนอุปกรณ์นี้",
+  "speechToTextPreparingLabel": "กำลังเตรียม…",
+  "speechToTextListeningLabel": "กำลังฟัง…",
+  "speechToTextStartSpeakingPlaceholder": "เริ่มพูด…",
+  "speechToTextCancelButton": "ยกเลิก",
+  "speechToTextStopAddButton": "หยุดและเพิ่ม",
+  "textToSpeechNoContentMessage": "ไม่มีเนื้อหาให้อ่าน",
+  "textToSpeechReadErrorMessage": "เกิดข้อผิดพลาดขณะอ่าน",
+  "textToSpeechUnavailableMessage": "ระบบแปลงข้อความเป็นเสียงไม่พร้อมใช้งานบนอุปกรณ์นี้",
+  "textToSpeechPreparingLabel": "กำลังเตรียม…",
+  "textToSpeechPausedLabel": "หยุดชั่วคราว",
+  "textToSpeechFinishedLabel": "อ่านเสร็จสิ้น",
+  "textToSpeechReadingLabel": "กำลังอ่าน…",
+  "textToSpeechCloseErrorButton": "ปิด",
+  "textToSpeechReplayButton": "อ่านอีกครั้ง",
+  "textToSpeechCloseFinishedButton": "ปิด",
+  "textToSpeechPauseButton": "หยุดชั่วคราว",
+  "textToSpeechResumeButton": "ดำเนินการต่อ",
+  "textToSpeechStopButton": "หยุด",
+  "textToSpeechSpeedSlow": "ช้า",
+  "textToSpeechSpeedNormal": "ปกติ",
+  "textToSpeechSpeedFast": "เร็ว",
+  "calendarPickerCancelButton": "ยกเลิก",
+  "calendarPickerConfirmButton": "เลือก",
+  "calendarPickerClearButton": "ล้าง",
+  "reminderPickerDialogTitle": "เพิ่มการแจ้งเตือน",
+  "reminderPickerDateTodayOption": "วันนี้",
+  "reminderPickerDateTomorrowOption": "พรุ่งนี้",
+  "reminderPickerDatePickOption": "เลือกวันที่",
+  "reminderRepeatHourlyLabel": "ทุกชั่วโมง",
+  "reminderRepeatDailyLabel": "ทุกวัน",
+  "reminderRepeatWeeklyLabel": "ทุกสัปดาห์",
+  "reminderRepeatMonthlyLabel": "ทุกเดือน",
+  "reminderRepeatYearlyLabel": "ทุกปี",
+  "reminderPickerCalendarHelpText": "เลือกวันที่แจ้งเตือน",
+  "reminderPickerCancelButton": "ยกเลิก",
+  "reminderPickerSaveButton": "บันทึก",
+  "reminderPickerPastTimeErrorMessage": "ไม่สามารถเลือกเวลาที่ผ่านมาแล้วได้",
+  "calcTableTotalLabel": "รวม: {amount}",
+  "backupCreatePreparingDataLabel": "กำลังเตรียมข้อมูล...",
+  "backupCreatePackagingNotesLabel": "กำลังบรรจุโน้ตและหมวดหมู่...",
+  "backupCreateReadingAttachmentsLabel": "กำลังอ่านไฟล์แนบ...",
+  "backupCreateReadingAttachmentsProgressLabel": "กำลังอ่านไฟล์แนบ... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "กำลังบีบอัดไฟล์ zip...",
+  "backupCreateSavingFileLabel": "กำลังบันทึกไฟล์...",
+  "backupRestoreValidatingLabel": "กำลังตรวจสอบข้อมูลสำรอง...",
+  "backupRestoreValidatedPreparingDataLabel": "ตรวจสอบข้อมูลสำรองแล้ว กำลังเตรียมข้อมูล...",
+  "backupRestoreWritingNotesLabel": "กำลังเขียนโน้ต...",
+  "backupRestoreWritingTrashLabel": "กำลังเขียนถังขยะ...",
+  "backupRestoreTrashWrittenLabel": "เขียนถังขยะแล้ว",
+  "backupRestoreWritingCategoriesLabel": "กำลังเขียนหมวดหมู่...",
+  "backupRestoreCategoriesWrittenLabel": "เขียนหมวดหมู่แล้ว",
+  "backupRestoreWritingSettingsLabel": "กำลังเขียนการตั้งค่า...",
+  "backupRestoreSettingsWrittenLabel": "เขียนการตั้งค่าแล้ว",
+  "backupRestoreCleaningOldAttachmentsLabel": "กำลังล้างไฟล์แนบเก่า...",
+  "backupRestoreNoAttachmentsFinishingLabel": "ไม่พบไฟล์แนบ กำลังเสร็จสิ้น...",
+  "backupRestoreAttachmentsProgressLabel": "กำลังกู้คืนไฟล์แนบ... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "เสร็จสมบูรณ์",
+  "backupValidationCorruptedFileMessage": "ไฟล์เสียหายหรือไม่ใช่ไฟล์สำรองข้อมูลที่ถูกต้อง",
+  "backupValidationMissingDataMessage": "ไม่พบข้อมูลภายในไฟล์สำรองข้อมูล (ไม่มีไฟล์ backup_data.json)",
+  "backupValidationInvalidJsonMessage": "ไม่สามารถอ่านข้อมูลสำรองได้ (JSON เสียหาย)",
+  "backupValidationNotDnoteBackupMessage": "ไฟล์นี้ไม่ใช่ข้อมูลสำรองจากแอป dnote",
+  "backupValidationVersionUnreadableMessage": "ไม่สามารถอ่านข้อมูลเวอร์ชันของไฟล์สำรองข้อมูลได้",
+  "backupValidationIncompatibleVersionMessage": "ข้อมูลสำรองนี้อยู่ในรูปแบบใหม่ที่แอปเวอร์ชันปัจจุบันไม่รองรับ กรุณาอัปเดตแอป",
+  "backupValidationInvalidVersionMessage": "ข้อมูลเวอร์ชันของไฟล์สำรองข้อมูลไม่ถูกต้อง",
+  "backupValidationMissingNotesFieldMessage": "ข้อมูลสำรองไม่อยู่ในรูปแบบที่คาดไว้ (ไม่มีฟิลด์โน้ต)",
+  "backupValidationMissingTrashFieldMessage": "ข้อมูลสำรองไม่อยู่ในรูปแบบที่คาดไว้ (ไม่มีฟิลด์ถังขยะ)",
+  "backupValidationInvalidCategoriesFieldMessage": "ข้อมูลสำรองไม่อยู่ในรูปแบบที่คาดไว้ (รายการหมวดหมู่ไม่ถูกต้อง)",
+  "backupValidationInvalidSettingsFieldMessage": "ข้อมูลสำรองไม่อยู่ในรูปแบบที่คาดไว้ (ฟิลด์การตั้งค่าไม่ถูกต้อง)",
+  "backupValidationInvalidNoteRecordMessage": "ข้อมูลสำรองไม่อยู่ในรูปแบบที่คาดไว้ (ข้อมูลโน้ตรายการหนึ่งไม่ถูกต้อง)",
+  "backupValidationMissingNoteIdMessage": "ข้อมูลสำรองไม่อยู่ในรูปแบบที่คาดไว้ (พบข้อมูลโน้ตที่ไม่มี ID)",
+  "backupValidationFileNotFoundMessage": "ไม่พบไฟล์สำรองข้อมูล",
+  "backupErrorInsufficientStorageMessage": "พื้นที่จัดเก็บว่างบนอุปกรณ์ไม่เพียงพอ กรุณาเพิ่มพื้นที่ว่างแล้วลองอีกครั้ง",
+  "backupErrorPermissionDeniedMessage": "การเข้าถึงไฟล์ถูกปฏิเสธ กรุณาตรวจสอบสิทธิ์ของแอปแล้วลองอีกครั้ง",
+  "backupErrorFileOperationMessage": "เกิดข้อผิดพลาดระหว่างการดำเนินการไฟล์: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "เกิดข้อผิดพลาดที่ไม่คาดคิด: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "ไม่สามารถสร้างไฟล์ zip ได้ (ZipEncoder ส่งค่า null กลับมา)",
+  "calcTableMenuItemLabel": "รายการคำนวณ",
+  "tagsMenuItemLabel": "แท็ก",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "เพิ่มรายการ...",
+  "toolbarHighlightTooltip": "ไฮไลต์",
+  "toolbarListTooltip": "รายการ",
+  "toolbarHideKeyboardTooltip": "ซ่อนแป้นพิมพ์",
+  "autoBackupLocalSuccessMessage": "สำรองข้อมูลในเครื่องสำเร็จ",
+  "autoBackupLocalFailedMessage": "สำรองข้อมูลในเครื่องล้มเหลว: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "ข้ามการสำรองข้อมูลไปยัง Drive: บัญชี Google ยังไม่ได้เชื่อมต่อหรือเซสชันหมดอายุ กรุณาเปิดแอปและเชื่อมต่อใหม่",
+  "autoBackupDriveSuccessMessage": "สำรองข้อมูลไปยัง Drive สำเร็จ",
+  "autoBackupDriveFailedMessage": "สำรองข้อมูลไปยัง Drive ล้มเหลว: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "ยังไม่มีโน้ต",
+  "noteWidgetPreviewTotalLabel": "รวม: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ ภาพวาด",
+  "autoBackupSettingsAppBarTitle": "การตั้งค่าสำรองข้อมูลอัตโนมัติ",
+  "autoBackupSettingsMainSwitchTitle": "เปิดใช้งานการสำรองข้อมูลอัตโนมัติ",
+  "autoBackupSettingsMainSwitchSubtitle": "โน้ตของคุณจะถูกสำรองข้อมูลอย่างปลอดภัยเป็นระยะในเบื้องหลัง",
+  "autoBackupSettingsTargetTitle": "เป้าหมายการสำรองข้อมูล",
+  "autoBackupSettingsTargetSubtitle": "เลือกตำแหน่งที่จะบันทึกข้อมูลสำรอง",
+  "autoBackupSettingsTargetLocalOption": "ในเครื่อง",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "ทั้งสองอย่าง",
+  "autoBackupSettingsDriveNotConnectedNote": "เชื่อมต่อบัญชีของคุณก่อนเพื่อใช้ตัวเลือก Google Drive",
+  "autoBackupSettingsConnectButton": "เชื่อมต่อ",
+  "autoBackupSettingsFrequencyTitle": "ความถี่ในการสำรองข้อมูล",
+  "autoBackupSettingsFrequencySubtitle": "ทำการสำรองข้อมูลทุก {hours} ชั่วโมง",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 ชั่วโมง",
+  "autoBackupSettingsFrequency12h": "12 ชั่วโมง",
+  "autoBackupSettingsFrequency24h": "24 ชั่วโมง (รายวัน)",
+  "autoBackupSettingsFrequency48h": "48 ชั่วโมง (2 วัน)",
+  "autoBackupSettingsFrequency168h": "168 ชั่วโมง (รายสัปดาห์)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "ใช้ Wi-Fi เท่านั้น",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "การอัปโหลดขึ้นคลาวด์จะเกิดขึ้นผ่าน Wi-Fi เท่านั้นเพื่อประหยัดอินเทอร์เน็ตมือถือของคุณ",
+  "autoBackupSettingsStatusCardTitle": "สถานะระบบ",
+  "autoBackupSettingsNeverRunMessage": "การสำรองข้อมูลอัตโนมัติยังไม่เคยทำงาน",
+  "autoBackupSettingsLastRunInfo": "ทำงานล่าสุด: {date} {time} ({status})\\nข้อความ: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "สำเร็จ",
+  "autoBackupSettingsStatusFailedLabel": "ล้มเหลว",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "ไม่สามารถเชื่อมต่อกับบัญชี Google ได้",
+  "autoBackupSettingsSavedSnackbar": "อัปเดตการตั้งค่าสำรองข้อมูลอัตโนมัติแล้ว",
+  "selectionModeDeletedMessage": "ลบโน้ตแล้ว {count} รายการ",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "เก็บถาวรแล้ว",
+  "selectionModeClassifySheetTitle": "เลือกหมวดหมู่สำหรับโน้ต {count} รายการ",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "เพิ่มหมวดหมู่",
+  "selectionModeRemoveCategoryOption": "ลบหมวดหมู่",
+  "calcTableItemHint": "รายการ...",
+  "calcTableTotalRowLabel": "รวม",
+  "textSelectionMenuShareButton": "แชร์",
+  "textSelectionMenuTranslateButton": "แปล",
+  "textSelectionMenuShareFailedSnackbar": "ไม่สามารถเริ่มการแชร์ได้",
+  "textSelectionMenuTranslateFailedSnackbar": "ไม่สามารถเปิดการแปลได้",
+  "lastBackupInfoTodayFormat": "วันนี้ {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}/{month}/{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "สำรองข้อมูลล่าสุด: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "ยังไม่เคยมีการสำรองข้อมูล"
+}

@@ -1,0 +1,1136 @@
+{
+  "@@locale": "uk",
+  "toolbarBoldTooltip": "Жирний",
+  "toolbarItalicTooltip": "Курсив",
+  "toolbarUnderlineTooltip": "Підкреслення",
+  "toolbarStrikethroughTooltip": "Закреслення",
+  "toolbarFontSizeTooltip": "Розмір шрифту",
+  "toolbarColorTooltip": "Колір тексту",
+  "toolbarBulletTooltip": "Маркований список",
+  "toolbarNumberTooltip": "Нумерований список",
+  "toolbarIndentTooltip": "Відступ абзацу",
+  "toolbarLinkTooltip": "Додати / редагувати / видалити посилання",
+  "toolbarDividerTooltip": "Вставити розділювач",
+  "toolbarChecklistTooltip": "Додати список завдань",
+  "linkSelectTextSnackbar": "Спершу виділіть текст, який хочете зробити посиланням",
+  "linkDialogEditTitle": "Редагувати посилання",
+  "linkDialogAddTitle": "Додати посилання",
+  "linkDialogRemoveButton": "Видалити посилання",
+  "linkDialogCancelButton": "Скасувати",
+  "linkDialogConfirmButton": "Додати",
+  "cameraPermissionPermanentlyDeniedMessage": "Доступ до камери заборонено. Щоб записувати відео, дозвольте доступ у налаштуваннях.",
+  "cameraPermissionRequiredMessage": "Для запису відео потрібен дозвіл на використання камери.",
+  "openSettingsButtonLabel": "Налаштування",
+  "documentScanStartFailedMessage": "Не вдалося почати сканування: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "Розпізнавання тексту не вдалося: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "У документі не знайдено тексту, придатного для розпізнавання",
+  "scanResultSheetTitle": "Як додати відсканований документ?",
+  "scanResultTextOnlyOption": "Додати лише як текст",
+  "scanResultTextAndImageOption": "Додати текст + відскановане зображення",
+  "scanResultCancelOption": "Скасувати",
+  "audioPermissionPermanentlyDeniedMessage": "Доступ до мікрофона заборонено. Щоб записувати звук, дозвольте доступ у налаштуваннях.",
+  "audioPermissionRequiredMessage": "Для запису аудіо потрібен дозвіл на використання мікрофона.",
+  "voiceRecordingDefaultLabel": "Голосовий запис",
+  "blockPreviewCalcTableLabel": "Список розрахунків ({count} рядків)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "Малюнок",
+  "blockPreviewAttachmentsLabel": "{count} вкладень (фото/документ)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "Розділювач",
+  "blockPreviewChecklistLabel": "Список завдань ({count} пунктів)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(порожній текст)",
+  "reorderBlocksSheetTitle": "Змінити порядок блоків",
+  "reorderBlocksMoveUpTooltip": "Перемістити вгору",
+  "reorderBlocksMoveDownTooltip": "Перемістити вниз",
+  "reorderBlocksCloseTooltip": "Закрити",
+  "reorderBlocksDescription": "Торкніться блоку, щоб вибрати його, потім використайте стрілки вгору/вниз для переміщення.",
+  "reorderBlocksMenuItemLabel": "Змінити порядок",
+  "txtImportPickerDialogTitle": "Виберіть TXT-файл для імпорту",
+  "txtImportReadFailedMessage": "Не вдалося прочитати TXT-файл",
+  "txtImportEmptyFileMessage": "TXT-файл порожній",
+  "txtImportSuccessMessage": "TXT імпортовано",
+  "txtImportMenuItemLabel": "Імпорт (txt)",
+  "exportMenuItemLabel": "Експорт",
+  "editorUndoTooltip": "Скасувати",
+  "editorRedoTooltip": "Повторити",
+  "noteSavedMessage": "Нотатку збережено",
+  "dateAssignPickerHelpText": "Призначити нотатку на день",
+  "dateAssignChangeOption": "Змінити дату",
+  "dateAssignRemoveOption": "Скасувати призначення",
+  "editorSubToolbarCloseTooltip": "Закрити",
+  "titleFieldHint": "Заголовок",
+  "textBlockHint": "Напишіть свою нотатку тут...",
+  "drawingBoardMenuItemLabel": "Дошка для малювання",
+  "voiceToTextTextNotesOnlyMessage": "Перетворення голосу на текст доступне лише для текстових нотаток",
+  "selectionModeCancelTooltip": "Скасувати вибір",
+  "selectionModeSelectedCountTitle": "Вибрано: {count}",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "Видалити",
+  "selectionModeArchiveTooltip": "Архівувати",
+  "selectionModeFolderTooltip": "Папка",
+  "searchFieldHint": "Пошук нотаток...",
+  "emptyTrashDialogTitle": "Очистити кошик",
+  "emptyTrashDialogConfirmMessage": "Усі видалені нотатки буде остаточно видалено. Ви впевнені?",
+  "emptyTrashDialogCancelButton": "Скасувати",
+  "restoreAllMenuItemLabel": "Відновити всі",
+  "sortMenuTooltip": "Сортувати нотатки",
+  "sortMenuAscendingLabel": "Порядок: за зростанням (А-Я)",
+  "sortMenuDescendingLabel": "Порядок: за спаданням (Я-А)",
+  "sortMenuByTitleLabel": "Сортувати за: заголовком",
+  "sortMenuByModifiedDateLabel": "Сортувати за: датою зміни",
+  "sortMenuByCreatedDateLabel": "Сортувати за: датою створення",
+  "sortMenuByFolderLabel": "Сортувати за: папкою",
+  "viewToggleGridTooltip": "Вигляд сіткою",
+  "viewToggleListTooltip": "Вигляд списком",
+  "drawerHeaderSubtitle": "Ваш особистий блокнот",
+  "drawerNotesSectionHeader": "НОТАТКИ",
+  "drawerAllNotesLabel": "Нотатки",
+  "drawerFavoritesLabel": "Обране",
+  "drawerAgendaLabel": "Порядок денний",
+  "drawerRemindersLabel": "Нагадування",
+  "drawerLockedLabel": "Заблоковані",
+  "drawerTrashLabel": "Кошик",
+  "drawerFoldersSectionHeader": "ПАПКИ",
+  "drawerExpandLabel": "Розгорнути",
+  "drawerCollapseLabel": "Згорнути",
+  "drawerAddFolderLabel": "Додати папку",
+  "drawerAppSectionHeader": "ДОДАТОК",
+  "drawerCalendarLabel": "Календар",
+  "drawerSettingsLabel": "Налаштування",
+  "drawerBackupRestoreLabel": "Резервне копіювання й відновлення",
+  "drawerUpgradeToProLabel": "Оновити до Pro",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "Підтримати розробку",
+  "drawerFeedbackLabel": "Зворотний зв'язок",
+  "drawerAboutLabel": "Про додаток",
+  "noNotesFoundMessage": "Нотаток не знайдено.",
+  "trashRestoreButtonLabel": "Відновити",
+  "trashPermanentDeleteButtonLabel": "Видалити назавжди",
+  "tagRenamedInfoMessage": "Тег перейменовано",
+  "tagDeletedInfoMessage": "Тег видалено",
+  "tagOptionsRenameLabel": "Перейменувати",
+  "tagOptionsDeleteLabel": "Видалити",
+  "renameTagDialogTitle": "Перейменувати тег",
+  "renameTagDialogHint": "Нова назва тегу",
+  "renameTagDialogCancelButton": "Скасувати",
+  "renameTagDialogSaveButton": "Зберегти",
+  "deleteTagDialogMessageWithCount": "«{tag}» буде видалено з {affectedCount} нотаток. Продовжити?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "Видалити тег «{tag}»?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "Видалити тег",
+  "deleteTagDialogCancelButton": "Скасувати",
+  "deleteTagDialogConfirmButton": "Видалити",
+  "tagsSheetTitle": "Теги",
+  "tagsSheetEmptyMessage": "У цій нотатці ще немає тегів.",
+  "tagsSheetInputHint": "Введіть новий тег...",
+  "tagsSheetSuggestionsLabel": "Наявні теги",
+  "noteDeletedInfoMessage": "Нотатку видалено",
+  "noteDeletedUndoActionLabel": "Скасувати",
+  "reminderSetInfoMessage": "Нагадування встановлено",
+  "reminderRemovedInfoMessage": "Нагадування видалено",
+  "noteDuplicatedInfoMessage": "Копію створено",
+  "speechTextAppendedInfoMessage": "Текст додано до нотатки",
+  "pdfPreparingInfoMessage": "Підготовка PDF…",
+  "pdfSavedInfoMessage": "PDF збережено",
+  "jpgPreparingInfoMessage": "Підготовка JPG…",
+  "jpgSavedInfoMessage": "JPG збережено",
+  "jpgFailedInfoMessage": "Не вдалося створити JPG",
+  "txtPreparingInfoMessage": "Підготовка TXT…",
+  "txtSavedInfoMessage": "TXT збережено",
+  "txtFailedInfoMessage": "Не вдалося створити TXT",
+  "exportOpenActionLabel": "Відкрити",
+  "wrongPasswordInfoMessage": "Неправильний пароль.",
+  "noteArchivedInfoMessage": "Нотатку заархівовано",
+  "noteUnarchivedInfoMessage": "Видалено з архіву",
+  "noteUnlockedInfoMessage": "Розблоковано",
+  "noteLockedInfoMessage": "Нотатку заблоковано",
+  "notificationUnpinnedInfoMessage": "Відкріплено",
+  "emptyNotePinBlockedInfoMessage": "Порожню нотатку не можна закріпити.",
+  "notificationPinnedInfoMessage": "Закріплено на панелі сповіщень",
+  "noContentToReadInfoMessage": "Немає вмісту для читання",
+  "backPressExitInfoMessage": "Натисніть «Назад» ще раз, щоб вийти",
+  "reminderChannelName": "Нагадування про нотатки",
+  "reminderChannelDescription": "Нагадування про нотатки в додатку Layout",
+  "pinnedChannelName": "Закріплені нотатки",
+  "pinnedChannelDescription": "Нотатки Layout, закріплені на панелі сповіщень",
+  "notificationUnpinActionLabel": "Видалити",
+  "reminderDefaultTitle": "Нагадування",
+  "reminderChecklistBodyFallback": "Не забудьте перевірити свій список завдань",
+  "reminderTextBodyFallback": "Не забудьте переглянути свою нотатку",
+  "pdfSaveDialogTitle": "Зберегти як PDF",
+  "jpgSaveDialogTitle": "Зберегти як JPG",
+  "txtSaveDialogTitle": "Зберегти як TXT",
+  "textSizeSheetTitle": "Розмір тексту",
+  "textSizeSamplePreview": "Приклад тексту",
+  "textSizeCancelButton": "Скасувати",
+  "textSizeApplyButton": "Застосувати",
+  "createPasswordDialogTitle": "Створити пароль",
+  "createPasswordNewPasswordHint": "Новий пароль",
+  "createPasswordConfirmHint": "Повторіть пароль",
+  "createPasswordHintQuestionDescription": "Встановіть контрольне запитання на випадок, якщо забудете пароль (необов'язково).",
+  "createPasswordHintQuestionHint": "Виберіть контрольне запитання",
+  "createPasswordHintAnswerHint": "Ваша відповідь",
+  "createPasswordCancelButton": "Скасувати",
+  "createPasswordSaveButton": "Зберегти",
+  "passwordMismatchMessage": "Паролі не збігаються!",
+  "passwordRequiredDialogTitle": "Потрібен пароль",
+  "passwordRequiredHint": "Введіть пароль",
+  "forgotPasswordButtonLabel": "Я забув пароль",
+  "passwordRequiredCancelButton": "Скасувати",
+  "passwordRequiredConfirmButton": "Підтвердити",
+  "securityQuestionDialogTitle": "Контрольне запитання",
+  "securityQuestionAnswerHint": "Ваша відповідь",
+  "securityQuestionCancelButton": "Скасувати",
+  "securityQuestionConfirmButton": "Підтвердити",
+  "securityQuestionWrongAnswerMessage": "Неправильна відповідь. Спробуйте ще раз.",
+  "revealedPasswordDialogTitle": "Ваш пароль",
+  "revealedPasswordLabel": "Пароль вашої нотатки:",
+  "revealedPasswordOkButton": "ОК",
+  "securityQuestionPetName": "Як звали вашого першого домашнього улюбленця?",
+  "securityQuestionFavoriteTeacher": "Як звали вашого улюбленого вчителя?",
+  "securityQuestionBirthCity": "У якому місті ви народилися?",
+  "securityQuestionFavoriteFood": "Яка ваша улюблена страва?",
+  "securityQuestionMotherMaidenName": "Яке дівоче прізвище вашої матері?",
+  "securityQuestionFirstSchool": "Як називалася перша школа, яку ви відвідували?",
+  "securityQuestionFavoriteColor": "Який ваш улюблений колір?",
+  "editFolderDialogTitle": "Редагувати папку",
+  "newSubfolderDialogTitle": "Нова підпапка",
+  "addFolderDialogTitle": "Додати папку",
+  "subfolderParentInfoMessage": "Буде створено всередині «{parentCategory}»",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "Назва підпапки",
+  "folderNameFieldLabel": "Назва папки",
+  "folderColorLabel": "Колір",
+  "folderDialogCancelButton": "Скасувати",
+  "folderDialogSaveButton": "Зберегти",
+  "folderDialogAddButton": "Додати",
+  "selectFolderSheetTitle": "Вибрати папку",
+  "selectFolderAddOptionLabel": "Додати папку",
+  "removeCurrentFolderLabel": "Прибрати з поточної папки",
+  "noteDetailsDialogTitle": "Деталі",
+  "noteDetailsCreatedLabel": "Створено",
+  "noteDetailsModifiedLabel": "Востаннє змінено",
+  "noteDetailsCharCountLabel": "Кількість символів",
+  "noteDetailsCharCountValue": "{count} символів",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "Кількість слів",
+  "noteDetailsWordCountValue": "{count} слів",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "ОК",
+  "noteDetailsUnknownDateLabel": "Невідомо",
+  "addAttachmentSheetTitle": "Додати",
+  "addAttachmentImageOption": "Додати зображення",
+  "addAttachmentCameraOption": "Камера",
+  "addAttachmentFileOption": "Додати файл",
+  "addAttachmentVoiceOption": "Голосовий запис",
+  "addAttachmentVideoOption": "Записати відео",
+  "addAttachmentScanOption": "Сканувати документ",
+  "noteActionsSheetTitle": "Виберіть дію",
+  "noteActionReminderLabel": "Нагадування",
+  "noteActionEditReminderLabel": "Редагувати нагадування",
+  "noteActionSpeechToTextLabel": "Голос у текст",
+  "noteActionArchiveLabel": "Архівувати",
+  "noteActionUnarchiveLabel": "Видалити з архіву",
+  "noteActionLockLabel": "Заблокувати",
+  "noteActionUnlockLabel": "Розблокувати",
+  "noteActionFavoriteLabel": "Додати в обране",
+  "noteActionUnfavoriteLabel": "Видалити з обраного",
+  "noteActionClassifyLabel": "Вибрати папку",
+  "noteActionDeleteLabel": "Видалити",
+  "noteActionPinToNotificationLabel": "Закріпити на панелі сповіщень",
+  "noteActionUnpinFromNotificationLabel": "Відкріпити",
+  "noteActionShareLabel": "Поділитися",
+  "noteActionDuplicateLabel": "Створити копію",
+  "noteActionCopyContentLabel": "Копіювати вміст",
+  "noteActionTtsLabel": "Прочитати вголос",
+  "noteActionTextSizeLabel": "Розмір тексту",
+  "noteActionDetailsLabel": "Деталі",
+  "noteActionDiscardChangesLabel": "Скасувати зміни",
+  "noteActionSelectLabel": "Вибрати",
+  "reminderEditOptionLabel": "Змінити нагадування",
+  "reminderRemoveOptionLabel": "Видалити нагадування",
+  "discardChangesDialogTitle": "Скасувати зміни",
+  "discardChangesDialogMessage": "Незбережені зміни в цій нотатці буде втрачено. Ви впевнені, що хочете їх скасувати?",
+  "discardChangesCancelButton": "Скасувати",
+  "discardChangesConfirmButton": "Скасувати зміни",
+  "pinnedNotificationDefaultTitle": "Нотатка",
+  "pdfFailedInfoMessage": "Не вдалося створити PDF",
+  "drawingScreenTitle": "Малюнок",
+  "drawingMinimizeTooltip": "Згорнути",
+  "drawingEmptyExportWarningMessage": "Спочатку щось намалюйте",
+  "drawingEraserPartialModeLabel": "Частково",
+  "drawingEraserFullModeLabel": "Повністю",
+  "drawingClearTooltip": "Очистити",
+  "drawingZoomOutTooltip": "Зменшити",
+  "drawingZoomInTooltip": "Збільшити",
+  "drawingDeleteTooltip": "Видалити",
+  "drawingEmptyPreviewHint": "Торкніться, щоб малювати",
+  "settingsPageTitle": "Налаштування",
+  "settingsSectionGeneral": "Загальні",
+  "settingsSectionSecurity": "Безпека",
+  "settingsSectionTheme": "Тема",
+  "settingsSectionPersonalization": "Персоналізація",
+  "settingsSectionWidget": "Віджет",
+  "settingsSectionAbout": "Про додаток",
+  "settingsHintQuestionPet": "Як звали вашого першого домашнього улюбленця?",
+  "settingsHintQuestionTeacher": "Як звали вашого улюбленого вчителя?",
+  "settingsHintQuestionBirthCity": "У якому місті ви народилися?",
+  "settingsHintQuestionFavoriteFood": "Яка ваша улюблена страва?",
+  "settingsHintQuestionMotherMaidenName": "Яке дівоче прізвище вашої матері?",
+  "settingsHintQuestionFirstSchool": "Яка перша школа, яку ви відвідували?",
+  "settingsHintQuestionFavoriteColor": "Який ваш улюблений колір?",
+  "settingsSecurityQuestionDialogTitle": "Контрольне запитання",
+  "settingsSecurityQuestionDialogDesc": "Якщо ви забудете пароль, ви зможете відновити його, правильно відповівши на це запитання.",
+  "settingsSecurityQuestionDropdownHint": "Виберіть контрольне запитання",
+  "settingsSecurityQuestionAnswerHint": "Ваша відповідь",
+  "settingsSecurityQuestionCancelButton": "Скасувати",
+  "settingsSecurityQuestionEmptyWarning": "Запитання та відповідь не можуть бути порожніми!",
+  "settingsSecurityQuestionSaveButton": "Зберегти",
+  "settingsCreatePasswordTitle": "Створити пароль",
+  "settingsPasswordRequiredTitle": "Потрібен пароль",
+  "settingsPasswordEnterHint": "Введіть пароль",
+  "settingsForgotPasswordButton": "Я забув пароль",
+  "settingsNewPasswordHint": "Новий пароль",
+  "settingsConfirmPasswordHint": "Повторіть пароль",
+  "settingsSecurityQuestionOptionalDesc": "Встановіть контрольне запитання на випадок, якщо забудете пароль (необов'язково).",
+  "settingsPasswordDialogCancelButton": "Скасувати",
+  "settingsPasswordMismatchWarning": "Паролі не збігаються!",
+  "settingsWrongPasswordWarning": "Неправильний пароль!",
+  "settingsPasswordSaveButton": "Зберегти",
+  "settingsPasswordRemoveButton": "Видалити",
+  "settingsNotePasswordTitle": "Пароль нотатки",
+  "settingsPasswordSetSubtitle": "Пароль установлено ✓",
+  "settingsPasswordNotSetSubtitle": "Пароль не встановлено",
+  "settingsSecurityQuestionTileTitle": "Контрольне запитання",
+  "settingsSecurityQuestionSetSubtitle": "Встановлено ✓ — використовується, якщо ви забудете пароль",
+  "settingsSecurityQuestionNotSetSubtitle": "Не встановлено — ви не зможете відновити пароль у разі втрати",
+  "settingsThemeDialogTitle": "Вибрати тему",
+  "settingsThemeSystemDefault": "Системна за замовчуванням",
+  "settingsThemeLightOption": "Світла тема",
+  "settingsThemeDarkOption": "Темна тема",
+  "settingsAccentColorDialogTitle": "Вибрати акцентний колір",
+  "settingsThemeChangeTileTitle": "Змінити тему",
+  "settingsThemeLightLabel": "Світла",
+  "settingsThemeDarkLabel": "Темна",
+  "settingsThemeSystemLabel": "Системна",
+  "settingsLanguageTileTitle": "Мова",
+  "settingsLanguageDialogTitle": "Вибрати мову",
+  "settingsLanguageSystemOption": "Системна",
+  "settingsAccentColorTileTitle": "Акцентний колір",
+  "settingsAccentColorTileSubtitle": "Колір, що використовується на панелі додатку, кнопках і перемикачах",
+  "settingsColorfulNotesTitle": "Різнокольорові нотатки",
+  "settingsColorfulNotesSubtitle": "Кожна картка нотатки отримує інший відтінок кольору.",
+  "settingsTextColorSheetTitle": "Колір тексту",
+  "settingsTextColorSheetDesc": "Встановлює колір тексту вмісту нотатки.",
+  "settingsTextColorOkButton": "ОК",
+  "settingsTextColorTileTitle": "Колір тексту",
+  "settingsTextColorTileSubtitle": "Колір для тексту вмісту нотатки.",
+  "settingsWidgetFontSizeLabel": "Розмір шрифту віджета",
+  "settingsWidgetFontSizeSample": "Приклад заголовка - {size} пт",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "Скасувати",
+  "settingsWidgetFontSizeApplyButton": "Застосувати",
+  "settingsWidgetOpacityLabel": "Прозорість фону",
+  "settingsWidgetOpacityValue": "Прозорість {percent}%",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "Скасувати",
+  "settingsWidgetOpacityApplyButton": "Застосувати",
+  "settingsWidgetDarkModeTitle": "Темний віджет",
+  "settingsWidgetDarkModeDesc": "Темна колірна схема для віджета.",
+  "settingsAboutVersionTitle": "Версія додатку",
+  "settingsFontFamilyTileTitle": "Шрифт",
+  "settingsFontFamilyDefaultLabel": "За замовчуванням",
+  "settingsGlobalFontSizeTileTitle": "Розмір шрифту",
+  "settingsGlobalFontSizeTileSubtitle": "{size} пт — застосовується до всіх нотаток.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "Приклад тексту - {size} пт",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "Застосувати до наявних нотаток",
+  "settingsGlobalFontSizeApplyToAllNote": "Якщо для нотатки встановлено індивідуальний розмір шрифту, це налаштування на неї не вплине.",
+  "settingsGlobalFontSizeCancelButton": "Скасувати",
+  "settingsGlobalFontSizeApplyButton": "Застосувати",
+  "settingsPreviewLinesTileTitle": "Рядки попереднього перегляду нотатки",
+  "settingsPreviewLinesTileSubtitle": "Показувати до {lines} рядків. Якщо нотатка коротша, показується фактична кількість рядків.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "Поточне значення: {lines} рядків",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "Встановлює максимальну кількість рядків для попереднього перегляду. Якщо в нотатці менше рядків, показується фактична кількість.",
+  "settingsPreviewLinesCancelButton": "Скасувати",
+  "settingsPreviewLinesApplyButton": "Застосувати",
+  "backupCancelButton": "Скасувати",
+  "backupConnectButton": "Підключити",
+  "backupDisconnectButton": "Відключити",
+  "backupContinueButton": "Продовжити",
+  "backupCloseButton": "Закрити",
+  "backupShareButton": "Поділитися",
+  "backupRestoreButton": "Відновити",
+  "backupConfigureButton": "Налаштувати",
+  "backupUnknownDateLabel": "Невідомо",
+  "backupProcessingDefaultLabel": "Обробка...",
+  "backupPermissionRequiredTitle": "Потрібен дозвіл на доступ до сховища",
+  "backupPermissionRequiredBodyPermanent": "Ця версія Android вимагає дозволу на доступ до сховища для резервного копіювання/відновлення. Оскільки дозвіл було остаточно відхилено, увімкніть його вручну в налаштуваннях додатку.",
+  "backupPermissionRequiredBodyNormal": "Ця версія Android вимагає дозволу на доступ до сховища для резервного копіювання/відновлення. Надайте дозвіл, щоб продовжити.",
+  "backupGoToSettingsButton": "Перейти до налаштувань",
+  "backupRetryButton": "Повторити",
+  "backupDriveConnectingLabel": "Підключення до облікового запису Google...",
+  "backupDriveConnectedWithEmailMessage": "Підключено до облікового запису Google Drive: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Підключено до облікового запису Google Drive.",
+  "backupDriveConnectFailedMessage": "Не вдалося підключитися до облікового запису Google, або операцію скасовано.",
+  "backupDriveDisconnectTitle": "Відключити Google Drive",
+  "backupDriveDisconnectBody": "Якщо ви відключитеся, ручне або автоматичне резервне копіювання на Drive стане неможливим. Резервні копії, вже збережені на Drive, не буде видалено — буде скасовано лише доступ із цього пристрою.",
+  "backupDriveDisconnectedMessage": "З'єднання з Google Drive видалено.",
+  "backupDriveRequiredTitle": "Потрібен обліковий запис Google",
+  "backupDriveRequiredBody": "Ця дія вимагає підключення вашого облікового запису Google. Підключити зараз?",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: підключено ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: підключено",
+  "backupDriveStatusDisconnected": "Google Drive: не підключено",
+  "backupDriveAuthenticatingLabel": "Перевірка облікового запису Google...",
+  "backupDriveNotSignedInMessage": "Ви не підключені до Google Drive. Спочатку увійдіть у свій обліковий запис Google.",
+  "backupDriveUploadingLabel": "Завантаження резервної копії на Drive...",
+  "backupDriveUploadTimeoutMessage": "Завантаження на Google Drive не завершилося за 120 секунд (немає відповіді від сервера). Перевірте з'єднання і спробуйте ще раз.",
+  "backupDriveOperationCompletedLabel": "Завершено",
+  "backupToDriveActionLabel": "резервне копіювання на Drive",
+  "backupToDeviceActionLabel": "резервне копіювання",
+  "backupCreatingLabel": "Створення резервної копії...",
+  "backupCreateFailedMessage": "Не вдалося створити резервну копію: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Завантаження на Google Drive не вдалося: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "Резервну копію успішно завантажено на Google Drive.",
+  "backupCreatedMessage": "Резервну копію створено: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "Резервна копія готова",
+  "backupOfferShareBody": "Файл резервної копії збережено на вашому пристрої. Бажаєте поділитися ним зараз (наприклад, у хмарному сховищі, електронною поштою, на іншому пристрої)?",
+  "backupShareFileText": "файл резервної копії layout",
+  "backupShareFailedMessage": "Не вдалося почати надсилання: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "Велика резервна копія",
+  "backupLargeOperationBody": "Дані, які потрібно обробити, становлять приблизно {sizeText}. {actionLabel} такого розміру може зайняти деякий час залежно від вашого пристрою. Просто не закривайте додаток, поки триває процес — продовжити?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "відновлення",
+  "backupDriveListingLabel": "Отримання списку резервних копій Drive...",
+  "backupDriveListFailedMessage": "Не вдалося отримати список резервних копій: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "На Google Drive ще немає резервних копій.",
+  "backupDrivePickTitle": "Виберіть резервну копію з Drive",
+  "backupDriveDownloadingLabel": "Завантаження резервної копії з Drive...",
+  "backupDriveDownloadingWithSizeLabel": "Завантаження резервної копії з Drive... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "Збереження файлу на пристрій...",
+  "backupDriveUnknownBackupFileName": "unknown_backup.zip",
+  "backupDriveStorageFullMessage": "Ваше сховище Google Drive заповнене. Звільніть місце на Drive і спробуйте ще раз.",
+  "backupDriveNetworkErrorMessage": "Не вдалося встановити з'єднання з інтернетом. Перевірте з'єднання і спробуйте ще раз.",
+  "backupDriveBackupNotFoundMessage": "Вказаний файл резервної копії не знайдено на Drive. Можливо, його видалено.",
+  "backupDriveUnknownErrorMessage": "Під час операції з Google Drive сталася неочікувана помилка: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "Завантаження не вдалося: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "Не вдалося вибрати файл: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "Немає доступу до вибраного файлу.",
+  "backupCheckingLabel": "Перевірка резервної копії...",
+  "backupReadFailedMessage": "Не вдалося прочитати файл резервної копії: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Відновити резервну копію",
+  "backupPreviewContentsHeader": "Вміст вибраної резервної копії:",
+  "backupPreviewNoteCountLabel": "Кількість нотаток",
+  "backupPreviewTrashCountLabel": "Нотатки в кошику",
+  "backupPreviewCategoryCountLabel": "Кількість категорій",
+  "backupPreviewAttachmentLabel": "Вкладення",
+  "backupPreviewAttachmentNoneValue": "Немає",
+  "backupPreviewAttachmentCountValue": "{count} файлів ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "Створено",
+  "backupEmptyPreviewTitle": "Схоже, ця резервна копія порожня",
+  "backupEmptyPreviewBody": "У вибраному файлі не знайдено нотаток, категорій чи вкладень. Якщо ви продовжите, ваші поточні дані все одно буде видалено та замінено цією порожньою резервною копією.",
+  "backupMissingAttachmentsTitle": "{count} вкладень не знайдено в резервній копії",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "Нотатки з цими файлами буде відновлено, але без вкладень (можливо, вони були відсутні або пошкоджені під час створення резервної копії): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} і ще {remaining}",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "Це ЗАМІНИТЬ усі ваші поточні нотатки, кошик, категорії, налаштування та вкладення даними з наведеної вище резервної копії. Ваші поточні дані буде остаточно втрачено, і цю дію неможливо скасувати.",
+  "backupRestoringLabel": "Відновлення резервної копії...",
+  "backupRestoreSuccessWithMissingMessage": "Резервну копію відновлено. Однак {count} вкладень не знайдено в резервній копії, тому їх не вдалося відновити. Рекомендується перезапустити додаток, щоб зміни повністю набули чинності.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "Резервну копію успішно відновлено. Рекомендується перезапустити додаток, щоб зміни повністю набули чинності.",
+  "backupRestoreFailedMessage": "Під час відновлення сталася помилка: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "Резервне копіювання й відновлення",
+  "backupBlockedExitWarningMessage": "Триває операція, зачекайте на її завершення.",
+  "backupBusyBackTooltip": "Триває операція",
+  "backupIntroText": "Ви можете створити резервну копію своїх нотаток, категорій, налаштувань і вкладень у вигляді одного .zip-файлу або відновити резервну копію, зроблену раніше.",
+  "backupDriveCardTitle": "Резервне копіювання на Google Drive",
+  "backupDriveCardSubtitle": "Створіть нову резервну копію та завантажте її безпосередньо в приватну область вашого Google Drive.",
+  "backupDriveCardButtonLabel": "Копіювати на Drive",
+  "backupDeviceCardTitle": "Резервне копіювання на пристрій",
+  "backupDeviceCardSubtitle": "Збережіть усі свої дані у вигляді одного .zip-файлу на пристрій і за бажанням поділіться ним.",
+  "backupDeviceCardButtonLabel": "Копіювати на пристрій",
+  "backupHistoryCardTitle": "Історія резервного копіювання",
+  "backupHistoryCardSubtitle": "Переглядайте всі резервні копії, збережені на пристрої, разом із датою та розміром; ви можете поділитися ними, відновити або видалити прямо звідси.",
+  "backupHistoryTabDevice": "Пристрій",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "Видалити резервну копію",
+  "backupHistoryDeleteDialogBody": "Ви впевнені, що хочете остаточно видалити файл резервної копії «{fileName}»? Цю дію неможливо скасувати.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "Резервну копію видалено.",
+  "backupHistoryDriveDeleteDialogTitle": "Видалити резервну копію з Drive",
+  "backupHistoryDriveDeleteDialogBody": "Ви впевнені, що хочете остаточно видалити резервну копію «{fileName}» з Google Drive? Цю дію неможливо скасувати, і файл не буде переміщено в кошик.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Резервну копію з Drive видалено.",
+  "backupHistoryDriveDeleteFailedMessage": "Не вдалося видалити: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "На цьому пристрої ще немає збережених резервних копій.",
+  "backupHistoryDeviceEmptySubtitle": "Скористайтеся функцією «Копіювати на пристрій», щоб створити першу резервну копію.",
+  "backupHistoryDriveEmptySubtitle": "Скористайтеся функцією «Резервне копіювання на Google Drive», щоб створити першу хмарну резервну копію.",
+  "backupHistoryDriveSignInPrompt": "Підключіть свій обліковий запис Google, щоб переглянути резервні копії на Drive.",
+  "backupHistoryConnectGoogleButton": "Підключити через Google",
+  "backupHistoryDriveConnectedFallback": "Підключено",
+  "backupHistoryUnknownErrorFallback": "Сталася невідома помилка.",
+  "backupHistoryDownloadStartingLabel": "Починається...",
+  "backupAutoBackupEnabledLabel": "Автоматичне резервне копіювання: увімкнено",
+  "backupAutoBackupDisabledLabel": "Автоматичне резервне копіювання: вимкнено",
+  "backupOverlayWarningMessage": "Зачекайте, не закривайте додаток, поки операція не завершиться.",
+  "pdfExportUntitledNoteLabel": "Нотатка без назви",
+  "pdfExportDefaultAttachmentName": "Вкладення",
+  "pdfExportDefaultFileName": "note",
+  "screenshotExportBoundaryNotFoundMessage": "Не вдалося зробити знімок екрана (межу не знайдено)",
+  "screenshotExportByteDataNullMessage": "Не вдалося створити дані знімка екрана",
+  "screenshotExportPngDecodeFailedMessage": "Не вдалося обробити зображення (помилка декодування PNG)",
+  "screenshotCalcTableTotalLabel": "Разом",
+  "gundemMenuRemoveFromAgenda": "Прибрати з порядку денного",
+  "gundemMenuDeleteNote": "Видалити нотатку",
+  "gundemSectionOverdue": "Прострочено",
+  "gundemSectionToday": "Сьогодні",
+  "gundemSectionTomorrow": "Завтра",
+  "gundemSectionNextWeek": "Наступного тижня",
+  "gundemSectionFurther": "Пізніше",
+  "gundemWeekdayMonday": "Понеділок",
+  "gundemWeekdayTuesday": "Вівторок",
+  "gundemWeekdayWednesday": "Середа",
+  "gundemWeekdayThursday": "Четвер",
+  "gundemWeekdayFriday": "П'ятниця",
+  "gundemWeekdaySaturday": "Субота",
+  "gundemWeekdaySunday": "Неділя",
+  "gundemAppBarTitle": "Порядок денний",
+  "gundemCalendarTooltip": "Календар",
+  "gundemEmptyTitle": "У порядку денному нічого немає",
+  "gundemEmptySubtitle": "Тут з'являтимуться нотатки з нагадуванням або призначеною датою.",
+  "gundemUntitledNote": "Нотатка без назви",
+  "gundemRepeatHourly": "Щогодини",
+  "gundemRepeatDaily": "Щодня",
+  "gundemRepeatWeekly": "Щотижня",
+  "gundemRepeatMonthly": "Щомісяця",
+  "gundemRepeatYearly": "Щороку",
+  "gundemPreviewCalcTableLabel": "[Список розрахунків]",
+  "gundemPreviewDrawingLabel": "[Малюнок]",
+  "gundemPreviewImageLabel": "[Зображення]",
+  "gundemMonthShortJan": "Січ",
+  "gundemMonthShortFeb": "Лют",
+  "gundemMonthShortMar": "Бер",
+  "gundemMonthShortApr": "Кві",
+  "gundemMonthShortMay": "Тра",
+  "gundemMonthShortJun": "Чер",
+  "gundemMonthShortJul": "Лип",
+  "gundemMonthShortAug": "Сер",
+  "gundemMonthShortSep": "Вер",
+  "gundemMonthShortOct": "Жов",
+  "gundemMonthShortNov": "Лис",
+  "gundemMonthShortDec": "Гру",
+  "calendarAppBarTitle": "Календар",
+  "calendarTodayButton": "Сьогодні",
+  "calendarLegendNoteLabel": "Нотатка",
+  "calendarLegendReminderLabel": "Нагадування",
+  "calendarTodayBadge": "Сьогодні",
+  "calendarEmptyDayMessage": "На цей день немає нотаток чи нагадувань.",
+  "calendarReminderHourlyLabel": "Щогодини",
+  "calendarMonthJan": "Січень",
+  "calendarMonthFeb": "Лютий",
+  "calendarMonthMar": "Березень",
+  "calendarMonthApr": "Квітень",
+  "calendarMonthMay": "Травень",
+  "calendarMonthJun": "Червень",
+  "calendarMonthJul": "Липень",
+  "calendarMonthAug": "Серпень",
+  "calendarMonthSep": "Вересень",
+  "calendarMonthOct": "Жовтень",
+  "calendarMonthNov": "Листопад",
+  "calendarMonthDec": "Грудень",
+  "calendarWeekdayShortMon": "Пн",
+  "calendarWeekdayShortTue": "Вт",
+  "calendarWeekdayShortWed": "Ср",
+  "calendarWeekdayShortThu": "Чт",
+  "calendarWeekdayShortFri": "Пт",
+  "calendarWeekdayShortSat": "Сб",
+  "calendarWeekdayShortSun": "Нд",
+  "calendarWeekdayFullMonday": "Понеділок",
+  "calendarWeekdayFullTuesday": "Вівторок",
+  "calendarWeekdayFullWednesday": "Середа",
+  "calendarWeekdayFullThursday": "Четвер",
+  "calendarWeekdayFullFriday": "П'ятниця",
+  "calendarWeekdayFullSaturday": "Субота",
+  "calendarWeekdayFullSunday": "Неділя",
+  "wrongPasswordDialogTitle": "Неправильний пароль",
+  "wrongPasswordDialogMessage": "Введений вами пароль неправильний.",
+  "commonOkButton": "ОК",
+  "unlockCategoryAction": "Розблокувати",
+  "lockCategoryAction": "Заблокувати",
+  "categoryUnlockedMessage": "Розблоковано",
+  "categoryLockedMessage": "Папку заблоковано",
+  "deleteFolderMenuItemLabel": "Видалити папку",
+  "deleteFolderDialogTitle": "Видалити папку",
+  "deleteFolderDialogMessageWithSubfolders": "Ви впевнені, що хочете видалити папку «{category}» та всі її підпапки? Нотатки в цих папках стануть некатегоризованими.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "Ви впевнені, що хочете видалити папку «{category}»? Нотатки в цій папці стануть некатегоризованими.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "Скасувати",
+  "deleteFolderDialogConfirmButton": "Видалити",
+  "editCategoryNameColorMenuItemLabel": "Редагувати назву / колір",
+  "addSubfolderMenuItemLabel": "Створити підпапку",
+  "expandSubfoldersMenuItemLabel": "Розгорнути підпапки",
+  "collapseSubfoldersMenuItemLabel": "Згорнути підпапки",
+  "saveErrorInfoMessage": "Помилка збереження: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "Ласкаво просимо до DNote! 🚀",
+  "welcomeNoteContent": "Додано нові функції!",
+  "noteListDateGroupToday": "Сьогодні",
+  "noteListDateGroupYesterday": "Учора",
+  "noteListDateGroupLast7Days": "Останні 7 днів",
+  "noteListDateGroupLast30Days": "Останні 30 днів",
+  "reminderRepeatNoneLabel": "Без повторення",
+  "voiceRecorderPreparingLabel": "Підготовка…",
+  "voiceRecorderCancelButton": "Скасувати",
+  "voiceRecorderStopAddButton": "Зупинити й додати",
+  "speechToTextMicPermissionDeniedMessage": "Дозвіл на використання мікрофона не надано.",
+  "speechToTextUnavailableMessage": "Розпізнавання мовлення недоступне на цьому пристрої.",
+  "speechToTextPreparingLabel": "Підготовка…",
+  "speechToTextListeningLabel": "Слухаю…",
+  "speechToTextStartSpeakingPlaceholder": "Почніть говорити…",
+  "speechToTextCancelButton": "Скасувати",
+  "speechToTextStopAddButton": "Зупинити й додати",
+  "textToSpeechNoContentMessage": "Немає вмісту для читання.",
+  "textToSpeechReadErrorMessage": "Під час читання сталася помилка.",
+  "textToSpeechUnavailableMessage": "Синтез мовлення недоступний на цьому пристрої.",
+  "textToSpeechPreparingLabel": "Підготовка…",
+  "textToSpeechPausedLabel": "Призупинено",
+  "textToSpeechFinishedLabel": "Читання завершено",
+  "textToSpeechReadingLabel": "Читання…",
+  "textToSpeechCloseErrorButton": "Закрити",
+  "textToSpeechReplayButton": "Прочитати знову",
+  "textToSpeechCloseFinishedButton": "Закрити",
+  "textToSpeechPauseButton": "Пауза",
+  "textToSpeechResumeButton": "Продовжити",
+  "textToSpeechStopButton": "Зупинити",
+  "textToSpeechSpeedSlow": "Повільно",
+  "textToSpeechSpeedNormal": "Звичайно",
+  "textToSpeechSpeedFast": "Швидко",
+  "calendarPickerCancelButton": "Скасувати",
+  "calendarPickerConfirmButton": "Вибрати",
+  "calendarPickerClearButton": "Очистити",
+  "reminderPickerDialogTitle": "Додати нагадування",
+  "reminderPickerDateTodayOption": "Сьогодні",
+  "reminderPickerDateTomorrowOption": "Завтра",
+  "reminderPickerDatePickOption": "Вибрати дату",
+  "reminderRepeatHourlyLabel": "Щогодини",
+  "reminderRepeatDailyLabel": "Щодня",
+  "reminderRepeatWeeklyLabel": "Щотижня",
+  "reminderRepeatMonthlyLabel": "Щомісяця",
+  "reminderRepeatYearlyLabel": "Щороку",
+  "reminderPickerCalendarHelpText": "Виберіть дату нагадування",
+  "reminderPickerCancelButton": "СКАСУВАТИ",
+  "reminderPickerSaveButton": "ЗБЕРЕГТИ",
+  "reminderPickerPastTimeErrorMessage": "Не можна вибрати час у минулому",
+  "calcTableTotalLabel": "Разом: {amount}",
+  "backupCreatePreparingDataLabel": "Підготовка даних...",
+  "backupCreatePackagingNotesLabel": "Упаковка нотаток і категорій...",
+  "backupCreateReadingAttachmentsLabel": "Читання вкладень...",
+  "backupCreateReadingAttachmentsProgressLabel": "Читання вкладень... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "Стиснення zip-файлу...",
+  "backupCreateSavingFileLabel": "Збереження файлу...",
+  "backupRestoreValidatingLabel": "Перевірка резервної копії...",
+  "backupRestoreValidatedPreparingDataLabel": "Резервну копію перевірено, підготовка даних...",
+  "backupRestoreWritingNotesLabel": "Запис нотаток...",
+  "backupRestoreWritingTrashLabel": "Запис кошика...",
+  "backupRestoreTrashWrittenLabel": "Кошик записано",
+  "backupRestoreWritingCategoriesLabel": "Запис категорій...",
+  "backupRestoreCategoriesWrittenLabel": "Категорії записано",
+  "backupRestoreWritingSettingsLabel": "Запис налаштувань...",
+  "backupRestoreSettingsWrittenLabel": "Налаштування записано",
+  "backupRestoreCleaningOldAttachmentsLabel": "Очищення старих вкладень...",
+  "backupRestoreNoAttachmentsFinishingLabel": "Вкладень не знайдено, завершення...",
+  "backupRestoreAttachmentsProgressLabel": "Відновлення вкладень... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "Завершено",
+  "backupValidationCorruptedFileMessage": "Файл пошкоджено або він не є дійсним файлом резервної копії.",
+  "backupValidationMissingDataMessage": "У файлі резервної копії не знайдено даних (відсутній backup_data.json).",
+  "backupValidationInvalidJsonMessage": "Не вдалося прочитати дані резервної копії (пошкоджений JSON).",
+  "backupValidationNotDnoteBackupMessage": "Цей файл не є резервною копією додатку dnote.",
+  "backupValidationVersionUnreadableMessage": "Не вдалося прочитати інформацію про версію файлу резервної копії.",
+  "backupValidationIncompatibleVersionMessage": "Ця резервна копія має новіший формат, який не підтримується поточною версією додатку. Оновіть додаток.",
+  "backupValidationInvalidVersionMessage": "Інформація про версію файлу резервної копії недійсна.",
+  "backupValidationMissingNotesFieldMessage": "Дані резервної копії мають неочікуваний формат (відсутнє поле notes).",
+  "backupValidationMissingTrashFieldMessage": "Дані резервної копії мають неочікуваний формат (відсутнє поле trash).",
+  "backupValidationInvalidCategoriesFieldMessage": "Дані резервної копії мають неочікуваний формат (недійсний список категорій).",
+  "backupValidationInvalidSettingsFieldMessage": "Дані резервної копії мають неочікуваний формат (недійсне поле settings).",
+  "backupValidationInvalidNoteRecordMessage": "Дані резервної копії мають неочікуваний формат (недійсний запис нотатки).",
+  "backupValidationMissingNoteIdMessage": "Дані резервної копії мають неочікуваний формат (знайдено запис нотатки без ID).",
+  "backupValidationFileNotFoundMessage": "Файл резервної копії не знайдено.",
+  "backupErrorInsufficientStorageMessage": "Недостатньо вільного місця на пристрої. Звільніть місце і спробуйте ще раз.",
+  "backupErrorPermissionDeniedMessage": "У доступі до файлу відмовлено. Перевірте дозволи додатку і спробуйте ще раз.",
+  "backupErrorFileOperationMessage": "Під час операції з файлом сталася помилка: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "Сталася неочікувана помилка: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "Не вдалося створити zip-архів (ZipEncoder повернув null).",
+  "calcTableMenuItemLabel": "Список розрахунків",
+  "tagsMenuItemLabel": "Теги",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "Додати пункт...",
+  "toolbarHighlightTooltip": "Виділення",
+  "toolbarListTooltip": "Список",
+  "toolbarHideKeyboardTooltip": "Сховати клавіатуру",
+  "autoBackupLocalSuccessMessage": "Локальне резервне копіювання успішне.",
+  "autoBackupLocalFailedMessage": "Локальне резервне копіювання не вдалося: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Резервне копіювання на Drive пропущено: обліковий запис Google не підключено, або сеанс закінчився. Відкрийте додаток і підключіться знову.",
+  "autoBackupDriveSuccessMessage": "Резервне копіювання на Drive успішне.",
+  "autoBackupDriveFailedMessage": "Резервне копіювання на Drive не вдалося: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "Ще немає нотаток",
+  "noteWidgetPreviewTotalLabel": "Разом: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ Малюнок",
+  "autoBackupSettingsAppBarTitle": "Налаштування автоматичного резервного копіювання",
+  "autoBackupSettingsMainSwitchTitle": "Увімкнути автоматичне резервне копіювання",
+  "autoBackupSettingsMainSwitchSubtitle": "Ваші нотатки періодично й безпечно резервуються у фоновому режимі.",
+  "autoBackupSettingsTargetTitle": "Місце резервного копіювання",
+  "autoBackupSettingsTargetSubtitle": "Виберіть, де зберігатимуться резервні копії.",
+  "autoBackupSettingsTargetLocalOption": "Локально",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "Обидва",
+  "autoBackupSettingsDriveNotConnectedNote": "Спочатку підключіть свій обліковий запис, щоб використовувати параметри Google Drive.",
+  "autoBackupSettingsConnectButton": "Підключити",
+  "autoBackupSettingsFrequencyTitle": "Частота резервного копіювання",
+  "autoBackupSettingsFrequencySubtitle": "Резервна копія створюється кожні {hours} год.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 годин",
+  "autoBackupSettingsFrequency12h": "12 годин",
+  "autoBackupSettingsFrequency24h": "24 години (щодня)",
+  "autoBackupSettingsFrequency48h": "48 годин (2 дні)",
+  "autoBackupSettingsFrequency168h": "168 годин (щотижня)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "Лише через Wi-Fi",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "Завантаження в хмару відбувається лише через Wi-Fi, щоб заощадити мобільний трафік.",
+  "autoBackupSettingsStatusCardTitle": "Стан системи",
+  "autoBackupSettingsNeverRunMessage": "Автоматичне резервне копіювання ще не запускалося.",
+  "autoBackupSettingsLastRunInfo": "Останній запуск: {date} {time} ({status})\nПовідомлення: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "Успішно",
+  "autoBackupSettingsStatusFailedLabel": "Невдало",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Не вдалося підключитися до облікового запису Google.",
+  "autoBackupSettingsSavedSnackbar": "Налаштування автоматичного резервного копіювання оновлено.",
+  "selectionModeDeletedMessage": "Видалено нотаток: {count}",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "Заархівовано",
+  "selectionModeClassifySheetTitle": "Виберіть категорію для {count} нотаток",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "Додати категорію",
+  "selectionModeRemoveCategoryOption": "Прибрати категорію",
+  "calcTableItemHint": "Пункт...",
+  "calcTableTotalRowLabel": "Разом",
+  "textSelectionMenuShareButton": "Поділитися",
+  "textSelectionMenuTranslateButton": "Перекласти",
+  "textSelectionMenuShareFailedSnackbar": "Не вдалося почати надсилання.",
+  "textSelectionMenuTranslateFailedSnackbar": "Не вдалося відкрити переклад.",
+  "lastBackupInfoTodayFormat": "Сьогодні {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}.{month}.{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "Остання резервна копія: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "Резервну копію ще не створено."
+}

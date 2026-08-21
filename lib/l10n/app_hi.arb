@@ -1,0 +1,1136 @@
+{
+  "@@locale": "hi",
+  "toolbarBoldTooltip": "बोल्ड",
+  "toolbarItalicTooltip": "इटैलिक",
+  "toolbarUnderlineTooltip": "अंडरलाइन",
+  "toolbarStrikethroughTooltip": "स्ट्राइकथ्रू",
+  "toolbarFontSizeTooltip": "फ़ॉन्ट आकार",
+  "toolbarColorTooltip": "टेक्स्ट रंग",
+  "toolbarBulletTooltip": "बुलेट सूची",
+  "toolbarNumberTooltip": "क्रमांकित सूची",
+  "toolbarIndentTooltip": "पैराग्राफ इंडेंट",
+  "toolbarLinkTooltip": "लिंक जोड़ें / संपादित करें / हटाएं",
+  "toolbarDividerTooltip": "विभाजक डालें",
+  "toolbarChecklistTooltip": "चेकलिस्ट जोड़ें",
+  "linkSelectTextSnackbar": "पहले वह टेक्स्ट चुनें जिसे आप लिंक करना चाहते हैं",
+  "linkDialogEditTitle": "लिंक संपादित करें",
+  "linkDialogAddTitle": "लिंक जोड़ें",
+  "linkDialogRemoveButton": "लिंक हटाएं",
+  "linkDialogCancelButton": "रद्द करें",
+  "linkDialogConfirmButton": "जोड़ें",
+  "cameraPermissionPermanentlyDeniedMessage": "कैमरा अनुमति अस्वीकृत। वीडियो रिकॉर्ड करने के लिए आपको इसे सेटिंग्स से अनुमति देनी होगी।",
+  "cameraPermissionRequiredMessage": "वीडियो रिकॉर्ड करने के लिए कैमरा अनुमति आवश्यक है।",
+  "openSettingsButtonLabel": "सेटिंग्स",
+  "documentScanStartFailedMessage": "स्कैन शुरू नहीं किया जा सका: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "टेक्स्ट पहचान विफल: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "दस्तावेज़ में कोई पठनीय टेक्स्ट नहीं मिला",
+  "scanResultSheetTitle": "स्कैन किए गए दस्तावेज़ को कैसे जोड़ा जाए?",
+  "scanResultTextOnlyOption": "केवल टेक्स्ट के रूप में जोड़ें",
+  "scanResultTextAndImageOption": "टेक्स्ट + स्कैन की गई छवि जोड़ें",
+  "scanResultCancelOption": "रद्द करें",
+  "audioPermissionPermanentlyDeniedMessage": "माइक्रोफ़ोन अनुमति अस्वीकृत। ऑडियो रिकॉर्ड करने के लिए आपको इसे सेटिंग्स से अनुमति देनी होगी।",
+  "audioPermissionRequiredMessage": "ऑडियो रिकॉर्ड करने के लिए माइक्रोफ़ोन अनुमति आवश्यक है।",
+  "voiceRecordingDefaultLabel": "वॉइस रिकॉर्डिंग",
+  "blockPreviewCalcTableLabel": "कैलकुलेशन सूची ({count} पंक्तियाँ)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "ड्राइंग",
+  "blockPreviewAttachmentsLabel": "{count} अटैचमेंट (फोटो/दस्तावेज़)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "विभाजक",
+  "blockPreviewChecklistLabel": "चेकलिस्ट ({count} आइटम)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(खाली टेक्स्ट)",
+  "reorderBlocksSheetTitle": "ब्लॉक फिर से व्यवस्थित करें",
+  "reorderBlocksMoveUpTooltip": "ऊपर ले जाएं",
+  "reorderBlocksMoveDownTooltip": "नीचे ले जाएं",
+  "reorderBlocksCloseTooltip": "बंद करें",
+  "reorderBlocksDescription": "किसी ब्लॉक को चुनने के लिए टैप करें, फिर उसे स्थानांतरित करने के लिए ऊपर/नीचे तीरों का उपयोग करें।",
+  "reorderBlocksMenuItemLabel": "फिर से व्यवस्थित करें",
+  "txtImportPickerDialogTitle": "आयात करने के लिए TXT फ़ाइल चुनें",
+  "txtImportReadFailedMessage": "TXT फ़ाइल पढ़ी नहीं जा सकी",
+  "txtImportEmptyFileMessage": "TXT फ़ाइल खाली है",
+  "txtImportSuccessMessage": "TXT आयात किया गया",
+  "txtImportMenuItemLabel": "आयात करें (txt)",
+  "exportMenuItemLabel": "एक्सपोर्ट",
+  "editorUndoTooltip": "पूर्ववत करें",
+  "editorRedoTooltip": "फिर से करें",
+  "noteSavedMessage": "नोट सहेजा गया",
+  "dateAssignPickerHelpText": "नोट को किसी दिन को असाइन करें",
+  "dateAssignChangeOption": "तारीख बदलें",
+  "dateAssignRemoveOption": "असाइनमेंट हटाएं",
+  "editorSubToolbarCloseTooltip": "बंद करें",
+  "titleFieldHint": "शीर्षक",
+  "textBlockHint": "अपना नोट यहां लिखें...",
+  "drawingBoardMenuItemLabel": "ड्राइंग बोर्ड",
+  "voiceToTextTextNotesOnlyMessage": "वॉइस-टू-टेक्स्ट केवल टेक्स्ट नोट्स के लिए उपलब्ध है",
+  "selectionModeCancelTooltip": "चयन रद्द करें",
+  "selectionModeSelectedCountTitle": "{count} चयनित",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "हटाएं",
+  "selectionModeArchiveTooltip": "संग्रह करें",
+  "selectionModeFolderTooltip": "फ़ोल्डर",
+  "searchFieldHint": "नोट्स खोजें...",
+  "emptyTrashDialogTitle": "ट्रैश खाली करें",
+  "emptyTrashDialogConfirmMessage": "सभी हटाए गए नोट्स स्थायी रूप से हटा दिए जाएंगे। क्या आप सुनिश्चित हैं?",
+  "emptyTrashDialogCancelButton": "रद्द करें",
+  "restoreAllMenuItemLabel": "सभी पुनर्स्थापित करें",
+  "sortMenuTooltip": "नोट्स क्रमबद्ध करें",
+  "sortMenuAscendingLabel": "क्रम: आरोही (A-Z)",
+  "sortMenuDescendingLabel": "क्रम: अवरोही (Z-A)",
+  "sortMenuByTitleLabel": "इसके अनुसार क्रमबद्ध करें: शीर्षक",
+  "sortMenuByModifiedDateLabel": "इसके अनुसार क्रमबद्ध करें: अंतिम संशोधन",
+  "sortMenuByCreatedDateLabel": "इसके अनुसार क्रमबद्ध करें: निर्माण तिथि",
+  "sortMenuByFolderLabel": "इसके अनुसार क्रमबद्ध करें: फ़ोल्डर",
+  "viewToggleGridTooltip": "ग्रिड दृश्य",
+  "viewToggleListTooltip": "सूची दृश्य",
+  "drawerHeaderSubtitle": "आपकी व्यक्तिगत नोटबुक",
+  "drawerNotesSectionHeader": "नोट्स",
+  "drawerAllNotesLabel": "नोट्स",
+  "drawerFavoritesLabel": "पसंदीदा",
+  "drawerAgendaLabel": "एजेंडा",
+  "drawerRemindersLabel": "रिमाइंडर",
+  "drawerLockedLabel": "लॉक्ड",
+  "drawerTrashLabel": "ट्रैश",
+  "drawerFoldersSectionHeader": "फ़ोल्डर",
+  "drawerExpandLabel": "विस्तृत करें",
+  "drawerCollapseLabel": "संक्षिप्त करें",
+  "drawerAddFolderLabel": "फ़ोल्डर जोड़ें",
+  "drawerAppSectionHeader": "ऐप",
+  "drawerCalendarLabel": "कैलेंडर",
+  "drawerSettingsLabel": "सेटिंग्स",
+  "drawerBackupRestoreLabel": "बैकअप और पुनर्स्थापना",
+  "drawerUpgradeToProLabel": "प्रो में अपग्रेड करें",
+  "drawerProBadgeLabel": "प्रो",
+  "drawerSupportDevelopmentLabel": "विकास का समर्थन करें",
+  "drawerFeedbackLabel": "फीडबैक",
+  "drawerAboutLabel": "के बारे में",
+  "noNotesFoundMessage": "कोई नोट नहीं मिला।",
+  "trashRestoreButtonLabel": "पुनर्स्थापित करें",
+  "trashPermanentDeleteButtonLabel": "स्थायी रूप से हटाएं",
+  "tagRenamedInfoMessage": "टैग का नाम बदला गया",
+  "tagDeletedInfoMessage": "टैग हटाया गया",
+  "tagOptionsRenameLabel": "नाम बदलें",
+  "tagOptionsDeleteLabel": "हटाएं",
+  "renameTagDialogTitle": "टैग का नाम बदलें",
+  "renameTagDialogHint": "नया टैग नाम",
+  "renameTagDialogCancelButton": "रद्द करें",
+  "renameTagDialogSaveButton": "सहेजें",
+  "deleteTagDialogMessageWithCount": "\"{tag}\" को {affectedCount} नोट्स से हटा दिया जाएगा। जारी रखें?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "\"{tag}\" टैग हटाएं?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "टैग हटाएं",
+  "deleteTagDialogCancelButton": "रद्द करें",
+  "deleteTagDialogConfirmButton": "हटाएं",
+  "tagsSheetTitle": "टैग",
+  "tagsSheetEmptyMessage": "इस नोट पर अभी तक कोई टैग नहीं है।",
+  "tagsSheetInputHint": "एक नया टैग लिखें...",
+  "tagsSheetSuggestionsLabel": "मौजूदा टैग",
+  "noteDeletedInfoMessage": "नोट हटाया गया",
+  "noteDeletedUndoActionLabel": "पूर्ववत करें",
+  "reminderSetInfoMessage": "रिमाइंडर सेट किया गया",
+  "reminderRemovedInfoMessage": "रिमाइंडर हटाया गया",
+  "noteDuplicatedInfoMessage": "कॉपी बनाई गई",
+  "speechTextAppendedInfoMessage": "नोट में टेक्स्ट जोड़ा गया",
+  "pdfPreparingInfoMessage": "PDF तैयार किया जा रहा है…",
+  "pdfSavedInfoMessage": "PDF सहेजा गया",
+  "jpgPreparingInfoMessage": "JPG तैयार किया जा रहा है…",
+  "jpgSavedInfoMessage": "JPG सहेजा गया",
+  "jpgFailedInfoMessage": "JPG नहीं बनाया जा सका",
+  "txtPreparingInfoMessage": "TXT तैयार किया जा रहा है…",
+  "txtSavedInfoMessage": "TXT सहेजा गया",
+  "txtFailedInfoMessage": "TXT नहीं बनाया जा सका",
+  "exportOpenActionLabel": "खोलें",
+  "wrongPasswordInfoMessage": "गलत पासवर्ड।",
+  "noteArchivedInfoMessage": "नोट संग्रहीत किया गया",
+  "noteUnarchivedInfoMessage": "संग्रह से हटाया गया",
+  "noteUnlockedInfoMessage": "अनलॉक किया गया",
+  "noteLockedInfoMessage": "नोट लॉक किया गया",
+  "notificationUnpinnedInfoMessage": "अनपिन किया गया",
+  "emptyNotePinBlockedInfoMessage": "एक खाली नोट को पिन नहीं किया जा सकता।",
+  "notificationPinnedInfoMessage": "सूचना पैनल में पिन किया गया",
+  "noContentToReadInfoMessage": "पढ़ने के लिए कोई सामग्री नहीं है",
+  "backPressExitInfoMessage": "बाहर निकलने के लिए फिर से बैक दबाएं",
+  "reminderChannelName": "नोट रिमाइंडर",
+  "reminderChannelDescription": "Layout ऐप में नोट रिमाइंडर",
+  "pinnedChannelName": "पिन किए गए नोट्स",
+  "pinnedChannelDescription": "सूचना पैनल में पिन किए गए Layout नोट्स",
+  "notificationUnpinActionLabel": "हटाएं",
+  "reminderDefaultTitle": "रिमाइंडर",
+  "reminderChecklistBodyFallback": "अपनी चेकलिस्ट जांचना न भूलें",
+  "reminderTextBodyFallback": "अपना नोट जांचना न भूलें",
+  "pdfSaveDialogTitle": "PDF के रूप में सहेजें",
+  "jpgSaveDialogTitle": "JPG के रूप में सहेजें",
+  "txtSaveDialogTitle": "TXT के रूप में सहेजें",
+  "textSizeSheetTitle": "टेक्स्ट आकार",
+  "textSizeSamplePreview": "नमूना टेक्स्ट",
+  "textSizeCancelButton": "रद्द करें",
+  "textSizeApplyButton": "लागू करें",
+  "createPasswordDialogTitle": "पासवर्ड बनाएं",
+  "createPasswordNewPasswordHint": "नया पासवर्ड",
+  "createPasswordConfirmHint": "पासवर्ड फिर से दर्ज करें",
+  "createPasswordHintQuestionDescription": "यदि आप अपना पासवर्ड भूल जाएं, तो एक सुरक्षा प्रश्न सेट करें (वैकल्पिक)।",
+  "createPasswordHintQuestionHint": "एक सुरक्षा प्रश्न चुनें",
+  "createPasswordHintAnswerHint": "आपका उत्तर",
+  "createPasswordCancelButton": "रद्द करें",
+  "createPasswordSaveButton": "सहेजें",
+  "passwordMismatchMessage": "पासवर्ड मेल नहीं खाते!",
+  "passwordRequiredDialogTitle": "पासवर्ड आवश्यक है",
+  "passwordRequiredHint": "पासवर्ड दर्ज करें",
+  "forgotPasswordButtonLabel": "मैं अपना पासवर्ड भूल गया",
+  "passwordRequiredCancelButton": "रद्द करें",
+  "passwordRequiredConfirmButton": "सत्यापित करें",
+  "securityQuestionDialogTitle": "सुरक्षा प्रश्न",
+  "securityQuestionAnswerHint": "आपका उत्तर",
+  "securityQuestionCancelButton": "रद्द करें",
+  "securityQuestionConfirmButton": "पुष्टि करें",
+  "securityQuestionWrongAnswerMessage": "गलत उत्तर। फिर से प्रयास करें।",
+  "revealedPasswordDialogTitle": "आपका पासवर्ड",
+  "revealedPasswordLabel": "आपका नोट पासवर्ड:",
+  "revealedPasswordOkButton": "ठीक है",
+  "securityQuestionPetName": "आपके पहले पालतू जानवर का नाम क्या है?",
+  "securityQuestionFavoriteTeacher": "आपके पसंदीदा शिक्षक का नाम क्या है?",
+  "securityQuestionBirthCity": "आपका जन्म किस शहर में हुआ था?",
+  "securityQuestionFavoriteFood": "आपका पसंदीदा भोजन क्या है?",
+  "securityQuestionMotherMaidenName": "आपकी माँ का मायके का नाम क्या है?",
+  "securityQuestionFirstSchool": "आपने जिस पहले स्कूल में पढ़ाई की, उसका नाम क्या है?",
+  "securityQuestionFavoriteColor": "आपका पसंदीदा रंग क्या है?",
+  "editFolderDialogTitle": "फ़ोल्डर संपादित करें",
+  "newSubfolderDialogTitle": "नया सबफ़ोल्डर",
+  "addFolderDialogTitle": "फ़ोल्डर जोड़ें",
+  "subfolderParentInfoMessage": "\"{parentCategory}\" के अंदर बनाया जाएगा",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "सबफ़ोल्डर नाम",
+  "folderNameFieldLabel": "फ़ोल्डर नाम",
+  "folderColorLabel": "रंग",
+  "folderDialogCancelButton": "रद्द करें",
+  "folderDialogSaveButton": "सहेजें",
+  "folderDialogAddButton": "जोड़ें",
+  "selectFolderSheetTitle": "फ़ोल्डर चुनें",
+  "selectFolderAddOptionLabel": "फ़ोल्डर जोड़ें",
+  "removeCurrentFolderLabel": "वर्तमान फ़ोल्डर हटाएं",
+  "noteDetailsDialogTitle": "विवरण",
+  "noteDetailsCreatedLabel": "बनाया गया",
+  "noteDetailsModifiedLabel": "अंतिम संशोधन",
+  "noteDetailsCharCountLabel": "वर्ण संख्या",
+  "noteDetailsCharCountValue": "{count} वर्ण",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "शब्द संख्या",
+  "noteDetailsWordCountValue": "{count} शब्द",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "ठीक है",
+  "noteDetailsUnknownDateLabel": "अज्ञात",
+  "addAttachmentSheetTitle": "जोड़ें",
+  "addAttachmentImageOption": "छवि जोड़ें",
+  "addAttachmentCameraOption": "कैमरा",
+  "addAttachmentFileOption": "फ़ाइल जोड़ें",
+  "addAttachmentVoiceOption": "वॉइस रिकॉर्डिंग",
+  "addAttachmentVideoOption": "वीडियो रिकॉर्ड करें",
+  "addAttachmentScanOption": "दस्तावेज़ स्कैन करें",
+  "noteActionsSheetTitle": "कार्रवाई चुनें",
+  "noteActionReminderLabel": "रिमाइंडर",
+  "noteActionEditReminderLabel": "रिमाइंडर संपादित करें",
+  "noteActionSpeechToTextLabel": "स्पीच टू टेक्स्ट",
+  "noteActionArchiveLabel": "संग्रह करें",
+  "noteActionUnarchiveLabel": "संग्रह से हटाएं",
+  "noteActionLockLabel": "लॉक करें",
+  "noteActionUnlockLabel": "अनलॉक करें",
+  "noteActionFavoriteLabel": "पसंदीदा",
+  "noteActionUnfavoriteLabel": "पसंदीदा से हटाएं",
+  "noteActionClassifyLabel": "फ़ोल्डर चुनें",
+  "noteActionDeleteLabel": "हटाएं",
+  "noteActionPinToNotificationLabel": "सूचना पैनल में पिन करें",
+  "noteActionUnpinFromNotificationLabel": "पिन हटाएं",
+  "noteActionShareLabel": "साझा करें",
+  "noteActionDuplicateLabel": "कॉपी बनाएं",
+  "noteActionCopyContentLabel": "सामग्री कॉपी करें",
+  "noteActionTtsLabel": "जोर से पढ़ें",
+  "noteActionTextSizeLabel": "टेक्स्ट आकार",
+  "noteActionDetailsLabel": "विवरण",
+  "noteActionDiscardChangesLabel": "परिवर्तन छोड़ें",
+  "noteActionSelectLabel": "चुनें",
+  "reminderEditOptionLabel": "रिमाइंडर बदलें",
+  "reminderRemoveOptionLabel": "रिमाइंडर हटाएं",
+  "discardChangesDialogTitle": "परिवर्तन छोड़ें",
+  "discardChangesDialogMessage": "इस नोट में सहेजे न गए परिवर्तन खो जाएंगे। क्या आप वाकई उन्हें छोड़ना चाहते हैं?",
+  "discardChangesCancelButton": "रद्द करें",
+  "discardChangesConfirmButton": "छोड़ें",
+  "pinnedNotificationDefaultTitle": "नोट",
+  "pdfFailedInfoMessage": "PDF बनाने में विफल",
+  "drawingScreenTitle": "ड्राइंग",
+  "drawingMinimizeTooltip": "छोटा करें",
+  "drawingEmptyExportWarningMessage": "पहले कुछ बनाएं",
+  "drawingEraserPartialModeLabel": "आंशिक",
+  "drawingEraserFullModeLabel": "पूर्ण",
+  "drawingClearTooltip": "साफ़ करें",
+  "drawingZoomOutTooltip": "ज़ूम आउट",
+  "drawingZoomInTooltip": "ज़ूम इन",
+  "drawingDeleteTooltip": "हटाएं",
+  "drawingEmptyPreviewHint": "बनाने के लिए टैप करें",
+  "settingsPageTitle": "सेटिंग्स",
+  "settingsSectionGeneral": "सामान्य",
+  "settingsSectionSecurity": "सुरक्षा",
+  "settingsSectionTheme": "थीम",
+  "settingsSectionPersonalization": "वैयक्तिकरण",
+  "settingsSectionWidget": "विजेट",
+  "settingsSectionAbout": "के बारे में",
+  "settingsHintQuestionPet": "आपके पहले पालतू जानवर का नाम क्या है?",
+  "settingsHintQuestionTeacher": "आपके पसंदीदा शिक्षक का नाम क्या है?",
+  "settingsHintQuestionBirthCity": "आपका जन्म किस शहर में हुआ था?",
+  "settingsHintQuestionFavoriteFood": "आपका पसंदीदा भोजन क्या है?",
+  "settingsHintQuestionMotherMaidenName": "आपकी माँ का मायके का नाम क्या है?",
+  "settingsHintQuestionFirstSchool": "आपने पहले किस स्कूल में पढ़ाई की थी?",
+  "settingsHintQuestionFavoriteColor": "आपका पसंदीदा रंग क्या है?",
+  "settingsSecurityQuestionDialogTitle": "सुरक्षा प्रश्न",
+  "settingsSecurityQuestionDialogDesc": "यदि आप अपना पासवर्ड भूल जाते हैं, तो आप इस प्रश्न का सही उत्तर देकर उसे पुनर्प्राप्त कर सकते हैं।",
+  "settingsSecurityQuestionDropdownHint": "एक सुरक्षा प्रश्न चुनें",
+  "settingsSecurityQuestionAnswerHint": "आपका उत्तर",
+  "settingsSecurityQuestionCancelButton": "रद्द करें",
+  "settingsSecurityQuestionEmptyWarning": "प्रश्न और उत्तर खाली नहीं हो सकते!",
+  "settingsSecurityQuestionSaveButton": "सहेजें",
+  "settingsCreatePasswordTitle": "पासवर्ड बनाएं",
+  "settingsPasswordRequiredTitle": "पासवर्ड आवश्यक है",
+  "settingsPasswordEnterHint": "पासवर्ड दर्ज करें",
+  "settingsForgotPasswordButton": "मैं अपना पासवर्ड भूल गया",
+  "settingsNewPasswordHint": "नया पासवर्ड",
+  "settingsConfirmPasswordHint": "पासवर्ड फिर से दर्ज करें",
+  "settingsSecurityQuestionOptionalDesc": "यदि आप अपना पासवर्ड भूल जाएं, तो एक सुरक्षा प्रश्न सेट करें (वैकल्पिक)।",
+  "settingsPasswordDialogCancelButton": "रद्द करें",
+  "settingsPasswordMismatchWarning": "पासवर्ड मेल नहीं खाते!",
+  "settingsWrongPasswordWarning": "गलत पासवर्ड!",
+  "settingsPasswordSaveButton": "सहेजें",
+  "settingsPasswordRemoveButton": "हटाएं",
+  "settingsNotePasswordTitle": "नोट पासवर्ड",
+  "settingsPasswordSetSubtitle": "पासवर्ड सेट है ✓",
+  "settingsPasswordNotSetSubtitle": "पासवर्ड सेट नहीं है",
+  "settingsSecurityQuestionTileTitle": "सुरक्षा प्रश्न",
+  "settingsSecurityQuestionSetSubtitle": "सेट है ✓ — पासवर्ड भूलने पर उपयोग होता है",
+  "settingsSecurityQuestionNotSetSubtitle": "सेट नहीं है — खो जाने पर आप अपना पासवर्ड पुनर्प्राप्त नहीं कर पाएंगे",
+  "settingsThemeDialogTitle": "थीम चुनें",
+  "settingsThemeSystemDefault": "सिस्टम डिफ़ॉल्ट",
+  "settingsThemeLightOption": "लाइट थीम",
+  "settingsThemeDarkOption": "डार्क थीम",
+  "settingsAccentColorDialogTitle": "एक्सेंट रंग चुनें",
+  "settingsThemeChangeTileTitle": "थीम बदलें",
+  "settingsThemeLightLabel": "लाइट",
+  "settingsThemeDarkLabel": "डार्क",
+  "settingsThemeSystemLabel": "सिस्टम",
+  "settingsLanguageTileTitle": "भाषा",
+  "settingsLanguageDialogTitle": "भाषा चुनें",
+  "settingsLanguageSystemOption": "सिस्टम",
+  "settingsAccentColorTileTitle": "एक्सेंट रंग",
+  "settingsAccentColorTileSubtitle": "ऐप बार, बटन और स्विच में उपयोग होने वाला रंग",
+  "settingsColorfulNotesTitle": "विविध नोट रंग",
+  "settingsColorfulNotesSubtitle": "प्रत्येक नोट कार्ड को एक अलग रंग टोन मिलता है।",
+  "settingsTextColorSheetTitle": "टेक्स्ट रंग",
+  "settingsTextColorSheetDesc": "नोट सामग्री टेक्स्ट का रंग सेट करता है।",
+  "settingsTextColorOkButton": "ठीक है",
+  "settingsTextColorTileTitle": "टेक्स्ट रंग",
+  "settingsTextColorTileSubtitle": "नोट सामग्री टेक्स्ट के लिए रंग।",
+  "settingsWidgetFontSizeLabel": "विजेट फ़ॉन्ट आकार",
+  "settingsWidgetFontSizeSample": "नमूना शीर्षक - {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "रद्द करें",
+  "settingsWidgetFontSizeApplyButton": "लागू करें",
+  "settingsWidgetOpacityLabel": "पृष्ठभूमि पारदर्शिता",
+  "settingsWidgetOpacityValue": "{percent}% पारदर्शिता",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "रद्द करें",
+  "settingsWidgetOpacityApplyButton": "लागू करें",
+  "settingsWidgetDarkModeTitle": "डार्क विजेट",
+  "settingsWidgetDarkModeDesc": "विजेट के लिए डार्क रंग योजना।",
+  "settingsAboutVersionTitle": "ऐप संस्करण",
+  "settingsFontFamilyTileTitle": "फ़ॉन्ट",
+  "settingsFontFamilyDefaultLabel": "डिफ़ॉल्ट",
+  "settingsGlobalFontSizeTileTitle": "फ़ॉन्ट आकार",
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt — सभी नोट्स पर लागू।",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "नमूना टेक्स्ट - {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "मौजूदा नोट्स पर लागू करें",
+  "settingsGlobalFontSizeApplyToAllNote": "यदि किसी नोट में अलग फ़ॉन्ट आकार सेट है, तो यह सेटिंग उसे प्रभावित नहीं करेगी।",
+  "settingsGlobalFontSizeCancelButton": "रद्द करें",
+  "settingsGlobalFontSizeApplyButton": "लागू करें",
+  "settingsPreviewLinesTileTitle": "नोट पूर्वावलोकन पंक्तियाँ",
+  "settingsPreviewLinesTileSubtitle": "{lines} पंक्तियों तक दिखाएं। यदि नोट छोटा है, तो वास्तविक पंक्तियों की संख्या दिखाई जाती है।",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "वर्तमान: {lines} पंक्तियाँ",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "पूर्वावलोकन के लिए अधिकतम पंक्तियों की संख्या सेट करता है। यदि नोट में कम पंक्तियाँ हैं, तो वास्तविक संख्या दिखाई जाती है।",
+  "settingsPreviewLinesCancelButton": "रद्द करें",
+  "settingsPreviewLinesApplyButton": "लागू करें",
+  "backupCancelButton": "रद्द करें",
+  "backupConnectButton": "कनेक्ट करें",
+  "backupDisconnectButton": "डिस्कनेक्ट करें",
+  "backupContinueButton": "जारी रखें",
+  "backupCloseButton": "बंद करें",
+  "backupShareButton": "साझा करें",
+  "backupRestoreButton": "पुनर्स्थापित करें",
+  "backupConfigureButton": "कॉन्फ़िगर करें",
+  "backupUnknownDateLabel": "अज्ञात",
+  "backupProcessingDefaultLabel": "प्रोसेसिंग हो रही है...",
+  "backupPermissionRequiredTitle": "संग्रहण अनुमति आवश्यक है",
+  "backupPermissionRequiredBodyPermanent": "इस Android संस्करण में बैकअप/पुनर्स्थापना के लिए संग्रहण अनुमति आवश्यक है। चूंकि अनुमति स्थायी रूप से अस्वीकृत कर दी गई थी, कृपया इसे ऐप सेटिंग्स से मैन्युअल रूप से सक्षम करें।",
+  "backupPermissionRequiredBodyNormal": "इस Android संस्करण में बैकअप/पुनर्स्थापना के लिए संग्रहण अनुमति आवश्यक है। जारी रखने के लिए कृपया अनुमति दें।",
+  "backupGoToSettingsButton": "सेटिंग्स पर जाएं",
+  "backupRetryButton": "फिर से प्रयास करें",
+  "backupDriveConnectingLabel": "Google खाते से कनेक्ट हो रहा है...",
+  "backupDriveConnectedWithEmailMessage": "Google Drive खाते से कनेक्ट हुआ: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Google Drive खाते से कनेक्ट हुआ।",
+  "backupDriveConnectFailedMessage": "Google खाते से कनेक्ट नहीं हो सका, या ऑपरेशन रद्द कर दिया गया था।",
+  "backupDriveDisconnectTitle": "Google Drive डिस्कनेक्ट करें",
+  "backupDriveDisconnectBody": "यदि आप डिस्कनेक्ट करते हैं, तो Drive पर मैन्युअल या स्वचालित बैकअप संभव नहीं होंगे। Drive पर पहले से संग्रहीत बैकअप हटाए नहीं जाएंगे — केवल इस डिवाइस से पहुंच हटाई जाएगी।",
+  "backupDriveDisconnectedMessage": "Google Drive कनेक्शन हटाया गया।",
+  "backupDriveRequiredTitle": "Google खाता आवश्यक है",
+  "backupDriveRequiredBody": "इस कार्रवाई के लिए आपको अपना Google खाता कनेक्ट करना आवश्यक है। क्या आप अभी कनेक्ट करना चाहेंगे?",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: कनेक्टेड ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: कनेक्टेड",
+  "backupDriveStatusDisconnected": "Google Drive: कनेक्टेड नहीं",
+  "backupDriveAuthenticatingLabel": "Google खाता सत्यापित हो रहा है...",
+  "backupDriveNotSignedInMessage": "आप Google Drive से कनेक्टेड नहीं हैं। कृपया पहले अपने Google खाते से साइन इन करें।",
+  "backupDriveUploadingLabel": "Drive पर बैकअप अपलोड हो रहा है...",
+  "backupDriveUploadTimeoutMessage": "Google Drive पर अपलोड 120 सेकंड के भीतर पूरा नहीं हुआ (सर्वर से कोई प्रतिक्रिया नहीं)। कृपया अपना कनेक्शन जांचें और फिर से प्रयास करें।",
+  "backupDriveOperationCompletedLabel": "पूर्ण हुआ",
+  "backupToDriveActionLabel": "Drive पर बैकअप",
+  "backupToDeviceActionLabel": "बैकअप",
+  "backupCreatingLabel": "बैकअप बनाया जा रहा है...",
+  "backupCreateFailedMessage": "बैकअप नहीं बनाया जा सका: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Google Drive पर अपलोड विफल: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "बैकअप सफलतापूर्वक Google Drive पर अपलोड किया गया।",
+  "backupCreatedMessage": "बैकअप बनाया गया: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "बैकअप तैयार है",
+  "backupOfferShareBody": "आपकी बैकअप फ़ाइल आपके डिवाइस में सहेज दी गई है। क्या आप इसे अभी साझा करना चाहेंगे (जैसे क्लाउड स्टोरेज, ईमेल, कोई अन्य डिवाइस)?",
+  "backupShareFileText": "layout बैकअप फ़ाइल",
+  "backupShareFailedMessage": "साझा करना शुरू नहीं किया जा सका: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "बड़ा बैकअप",
+  "backupLargeOperationBody": "प्रोसेस किया जाने वाला डेटा लगभग {sizeText} है। इस आकार का {actionLabel} आपके डिवाइस के आधार पर कुछ समय ले सकता है। बस प्रगति के दौरान ऐप न छोड़ें — क्या आप जारी रखना चाहेंगे?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "पुनर्स्थापना",
+  "backupDriveListingLabel": "Drive बैकअप सूचीबद्ध हो रहे हैं...",
+  "backupDriveListFailedMessage": "बैकअप सूचीबद्ध नहीं किए जा सके: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "Google Drive पर अभी तक कोई बैकअप नहीं है।",
+  "backupDrivePickTitle": "Drive से एक बैकअप चुनें",
+  "backupDriveDownloadingLabel": "Drive से बैकअप डाउनलोड हो रहा है...",
+  "backupDriveDownloadingWithSizeLabel": "Drive से बैकअप डाउनलोड हो रहा है... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "फ़ाइल डिवाइस पर सहेजी जा रही है...",
+  "backupDriveUnknownBackupFileName": "अज्ञात_बैकअप.zip",
+  "backupDriveStorageFullMessage": "आपका Google Drive स्टोरेज भर गया है। कृपया Drive पर जगह खाली करें और फिर से प्रयास करें।",
+  "backupDriveNetworkErrorMessage": "इंटरनेट कनेक्शन स्थापित नहीं हो सका। कृपया अपना कनेक्शन जांचें और फिर से प्रयास करें।",
+  "backupDriveBackupNotFoundMessage": "निर्दिष्ट बैकअप फ़ाइल Drive पर नहीं मिली। इसे हटाया जा चुका हो सकता है।",
+  "backupDriveUnknownErrorMessage": "Google Drive कार्रवाई के दौरान एक अप्रत्याशित त्रुटि हुई: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "डाउनलोड विफल: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "फ़ाइल चुनी नहीं जा सकी: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "चुनी गई फ़ाइल तक पहुंचा नहीं जा सका।",
+  "backupCheckingLabel": "बैकअप जांचा जा रहा है...",
+  "backupReadFailedMessage": "बैकअप फ़ाइल पढ़ी नहीं जा सकी: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "बैकअप पुनर्स्थापित करें",
+  "backupPreviewContentsHeader": "चुने गए बैकअप की सामग्री:",
+  "backupPreviewNoteCountLabel": "नोट्स की संख्या",
+  "backupPreviewTrashCountLabel": "ट्रैश में नोट्स",
+  "backupPreviewCategoryCountLabel": "फ़ोल्डरों की संख्या",
+  "backupPreviewAttachmentLabel": "अटैचमेंट",
+  "backupPreviewAttachmentNoneValue": "कोई नहीं",
+  "backupPreviewAttachmentCountValue": "{count} फ़ाइलें ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "बनाया गया",
+  "backupEmptyPreviewTitle": "यह बैकअप खाली दिखता है",
+  "backupEmptyPreviewBody": "चुनी गई फ़ाइल में कोई नोट्स, फ़ोल्डर या अटैचमेंट नहीं मिले। यदि आप जारी रखते हैं, तो आपका मौजूदा डेटा फिर भी हटा दिया जाएगा और इस खाली बैकअप से बदल दिया जाएगा।",
+  "backupMissingAttachmentsTitle": "बैकअप में {count} अटैचमेंट नहीं मिले",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "इन फ़ाइलों वाले नोट्स पुनर्स्थापित किए जाएंगे, लेकिन अटैचमेंट के बिना (बैकअप लेते समय वे गुम या करप्ट हो सकते थे): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} और {remaining} और",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "यह आपके सभी मौजूदा नोट्स, ट्रैश, फ़ोल्डर, सेटिंग्स और अटैचमेंट को ऊपर दिए गए बैकअप के डेटा से बदल देगा। आपका मौजूदा डेटा स्थायी रूप से खो जाएगा और यह कार्रवाई पूर्ववत नहीं की जा सकती।",
+  "backupRestoringLabel": "बैकअप पुनर्स्थापित किया जा रहा है...",
+  "backupRestoreSuccessWithMissingMessage": "बैकअप पुनर्स्थापित किया गया। हालांकि, {count} अटैचमेंट बैकअप में नहीं मिले और पुनर्स्थापित नहीं किए जा सके। परिवर्तनों को पूरी तरह लागू करने के लिए ऐप को पुनः आरंभ करने की सलाह दी जाती है।",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "बैकअप सफलतापूर्वक पुनर्स्थापित किया गया। परिवर्तनों को पूरी तरह लागू करने के लिए ऐप को पुनः आरंभ करने की सलाह दी जाती है।",
+  "backupRestoreFailedMessage": "पुनर्स्थापित करते समय एक त्रुटि हुई: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "बैकअप और पुनर्स्थापना",
+  "backupBlockedExitWarningMessage": "एक कार्रवाई जारी है, कृपया इसके समाप्त होने की प्रतीक्षा करें।",
+  "backupBusyBackTooltip": "कार्रवाई जारी है",
+  "backupIntroText": "आप अपने नोट्स, फ़ोल्डर, सेटिंग्स और अटैचमेंट को एक ही .zip फ़ाइल के रूप में बैकअप कर सकते हैं, या पहले लिया गया बैकअप पुनर्स्थापित कर सकते हैं।",
+  "backupDriveCardTitle": "Google Drive पर बैकअप लें",
+  "backupDriveCardSubtitle": "एक नया बैकअप बनाएं और इसे सीधे अपने Google Drive के निजी क्षेत्र में अपलोड करें।",
+  "backupDriveCardButtonLabel": "Drive पर बैकअप लें",
+  "backupDeviceCardTitle": "डिवाइस पर बैकअप लें",
+  "backupDeviceCardSubtitle": "अपने सभी डेटा को एक .zip फ़ाइल के रूप में अपने डिवाइस पर सहेजें और चाहें तो इसे साझा करें।",
+  "backupDeviceCardButtonLabel": "डिवाइस पर बैकअप लें",
+  "backupHistoryCardTitle": "बैकअप इतिहास",
+  "backupHistoryCardSubtitle": "अपने डिवाइस पर संग्रहीत सभी बैकअप को उनकी तारीख और आकार के साथ देखें; आप उन्हें यहीं से सीधे साझा, पुनर्स्थापित या हटा सकते हैं।",
+  "backupHistoryTabDevice": "डिवाइस",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "बैकअप हटाएं",
+  "backupHistoryDeleteDialogBody": "क्या आप वाकई बैकअप फ़ाइल \"{fileName}\" को स्थायी रूप से हटाना चाहते हैं? यह कार्रवाई पूर्ववत नहीं की जा सकती।",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "बैकअप हटाया गया।",
+  "backupHistoryDriveDeleteDialogTitle": "Drive बैकअप हटाएं",
+  "backupHistoryDriveDeleteDialogBody": "क्या आप वाकई Google Drive से बैकअप \"{fileName}\" को स्थायी रूप से हटाना चाहते हैं? यह कार्रवाई पूर्ववत नहीं की जा सकती और फ़ाइल ट्रैश में नहीं जाएगी।",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Drive बैकअप हटाया गया।",
+  "backupHistoryDriveDeleteFailedMessage": "हटाया नहीं जा सका: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "इस डिवाइस पर अभी तक कोई बैकअप सहेजा नहीं गया है।",
+  "backupHistoryDeviceEmptySubtitle": "अपना पहला बैकअप बनाने के लिए \"डिवाइस पर बैकअप लें\" का उपयोग करें।",
+  "backupHistoryDriveEmptySubtitle": "अपना पहला क्लाउड बैकअप बनाने के लिए \"Google Drive पर बैकअप लें\" का उपयोग करें।",
+  "backupHistoryDriveSignInPrompt": "अपने Drive बैकअप देखने के लिए अपना Google खाता कनेक्ट करें।",
+  "backupHistoryConnectGoogleButton": "Google से कनेक्ट करें",
+  "backupHistoryDriveConnectedFallback": "कनेक्टेड",
+  "backupHistoryUnknownErrorFallback": "एक अज्ञात त्रुटि हुई।",
+  "backupHistoryDownloadStartingLabel": "शुरू हो रहा है...",
+  "backupAutoBackupEnabledLabel": "स्वचालित बैकअप: चालू",
+  "backupAutoBackupDisabledLabel": "स्वचालित बैकअप: बंद",
+  "backupOverlayWarningMessage": "कृपया प्रतीक्षा करें, कार्रवाई पूरी होने तक ऐप न छोड़ें।",
+  "pdfExportUntitledNoteLabel": "शीर्षक रहित नोट",
+  "pdfExportDefaultAttachmentName": "अटैचमेंट",
+  "pdfExportDefaultFileName": "नोट",
+  "screenshotExportBoundaryNotFoundMessage": "स्क्रीनशॉट कैप्चर नहीं किया जा सका (बाउंड्री नहीं मिली)",
+  "screenshotExportByteDataNullMessage": "स्क्रीनशॉट डेटा जनरेट नहीं किया जा सका",
+  "screenshotExportPngDecodeFailedMessage": "छवि प्रोसेस नहीं की जा सकी (PNG डिकोड विफल)",
+  "screenshotCalcTableTotalLabel": "कुल",
+  "gundemMenuRemoveFromAgenda": "एजेंडा से हटाएं",
+  "gundemMenuDeleteNote": "नोट हटाएं",
+  "gundemSectionOverdue": "समय सीमा बीत चुकी",
+  "gundemSectionToday": "आज",
+  "gundemSectionTomorrow": "कल",
+  "gundemSectionNextWeek": "अगले सप्ताह",
+  "gundemSectionFurther": "और आगे",
+  "gundemWeekdayMonday": "सोमवार",
+  "gundemWeekdayTuesday": "मंगलवार",
+  "gundemWeekdayWednesday": "बुधवार",
+  "gundemWeekdayThursday": "गुरुवार",
+  "gundemWeekdayFriday": "शुक्रवार",
+  "gundemWeekdaySaturday": "शनिवार",
+  "gundemWeekdaySunday": "रविवार",
+  "gundemAppBarTitle": "एजेंडा",
+  "gundemCalendarTooltip": "कैलेंडर",
+  "gundemEmptyTitle": "आपके एजेंडे में कुछ नहीं है",
+  "gundemEmptySubtitle": "रिमाइंडर या असाइन की गई तारीख वाले नोट्स यहां दिखाई देंगे।",
+  "gundemUntitledNote": "शीर्षक रहित नोट",
+  "gundemRepeatHourly": "प्रति घंटा",
+  "gundemRepeatDaily": "प्रतिदिन",
+  "gundemRepeatWeekly": "साप्ताहिक",
+  "gundemRepeatMonthly": "मासिक",
+  "gundemRepeatYearly": "वार्षिक",
+  "gundemPreviewCalcTableLabel": "[कैलकुलेशन सूची]",
+  "gundemPreviewDrawingLabel": "[ड्राइंग]",
+  "gundemPreviewImageLabel": "[छवि]",
+  "gundemMonthShortJan": "जन",
+  "gundemMonthShortFeb": "फ़र",
+  "gundemMonthShortMar": "मार्च",
+  "gundemMonthShortApr": "अप्रैल",
+  "gundemMonthShortMay": "मई",
+  "gundemMonthShortJun": "जून",
+  "gundemMonthShortJul": "जुल",
+  "gundemMonthShortAug": "अग",
+  "gundemMonthShortSep": "सित",
+  "gundemMonthShortOct": "अक्तू",
+  "gundemMonthShortNov": "नव",
+  "gundemMonthShortDec": "दिस",
+  "calendarAppBarTitle": "कैलेंडर",
+  "calendarTodayButton": "आज",
+  "calendarLegendNoteLabel": "नोट",
+  "calendarLegendReminderLabel": "रिमाइंडर",
+  "calendarTodayBadge": "आज",
+  "calendarEmptyDayMessage": "इस दिन के लिए कोई नोट्स या रिमाइंडर नहीं हैं।",
+  "calendarReminderHourlyLabel": "प्रति घंटा",
+  "calendarMonthJan": "जनवरी",
+  "calendarMonthFeb": "फ़रवरी",
+  "calendarMonthMar": "मार्च",
+  "calendarMonthApr": "अप्रैल",
+  "calendarMonthMay": "मई",
+  "calendarMonthJun": "जून",
+  "calendarMonthJul": "जुलाई",
+  "calendarMonthAug": "अगस्त",
+  "calendarMonthSep": "सितंबर",
+  "calendarMonthOct": "अक्तूबर",
+  "calendarMonthNov": "नवंबर",
+  "calendarMonthDec": "दिसंबर",
+  "calendarWeekdayShortMon": "सोम",
+  "calendarWeekdayShortTue": "मंगल",
+  "calendarWeekdayShortWed": "बुध",
+  "calendarWeekdayShortThu": "गुरु",
+  "calendarWeekdayShortFri": "शुक्र",
+  "calendarWeekdayShortSat": "शनि",
+  "calendarWeekdayShortSun": "रवि",
+  "calendarWeekdayFullMonday": "सोमवार",
+  "calendarWeekdayFullTuesday": "मंगलवार",
+  "calendarWeekdayFullWednesday": "बुधवार",
+  "calendarWeekdayFullThursday": "गुरुवार",
+  "calendarWeekdayFullFriday": "शुक्रवार",
+  "calendarWeekdayFullSaturday": "शनिवार",
+  "calendarWeekdayFullSunday": "रविवार",
+  "wrongPasswordDialogTitle": "गलत पासवर्ड",
+  "wrongPasswordDialogMessage": "आपके द्वारा दर्ज किया गया पासवर्ड गलत है।",
+  "commonOkButton": "ठीक है",
+  "unlockCategoryAction": "अनलॉक करें",
+  "lockCategoryAction": "लॉक करें",
+  "categoryUnlockedMessage": "अनलॉक किया गया",
+  "categoryLockedMessage": "फ़ोल्डर लॉक किया गया",
+  "deleteFolderMenuItemLabel": "फ़ोल्डर हटाएं",
+  "deleteFolderDialogTitle": "फ़ोल्डर हटाएं",
+  "deleteFolderDialogMessageWithSubfolders": "क्या आप वाकई फ़ोल्डर \"{category}\" और इसके सभी सबफ़ोल्डर हटाना चाहते हैं? इन फ़ोल्डरों के नोट्स अवर्गीकृत हो जाएंगे।",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "क्या आप वाकई फ़ोल्डर \"{category}\" हटाना चाहते हैं? इस फ़ोल्डर के नोट्स अवर्गीकृत हो जाएंगे।",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "रद्द करें",
+  "deleteFolderDialogConfirmButton": "हटाएं",
+  "editCategoryNameColorMenuItemLabel": "नाम / रंग संपादित करें",
+  "addSubfolderMenuItemLabel": "सबफ़ोल्डर बनाएं",
+  "expandSubfoldersMenuItemLabel": "सबफ़ोल्डर विस्तृत करें",
+  "collapseSubfoldersMenuItemLabel": "सबफ़ोल्डर संक्षिप्त करें",
+  "saveErrorInfoMessage": "सहेजने में त्रुटि: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "DNote में आपका स्वागत है! 🚀",
+  "welcomeNoteContent": "नई सुविधाएं जोड़ी गईं!",
+  "noteListDateGroupToday": "आज",
+  "noteListDateGroupYesterday": "कल",
+  "noteListDateGroupLast7Days": "पिछले 7 दिन",
+  "noteListDateGroupLast30Days": "पिछले 30 दिन",
+  "reminderRepeatNoneLabel": "कोई पुनरावृत्ति नहीं",
+  "voiceRecorderPreparingLabel": "तैयार किया जा रहा है…",
+  "voiceRecorderCancelButton": "रद्द करें",
+  "voiceRecorderStopAddButton": "रोकें और जोड़ें",
+  "speechToTextMicPermissionDeniedMessage": "माइक्रोफ़ोन अनुमति नहीं दी गई।",
+  "speechToTextUnavailableMessage": "इस डिवाइस पर स्पीच पहचान उपलब्ध नहीं है।",
+  "speechToTextPreparingLabel": "तैयार किया जा रहा है…",
+  "speechToTextListeningLabel": "सुन रहा है…",
+  "speechToTextStartSpeakingPlaceholder": "बोलना शुरू करें…",
+  "speechToTextCancelButton": "रद्द करें",
+  "speechToTextStopAddButton": "रोकें और जोड़ें",
+  "textToSpeechNoContentMessage": "पढ़ने के लिए कोई सामग्री नहीं है।",
+  "textToSpeechReadErrorMessage": "पढ़ते समय एक त्रुटि हुई।",
+  "textToSpeechUnavailableMessage": "इस डिवाइस पर टेक्स्ट-टू-स्पीच उपलब्ध नहीं है।",
+  "textToSpeechPreparingLabel": "तैयार किया जा रहा है…",
+  "textToSpeechPausedLabel": "रोका गया",
+  "textToSpeechFinishedLabel": "पढ़ना पूरा हुआ",
+  "textToSpeechReadingLabel": "पढ़ रहा है…",
+  "textToSpeechCloseErrorButton": "बंद करें",
+  "textToSpeechReplayButton": "फिर से पढ़ें",
+  "textToSpeechCloseFinishedButton": "बंद करें",
+  "textToSpeechPauseButton": "रोकें",
+  "textToSpeechResumeButton": "फिर शुरू करें",
+  "textToSpeechStopButton": "रोकें",
+  "textToSpeechSpeedSlow": "धीमा",
+  "textToSpeechSpeedNormal": "सामान्य",
+  "textToSpeechSpeedFast": "तेज़",
+  "calendarPickerCancelButton": "रद्द करें",
+  "calendarPickerConfirmButton": "चुनें",
+  "calendarPickerClearButton": "साफ़ करें",
+  "reminderPickerDialogTitle": "रिमाइंडर जोड़ें",
+  "reminderPickerDateTodayOption": "आज",
+  "reminderPickerDateTomorrowOption": "कल",
+  "reminderPickerDatePickOption": "तारीख चुनें",
+  "reminderRepeatHourlyLabel": "हर घंटे",
+  "reminderRepeatDailyLabel": "हर दिन",
+  "reminderRepeatWeeklyLabel": "हर सप्ताह",
+  "reminderRepeatMonthlyLabel": "हर महीने",
+  "reminderRepeatYearlyLabel": "हर साल",
+  "reminderPickerCalendarHelpText": "रिमाइंडर तारीख चुनें",
+  "reminderPickerCancelButton": "रद्द करें",
+  "reminderPickerSaveButton": "सहेजें",
+  "reminderPickerPastTimeErrorMessage": "बीता हुआ समय नहीं चुना जा सकता",
+  "calcTableTotalLabel": "कुल: {amount}",
+  "backupCreatePreparingDataLabel": "डेटा तैयार किया जा रहा है...",
+  "backupCreatePackagingNotesLabel": "नोट्स और फ़ोल्डर पैक किए जा रहे हैं...",
+  "backupCreateReadingAttachmentsLabel": "अटैचमेंट पढ़े जा रहे हैं...",
+  "backupCreateReadingAttachmentsProgressLabel": "अटैचमेंट पढ़े जा रहे हैं... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "ज़िप फ़ाइल कंप्रेस की जा रही है...",
+  "backupCreateSavingFileLabel": "फ़ाइल सहेजी जा रही है...",
+  "backupRestoreValidatingLabel": "बैकअप सत्यापित किया जा रहा है...",
+  "backupRestoreValidatedPreparingDataLabel": "बैकअप सत्यापित हुआ, डेटा तैयार किया जा रहा है...",
+  "backupRestoreWritingNotesLabel": "नोट्स लिखे जा रहे हैं...",
+  "backupRestoreWritingTrashLabel": "ट्रैश लिखा जा रहा है...",
+  "backupRestoreTrashWrittenLabel": "ट्रैश लिखा गया",
+  "backupRestoreWritingCategoriesLabel": "फ़ोल्डर लिखे जा रहे हैं...",
+  "backupRestoreCategoriesWrittenLabel": "फ़ोल्डर लिखे गए",
+  "backupRestoreWritingSettingsLabel": "सेटिंग्स लिखी जा रही हैं...",
+  "backupRestoreSettingsWrittenLabel": "सेटिंग्स लिखी गईं",
+  "backupRestoreCleaningOldAttachmentsLabel": "पुराने अटैचमेंट साफ़ किए जा रहे हैं...",
+  "backupRestoreNoAttachmentsFinishingLabel": "कोई अटैचमेंट नहीं मिला, समाप्त किया जा रहा है...",
+  "backupRestoreAttachmentsProgressLabel": "अटैचमेंट पुनर्स्थापित किए जा रहे हैं... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "पूर्ण हुआ",
+  "backupValidationCorruptedFileMessage": "फ़ाइल करप्ट है या एक मान्य बैकअप फ़ाइल नहीं है।",
+  "backupValidationMissingDataMessage": "बैकअप फ़ाइल के अंदर कोई डेटा नहीं मिला (backup_data.json गायब है)।",
+  "backupValidationInvalidJsonMessage": "बैकअप डेटा पढ़ा नहीं जा सका (करप्ट JSON)।",
+  "backupValidationNotDnoteBackupMessage": "यह फ़ाइल dnote ऐप का बैकअप नहीं है।",
+  "backupValidationVersionUnreadableMessage": "बैकअप फ़ाइल की वर्शन जानकारी पढ़ी नहीं जा सकी।",
+  "backupValidationIncompatibleVersionMessage": "यह बैकअप एक नए फॉर्मेट में है जिसे मौजूदा ऐप वर्शन सपोर्ट नहीं करता। कृपया ऐप को अपडेट करें।",
+  "backupValidationInvalidVersionMessage": "बैकअप फ़ाइल की वर्शन जानकारी अमान्य है।",
+  "backupValidationMissingNotesFieldMessage": "बैकअप डेटा अपेक्षित फॉर्मेट में नहीं है (notes फ़ील्ड गायब है)।",
+  "backupValidationMissingTrashFieldMessage": "बैकअप डेटा अपेक्षित फॉर्मेट में नहीं है (trash फ़ील्ड गायब है)।",
+  "backupValidationInvalidCategoriesFieldMessage": "बैकअप डेटा अपेक्षित फॉर्मेट में नहीं है (फ़ोल्डर सूची अमान्य है)।",
+  "backupValidationInvalidSettingsFieldMessage": "बैकअप डेटा अपेक्षित फॉर्मेट में नहीं है (settings फ़ील्ड अमान्य है)।",
+  "backupValidationInvalidNoteRecordMessage": "बैकअप डेटा अपेक्षित फॉर्मेट में नहीं है (एक नोट रिकॉर्ड अमान्य है)।",
+  "backupValidationMissingNoteIdMessage": "बैकअप डेटा अपेक्षित फॉर्मेट में नहीं है (बिना ID वाला एक नोट रिकॉर्ड मिला)।",
+  "backupValidationFileNotFoundMessage": "बैकअप फ़ाइल नहीं मिली।",
+  "backupErrorInsufficientStorageMessage": "डिवाइस पर पर्याप्त खाली स्टोरेज नहीं है। कृपया जगह खाली करें और फिर से प्रयास करें।",
+  "backupErrorPermissionDeniedMessage": "फ़ाइल एक्सेस अनुमति अस्वीकृत कर दी गई। कृपया ऐप की अनुमतियां जांचें और फिर से प्रयास करें।",
+  "backupErrorFileOperationMessage": "फ़ाइल कार्रवाई के दौरान एक त्रुटि हुई: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "एक अप्रत्याशित त्रुटि हुई: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "ज़िप आर्काइव नहीं बनाया जा सका (ZipEncoder ने null लौटाया)।",
+  "calcTableMenuItemLabel": "कैलकुलेशन सूची",
+  "tagsMenuItemLabel": "टैग",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "आइटम जोड़ें...",
+  "toolbarHighlightTooltip": "हाइलाइट",
+  "toolbarListTooltip": "सूची",
+  "toolbarHideKeyboardTooltip": "कीबोर्ड छिपाएं",
+  "autoBackupLocalSuccessMessage": "लोकल बैकअप सफल रहा।",
+  "autoBackupLocalFailedMessage": "लोकल बैकअप विफल: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Drive बैकअप छोड़ा गया: Google खाता कनेक्टेड नहीं है या सत्र समाप्त हो चुका है। कृपया ऐप खोलें और फिर से कनेक्ट करें।",
+  "autoBackupDriveSuccessMessage": "Drive बैकअप सफल रहा।",
+  "autoBackupDriveFailedMessage": "Drive बैकअप विफल: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "अभी तक कोई नोट नहीं",
+  "noteWidgetPreviewTotalLabel": "कुल: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ ड्राइंग",
+  "autoBackupSettingsAppBarTitle": "स्वचालित बैकअप सेटिंग्स",
+  "autoBackupSettingsMainSwitchTitle": "स्वचालित बैकअप सक्षम करें",
+  "autoBackupSettingsMainSwitchSubtitle": "आपके नोट्स बैकग्राउंड में समय-समय पर सुरक्षित रूप से बैकअप किए जाते हैं।",
+  "autoBackupSettingsTargetTitle": "बैकअप गंतव्य",
+  "autoBackupSettingsTargetSubtitle": "चुनें कि बैकअप कहां सहेजे जाएं।",
+  "autoBackupSettingsTargetLocalOption": "लोकल",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "दोनों",
+  "autoBackupSettingsDriveNotConnectedNote": "Google Drive विकल्पों का उपयोग करने के लिए पहले अपना खाता कनेक्ट करें।",
+  "autoBackupSettingsConnectButton": "कनेक्ट करें",
+  "autoBackupSettingsFrequencyTitle": "बैकअप आवृत्ति",
+  "autoBackupSettingsFrequencySubtitle": "हर {hours} घंटे में एक बैकअप लिया जाता है।",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 घंटे",
+  "autoBackupSettingsFrequency12h": "12 घंटे",
+  "autoBackupSettingsFrequency24h": "24 घंटे (प्रतिदिन)",
+  "autoBackupSettingsFrequency48h": "48 घंटे (2 दिन)",
+  "autoBackupSettingsFrequency168h": "168 घंटे (साप्ताहिक)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "केवल Wi-Fi का उपयोग करें",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "आपके मोबाइल डेटा को बचाने के लिए क्लाउड अपलोड केवल Wi-Fi पर होता है।",
+  "autoBackupSettingsStatusCardTitle": "सिस्टम स्थिति",
+  "autoBackupSettingsNeverRunMessage": "स्वचालित बैकअप अभी तक नहीं चला है।",
+  "autoBackupSettingsLastRunInfo": "अंतिम रन: {date} {time} ({status})\nसंदेश: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "सफल",
+  "autoBackupSettingsStatusFailedLabel": "विफल",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Google खाते से कनेक्ट नहीं हो सका।",
+  "autoBackupSettingsSavedSnackbar": "स्वचालित बैकअप सेटिंग्स अपडेट की गईं।",
+  "selectionModeDeletedMessage": "{count} नोट्स हटाए गए",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "संग्रहीत किया गया",
+  "selectionModeClassifySheetTitle": "{count} नोट्स के लिए फ़ोल्डर चुनें",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "फ़ोल्डर जोड़ें",
+  "selectionModeRemoveCategoryOption": "फ़ोल्डर हटाएं",
+  "calcTableItemHint": "आइटम...",
+  "calcTableTotalRowLabel": "कुल",
+  "textSelectionMenuShareButton": "साझा करें",
+  "textSelectionMenuTranslateButton": "अनुवाद करें",
+  "textSelectionMenuShareFailedSnackbar": "साझा करना शुरू नहीं किया जा सका।",
+  "textSelectionMenuTranslateFailedSnackbar": "अनुवाद नहीं खोला जा सका।",
+  "lastBackupInfoTodayFormat": "आज {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}/{month}/{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "अंतिम बैकअप: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "अभी तक कोई बैकअप नहीं लिया गया है।"
+}

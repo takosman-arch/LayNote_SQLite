@@ -339,6 +339,7 @@
   "drawingDeleteTooltip": "Löschen",
   "drawingEmptyPreviewHint": "Zum Zeichnen tippen",
   "settingsPageTitle": "Einstellungen",
+  "settingsSectionGeneral": "Allgemein",
   "settingsSectionSecurity": "Sicherheit",
   "settingsSectionTheme": "Design",
   "settingsSectionPersonalization": "Personalisierung",

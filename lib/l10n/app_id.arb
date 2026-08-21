@@ -1,0 +1,1136 @@
+{
+  "@@locale": "id",
+  "toolbarBoldTooltip": "Tebal",
+  "toolbarItalicTooltip": "Miring",
+  "toolbarUnderlineTooltip": "Garis Bawah",
+  "toolbarStrikethroughTooltip": "Coret",
+  "toolbarFontSizeTooltip": "Ukuran Font",
+  "toolbarColorTooltip": "Warna Teks",
+  "toolbarBulletTooltip": "Daftar Poin",
+  "toolbarNumberTooltip": "Daftar Bernomor",
+  "toolbarIndentTooltip": "Indentasi Paragraf",
+  "toolbarLinkTooltip": "Tambah / Edit / Hapus Tautan",
+  "toolbarDividerTooltip": "Sisipkan Pembatas",
+  "toolbarChecklistTooltip": "Tambah Daftar Periksa",
+  "linkSelectTextSnackbar": "Pilih dulu teks yang ingin ditautkan",
+  "linkDialogEditTitle": "Edit Tautan",
+  "linkDialogAddTitle": "Tambah Tautan",
+  "linkDialogRemoveButton": "Hapus Tautan",
+  "linkDialogCancelButton": "Batal",
+  "linkDialogConfirmButton": "Tambah",
+  "cameraPermissionPermanentlyDeniedMessage": "Izin kamera ditolak. Anda perlu mengizinkannya dari pengaturan untuk merekam video.",
+  "cameraPermissionRequiredMessage": "Izin kamera diperlukan untuk merekam video.",
+  "openSettingsButtonLabel": "Pengaturan",
+  "documentScanStartFailedMessage": "Pemindaian tidak dapat dimulai: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "Pengenalan teks gagal: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "Tidak ditemukan teks yang dapat dibaca pada dokumen",
+  "scanResultSheetTitle": "Bagaimana dokumen yang dipindai akan ditambahkan?",
+  "scanResultTextOnlyOption": "Tambahkan sebagai teks saja",
+  "scanResultTextAndImageOption": "Tambahkan teks + gambar hasil pindai",
+  "scanResultCancelOption": "Batal",
+  "audioPermissionPermanentlyDeniedMessage": "Izin mikrofon ditolak. Anda perlu mengizinkannya dari pengaturan untuk merekam audio.",
+  "audioPermissionRequiredMessage": "Izin mikrofon diperlukan untuk merekam audio.",
+  "voiceRecordingDefaultLabel": "Rekaman Suara",
+  "blockPreviewCalcTableLabel": "Daftar Perhitungan ({count} baris)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "Gambar",
+  "blockPreviewAttachmentsLabel": "{count} lampiran (foto/dokumen)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "Pembatas",
+  "blockPreviewChecklistLabel": "Daftar Periksa ({count} item)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(teks kosong)",
+  "reorderBlocksSheetTitle": "Urutkan Ulang Blok",
+  "reorderBlocksMoveUpTooltip": "Pindah ke Atas",
+  "reorderBlocksMoveDownTooltip": "Pindah ke Bawah",
+  "reorderBlocksCloseTooltip": "Tutup",
+  "reorderBlocksDescription": "Ketuk sebuah blok untuk memilihnya, lalu gunakan panah atas/bawah untuk memindahkannya.",
+  "reorderBlocksMenuItemLabel": "Urutkan Ulang",
+  "txtImportPickerDialogTitle": "Pilih file TXT yang akan diimpor",
+  "txtImportReadFailedMessage": "File TXT tidak dapat dibaca",
+  "txtImportEmptyFileMessage": "File TXT kosong",
+  "txtImportSuccessMessage": "TXT berhasil diimpor",
+  "txtImportMenuItemLabel": "Impor (txt)",
+  "exportMenuItemLabel": "Ekspor",
+  "editorUndoTooltip": "Urungkan",
+  "editorRedoTooltip": "Ulangi",
+  "noteSavedMessage": "Catatan disimpan",
+  "dateAssignPickerHelpText": "Tetapkan catatan ke suatu hari",
+  "dateAssignChangeOption": "Ubah tanggal",
+  "dateAssignRemoveOption": "Hapus penetapan",
+  "editorSubToolbarCloseTooltip": "Tutup",
+  "titleFieldHint": "Judul",
+  "textBlockHint": "Tulis catatan Anda di sini...",
+  "drawingBoardMenuItemLabel": "Papan Gambar",
+  "voiceToTextTextNotesOnlyMessage": "Ucapan ke teks hanya tersedia untuk catatan teks",
+  "selectionModeCancelTooltip": "Batalkan Pemilihan",
+  "selectionModeSelectedCountTitle": "{count} dipilih",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "Hapus",
+  "selectionModeArchiveTooltip": "Arsipkan",
+  "selectionModeFolderTooltip": "Folder",
+  "searchFieldHint": "Cari catatan...",
+  "emptyTrashDialogTitle": "Kosongkan Sampah",
+  "emptyTrashDialogConfirmMessage": "Semua catatan yang dihapus akan dihapus permanen. Anda yakin?",
+  "emptyTrashDialogCancelButton": "Batal",
+  "restoreAllMenuItemLabel": "Pulihkan Semua",
+  "sortMenuTooltip": "Urutkan Catatan",
+  "sortMenuAscendingLabel": "Urutan: Naik (A-Z)",
+  "sortMenuDescendingLabel": "Urutan: Turun (Z-A)",
+  "sortMenuByTitleLabel": "Urutkan berdasarkan: Judul",
+  "sortMenuByModifiedDateLabel": "Urutkan berdasarkan: Terakhir Diubah",
+  "sortMenuByCreatedDateLabel": "Urutkan berdasarkan: Tanggal Dibuat",
+  "sortMenuByFolderLabel": "Urutkan berdasarkan: Folder",
+  "viewToggleGridTooltip": "Tampilan Kisi",
+  "viewToggleListTooltip": "Tampilan Daftar",
+  "drawerHeaderSubtitle": "Buku Catatan Pribadi Anda",
+  "drawerNotesSectionHeader": "CATATAN",
+  "drawerAllNotesLabel": "Catatan",
+  "drawerFavoritesLabel": "Favorit",
+  "drawerAgendaLabel": "Agenda",
+  "drawerRemindersLabel": "Pengingat",
+  "drawerLockedLabel": "Terkunci",
+  "drawerTrashLabel": "Sampah",
+  "drawerFoldersSectionHeader": "FOLDER",
+  "drawerExpandLabel": "Perluas",
+  "drawerCollapseLabel": "Ciutkan",
+  "drawerAddFolderLabel": "Tambah Folder",
+  "drawerAppSectionHeader": "APLIKASI",
+  "drawerCalendarLabel": "Kalender",
+  "drawerSettingsLabel": "Pengaturan",
+  "drawerBackupRestoreLabel": "Cadangkan & Pulihkan",
+  "drawerUpgradeToProLabel": "Tingkatkan ke Pro",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "Dukung Pengembangan",
+  "drawerFeedbackLabel": "Masukan",
+  "drawerAboutLabel": "Tentang",
+  "noNotesFoundMessage": "Tidak ada catatan ditemukan.",
+  "trashRestoreButtonLabel": "Pulihkan",
+  "trashPermanentDeleteButtonLabel": "Hapus Permanen",
+  "tagRenamedInfoMessage": "Tag diganti nama",
+  "tagDeletedInfoMessage": "Tag dihapus",
+  "tagOptionsRenameLabel": "Ganti Nama",
+  "tagOptionsDeleteLabel": "Hapus",
+  "renameTagDialogTitle": "Ganti Nama Tag",
+  "renameTagDialogHint": "Nama tag baru",
+  "renameTagDialogCancelButton": "Batal",
+  "renameTagDialogSaveButton": "Simpan",
+  "deleteTagDialogMessageWithCount": "\"{tag}\" akan dihapus dari {affectedCount} catatan. Lanjutkan?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "Hapus tag \"{tag}\"?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "Hapus Tag",
+  "deleteTagDialogCancelButton": "Batal",
+  "deleteTagDialogConfirmButton": "Hapus",
+  "tagsSheetTitle": "Tag",
+  "tagsSheetEmptyMessage": "Belum ada tag pada catatan ini.",
+  "tagsSheetInputHint": "Tulis tag baru...",
+  "tagsSheetSuggestionsLabel": "Tag yang sudah ada",
+  "noteDeletedInfoMessage": "Catatan dihapus",
+  "noteDeletedUndoActionLabel": "Urungkan",
+  "reminderSetInfoMessage": "Pengingat diatur",
+  "reminderRemovedInfoMessage": "Pengingat dihapus",
+  "noteDuplicatedInfoMessage": "Salinan dibuat",
+  "speechTextAppendedInfoMessage": "Teks ditambahkan ke catatan",
+  "pdfPreparingInfoMessage": "Menyiapkan PDF…",
+  "pdfSavedInfoMessage": "PDF disimpan",
+  "jpgPreparingInfoMessage": "Menyiapkan JPG…",
+  "jpgSavedInfoMessage": "JPG disimpan",
+  "jpgFailedInfoMessage": "Gagal membuat JPG",
+  "txtPreparingInfoMessage": "Menyiapkan TXT…",
+  "txtSavedInfoMessage": "TXT disimpan",
+  "txtFailedInfoMessage": "Gagal membuat TXT",
+  "exportOpenActionLabel": "Buka",
+  "wrongPasswordInfoMessage": "Kata sandi salah.",
+  "noteArchivedInfoMessage": "Catatan diarsipkan",
+  "noteUnarchivedInfoMessage": "Dikeluarkan dari arsip",
+  "noteUnlockedInfoMessage": "Dibuka kuncinya",
+  "noteLockedInfoMessage": "Catatan dikunci",
+  "notificationUnpinnedInfoMessage": "Lepas pin",
+  "emptyNotePinBlockedInfoMessage": "Catatan kosong tidak dapat disematkan.",
+  "notificationPinnedInfoMessage": "Disematkan ke panel notifikasi",
+  "noContentToReadInfoMessage": "Tidak ada konten untuk dibacakan",
+  "backPressExitInfoMessage": "Tekan kembali sekali lagi untuk keluar",
+  "reminderChannelName": "Pengingat Catatan",
+  "reminderChannelDescription": "Pengingat catatan di aplikasi Layout",
+  "pinnedChannelName": "Catatan yang Disematkan",
+  "pinnedChannelDescription": "Catatan Layout yang disematkan ke panel notifikasi",
+  "notificationUnpinActionLabel": "Hapus",
+  "reminderDefaultTitle": "Pengingat",
+  "reminderChecklistBodyFallback": "Jangan lupa periksa daftar periksa Anda",
+  "reminderTextBodyFallback": "Jangan lupa periksa catatan Anda",
+  "pdfSaveDialogTitle": "Simpan sebagai PDF",
+  "jpgSaveDialogTitle": "Simpan sebagai JPG",
+  "txtSaveDialogTitle": "Simpan sebagai TXT",
+  "textSizeSheetTitle": "Ukuran Teks",
+  "textSizeSamplePreview": "Contoh teks",
+  "textSizeCancelButton": "Batal",
+  "textSizeApplyButton": "Terapkan",
+  "createPasswordDialogTitle": "Buat Kata Sandi",
+  "createPasswordNewPasswordHint": "Kata sandi baru",
+  "createPasswordConfirmHint": "Masukkan ulang kata sandi",
+  "createPasswordHintQuestionDescription": "Atur pertanyaan keamanan untuk berjaga-jaga jika Anda lupa kata sandi (opsional).",
+  "createPasswordHintQuestionHint": "Pilih pertanyaan keamanan",
+  "createPasswordHintAnswerHint": "Jawaban Anda",
+  "createPasswordCancelButton": "Batal",
+  "createPasswordSaveButton": "Simpan",
+  "passwordMismatchMessage": "Kata sandi tidak cocok!",
+  "passwordRequiredDialogTitle": "Kata Sandi Diperlukan",
+  "passwordRequiredHint": "Masukkan kata sandi",
+  "forgotPasswordButtonLabel": "Lupa kata sandi saya",
+  "passwordRequiredCancelButton": "Batal",
+  "passwordRequiredConfirmButton": "Verifikasi",
+  "securityQuestionDialogTitle": "Pertanyaan Keamanan",
+  "securityQuestionAnswerHint": "Jawaban Anda",
+  "securityQuestionCancelButton": "Batal",
+  "securityQuestionConfirmButton": "Konfirmasi",
+  "securityQuestionWrongAnswerMessage": "Jawaban salah. Coba lagi.",
+  "revealedPasswordDialogTitle": "Kata Sandi Anda",
+  "revealedPasswordLabel": "Kata sandi catatan Anda:",
+  "revealedPasswordOkButton": "OK",
+  "securityQuestionPetName": "Siapa nama hewan peliharaan pertama Anda?",
+  "securityQuestionFavoriteTeacher": "Siapa nama guru favorit Anda?",
+  "securityQuestionBirthCity": "Di kota mana Anda lahir?",
+  "securityQuestionFavoriteFood": "Apa makanan favorit Anda?",
+  "securityQuestionMotherMaidenName": "Siapa nama gadis ibu Anda?",
+  "securityQuestionFirstSchool": "Apa nama sekolah pertama yang Anda ikuti?",
+  "securityQuestionFavoriteColor": "Apa warna favorit Anda?",
+  "editFolderDialogTitle": "Edit Folder",
+  "newSubfolderDialogTitle": "Subfolder Baru",
+  "addFolderDialogTitle": "Tambah Folder",
+  "subfolderParentInfoMessage": "Akan dibuat di dalam \"{parentCategory}\"",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "Nama subfolder",
+  "folderNameFieldLabel": "Nama folder",
+  "folderColorLabel": "Warna",
+  "folderDialogCancelButton": "Batal",
+  "folderDialogSaveButton": "Simpan",
+  "folderDialogAddButton": "Tambah",
+  "selectFolderSheetTitle": "Pilih Folder",
+  "selectFolderAddOptionLabel": "Tambah Folder",
+  "removeCurrentFolderLabel": "Hapus Folder Saat Ini",
+  "noteDetailsDialogTitle": "Detail",
+  "noteDetailsCreatedLabel": "Dibuat",
+  "noteDetailsModifiedLabel": "Terakhir Diubah",
+  "noteDetailsCharCountLabel": "Jumlah Karakter",
+  "noteDetailsCharCountValue": "{count} karakter",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "Jumlah Kata",
+  "noteDetailsWordCountValue": "{count} kata",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "OK",
+  "noteDetailsUnknownDateLabel": "Tidak diketahui",
+  "addAttachmentSheetTitle": "Tambah",
+  "addAttachmentImageOption": "Tambah Gambar",
+  "addAttachmentCameraOption": "Kamera",
+  "addAttachmentFileOption": "Tambah File",
+  "addAttachmentVoiceOption": "Rekaman Suara",
+  "addAttachmentVideoOption": "Rekam Video",
+  "addAttachmentScanOption": "Pindai Dokumen",
+  "noteActionsSheetTitle": "Pilih Tindakan",
+  "noteActionReminderLabel": "Pengingat",
+  "noteActionEditReminderLabel": "Edit Pengingat",
+  "noteActionSpeechToTextLabel": "Ucapan ke Teks",
+  "noteActionArchiveLabel": "Arsipkan",
+  "noteActionUnarchiveLabel": "Keluarkan dari Arsip",
+  "noteActionLockLabel": "Kunci",
+  "noteActionUnlockLabel": "Buka Kunci",
+  "noteActionFavoriteLabel": "Favorit",
+  "noteActionUnfavoriteLabel": "Hapus dari Favorit",
+  "noteActionClassifyLabel": "Pilih Folder",
+  "noteActionDeleteLabel": "Hapus",
+  "noteActionPinToNotificationLabel": "Sematkan ke Panel Notifikasi",
+  "noteActionUnpinFromNotificationLabel": "Lepas Sematan",
+  "noteActionShareLabel": "Bagikan",
+  "noteActionDuplicateLabel": "Buat Salinan",
+  "noteActionCopyContentLabel": "Salin Konten",
+  "noteActionTtsLabel": "Bacakan",
+  "noteActionTextSizeLabel": "Ukuran Teks",
+  "noteActionDetailsLabel": "Detail",
+  "noteActionDiscardChangesLabel": "Buang Perubahan",
+  "noteActionSelectLabel": "Pilih",
+  "reminderEditOptionLabel": "Ubah pengingat",
+  "reminderRemoveOptionLabel": "Hapus pengingat",
+  "discardChangesDialogTitle": "Buang Perubahan",
+  "discardChangesDialogMessage": "Perubahan yang belum disimpan pada catatan ini akan hilang. Anda yakin ingin membuangnya?",
+  "discardChangesCancelButton": "Batal",
+  "discardChangesConfirmButton": "Buang",
+  "pinnedNotificationDefaultTitle": "Catatan",
+  "pdfFailedInfoMessage": "Gagal membuat PDF",
+  "drawingScreenTitle": "Gambar",
+  "drawingMinimizeTooltip": "Kecilkan",
+  "drawingEmptyExportWarningMessage": "Gambar sesuatu terlebih dahulu",
+  "drawingEraserPartialModeLabel": "Sebagian",
+  "drawingEraserFullModeLabel": "Penuh",
+  "drawingClearTooltip": "Bersihkan",
+  "drawingZoomOutTooltip": "Perkecil",
+  "drawingZoomInTooltip": "Perbesar",
+  "drawingDeleteTooltip": "Hapus",
+  "drawingEmptyPreviewHint": "Ketuk untuk menggambar",
+  "settingsPageTitle": "Pengaturan",
+  "settingsSectionGeneral": "Umum",
+  "settingsSectionSecurity": "Keamanan",
+  "settingsSectionTheme": "Tema",
+  "settingsSectionPersonalization": "Personalisasi",
+  "settingsSectionWidget": "Widget",
+  "settingsSectionAbout": "Tentang",
+  "settingsHintQuestionPet": "Siapa nama hewan peliharaan pertama Anda?",
+  "settingsHintQuestionTeacher": "Siapa nama guru favorit Anda?",
+  "settingsHintQuestionBirthCity": "Di kota mana Anda lahir?",
+  "settingsHintQuestionFavoriteFood": "Apa makanan favorit Anda?",
+  "settingsHintQuestionMotherMaidenName": "Siapa nama gadis ibu Anda?",
+  "settingsHintQuestionFirstSchool": "Apa sekolah pertama yang Anda ikuti?",
+  "settingsHintQuestionFavoriteColor": "Apa warna favorit Anda?",
+  "settingsSecurityQuestionDialogTitle": "Pertanyaan Keamanan",
+  "settingsSecurityQuestionDialogDesc": "Jika Anda lupa kata sandi, Anda dapat memulihkannya dengan menjawab pertanyaan ini dengan benar.",
+  "settingsSecurityQuestionDropdownHint": "Pilih pertanyaan keamanan",
+  "settingsSecurityQuestionAnswerHint": "Jawaban Anda",
+  "settingsSecurityQuestionCancelButton": "Batal",
+  "settingsSecurityQuestionEmptyWarning": "Pertanyaan dan jawaban tidak boleh kosong!",
+  "settingsSecurityQuestionSaveButton": "Simpan",
+  "settingsCreatePasswordTitle": "Buat Kata Sandi",
+  "settingsPasswordRequiredTitle": "Kata Sandi Diperlukan",
+  "settingsPasswordEnterHint": "Masukkan kata sandi",
+  "settingsForgotPasswordButton": "Lupa kata sandi saya",
+  "settingsNewPasswordHint": "Kata sandi baru",
+  "settingsConfirmPasswordHint": "Masukkan ulang kata sandi",
+  "settingsSecurityQuestionOptionalDesc": "Atur pertanyaan keamanan untuk berjaga-jaga jika Anda lupa kata sandi (opsional).",
+  "settingsPasswordDialogCancelButton": "Batal",
+  "settingsPasswordMismatchWarning": "Kata sandi tidak cocok!",
+  "settingsWrongPasswordWarning": "Kata sandi salah!",
+  "settingsPasswordSaveButton": "Simpan",
+  "settingsPasswordRemoveButton": "Hapus",
+  "settingsNotePasswordTitle": "Kata Sandi Catatan",
+  "settingsPasswordSetSubtitle": "Kata sandi diatur ✓",
+  "settingsPasswordNotSetSubtitle": "Kata sandi belum diatur",
+  "settingsSecurityQuestionTileTitle": "Pertanyaan Keamanan",
+  "settingsSecurityQuestionSetSubtitle": "Diatur ✓ — digunakan jika Anda lupa kata sandi",
+  "settingsSecurityQuestionNotSetSubtitle": "Belum diatur — Anda tidak akan bisa memulihkan kata sandi jika hilang",
+  "settingsThemeDialogTitle": "Pilih Tema",
+  "settingsThemeSystemDefault": "Default Sistem",
+  "settingsThemeLightOption": "Tema Terang",
+  "settingsThemeDarkOption": "Tema Gelap",
+  "settingsAccentColorDialogTitle": "Pilih Warna Aksen",
+  "settingsThemeChangeTileTitle": "Ubah Tema",
+  "settingsThemeLightLabel": "Terang",
+  "settingsThemeDarkLabel": "Gelap",
+  "settingsThemeSystemLabel": "Sistem",
+  "settingsLanguageTileTitle": "Bahasa",
+  "settingsLanguageDialogTitle": "Pilih Bahasa",
+  "settingsLanguageSystemOption": "Sistem",
+  "settingsAccentColorTileTitle": "Warna Aksen",
+  "settingsAccentColorTileSubtitle": "Warna yang digunakan pada bilah aplikasi, tombol, dan sakelar",
+  "settingsColorfulNotesTitle": "Warna Catatan Beragam",
+  "settingsColorfulNotesSubtitle": "Setiap kartu catatan mendapat corak warna yang berbeda.",
+  "settingsTextColorSheetTitle": "Warna Teks",
+  "settingsTextColorSheetDesc": "Menetapkan warna teks konten catatan.",
+  "settingsTextColorOkButton": "OK",
+  "settingsTextColorTileTitle": "Warna Teks",
+  "settingsTextColorTileSubtitle": "Warna untuk teks konten catatan.",
+  "settingsWidgetFontSizeLabel": "Ukuran Font Widget",
+  "settingsWidgetFontSizeSample": "Contoh judul - {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "Batal",
+  "settingsWidgetFontSizeApplyButton": "Terapkan",
+  "settingsWidgetOpacityLabel": "Transparansi Latar Belakang",
+  "settingsWidgetOpacityValue": "Transparansi {percent}%",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "Batal",
+  "settingsWidgetOpacityApplyButton": "Terapkan",
+  "settingsWidgetDarkModeTitle": "Widget Gelap",
+  "settingsWidgetDarkModeDesc": "Skema warna gelap untuk widget.",
+  "settingsAboutVersionTitle": "Versi Aplikasi",
+  "settingsFontFamilyTileTitle": "Font",
+  "settingsFontFamilyDefaultLabel": "Default",
+  "settingsGlobalFontSizeTileTitle": "Ukuran Font",
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt — diterapkan ke semua catatan.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "Contoh teks - {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "Terapkan ke catatan yang ada",
+  "settingsGlobalFontSizeApplyToAllNote": "Jika sebuah catatan memiliki ukuran font tersendiri, pengaturan ini tidak akan memengaruhinya.",
+  "settingsGlobalFontSizeCancelButton": "Batal",
+  "settingsGlobalFontSizeApplyButton": "Terapkan",
+  "settingsPreviewLinesTileTitle": "Baris Pratinjau Catatan",
+  "settingsPreviewLinesTileSubtitle": "Tampilkan hingga {lines} baris. Jika catatan lebih pendek, jumlah baris sebenarnya yang ditampilkan.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "Saat ini: {lines} baris",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "Menetapkan jumlah maksimum baris untuk pratinjau. Jika catatan memiliki lebih sedikit baris, jumlah baris sebenarnya yang ditampilkan.",
+  "settingsPreviewLinesCancelButton": "Batal",
+  "settingsPreviewLinesApplyButton": "Terapkan",
+  "backupCancelButton": "Batal",
+  "backupConnectButton": "Hubungkan",
+  "backupDisconnectButton": "Putuskan",
+  "backupContinueButton": "Lanjutkan",
+  "backupCloseButton": "Tutup",
+  "backupShareButton": "Bagikan",
+  "backupRestoreButton": "Pulihkan",
+  "backupConfigureButton": "Konfigurasi",
+  "backupUnknownDateLabel": "Tidak diketahui",
+  "backupProcessingDefaultLabel": "Memproses...",
+  "backupPermissionRequiredTitle": "Izin Penyimpanan Diperlukan",
+  "backupPermissionRequiredBodyPermanent": "Versi Android ini memerlukan izin penyimpanan untuk cadangkan/pulihkan. Karena izin ditolak secara permanen, silakan aktifkan secara manual dari pengaturan aplikasi.",
+  "backupPermissionRequiredBodyNormal": "Versi Android ini memerlukan izin penyimpanan untuk cadangkan/pulihkan. Silakan berikan izin untuk melanjutkan.",
+  "backupGoToSettingsButton": "Buka Pengaturan",
+  "backupRetryButton": "Coba Lagi",
+  "backupDriveConnectingLabel": "Menghubungkan ke akun Google...",
+  "backupDriveConnectedWithEmailMessage": "Terhubung ke akun Google Drive: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Terhubung ke akun Google Drive.",
+  "backupDriveConnectFailedMessage": "Tidak dapat terhubung ke akun Google, atau operasi dibatalkan.",
+  "backupDriveDisconnectTitle": "Putuskan Google Drive",
+  "backupDriveDisconnectBody": "Jika Anda memutuskan sambungan, cadangan manual atau otomatis ke Drive tidak akan mungkin dilakukan. Cadangan yang sudah tersimpan di Drive tidak akan dihapus — hanya akses dari perangkat ini yang akan dihapus.",
+  "backupDriveDisconnectedMessage": "Koneksi Google Drive dihapus.",
+  "backupDriveRequiredTitle": "Akun Google Diperlukan",
+  "backupDriveRequiredBody": "Tindakan ini mengharuskan Anda menghubungkan akun Google. Ingin menghubungkan sekarang?",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: terhubung ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: terhubung",
+  "backupDriveStatusDisconnected": "Google Drive: tidak terhubung",
+  "backupDriveAuthenticatingLabel": "Memverifikasi akun Google...",
+  "backupDriveNotSignedInMessage": "Anda belum terhubung ke Google Drive. Silakan masuk dengan akun Google Anda terlebih dahulu.",
+  "backupDriveUploadingLabel": "Mengunggah cadangan ke Drive...",
+  "backupDriveUploadTimeoutMessage": "Unggah ke Google Drive tidak selesai dalam 120 detik (tidak ada respons dari server). Periksa koneksi Anda dan coba lagi.",
+  "backupDriveOperationCompletedLabel": "Selesai",
+  "backupToDriveActionLabel": "cadangkan ke Drive",
+  "backupToDeviceActionLabel": "cadangkan",
+  "backupCreatingLabel": "Membuat cadangan...",
+  "backupCreateFailedMessage": "Cadangan tidak dapat dibuat: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Unggah ke Google Drive gagal: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "Cadangan berhasil diunggah ke Google Drive.",
+  "backupCreatedMessage": "Cadangan dibuat: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "Cadangan Siap",
+  "backupOfferShareBody": "File cadangan Anda telah disimpan ke perangkat Anda. Ingin membagikannya sekarang (mis. penyimpanan cloud, email, perangkat lain)?",
+  "backupShareFileText": "file cadangan layout",
+  "backupShareFailedMessage": "Berbagi tidak dapat dimulai: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "Cadangan Besar",
+  "backupLargeOperationBody": "Data yang akan diproses berukuran sekitar {sizeText}. {actionLabel} dengan ukuran ini mungkin memerlukan waktu tergantung perangkat Anda. Jangan tinggalkan aplikasi selama proses berlangsung — ingin melanjutkan?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "pemulihan",
+  "backupDriveListingLabel": "Membuat daftar cadangan Drive...",
+  "backupDriveListFailedMessage": "Cadangan tidak dapat didaftar: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "Belum ada cadangan di Google Drive.",
+  "backupDrivePickTitle": "Pilih Cadangan dari Drive",
+  "backupDriveDownloadingLabel": "Mengunduh cadangan dari Drive...",
+  "backupDriveDownloadingWithSizeLabel": "Mengunduh cadangan dari Drive... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "Menyimpan file ke perangkat...",
+  "backupDriveUnknownBackupFileName": "unknown_backup.zip",
+  "backupDriveStorageFullMessage": "Penyimpanan Google Drive Anda penuh. Silakan kosongkan ruang di Drive dan coba lagi.",
+  "backupDriveNetworkErrorMessage": "Tidak dapat membuat koneksi internet. Periksa koneksi Anda dan coba lagi.",
+  "backupDriveBackupNotFoundMessage": "File cadangan yang ditentukan tidak ditemukan di Drive. Mungkin telah dihapus.",
+  "backupDriveUnknownErrorMessage": "Terjadi kesalahan tak terduga selama operasi Google Drive: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "Pengunduhan gagal: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "File tidak dapat dipilih: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "File yang dipilih tidak dapat diakses.",
+  "backupCheckingLabel": "Memeriksa cadangan...",
+  "backupReadFailedMessage": "File cadangan tidak dapat dibaca: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Pulihkan Cadangan",
+  "backupPreviewContentsHeader": "Isi cadangan yang dipilih:",
+  "backupPreviewNoteCountLabel": "Jumlah catatan",
+  "backupPreviewTrashCountLabel": "Catatan di sampah",
+  "backupPreviewCategoryCountLabel": "Jumlah kategori",
+  "backupPreviewAttachmentLabel": "Lampiran",
+  "backupPreviewAttachmentNoneValue": "Tidak ada",
+  "backupPreviewAttachmentCountValue": "{count} file ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "Dibuat pada",
+  "backupEmptyPreviewTitle": "Cadangan ini tampak kosong",
+  "backupEmptyPreviewBody": "Tidak ditemukan catatan, kategori, atau lampiran di file yang dipilih. Jika Anda melanjutkan, data Anda saat ini tetap akan dihapus dan diganti dengan cadangan kosong ini.",
+  "backupMissingAttachmentsTitle": "{count} lampiran tidak ditemukan dalam cadangan",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "Catatan dengan file ini akan dipulihkan, tetapi tanpa lampirannya (mungkin hilang atau rusak saat cadangan dibuat): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} dan {remaining} lainnya",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "Ini akan MENGGANTI semua catatan, sampah, kategori, pengaturan, dan lampiran Anda saat ini dengan data dari cadangan di atas. Data Anda saat ini akan hilang secara permanen dan tindakan ini tidak dapat dibatalkan.",
+  "backupRestoringLabel": "Memulihkan cadangan...",
+  "backupRestoreSuccessWithMissingMessage": "Cadangan berhasil dipulihkan. Namun, {count} lampiran tidak ditemukan dalam cadangan dan tidak dapat dipulihkan. Disarankan untuk memulai ulang aplikasi agar perubahan berlaku sepenuhnya.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "Cadangan berhasil dipulihkan. Disarankan untuk memulai ulang aplikasi agar perubahan berlaku sepenuhnya.",
+  "backupRestoreFailedMessage": "Terjadi kesalahan saat memulihkan: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "Cadangkan & Pulihkan",
+  "backupBlockedExitWarningMessage": "Sebuah operasi sedang berlangsung, mohon tunggu hingga selesai.",
+  "backupBusyBackTooltip": "Operasi sedang berlangsung",
+  "backupIntroText": "Anda dapat mencadangkan catatan, kategori, pengaturan, dan lampiran Anda sebagai satu file .zip, atau memulihkan cadangan yang Anda buat sebelumnya.",
+  "backupDriveCardTitle": "Cadangkan ke Google Drive",
+  "backupDriveCardSubtitle": "Buat cadangan baru dan unggah langsung ke area privat Google Drive Anda.",
+  "backupDriveCardButtonLabel": "Cadangkan ke Drive",
+  "backupDeviceCardTitle": "Cadangkan ke Perangkat",
+  "backupDeviceCardSubtitle": "Simpan semua data Anda sebagai satu file .zip ke perangkat Anda dan bagikan jika Anda mau.",
+  "backupDeviceCardButtonLabel": "Cadangkan ke Perangkat",
+  "backupHistoryCardTitle": "Riwayat Cadangan",
+  "backupHistoryCardSubtitle": "Lihat semua cadangan yang tersimpan di perangkat Anda beserta tanggal dan ukurannya; Anda dapat membagikan, memulihkan, atau menghapusnya langsung dari sini.",
+  "backupHistoryTabDevice": "Perangkat",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "Hapus Cadangan",
+  "backupHistoryDeleteDialogBody": "Anda yakin ingin menghapus permanen file cadangan \"{fileName}\"? Tindakan ini tidak dapat dibatalkan.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "Cadangan dihapus.",
+  "backupHistoryDriveDeleteDialogTitle": "Hapus Cadangan Drive",
+  "backupHistoryDriveDeleteDialogBody": "Anda yakin ingin menghapus permanen cadangan \"{fileName}\" dari Google Drive? Tindakan ini tidak dapat dibatalkan dan file tidak akan dipindahkan ke sampah.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Cadangan Drive dihapus.",
+  "backupHistoryDriveDeleteFailedMessage": "Tidak dapat menghapus: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "Belum ada cadangan tersimpan di perangkat ini.",
+  "backupHistoryDeviceEmptySubtitle": "Gunakan \"Cadangkan ke Perangkat\" untuk membuat cadangan pertama Anda.",
+  "backupHistoryDriveEmptySubtitle": "Gunakan \"Cadangkan ke Google Drive\" untuk membuat cadangan cloud pertama Anda.",
+  "backupHistoryDriveSignInPrompt": "Hubungkan akun Google Anda untuk melihat cadangan Drive Anda.",
+  "backupHistoryConnectGoogleButton": "Hubungkan dengan Google",
+  "backupHistoryDriveConnectedFallback": "Terhubung",
+  "backupHistoryUnknownErrorFallback": "Terjadi kesalahan yang tidak diketahui.",
+  "backupHistoryDownloadStartingLabel": "Memulai...",
+  "backupAutoBackupEnabledLabel": "Cadangan Otomatis: aktif",
+  "backupAutoBackupDisabledLabel": "Cadangan Otomatis: nonaktif",
+  "backupOverlayWarningMessage": "Mohon tunggu, jangan tinggalkan aplikasi hingga operasi selesai.",
+  "pdfExportUntitledNoteLabel": "Catatan Tanpa Judul",
+  "pdfExportDefaultAttachmentName": "Lampiran",
+  "pdfExportDefaultFileName": "catatan",
+  "screenshotExportBoundaryNotFoundMessage": "Tangkapan layar tidak dapat diambil (batas tidak ditemukan)",
+  "screenshotExportByteDataNullMessage": "Data tangkapan layar tidak dapat dibuat",
+  "screenshotExportPngDecodeFailedMessage": "Gambar tidak dapat diproses (dekode PNG gagal)",
+  "screenshotCalcTableTotalLabel": "Total",
+  "gundemMenuRemoveFromAgenda": "Hapus dari agenda",
+  "gundemMenuDeleteNote": "Hapus catatan",
+  "gundemSectionOverdue": "Terlambat",
+  "gundemSectionToday": "Hari Ini",
+  "gundemSectionTomorrow": "Besok",
+  "gundemSectionNextWeek": "Minggu Depan",
+  "gundemSectionFurther": "Selanjutnya",
+  "gundemWeekdayMonday": "Senin",
+  "gundemWeekdayTuesday": "Selasa",
+  "gundemWeekdayWednesday": "Rabu",
+  "gundemWeekdayThursday": "Kamis",
+  "gundemWeekdayFriday": "Jumat",
+  "gundemWeekdaySaturday": "Sabtu",
+  "gundemWeekdaySunday": "Minggu",
+  "gundemAppBarTitle": "Agenda",
+  "gundemCalendarTooltip": "Kalender",
+  "gundemEmptyTitle": "Tidak ada agenda",
+  "gundemEmptySubtitle": "Catatan dengan pengingat atau tanggal yang ditetapkan akan muncul di sini.",
+  "gundemUntitledNote": "Catatan tanpa judul",
+  "gundemRepeatHourly": "Setiap Jam",
+  "gundemRepeatDaily": "Harian",
+  "gundemRepeatWeekly": "Mingguan",
+  "gundemRepeatMonthly": "Bulanan",
+  "gundemRepeatYearly": "Tahunan",
+  "gundemPreviewCalcTableLabel": "[Daftar Perhitungan]",
+  "gundemPreviewDrawingLabel": "[Gambar]",
+  "gundemPreviewImageLabel": "[Gambar]",
+  "gundemMonthShortJan": "Jan",
+  "gundemMonthShortFeb": "Feb",
+  "gundemMonthShortMar": "Mar",
+  "gundemMonthShortApr": "Apr",
+  "gundemMonthShortMay": "Mei",
+  "gundemMonthShortJun": "Jun",
+  "gundemMonthShortJul": "Jul",
+  "gundemMonthShortAug": "Agu",
+  "gundemMonthShortSep": "Sep",
+  "gundemMonthShortOct": "Okt",
+  "gundemMonthShortNov": "Nov",
+  "gundemMonthShortDec": "Des",
+  "calendarAppBarTitle": "Kalender",
+  "calendarTodayButton": "Hari Ini",
+  "calendarLegendNoteLabel": "Catatan",
+  "calendarLegendReminderLabel": "Pengingat",
+  "calendarTodayBadge": "Hari Ini",
+  "calendarEmptyDayMessage": "Tidak ada catatan atau pengingat untuk hari ini.",
+  "calendarReminderHourlyLabel": "Setiap Jam",
+  "calendarMonthJan": "Januari",
+  "calendarMonthFeb": "Februari",
+  "calendarMonthMar": "Maret",
+  "calendarMonthApr": "April",
+  "calendarMonthMay": "Mei",
+  "calendarMonthJun": "Juni",
+  "calendarMonthJul": "Juli",
+  "calendarMonthAug": "Agustus",
+  "calendarMonthSep": "September",
+  "calendarMonthOct": "Oktober",
+  "calendarMonthNov": "November",
+  "calendarMonthDec": "Desember",
+  "calendarWeekdayShortMon": "Sen",
+  "calendarWeekdayShortTue": "Sel",
+  "calendarWeekdayShortWed": "Rab",
+  "calendarWeekdayShortThu": "Kam",
+  "calendarWeekdayShortFri": "Jum",
+  "calendarWeekdayShortSat": "Sab",
+  "calendarWeekdayShortSun": "Min",
+  "calendarWeekdayFullMonday": "Senin",
+  "calendarWeekdayFullTuesday": "Selasa",
+  "calendarWeekdayFullWednesday": "Rabu",
+  "calendarWeekdayFullThursday": "Kamis",
+  "calendarWeekdayFullFriday": "Jumat",
+  "calendarWeekdayFullSaturday": "Sabtu",
+  "calendarWeekdayFullSunday": "Minggu",
+  "wrongPasswordDialogTitle": "Kata Sandi Salah",
+  "wrongPasswordDialogMessage": "Kata sandi yang Anda masukkan salah.",
+  "commonOkButton": "OK",
+  "unlockCategoryAction": "Buka Kunci",
+  "lockCategoryAction": "Kunci",
+  "categoryUnlockedMessage": "Dibuka kuncinya",
+  "categoryLockedMessage": "Folder dikunci",
+  "deleteFolderMenuItemLabel": "Hapus Folder",
+  "deleteFolderDialogTitle": "Hapus Folder",
+  "deleteFolderDialogMessageWithSubfolders": "Anda yakin ingin menghapus folder \"{category}\" beserta semua subfoldernya? Catatan dalam folder ini akan menjadi tidak berkategori.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "Anda yakin ingin menghapus folder \"{category}\"? Catatan dalam folder ini akan menjadi tidak berkategori.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "Batal",
+  "deleteFolderDialogConfirmButton": "Hapus",
+  "editCategoryNameColorMenuItemLabel": "Edit Nama / Warna",
+  "addSubfolderMenuItemLabel": "Buat Subfolder",
+  "expandSubfoldersMenuItemLabel": "Perluas Subfolder",
+  "collapseSubfoldersMenuItemLabel": "Ciutkan Subfolder",
+  "saveErrorInfoMessage": "Kesalahan penyimpanan: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "Selamat Datang di DNote! 🚀",
+  "welcomeNoteContent": "Fitur baru telah ditambahkan!",
+  "noteListDateGroupToday": "Hari Ini",
+  "noteListDateGroupYesterday": "Kemarin",
+  "noteListDateGroupLast7Days": "7 Hari Terakhir",
+  "noteListDateGroupLast30Days": "30 Hari Terakhir",
+  "reminderRepeatNoneLabel": "Tidak berulang",
+  "voiceRecorderPreparingLabel": "Menyiapkan…",
+  "voiceRecorderCancelButton": "Batal",
+  "voiceRecorderStopAddButton": "Berhenti dan Tambahkan",
+  "speechToTextMicPermissionDeniedMessage": "Izin mikrofon tidak diberikan.",
+  "speechToTextUnavailableMessage": "Pengenalan suara tidak tersedia di perangkat ini.",
+  "speechToTextPreparingLabel": "Menyiapkan…",
+  "speechToTextListeningLabel": "Mendengarkan…",
+  "speechToTextStartSpeakingPlaceholder": "Mulai berbicara…",
+  "speechToTextCancelButton": "Batal",
+  "speechToTextStopAddButton": "Berhenti dan Tambahkan",
+  "textToSpeechNoContentMessage": "Tidak ada konten untuk dibacakan.",
+  "textToSpeechReadErrorMessage": "Terjadi kesalahan saat membacakan.",
+  "textToSpeechUnavailableMessage": "Text-to-speech tidak tersedia di perangkat ini.",
+  "textToSpeechPreparingLabel": "Menyiapkan…",
+  "textToSpeechPausedLabel": "Dijeda",
+  "textToSpeechFinishedLabel": "Pembacaan selesai",
+  "textToSpeechReadingLabel": "Membaca…",
+  "textToSpeechCloseErrorButton": "Tutup",
+  "textToSpeechReplayButton": "Baca Lagi",
+  "textToSpeechCloseFinishedButton": "Tutup",
+  "textToSpeechPauseButton": "Jeda",
+  "textToSpeechResumeButton": "Lanjutkan",
+  "textToSpeechStopButton": "Berhenti",
+  "textToSpeechSpeedSlow": "Lambat",
+  "textToSpeechSpeedNormal": "Normal",
+  "textToSpeechSpeedFast": "Cepat",
+  "calendarPickerCancelButton": "Batal",
+  "calendarPickerConfirmButton": "Pilih",
+  "calendarPickerClearButton": "Hapus",
+  "reminderPickerDialogTitle": "Tambah pengingat",
+  "reminderPickerDateTodayOption": "Hari Ini",
+  "reminderPickerDateTomorrowOption": "Besok",
+  "reminderPickerDatePickOption": "Pilih tanggal",
+  "reminderRepeatHourlyLabel": "Setiap jam",
+  "reminderRepeatDailyLabel": "Setiap hari",
+  "reminderRepeatWeeklyLabel": "Setiap minggu",
+  "reminderRepeatMonthlyLabel": "Setiap bulan",
+  "reminderRepeatYearlyLabel": "Setiap tahun",
+  "reminderPickerCalendarHelpText": "Pilih tanggal pengingat",
+  "reminderPickerCancelButton": "BATAL",
+  "reminderPickerSaveButton": "SIMPAN",
+  "reminderPickerPastTimeErrorMessage": "Waktu yang telah lewat tidak dapat dipilih",
+  "calcTableTotalLabel": "Total: {amount}",
+  "backupCreatePreparingDataLabel": "Menyiapkan data...",
+  "backupCreatePackagingNotesLabel": "Mengemas catatan dan kategori...",
+  "backupCreateReadingAttachmentsLabel": "Membaca lampiran...",
+  "backupCreateReadingAttachmentsProgressLabel": "Membaca lampiran... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "Mengompresi file zip...",
+  "backupCreateSavingFileLabel": "Menyimpan file...",
+  "backupRestoreValidatingLabel": "Memvalidasi cadangan...",
+  "backupRestoreValidatedPreparingDataLabel": "Cadangan tervalidasi, menyiapkan data...",
+  "backupRestoreWritingNotesLabel": "Menulis catatan...",
+  "backupRestoreWritingTrashLabel": "Menulis sampah...",
+  "backupRestoreTrashWrittenLabel": "Sampah tertulis",
+  "backupRestoreWritingCategoriesLabel": "Menulis kategori...",
+  "backupRestoreCategoriesWrittenLabel": "Kategori tertulis",
+  "backupRestoreWritingSettingsLabel": "Menulis pengaturan...",
+  "backupRestoreSettingsWrittenLabel": "Pengaturan tertulis",
+  "backupRestoreCleaningOldAttachmentsLabel": "Membersihkan lampiran lama...",
+  "backupRestoreNoAttachmentsFinishingLabel": "Tidak ditemukan lampiran, menyelesaikan...",
+  "backupRestoreAttachmentsProgressLabel": "Memulihkan lampiran... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "Selesai",
+  "backupValidationCorruptedFileMessage": "File rusak atau bukan file cadangan yang valid.",
+  "backupValidationMissingDataMessage": "Tidak ditemukan data di dalam file cadangan (backup_data.json tidak ada).",
+  "backupValidationInvalidJsonMessage": "Data cadangan tidak dapat dibaca (JSON rusak).",
+  "backupValidationNotDnoteBackupMessage": "File ini bukan cadangan dari aplikasi dnote.",
+  "backupValidationVersionUnreadableMessage": "Informasi versi file cadangan tidak dapat dibaca.",
+  "backupValidationIncompatibleVersionMessage": "Cadangan ini dalam format yang lebih baru yang tidak didukung oleh versi aplikasi saat ini. Silakan perbarui aplikasi.",
+  "backupValidationInvalidVersionMessage": "Informasi versi file cadangan tidak valid.",
+  "backupValidationMissingNotesFieldMessage": "Data cadangan tidak dalam format yang diharapkan (kolom catatan tidak ada).",
+  "backupValidationMissingTrashFieldMessage": "Data cadangan tidak dalam format yang diharapkan (kolom sampah tidak ada).",
+  "backupValidationInvalidCategoriesFieldMessage": "Data cadangan tidak dalam format yang diharapkan (daftar kategori tidak valid).",
+  "backupValidationInvalidSettingsFieldMessage": "Data cadangan tidak dalam format yang diharapkan (kolom pengaturan tidak valid).",
+  "backupValidationInvalidNoteRecordMessage": "Data cadangan tidak dalam format yang diharapkan (sebuah data catatan tidak valid).",
+  "backupValidationMissingNoteIdMessage": "Data cadangan tidak dalam format yang diharapkan (ditemukan data catatan tanpa ID).",
+  "backupValidationFileNotFoundMessage": "File cadangan tidak ditemukan.",
+  "backupErrorInsufficientStorageMessage": "Ruang penyimpanan perangkat tidak cukup. Silakan kosongkan ruang dan coba lagi.",
+  "backupErrorPermissionDeniedMessage": "Izin akses file ditolak. Silakan periksa izin aplikasi dan coba lagi.",
+  "backupErrorFileOperationMessage": "Terjadi kesalahan saat operasi file: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "Terjadi kesalahan tak terduga: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "Tidak dapat membuat arsip zip (ZipEncoder mengembalikan null).",
+  "calcTableMenuItemLabel": "Daftar Perhitungan",
+  "tagsMenuItemLabel": "Tag",
+  "linkDialogUrlHint": "https://contoh.com",
+  "checklistItemHint": "Tambah item...",
+  "toolbarHighlightTooltip": "Sorot",
+  "toolbarListTooltip": "Daftar",
+  "toolbarHideKeyboardTooltip": "Sembunyikan Keyboard",
+  "autoBackupLocalSuccessMessage": "Cadangan lokal berhasil.",
+  "autoBackupLocalFailedMessage": "Cadangan lokal gagal: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Cadangan Drive dilewati: akun Google tidak terhubung atau sesi telah berakhir. Silakan buka aplikasi dan hubungkan kembali.",
+  "autoBackupDriveSuccessMessage": "Cadangan Drive berhasil.",
+  "autoBackupDriveFailedMessage": "Cadangan Drive gagal: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "Belum ada catatan",
+  "noteWidgetPreviewTotalLabel": "Total: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ Gambar",
+  "autoBackupSettingsAppBarTitle": "Pengaturan Cadangan Otomatis",
+  "autoBackupSettingsMainSwitchTitle": "Aktifkan Cadangan Otomatis",
+  "autoBackupSettingsMainSwitchSubtitle": "Catatan Anda dicadangkan secara aman secara berkala di latar belakang.",
+  "autoBackupSettingsTargetTitle": "Target Cadangan",
+  "autoBackupSettingsTargetSubtitle": "Pilih tempat penyimpanan cadangan.",
+  "autoBackupSettingsTargetLocalOption": "Lokal",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "Keduanya",
+  "autoBackupSettingsDriveNotConnectedNote": "Hubungkan akun Anda terlebih dahulu untuk menggunakan opsi Google Drive.",
+  "autoBackupSettingsConnectButton": "Hubungkan",
+  "autoBackupSettingsFrequencyTitle": "Frekuensi Cadangan",
+  "autoBackupSettingsFrequencySubtitle": "Cadangan dibuat setiap {hours} jam.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 Jam",
+  "autoBackupSettingsFrequency12h": "12 Jam",
+  "autoBackupSettingsFrequency24h": "24 Jam (Harian)",
+  "autoBackupSettingsFrequency48h": "48 Jam (2 Hari)",
+  "autoBackupSettingsFrequency168h": "168 Jam (Mingguan)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "Gunakan Wi-Fi Saja",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "Unggahan cloud hanya terjadi melalui Wi-Fi untuk melindungi data seluler Anda.",
+  "autoBackupSettingsStatusCardTitle": "Status Sistem",
+  "autoBackupSettingsNeverRunMessage": "Cadangan otomatis belum pernah berjalan.",
+  "autoBackupSettingsLastRunInfo": "Terakhir Dijalankan: {date} {time} ({status})\nPesan: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "Berhasil",
+  "autoBackupSettingsStatusFailedLabel": "Gagal",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Tidak dapat terhubung ke akun Google.",
+  "autoBackupSettingsSavedSnackbar": "Pengaturan cadangan otomatis diperbarui.",
+  "selectionModeDeletedMessage": "{count} catatan dihapus",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "Diarsipkan",
+  "selectionModeClassifySheetTitle": "Pilih kategori untuk {count} catatan",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "Tambah Kategori",
+  "selectionModeRemoveCategoryOption": "Hapus Kategori",
+  "calcTableItemHint": "Item...",
+  "calcTableTotalRowLabel": "Total",
+  "textSelectionMenuShareButton": "Bagikan",
+  "textSelectionMenuTranslateButton": "Terjemahkan",
+  "textSelectionMenuShareFailedSnackbar": "Berbagi tidak dapat dimulai.",
+  "textSelectionMenuTranslateFailedSnackbar": "Terjemahan tidak dapat dibuka.",
+  "lastBackupInfoTodayFormat": "Hari Ini {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}/{month}/{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "Cadangan terakhir: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "Belum ada cadangan yang dibuat."
+}

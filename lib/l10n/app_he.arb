@@ -1,0 +1,1136 @@
+{
+  "@@locale": "he",
+  "toolbarBoldTooltip": "מודגש",
+  "toolbarItalicTooltip": "נטוי",
+  "toolbarUnderlineTooltip": "קו תחתון",
+  "toolbarStrikethroughTooltip": "קו חוצה",
+  "toolbarFontSizeTooltip": "גודל גופן",
+  "toolbarColorTooltip": "צבע טקסט",
+  "toolbarBulletTooltip": "רשימת תבליטים",
+  "toolbarNumberTooltip": "רשימה ממוספרת",
+  "toolbarIndentTooltip": "הזחת פסקה",
+  "toolbarLinkTooltip": "הוספה/עריכה/הסרה של קישור",
+  "toolbarDividerTooltip": "הוספת קו מפריד",
+  "toolbarChecklistTooltip": "הוספת רשימת משימות",
+  "linkSelectTextSnackbar": "בחר קודם את הטקסט שברצונך לקשר",
+  "linkDialogEditTitle": "עריכת קישור",
+  "linkDialogAddTitle": "הוספת קישור",
+  "linkDialogRemoveButton": "הסר קישור",
+  "linkDialogCancelButton": "ביטול",
+  "linkDialogConfirmButton": "הוסף",
+  "cameraPermissionPermanentlyDeniedMessage": "הרשאת המצלמה נדחתה. יש לאפשר אותה מההגדרות כדי להקליט וידאו.",
+  "cameraPermissionRequiredMessage": "נדרשת הרשאת מצלמה כדי להקליט וידאו.",
+  "openSettingsButtonLabel": "הגדרות",
+  "documentScanStartFailedMessage": "לא ניתן היה להתחיל את הסריקה: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "זיהוי הטקסט נכשל: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "לא נמצא טקסט קריא במסמך",
+  "scanResultSheetTitle": "כיצד להוסיף את המסמך הסרוק?",
+  "scanResultTextOnlyOption": "הוסף כטקסט בלבד",
+  "scanResultTextAndImageOption": "הוסף טקסט + תמונה סרוקה",
+  "scanResultCancelOption": "ביטול",
+  "audioPermissionPermanentlyDeniedMessage": "הרשאת המיקרופון נדחתה. יש לאפשר אותה מההגדרות כדי להקליט שמע.",
+  "audioPermissionRequiredMessage": "נדרשת הרשאת מיקרופון כדי להקליט שמע.",
+  "voiceRecordingDefaultLabel": "הקלטה קולית",
+  "blockPreviewCalcTableLabel": "רשימת חישוב ({count} שורות)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "ציור",
+  "blockPreviewAttachmentsLabel": "{count} קבצים מצורפים (תמונה/מסמך)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "קו מפריד",
+  "blockPreviewChecklistLabel": "רשימת משימות ({count} פריטים)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(טקסט ריק)",
+  "reorderBlocksSheetTitle": "סידור מחדש של הבלוקים",
+  "reorderBlocksMoveUpTooltip": "הזז למעלה",
+  "reorderBlocksMoveDownTooltip": "הזז למטה",
+  "reorderBlocksCloseTooltip": "סגור",
+  "reorderBlocksDescription": "הקש על בלוק כדי לבחור בו, ולאחר מכן השתמש בחצים למעלה/למטה כדי להזיז אותו.",
+  "reorderBlocksMenuItemLabel": "סדר מחדש",
+  "txtImportPickerDialogTitle": "בחר את קובץ ה-TXT לייבוא",
+  "txtImportReadFailedMessage": "לא ניתן היה לקרוא את קובץ ה-TXT",
+  "txtImportEmptyFileMessage": "קובץ ה-TXT ריק",
+  "txtImportSuccessMessage": "קובץ ה-TXT יובא",
+  "txtImportMenuItemLabel": "ייבוא (txt)",
+  "exportMenuItemLabel": "ייצוא",
+  "editorUndoTooltip": "בטל",
+  "editorRedoTooltip": "בצע שוב",
+  "noteSavedMessage": "הפתקית נשמרה",
+  "dateAssignPickerHelpText": "שיוך פתקית ליום",
+  "dateAssignChangeOption": "שנה תאריך",
+  "dateAssignRemoveOption": "הסר שיוך",
+  "editorSubToolbarCloseTooltip": "סגור",
+  "titleFieldHint": "כותרת",
+  "textBlockHint": "כתוב את הפתקית שלך כאן...",
+  "drawingBoardMenuItemLabel": "לוח ציור",
+  "voiceToTextTextNotesOnlyMessage": "המרת קול לטקסט זמינה רק עבור פתקיות טקסט",
+  "selectionModeCancelTooltip": "ביטול בחירה",
+  "selectionModeSelectedCountTitle": "{count} נבחרו",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "מחק",
+  "selectionModeArchiveTooltip": "העבר לארכיון",
+  "selectionModeFolderTooltip": "תיקייה",
+  "searchFieldHint": "חפש פתקיות...",
+  "emptyTrashDialogTitle": "רוקן את האשפה",
+  "emptyTrashDialogConfirmMessage": "כל הפתקיות שנמחקו יוסרו לצמיתות. האם אתה בטוח?",
+  "emptyTrashDialogCancelButton": "ביטול",
+  "restoreAllMenuItemLabel": "שחזר הכול",
+  "sortMenuTooltip": "מיין פתקיות",
+  "sortMenuAscendingLabel": "סדר: עולה (א-ת)",
+  "sortMenuDescendingLabel": "סדר: יורד (ת-א)",
+  "sortMenuByTitleLabel": "מיין לפי: כותרת",
+  "sortMenuByModifiedDateLabel": "מיין לפי: עדכון אחרון",
+  "sortMenuByCreatedDateLabel": "מיין לפי: תאריך יצירה",
+  "sortMenuByFolderLabel": "מיין לפי: תיקייה",
+  "viewToggleGridTooltip": "תצוגת רשת",
+  "viewToggleListTooltip": "תצוגת רשימה",
+  "drawerHeaderSubtitle": "המחברת האישית שלך",
+  "drawerNotesSectionHeader": "פתקיות",
+  "drawerAllNotesLabel": "פתקיות",
+  "drawerFavoritesLabel": "מועדפים",
+  "drawerAgendaLabel": "סדר יום",
+  "drawerRemindersLabel": "תזכורת",
+  "drawerLockedLabel": "נעול",
+  "drawerTrashLabel": "אשפה",
+  "drawerFoldersSectionHeader": "תיקיות",
+  "drawerExpandLabel": "הרחב",
+  "drawerCollapseLabel": "כווץ",
+  "drawerAddFolderLabel": "הוסף תיקייה",
+  "drawerAppSectionHeader": "אפליקציה",
+  "drawerCalendarLabel": "לוח שנה",
+  "drawerSettingsLabel": "הגדרות",
+  "drawerBackupRestoreLabel": "גיבוי ושחזור",
+  "drawerUpgradeToProLabel": "שדרג ל-Pro",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "תמוך בפיתוח",
+  "drawerFeedbackLabel": "משוב",
+  "drawerAboutLabel": "אודות",
+  "noNotesFoundMessage": "לא נמצאו פתקיות.",
+  "trashRestoreButtonLabel": "שחזר",
+  "trashPermanentDeleteButtonLabel": "מחק לצמיתות",
+  "tagRenamedInfoMessage": "שם התג שונה",
+  "tagDeletedInfoMessage": "התג נמחק",
+  "tagOptionsRenameLabel": "שנה שם",
+  "tagOptionsDeleteLabel": "מחק",
+  "renameTagDialogTitle": "שינוי שם תג",
+  "renameTagDialogHint": "שם תג חדש",
+  "renameTagDialogCancelButton": "ביטול",
+  "renameTagDialogSaveButton": "שמור",
+  "deleteTagDialogMessageWithCount": "\"{tag}\" תוסר מ-{affectedCount} פתקיות. להמשיך?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "למחוק את התג \"{tag}\"?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "מחיקת תג",
+  "deleteTagDialogCancelButton": "ביטול",
+  "deleteTagDialogConfirmButton": "מחק",
+  "tagsSheetTitle": "תגים",
+  "tagsSheetEmptyMessage": "אין עדיין תגים בפתקית זו.",
+  "tagsSheetInputHint": "כתוב תג חדש...",
+  "tagsSheetSuggestionsLabel": "תגים קיימים",
+  "noteDeletedInfoMessage": "הפתקית נמחקה",
+  "noteDeletedUndoActionLabel": "בטל",
+  "reminderSetInfoMessage": "התזכורת הוגדרה",
+  "reminderRemovedInfoMessage": "התזכורת הוסרה",
+  "noteDuplicatedInfoMessage": "העותק נוצר",
+  "speechTextAppendedInfoMessage": "הטקסט נוסף לפתקית",
+  "pdfPreparingInfoMessage": "מכין PDF…",
+  "pdfSavedInfoMessage": "ה-PDF נשמר",
+  "jpgPreparingInfoMessage": "מכין JPG…",
+  "jpgSavedInfoMessage": "ה-JPG נשמר",
+  "jpgFailedInfoMessage": "לא ניתן היה ליצור JPG",
+  "txtPreparingInfoMessage": "מכין TXT…",
+  "txtSavedInfoMessage": "ה-TXT נשמר",
+  "txtFailedInfoMessage": "לא ניתן היה ליצור TXT",
+  "exportOpenActionLabel": "פתח",
+  "wrongPasswordInfoMessage": "סיסמה שגויה.",
+  "noteArchivedInfoMessage": "הפתקית הועברה לארכיון",
+  "noteUnarchivedInfoMessage": "הוסרה מהארכיון",
+  "noteUnlockedInfoMessage": "בוטלה הנעילה",
+  "noteLockedInfoMessage": "הפתקית ננעלה",
+  "notificationUnpinnedInfoMessage": "ביטול נעיצה",
+  "emptyNotePinBlockedInfoMessage": "לא ניתן לנעוץ פתקית ריקה.",
+  "notificationPinnedInfoMessage": "ננעצה לחלונית ההתראות",
+  "noContentToReadInfoMessage": "אין תוכן לקריאה",
+  "backPressExitInfoMessage": "לחץ שוב על 'חזור' כדי לצאת",
+  "reminderChannelName": "תזכורות פתקיות",
+  "reminderChannelDescription": "תזכורות פתקיות באפליקציית Layout",
+  "pinnedChannelName": "פתקיות נעוצות",
+  "pinnedChannelDescription": "פתקיות Layout נעוצות לחלונית ההתראות",
+  "notificationUnpinActionLabel": "הסר",
+  "reminderDefaultTitle": "תזכורת",
+  "reminderChecklistBodyFallback": "אל תשכח לבדוק את רשימת המשימות שלך",
+  "reminderTextBodyFallback": "אל תשכח לבדוק את הפתקית שלך",
+  "pdfSaveDialogTitle": "שמור כ-PDF",
+  "jpgSaveDialogTitle": "שמור כ-JPG",
+  "txtSaveDialogTitle": "שמור כ-TXT",
+  "textSizeSheetTitle": "גודל טקסט",
+  "textSizeSamplePreview": "טקסט לדוגמה",
+  "textSizeCancelButton": "ביטול",
+  "textSizeApplyButton": "החל",
+  "createPasswordDialogTitle": "יצירת סיסמה",
+  "createPasswordNewPasswordHint": "סיסמה חדשה",
+  "createPasswordConfirmHint": "הזן סיסמה שוב",
+  "createPasswordHintQuestionDescription": "הגדר שאלת אבטחה למקרה שתשכח את הסיסמה (אופציונלי).",
+  "createPasswordHintQuestionHint": "בחר שאלת אבטחה",
+  "createPasswordHintAnswerHint": "התשובה שלך",
+  "createPasswordCancelButton": "ביטול",
+  "createPasswordSaveButton": "שמור",
+  "passwordMismatchMessage": "הסיסמאות אינן תואמות!",
+  "passwordRequiredDialogTitle": "נדרשת סיסמה",
+  "passwordRequiredHint": "הזן סיסמה",
+  "forgotPasswordButtonLabel": "שכחתי את הסיסמה",
+  "passwordRequiredCancelButton": "ביטול",
+  "passwordRequiredConfirmButton": "אמת",
+  "securityQuestionDialogTitle": "שאלת אבטחה",
+  "securityQuestionAnswerHint": "התשובה שלך",
+  "securityQuestionCancelButton": "ביטול",
+  "securityQuestionConfirmButton": "אשר",
+  "securityQuestionWrongAnswerMessage": "תשובה שגויה. נסה שוב.",
+  "revealedPasswordDialogTitle": "הסיסמה שלך",
+  "revealedPasswordLabel": "סיסמת הפתקית שלך:",
+  "revealedPasswordOkButton": "אישור",
+  "securityQuestionPetName": "מה שם חיית המחמד הראשונה שלך?",
+  "securityQuestionFavoriteTeacher": "מה שם המורה האהוב עליך?",
+  "securityQuestionBirthCity": "באיזו עיר נולדת?",
+  "securityQuestionFavoriteFood": "מהו המאכל האהוב עליך?",
+  "securityQuestionMotherMaidenName": "מה שם הנעורים של אמך?",
+  "securityQuestionFirstSchool": "מה שם בית הספר הראשון שבו למדת?",
+  "securityQuestionFavoriteColor": "מהו הצבע האהוב עליך?",
+  "editFolderDialogTitle": "עריכת תיקייה",
+  "newSubfolderDialogTitle": "תת-תיקייה חדשה",
+  "addFolderDialogTitle": "הוספת תיקייה",
+  "subfolderParentInfoMessage": "תיווצר בתוך \"{parentCategory}\"",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "שם תת-התיקייה",
+  "folderNameFieldLabel": "שם התיקייה",
+  "folderColorLabel": "צבע",
+  "folderDialogCancelButton": "ביטול",
+  "folderDialogSaveButton": "שמור",
+  "folderDialogAddButton": "הוסף",
+  "selectFolderSheetTitle": "בחירת תיקייה",
+  "selectFolderAddOptionLabel": "הוסף תיקייה",
+  "removeCurrentFolderLabel": "הסר תיקייה נוכחית",
+  "noteDetailsDialogTitle": "פרטים",
+  "noteDetailsCreatedLabel": "נוצרה",
+  "noteDetailsModifiedLabel": "עדכון אחרון",
+  "noteDetailsCharCountLabel": "ספירת תווים",
+  "noteDetailsCharCountValue": "{count} תווים",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "ספירת מילים",
+  "noteDetailsWordCountValue": "{count} מילים",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "אישור",
+  "noteDetailsUnknownDateLabel": "לא ידוע",
+  "addAttachmentSheetTitle": "הוספה",
+  "addAttachmentImageOption": "הוסף תמונה",
+  "addAttachmentCameraOption": "מצלמה",
+  "addAttachmentFileOption": "הוסף קובץ",
+  "addAttachmentVoiceOption": "הקלטה קולית",
+  "addAttachmentVideoOption": "הקלט וידאו",
+  "addAttachmentScanOption": "סרוק מסמך",
+  "noteActionsSheetTitle": "בחר פעולה",
+  "noteActionReminderLabel": "תזכורת",
+  "noteActionEditReminderLabel": "ערוך תזכורת",
+  "noteActionSpeechToTextLabel": "המרת דיבור לטקסט",
+  "noteActionArchiveLabel": "העבר לארכיון",
+  "noteActionUnarchiveLabel": "הסר מהארכיון",
+  "noteActionLockLabel": "נעל",
+  "noteActionUnlockLabel": "בטל נעילה",
+  "noteActionFavoriteLabel": "הוסף למועדפים",
+  "noteActionUnfavoriteLabel": "הסר מהמועדפים",
+  "noteActionClassifyLabel": "בחר תיקייה",
+  "noteActionDeleteLabel": "מחק",
+  "noteActionPinToNotificationLabel": "נעץ לחלונית ההתראות",
+  "noteActionUnpinFromNotificationLabel": "הסר נעיצה",
+  "noteActionShareLabel": "שתף",
+  "noteActionDuplicateLabel": "צור עותק",
+  "noteActionCopyContentLabel": "העתק תוכן",
+  "noteActionTtsLabel": "הקרא בקול",
+  "noteActionTextSizeLabel": "גודל טקסט",
+  "noteActionDetailsLabel": "פרטים",
+  "noteActionDiscardChangesLabel": "בטל שינויים",
+  "noteActionSelectLabel": "בחר",
+  "reminderEditOptionLabel": "שנה תזכורת",
+  "reminderRemoveOptionLabel": "הסר תזכורת",
+  "discardChangesDialogTitle": "ביטול שינויים",
+  "discardChangesDialogMessage": "שינויים שלא נשמרו בפתקית זו יאבדו. האם אתה בטוח שברצונך לבטל אותם?",
+  "discardChangesCancelButton": "ביטול",
+  "discardChangesConfirmButton": "בטל שינויים",
+  "pinnedNotificationDefaultTitle": "פתקית",
+  "pdfFailedInfoMessage": "יצירת ה-PDF נכשלה",
+  "drawingScreenTitle": "ציור",
+  "drawingMinimizeTooltip": "מזער",
+  "drawingEmptyExportWarningMessage": "צייר משהו קודם",
+  "drawingEraserPartialModeLabel": "חלקי",
+  "drawingEraserFullModeLabel": "מלא",
+  "drawingClearTooltip": "נקה",
+  "drawingZoomOutTooltip": "הקטן תצוגה",
+  "drawingZoomInTooltip": "הגדל תצוגה",
+  "drawingDeleteTooltip": "מחק",
+  "drawingEmptyPreviewHint": "הקש כדי לצייר",
+  "settingsPageTitle": "הגדרות",
+  "settingsSectionGeneral": "כללי",
+  "settingsSectionSecurity": "אבטחה",
+  "settingsSectionTheme": "ערכת נושא",
+  "settingsSectionPersonalization": "התאמה אישית",
+  "settingsSectionWidget": "ווידג'ט",
+  "settingsSectionAbout": "אודות",
+  "settingsHintQuestionPet": "מה שם חיית המחמד הראשונה שלך?",
+  "settingsHintQuestionTeacher": "מה שם המורה האהוב עליך?",
+  "settingsHintQuestionBirthCity": "באיזו עיר נולדת?",
+  "settingsHintQuestionFavoriteFood": "מהו המאכל האהוב עליך?",
+  "settingsHintQuestionMotherMaidenName": "מה שם הנעורים של אמך?",
+  "settingsHintQuestionFirstSchool": "מהו בית הספר הראשון שבו למדת?",
+  "settingsHintQuestionFavoriteColor": "מהו הצבע האהוב עליך?",
+  "settingsSecurityQuestionDialogTitle": "שאלת אבטחה",
+  "settingsSecurityQuestionDialogDesc": "אם תשכח את הסיסמה, תוכל לשחזר אותה על ידי מענה נכון על שאלה זו.",
+  "settingsSecurityQuestionDropdownHint": "בחר שאלת אבטחה",
+  "settingsSecurityQuestionAnswerHint": "התשובה שלך",
+  "settingsSecurityQuestionCancelButton": "ביטול",
+  "settingsSecurityQuestionEmptyWarning": "השאלה והתשובה לא יכולות להיות ריקות!",
+  "settingsSecurityQuestionSaveButton": "שמור",
+  "settingsCreatePasswordTitle": "יצירת סיסמה",
+  "settingsPasswordRequiredTitle": "נדרשת סיסמה",
+  "settingsPasswordEnterHint": "הזן סיסמה",
+  "settingsForgotPasswordButton": "שכחתי את הסיסמה",
+  "settingsNewPasswordHint": "סיסמה חדשה",
+  "settingsConfirmPasswordHint": "הזן סיסמה שוב",
+  "settingsSecurityQuestionOptionalDesc": "הגדר שאלת אבטחה למקרה שתשכח את הסיסמה (אופציונלי).",
+  "settingsPasswordDialogCancelButton": "ביטול",
+  "settingsPasswordMismatchWarning": "הסיסמאות אינן תואמות!",
+  "settingsWrongPasswordWarning": "סיסמה שגויה!",
+  "settingsPasswordSaveButton": "שמור",
+  "settingsPasswordRemoveButton": "הסר",
+  "settingsNotePasswordTitle": "סיסמת פתקית",
+  "settingsPasswordSetSubtitle": "הסיסמה הוגדרה ✓",
+  "settingsPasswordNotSetSubtitle": "הסיסמה לא הוגדרה",
+  "settingsSecurityQuestionTileTitle": "שאלת אבטחה",
+  "settingsSecurityQuestionSetSubtitle": "הוגדרה ✓ — משמשת אם תשכח את הסיסמה",
+  "settingsSecurityQuestionNotSetSubtitle": "לא הוגדרה — לא תוכל לשחזר את הסיסמה אם תאבד",
+  "settingsThemeDialogTitle": "בחר ערכת נושא",
+  "settingsThemeSystemDefault": "ברירת מחדל של המערכת",
+  "settingsThemeLightOption": "ערכת נושא בהירה",
+  "settingsThemeDarkOption": "ערכת נושא כהה",
+  "settingsAccentColorDialogTitle": "בחר צבע הדגשה",
+  "settingsThemeChangeTileTitle": "שנה ערכת נושא",
+  "settingsThemeLightLabel": "בהיר",
+  "settingsThemeDarkLabel": "כהה",
+  "settingsThemeSystemLabel": "מערכת",
+  "settingsLanguageTileTitle": "שפה",
+  "settingsLanguageDialogTitle": "בחר שפה",
+  "settingsLanguageSystemOption": "מערכת",
+  "settingsAccentColorTileTitle": "צבע הדגשה",
+  "settingsAccentColorTileSubtitle": "הצבע המשמש בסרגל העליון, בכפתורים ובמתגים",
+  "settingsColorfulNotesTitle": "גווני צבע מגוונים לפתקיות",
+  "settingsColorfulNotesSubtitle": "כל כרטיס פתקית מקבל גוון צבע שונה.",
+  "settingsTextColorSheetTitle": "צבע טקסט",
+  "settingsTextColorSheetDesc": "קובע את צבע טקסט תוכן הפתקית.",
+  "settingsTextColorOkButton": "אישור",
+  "settingsTextColorTileTitle": "צבע טקסט",
+  "settingsTextColorTileSubtitle": "צבע לטקסט תוכן הפתקית.",
+  "settingsWidgetFontSizeLabel": "גודל גופן הווידג'ט",
+  "settingsWidgetFontSizeSample": "כותרת לדוגמה - {size} נק'",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "ביטול",
+  "settingsWidgetFontSizeApplyButton": "החל",
+  "settingsWidgetOpacityLabel": "שקיפות רקע",
+  "settingsWidgetOpacityValue": "{percent}% שקיפות",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "ביטול",
+  "settingsWidgetOpacityApplyButton": "החל",
+  "settingsWidgetDarkModeTitle": "ווידג'ט כהה",
+  "settingsWidgetDarkModeDesc": "ערכת צבעים כהה עבור הווידג'ט.",
+  "settingsAboutVersionTitle": "גרסת האפליקציה",
+  "settingsFontFamilyTileTitle": "גופן",
+  "settingsFontFamilyDefaultLabel": "ברירת מחדל",
+  "settingsGlobalFontSizeTileTitle": "גודל גופן",
+  "settingsGlobalFontSizeTileSubtitle": "{size} נק' — חל על כל הפתקיות.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "טקסט לדוגמה - {size} נק'",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "החל על פתקיות קיימות",
+  "settingsGlobalFontSizeApplyToAllNote": "אם לפתקית מוגדר גודל גופן אישי, הגדרה זו לא תשפיע עליה.",
+  "settingsGlobalFontSizeCancelButton": "ביטול",
+  "settingsGlobalFontSizeApplyButton": "החל",
+  "settingsPreviewLinesTileTitle": "שורות תצוגה מקדימה לפתקית",
+  "settingsPreviewLinesTileSubtitle": "הצג עד {lines} שורות. אם הפתקית קצרה יותר, יוצג המספר בפועל של השורות.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "נוכחי: {lines} שורות",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "קובע את מספר השורות המרבי לתצוגה מקדימה. אם בפתקית פחות שורות, יוצג המספר בפועל.",
+  "settingsPreviewLinesCancelButton": "ביטול",
+  "settingsPreviewLinesApplyButton": "החל",
+  "backupCancelButton": "ביטול",
+  "backupConnectButton": "התחבר",
+  "backupDisconnectButton": "התנתק",
+  "backupContinueButton": "המשך",
+  "backupCloseButton": "סגור",
+  "backupShareButton": "שתף",
+  "backupRestoreButton": "שחזר",
+  "backupConfigureButton": "הגדר",
+  "backupUnknownDateLabel": "לא ידוע",
+  "backupProcessingDefaultLabel": "מעבד...",
+  "backupPermissionRequiredTitle": "נדרשת הרשאת אחסון",
+  "backupPermissionRequiredBodyPermanent": "גרסת אנדרואיד זו דורשת הרשאת אחסון לגיבוי/שחזור. מכיוון שההרשאה נדחתה לצמיתות, יש לאפשר אותה ידנית מהגדרות האפליקציה.",
+  "backupPermissionRequiredBodyNormal": "גרסת אנדרואיד זו דורשת הרשאת אחסון לגיבוי/שחזור. יש להעניק הרשאה כדי להמשיך.",
+  "backupGoToSettingsButton": "עבור להגדרות",
+  "backupRetryButton": "נסה שוב",
+  "backupDriveConnectingLabel": "מתחבר לחשבון Google...",
+  "backupDriveConnectedWithEmailMessage": "מחובר לחשבון Google Drive: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "מחובר לחשבון Google Drive.",
+  "backupDriveConnectFailedMessage": "לא ניתן היה להתחבר לחשבון Google, או שהפעולה בוטלה.",
+  "backupDriveDisconnectTitle": "ניתוק Google Drive",
+  "backupDriveDisconnectBody": "אם תנתק, לא יהיה ניתן לבצע גיבויים ידניים או אוטומטיים ל-Drive. גיבויים שכבר נשמרו ב-Drive לא יימחקו — רק הגישה ממכשיר זה תוסר.",
+  "backupDriveDisconnectedMessage": "החיבור ל-Google Drive הוסר.",
+  "backupDriveRequiredTitle": "נדרש חשבון Google",
+  "backupDriveRequiredBody": "פעולה זו מחייבת חיבור לחשבון Google שלך. האם ברצונך להתחבר כעת?",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: מחובר ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: מחובר",
+  "backupDriveStatusDisconnected": "Google Drive: לא מחובר",
+  "backupDriveAuthenticatingLabel": "מאמת חשבון Google...",
+  "backupDriveNotSignedInMessage": "אינך מחובר ל-Google Drive. יש להתחבר תחילה עם חשבון Google שלך.",
+  "backupDriveUploadingLabel": "מעלה גיבוי ל-Drive...",
+  "backupDriveUploadTimeoutMessage": "ההעלאה ל-Google Drive לא הושלמה תוך 120 שניות (אין תגובה מהשרת). בדוק את החיבור שלך ונסה שוב.",
+  "backupDriveOperationCompletedLabel": "הושלם",
+  "backupToDriveActionLabel": "גיבוי ל-Drive",
+  "backupToDeviceActionLabel": "גיבוי",
+  "backupCreatingLabel": "יוצר גיבוי...",
+  "backupCreateFailedMessage": "לא ניתן היה ליצור את הגיבוי: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "ההעלאה ל-Google Drive נכשלה: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "הגיבוי הועלה בהצלחה ל-Google Drive.",
+  "backupCreatedMessage": "הגיבוי נוצר: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "הגיבוי מוכן",
+  "backupOfferShareBody": "קובץ הגיבוי נשמר במכשיר שלך. האם ברצונך לשתף אותו כעת (למשל אחסון ענן, אימייל, מכשיר אחר)?",
+  "backupShareFileText": "קובץ גיבוי של Layout",
+  "backupShareFailedMessage": "לא ניתן היה להתחיל את השיתוף: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "גיבוי גדול",
+  "backupLargeOperationBody": "הנתונים לעיבוד הם בגודל של כ-{sizeText}. {actionLabel} בגודל כזה עשוי לקחת זמן מה בהתאם למכשיר שלך. רק אל תצא מהאפליקציה בזמן שהפעולה מתבצעת — האם ברצונך להמשיך?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "שחזור",
+  "backupDriveListingLabel": "טוען רשימת גיבויים מ-Drive...",
+  "backupDriveListFailedMessage": "לא ניתן היה לטעון את רשימת הגיבויים: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "אין עדיין גיבויים ב-Google Drive.",
+  "backupDrivePickTitle": "בחר גיבוי מ-Drive",
+  "backupDriveDownloadingLabel": "מוריד גיבוי מ-Drive...",
+  "backupDriveDownloadingWithSizeLabel": "מוריד גיבוי מ-Drive... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "שומר את הקובץ במכשיר...",
+  "backupDriveUnknownBackupFileName": "unknown_backup.zip",
+  "backupDriveStorageFullMessage": "אחסון ה-Google Drive שלך מלא. פנה מקום ב-Drive ונסה שוב.",
+  "backupDriveNetworkErrorMessage": "לא ניתן היה ליצור חיבור לאינטרנט. בדוק את החיבור שלך ונסה שוב.",
+  "backupDriveBackupNotFoundMessage": "קובץ הגיבוי המבוקש לא נמצא ב-Drive. ייתכן שנמחק.",
+  "backupDriveUnknownErrorMessage": "אירעה שגיאה בלתי צפויה במהלך פעולת Google Drive: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "ההורדה נכשלה: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "לא ניתן היה לבחור את הקובץ: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "לא ניתן היה לגשת לקובץ שנבחר.",
+  "backupCheckingLabel": "בודק את הגיבוי...",
+  "backupReadFailedMessage": "לא ניתן היה לקרוא את קובץ הגיבוי: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "שחזור גיבוי",
+  "backupPreviewContentsHeader": "תוכן הגיבוי הנבחר:",
+  "backupPreviewNoteCountLabel": "מספר פתקיות",
+  "backupPreviewTrashCountLabel": "פתקיות באשפה",
+  "backupPreviewCategoryCountLabel": "מספר קטגוריות",
+  "backupPreviewAttachmentLabel": "קבצים מצורפים",
+  "backupPreviewAttachmentNoneValue": "ללא",
+  "backupPreviewAttachmentCountValue": "{count} קבצים ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "נוצר בתאריך",
+  "backupEmptyPreviewTitle": "נראה שהגיבוי הזה ריק",
+  "backupEmptyPreviewBody": "לא נמצאו פתקיות, קטגוריות או קבצים מצורפים בקובץ הנבחר. אם תמשיך, הנתונים הנוכחיים שלך עדיין יימחקו ויוחלפו בגיבוי הריק הזה.",
+  "backupMissingAttachmentsTitle": "{count} קבצים מצורפים לא נמצאו בגיבוי",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "פתקיות עם קבצים אלה ישוחזרו, אך ללא הקבצים המצורפים (ייתכן שהיו חסרים או פגומים בעת ביצוע הגיבוי): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} ועוד {remaining}",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "פעולה זו תחליף את כל הפתקיות, האשפה, הקטגוריות, ההגדרות והקבצים המצורפים הנוכחיים שלך בנתונים מהגיבוי שלמעלה. הנתונים הנוכחיים שלך יאבדו לצמיתות ולא ניתן לבטל פעולה זו.",
+  "backupRestoringLabel": "משחזר גיבוי...",
+  "backupRestoreSuccessWithMissingMessage": "הגיבוי שוחזר. עם זאת, {count} קבצים מצורפים לא נמצאו בגיבוי ולא ניתן היה לשחזר אותם. מומלץ להפעיל מחדש את האפליקציה כדי שהשינויים ייכנסו לתוקף באופן מלא.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "הגיבוי שוחזר בהצלחה. מומלץ להפעיל מחדש את האפליקציה כדי שהשינויים ייכנסו לתוקף באופן מלא.",
+  "backupRestoreFailedMessage": "אירעה שגיאה בעת השחזור: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "גיבוי ושחזור",
+  "backupBlockedExitWarningMessage": "פעולה מתבצעת כעת, יש להמתין לסיומה.",
+  "backupBusyBackTooltip": "פעולה מתבצעת",
+  "backupIntroText": "תוכל לגבות את הפתקיות, הקטגוריות, ההגדרות והקבצים המצורפים שלך כקובץ ‎.zip אחד, או לשחזר גיבוי שביצעת בעבר.",
+  "backupDriveCardTitle": "גיבוי ל-Google Drive",
+  "backupDriveCardSubtitle": "צור גיבוי חדש והעלה אותו ישירות לאזור הפרטי שלך ב-Google Drive.",
+  "backupDriveCardButtonLabel": "גבה ל-Drive",
+  "backupDeviceCardTitle": "גיבוי למכשיר",
+  "backupDeviceCardSubtitle": "שמור את כל הנתונים שלך כקובץ ‎.zip אחד במכשיר שלך ושתף אותו אם תרצה.",
+  "backupDeviceCardButtonLabel": "גבה למכשיר",
+  "backupHistoryCardTitle": "היסטוריית גיבויים",
+  "backupHistoryCardSubtitle": "צפה בכל הגיבויים השמורים במכשיר שלך עם התאריך והגודל שלהם; תוכל לשתף, לשחזר או למחוק אותם ישירות מכאן.",
+  "backupHistoryTabDevice": "מכשיר",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "מחיקת גיבוי",
+  "backupHistoryDeleteDialogBody": "האם אתה בטוח שברצונך למחוק לצמיתות את קובץ הגיבוי \"{fileName}\"? לא ניתן לבטל פעולה זו.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "הגיבוי נמחק.",
+  "backupHistoryDriveDeleteDialogTitle": "מחיקת גיבוי מ-Drive",
+  "backupHistoryDriveDeleteDialogBody": "האם אתה בטוח שברצונך למחוק לצמיתות את הגיבוי \"{fileName}\" מ-Google Drive? לא ניתן לבטל פעולה זו והקובץ לא יועבר לאשפה.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "גיבוי ה-Drive נמחק.",
+  "backupHistoryDriveDeleteFailedMessage": "לא ניתן היה למחוק: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "אין עדיין גיבויים שמורים במכשיר זה.",
+  "backupHistoryDeviceEmptySubtitle": "השתמש ב\"גיבוי למכשיר\" כדי ליצור את הגיבוי הראשון שלך.",
+  "backupHistoryDriveEmptySubtitle": "השתמש ב\"גיבוי ל-Google Drive\" כדי ליצור את גיבוי הענן הראשון שלך.",
+  "backupHistoryDriveSignInPrompt": "חבר את חשבון Google שלך כדי לראות את גיבויי ה-Drive שלך.",
+  "backupHistoryConnectGoogleButton": "התחבר עם Google",
+  "backupHistoryDriveConnectedFallback": "מחובר",
+  "backupHistoryUnknownErrorFallback": "אירעה שגיאה לא ידועה.",
+  "backupHistoryDownloadStartingLabel": "מתחיל...",
+  "backupAutoBackupEnabledLabel": "גיבוי אוטומטי: פעיל",
+  "backupAutoBackupDisabledLabel": "גיבוי אוטומטי: כבוי",
+  "backupOverlayWarningMessage": "נא להמתין, אל תצא מהאפליקציה עד לסיום הפעולה.",
+  "pdfExportUntitledNoteLabel": "פתקית ללא כותרת",
+  "pdfExportDefaultAttachmentName": "קובץ מצורף",
+  "pdfExportDefaultFileName": "note",
+  "screenshotExportBoundaryNotFoundMessage": "לא ניתן היה לצלם מסך (הגבול לא נמצא)",
+  "screenshotExportByteDataNullMessage": "לא ניתן היה ליצור את נתוני צילום המסך",
+  "screenshotExportPngDecodeFailedMessage": "לא ניתן היה לעבד את התמונה (פענוח PNG נכשל)",
+  "screenshotCalcTableTotalLabel": "סה\"כ",
+  "gundemMenuRemoveFromAgenda": "הסר מסדר היום",
+  "gundemMenuDeleteNote": "מחק פתקית",
+  "gundemSectionOverdue": "באיחור",
+  "gundemSectionToday": "היום",
+  "gundemSectionTomorrow": "מחר",
+  "gundemSectionNextWeek": "השבוע הבא",
+  "gundemSectionFurther": "בהמשך",
+  "gundemWeekdayMonday": "יום שני",
+  "gundemWeekdayTuesday": "יום שלישי",
+  "gundemWeekdayWednesday": "יום רביעי",
+  "gundemWeekdayThursday": "יום חמישי",
+  "gundemWeekdayFriday": "יום שישי",
+  "gundemWeekdaySaturday": "יום שבת",
+  "gundemWeekdaySunday": "יום ראשון",
+  "gundemAppBarTitle": "סדר יום",
+  "gundemCalendarTooltip": "לוח שנה",
+  "gundemEmptyTitle": "אין דבר בסדר היום שלך",
+  "gundemEmptySubtitle": "פתקיות עם תזכורת או תאריך משויך יופיעו כאן.",
+  "gundemUntitledNote": "פתקית ללא כותרת",
+  "gundemRepeatHourly": "כל שעה",
+  "gundemRepeatDaily": "יומי",
+  "gundemRepeatWeekly": "שבועי",
+  "gundemRepeatMonthly": "חודשי",
+  "gundemRepeatYearly": "שנתי",
+  "gundemPreviewCalcTableLabel": "[רשימת חישוב]",
+  "gundemPreviewDrawingLabel": "[ציור]",
+  "gundemPreviewImageLabel": "[תמונה]",
+  "gundemMonthShortJan": "ינו׳",
+  "gundemMonthShortFeb": "פבר׳",
+  "gundemMonthShortMar": "מרץ",
+  "gundemMonthShortApr": "אפר׳",
+  "gundemMonthShortMay": "מאי",
+  "gundemMonthShortJun": "יונ׳",
+  "gundemMonthShortJul": "יול׳",
+  "gundemMonthShortAug": "אוג׳",
+  "gundemMonthShortSep": "ספט׳",
+  "gundemMonthShortOct": "אוק׳",
+  "gundemMonthShortNov": "נוב׳",
+  "gundemMonthShortDec": "דצמ׳",
+  "calendarAppBarTitle": "לוח שנה",
+  "calendarTodayButton": "היום",
+  "calendarLegendNoteLabel": "פתקית",
+  "calendarLegendReminderLabel": "תזכורת",
+  "calendarTodayBadge": "היום",
+  "calendarEmptyDayMessage": "אין פתקיות או תזכורות ליום זה.",
+  "calendarReminderHourlyLabel": "כל שעה",
+  "calendarMonthJan": "ינואר",
+  "calendarMonthFeb": "פברואר",
+  "calendarMonthMar": "מרץ",
+  "calendarMonthApr": "אפריל",
+  "calendarMonthMay": "מאי",
+  "calendarMonthJun": "יוני",
+  "calendarMonthJul": "יולי",
+  "calendarMonthAug": "אוגוסט",
+  "calendarMonthSep": "ספטמבר",
+  "calendarMonthOct": "אוקטובר",
+  "calendarMonthNov": "נובמבר",
+  "calendarMonthDec": "דצמבר",
+  "calendarWeekdayShortMon": "ב׳",
+  "calendarWeekdayShortTue": "ג׳",
+  "calendarWeekdayShortWed": "ד׳",
+  "calendarWeekdayShortThu": "ה׳",
+  "calendarWeekdayShortFri": "ו׳",
+  "calendarWeekdayShortSat": "ש׳",
+  "calendarWeekdayShortSun": "א׳",
+  "calendarWeekdayFullMonday": "יום שני",
+  "calendarWeekdayFullTuesday": "יום שלישי",
+  "calendarWeekdayFullWednesday": "יום רביעי",
+  "calendarWeekdayFullThursday": "יום חמישי",
+  "calendarWeekdayFullFriday": "יום שישי",
+  "calendarWeekdayFullSaturday": "יום שבת",
+  "calendarWeekdayFullSunday": "יום ראשון",
+  "wrongPasswordDialogTitle": "סיסמה שגויה",
+  "wrongPasswordDialogMessage": "הסיסמה שהזנת שגויה.",
+  "commonOkButton": "אישור",
+  "unlockCategoryAction": "בטל נעילה",
+  "lockCategoryAction": "נעל",
+  "categoryUnlockedMessage": "בוטלה הנעילה",
+  "categoryLockedMessage": "התיקייה ננעלה",
+  "deleteFolderMenuItemLabel": "מחק תיקייה",
+  "deleteFolderDialogTitle": "מחיקת תיקייה",
+  "deleteFolderDialogMessageWithSubfolders": "האם אתה בטוח שברצונך למחוק את התיקייה \"{category}\" ואת כל תת-התיקיות שלה? הפתקיות בתיקיות אלה יהפכו ללא מסווגות.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "האם אתה בטוח שברצונך למחוק את התיקייה \"{category}\"? הפתקיות בתיקייה זו יהפכו ללא מסווגות.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "ביטול",
+  "deleteFolderDialogConfirmButton": "מחק",
+  "editCategoryNameColorMenuItemLabel": "ערוך שם / צבע",
+  "addSubfolderMenuItemLabel": "צור תת-תיקייה",
+  "expandSubfoldersMenuItemLabel": "הרחב תת-תיקיות",
+  "collapseSubfoldersMenuItemLabel": "כווץ תת-תיקיות",
+  "saveErrorInfoMessage": "שגיאת שמירה: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "ברוכים הבאים ל-DNote! 🚀",
+  "welcomeNoteContent": "נוספו תכונות חדשות!",
+  "noteListDateGroupToday": "היום",
+  "noteListDateGroupYesterday": "אתמול",
+  "noteListDateGroupLast7Days": "7 הימים האחרונים",
+  "noteListDateGroupLast30Days": "30 הימים האחרונים",
+  "reminderRepeatNoneLabel": "ללא חזרה",
+  "voiceRecorderPreparingLabel": "מכין…",
+  "voiceRecorderCancelButton": "ביטול",
+  "voiceRecorderStopAddButton": "עצור והוסף",
+  "speechToTextMicPermissionDeniedMessage": "הרשאת המיקרופון לא ניתנה.",
+  "speechToTextUnavailableMessage": "זיהוי דיבור אינו זמין במכשיר זה.",
+  "speechToTextPreparingLabel": "מכין…",
+  "speechToTextListeningLabel": "מאזין…",
+  "speechToTextStartSpeakingPlaceholder": "התחל לדבר…",
+  "speechToTextCancelButton": "ביטול",
+  "speechToTextStopAddButton": "עצור והוסף",
+  "textToSpeechNoContentMessage": "אין תוכן לקריאה.",
+  "textToSpeechReadErrorMessage": "אירעה שגיאה בעת ההקראה.",
+  "textToSpeechUnavailableMessage": "המרת טקסט לדיבור אינה זמינה במכשיר זה.",
+  "textToSpeechPreparingLabel": "מכין…",
+  "textToSpeechPausedLabel": "מושהה",
+  "textToSpeechFinishedLabel": "ההקראה הושלמה",
+  "textToSpeechReadingLabel": "מקריא…",
+  "textToSpeechCloseErrorButton": "סגור",
+  "textToSpeechReplayButton": "הקרא שוב",
+  "textToSpeechCloseFinishedButton": "סגור",
+  "textToSpeechPauseButton": "השהה",
+  "textToSpeechResumeButton": "המשך",
+  "textToSpeechStopButton": "עצור",
+  "textToSpeechSpeedSlow": "איטי",
+  "textToSpeechSpeedNormal": "רגיל",
+  "textToSpeechSpeedFast": "מהיר",
+  "calendarPickerCancelButton": "ביטול",
+  "calendarPickerConfirmButton": "בחר",
+  "calendarPickerClearButton": "נקה",
+  "reminderPickerDialogTitle": "הוסף תזכורת",
+  "reminderPickerDateTodayOption": "היום",
+  "reminderPickerDateTomorrowOption": "מחר",
+  "reminderPickerDatePickOption": "בחר תאריך",
+  "reminderRepeatHourlyLabel": "כל שעה",
+  "reminderRepeatDailyLabel": "כל יום",
+  "reminderRepeatWeeklyLabel": "כל שבוע",
+  "reminderRepeatMonthlyLabel": "כל חודש",
+  "reminderRepeatYearlyLabel": "כל שנה",
+  "reminderPickerCalendarHelpText": "בחר תאריך לתזכורת",
+  "reminderPickerCancelButton": "ביטול",
+  "reminderPickerSaveButton": "שמור",
+  "reminderPickerPastTimeErrorMessage": "לא ניתן לבחור זמן שכבר עבר",
+  "calcTableTotalLabel": "סה\"כ: {amount}",
+  "backupCreatePreparingDataLabel": "מכין נתונים...",
+  "backupCreatePackagingNotesLabel": "אורז פתקיות וקטגוריות...",
+  "backupCreateReadingAttachmentsLabel": "קורא קבצים מצורפים...",
+  "backupCreateReadingAttachmentsProgressLabel": "קורא קבצים מצורפים... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "דוחס קובץ zip...",
+  "backupCreateSavingFileLabel": "שומר קובץ...",
+  "backupRestoreValidatingLabel": "מאמת את הגיבוי...",
+  "backupRestoreValidatedPreparingDataLabel": "הגיבוי אומת, מכין נתונים...",
+  "backupRestoreWritingNotesLabel": "כותב פתקיות...",
+  "backupRestoreWritingTrashLabel": "כותב אשפה...",
+  "backupRestoreTrashWrittenLabel": "האשפה נכתבה",
+  "backupRestoreWritingCategoriesLabel": "כותב קטגוריות...",
+  "backupRestoreCategoriesWrittenLabel": "הקטגוריות נכתבו",
+  "backupRestoreWritingSettingsLabel": "כותב הגדרות...",
+  "backupRestoreSettingsWrittenLabel": "ההגדרות נכתבו",
+  "backupRestoreCleaningOldAttachmentsLabel": "מנקה קבצים מצורפים ישנים...",
+  "backupRestoreNoAttachmentsFinishingLabel": "לא נמצאו קבצים מצורפים, מסיים...",
+  "backupRestoreAttachmentsProgressLabel": "משחזר קבצים מצורפים... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "הושלם",
+  "backupValidationCorruptedFileMessage": "הקובץ פגום או שאינו קובץ גיבוי תקין.",
+  "backupValidationMissingDataMessage": "לא נמצאו נתונים בתוך קובץ הגיבוי (backup_data.json חסר).",
+  "backupValidationInvalidJsonMessage": "לא ניתן היה לקרוא את נתוני הגיבוי (JSON פגום).",
+  "backupValidationNotDnoteBackupMessage": "קובץ זה אינו גיבוי מאפליקציית dnote.",
+  "backupValidationVersionUnreadableMessage": "לא ניתן היה לקרוא את פרטי הגרסה של קובץ הגיבוי.",
+  "backupValidationIncompatibleVersionMessage": "גיבוי זה בפורמט חדש יותר שאינו נתמך על ידי גרסת האפליקציה הנוכחית. יש לעדכן את האפליקציה.",
+  "backupValidationInvalidVersionMessage": "פרטי הגרסה של קובץ הגיבוי אינם תקינים.",
+  "backupValidationMissingNotesFieldMessage": "נתוני הגיבוי אינם בפורמט הצפוי (שדה הפתקיות חסר).",
+  "backupValidationMissingTrashFieldMessage": "נתוני הגיבוי אינם בפורמט הצפוי (שדה האשפה חסר).",
+  "backupValidationInvalidCategoriesFieldMessage": "נתוני הגיבוי אינם בפורמט הצפוי (רשימת הקטגוריות אינה תקינה).",
+  "backupValidationInvalidSettingsFieldMessage": "נתוני הגיבוי אינם בפורמט הצפוי (שדה ההגדרות אינו תקין).",
+  "backupValidationInvalidNoteRecordMessage": "נתוני הגיבוי אינם בפורמט הצפוי (רשומת פתקית אינה תקינה).",
+  "backupValidationMissingNoteIdMessage": "נתוני הגיבוי אינם בפורמט הצפוי (נמצאה רשומת פתקית ללא מזהה).",
+  "backupValidationFileNotFoundMessage": "קובץ הגיבוי לא נמצא.",
+  "backupErrorInsufficientStorageMessage": "אין מספיק שטח פנוי במכשיר. יש לפנות מקום ולנסות שוב.",
+  "backupErrorPermissionDeniedMessage": "הרשאת הגישה לקובץ נדחתה. בדוק את הרשאות האפליקציה ונסה שוב.",
+  "backupErrorFileOperationMessage": "אירעה שגיאה במהלך פעולת הקובץ: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "אירעה שגיאה בלתי צפויה: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "לא ניתן היה ליצור את קובץ ה-zip (ZipEncoder החזיר null).",
+  "calcTableMenuItemLabel": "רשימת חישוב",
+  "tagsMenuItemLabel": "תגים",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "הוסף פריט...",
+  "toolbarHighlightTooltip": "הדגשה",
+  "toolbarListTooltip": "רשימה",
+  "toolbarHideKeyboardTooltip": "הסתר מקלדת",
+  "autoBackupLocalSuccessMessage": "הגיבוי המקומי הצליח.",
+  "autoBackupLocalFailedMessage": "הגיבוי המקומי נכשל: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "גיבוי ה-Drive דולג: חשבון Google אינו מחובר או שפג תוקף ההתחברות. יש לפתוח את האפליקציה ולהתחבר מחדש.",
+  "autoBackupDriveSuccessMessage": "הגיבוי ל-Drive הצליח.",
+  "autoBackupDriveFailedMessage": "הגיבוי ל-Drive נכשל: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "אין עדיין פתקיות",
+  "noteWidgetPreviewTotalLabel": "סה\"כ: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ ציור",
+  "autoBackupSettingsAppBarTitle": "הגדרות גיבוי אוטומטי",
+  "autoBackupSettingsMainSwitchTitle": "אפשר גיבוי אוטומטי",
+  "autoBackupSettingsMainSwitchSubtitle": "הפתקיות שלך מגובות באופן מאובטח מעת לעת ברקע.",
+  "autoBackupSettingsTargetTitle": "יעד הגיבוי",
+  "autoBackupSettingsTargetSubtitle": "בחר היכן יישמרו הגיבויים.",
+  "autoBackupSettingsTargetLocalOption": "מקומי",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "שניהם",
+  "autoBackupSettingsDriveNotConnectedNote": "חבר תחילה את חשבונך כדי להשתמש באפשרויות Google Drive.",
+  "autoBackupSettingsConnectButton": "התחבר",
+  "autoBackupSettingsFrequencyTitle": "תדירות גיבוי",
+  "autoBackupSettingsFrequencySubtitle": "מתבצע גיבוי כל {hours} שעות.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 שעות",
+  "autoBackupSettingsFrequency12h": "12 שעות",
+  "autoBackupSettingsFrequency24h": "24 שעות (יומי)",
+  "autoBackupSettingsFrequency48h": "48 שעות (יומיים)",
+  "autoBackupSettingsFrequency168h": "168 שעות (שבועי)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "השתמש ב-Wi-Fi בלבד",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "ההעלאה לענן מתבצעת רק דרך Wi-Fi כדי לחסוך בנתונים הסלולריים שלך.",
+  "autoBackupSettingsStatusCardTitle": "מצב המערכת",
+  "autoBackupSettingsNeverRunMessage": "הגיבוי האוטומטי עדיין לא פעל.",
+  "autoBackupSettingsLastRunInfo": "הרצה אחרונה: {date} {time} ({status})\\nהודעה: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "הצליח",
+  "autoBackupSettingsStatusFailedLabel": "נכשל",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "לא ניתן היה להתחבר לחשבון Google.",
+  "autoBackupSettingsSavedSnackbar": "הגדרות הגיבוי האוטומטי עודכנו.",
+  "selectionModeDeletedMessage": "{count} פתקיות נמחקו",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "הועבר לארכיון",
+  "selectionModeClassifySheetTitle": "בחר קטגוריה עבור {count} פתקיות",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "הוסף קטגוריה",
+  "selectionModeRemoveCategoryOption": "הסר קטגוריה",
+  "calcTableItemHint": "פריט...",
+  "calcTableTotalRowLabel": "סה\"כ",
+  "textSelectionMenuShareButton": "שתף",
+  "textSelectionMenuTranslateButton": "תרגם",
+  "textSelectionMenuShareFailedSnackbar": "לא ניתן היה להתחיל את השיתוף.",
+  "textSelectionMenuTranslateFailedSnackbar": "לא ניתן היה לפתוח את התרגום.",
+  "lastBackupInfoTodayFormat": "היום {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}/{month}/{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "גיבוי אחרון: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "עדיין לא בוצע גיבוי."
+}

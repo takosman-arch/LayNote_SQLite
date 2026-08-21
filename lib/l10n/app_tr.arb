@@ -1094,6 +1094,10 @@
   "@settingsPageTitle": {
     "description": "Ayarlar sayfasının AppBar başlığı"
   },
+  "settingsSectionGeneral": "Genel",
+  "@settingsSectionGeneral": {
+    "description": "Ayarlar sayfasında Genel bölümünün başlığı"
+  },
   "settingsSectionSecurity": "Güvenlik",
   "@settingsSectionSecurity": {
     "description": "Ayarlar sayfasında Güvenlik bölümünün başlığı"

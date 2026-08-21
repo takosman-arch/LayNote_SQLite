@@ -1003,13 +1003,23 @@ class _AgendaTile extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             child: ConstrainedBox(
-              // Eskiden bu yükseklik, kaldırılan renkli şeridin (Container
-              // width:3 height:34) satır içinde durması sayesinde
-              // sağlanıyordu. Şerit kalktığı için satırın eski yüksekliğini
-              // korumak amacıyla aynı minimum yükseklik burada veriliyor.
+              // Hatırlatıcılı notlarda solda mavi şerit gösterilir (bkz.
+              // calendar_screen.dart _DayNoteTile ile aynı stil); şerit
+              // olmayan satırlarda önceki gibi minimum yükseklik korunur.
               constraints: const BoxConstraints(minHeight: 34),
               child: Row(
                 children: [
+                  if (effective != null) ...[
+                    Container(
+                      width: 4,
+                      height: 34,
+                      decoration: BoxDecoration(
+                        color: Colors.lightBlueAccent,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                  ],
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

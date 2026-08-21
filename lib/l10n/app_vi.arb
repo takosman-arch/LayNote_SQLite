@@ -1,0 +1,1136 @@
+{
+  "@@locale": "vi",
+  "toolbarBoldTooltip": "Đậm",
+  "toolbarItalicTooltip": "Nghiêng",
+  "toolbarUnderlineTooltip": "Gạch chân",
+  "toolbarStrikethroughTooltip": "Gạch ngang",
+  "toolbarFontSizeTooltip": "Cỡ chữ",
+  "toolbarColorTooltip": "Màu chữ",
+  "toolbarBulletTooltip": "Danh sách gạch đầu dòng",
+  "toolbarNumberTooltip": "Danh sách đánh số",
+  "toolbarIndentTooltip": "Thụt lề đoạn văn",
+  "toolbarLinkTooltip": "Thêm / Sửa / Xóa liên kết",
+  "toolbarDividerTooltip": "Chèn đường phân cách",
+  "toolbarChecklistTooltip": "Thêm danh sách việc cần làm",
+  "linkSelectTextSnackbar": "Trước tiên hãy chọn văn bản bạn muốn liên kết",
+  "linkDialogEditTitle": "Sửa liên kết",
+  "linkDialogAddTitle": "Thêm liên kết",
+  "linkDialogRemoveButton": "Xóa liên kết",
+  "linkDialogCancelButton": "Hủy",
+  "linkDialogConfirmButton": "Thêm",
+  "cameraPermissionPermanentlyDeniedMessage": "Quyền truy cập máy ảnh bị từ chối. Bạn cần cho phép trong cài đặt để quay video.",
+  "cameraPermissionRequiredMessage": "Cần có quyền truy cập máy ảnh để quay video.",
+  "openSettingsButtonLabel": "Cài đặt",
+  "documentScanStartFailedMessage": "Không thể bắt đầu quét: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "Nhận dạng văn bản thất bại: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "Không tìm thấy văn bản có thể đọc được trong tài liệu",
+  "scanResultSheetTitle": "Thêm tài liệu đã quét như thế nào?",
+  "scanResultTextOnlyOption": "Chỉ thêm dưới dạng văn bản",
+  "scanResultTextAndImageOption": "Thêm văn bản + ảnh đã quét",
+  "scanResultCancelOption": "Hủy",
+  "audioPermissionPermanentlyDeniedMessage": "Quyền truy cập micrô bị từ chối. Bạn cần cho phép trong cài đặt để ghi âm.",
+  "audioPermissionRequiredMessage": "Cần có quyền truy cập micrô để ghi âm.",
+  "voiceRecordingDefaultLabel": "Ghi âm giọng nói",
+  "blockPreviewCalcTableLabel": "Bảng tính ({count} dòng)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "Bản vẽ",
+  "blockPreviewAttachmentsLabel": "{count} tệp đính kèm (ảnh/tài liệu)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "Đường phân cách",
+  "blockPreviewChecklistLabel": "Danh sách việc cần làm ({count} mục)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(văn bản trống)",
+  "reorderBlocksSheetTitle": "Sắp xếp lại khối",
+  "reorderBlocksMoveUpTooltip": "Di chuyển lên",
+  "reorderBlocksMoveDownTooltip": "Di chuyển xuống",
+  "reorderBlocksCloseTooltip": "Đóng",
+  "reorderBlocksDescription": "Chạm vào một khối để chọn, sau đó dùng mũi tên lên/xuống để di chuyển.",
+  "reorderBlocksMenuItemLabel": "Sắp xếp lại",
+  "txtImportPickerDialogTitle": "Chọn tệp TXT để nhập",
+  "txtImportReadFailedMessage": "Không thể đọc tệp TXT",
+  "txtImportEmptyFileMessage": "Tệp TXT trống",
+  "txtImportSuccessMessage": "Đã nhập TXT",
+  "txtImportMenuItemLabel": "Nhập (txt)",
+  "exportMenuItemLabel": "Xuất",
+  "editorUndoTooltip": "Hoàn tác",
+  "editorRedoTooltip": "Làm lại",
+  "noteSavedMessage": "Đã lưu ghi chú",
+  "dateAssignPickerHelpText": "Gán ghi chú cho một ngày",
+  "dateAssignChangeOption": "Đổi ngày",
+  "dateAssignRemoveOption": "Bỏ gán",
+  "editorSubToolbarCloseTooltip": "Đóng",
+  "titleFieldHint": "Tiêu đề",
+  "textBlockHint": "Viết ghi chú của bạn ở đây...",
+  "drawingBoardMenuItemLabel": "Bảng vẽ",
+  "voiceToTextTextNotesOnlyMessage": "Chuyển giọng nói thành văn bản chỉ khả dụng cho ghi chú văn bản",
+  "selectionModeCancelTooltip": "Hủy chọn",
+  "selectionModeSelectedCountTitle": "Đã chọn {count}",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "Xóa",
+  "selectionModeArchiveTooltip": "Lưu trữ",
+  "selectionModeFolderTooltip": "Thư mục",
+  "searchFieldHint": "Tìm kiếm ghi chú...",
+  "emptyTrashDialogTitle": "Dọn sạch thùng rác",
+  "emptyTrashDialogConfirmMessage": "Tất cả ghi chú đã xóa sẽ bị xóa vĩnh viễn. Bạn có chắc chắn không?",
+  "emptyTrashDialogCancelButton": "Hủy",
+  "restoreAllMenuItemLabel": "Khôi phục tất cả",
+  "sortMenuTooltip": "Sắp xếp ghi chú",
+  "sortMenuAscendingLabel": "Thứ tự: Tăng dần (A-Z)",
+  "sortMenuDescendingLabel": "Thứ tự: Giảm dần (Z-A)",
+  "sortMenuByTitleLabel": "Sắp xếp theo: Tiêu đề",
+  "sortMenuByModifiedDateLabel": "Sắp xếp theo: Sửa đổi gần nhất",
+  "sortMenuByCreatedDateLabel": "Sắp xếp theo: Ngày tạo",
+  "sortMenuByFolderLabel": "Sắp xếp theo: Thư mục",
+  "viewToggleGridTooltip": "Xem dạng lưới",
+  "viewToggleListTooltip": "Xem dạng danh sách",
+  "drawerHeaderSubtitle": "Sổ tay cá nhân của bạn",
+  "drawerNotesSectionHeader": "GHI CHÚ",
+  "drawerAllNotesLabel": "Ghi chú",
+  "drawerFavoritesLabel": "Yêu thích",
+  "drawerAgendaLabel": "Lịch trình",
+  "drawerRemindersLabel": "Nhắc nhở",
+  "drawerLockedLabel": "Đã khóa",
+  "drawerTrashLabel": "Thùng rác",
+  "drawerFoldersSectionHeader": "THƯ MỤC",
+  "drawerExpandLabel": "Mở rộng",
+  "drawerCollapseLabel": "Thu gọn",
+  "drawerAddFolderLabel": "Thêm thư mục",
+  "drawerAppSectionHeader": "ỨNG DỤNG",
+  "drawerCalendarLabel": "Lịch",
+  "drawerSettingsLabel": "Cài đặt",
+  "drawerBackupRestoreLabel": "Sao lưu & Khôi phục",
+  "drawerUpgradeToProLabel": "Nâng cấp lên Pro",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "Ủng hộ phát triển",
+  "drawerFeedbackLabel": "Phản hồi",
+  "drawerAboutLabel": "Giới thiệu",
+  "noNotesFoundMessage": "Không tìm thấy ghi chú nào.",
+  "trashRestoreButtonLabel": "Khôi phục",
+  "trashPermanentDeleteButtonLabel": "Xóa vĩnh viễn",
+  "tagRenamedInfoMessage": "Đã đổi tên thẻ",
+  "tagDeletedInfoMessage": "Đã xóa thẻ",
+  "tagOptionsRenameLabel": "Đổi tên",
+  "tagOptionsDeleteLabel": "Xóa",
+  "renameTagDialogTitle": "Đổi tên thẻ",
+  "renameTagDialogHint": "Tên thẻ mới",
+  "renameTagDialogCancelButton": "Hủy",
+  "renameTagDialogSaveButton": "Lưu",
+  "deleteTagDialogMessageWithCount": "\"{tag}\" sẽ bị xóa khỏi {affectedCount} ghi chú. Tiếp tục?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "Xóa thẻ \"{tag}\"?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "Xóa thẻ",
+  "deleteTagDialogCancelButton": "Hủy",
+  "deleteTagDialogConfirmButton": "Xóa",
+  "tagsSheetTitle": "Thẻ",
+  "tagsSheetEmptyMessage": "Ghi chú này chưa có thẻ nào.",
+  "tagsSheetInputHint": "Nhập thẻ mới...",
+  "tagsSheetSuggestionsLabel": "Thẻ hiện có",
+  "noteDeletedInfoMessage": "Đã xóa ghi chú",
+  "noteDeletedUndoActionLabel": "Hoàn tác",
+  "reminderSetInfoMessage": "Đã đặt nhắc nhở",
+  "reminderRemovedInfoMessage": "Đã xóa nhắc nhở",
+  "noteDuplicatedInfoMessage": "Đã tạo bản sao",
+  "speechTextAppendedInfoMessage": "Đã thêm văn bản vào ghi chú",
+  "pdfPreparingInfoMessage": "Đang chuẩn bị PDF…",
+  "pdfSavedInfoMessage": "Đã lưu PDF",
+  "jpgPreparingInfoMessage": "Đang chuẩn bị JPG…",
+  "jpgSavedInfoMessage": "Đã lưu JPG",
+  "jpgFailedInfoMessage": "Không thể tạo JPG",
+  "txtPreparingInfoMessage": "Đang chuẩn bị TXT…",
+  "txtSavedInfoMessage": "Đã lưu TXT",
+  "txtFailedInfoMessage": "Không thể tạo TXT",
+  "exportOpenActionLabel": "Mở",
+  "wrongPasswordInfoMessage": "Sai mật khẩu.",
+  "noteArchivedInfoMessage": "Đã lưu trữ ghi chú",
+  "noteUnarchivedInfoMessage": "Đã bỏ khỏi lưu trữ",
+  "noteUnlockedInfoMessage": "Đã mở khóa",
+  "noteLockedInfoMessage": "Đã khóa ghi chú",
+  "notificationUnpinnedInfoMessage": "Đã bỏ ghim",
+  "emptyNotePinBlockedInfoMessage": "Không thể ghim ghi chú trống.",
+  "notificationPinnedInfoMessage": "Đã ghim vào bảng thông báo",
+  "noContentToReadInfoMessage": "Không có nội dung để đọc",
+  "backPressExitInfoMessage": "Nhấn lại để thoát",
+  "reminderChannelName": "Nhắc nhở ghi chú",
+  "reminderChannelDescription": "Nhắc nhở ghi chú trong ứng dụng Layout",
+  "pinnedChannelName": "Ghi chú đã ghim",
+  "pinnedChannelDescription": "Ghi chú Layout được ghim vào bảng thông báo",
+  "notificationUnpinActionLabel": "Xóa",
+  "reminderDefaultTitle": "Nhắc nhở",
+  "reminderChecklistBodyFallback": "Đừng quên kiểm tra danh sách việc cần làm của bạn",
+  "reminderTextBodyFallback": "Đừng quên kiểm tra ghi chú của bạn",
+  "pdfSaveDialogTitle": "Lưu dưới dạng PDF",
+  "jpgSaveDialogTitle": "Lưu dưới dạng JPG",
+  "txtSaveDialogTitle": "Lưu dưới dạng TXT",
+  "textSizeSheetTitle": "Cỡ chữ",
+  "textSizeSamplePreview": "Văn bản mẫu",
+  "textSizeCancelButton": "Hủy",
+  "textSizeApplyButton": "Áp dụng",
+  "createPasswordDialogTitle": "Tạo mật khẩu",
+  "createPasswordNewPasswordHint": "Mật khẩu mới",
+  "createPasswordConfirmHint": "Nhập lại mật khẩu",
+  "createPasswordHintQuestionDescription": "Đặt câu hỏi bảo mật phòng khi bạn quên mật khẩu (không bắt buộc).",
+  "createPasswordHintQuestionHint": "Chọn câu hỏi bảo mật",
+  "createPasswordHintAnswerHint": "Câu trả lời của bạn",
+  "createPasswordCancelButton": "Hủy",
+  "createPasswordSaveButton": "Lưu",
+  "passwordMismatchMessage": "Mật khẩu không khớp!",
+  "passwordRequiredDialogTitle": "Yêu cầu mật khẩu",
+  "passwordRequiredHint": "Nhập mật khẩu",
+  "forgotPasswordButtonLabel": "Tôi quên mật khẩu",
+  "passwordRequiredCancelButton": "Hủy",
+  "passwordRequiredConfirmButton": "Xác minh",
+  "securityQuestionDialogTitle": "Câu hỏi bảo mật",
+  "securityQuestionAnswerHint": "Câu trả lời của bạn",
+  "securityQuestionCancelButton": "Hủy",
+  "securityQuestionConfirmButton": "Xác nhận",
+  "securityQuestionWrongAnswerMessage": "Câu trả lời sai. Hãy thử lại.",
+  "revealedPasswordDialogTitle": "Mật khẩu của bạn",
+  "revealedPasswordLabel": "Mật khẩu ghi chú của bạn:",
+  "revealedPasswordOkButton": "OK",
+  "securityQuestionPetName": "Tên con vật nuôi đầu tiên của bạn là gì?",
+  "securityQuestionFavoriteTeacher": "Tên giáo viên yêu thích của bạn là gì?",
+  "securityQuestionBirthCity": "Bạn sinh ra ở thành phố nào?",
+  "securityQuestionFavoriteFood": "Món ăn yêu thích của bạn là gì?",
+  "securityQuestionMotherMaidenName": "Họ thời con gái của mẹ bạn là gì?",
+  "securityQuestionFirstSchool": "Tên trường học đầu tiên bạn theo học là gì?",
+  "securityQuestionFavoriteColor": "Màu sắc yêu thích của bạn là gì?",
+  "editFolderDialogTitle": "Sửa thư mục",
+  "newSubfolderDialogTitle": "Thư mục con mới",
+  "addFolderDialogTitle": "Thêm thư mục",
+  "subfolderParentInfoMessage": "Sẽ được tạo bên trong \"{parentCategory}\"",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "Tên thư mục con",
+  "folderNameFieldLabel": "Tên thư mục",
+  "folderColorLabel": "Màu",
+  "folderDialogCancelButton": "Hủy",
+  "folderDialogSaveButton": "Lưu",
+  "folderDialogAddButton": "Thêm",
+  "selectFolderSheetTitle": "Chọn thư mục",
+  "selectFolderAddOptionLabel": "Thêm thư mục",
+  "removeCurrentFolderLabel": "Bỏ thư mục hiện tại",
+  "noteDetailsDialogTitle": "Chi tiết",
+  "noteDetailsCreatedLabel": "Đã tạo",
+  "noteDetailsModifiedLabel": "Sửa đổi gần nhất",
+  "noteDetailsCharCountLabel": "Số ký tự",
+  "noteDetailsCharCountValue": "{count} ký tự",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "Số từ",
+  "noteDetailsWordCountValue": "{count} từ",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "OK",
+  "noteDetailsUnknownDateLabel": "Không xác định",
+  "addAttachmentSheetTitle": "Thêm",
+  "addAttachmentImageOption": "Thêm ảnh",
+  "addAttachmentCameraOption": "Máy ảnh",
+  "addAttachmentFileOption": "Thêm tệp",
+  "addAttachmentVoiceOption": "Ghi âm giọng nói",
+  "addAttachmentVideoOption": "Quay video",
+  "addAttachmentScanOption": "Quét tài liệu",
+  "noteActionsSheetTitle": "Chọn hành động",
+  "noteActionReminderLabel": "Nhắc nhở",
+  "noteActionEditReminderLabel": "Sửa nhắc nhở",
+  "noteActionSpeechToTextLabel": "Giọng nói thành văn bản",
+  "noteActionArchiveLabel": "Lưu trữ",
+  "noteActionUnarchiveLabel": "Bỏ khỏi lưu trữ",
+  "noteActionLockLabel": "Khóa",
+  "noteActionUnlockLabel": "Mở khóa",
+  "noteActionFavoriteLabel": "Yêu thích",
+  "noteActionUnfavoriteLabel": "Bỏ khỏi yêu thích",
+  "noteActionClassifyLabel": "Chọn thư mục",
+  "noteActionDeleteLabel": "Xóa",
+  "noteActionPinToNotificationLabel": "Ghim vào bảng thông báo",
+  "noteActionUnpinFromNotificationLabel": "Bỏ ghim",
+  "noteActionShareLabel": "Chia sẻ",
+  "noteActionDuplicateLabel": "Tạo bản sao",
+  "noteActionCopyContentLabel": "Sao chép nội dung",
+  "noteActionTtsLabel": "Đọc to",
+  "noteActionTextSizeLabel": "Cỡ chữ",
+  "noteActionDetailsLabel": "Chi tiết",
+  "noteActionDiscardChangesLabel": "Hủy thay đổi",
+  "noteActionSelectLabel": "Chọn",
+  "reminderEditOptionLabel": "Đổi nhắc nhở",
+  "reminderRemoveOptionLabel": "Xóa nhắc nhở",
+  "discardChangesDialogTitle": "Hủy thay đổi",
+  "discardChangesDialogMessage": "Các thay đổi chưa lưu của ghi chú này sẽ bị mất. Bạn có chắc chắn muốn hủy không?",
+  "discardChangesCancelButton": "Hủy",
+  "discardChangesConfirmButton": "Hủy bỏ",
+  "pinnedNotificationDefaultTitle": "Ghi chú",
+  "pdfFailedInfoMessage": "Không thể tạo PDF",
+  "drawingScreenTitle": "Bản vẽ",
+  "drawingMinimizeTooltip": "Thu nhỏ",
+  "drawingEmptyExportWarningMessage": "Hãy vẽ gì đó trước",
+  "drawingEraserPartialModeLabel": "Một phần",
+  "drawingEraserFullModeLabel": "Toàn bộ",
+  "drawingClearTooltip": "Xóa hết",
+  "drawingZoomOutTooltip": "Thu nhỏ",
+  "drawingZoomInTooltip": "Phóng to",
+  "drawingDeleteTooltip": "Xóa",
+  "drawingEmptyPreviewHint": "Chạm để vẽ",
+  "settingsPageTitle": "Cài đặt",
+  "settingsSectionGeneral": "Chung",
+  "settingsSectionSecurity": "Bảo mật",
+  "settingsSectionTheme": "Giao diện",
+  "settingsSectionPersonalization": "Cá nhân hóa",
+  "settingsSectionWidget": "Widget",
+  "settingsSectionAbout": "Giới thiệu",
+  "settingsHintQuestionPet": "Tên con vật nuôi đầu tiên của bạn là gì?",
+  "settingsHintQuestionTeacher": "Tên giáo viên yêu thích của bạn là gì?",
+  "settingsHintQuestionBirthCity": "Bạn sinh ra ở thành phố nào?",
+  "settingsHintQuestionFavoriteFood": "Món ăn yêu thích của bạn là gì?",
+  "settingsHintQuestionMotherMaidenName": "Họ thời con gái của mẹ bạn là gì?",
+  "settingsHintQuestionFirstSchool": "Trường học đầu tiên bạn theo học là gì?",
+  "settingsHintQuestionFavoriteColor": "Màu sắc yêu thích của bạn là gì?",
+  "settingsSecurityQuestionDialogTitle": "Câu hỏi bảo mật",
+  "settingsSecurityQuestionDialogDesc": "Nếu quên mật khẩu, bạn có thể khôi phục bằng cách trả lời đúng câu hỏi này.",
+  "settingsSecurityQuestionDropdownHint": "Chọn câu hỏi bảo mật",
+  "settingsSecurityQuestionAnswerHint": "Câu trả lời của bạn",
+  "settingsSecurityQuestionCancelButton": "Hủy",
+  "settingsSecurityQuestionEmptyWarning": "Câu hỏi và câu trả lời không được để trống!",
+  "settingsSecurityQuestionSaveButton": "Lưu",
+  "settingsCreatePasswordTitle": "Tạo mật khẩu",
+  "settingsPasswordRequiredTitle": "Yêu cầu mật khẩu",
+  "settingsPasswordEnterHint": "Nhập mật khẩu",
+  "settingsForgotPasswordButton": "Tôi quên mật khẩu",
+  "settingsNewPasswordHint": "Mật khẩu mới",
+  "settingsConfirmPasswordHint": "Nhập lại mật khẩu",
+  "settingsSecurityQuestionOptionalDesc": "Đặt câu hỏi bảo mật phòng khi bạn quên mật khẩu (không bắt buộc).",
+  "settingsPasswordDialogCancelButton": "Hủy",
+  "settingsPasswordMismatchWarning": "Mật khẩu không khớp!",
+  "settingsWrongPasswordWarning": "Sai mật khẩu!",
+  "settingsPasswordSaveButton": "Lưu",
+  "settingsPasswordRemoveButton": "Xóa",
+  "settingsNotePasswordTitle": "Mật khẩu ghi chú",
+  "settingsPasswordSetSubtitle": "Đã đặt mật khẩu ✓",
+  "settingsPasswordNotSetSubtitle": "Chưa đặt mật khẩu",
+  "settingsSecurityQuestionTileTitle": "Câu hỏi bảo mật",
+  "settingsSecurityQuestionSetSubtitle": "Đã đặt ✓ — dùng khi bạn quên mật khẩu",
+  "settingsSecurityQuestionNotSetSubtitle": "Chưa đặt — bạn sẽ không thể khôi phục mật khẩu nếu bị mất",
+  "settingsThemeDialogTitle": "Chọn giao diện",
+  "settingsThemeSystemDefault": "Theo hệ thống",
+  "settingsThemeLightOption": "Giao diện sáng",
+  "settingsThemeDarkOption": "Giao diện tối",
+  "settingsAccentColorDialogTitle": "Chọn màu nhấn",
+  "settingsThemeChangeTileTitle": "Đổi giao diện",
+  "settingsThemeLightLabel": "Sáng",
+  "settingsThemeDarkLabel": "Tối",
+  "settingsThemeSystemLabel": "Hệ thống",
+  "settingsLanguageTileTitle": "Ngôn ngữ",
+  "settingsLanguageDialogTitle": "Chọn ngôn ngữ",
+  "settingsLanguageSystemOption": "Hệ thống",
+  "settingsAccentColorTileTitle": "Màu nhấn",
+  "settingsAccentColorTileSubtitle": "Màu dùng cho thanh ứng dụng, nút bấm và công tắc",
+  "settingsColorfulNotesTitle": "Màu ghi chú đa dạng",
+  "settingsColorfulNotesSubtitle": "Mỗi thẻ ghi chú có một tông màu khác nhau.",
+  "settingsTextColorSheetTitle": "Màu chữ",
+  "settingsTextColorSheetDesc": "Đặt màu cho nội dung văn bản của ghi chú.",
+  "settingsTextColorOkButton": "OK",
+  "settingsTextColorTileTitle": "Màu chữ",
+  "settingsTextColorTileSubtitle": "Màu cho nội dung văn bản ghi chú.",
+  "settingsWidgetFontSizeLabel": "Cỡ chữ widget",
+  "settingsWidgetFontSizeSample": "Tiêu đề mẫu - {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "Hủy",
+  "settingsWidgetFontSizeApplyButton": "Áp dụng",
+  "settingsWidgetOpacityLabel": "Độ trong suốt nền",
+  "settingsWidgetOpacityValue": "Độ trong suốt {percent}%",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "Hủy",
+  "settingsWidgetOpacityApplyButton": "Áp dụng",
+  "settingsWidgetDarkModeTitle": "Widget tối",
+  "settingsWidgetDarkModeDesc": "Bảng màu tối cho widget.",
+  "settingsAboutVersionTitle": "Phiên bản ứng dụng",
+  "settingsFontFamilyTileTitle": "Phông chữ",
+  "settingsFontFamilyDefaultLabel": "Mặc định",
+  "settingsGlobalFontSizeTileTitle": "Cỡ chữ",
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt — áp dụng cho tất cả ghi chú.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "Văn bản mẫu - {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "Áp dụng cho ghi chú hiện có",
+  "settingsGlobalFontSizeApplyToAllNote": "Nếu một ghi chú đã đặt cỡ chữ riêng, cài đặt này sẽ không ảnh hưởng đến nó.",
+  "settingsGlobalFontSizeCancelButton": "Hủy",
+  "settingsGlobalFontSizeApplyButton": "Áp dụng",
+  "settingsPreviewLinesTileTitle": "Số dòng xem trước ghi chú",
+  "settingsPreviewLinesTileSubtitle": "Hiển thị tối đa {lines} dòng. Nếu ghi chú ngắn hơn, số dòng thực tế sẽ được hiển thị.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "Hiện tại: {lines} dòng",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "Đặt số dòng tối đa để xem trước. Nếu ghi chú có ít dòng hơn, số dòng thực tế sẽ được hiển thị.",
+  "settingsPreviewLinesCancelButton": "Hủy",
+  "settingsPreviewLinesApplyButton": "Áp dụng",
+  "backupCancelButton": "Hủy",
+  "backupConnectButton": "Kết nối",
+  "backupDisconnectButton": "Ngắt kết nối",
+  "backupContinueButton": "Tiếp tục",
+  "backupCloseButton": "Đóng",
+  "backupShareButton": "Chia sẻ",
+  "backupRestoreButton": "Khôi phục",
+  "backupConfigureButton": "Cấu hình",
+  "backupUnknownDateLabel": "Không xác định",
+  "backupProcessingDefaultLabel": "Đang xử lý...",
+  "backupPermissionRequiredTitle": "Yêu cầu quyền lưu trữ",
+  "backupPermissionRequiredBodyPermanent": "Phiên bản Android này yêu cầu quyền lưu trữ để sao lưu/khôi phục. Do quyền đã bị từ chối vĩnh viễn, vui lòng bật thủ công trong cài đặt ứng dụng.",
+  "backupPermissionRequiredBodyNormal": "Phiên bản Android này yêu cầu quyền lưu trữ để sao lưu/khôi phục. Vui lòng cấp quyền để tiếp tục.",
+  "backupGoToSettingsButton": "Đi tới cài đặt",
+  "backupRetryButton": "Thử lại",
+  "backupDriveConnectingLabel": "Đang kết nối với tài khoản Google...",
+  "backupDriveConnectedWithEmailMessage": "Đã kết nối với tài khoản Google Drive: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Đã kết nối với tài khoản Google Drive.",
+  "backupDriveConnectFailedMessage": "Không thể kết nối với tài khoản Google, hoặc thao tác đã bị hủy.",
+  "backupDriveDisconnectTitle": "Ngắt kết nối Google Drive",
+  "backupDriveDisconnectBody": "Nếu ngắt kết nối, bạn sẽ không thể sao lưu thủ công hoặc tự động lên Drive nữa. Các bản sao lưu đã có trên Drive sẽ không bị xóa — chỉ quyền truy cập từ thiết bị này sẽ bị gỡ bỏ.",
+  "backupDriveDisconnectedMessage": "Đã gỡ kết nối Google Drive.",
+  "backupDriveRequiredTitle": "Yêu cầu tài khoản Google",
+  "backupDriveRequiredBody": "Thao tác này yêu cầu bạn kết nối tài khoản Google. Bạn có muốn kết nối ngay bây giờ không?",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: đã kết nối ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: đã kết nối",
+  "backupDriveStatusDisconnected": "Google Drive: chưa kết nối",
+  "backupDriveAuthenticatingLabel": "Đang xác minh tài khoản Google...",
+  "backupDriveNotSignedInMessage": "Bạn chưa kết nối với Google Drive. Vui lòng đăng nhập bằng tài khoản Google trước.",
+  "backupDriveUploadingLabel": "Đang tải bản sao lưu lên Drive...",
+  "backupDriveUploadTimeoutMessage": "Tải lên Google Drive không hoàn tất trong 120 giây (không có phản hồi từ máy chủ). Vui lòng kiểm tra kết nối và thử lại.",
+  "backupDriveOperationCompletedLabel": "Hoàn tất",
+  "backupToDriveActionLabel": "sao lưu lên Drive",
+  "backupToDeviceActionLabel": "sao lưu",
+  "backupCreatingLabel": "Đang tạo bản sao lưu...",
+  "backupCreateFailedMessage": "Không thể tạo bản sao lưu: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Tải lên Google Drive thất bại: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "Đã tải bản sao lưu lên Google Drive thành công.",
+  "backupCreatedMessage": "Đã tạo bản sao lưu: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "Bản sao lưu đã sẵn sàng",
+  "backupOfferShareBody": "Tệp sao lưu của bạn đã được lưu vào thiết bị. Bạn có muốn chia sẻ ngay bây giờ không (ví dụ: lưu trữ đám mây, email, thiết bị khác)?",
+  "backupShareFileText": "tệp sao lưu layout",
+  "backupShareFailedMessage": "Không thể bắt đầu chia sẻ: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "Sao lưu lớn",
+  "backupLargeOperationBody": "Dữ liệu cần xử lý có kích thước khoảng {sizeText}. Thao tác {actionLabel} với kích thước này có thể mất một chút thời gian tùy thiết bị. Chỉ cần không thoát ứng dụng trong khi xử lý — bạn có muốn tiếp tục không?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "khôi phục",
+  "backupDriveListingLabel": "Đang liệt kê các bản sao lưu trên Drive...",
+  "backupDriveListFailedMessage": "Không thể liệt kê các bản sao lưu: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "Chưa có bản sao lưu nào trên Google Drive.",
+  "backupDrivePickTitle": "Chọn bản sao lưu từ Drive",
+  "backupDriveDownloadingLabel": "Đang tải bản sao lưu từ Drive...",
+  "backupDriveDownloadingWithSizeLabel": "Đang tải bản sao lưu từ Drive... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "Đang lưu tệp vào thiết bị...",
+  "backupDriveUnknownBackupFileName": "unknown_backup.zip",
+  "backupDriveStorageFullMessage": "Dung lượng lưu trữ Google Drive của bạn đã đầy. Vui lòng giải phóng dung lượng trên Drive và thử lại.",
+  "backupDriveNetworkErrorMessage": "Không thể thiết lập kết nối internet. Vui lòng kiểm tra kết nối và thử lại.",
+  "backupDriveBackupNotFoundMessage": "Không tìm thấy tệp sao lưu được chỉ định trên Drive. Có thể tệp đã bị xóa.",
+  "backupDriveUnknownErrorMessage": "Đã xảy ra lỗi không mong muốn trong thao tác Google Drive: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "Tải xuống thất bại: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "Không thể chọn tệp: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "Không thể truy cập tệp đã chọn.",
+  "backupCheckingLabel": "Đang kiểm tra bản sao lưu...",
+  "backupReadFailedMessage": "Không thể đọc tệp sao lưu: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Khôi phục bản sao lưu",
+  "backupPreviewContentsHeader": "Nội dung của bản sao lưu đã chọn:",
+  "backupPreviewNoteCountLabel": "Số lượng ghi chú",
+  "backupPreviewTrashCountLabel": "Ghi chú trong thùng rác",
+  "backupPreviewCategoryCountLabel": "Số lượng danh mục",
+  "backupPreviewAttachmentLabel": "Tệp đính kèm",
+  "backupPreviewAttachmentNoneValue": "Không có",
+  "backupPreviewAttachmentCountValue": "{count} tệp ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "Được tạo vào",
+  "backupEmptyPreviewTitle": "Bản sao lưu này có vẻ trống",
+  "backupEmptyPreviewBody": "Không tìm thấy ghi chú, danh mục hoặc tệp đính kèm nào trong tệp đã chọn. Nếu tiếp tục, dữ liệu hiện tại của bạn vẫn sẽ bị xóa và thay thế bằng bản sao lưu trống này.",
+  "backupMissingAttachmentsTitle": "{count} tệp đính kèm không tìm thấy trong bản sao lưu",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "Các ghi chú có những tệp này sẽ được khôi phục, nhưng không có tệp đính kèm (có thể chúng đã bị thiếu hoặc hỏng khi sao lưu): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} và {remaining} tệp khác",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "Thao tác này sẽ THAY THẾ tất cả ghi chú, thùng rác, danh mục, cài đặt và tệp đính kèm hiện tại bằng dữ liệu trong bản sao lưu ở trên. Dữ liệu hiện tại của bạn sẽ bị mất vĩnh viễn và không thể hoàn tác.",
+  "backupRestoringLabel": "Đang khôi phục bản sao lưu...",
+  "backupRestoreSuccessWithMissingMessage": "Đã khôi phục bản sao lưu. Tuy nhiên, {count} tệp đính kèm không tìm thấy trong bản sao lưu và không thể khôi phục. Nên khởi động lại ứng dụng để các thay đổi có hiệu lực đầy đủ.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "Đã khôi phục bản sao lưu thành công. Nên khởi động lại ứng dụng để các thay đổi có hiệu lực đầy đủ.",
+  "backupRestoreFailedMessage": "Đã xảy ra lỗi khi khôi phục: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "Sao lưu & Khôi phục",
+  "backupBlockedExitWarningMessage": "Một thao tác đang diễn ra, vui lòng đợi cho đến khi hoàn tất.",
+  "backupBusyBackTooltip": "Thao tác đang diễn ra",
+  "backupIntroText": "Bạn có thể sao lưu ghi chú, danh mục, cài đặt và tệp đính kèm thành một tệp .zip duy nhất, hoặc khôi phục bản sao lưu đã thực hiện trước đó.",
+  "backupDriveCardTitle": "Sao lưu lên Google Drive",
+  "backupDriveCardSubtitle": "Tạo bản sao lưu mới và tải trực tiếp lên khu vực riêng tư trên Google Drive của bạn.",
+  "backupDriveCardButtonLabel": "Sao lưu lên Drive",
+  "backupDeviceCardTitle": "Sao lưu vào thiết bị",
+  "backupDeviceCardSubtitle": "Lưu toàn bộ dữ liệu của bạn thành một tệp .zip duy nhất vào thiết bị và chia sẻ nếu bạn muốn.",
+  "backupDeviceCardButtonLabel": "Sao lưu vào thiết bị",
+  "backupHistoryCardTitle": "Lịch sử sao lưu",
+  "backupHistoryCardSubtitle": "Xem tất cả các bản sao lưu được lưu trên thiết bị cùng ngày tháng và kích thước; bạn có thể chia sẻ, khôi phục hoặc xóa trực tiếp tại đây.",
+  "backupHistoryTabDevice": "Thiết bị",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "Xóa bản sao lưu",
+  "backupHistoryDeleteDialogBody": "Bạn có chắc chắn muốn xóa vĩnh viễn tệp sao lưu \"{fileName}\" không? Hành động này không thể hoàn tác.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "Đã xóa bản sao lưu.",
+  "backupHistoryDriveDeleteDialogTitle": "Xóa bản sao lưu trên Drive",
+  "backupHistoryDriveDeleteDialogBody": "Bạn có chắc chắn muốn xóa vĩnh viễn bản sao lưu \"{fileName}\" khỏi Google Drive không? Hành động này không thể hoàn tác và tệp sẽ không được chuyển vào thùng rác.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Đã xóa bản sao lưu trên Drive.",
+  "backupHistoryDriveDeleteFailedMessage": "Không thể xóa: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "Chưa có bản sao lưu nào được lưu trên thiết bị này.",
+  "backupHistoryDeviceEmptySubtitle": "Sử dụng \"Sao lưu vào thiết bị\" để tạo bản sao lưu đầu tiên của bạn.",
+  "backupHistoryDriveEmptySubtitle": "Sử dụng \"Sao lưu lên Google Drive\" để tạo bản sao lưu đám mây đầu tiên của bạn.",
+  "backupHistoryDriveSignInPrompt": "Kết nối tài khoản Google để xem các bản sao lưu trên Drive của bạn.",
+  "backupHistoryConnectGoogleButton": "Kết nối với Google",
+  "backupHistoryDriveConnectedFallback": "Đã kết nối",
+  "backupHistoryUnknownErrorFallback": "Đã xảy ra lỗi không xác định.",
+  "backupHistoryDownloadStartingLabel": "Đang bắt đầu...",
+  "backupAutoBackupEnabledLabel": "Sao lưu tự động: bật",
+  "backupAutoBackupDisabledLabel": "Sao lưu tự động: tắt",
+  "backupOverlayWarningMessage": "Vui lòng chờ, không thoát ứng dụng cho đến khi thao tác hoàn tất.",
+  "pdfExportUntitledNoteLabel": "Ghi chú chưa đặt tên",
+  "pdfExportDefaultAttachmentName": "Tệp đính kèm",
+  "pdfExportDefaultFileName": "ghi_chu",
+  "screenshotExportBoundaryNotFoundMessage": "Không thể chụp ảnh màn hình (không tìm thấy ranh giới)",
+  "screenshotExportByteDataNullMessage": "Không thể tạo dữ liệu ảnh chụp màn hình",
+  "screenshotExportPngDecodeFailedMessage": "Không thể xử lý hình ảnh (giải mã PNG thất bại)",
+  "screenshotCalcTableTotalLabel": "Tổng",
+  "gundemMenuRemoveFromAgenda": "Bỏ khỏi lịch trình",
+  "gundemMenuDeleteNote": "Xóa ghi chú",
+  "gundemSectionOverdue": "Quá hạn",
+  "gundemSectionToday": "Hôm nay",
+  "gundemSectionTomorrow": "Ngày mai",
+  "gundemSectionNextWeek": "Tuần sau",
+  "gundemSectionFurther": "Sắp tới",
+  "gundemWeekdayMonday": "Thứ Hai",
+  "gundemWeekdayTuesday": "Thứ Ba",
+  "gundemWeekdayWednesday": "Thứ Tư",
+  "gundemWeekdayThursday": "Thứ Năm",
+  "gundemWeekdayFriday": "Thứ Sáu",
+  "gundemWeekdaySaturday": "Thứ Bảy",
+  "gundemWeekdaySunday": "Chủ Nhật",
+  "gundemAppBarTitle": "Lịch trình",
+  "gundemCalendarTooltip": "Lịch",
+  "gundemEmptyTitle": "Không có gì trong lịch trình của bạn",
+  "gundemEmptySubtitle": "Các ghi chú có nhắc nhở hoặc ngày được gán sẽ hiển thị ở đây.",
+  "gundemUntitledNote": "Ghi chú chưa đặt tên",
+  "gundemRepeatHourly": "Hàng giờ",
+  "gundemRepeatDaily": "Hàng ngày",
+  "gundemRepeatWeekly": "Hàng tuần",
+  "gundemRepeatMonthly": "Hàng tháng",
+  "gundemRepeatYearly": "Hàng năm",
+  "gundemPreviewCalcTableLabel": "[Bảng tính]",
+  "gundemPreviewDrawingLabel": "[Bản vẽ]",
+  "gundemPreviewImageLabel": "[Hình ảnh]",
+  "gundemMonthShortJan": "Th1",
+  "gundemMonthShortFeb": "Th2",
+  "gundemMonthShortMar": "Th3",
+  "gundemMonthShortApr": "Th4",
+  "gundemMonthShortMay": "Th5",
+  "gundemMonthShortJun": "Th6",
+  "gundemMonthShortJul": "Th7",
+  "gundemMonthShortAug": "Th8",
+  "gundemMonthShortSep": "Th9",
+  "gundemMonthShortOct": "Th10",
+  "gundemMonthShortNov": "Th11",
+  "gundemMonthShortDec": "Th12",
+  "calendarAppBarTitle": "Lịch",
+  "calendarTodayButton": "Hôm nay",
+  "calendarLegendNoteLabel": "Ghi chú",
+  "calendarLegendReminderLabel": "Nhắc nhở",
+  "calendarTodayBadge": "Hôm nay",
+  "calendarEmptyDayMessage": "Không có ghi chú hoặc nhắc nhở nào cho ngày này.",
+  "calendarReminderHourlyLabel": "Hàng giờ",
+  "calendarMonthJan": "Tháng 1",
+  "calendarMonthFeb": "Tháng 2",
+  "calendarMonthMar": "Tháng 3",
+  "calendarMonthApr": "Tháng 4",
+  "calendarMonthMay": "Tháng 5",
+  "calendarMonthJun": "Tháng 6",
+  "calendarMonthJul": "Tháng 7",
+  "calendarMonthAug": "Tháng 8",
+  "calendarMonthSep": "Tháng 9",
+  "calendarMonthOct": "Tháng 10",
+  "calendarMonthNov": "Tháng 11",
+  "calendarMonthDec": "Tháng 12",
+  "calendarWeekdayShortMon": "T2",
+  "calendarWeekdayShortTue": "T3",
+  "calendarWeekdayShortWed": "T4",
+  "calendarWeekdayShortThu": "T5",
+  "calendarWeekdayShortFri": "T6",
+  "calendarWeekdayShortSat": "T7",
+  "calendarWeekdayShortSun": "CN",
+  "calendarWeekdayFullMonday": "Thứ Hai",
+  "calendarWeekdayFullTuesday": "Thứ Ba",
+  "calendarWeekdayFullWednesday": "Thứ Tư",
+  "calendarWeekdayFullThursday": "Thứ Năm",
+  "calendarWeekdayFullFriday": "Thứ Sáu",
+  "calendarWeekdayFullSaturday": "Thứ Bảy",
+  "calendarWeekdayFullSunday": "Chủ Nhật",
+  "wrongPasswordDialogTitle": "Sai mật khẩu",
+  "wrongPasswordDialogMessage": "Mật khẩu bạn nhập không đúng.",
+  "commonOkButton": "OK",
+  "unlockCategoryAction": "Mở khóa",
+  "lockCategoryAction": "Khóa",
+  "categoryUnlockedMessage": "Đã mở khóa",
+  "categoryLockedMessage": "Đã khóa thư mục",
+  "deleteFolderMenuItemLabel": "Xóa thư mục",
+  "deleteFolderDialogTitle": "Xóa thư mục",
+  "deleteFolderDialogMessageWithSubfolders": "Bạn có chắc chắn muốn xóa thư mục \"{category}\" và tất cả thư mục con của nó không? Các ghi chú trong những thư mục này sẽ trở thành chưa phân loại.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "Bạn có chắc chắn muốn xóa thư mục \"{category}\" không? Các ghi chú trong thư mục này sẽ trở thành chưa phân loại.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "Hủy",
+  "deleteFolderDialogConfirmButton": "Xóa",
+  "editCategoryNameColorMenuItemLabel": "Sửa tên / màu",
+  "addSubfolderMenuItemLabel": "Tạo thư mục con",
+  "expandSubfoldersMenuItemLabel": "Mở rộng thư mục con",
+  "collapseSubfoldersMenuItemLabel": "Thu gọn thư mục con",
+  "saveErrorInfoMessage": "Lỗi lưu: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "Chào mừng đến với DNote! 🚀",
+  "welcomeNoteContent": "Đã thêm tính năng mới!",
+  "noteListDateGroupToday": "Hôm nay",
+  "noteListDateGroupYesterday": "Hôm qua",
+  "noteListDateGroupLast7Days": "7 ngày qua",
+  "noteListDateGroupLast30Days": "30 ngày qua",
+  "reminderRepeatNoneLabel": "Không lặp lại",
+  "voiceRecorderPreparingLabel": "Đang chuẩn bị…",
+  "voiceRecorderCancelButton": "Hủy",
+  "voiceRecorderStopAddButton": "Dừng và thêm",
+  "speechToTextMicPermissionDeniedMessage": "Quyền truy cập micrô chưa được cấp.",
+  "speechToTextUnavailableMessage": "Nhận dạng giọng nói không khả dụng trên thiết bị này.",
+  "speechToTextPreparingLabel": "Đang chuẩn bị…",
+  "speechToTextListeningLabel": "Đang nghe…",
+  "speechToTextStartSpeakingPlaceholder": "Bắt đầu nói…",
+  "speechToTextCancelButton": "Hủy",
+  "speechToTextStopAddButton": "Dừng và thêm",
+  "textToSpeechNoContentMessage": "Không có nội dung để đọc.",
+  "textToSpeechReadErrorMessage": "Đã xảy ra lỗi khi đọc.",
+  "textToSpeechUnavailableMessage": "Chuyển văn bản thành giọng nói không khả dụng trên thiết bị này.",
+  "textToSpeechPreparingLabel": "Đang chuẩn bị…",
+  "textToSpeechPausedLabel": "Đã tạm dừng",
+  "textToSpeechFinishedLabel": "Đọc xong",
+  "textToSpeechReadingLabel": "Đang đọc…",
+  "textToSpeechCloseErrorButton": "Đóng",
+  "textToSpeechReplayButton": "Đọc lại",
+  "textToSpeechCloseFinishedButton": "Đóng",
+  "textToSpeechPauseButton": "Tạm dừng",
+  "textToSpeechResumeButton": "Tiếp tục",
+  "textToSpeechStopButton": "Dừng",
+  "textToSpeechSpeedSlow": "Chậm",
+  "textToSpeechSpeedNormal": "Bình thường",
+  "textToSpeechSpeedFast": "Nhanh",
+  "calendarPickerCancelButton": "Hủy",
+  "calendarPickerConfirmButton": "Chọn",
+  "calendarPickerClearButton": "Xóa",
+  "reminderPickerDialogTitle": "Thêm nhắc nhở",
+  "reminderPickerDateTodayOption": "Hôm nay",
+  "reminderPickerDateTomorrowOption": "Ngày mai",
+  "reminderPickerDatePickOption": "Chọn ngày",
+  "reminderRepeatHourlyLabel": "Mỗi giờ",
+  "reminderRepeatDailyLabel": "Mỗi ngày",
+  "reminderRepeatWeeklyLabel": "Mỗi tuần",
+  "reminderRepeatMonthlyLabel": "Mỗi tháng",
+  "reminderRepeatYearlyLabel": "Mỗi năm",
+  "reminderPickerCalendarHelpText": "Chọn ngày nhắc nhở",
+  "reminderPickerCancelButton": "HỦY",
+  "reminderPickerSaveButton": "LƯU",
+  "reminderPickerPastTimeErrorMessage": "Không thể chọn thời gian trong quá khứ",
+  "calcTableTotalLabel": "Tổng: {amount}",
+  "backupCreatePreparingDataLabel": "Đang chuẩn bị dữ liệu...",
+  "backupCreatePackagingNotesLabel": "Đang đóng gói ghi chú và danh mục...",
+  "backupCreateReadingAttachmentsLabel": "Đang đọc tệp đính kèm...",
+  "backupCreateReadingAttachmentsProgressLabel": "Đang đọc tệp đính kèm... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "Đang nén tệp zip...",
+  "backupCreateSavingFileLabel": "Đang lưu tệp...",
+  "backupRestoreValidatingLabel": "Đang xác thực bản sao lưu...",
+  "backupRestoreValidatedPreparingDataLabel": "Đã xác thực bản sao lưu, đang chuẩn bị dữ liệu...",
+  "backupRestoreWritingNotesLabel": "Đang ghi ghi chú...",
+  "backupRestoreWritingTrashLabel": "Đang ghi thùng rác...",
+  "backupRestoreTrashWrittenLabel": "Đã ghi thùng rác",
+  "backupRestoreWritingCategoriesLabel": "Đang ghi danh mục...",
+  "backupRestoreCategoriesWrittenLabel": "Đã ghi danh mục",
+  "backupRestoreWritingSettingsLabel": "Đang ghi cài đặt...",
+  "backupRestoreSettingsWrittenLabel": "Đã ghi cài đặt",
+  "backupRestoreCleaningOldAttachmentsLabel": "Đang dọn dẹp tệp đính kèm cũ...",
+  "backupRestoreNoAttachmentsFinishingLabel": "Không tìm thấy tệp đính kèm, đang hoàn tất...",
+  "backupRestoreAttachmentsProgressLabel": "Đang khôi phục tệp đính kèm... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "Hoàn tất",
+  "backupValidationCorruptedFileMessage": "Tệp bị hỏng hoặc không phải là tệp sao lưu hợp lệ.",
+  "backupValidationMissingDataMessage": "Không tìm thấy dữ liệu bên trong tệp sao lưu (thiếu backup_data.json).",
+  "backupValidationInvalidJsonMessage": "Không thể đọc dữ liệu sao lưu (JSON bị hỏng).",
+  "backupValidationNotDnoteBackupMessage": "Tệp này không phải là bản sao lưu từ ứng dụng dnote.",
+  "backupValidationVersionUnreadableMessage": "Không thể đọc thông tin phiên bản của tệp sao lưu.",
+  "backupValidationIncompatibleVersionMessage": "Bản sao lưu này có định dạng mới hơn mà phiên bản ứng dụng hiện tại không hỗ trợ. Vui lòng cập nhật ứng dụng.",
+  "backupValidationInvalidVersionMessage": "Thông tin phiên bản của tệp sao lưu không hợp lệ.",
+  "backupValidationMissingNotesFieldMessage": "Dữ liệu sao lưu không đúng định dạng mong đợi (thiếu trường notes).",
+  "backupValidationMissingTrashFieldMessage": "Dữ liệu sao lưu không đúng định dạng mong đợi (thiếu trường trash).",
+  "backupValidationInvalidCategoriesFieldMessage": "Dữ liệu sao lưu không đúng định dạng mong đợi (danh sách danh mục không hợp lệ).",
+  "backupValidationInvalidSettingsFieldMessage": "Dữ liệu sao lưu không đúng định dạng mong đợi (trường settings không hợp lệ).",
+  "backupValidationInvalidNoteRecordMessage": "Dữ liệu sao lưu không đúng định dạng mong đợi (một bản ghi ghi chú không hợp lệ).",
+  "backupValidationMissingNoteIdMessage": "Dữ liệu sao lưu không đúng định dạng mong đợi (tìm thấy một bản ghi ghi chú không có ID).",
+  "backupValidationFileNotFoundMessage": "Không tìm thấy tệp sao lưu.",
+  "backupErrorInsufficientStorageMessage": "Không đủ dung lượng trống trên thiết bị. Vui lòng giải phóng dung lượng và thử lại.",
+  "backupErrorPermissionDeniedMessage": "Quyền truy cập tệp đã bị từ chối. Vui lòng kiểm tra quyền của ứng dụng và thử lại.",
+  "backupErrorFileOperationMessage": "Đã xảy ra lỗi trong thao tác tệp: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "Đã xảy ra lỗi không mong muốn: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "Không thể tạo tệp zip (ZipEncoder trả về null).",
+  "calcTableMenuItemLabel": "Bảng tính",
+  "tagsMenuItemLabel": "Thẻ",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "Thêm mục...",
+  "toolbarHighlightTooltip": "Tô sáng",
+  "toolbarListTooltip": "Danh sách",
+  "toolbarHideKeyboardTooltip": "Ẩn bàn phím",
+  "autoBackupLocalSuccessMessage": "Sao lưu cục bộ thành công.",
+  "autoBackupLocalFailedMessage": "Sao lưu cục bộ thất bại: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Bỏ qua sao lưu Drive: tài khoản Google chưa được kết nối hoặc phiên đã hết hạn. Vui lòng mở ứng dụng và kết nối lại.",
+  "autoBackupDriveSuccessMessage": "Sao lưu lên Drive thành công.",
+  "autoBackupDriveFailedMessage": "Sao lưu lên Drive thất bại: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "Chưa có ghi chú nào",
+  "noteWidgetPreviewTotalLabel": "Tổng: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ Bản vẽ",
+  "autoBackupSettingsAppBarTitle": "Cài đặt sao lưu tự động",
+  "autoBackupSettingsMainSwitchTitle": "Bật sao lưu tự động",
+  "autoBackupSettingsMainSwitchSubtitle": "Ghi chú của bạn được sao lưu định kỳ và an toàn trong nền.",
+  "autoBackupSettingsTargetTitle": "Đích sao lưu",
+  "autoBackupSettingsTargetSubtitle": "Chọn nơi lưu bản sao lưu.",
+  "autoBackupSettingsTargetLocalOption": "Cục bộ",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "Cả hai",
+  "autoBackupSettingsDriveNotConnectedNote": "Kết nối tài khoản trước để sử dụng các tùy chọn Google Drive.",
+  "autoBackupSettingsConnectButton": "Kết nối",
+  "autoBackupSettingsFrequencyTitle": "Tần suất sao lưu",
+  "autoBackupSettingsFrequencySubtitle": "Sao lưu được thực hiện mỗi {hours} giờ.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 giờ",
+  "autoBackupSettingsFrequency12h": "12 giờ",
+  "autoBackupSettingsFrequency24h": "24 giờ (Hàng ngày)",
+  "autoBackupSettingsFrequency48h": "48 giờ (2 ngày)",
+  "autoBackupSettingsFrequency168h": "168 giờ (Hàng tuần)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "Chỉ dùng Wi-Fi",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "Chỉ tải lên đám mây qua Wi-Fi để bảo vệ dữ liệu di động của bạn.",
+  "autoBackupSettingsStatusCardTitle": "Trạng thái hệ thống",
+  "autoBackupSettingsNeverRunMessage": "Sao lưu tự động chưa từng chạy.",
+  "autoBackupSettingsLastRunInfo": "Lần chạy gần nhất: {date} {time} ({status})\\nThông báo: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "Thành công",
+  "autoBackupSettingsStatusFailedLabel": "Thất bại",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Không thể kết nối với tài khoản Google.",
+  "autoBackupSettingsSavedSnackbar": "Đã cập nhật cài đặt sao lưu tự động.",
+  "selectionModeDeletedMessage": "Đã xóa {count} ghi chú",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "Đã lưu trữ",
+  "selectionModeClassifySheetTitle": "Chọn danh mục cho {count} ghi chú",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "Thêm danh mục",
+  "selectionModeRemoveCategoryOption": "Bỏ danh mục",
+  "calcTableItemHint": "Mục...",
+  "calcTableTotalRowLabel": "Tổng",
+  "textSelectionMenuShareButton": "Chia sẻ",
+  "textSelectionMenuTranslateButton": "Dịch",
+  "textSelectionMenuShareFailedSnackbar": "Không thể bắt đầu chia sẻ.",
+  "textSelectionMenuTranslateFailedSnackbar": "Không thể mở bản dịch.",
+  "lastBackupInfoTodayFormat": "Hôm nay {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}/{month}/{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "Sao lưu gần nhất: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "Chưa có bản sao lưu nào được thực hiện."
+}

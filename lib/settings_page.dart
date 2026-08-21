@@ -959,52 +959,80 @@ class _SettingsPageState extends State<SettingsPage> {
         return StatefulBuilder(
           builder: (ctx, setDlg) => AlertDialog(
             title: Text(AppLocalizations.of(context)!.settingsLanguageDialogTitle),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                RadioListTile<String>(
-                  title: Text(AppLocalizations.of(context)!.settingsLanguageSystemOption),
-                  value: 'system',
-                  groupValue: s._appLanguage,
-                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
-                ),
-                RadioListTile<String>(
-                  title: const Text('Türkçe'),
-                  value: 'tr',
-                  groupValue: s._appLanguage,
-                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
-                ),
-                RadioListTile<String>(
-                  title: const Text('English'),
-                  value: 'en',
-                  groupValue: s._appLanguage,
-                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
-                ),
-                RadioListTile<String>(
-                  title: const Text('Deutsch'),
-                  value: 'de',
-                  groupValue: s._appLanguage,
-                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
-                ),
-                RadioListTile<String>(
-                  title: const Text('Français'),
-                  value: 'fr',
-                  groupValue: s._appLanguage,
-                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
-                ),
-                RadioListTile<String>(
-                  title: const Text('Italiano'),
-                  value: 'it',
-                  groupValue: s._appLanguage,
-                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
-                ),
-                RadioListTile<String>(
-                  title: const Text('Español'),
-                  value: 'es',
-                  groupValue: s._appLanguage,
-                  onChanged: (val) => _updateLanguage(ctx, val, setDlg),
-                ),
-              ],
+            content: SizedBox(
+              width: double.maxFinite,
+              // Dil sayısı arttıkça listenin tamamı ekrana sığmayabilir.
+              // Column + mainAxisSize.min, AlertDialog'un yükseklik sınırını
+              // aşarak "BOTTOM OVERFLOWED" hatasına yol açıyordu. ListView +
+              // shrinkWrap, dialog'un kendi maksimum yükseklik kısıtı
+              // içinde (ekranın belli bir oranı) otomatik olarak scrollable
+              // hale gelmesini sağlar; taşma yerine kaydırma olur.
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  // "Sistem" seçeneği bir dil değil, davranış tercihi
+                  // olduğu için alfabetik sıralamanın dışında tutulup
+                  // her zaman en üstte gösterilir.
+                  RadioListTile<String>(
+                    title: Text(
+                      AppLocalizations.of(context)!.settingsLanguageSystemOption,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    value: 'system',
+                    groupValue: s._appLanguage,
+                    onChanged: (val) => _updateLanguage(ctx, val, setDlg),
+                    dense: true,
+                  ),
+                  // ── Diller: alfabetik sırayla ────────────────────────
+                  // Aşağıdaki liste kasıtlı olarak sırasız tutulur; sıralama
+                  // build sırasında otomatik yapılır (koda göre değil,
+                  // görünen isme göre, Dart'ın varsayılan codepoint
+                  // karşılaştırmasıyla). Bu sayede yeni bir dil eklemek
+                  // için listeye tek satır eklemek yeterlidir — sıralamayı
+                  // elle güncellemeye gerek kalmaz, her zaman bu kurala
+                  // (alfabetik sıra) otomatik uyar.
+                  ...(() {
+                    final entries = <MapEntry<String, String>>[
+                      const MapEntry('tr', 'Türkçe'),
+                      const MapEntry('en', 'English'),
+                      const MapEntry('de', 'Deutsch'),
+                      const MapEntry('fr', 'Français'),
+                      const MapEntry('it', 'Italiano'),
+                      const MapEntry('es', 'Español'),
+                      const MapEntry('pt', 'Português'),
+                      const MapEntry('ru', 'Русский'),
+                      const MapEntry('ja', '日本語'),
+                      const MapEntry('zh', '中文'),
+                      const MapEntry('ko', '한국어'),
+                      const MapEntry('hi', 'हिन्दी'),
+                      const MapEntry('id', 'Bahasa Indonesia'),
+                      const MapEntry('vi', 'Tiếng Việt'),
+                      const MapEntry('th', 'ไทย'),
+                      const MapEntry('pl', 'Polski'),
+                      const MapEntry('nl', 'Nederlands'),
+                      const MapEntry('sv', 'Svenska'),
+                      const MapEntry('ar', 'العربية'),
+                      const MapEntry('he', 'עברית'),
+                      const MapEntry('uk', 'Українська'),
+                      const MapEntry('ro', 'Română'),
+                      // Yeni dil eklerken buraya bir satır eklemek yeterli;
+                      // aşağıdaki sort otomatik doğru sıraya koyar.
+                    ]..sort((a, b) => a.value.compareTo(b.value));
+                    return entries.map(
+                      (e) => RadioListTile<String>(
+                        title: Text(
+                          e.value,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        value: e.key,
+                        groupValue: s._appLanguage,
+                        onChanged: (val) => _updateLanguage(ctx, val, setDlg),
+                        dense: true,
+                      ),
+                    );
+                  })(),
+                ],
+              ),
             ),
           ),
         );
@@ -1146,7 +1174,57 @@ class _SettingsPageState extends State<SettingsPage> {
       body: SafeArea(
         child: ListView(
           children: [
-            // ── 1. GÜVENLİK ─────────────────────────────────────────────
+            // ── 1. GENEL ─────────────────────────────────────────────────
+            // Dil, görsel/renk bir tercih olmadığı (Tema bölümündeki
+            // diğer ayarların aksine) davranışsal bir ayar olduğu için
+            // artık kendi bölümünde; ayrıca en üstte olması, kullanıcıların
+            // genelde ilk aradığı ayarlardan biri olmasıyla da örtüşüyor.
+            _sectionHeader(AppLocalizations.of(context)!.settingsSectionGeneral),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: dNoteCardColor(context),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Column(
+                children: [
+                  _settingTile(
+                    icon: Icons.language_outlined,
+                    iconColor: Colors.tealAccent,
+                    title: AppLocalizations.of(context)!.settingsLanguageTileTitle,
+                    subtitle: switch (s._appLanguage) {
+                      'tr' => 'Türkçe',
+                      'en' => 'English',
+                      'de' => 'Deutsch',
+                      'fr' => 'Français',
+                      'it' => 'Italiano',
+                      'es' => 'Español',
+                      'pt' => 'Português',
+                      'ru' => 'Русский',
+                      'ja' => '日本語',
+                      'zh' => '中文',
+                      'ko' => '한국어',
+                      'hi' => 'हिन्दी',
+                      'id' => 'Bahasa Indonesia',
+                      'vi' => 'Tiếng Việt',
+                      'th' => 'ไทย',
+                      'pl' => 'Polski',
+                      'nl' => 'Nederlands',
+                      'sv' => 'Svenska',
+                      'ar' => 'العربية',
+                      'he' => 'עברית',
+                      'uk' => 'Українська',
+                      'ro' => 'Română',
+                      _ => AppLocalizations.of(context)!.settingsLanguageSystemOption,
+                    },
+                    trailing: null,
+                    onTap: () => _showLanguageDialog(context),
+                  ),
+                ],
+              ),
+            ),
+
+            // ── 2. GÜVENLİK ─────────────────────────────────────────────
             _sectionHeader(AppLocalizations.of(context)!.settingsSectionSecurity),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -1202,7 +1280,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
 
-            // ── 2. TEMA ──────────────────────────────────────────────────
+            // ── 3. TEMA ──────────────────────────────────────────────────
             _sectionHeader(AppLocalizations.of(context)!.settingsSectionTheme),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -1223,27 +1301,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                     trailing: null,
                     onTap: () => _showThemeDialog(context),
-                  ),
-                  Divider(
-                    color: Theme.of(context).dividerColor,
-                    height: 1,
-                    indent: 56,
-                  ),
-                  _settingTile(
-                    icon: Icons.language_outlined,
-                    iconColor: Colors.tealAccent,
-                    title: AppLocalizations.of(context)!.settingsLanguageTileTitle,
-                    subtitle: switch (s._appLanguage) {
-                      'tr' => 'Türkçe',
-                      'en' => 'English',
-                      'de' => 'Deutsch',
-                      'fr' => 'Français',
-                      'it' => 'Italiano',
-                      'es' => 'Español',
-                      _ => AppLocalizations.of(context)!.settingsLanguageSystemOption,
-                    },
-                    trailing: null,
-                    onTap: () => _showLanguageDialog(context),
                   ),
                   Divider(
                     color: Theme.of(context).dividerColor,
@@ -1298,7 +1355,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
 
-            // ── 3. KİŞİSELLEŞTİRME ──────────────────────────────────────
+            // ── 4. KİŞİSELLEŞTİRME ──────────────────────────────────────
             _sectionHeader(AppLocalizations.of(context)!.settingsSectionPersonalization),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),

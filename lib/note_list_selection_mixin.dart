@@ -23,6 +23,11 @@ mixin NoteListSelectionMixin on State<NoteListScreen> {
   // Alt klasörleri çekmecede gizlenmiş üst kategorilerin adlarını tutar.
   // Her üst kategori kendi bağımsız daralt/genişlet durumuna sahiptir.
   Set<String> _collapsedCategories = {};
+  // Liste görünümünde daraltılmış (altındaki notlar gizli) tarih grubu
+  // başlıklarının (ör. "Bugün", "Yarın") adlarını tutar. Her grup kendi
+  // bağımsız daralt/genişlet durumuna sahiptir ve kalıcıdır (bkz.
+  // note_list_data_category_mixin.dart -> _loadData / _saveData).
+  Set<String> _collapsedDateGroups = {};
   String _activeCategory = 'Tümü';
   DateTime? _lastBackPressTime;
 

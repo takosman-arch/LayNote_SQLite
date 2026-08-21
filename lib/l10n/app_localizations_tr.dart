@@ -824,6 +824,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsPageTitle => 'Ayarlar';
 
   @override
+  String get settingsSectionGeneral => 'Genel';
+
+  @override
   String get settingsSectionSecurity => 'Güvenlik';
 
   @override

@@ -1,0 +1,1136 @@
+{
+  "@@locale": "ko",
+  "toolbarBoldTooltip": "굵게",
+  "toolbarItalicTooltip": "기울임꼴",
+  "toolbarUnderlineTooltip": "밑줄",
+  "toolbarStrikethroughTooltip": "취소선",
+  "toolbarFontSizeTooltip": "글자 크기",
+  "toolbarColorTooltip": "글자 색상",
+  "toolbarBulletTooltip": "글머리 기호 목록",
+  "toolbarNumberTooltip": "번호 매기기 목록",
+  "toolbarIndentTooltip": "문단 들여쓰기",
+  "toolbarLinkTooltip": "링크 추가/편집/삭제",
+  "toolbarDividerTooltip": "구분선 삽입",
+  "toolbarChecklistTooltip": "체크리스트 추가",
+  "linkSelectTextSnackbar": "먼저 링크로 연결할 텍스트를 선택하세요",
+  "linkDialogEditTitle": "링크 편집",
+  "linkDialogAddTitle": "링크 추가",
+  "linkDialogRemoveButton": "링크 삭제",
+  "linkDialogCancelButton": "취소",
+  "linkDialogConfirmButton": "추가",
+  "cameraPermissionPermanentlyDeniedMessage": "카메라 권한이 거부되었습니다. 동영상을 녹화하려면 설정에서 권한을 허용해야 합니다.",
+  "cameraPermissionRequiredMessage": "동영상을 녹화하려면 카메라 권한이 필요합니다.",
+  "openSettingsButtonLabel": "설정",
+  "documentScanStartFailedMessage": "스캔을 시작할 수 없습니다: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "텍스트 인식에 실패했습니다: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "문서에서 읽을 수 있는 텍스트를 찾지 못했습니다",
+  "scanResultSheetTitle": "스캔한 문서를 어떻게 추가할까요?",
+  "scanResultTextOnlyOption": "텍스트로만 추가",
+  "scanResultTextAndImageOption": "텍스트 + 스캔 이미지 추가",
+  "scanResultCancelOption": "취소",
+  "audioPermissionPermanentlyDeniedMessage": "마이크 권한이 거부되었습니다. 오디오를 녹음하려면 설정에서 권한을 허용해야 합니다.",
+  "audioPermissionRequiredMessage": "오디오를 녹음하려면 마이크 권한이 필요합니다.",
+  "voiceRecordingDefaultLabel": "음성 녹음",
+  "blockPreviewCalcTableLabel": "계산 목록 ({count}행)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "그림",
+  "blockPreviewAttachmentsLabel": "첨부파일 {count}개 (사진/문서)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "구분선",
+  "blockPreviewChecklistLabel": "체크리스트 ({count}개 항목)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(빈 텍스트)",
+  "reorderBlocksSheetTitle": "블록 순서 변경",
+  "reorderBlocksMoveUpTooltip": "위로 이동",
+  "reorderBlocksMoveDownTooltip": "아래로 이동",
+  "reorderBlocksCloseTooltip": "닫기",
+  "reorderBlocksDescription": "블록을 선택한 다음 위/아래 화살표로 순서를 옮기세요.",
+  "reorderBlocksMenuItemLabel": "순서 변경",
+  "txtImportPickerDialogTitle": "가져올 TXT 파일 선택",
+  "txtImportReadFailedMessage": "TXT 파일을 읽을 수 없습니다",
+  "txtImportEmptyFileMessage": "TXT 파일이 비어 있습니다",
+  "txtImportSuccessMessage": "TXT 파일을 가져왔습니다",
+  "txtImportMenuItemLabel": "가져오기 (txt)",
+  "exportMenuItemLabel": "내보내기",
+  "editorUndoTooltip": "실행 취소",
+  "editorRedoTooltip": "다시 실행",
+  "noteSavedMessage": "노트가 저장되었습니다",
+  "dateAssignPickerHelpText": "노트를 특정 날짜에 지정",
+  "dateAssignChangeOption": "날짜 변경",
+  "dateAssignRemoveOption": "지정 해제",
+  "editorSubToolbarCloseTooltip": "닫기",
+  "titleFieldHint": "제목",
+  "textBlockHint": "여기에 노트를 작성하세요...",
+  "drawingBoardMenuItemLabel": "그림판",
+  "voiceToTextTextNotesOnlyMessage": "음성을 텍스트로 변환하는 기능은 텍스트 노트에서만 사용할 수 있습니다",
+  "selectionModeCancelTooltip": "선택 취소",
+  "selectionModeSelectedCountTitle": "{count}개 선택됨",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "삭제",
+  "selectionModeArchiveTooltip": "보관",
+  "selectionModeFolderTooltip": "폴더",
+  "searchFieldHint": "노트 검색...",
+  "emptyTrashDialogTitle": "휴지통 비우기",
+  "emptyTrashDialogConfirmMessage": "삭제된 모든 노트가 영구적으로 제거됩니다. 계속하시겠습니까?",
+  "emptyTrashDialogCancelButton": "취소",
+  "restoreAllMenuItemLabel": "모두 복원",
+  "sortMenuTooltip": "노트 정렬",
+  "sortMenuAscendingLabel": "정렬: 오름차순 (A-Z)",
+  "sortMenuDescendingLabel": "정렬: 내림차순 (Z-A)",
+  "sortMenuByTitleLabel": "정렬 기준: 제목",
+  "sortMenuByModifiedDateLabel": "정렬 기준: 마지막 수정일",
+  "sortMenuByCreatedDateLabel": "정렬 기준: 생성일",
+  "sortMenuByFolderLabel": "정렬 기준: 폴더",
+  "viewToggleGridTooltip": "그리드 보기",
+  "viewToggleListTooltip": "목록 보기",
+  "drawerHeaderSubtitle": "나만의 개인 노트",
+  "drawerNotesSectionHeader": "노트",
+  "drawerAllNotesLabel": "노트",
+  "drawerFavoritesLabel": "즐겨찾기",
+  "drawerAgendaLabel": "일정",
+  "drawerRemindersLabel": "알림",
+  "drawerLockedLabel": "잠김",
+  "drawerTrashLabel": "휴지통",
+  "drawerFoldersSectionHeader": "폴더",
+  "drawerExpandLabel": "펼치기",
+  "drawerCollapseLabel": "접기",
+  "drawerAddFolderLabel": "폴더 추가",
+  "drawerAppSectionHeader": "앱",
+  "drawerCalendarLabel": "달력",
+  "drawerSettingsLabel": "설정",
+  "drawerBackupRestoreLabel": "백업 및 복원",
+  "drawerUpgradeToProLabel": "Pro로 업그레이드",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "개발 후원하기",
+  "drawerFeedbackLabel": "피드백",
+  "drawerAboutLabel": "정보",
+  "noNotesFoundMessage": "노트를 찾을 수 없습니다.",
+  "trashRestoreButtonLabel": "복원",
+  "trashPermanentDeleteButtonLabel": "영구 삭제",
+  "tagRenamedInfoMessage": "태그 이름이 변경되었습니다",
+  "tagDeletedInfoMessage": "태그가 삭제되었습니다",
+  "tagOptionsRenameLabel": "이름 변경",
+  "tagOptionsDeleteLabel": "삭제",
+  "renameTagDialogTitle": "태그 이름 변경",
+  "renameTagDialogHint": "새 태그 이름",
+  "renameTagDialogCancelButton": "취소",
+  "renameTagDialogSaveButton": "저장",
+  "deleteTagDialogMessageWithCount": "\"{tag}\" 태그가 {affectedCount}개의 노트에서 제거됩니다. 계속하시겠습니까?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "\"{tag}\" 태그를 삭제하시겠습니까?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "태그 삭제",
+  "deleteTagDialogCancelButton": "취소",
+  "deleteTagDialogConfirmButton": "삭제",
+  "tagsSheetTitle": "태그",
+  "tagsSheetEmptyMessage": "이 노트에는 아직 태그가 없습니다.",
+  "tagsSheetInputHint": "새 태그 입력...",
+  "tagsSheetSuggestionsLabel": "기존 태그",
+  "noteDeletedInfoMessage": "노트가 삭제되었습니다",
+  "noteDeletedUndoActionLabel": "실행 취소",
+  "reminderSetInfoMessage": "알림이 설정되었습니다",
+  "reminderRemovedInfoMessage": "알림이 삭제되었습니다",
+  "noteDuplicatedInfoMessage": "사본이 생성되었습니다",
+  "speechTextAppendedInfoMessage": "노트에 텍스트가 추가되었습니다",
+  "pdfPreparingInfoMessage": "PDF 준비 중…",
+  "pdfSavedInfoMessage": "PDF가 저장되었습니다",
+  "jpgPreparingInfoMessage": "JPG 준비 중…",
+  "jpgSavedInfoMessage": "JPG가 저장되었습니다",
+  "jpgFailedInfoMessage": "JPG를 생성할 수 없습니다",
+  "txtPreparingInfoMessage": "TXT 준비 중…",
+  "txtSavedInfoMessage": "TXT가 저장되었습니다",
+  "txtFailedInfoMessage": "TXT를 생성할 수 없습니다",
+  "exportOpenActionLabel": "열기",
+  "wrongPasswordInfoMessage": "비밀번호가 틀렸습니다.",
+  "noteArchivedInfoMessage": "노트가 보관되었습니다",
+  "noteUnarchivedInfoMessage": "보관함에서 제거되었습니다",
+  "noteUnlockedInfoMessage": "잠금이 해제되었습니다",
+  "noteLockedInfoMessage": "노트가 잠겼습니다",
+  "notificationUnpinnedInfoMessage": "고정이 해제되었습니다",
+  "emptyNotePinBlockedInfoMessage": "빈 노트는 고정할 수 없습니다.",
+  "notificationPinnedInfoMessage": "알림 패널에 고정되었습니다",
+  "noContentToReadInfoMessage": "읽을 내용이 없습니다",
+  "backPressExitInfoMessage": "한 번 더 뒤로가기를 누르면 종료됩니다",
+  "reminderChannelName": "노트 알림",
+  "reminderChannelDescription": "Layout 앱의 노트 알림",
+  "pinnedChannelName": "고정된 노트",
+  "pinnedChannelDescription": "알림 패널에 고정된 Layout 노트",
+  "notificationUnpinActionLabel": "제거",
+  "reminderDefaultTitle": "알림",
+  "reminderChecklistBodyFallback": "체크리스트를 확인하는 것을 잊지 마세요",
+  "reminderTextBodyFallback": "노트를 확인하는 것을 잊지 마세요",
+  "pdfSaveDialogTitle": "PDF로 저장",
+  "jpgSaveDialogTitle": "JPG로 저장",
+  "txtSaveDialogTitle": "TXT로 저장",
+  "textSizeSheetTitle": "글자 크기",
+  "textSizeSamplePreview": "샘플 텍스트",
+  "textSizeCancelButton": "취소",
+  "textSizeApplyButton": "적용",
+  "createPasswordDialogTitle": "비밀번호 만들기",
+  "createPasswordNewPasswordHint": "새 비밀번호",
+  "createPasswordConfirmHint": "비밀번호 다시 입력",
+  "createPasswordHintQuestionDescription": "비밀번호를 잊어버릴 경우를 대비해 보안 질문을 설정하세요 (선택 사항).",
+  "createPasswordHintQuestionHint": "보안 질문 선택",
+  "createPasswordHintAnswerHint": "답변",
+  "createPasswordCancelButton": "취소",
+  "createPasswordSaveButton": "저장",
+  "passwordMismatchMessage": "비밀번호가 일치하지 않습니다!",
+  "passwordRequiredDialogTitle": "비밀번호 필요",
+  "passwordRequiredHint": "비밀번호 입력",
+  "forgotPasswordButtonLabel": "비밀번호를 잊으셨나요",
+  "passwordRequiredCancelButton": "취소",
+  "passwordRequiredConfirmButton": "확인",
+  "securityQuestionDialogTitle": "보안 질문",
+  "securityQuestionAnswerHint": "답변",
+  "securityQuestionCancelButton": "취소",
+  "securityQuestionConfirmButton": "확인",
+  "securityQuestionWrongAnswerMessage": "답변이 틀렸습니다. 다시 시도하세요.",
+  "revealedPasswordDialogTitle": "내 비밀번호",
+  "revealedPasswordLabel": "노트 비밀번호:",
+  "revealedPasswordOkButton": "확인",
+  "securityQuestionPetName": "첫 번째 반려동물의 이름은 무엇인가요?",
+  "securityQuestionFavoriteTeacher": "가장 좋아하는 선생님의 이름은 무엇인가요?",
+  "securityQuestionBirthCity": "태어난 도시는 어디인가요?",
+  "securityQuestionFavoriteFood": "가장 좋아하는 음식은 무엇인가요?",
+  "securityQuestionMotherMaidenName": "어머니의 결혼 전 성함은 무엇인가요?",
+  "securityQuestionFirstSchool": "처음 다닌 학교의 이름은 무엇인가요?",
+  "securityQuestionFavoriteColor": "가장 좋아하는 색은 무엇인가요?",
+  "editFolderDialogTitle": "폴더 편집",
+  "newSubfolderDialogTitle": "새 하위 폴더",
+  "addFolderDialogTitle": "폴더 추가",
+  "subfolderParentInfoMessage": "\"{parentCategory}\" 안에 생성됩니다",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "하위 폴더 이름",
+  "folderNameFieldLabel": "폴더 이름",
+  "folderColorLabel": "색상",
+  "folderDialogCancelButton": "취소",
+  "folderDialogSaveButton": "저장",
+  "folderDialogAddButton": "추가",
+  "selectFolderSheetTitle": "폴더 선택",
+  "selectFolderAddOptionLabel": "폴더 추가",
+  "removeCurrentFolderLabel": "현재 폴더 제거",
+  "noteDetailsDialogTitle": "세부 정보",
+  "noteDetailsCreatedLabel": "생성일",
+  "noteDetailsModifiedLabel": "마지막 수정일",
+  "noteDetailsCharCountLabel": "글자 수",
+  "noteDetailsCharCountValue": "{count}자",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "단어 수",
+  "noteDetailsWordCountValue": "{count}개 단어",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "확인",
+  "noteDetailsUnknownDateLabel": "알 수 없음",
+  "addAttachmentSheetTitle": "추가",
+  "addAttachmentImageOption": "이미지 추가",
+  "addAttachmentCameraOption": "카메라",
+  "addAttachmentFileOption": "파일 추가",
+  "addAttachmentVoiceOption": "음성 녹음",
+  "addAttachmentVideoOption": "동영상 녹화",
+  "addAttachmentScanOption": "문서 스캔",
+  "noteActionsSheetTitle": "작업 선택",
+  "noteActionReminderLabel": "알림",
+  "noteActionEditReminderLabel": "알림 편집",
+  "noteActionSpeechToTextLabel": "음성을 텍스트로 변환",
+  "noteActionArchiveLabel": "보관",
+  "noteActionUnarchiveLabel": "보관함에서 제거",
+  "noteActionLockLabel": "잠금",
+  "noteActionUnlockLabel": "잠금 해제",
+  "noteActionFavoriteLabel": "즐겨찾기",
+  "noteActionUnfavoriteLabel": "즐겨찾기에서 제거",
+  "noteActionClassifyLabel": "폴더 선택",
+  "noteActionDeleteLabel": "삭제",
+  "noteActionPinToNotificationLabel": "알림 패널에 고정",
+  "noteActionUnpinFromNotificationLabel": "고정 해제",
+  "noteActionShareLabel": "공유",
+  "noteActionDuplicateLabel": "사본 만들기",
+  "noteActionCopyContentLabel": "내용 복사",
+  "noteActionTtsLabel": "소리 내어 읽기",
+  "noteActionTextSizeLabel": "글자 크기",
+  "noteActionDetailsLabel": "세부 정보",
+  "noteActionDiscardChangesLabel": "변경 사항 취소",
+  "noteActionSelectLabel": "선택",
+  "reminderEditOptionLabel": "알림 변경",
+  "reminderRemoveOptionLabel": "알림 삭제",
+  "discardChangesDialogTitle": "변경 사항 취소",
+  "discardChangesDialogMessage": "이 노트의 저장되지 않은 변경 사항이 사라집니다. 취소하시겠습니까?",
+  "discardChangesCancelButton": "취소",
+  "discardChangesConfirmButton": "취소하기",
+  "pinnedNotificationDefaultTitle": "노트",
+  "pdfFailedInfoMessage": "PDF 생성에 실패했습니다",
+  "drawingScreenTitle": "그림",
+  "drawingMinimizeTooltip": "최소화",
+  "drawingEmptyExportWarningMessage": "먼저 그림을 그려주세요",
+  "drawingEraserPartialModeLabel": "부분",
+  "drawingEraserFullModeLabel": "전체",
+  "drawingClearTooltip": "지우기",
+  "drawingZoomOutTooltip": "축소",
+  "drawingZoomInTooltip": "확대",
+  "drawingDeleteTooltip": "삭제",
+  "drawingEmptyPreviewHint": "탭하여 그리기",
+  "settingsPageTitle": "설정",
+  "settingsSectionGeneral": "일반",
+  "settingsSectionSecurity": "보안",
+  "settingsSectionTheme": "테마",
+  "settingsSectionPersonalization": "개인화",
+  "settingsSectionWidget": "위젯",
+  "settingsSectionAbout": "정보",
+  "settingsHintQuestionPet": "첫 번째 반려동물의 이름은 무엇인가요?",
+  "settingsHintQuestionTeacher": "가장 좋아하는 선생님의 이름은 무엇인가요?",
+  "settingsHintQuestionBirthCity": "태어난 도시는 어디인가요?",
+  "settingsHintQuestionFavoriteFood": "가장 좋아하는 음식은 무엇인가요?",
+  "settingsHintQuestionMotherMaidenName": "어머니의 결혼 전 성함은 무엇인가요?",
+  "settingsHintQuestionFirstSchool": "처음 다닌 학교는 어디인가요?",
+  "settingsHintQuestionFavoriteColor": "가장 좋아하는 색은 무엇인가요?",
+  "settingsSecurityQuestionDialogTitle": "보안 질문",
+  "settingsSecurityQuestionDialogDesc": "비밀번호를 잊어버린 경우, 이 질문에 올바르게 답하면 비밀번호를 복구할 수 있습니다.",
+  "settingsSecurityQuestionDropdownHint": "보안 질문 선택",
+  "settingsSecurityQuestionAnswerHint": "답변",
+  "settingsSecurityQuestionCancelButton": "취소",
+  "settingsSecurityQuestionEmptyWarning": "질문과 답변은 비워둘 수 없습니다!",
+  "settingsSecurityQuestionSaveButton": "저장",
+  "settingsCreatePasswordTitle": "비밀번호 만들기",
+  "settingsPasswordRequiredTitle": "비밀번호 필요",
+  "settingsPasswordEnterHint": "비밀번호 입력",
+  "settingsForgotPasswordButton": "비밀번호를 잊으셨나요",
+  "settingsNewPasswordHint": "새 비밀번호",
+  "settingsConfirmPasswordHint": "비밀번호 다시 입력",
+  "settingsSecurityQuestionOptionalDesc": "비밀번호를 잊어버릴 경우를 대비해 보안 질문을 설정하세요 (선택 사항).",
+  "settingsPasswordDialogCancelButton": "취소",
+  "settingsPasswordMismatchWarning": "비밀번호가 일치하지 않습니다!",
+  "settingsWrongPasswordWarning": "비밀번호가 틀렸습니다!",
+  "settingsPasswordSaveButton": "저장",
+  "settingsPasswordRemoveButton": "제거",
+  "settingsNotePasswordTitle": "노트 비밀번호",
+  "settingsPasswordSetSubtitle": "비밀번호 설정됨 ✓",
+  "settingsPasswordNotSetSubtitle": "비밀번호가 설정되지 않음",
+  "settingsSecurityQuestionTileTitle": "보안 질문",
+  "settingsSecurityQuestionSetSubtitle": "설정됨 ✓ — 비밀번호를 잊었을 때 사용됩니다",
+  "settingsSecurityQuestionNotSetSubtitle": "설정되지 않음 — 비밀번호를 분실하면 복구할 수 없습니다",
+  "settingsThemeDialogTitle": "테마 선택",
+  "settingsThemeSystemDefault": "시스템 기본값",
+  "settingsThemeLightOption": "밝은 테마",
+  "settingsThemeDarkOption": "어두운 테마",
+  "settingsAccentColorDialogTitle": "강조 색상 선택",
+  "settingsThemeChangeTileTitle": "테마 변경",
+  "settingsThemeLightLabel": "밝게",
+  "settingsThemeDarkLabel": "어둡게",
+  "settingsThemeSystemLabel": "시스템",
+  "settingsLanguageTileTitle": "언어",
+  "settingsLanguageDialogTitle": "언어 선택",
+  "settingsLanguageSystemOption": "시스템",
+  "settingsAccentColorTileTitle": "강조 색상",
+  "settingsAccentColorTileSubtitle": "앱 바, 버튼, 스위치에 사용되는 색상",
+  "settingsColorfulNotesTitle": "다양한 노트 색상",
+  "settingsColorfulNotesSubtitle": "각 노트 카드가 서로 다른 색상 톤을 가집니다.",
+  "settingsTextColorSheetTitle": "글자 색상",
+  "settingsTextColorSheetDesc": "노트 내용 텍스트의 색상을 설정합니다.",
+  "settingsTextColorOkButton": "확인",
+  "settingsTextColorTileTitle": "글자 색상",
+  "settingsTextColorTileSubtitle": "노트 내용 텍스트의 색상입니다.",
+  "settingsWidgetFontSizeLabel": "위젯 글자 크기",
+  "settingsWidgetFontSizeSample": "샘플 제목 - {size}pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "취소",
+  "settingsWidgetFontSizeApplyButton": "적용",
+  "settingsWidgetOpacityLabel": "배경 투명도",
+  "settingsWidgetOpacityValue": "투명도 {percent}%",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "취소",
+  "settingsWidgetOpacityApplyButton": "적용",
+  "settingsWidgetDarkModeTitle": "어두운 위젯",
+  "settingsWidgetDarkModeDesc": "위젯에 어두운 색상 구성표를 적용합니다.",
+  "settingsAboutVersionTitle": "앱 버전",
+  "settingsFontFamilyTileTitle": "글꼴",
+  "settingsFontFamilyDefaultLabel": "기본값",
+  "settingsGlobalFontSizeTileTitle": "글자 크기",
+  "settingsGlobalFontSizeTileSubtitle": "{size}pt — 모든 노트에 적용됩니다.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "샘플 텍스트 - {size}pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "기존 노트에도 적용",
+  "settingsGlobalFontSizeApplyToAllNote": "노트에 개별 글자 크기가 설정되어 있으면 이 설정이 적용되지 않습니다.",
+  "settingsGlobalFontSizeCancelButton": "취소",
+  "settingsGlobalFontSizeApplyButton": "적용",
+  "settingsPreviewLinesTileTitle": "노트 미리보기 줄 수",
+  "settingsPreviewLinesTileSubtitle": "최대 {lines}줄까지 표시합니다. 노트가 더 짧으면 실제 줄 수만큼 표시됩니다.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "현재: {lines}줄",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "미리보기에 표시할 최대 줄 수를 설정합니다. 노트의 줄 수가 더 적으면 실제 줄 수만큼 표시됩니다.",
+  "settingsPreviewLinesCancelButton": "취소",
+  "settingsPreviewLinesApplyButton": "적용",
+  "backupCancelButton": "취소",
+  "backupConnectButton": "연결",
+  "backupDisconnectButton": "연결 해제",
+  "backupContinueButton": "계속",
+  "backupCloseButton": "닫기",
+  "backupShareButton": "공유",
+  "backupRestoreButton": "복원",
+  "backupConfigureButton": "구성",
+  "backupUnknownDateLabel": "알 수 없음",
+  "backupProcessingDefaultLabel": "처리 중...",
+  "backupPermissionRequiredTitle": "저장소 권한 필요",
+  "backupPermissionRequiredBodyPermanent": "이 안드로이드 버전에서는 백업/복원을 위해 저장소 권한이 필요합니다. 권한이 영구적으로 거부되었으므로 앱 설정에서 직접 활성화해 주세요.",
+  "backupPermissionRequiredBodyNormal": "이 안드로이드 버전에서는 백업/복원을 위해 저장소 권한이 필요합니다. 계속하려면 권한을 허용해 주세요.",
+  "backupGoToSettingsButton": "설정으로 이동",
+  "backupRetryButton": "다시 시도",
+  "backupDriveConnectingLabel": "Google 계정에 연결 중...",
+  "backupDriveConnectedWithEmailMessage": "Google Drive 계정에 연결됨: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Google Drive 계정에 연결되었습니다.",
+  "backupDriveConnectFailedMessage": "Google 계정에 연결할 수 없거나 작업이 취소되었습니다.",
+  "backupDriveDisconnectTitle": "Google Drive 연결 해제",
+  "backupDriveDisconnectBody": "연결을 해제하면 Drive로의 수동 또는 자동 백업이 불가능해집니다. Drive에 이미 저장된 백업은 삭제되지 않으며, 이 기기에서의 접근만 제거됩니다.",
+  "backupDriveDisconnectedMessage": "Google Drive 연결이 제거되었습니다.",
+  "backupDriveRequiredTitle": "Google 계정 필요",
+  "backupDriveRequiredBody": "이 작업을 수행하려면 Google 계정을 연결해야 합니다. 지금 연결하시겠습니까?",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: 연결됨 ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: 연결됨",
+  "backupDriveStatusDisconnected": "Google Drive: 연결 안 됨",
+  "backupDriveAuthenticatingLabel": "Google 계정 확인 중...",
+  "backupDriveNotSignedInMessage": "Google Drive에 연결되어 있지 않습니다. 먼저 Google 계정으로 로그인해 주세요.",
+  "backupDriveUploadingLabel": "Drive에 백업 업로드 중...",
+  "backupDriveUploadTimeoutMessage": "Google Drive 업로드가 120초 내에 완료되지 않았습니다 (서버 응답 없음). 연결 상태를 확인하고 다시 시도해 주세요.",
+  "backupDriveOperationCompletedLabel": "완료됨",
+  "backupToDriveActionLabel": "Drive로 백업",
+  "backupToDeviceActionLabel": "백업",
+  "backupCreatingLabel": "백업 생성 중...",
+  "backupCreateFailedMessage": "백업을 생성할 수 없습니다: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Google Drive 업로드에 실패했습니다: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "백업이 Google Drive에 성공적으로 업로드되었습니다.",
+  "backupCreatedMessage": "백업 생성됨: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "백업 준비 완료",
+  "backupOfferShareBody": "백업 파일이 기기에 저장되었습니다. 지금 공유하시겠습니까? (예: 클라우드 저장소, 이메일, 다른 기기)",
+  "backupShareFileText": "layout 백업 파일",
+  "backupShareFailedMessage": "공유를 시작할 수 없습니다: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "대용량 백업",
+  "backupLargeOperationBody": "처리할 데이터가 약 {sizeText}입니다. 이 정도 크기의 {actionLabel} 작업은 기기에 따라 시간이 걸릴 수 있습니다. 작업이 진행되는 동안 앱을 나가지 마세요 — 계속하시겠습니까?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "복원",
+  "backupDriveListingLabel": "Drive 백업 목록 불러오는 중...",
+  "backupDriveListFailedMessage": "백업 목록을 불러올 수 없습니다: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "아직 Google Drive에 백업이 없습니다.",
+  "backupDrivePickTitle": "Drive에서 백업 선택",
+  "backupDriveDownloadingLabel": "Drive에서 백업 다운로드 중...",
+  "backupDriveDownloadingWithSizeLabel": "Drive에서 백업 다운로드 중... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "파일을 기기에 저장 중...",
+  "backupDriveUnknownBackupFileName": "unknown_backup.zip",
+  "backupDriveStorageFullMessage": "Google Drive 저장 공간이 가득 찼습니다. Drive에서 공간을 확보한 후 다시 시도해 주세요.",
+  "backupDriveNetworkErrorMessage": "인터넷 연결을 설정할 수 없습니다. 연결 상태를 확인하고 다시 시도해 주세요.",
+  "backupDriveBackupNotFoundMessage": "지정한 백업 파일을 Drive에서 찾을 수 없습니다. 삭제되었을 수 있습니다.",
+  "backupDriveUnknownErrorMessage": "Google Drive 작업 중 예기치 않은 오류가 발생했습니다: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "다운로드에 실패했습니다: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "파일을 선택할 수 없습니다: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "선택한 파일에 접근할 수 없습니다.",
+  "backupCheckingLabel": "백업 확인 중...",
+  "backupReadFailedMessage": "백업 파일을 읽을 수 없습니다: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "백업 복원",
+  "backupPreviewContentsHeader": "선택한 백업의 내용:",
+  "backupPreviewNoteCountLabel": "노트 수",
+  "backupPreviewTrashCountLabel": "휴지통의 노트",
+  "backupPreviewCategoryCountLabel": "카테고리 수",
+  "backupPreviewAttachmentLabel": "첨부파일",
+  "backupPreviewAttachmentNoneValue": "없음",
+  "backupPreviewAttachmentCountValue": "파일 {count}개 ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "생성일",
+  "backupEmptyPreviewTitle": "이 백업은 비어 있는 것 같습니다",
+  "backupEmptyPreviewBody": "선택한 파일에서 노트, 카테고리 또는 첨부파일을 찾을 수 없습니다. 계속하면 현재 데이터가 삭제되고 이 빈 백업으로 교체됩니다.",
+  "backupMissingAttachmentsTitle": "백업에서 첨부파일 {count}개를 찾을 수 없음",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "이 파일이 포함된 노트는 복원되지만 첨부파일 없이 복원됩니다 (백업 시점에 파일이 누락되었거나 손상되었을 수 있습니다): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} 외 {remaining}개 더",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "이 작업은 현재의 모든 노트, 휴지통, 카테고리, 설정, 첨부파일을 위 백업의 데이터로 교체합니다. 현재 데이터는 영구적으로 사라지며 이 작업은 되돌릴 수 없습니다.",
+  "backupRestoringLabel": "백업 복원 중...",
+  "backupRestoreSuccessWithMissingMessage": "백업이 복원되었습니다. 다만 첨부파일 {count}개는 백업에서 찾을 수 없어 복원되지 않았습니다. 변경 사항을 완전히 적용하려면 앱을 재시작하는 것을 권장합니다.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "백업이 성공적으로 복원되었습니다. 변경 사항을 완전히 적용하려면 앱을 재시작하는 것을 권장합니다.",
+  "backupRestoreFailedMessage": "복원 중 오류가 발생했습니다: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "백업 및 복원",
+  "backupBlockedExitWarningMessage": "작업이 진행 중입니다. 완료될 때까지 기다려 주세요.",
+  "backupBusyBackTooltip": "작업 진행 중",
+  "backupIntroText": "노트, 카테고리, 설정, 첨부파일을 하나의 .zip 파일로 백업하거나 이전에 만든 백업을 복원할 수 있습니다.",
+  "backupDriveCardTitle": "Google Drive에 백업",
+  "backupDriveCardSubtitle": "새 백업을 만들어 Google Drive의 비공개 영역에 직접 업로드합니다.",
+  "backupDriveCardButtonLabel": "Drive에 백업",
+  "backupDeviceCardTitle": "기기에 백업",
+  "backupDeviceCardSubtitle": "모든 데이터를 하나의 .zip 파일로 기기에 저장하고 원하는 경우 공유하세요.",
+  "backupDeviceCardButtonLabel": "기기에 백업",
+  "backupHistoryCardTitle": "백업 기록",
+  "backupHistoryCardSubtitle": "기기에 저장된 모든 백업을 날짜와 크기와 함께 확인하세요. 여기서 바로 공유, 복원 또는 삭제할 수 있습니다.",
+  "backupHistoryTabDevice": "기기",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "백업 삭제",
+  "backupHistoryDeleteDialogBody": "\"{fileName}\" 백업 파일을 영구적으로 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "백업이 삭제되었습니다.",
+  "backupHistoryDriveDeleteDialogTitle": "Drive 백업 삭제",
+  "backupHistoryDriveDeleteDialogBody": "\"{fileName}\" 백업을 Google Drive에서 영구적으로 삭제하시겠습니까? 이 작업은 되돌릴 수 없으며 파일이 휴지통으로 이동하지 않습니다.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Drive 백업이 삭제되었습니다.",
+  "backupHistoryDriveDeleteFailedMessage": "삭제할 수 없습니다: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "이 기기에 저장된 백업이 아직 없습니다.",
+  "backupHistoryDeviceEmptySubtitle": "\"기기에 백업\"을 사용해 첫 백업을 만들어보세요.",
+  "backupHistoryDriveEmptySubtitle": "\"Google Drive에 백업\"을 사용해 첫 클라우드 백업을 만들어보세요.",
+  "backupHistoryDriveSignInPrompt": "Google 계정을 연결하면 Drive 백업을 확인할 수 있습니다.",
+  "backupHistoryConnectGoogleButton": "Google로 연결",
+  "backupHistoryDriveConnectedFallback": "연결됨",
+  "backupHistoryUnknownErrorFallback": "알 수 없는 오류가 발생했습니다.",
+  "backupHistoryDownloadStartingLabel": "시작 중...",
+  "backupAutoBackupEnabledLabel": "자동 백업: 켜짐",
+  "backupAutoBackupDisabledLabel": "자동 백업: 꺼짐",
+  "backupOverlayWarningMessage": "작업이 완료될 때까지 앱을 나가지 말고 기다려 주세요.",
+  "pdfExportUntitledNoteLabel": "제목 없는 노트",
+  "pdfExportDefaultAttachmentName": "첨부파일",
+  "pdfExportDefaultFileName": "note",
+  "screenshotExportBoundaryNotFoundMessage": "스크린샷을 캡처할 수 없습니다 (경계를 찾을 수 없음)",
+  "screenshotExportByteDataNullMessage": "스크린샷 데이터를 생성할 수 없습니다",
+  "screenshotExportPngDecodeFailedMessage": "이미지를 처리할 수 없습니다 (PNG 디코딩 실패)",
+  "screenshotCalcTableTotalLabel": "합계",
+  "gundemMenuRemoveFromAgenda": "일정에서 제거",
+  "gundemMenuDeleteNote": "노트 삭제",
+  "gundemSectionOverdue": "기한 지남",
+  "gundemSectionToday": "오늘",
+  "gundemSectionTomorrow": "내일",
+  "gundemSectionNextWeek": "다음 주",
+  "gundemSectionFurther": "그 이후",
+  "gundemWeekdayMonday": "월요일",
+  "gundemWeekdayTuesday": "화요일",
+  "gundemWeekdayWednesday": "수요일",
+  "gundemWeekdayThursday": "목요일",
+  "gundemWeekdayFriday": "금요일",
+  "gundemWeekdaySaturday": "토요일",
+  "gundemWeekdaySunday": "일요일",
+  "gundemAppBarTitle": "일정",
+  "gundemCalendarTooltip": "달력",
+  "gundemEmptyTitle": "일정에 아무것도 없습니다",
+  "gundemEmptySubtitle": "알림이나 날짜가 지정된 노트가 여기에 표시됩니다.",
+  "gundemUntitledNote": "제목 없는 노트",
+  "gundemRepeatHourly": "매시간",
+  "gundemRepeatDaily": "매일",
+  "gundemRepeatWeekly": "매주",
+  "gundemRepeatMonthly": "매월",
+  "gundemRepeatYearly": "매년",
+  "gundemPreviewCalcTableLabel": "[계산 목록]",
+  "gundemPreviewDrawingLabel": "[그림]",
+  "gundemPreviewImageLabel": "[이미지]",
+  "gundemMonthShortJan": "1월",
+  "gundemMonthShortFeb": "2월",
+  "gundemMonthShortMar": "3월",
+  "gundemMonthShortApr": "4월",
+  "gundemMonthShortMay": "5월",
+  "gundemMonthShortJun": "6월",
+  "gundemMonthShortJul": "7월",
+  "gundemMonthShortAug": "8월",
+  "gundemMonthShortSep": "9월",
+  "gundemMonthShortOct": "10월",
+  "gundemMonthShortNov": "11월",
+  "gundemMonthShortDec": "12월",
+  "calendarAppBarTitle": "달력",
+  "calendarTodayButton": "오늘",
+  "calendarLegendNoteLabel": "노트",
+  "calendarLegendReminderLabel": "알림",
+  "calendarTodayBadge": "오늘",
+  "calendarEmptyDayMessage": "이 날짜에는 노트나 알림이 없습니다.",
+  "calendarReminderHourlyLabel": "매시간",
+  "calendarMonthJan": "1월",
+  "calendarMonthFeb": "2월",
+  "calendarMonthMar": "3월",
+  "calendarMonthApr": "4월",
+  "calendarMonthMay": "5월",
+  "calendarMonthJun": "6월",
+  "calendarMonthJul": "7월",
+  "calendarMonthAug": "8월",
+  "calendarMonthSep": "9월",
+  "calendarMonthOct": "10월",
+  "calendarMonthNov": "11월",
+  "calendarMonthDec": "12월",
+  "calendarWeekdayShortMon": "월",
+  "calendarWeekdayShortTue": "화",
+  "calendarWeekdayShortWed": "수",
+  "calendarWeekdayShortThu": "목",
+  "calendarWeekdayShortFri": "금",
+  "calendarWeekdayShortSat": "토",
+  "calendarWeekdayShortSun": "일",
+  "calendarWeekdayFullMonday": "월요일",
+  "calendarWeekdayFullTuesday": "화요일",
+  "calendarWeekdayFullWednesday": "수요일",
+  "calendarWeekdayFullThursday": "목요일",
+  "calendarWeekdayFullFriday": "금요일",
+  "calendarWeekdayFullSaturday": "토요일",
+  "calendarWeekdayFullSunday": "일요일",
+  "wrongPasswordDialogTitle": "잘못된 비밀번호",
+  "wrongPasswordDialogMessage": "입력한 비밀번호가 올바르지 않습니다.",
+  "commonOkButton": "확인",
+  "unlockCategoryAction": "잠금 해제",
+  "lockCategoryAction": "잠금",
+  "categoryUnlockedMessage": "잠금이 해제되었습니다",
+  "categoryLockedMessage": "폴더가 잠겼습니다",
+  "deleteFolderMenuItemLabel": "폴더 삭제",
+  "deleteFolderDialogTitle": "폴더 삭제",
+  "deleteFolderDialogMessageWithSubfolders": "\"{category}\" 폴더와 모든 하위 폴더를 삭제하시겠습니까? 이 폴더의 노트는 분류되지 않은 상태가 됩니다.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "\"{category}\" 폴더를 삭제하시겠습니까? 이 폴더의 노트는 분류되지 않은 상태가 됩니다.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "취소",
+  "deleteFolderDialogConfirmButton": "삭제",
+  "editCategoryNameColorMenuItemLabel": "이름/색상 편집",
+  "addSubfolderMenuItemLabel": "하위 폴더 만들기",
+  "expandSubfoldersMenuItemLabel": "하위 폴더 펼치기",
+  "collapseSubfoldersMenuItemLabel": "하위 폴더 접기",
+  "saveErrorInfoMessage": "저장 오류: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "DNote에 오신 것을 환영합니다! 🚀",
+  "welcomeNoteContent": "새로운 기능이 추가되었습니다!",
+  "noteListDateGroupToday": "오늘",
+  "noteListDateGroupYesterday": "어제",
+  "noteListDateGroupLast7Days": "최근 7일",
+  "noteListDateGroupLast30Days": "최근 30일",
+  "reminderRepeatNoneLabel": "반복 없음",
+  "voiceRecorderPreparingLabel": "준비 중…",
+  "voiceRecorderCancelButton": "취소",
+  "voiceRecorderStopAddButton": "중지하고 추가",
+  "speechToTextMicPermissionDeniedMessage": "마이크 권한이 허용되지 않았습니다.",
+  "speechToTextUnavailableMessage": "이 기기에서는 음성 인식을 사용할 수 없습니다.",
+  "speechToTextPreparingLabel": "준비 중…",
+  "speechToTextListeningLabel": "듣는 중…",
+  "speechToTextStartSpeakingPlaceholder": "말하기 시작하세요…",
+  "speechToTextCancelButton": "취소",
+  "speechToTextStopAddButton": "중지하고 추가",
+  "textToSpeechNoContentMessage": "읽을 내용이 없습니다.",
+  "textToSpeechReadErrorMessage": "읽는 중 오류가 발생했습니다.",
+  "textToSpeechUnavailableMessage": "이 기기에서는 텍스트 음성 변환을 사용할 수 없습니다.",
+  "textToSpeechPreparingLabel": "준비 중…",
+  "textToSpeechPausedLabel": "일시 정지됨",
+  "textToSpeechFinishedLabel": "읽기 완료",
+  "textToSpeechReadingLabel": "읽는 중…",
+  "textToSpeechCloseErrorButton": "닫기",
+  "textToSpeechReplayButton": "다시 읽기",
+  "textToSpeechCloseFinishedButton": "닫기",
+  "textToSpeechPauseButton": "일시 정지",
+  "textToSpeechResumeButton": "재개",
+  "textToSpeechStopButton": "중지",
+  "textToSpeechSpeedSlow": "느리게",
+  "textToSpeechSpeedNormal": "보통",
+  "textToSpeechSpeedFast": "빠르게",
+  "calendarPickerCancelButton": "취소",
+  "calendarPickerConfirmButton": "선택",
+  "calendarPickerClearButton": "지우기",
+  "reminderPickerDialogTitle": "알림 추가",
+  "reminderPickerDateTodayOption": "오늘",
+  "reminderPickerDateTomorrowOption": "내일",
+  "reminderPickerDatePickOption": "날짜 선택",
+  "reminderRepeatHourlyLabel": "매시간",
+  "reminderRepeatDailyLabel": "매일",
+  "reminderRepeatWeeklyLabel": "매주",
+  "reminderRepeatMonthlyLabel": "매월",
+  "reminderRepeatYearlyLabel": "매년",
+  "reminderPickerCalendarHelpText": "알림 날짜 선택",
+  "reminderPickerCancelButton": "취소",
+  "reminderPickerSaveButton": "저장",
+  "reminderPickerPastTimeErrorMessage": "과거 시간은 선택할 수 없습니다",
+  "calcTableTotalLabel": "합계: {amount}",
+  "backupCreatePreparingDataLabel": "데이터 준비 중...",
+  "backupCreatePackagingNotesLabel": "노트와 카테고리 패키징 중...",
+  "backupCreateReadingAttachmentsLabel": "첨부파일 읽는 중...",
+  "backupCreateReadingAttachmentsProgressLabel": "첨부파일 읽는 중... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "zip 파일 압축 중...",
+  "backupCreateSavingFileLabel": "파일 저장 중...",
+  "backupRestoreValidatingLabel": "백업 확인 중...",
+  "backupRestoreValidatedPreparingDataLabel": "백업 확인 완료, 데이터 준비 중...",
+  "backupRestoreWritingNotesLabel": "노트 쓰는 중...",
+  "backupRestoreWritingTrashLabel": "휴지통 쓰는 중...",
+  "backupRestoreTrashWrittenLabel": "휴지통 저장 완료",
+  "backupRestoreWritingCategoriesLabel": "카테고리 쓰는 중...",
+  "backupRestoreCategoriesWrittenLabel": "카테고리 저장 완료",
+  "backupRestoreWritingSettingsLabel": "설정 쓰는 중...",
+  "backupRestoreSettingsWrittenLabel": "설정 저장 완료",
+  "backupRestoreCleaningOldAttachmentsLabel": "이전 첨부파일 정리 중...",
+  "backupRestoreNoAttachmentsFinishingLabel": "첨부파일이 없습니다. 마무리 중...",
+  "backupRestoreAttachmentsProgressLabel": "첨부파일 복원 중... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "완료됨",
+  "backupValidationCorruptedFileMessage": "파일이 손상되었거나 유효한 백업 파일이 아닙니다.",
+  "backupValidationMissingDataMessage": "백업 파일 안에서 데이터를 찾을 수 없습니다 (backup_data.json이 없음).",
+  "backupValidationInvalidJsonMessage": "백업 데이터를 읽을 수 없습니다 (손상된 JSON).",
+  "backupValidationNotDnoteBackupMessage": "이 파일은 dnote 앱의 백업이 아닙니다.",
+  "backupValidationVersionUnreadableMessage": "백업 파일의 버전 정보를 읽을 수 없습니다.",
+  "backupValidationIncompatibleVersionMessage": "이 백업은 현재 앱 버전에서 지원하지 않는 최신 형식입니다. 앱을 업데이트해 주세요.",
+  "backupValidationInvalidVersionMessage": "백업 파일의 버전 정보가 유효하지 않습니다.",
+  "backupValidationMissingNotesFieldMessage": "백업 데이터가 예상된 형식이 아닙니다 (notes 필드가 없음).",
+  "backupValidationMissingTrashFieldMessage": "백업 데이터가 예상된 형식이 아닙니다 (trash 필드가 없음).",
+  "backupValidationInvalidCategoriesFieldMessage": "백업 데이터가 예상된 형식이 아닙니다 (카테고리 목록이 유효하지 않음).",
+  "backupValidationInvalidSettingsFieldMessage": "백업 데이터가 예상된 형식이 아닙니다 (설정 필드가 유효하지 않음).",
+  "backupValidationInvalidNoteRecordMessage": "백업 데이터가 예상된 형식이 아닙니다 (노트 레코드가 유효하지 않음).",
+  "backupValidationMissingNoteIdMessage": "백업 데이터가 예상된 형식이 아닙니다 (ID가 없는 노트 레코드가 발견됨).",
+  "backupValidationFileNotFoundMessage": "백업 파일을 찾을 수 없습니다.",
+  "backupErrorInsufficientStorageMessage": "기기의 여유 저장 공간이 부족합니다. 공간을 확보한 후 다시 시도해 주세요.",
+  "backupErrorPermissionDeniedMessage": "파일 접근 권한이 거부되었습니다. 앱 권한을 확인하고 다시 시도해 주세요.",
+  "backupErrorFileOperationMessage": "파일 작업 중 오류가 발생했습니다: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "예기치 않은 오류가 발생했습니다: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "zip 압축 파일을 생성할 수 없습니다 (ZipEncoder가 null을 반환함).",
+  "calcTableMenuItemLabel": "계산 목록",
+  "tagsMenuItemLabel": "태그",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "항목 추가...",
+  "toolbarHighlightTooltip": "형광펜",
+  "toolbarListTooltip": "목록",
+  "toolbarHideKeyboardTooltip": "키보드 숨기기",
+  "autoBackupLocalSuccessMessage": "로컬 백업이 완료되었습니다.",
+  "autoBackupLocalFailedMessage": "로컬 백업에 실패했습니다: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Drive 백업이 건너뛰어졌습니다: Google 계정이 연결되지 않았거나 세션이 만료되었습니다. 앱을 열어 다시 연결해 주세요.",
+  "autoBackupDriveSuccessMessage": "Drive 백업이 완료되었습니다.",
+  "autoBackupDriveFailedMessage": "Drive 백업에 실패했습니다: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "아직 노트가 없습니다",
+  "noteWidgetPreviewTotalLabel": "합계: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ 그림",
+  "autoBackupSettingsAppBarTitle": "자동 백업 설정",
+  "autoBackupSettingsMainSwitchTitle": "자동 백업 사용",
+  "autoBackupSettingsMainSwitchSubtitle": "노트가 백그라운드에서 주기적으로 안전하게 백업됩니다.",
+  "autoBackupSettingsTargetTitle": "백업 대상",
+  "autoBackupSettingsTargetSubtitle": "백업을 저장할 위치를 선택하세요.",
+  "autoBackupSettingsTargetLocalOption": "로컬",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "둘 다",
+  "autoBackupSettingsDriveNotConnectedNote": "Google Drive 옵션을 사용하려면 먼저 계정을 연결하세요.",
+  "autoBackupSettingsConnectButton": "연결",
+  "autoBackupSettingsFrequencyTitle": "백업 주기",
+  "autoBackupSettingsFrequencySubtitle": "{hours}시간마다 백업이 생성됩니다.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6시간",
+  "autoBackupSettingsFrequency12h": "12시간",
+  "autoBackupSettingsFrequency24h": "24시간 (매일)",
+  "autoBackupSettingsFrequency48h": "48시간 (2일)",
+  "autoBackupSettingsFrequency168h": "168시간 (매주)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "Wi-Fi에서만 사용",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "모바일 데이터를 보호하기 위해 클라우드 업로드는 Wi-Fi에서만 이루어집니다.",
+  "autoBackupSettingsStatusCardTitle": "시스템 상태",
+  "autoBackupSettingsNeverRunMessage": "자동 백업이 아직 실행되지 않았습니다.",
+  "autoBackupSettingsLastRunInfo": "마지막 실행: {date} {time} ({status})\n메시지: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "성공",
+  "autoBackupSettingsStatusFailedLabel": "실패",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Google 계정에 연결할 수 없습니다.",
+  "autoBackupSettingsSavedSnackbar": "자동 백업 설정이 업데이트되었습니다.",
+  "selectionModeDeletedMessage": "노트 {count}개가 삭제되었습니다",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "보관되었습니다",
+  "selectionModeClassifySheetTitle": "노트 {count}개의 카테고리 선택",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "카테고리 추가",
+  "selectionModeRemoveCategoryOption": "카테고리 제거",
+  "calcTableItemHint": "항목...",
+  "calcTableTotalRowLabel": "합계",
+  "textSelectionMenuShareButton": "공유",
+  "textSelectionMenuTranslateButton": "번역",
+  "textSelectionMenuShareFailedSnackbar": "공유를 시작할 수 없습니다.",
+  "textSelectionMenuTranslateFailedSnackbar": "번역을 열 수 없습니다.",
+  "lastBackupInfoTodayFormat": "오늘 {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{year}. {month}. {day}. {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "마지막 백업: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "아직 백업이 없습니다."
+}

@@ -1,0 +1,1136 @@
+{
+  "@@locale": "zh",
+  "toolbarBoldTooltip": "加粗",
+  "toolbarItalicTooltip": "斜体",
+  "toolbarUnderlineTooltip": "下划线",
+  "toolbarStrikethroughTooltip": "删除线",
+  "toolbarFontSizeTooltip": "字号",
+  "toolbarColorTooltip": "文字颜色",
+  "toolbarBulletTooltip": "项目符号列表",
+  "toolbarNumberTooltip": "编号列表",
+  "toolbarIndentTooltip": "段落缩进",
+  "toolbarLinkTooltip": "添加/编辑/删除链接",
+  "toolbarDividerTooltip": "插入分割线",
+  "toolbarChecklistTooltip": "添加清单",
+  "linkSelectTextSnackbar": "请先选择要添加链接的文本",
+  "linkDialogEditTitle": "编辑链接",
+  "linkDialogAddTitle": "添加链接",
+  "linkDialogRemoveButton": "移除链接",
+  "linkDialogCancelButton": "取消",
+  "linkDialogConfirmButton": "添加",
+  "cameraPermissionPermanentlyDeniedMessage": "相机权限被拒绝。请在设置中允许相机权限以录制视频。",
+  "cameraPermissionRequiredMessage": "录制视频需要相机权限。",
+  "openSettingsButtonLabel": "设置",
+  "documentScanStartFailedMessage": "无法开始扫描：{error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "文字识别失败：{error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "在文档中未找到可识别的文字",
+  "scanResultSheetTitle": "扫描的文档应如何添加？",
+  "scanResultTextOnlyOption": "仅添加文字",
+  "scanResultTextAndImageOption": "添加文字+扫描图像",
+  "scanResultCancelOption": "取消",
+  "audioPermissionPermanentlyDeniedMessage": "麦克风权限被拒绝。请在设置中允许麦克风权限以录制音频。",
+  "audioPermissionRequiredMessage": "录制音频需要麦克风权限。",
+  "voiceRecordingDefaultLabel": "语音录制",
+  "blockPreviewCalcTableLabel": "计算列表（{count} 行）",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "绘图",
+  "blockPreviewAttachmentsLabel": "{count} 个附件（照片/文档）",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "分割线",
+  "blockPreviewChecklistLabel": "清单（{count} 项）",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "（空文本）",
+  "reorderBlocksSheetTitle": "重新排序模块",
+  "reorderBlocksMoveUpTooltip": "上移",
+  "reorderBlocksMoveDownTooltip": "下移",
+  "reorderBlocksCloseTooltip": "关闭",
+  "reorderBlocksDescription": "点按一个模块以选中它，然后使用上下箭头移动它。",
+  "reorderBlocksMenuItemLabel": "重新排序",
+  "txtImportPickerDialogTitle": "选择要导入的 TXT 文件",
+  "txtImportReadFailedMessage": "无法读取该 TXT 文件",
+  "txtImportEmptyFileMessage": "TXT 文件为空",
+  "txtImportSuccessMessage": "TXT 已导入",
+  "txtImportMenuItemLabel": "导入（txt）",
+  "exportMenuItemLabel": "导出",
+  "editorUndoTooltip": "撤销",
+  "editorRedoTooltip": "重做",
+  "noteSavedMessage": "笔记已保存",
+  "dateAssignPickerHelpText": "将笔记分配到某一天",
+  "dateAssignChangeOption": "更改日期",
+  "dateAssignRemoveOption": "移除分配",
+  "editorSubToolbarCloseTooltip": "关闭",
+  "titleFieldHint": "标题",
+  "textBlockHint": "在此处写下你的笔记……",
+  "drawingBoardMenuItemLabel": "画板",
+  "voiceToTextTextNotesOnlyMessage": "语音转文字仅适用于文本笔记",
+  "selectionModeCancelTooltip": "取消选择",
+  "selectionModeSelectedCountTitle": "已选择 {count} 项",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "删除",
+  "selectionModeArchiveTooltip": "归档",
+  "selectionModeFolderTooltip": "文件夹",
+  "searchFieldHint": "搜索笔记……",
+  "emptyTrashDialogTitle": "清空回收站",
+  "emptyTrashDialogConfirmMessage": "所有已删除的笔记将被永久移除。确定要继续吗？",
+  "emptyTrashDialogCancelButton": "取消",
+  "restoreAllMenuItemLabel": "全部恢复",
+  "sortMenuTooltip": "排序笔记",
+  "sortMenuAscendingLabel": "顺序：升序（A-Z）",
+  "sortMenuDescendingLabel": "顺序：降序（Z-A）",
+  "sortMenuByTitleLabel": "排序方式：标题",
+  "sortMenuByModifiedDateLabel": "排序方式：最后修改时间",
+  "sortMenuByCreatedDateLabel": "排序方式：创建日期",
+  "sortMenuByFolderLabel": "排序方式：文件夹",
+  "viewToggleGridTooltip": "网格视图",
+  "viewToggleListTooltip": "列表视图",
+  "drawerHeaderSubtitle": "你的个人笔记本",
+  "drawerNotesSectionHeader": "笔记",
+  "drawerAllNotesLabel": "笔记",
+  "drawerFavoritesLabel": "收藏",
+  "drawerAgendaLabel": "日程",
+  "drawerRemindersLabel": "提醒",
+  "drawerLockedLabel": "已锁定",
+  "drawerTrashLabel": "回收站",
+  "drawerFoldersSectionHeader": "文件夹",
+  "drawerExpandLabel": "展开",
+  "drawerCollapseLabel": "收起",
+  "drawerAddFolderLabel": "添加文件夹",
+  "drawerAppSectionHeader": "应用",
+  "drawerCalendarLabel": "日历",
+  "drawerSettingsLabel": "设置",
+  "drawerBackupRestoreLabel": "备份与恢复",
+  "drawerUpgradeToProLabel": "升级到专业版",
+  "drawerProBadgeLabel": "专业版",
+  "drawerSupportDevelopmentLabel": "支持开发",
+  "drawerFeedbackLabel": "反馈",
+  "drawerAboutLabel": "关于",
+  "noNotesFoundMessage": "未找到笔记。",
+  "trashRestoreButtonLabel": "恢复",
+  "trashPermanentDeleteButtonLabel": "永久删除",
+  "tagRenamedInfoMessage": "标签已重命名",
+  "tagDeletedInfoMessage": "标签已删除",
+  "tagOptionsRenameLabel": "重命名",
+  "tagOptionsDeleteLabel": "删除",
+  "renameTagDialogTitle": "重命名标签",
+  "renameTagDialogHint": "新标签名称",
+  "renameTagDialogCancelButton": "取消",
+  "renameTagDialogSaveButton": "保存",
+  "deleteTagDialogMessageWithCount": "“{tag}”将从 {affectedCount} 条笔记中移除。是否继续？",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "删除“{tag}”标签？",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "删除标签",
+  "deleteTagDialogCancelButton": "取消",
+  "deleteTagDialogConfirmButton": "删除",
+  "tagsSheetTitle": "标签",
+  "tagsSheetEmptyMessage": "此笔记还没有标签。",
+  "tagsSheetInputHint": "输入新标签……",
+  "tagsSheetSuggestionsLabel": "已有标签",
+  "noteDeletedInfoMessage": "笔记已删除",
+  "noteDeletedUndoActionLabel": "撤销",
+  "reminderSetInfoMessage": "提醒已设置",
+  "reminderRemovedInfoMessage": "提醒已移除",
+  "noteDuplicatedInfoMessage": "已创建副本",
+  "speechTextAppendedInfoMessage": "文字已添加到笔记",
+  "pdfPreparingInfoMessage": "正在准备 PDF…",
+  "pdfSavedInfoMessage": "PDF 已保存",
+  "jpgPreparingInfoMessage": "正在准备 JPG…",
+  "jpgSavedInfoMessage": "JPG 已保存",
+  "jpgFailedInfoMessage": "无法创建 JPG",
+  "txtPreparingInfoMessage": "正在准备 TXT…",
+  "txtSavedInfoMessage": "TXT 已保存",
+  "txtFailedInfoMessage": "无法创建 TXT",
+  "exportOpenActionLabel": "打开",
+  "wrongPasswordInfoMessage": "密码错误。",
+  "noteArchivedInfoMessage": "笔记已归档",
+  "noteUnarchivedInfoMessage": "已从归档中移除",
+  "noteUnlockedInfoMessage": "已解锁",
+  "noteLockedInfoMessage": "笔记已锁定",
+  "notificationUnpinnedInfoMessage": "已取消置顶",
+  "emptyNotePinBlockedInfoMessage": "空笔记无法置顶。",
+  "notificationPinnedInfoMessage": "已置顶到通知栏",
+  "noContentToReadInfoMessage": "没有可朗读的内容",
+  "backPressExitInfoMessage": "再次按返回键退出",
+  "reminderChannelName": "笔记提醒",
+  "reminderChannelDescription": "Layout 应用中的笔记提醒",
+  "pinnedChannelName": "置顶笔记",
+  "pinnedChannelDescription": "置顶在通知栏中的 Layout 笔记",
+  "notificationUnpinActionLabel": "移除",
+  "reminderDefaultTitle": "提醒",
+  "reminderChecklistBodyFallback": "别忘了查看你的清单",
+  "reminderTextBodyFallback": "别忘了查看你的笔记",
+  "pdfSaveDialogTitle": "保存为 PDF",
+  "jpgSaveDialogTitle": "保存为 JPG",
+  "txtSaveDialogTitle": "保存为 TXT",
+  "textSizeSheetTitle": "文字大小",
+  "textSizeSamplePreview": "示例文字",
+  "textSizeCancelButton": "取消",
+  "textSizeApplyButton": "应用",
+  "createPasswordDialogTitle": "创建密码",
+  "createPasswordNewPasswordHint": "新密码",
+  "createPasswordConfirmHint": "再次输入密码",
+  "createPasswordHintQuestionDescription": "设置一个安全问题，以便在忘记密码时使用（可选）。",
+  "createPasswordHintQuestionHint": "选择一个安全问题",
+  "createPasswordHintAnswerHint": "你的答案",
+  "createPasswordCancelButton": "取消",
+  "createPasswordSaveButton": "保存",
+  "passwordMismatchMessage": "两次输入的密码不一致！",
+  "passwordRequiredDialogTitle": "需要密码",
+  "passwordRequiredHint": "输入密码",
+  "forgotPasswordButtonLabel": "忘记密码",
+  "passwordRequiredCancelButton": "取消",
+  "passwordRequiredConfirmButton": "验证",
+  "securityQuestionDialogTitle": "安全问题",
+  "securityQuestionAnswerHint": "你的答案",
+  "securityQuestionCancelButton": "取消",
+  "securityQuestionConfirmButton": "确认",
+  "securityQuestionWrongAnswerMessage": "答案错误，请重试。",
+  "revealedPasswordDialogTitle": "你的密码",
+  "revealedPasswordLabel": "你的笔记密码：",
+  "revealedPasswordOkButton": "确定",
+  "securityQuestionPetName": "你第一只宠物的名字是什么？",
+  "securityQuestionFavoriteTeacher": "你最喜欢的老师叫什么名字？",
+  "securityQuestionBirthCity": "你出生在哪个城市？",
+  "securityQuestionFavoriteFood": "你最喜欢的食物是什么？",
+  "securityQuestionMotherMaidenName": "你母亲的娘家姓是什么？",
+  "securityQuestionFirstSchool": "你就读的第一所学校叫什么名字？",
+  "securityQuestionFavoriteColor": "你最喜欢的颜色是什么？",
+  "editFolderDialogTitle": "编辑文件夹",
+  "newSubfolderDialogTitle": "新建子文件夹",
+  "addFolderDialogTitle": "添加文件夹",
+  "subfolderParentInfoMessage": "将在“{parentCategory}”内创建",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "子文件夹名称",
+  "folderNameFieldLabel": "文件夹名称",
+  "folderColorLabel": "颜色",
+  "folderDialogCancelButton": "取消",
+  "folderDialogSaveButton": "保存",
+  "folderDialogAddButton": "添加",
+  "selectFolderSheetTitle": "选择文件夹",
+  "selectFolderAddOptionLabel": "添加文件夹",
+  "removeCurrentFolderLabel": "移除当前文件夹",
+  "noteDetailsDialogTitle": "详情",
+  "noteDetailsCreatedLabel": "创建时间",
+  "noteDetailsModifiedLabel": "最后修改时间",
+  "noteDetailsCharCountLabel": "字符数",
+  "noteDetailsCharCountValue": "{count} 个字符",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "字数",
+  "noteDetailsWordCountValue": "{count} 个字",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "确定",
+  "noteDetailsUnknownDateLabel": "未知",
+  "addAttachmentSheetTitle": "添加",
+  "addAttachmentImageOption": "添加图片",
+  "addAttachmentCameraOption": "相机",
+  "addAttachmentFileOption": "添加文件",
+  "addAttachmentVoiceOption": "语音录制",
+  "addAttachmentVideoOption": "录制视频",
+  "addAttachmentScanOption": "扫描文档",
+  "noteActionsSheetTitle": "选择操作",
+  "noteActionReminderLabel": "提醒",
+  "noteActionEditReminderLabel": "编辑提醒",
+  "noteActionSpeechToTextLabel": "语音转文字",
+  "noteActionArchiveLabel": "归档",
+  "noteActionUnarchiveLabel": "从归档中移除",
+  "noteActionLockLabel": "锁定",
+  "noteActionUnlockLabel": "解锁",
+  "noteActionFavoriteLabel": "收藏",
+  "noteActionUnfavoriteLabel": "取消收藏",
+  "noteActionClassifyLabel": "选择文件夹",
+  "noteActionDeleteLabel": "删除",
+  "noteActionPinToNotificationLabel": "置顶到通知栏",
+  "noteActionUnpinFromNotificationLabel": "取消置顶",
+  "noteActionShareLabel": "分享",
+  "noteActionDuplicateLabel": "创建副本",
+  "noteActionCopyContentLabel": "复制内容",
+  "noteActionTtsLabel": "朗读",
+  "noteActionTextSizeLabel": "文字大小",
+  "noteActionDetailsLabel": "详情",
+  "noteActionDiscardChangesLabel": "放弃更改",
+  "noteActionSelectLabel": "选择",
+  "reminderEditOptionLabel": "更改提醒",
+  "reminderRemoveOptionLabel": "移除提醒",
+  "discardChangesDialogTitle": "放弃更改",
+  "discardChangesDialogMessage": "此笔记的未保存更改将会丢失。确定要放弃吗？",
+  "discardChangesCancelButton": "取消",
+  "discardChangesConfirmButton": "放弃",
+  "pinnedNotificationDefaultTitle": "笔记",
+  "pdfFailedInfoMessage": "创建 PDF 失败",
+  "drawingScreenTitle": "绘图",
+  "drawingMinimizeTooltip": "最小化",
+  "drawingEmptyExportWarningMessage": "请先画点什么",
+  "drawingEraserPartialModeLabel": "部分擦除",
+  "drawingEraserFullModeLabel": "整体擦除",
+  "drawingClearTooltip": "清空",
+  "drawingZoomOutTooltip": "缩小",
+  "drawingZoomInTooltip": "放大",
+  "drawingDeleteTooltip": "删除",
+  "drawingEmptyPreviewHint": "点按以绘图",
+  "settingsPageTitle": "设置",
+  "settingsSectionGeneral": "通用",
+  "settingsSectionSecurity": "安全",
+  "settingsSectionTheme": "主题",
+  "settingsSectionPersonalization": "个性化",
+  "settingsSectionWidget": "小组件",
+  "settingsSectionAbout": "关于",
+  "settingsHintQuestionPet": "你第一只宠物的名字是什么？",
+  "settingsHintQuestionTeacher": "你最喜欢的老师叫什么名字？",
+  "settingsHintQuestionBirthCity": "你出生在哪个城市？",
+  "settingsHintQuestionFavoriteFood": "你最喜欢的食物是什么？",
+  "settingsHintQuestionMotherMaidenName": "你母亲的娘家姓是什么？",
+  "settingsHintQuestionFirstSchool": "你就读的第一所学校是什么？",
+  "settingsHintQuestionFavoriteColor": "你最喜欢的颜色是什么？",
+  "settingsSecurityQuestionDialogTitle": "安全问题",
+  "settingsSecurityQuestionDialogDesc": "如果你忘记了密码，可以通过正确回答此问题来找回。",
+  "settingsSecurityQuestionDropdownHint": "选择一个安全问题",
+  "settingsSecurityQuestionAnswerHint": "你的答案",
+  "settingsSecurityQuestionCancelButton": "取消",
+  "settingsSecurityQuestionEmptyWarning": "问题和答案不能为空！",
+  "settingsSecurityQuestionSaveButton": "保存",
+  "settingsCreatePasswordTitle": "创建密码",
+  "settingsPasswordRequiredTitle": "需要密码",
+  "settingsPasswordEnterHint": "输入密码",
+  "settingsForgotPasswordButton": "忘记密码",
+  "settingsNewPasswordHint": "新密码",
+  "settingsConfirmPasswordHint": "再次输入密码",
+  "settingsSecurityQuestionOptionalDesc": "设置一个安全问题，以便在忘记密码时使用（可选）。",
+  "settingsPasswordDialogCancelButton": "取消",
+  "settingsPasswordMismatchWarning": "两次输入的密码不一致！",
+  "settingsWrongPasswordWarning": "密码错误！",
+  "settingsPasswordSaveButton": "保存",
+  "settingsPasswordRemoveButton": "移除",
+  "settingsNotePasswordTitle": "笔记密码",
+  "settingsPasswordSetSubtitle": "密码已设置 ✓",
+  "settingsPasswordNotSetSubtitle": "未设置密码",
+  "settingsSecurityQuestionTileTitle": "安全问题",
+  "settingsSecurityQuestionSetSubtitle": "已设置 ✓ —— 用于忘记密码时找回",
+  "settingsSecurityQuestionNotSetSubtitle": "未设置 —— 密码丢失后将无法找回",
+  "settingsThemeDialogTitle": "选择主题",
+  "settingsThemeSystemDefault": "跟随系统",
+  "settingsThemeLightOption": "浅色主题",
+  "settingsThemeDarkOption": "深色主题",
+  "settingsAccentColorDialogTitle": "选择强调色",
+  "settingsThemeChangeTileTitle": "更改主题",
+  "settingsThemeLightLabel": "浅色",
+  "settingsThemeDarkLabel": "深色",
+  "settingsThemeSystemLabel": "跟随系统",
+  "settingsLanguageTileTitle": "语言",
+  "settingsLanguageDialogTitle": "选择语言",
+  "settingsLanguageSystemOption": "跟随系统",
+  "settingsAccentColorTileTitle": "强调色",
+  "settingsAccentColorTileSubtitle": "用于应用栏、按钮和开关的颜色",
+  "settingsColorfulNotesTitle": "笔记多彩配色",
+  "settingsColorfulNotesSubtitle": "每张笔记卡片会显示不同的颜色。",
+  "settingsTextColorSheetTitle": "文字颜色",
+  "settingsTextColorSheetDesc": "设置笔记内容文字的颜色。",
+  "settingsTextColorOkButton": "确定",
+  "settingsTextColorTileTitle": "文字颜色",
+  "settingsTextColorTileSubtitle": "笔记内容文字的颜色。",
+  "settingsWidgetFontSizeLabel": "小组件字号",
+  "settingsWidgetFontSizeSample": "示例标题 - {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "取消",
+  "settingsWidgetFontSizeApplyButton": "应用",
+  "settingsWidgetOpacityLabel": "背景透明度",
+  "settingsWidgetOpacityValue": "透明度 {percent}%",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "取消",
+  "settingsWidgetOpacityApplyButton": "应用",
+  "settingsWidgetDarkModeTitle": "深色小组件",
+  "settingsWidgetDarkModeDesc": "小组件使用深色配色方案。",
+  "settingsAboutVersionTitle": "应用版本",
+  "settingsFontFamilyTileTitle": "字体",
+  "settingsFontFamilyDefaultLabel": "默认",
+  "settingsGlobalFontSizeTileTitle": "字号",
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt —— 应用于所有笔记。",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "示例文字 - {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "应用到现有笔记",
+  "settingsGlobalFontSizeApplyToAllNote": "如果某条笔记已单独设置字号，此设置将不会影响它。",
+  "settingsGlobalFontSizeCancelButton": "取消",
+  "settingsGlobalFontSizeApplyButton": "应用",
+  "settingsPreviewLinesTileTitle": "笔记预览行数",
+  "settingsPreviewLinesTileSubtitle": "最多显示 {lines} 行。如果笔记更短，则显示实际行数。",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "当前：{lines} 行",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "设置预览的最大行数。如果笔记的行数更少，则显示实际行数。",
+  "settingsPreviewLinesCancelButton": "取消",
+  "settingsPreviewLinesApplyButton": "应用",
+  "backupCancelButton": "取消",
+  "backupConnectButton": "连接",
+  "backupDisconnectButton": "断开连接",
+  "backupContinueButton": "继续",
+  "backupCloseButton": "关闭",
+  "backupShareButton": "分享",
+  "backupRestoreButton": "恢复",
+  "backupConfigureButton": "配置",
+  "backupUnknownDateLabel": "未知",
+  "backupProcessingDefaultLabel": "处理中……",
+  "backupPermissionRequiredTitle": "需要存储权限",
+  "backupPermissionRequiredBodyPermanent": "此 Android 版本需要存储权限才能进行备份/恢复。由于权限被永久拒绝，请在应用设置中手动开启。",
+  "backupPermissionRequiredBodyNormal": "此 Android 版本需要存储权限才能进行备份/恢复。请授予权限以继续。",
+  "backupGoToSettingsButton": "前往设置",
+  "backupRetryButton": "重试",
+  "backupDriveConnectingLabel": "正在连接 Google 账号……",
+  "backupDriveConnectedWithEmailMessage": "已连接到 Google Drive 账号：{email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "已连接到 Google Drive 账号。",
+  "backupDriveConnectFailedMessage": "无法连接到 Google 账号，或操作已取消。",
+  "backupDriveDisconnectTitle": "断开 Google Drive 连接",
+  "backupDriveDisconnectBody": "断开连接后，将无法手动或自动备份到 Drive。已存储在 Drive 上的备份不会被删除，只会移除本设备的访问权限。",
+  "backupDriveDisconnectedMessage": "已移除 Google Drive 连接。",
+  "backupDriveRequiredTitle": "需要 Google 账号",
+  "backupDriveRequiredBody": "此操作需要连接你的 Google 账号。是否立即连接？",
+  "backupDriveStatusConnectedWithEmail": "Google Drive：已连接（{email}）",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive：已连接",
+  "backupDriveStatusDisconnected": "Google Drive：未连接",
+  "backupDriveAuthenticatingLabel": "正在验证 Google 账号……",
+  "backupDriveNotSignedInMessage": "你尚未连接 Google Drive。请先使用你的 Google 账号登录。",
+  "backupDriveUploadingLabel": "正在上传备份到 Drive……",
+  "backupDriveUploadTimeoutMessage": "上传到 Google Drive 未能在 120 秒内完成（服务器无响应）。请检查你的网络连接后重试。",
+  "backupDriveOperationCompletedLabel": "已完成",
+  "backupToDriveActionLabel": "备份到 Drive",
+  "backupToDeviceActionLabel": "备份",
+  "backupCreatingLabel": "正在创建备份……",
+  "backupCreateFailedMessage": "无法创建备份：{error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "上传到 Google Drive 失败：{error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "备份已成功上传到 Google Drive。",
+  "backupCreatedMessage": "备份已创建：{fileName}（{size}）",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "备份已就绪",
+  "backupOfferShareBody": "备份文件已保存到你的设备。是否现在分享（例如云存储、邮件或其他设备）？",
+  "backupShareFileText": "layout 备份文件",
+  "backupShareFailedMessage": "无法开始分享：{error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "大型备份",
+  "backupLargeOperationBody": "待处理的数据约为 {sizeText}。根据设备性能，此规模的{actionLabel}可能需要一些时间。请在操作进行时不要离开应用——是否继续？",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "恢复",
+  "backupDriveListingLabel": "正在列出 Drive 上的备份……",
+  "backupDriveListFailedMessage": "无法列出备份：{error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "Google Drive 上还没有备份。",
+  "backupDrivePickTitle": "从 Drive 选择一个备份",
+  "backupDriveDownloadingLabel": "正在从 Drive 下载备份……",
+  "backupDriveDownloadingWithSizeLabel": "正在从 Drive 下载备份……（{downloaded} / {total}）",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "正在将文件保存到设备……",
+  "backupDriveUnknownBackupFileName": "unknown_backup.zip",
+  "backupDriveStorageFullMessage": "你的 Google Drive 存储空间已满。请清理 Drive 空间后重试。",
+  "backupDriveNetworkErrorMessage": "无法建立网络连接。请检查你的连接后重试。",
+  "backupDriveBackupNotFoundMessage": "在 Drive 上找不到指定的备份文件，它可能已被删除。",
+  "backupDriveUnknownErrorMessage": "Google Drive 操作过程中发生意外错误：{error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "下载失败：{error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "无法选择文件：{error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "无法访问所选文件。",
+  "backupCheckingLabel": "正在检查备份……",
+  "backupReadFailedMessage": "无法读取备份文件：{error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "恢复备份",
+  "backupPreviewContentsHeader": "所选备份的内容：",
+  "backupPreviewNoteCountLabel": "笔记数量",
+  "backupPreviewTrashCountLabel": "回收站中的笔记",
+  "backupPreviewCategoryCountLabel": "分类数量",
+  "backupPreviewAttachmentLabel": "附件",
+  "backupPreviewAttachmentNoneValue": "无",
+  "backupPreviewAttachmentCountValue": "{count} 个文件（{size}）",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "创建于",
+  "backupEmptyPreviewTitle": "此备份似乎是空的",
+  "backupEmptyPreviewBody": "在所选文件中未找到任何笔记、分类或附件。如果继续，你当前的数据仍将被删除并替换为此空备份。",
+  "backupMissingAttachmentsTitle": "备份中未找到 {count} 个附件",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "包含这些文件的笔记将被恢复，但不含附件（这些附件在备份时可能已丢失或损坏）：{names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} 以及另外 {remaining} 个",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "此操作将用上方备份中的数据替换你当前的所有笔记、回收站、分类、设置和附件。你当前的数据将被永久丢失，且此操作无法撤销。",
+  "backupRestoringLabel": "正在恢复备份……",
+  "backupRestoreSuccessWithMissingMessage": "备份已恢复。不过，有 {count} 个附件在备份中未找到，无法恢复。建议重启应用以使更改完全生效。",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "备份已成功恢复。建议重启应用以使更改完全生效。",
+  "backupRestoreFailedMessage": "恢复时发生错误：{error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "备份与恢复",
+  "backupBlockedExitWarningMessage": "操作正在进行中，请等待其完成。",
+  "backupBusyBackTooltip": "操作进行中",
+  "backupIntroText": "你可以将笔记、分类、设置和附件备份为一个 .zip 文件，也可以恢复之前创建的备份。",
+  "backupDriveCardTitle": "备份到 Google Drive",
+  "backupDriveCardSubtitle": "创建新备份，并直接上传到你的 Google Drive 私密区域。",
+  "backupDriveCardButtonLabel": "备份到 Drive",
+  "backupDeviceCardTitle": "备份到设备",
+  "backupDeviceCardSubtitle": "将所有数据保存为一个 .zip 文件到你的设备，并可随时分享。",
+  "backupDeviceCardButtonLabel": "备份到设备",
+  "backupHistoryCardTitle": "备份历史",
+  "backupHistoryCardSubtitle": "查看设备上存储的所有备份及其日期和大小；你可以直接在此分享、恢复或删除它们。",
+  "backupHistoryTabDevice": "设备",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "删除备份",
+  "backupHistoryDeleteDialogBody": "确定要永久删除备份文件“{fileName}”吗？此操作无法撤销。",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "备份已删除。",
+  "backupHistoryDriveDeleteDialogTitle": "删除 Drive 备份",
+  "backupHistoryDriveDeleteDialogBody": "确定要从 Google Drive 永久删除备份“{fileName}”吗？此操作无法撤销，且文件不会被移到回收站。",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Drive 备份已删除。",
+  "backupHistoryDriveDeleteFailedMessage": "无法删除：{error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "此设备上尚未保存任何备份。",
+  "backupHistoryDeviceEmptySubtitle": "使用“备份到设备”创建你的第一个备份。",
+  "backupHistoryDriveEmptySubtitle": "使用“备份到 Google Drive”创建你的第一个云备份。",
+  "backupHistoryDriveSignInPrompt": "连接你的 Google 账号以查看 Drive 备份。",
+  "backupHistoryConnectGoogleButton": "使用 Google 连接",
+  "backupHistoryDriveConnectedFallback": "已连接",
+  "backupHistoryUnknownErrorFallback": "发生了未知错误。",
+  "backupHistoryDownloadStartingLabel": "正在开始……",
+  "backupAutoBackupEnabledLabel": "自动备份：开启",
+  "backupAutoBackupDisabledLabel": "自动备份：关闭",
+  "backupOverlayWarningMessage": "请稍候，操作完成前请勿离开应用。",
+  "pdfExportUntitledNoteLabel": "无标题笔记",
+  "pdfExportDefaultAttachmentName": "附件",
+  "pdfExportDefaultFileName": "note",
+  "screenshotExportBoundaryNotFoundMessage": "无法截图（未找到边界）",
+  "screenshotExportByteDataNullMessage": "无法生成截图数据",
+  "screenshotExportPngDecodeFailedMessage": "无法处理图像（PNG 解码失败）",
+  "screenshotCalcTableTotalLabel": "合计",
+  "gundemMenuRemoveFromAgenda": "从日程中移除",
+  "gundemMenuDeleteNote": "删除笔记",
+  "gundemSectionOverdue": "已逾期",
+  "gundemSectionToday": "今天",
+  "gundemSectionTomorrow": "明天",
+  "gundemSectionNextWeek": "下周",
+  "gundemSectionFurther": "更远的未来",
+  "gundemWeekdayMonday": "星期一",
+  "gundemWeekdayTuesday": "星期二",
+  "gundemWeekdayWednesday": "星期三",
+  "gundemWeekdayThursday": "星期四",
+  "gundemWeekdayFriday": "星期五",
+  "gundemWeekdaySaturday": "星期六",
+  "gundemWeekdaySunday": "星期日",
+  "gundemAppBarTitle": "日程",
+  "gundemCalendarTooltip": "日历",
+  "gundemEmptyTitle": "日程中没有内容",
+  "gundemEmptySubtitle": "带有提醒或指定日期的笔记会显示在这里。",
+  "gundemUntitledNote": "无标题笔记",
+  "gundemRepeatHourly": "每小时",
+  "gundemRepeatDaily": "每天",
+  "gundemRepeatWeekly": "每周",
+  "gundemRepeatMonthly": "每月",
+  "gundemRepeatYearly": "每年",
+  "gundemPreviewCalcTableLabel": "[计算列表]",
+  "gundemPreviewDrawingLabel": "[绘图]",
+  "gundemPreviewImageLabel": "[图片]",
+  "gundemMonthShortJan": "1月",
+  "gundemMonthShortFeb": "2月",
+  "gundemMonthShortMar": "3月",
+  "gundemMonthShortApr": "4月",
+  "gundemMonthShortMay": "5月",
+  "gundemMonthShortJun": "6月",
+  "gundemMonthShortJul": "7月",
+  "gundemMonthShortAug": "8月",
+  "gundemMonthShortSep": "9月",
+  "gundemMonthShortOct": "10月",
+  "gundemMonthShortNov": "11月",
+  "gundemMonthShortDec": "12月",
+  "calendarAppBarTitle": "日历",
+  "calendarTodayButton": "今天",
+  "calendarLegendNoteLabel": "笔记",
+  "calendarLegendReminderLabel": "提醒",
+  "calendarTodayBadge": "今天",
+  "calendarEmptyDayMessage": "这一天没有笔记或提醒。",
+  "calendarReminderHourlyLabel": "每小时",
+  "calendarMonthJan": "一月",
+  "calendarMonthFeb": "二月",
+  "calendarMonthMar": "三月",
+  "calendarMonthApr": "四月",
+  "calendarMonthMay": "五月",
+  "calendarMonthJun": "六月",
+  "calendarMonthJul": "七月",
+  "calendarMonthAug": "八月",
+  "calendarMonthSep": "九月",
+  "calendarMonthOct": "十月",
+  "calendarMonthNov": "十一月",
+  "calendarMonthDec": "十二月",
+  "calendarWeekdayShortMon": "一",
+  "calendarWeekdayShortTue": "二",
+  "calendarWeekdayShortWed": "三",
+  "calendarWeekdayShortThu": "四",
+  "calendarWeekdayShortFri": "五",
+  "calendarWeekdayShortSat": "六",
+  "calendarWeekdayShortSun": "日",
+  "calendarWeekdayFullMonday": "星期一",
+  "calendarWeekdayFullTuesday": "星期二",
+  "calendarWeekdayFullWednesday": "星期三",
+  "calendarWeekdayFullThursday": "星期四",
+  "calendarWeekdayFullFriday": "星期五",
+  "calendarWeekdayFullSaturday": "星期六",
+  "calendarWeekdayFullSunday": "星期日",
+  "wrongPasswordDialogTitle": "密码错误",
+  "wrongPasswordDialogMessage": "你输入的密码不正确。",
+  "commonOkButton": "确定",
+  "unlockCategoryAction": "解锁",
+  "lockCategoryAction": "锁定",
+  "categoryUnlockedMessage": "已解锁",
+  "categoryLockedMessage": "文件夹已锁定",
+  "deleteFolderMenuItemLabel": "删除文件夹",
+  "deleteFolderDialogTitle": "删除文件夹",
+  "deleteFolderDialogMessageWithSubfolders": "确定要删除文件夹“{category}”及其所有子文件夹吗？这些文件夹中的笔记将变为未分类。",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "确定要删除文件夹“{category}”吗？此文件夹中的笔记将变为未分类。",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "取消",
+  "deleteFolderDialogConfirmButton": "删除",
+  "editCategoryNameColorMenuItemLabel": "编辑名称/颜色",
+  "addSubfolderMenuItemLabel": "创建子文件夹",
+  "expandSubfoldersMenuItemLabel": "展开子文件夹",
+  "collapseSubfoldersMenuItemLabel": "收起子文件夹",
+  "saveErrorInfoMessage": "保存出错：{error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "欢迎使用 DNote！🚀",
+  "welcomeNoteContent": "新增了一些功能！",
+  "noteListDateGroupToday": "今天",
+  "noteListDateGroupYesterday": "昨天",
+  "noteListDateGroupLast7Days": "最近 7 天",
+  "noteListDateGroupLast30Days": "最近 30 天",
+  "reminderRepeatNoneLabel": "不重复",
+  "voiceRecorderPreparingLabel": "正在准备……",
+  "voiceRecorderCancelButton": "取消",
+  "voiceRecorderStopAddButton": "停止并添加",
+  "speechToTextMicPermissionDeniedMessage": "未获得麦克风权限。",
+  "speechToTextUnavailableMessage": "此设备不支持语音识别。",
+  "speechToTextPreparingLabel": "正在准备……",
+  "speechToTextListeningLabel": "正在聆听……",
+  "speechToTextStartSpeakingPlaceholder": "开始说话……",
+  "speechToTextCancelButton": "取消",
+  "speechToTextStopAddButton": "停止并添加",
+  "textToSpeechNoContentMessage": "没有可朗读的内容。",
+  "textToSpeechReadErrorMessage": "朗读时发生错误。",
+  "textToSpeechUnavailableMessage": "此设备不支持文字转语音。",
+  "textToSpeechPreparingLabel": "正在准备……",
+  "textToSpeechPausedLabel": "已暂停",
+  "textToSpeechFinishedLabel": "朗读完成",
+  "textToSpeechReadingLabel": "正在朗读……",
+  "textToSpeechCloseErrorButton": "关闭",
+  "textToSpeechReplayButton": "重新朗读",
+  "textToSpeechCloseFinishedButton": "关闭",
+  "textToSpeechPauseButton": "暂停",
+  "textToSpeechResumeButton": "继续",
+  "textToSpeechStopButton": "停止",
+  "textToSpeechSpeedSlow": "慢速",
+  "textToSpeechSpeedNormal": "正常",
+  "textToSpeechSpeedFast": "快速",
+  "calendarPickerCancelButton": "取消",
+  "calendarPickerConfirmButton": "选择",
+  "calendarPickerClearButton": "清除",
+  "reminderPickerDialogTitle": "添加提醒",
+  "reminderPickerDateTodayOption": "今天",
+  "reminderPickerDateTomorrowOption": "明天",
+  "reminderPickerDatePickOption": "选择日期",
+  "reminderRepeatHourlyLabel": "每小时",
+  "reminderRepeatDailyLabel": "每天",
+  "reminderRepeatWeeklyLabel": "每周",
+  "reminderRepeatMonthlyLabel": "每月",
+  "reminderRepeatYearlyLabel": "每年",
+  "reminderPickerCalendarHelpText": "选择提醒日期",
+  "reminderPickerCancelButton": "取消",
+  "reminderPickerSaveButton": "保存",
+  "reminderPickerPastTimeErrorMessage": "无法选择过去的时间",
+  "calcTableTotalLabel": "合计：{amount}",
+  "backupCreatePreparingDataLabel": "正在准备数据……",
+  "backupCreatePackagingNotesLabel": "正在打包笔记和分类……",
+  "backupCreateReadingAttachmentsLabel": "正在读取附件……",
+  "backupCreateReadingAttachmentsProgressLabel": "正在读取附件……（{current}/{total}）",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "正在压缩 zip 文件……",
+  "backupCreateSavingFileLabel": "正在保存文件……",
+  "backupRestoreValidatingLabel": "正在验证备份……",
+  "backupRestoreValidatedPreparingDataLabel": "备份已验证，正在准备数据……",
+  "backupRestoreWritingNotesLabel": "正在写入笔记……",
+  "backupRestoreWritingTrashLabel": "正在写入回收站……",
+  "backupRestoreTrashWrittenLabel": "回收站已写入",
+  "backupRestoreWritingCategoriesLabel": "正在写入分类……",
+  "backupRestoreCategoriesWrittenLabel": "分类已写入",
+  "backupRestoreWritingSettingsLabel": "正在写入设置……",
+  "backupRestoreSettingsWrittenLabel": "设置已写入",
+  "backupRestoreCleaningOldAttachmentsLabel": "正在清理旧附件……",
+  "backupRestoreNoAttachmentsFinishingLabel": "未找到附件，正在完成……",
+  "backupRestoreAttachmentsProgressLabel": "正在恢复附件……（{current}/{total}）",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "已完成",
+  "backupValidationCorruptedFileMessage": "该文件已损坏或不是有效的备份文件。",
+  "backupValidationMissingDataMessage": "备份文件内未找到数据（缺少 backup_data.json）。",
+  "backupValidationInvalidJsonMessage": "无法读取备份数据（JSON 已损坏）。",
+  "backupValidationNotDnoteBackupMessage": "该文件不是来自 dnote 应用的备份。",
+  "backupValidationVersionUnreadableMessage": "无法读取备份文件的版本信息。",
+  "backupValidationIncompatibleVersionMessage": "此备份的格式较新，当前应用版本不支持。请更新应用。",
+  "backupValidationInvalidVersionMessage": "备份文件的版本信息无效。",
+  "backupValidationMissingNotesFieldMessage": "备份数据格式不符合预期（缺少 notes 字段）。",
+  "backupValidationMissingTrashFieldMessage": "备份数据格式不符合预期（缺少 trash 字段）。",
+  "backupValidationInvalidCategoriesFieldMessage": "备份数据格式不符合预期（分类列表无效）。",
+  "backupValidationInvalidSettingsFieldMessage": "备份数据格式不符合预期（settings 字段无效）。",
+  "backupValidationInvalidNoteRecordMessage": "备份数据格式不符合预期（存在无效的笔记记录）。",
+  "backupValidationMissingNoteIdMessage": "备份数据格式不符合预期（存在没有 ID 的笔记记录）。",
+  "backupValidationFileNotFoundMessage": "未找到备份文件。",
+  "backupErrorInsufficientStorageMessage": "设备可用存储空间不足。请清理空间后重试。",
+  "backupErrorPermissionDeniedMessage": "文件访问权限被拒绝。请检查应用权限后重试。",
+  "backupErrorFileOperationMessage": "文件操作过程中发生错误：{detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "发生了意外错误：{detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "无法创建 zip 压缩包（ZipEncoder 返回了 null）。",
+  "calcTableMenuItemLabel": "计算列表",
+  "tagsMenuItemLabel": "标签",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "添加项目……",
+  "toolbarHighlightTooltip": "高亮",
+  "toolbarListTooltip": "列表",
+  "toolbarHideKeyboardTooltip": "隐藏键盘",
+  "autoBackupLocalSuccessMessage": "本地备份成功。",
+  "autoBackupLocalFailedMessage": "本地备份失败：{detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "已跳过 Drive 备份：Google 账号未连接或会话已过期。请打开应用重新连接。",
+  "autoBackupDriveSuccessMessage": "Drive 备份成功。",
+  "autoBackupDriveFailedMessage": "Drive 备份失败：{detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "还没有笔记",
+  "noteWidgetPreviewTotalLabel": "共计：{total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ 绘图",
+  "autoBackupSettingsAppBarTitle": "自动备份设置",
+  "autoBackupSettingsMainSwitchTitle": "启用自动备份",
+  "autoBackupSettingsMainSwitchSubtitle": "你的笔记会在后台定期安全备份。",
+  "autoBackupSettingsTargetTitle": "备份目标",
+  "autoBackupSettingsTargetSubtitle": "选择备份的保存位置。",
+  "autoBackupSettingsTargetLocalOption": "本地",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "两者都要",
+  "autoBackupSettingsDriveNotConnectedNote": "请先连接你的账号以使用 Google Drive 选项。",
+  "autoBackupSettingsConnectButton": "连接",
+  "autoBackupSettingsFrequencyTitle": "备份频率",
+  "autoBackupSettingsFrequencySubtitle": "每 {hours} 小时进行一次备份。",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 小时",
+  "autoBackupSettingsFrequency12h": "12 小时",
+  "autoBackupSettingsFrequency24h": "24 小时（每天）",
+  "autoBackupSettingsFrequency48h": "48 小时（2 天）",
+  "autoBackupSettingsFrequency168h": "168 小时（每周）",
+  "autoBackupSettingsWifiOnlySwitchTitle": "仅使用 Wi-Fi",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "仅在 Wi-Fi 下进行云端上传，以节省你的移动数据流量。",
+  "autoBackupSettingsStatusCardTitle": "系统状态",
+  "autoBackupSettingsNeverRunMessage": "自动备份尚未运行过。",
+  "autoBackupSettingsLastRunInfo": "上次运行：{date} {time}（{status}）\n消息：{message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "成功",
+  "autoBackupSettingsStatusFailedLabel": "失败",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "无法连接到 Google 账号。",
+  "autoBackupSettingsSavedSnackbar": "自动备份设置已更新。",
+  "selectionModeDeletedMessage": "已删除 {count} 条笔记",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "已归档",
+  "selectionModeClassifySheetTitle": "为 {count} 条笔记选择分类",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "添加分类",
+  "selectionModeRemoveCategoryOption": "移除分类",
+  "calcTableItemHint": "项目……",
+  "calcTableTotalRowLabel": "合计",
+  "textSelectionMenuShareButton": "分享",
+  "textSelectionMenuTranslateButton": "翻译",
+  "textSelectionMenuShareFailedSnackbar": "无法开始分享。",
+  "textSelectionMenuTranslateFailedSnackbar": "无法打开翻译。",
+  "lastBackupInfoTodayFormat": "今天 {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{year}/{month}/{day} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "上次备份：{date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "尚未进行过备份。"
+}

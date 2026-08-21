@@ -1,0 +1,1136 @@
+{
+  "@@locale": "sv",
+  "toolbarBoldTooltip": "Fet",
+  "toolbarItalicTooltip": "Kursiv",
+  "toolbarUnderlineTooltip": "Understruken",
+  "toolbarStrikethroughTooltip": "Genomstruken",
+  "toolbarFontSizeTooltip": "Textstorlek",
+  "toolbarColorTooltip": "Textfärg",
+  "toolbarBulletTooltip": "Punktlista",
+  "toolbarNumberTooltip": "Numrerad lista",
+  "toolbarIndentTooltip": "Styckeindrag",
+  "toolbarLinkTooltip": "Lägg till/redigera/ta bort länk",
+  "toolbarDividerTooltip": "Infoga avdelare",
+  "toolbarChecklistTooltip": "Lägg till checklista",
+  "linkSelectTextSnackbar": "Markera texten du vill länka först",
+  "linkDialogEditTitle": "Redigera länk",
+  "linkDialogAddTitle": "Lägg till länk",
+  "linkDialogRemoveButton": "Ta bort länk",
+  "linkDialogCancelButton": "Avbryt",
+  "linkDialogConfirmButton": "Lägg till",
+  "cameraPermissionPermanentlyDeniedMessage": "Kameraåtkomst nekad. Du måste tillåta det i inställningarna för att spela in video.",
+  "cameraPermissionRequiredMessage": "Kameraåtkomst krävs för att spela in video.",
+  "openSettingsButtonLabel": "Inställningar",
+  "documentScanStartFailedMessage": "Skanningen kunde inte startas: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "Textigenkänning misslyckades: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "Ingen läsbar text hittades i dokumentet",
+  "scanResultSheetTitle": "Hur ska det skannade dokumentet läggas till?",
+  "scanResultTextOnlyOption": "Lägg till som endast text",
+  "scanResultTextAndImageOption": "Lägg till text + skannad bild",
+  "scanResultCancelOption": "Avbryt",
+  "audioPermissionPermanentlyDeniedMessage": "Mikrofonåtkomst nekad. Du måste tillåta det i inställningarna för att spela in ljud.",
+  "audioPermissionRequiredMessage": "Mikrofonåtkomst krävs för att spela in ljud.",
+  "voiceRecordingDefaultLabel": "Röstinspelning",
+  "blockPreviewCalcTableLabel": "Beräkningslista ({count} rader)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "Teckning",
+  "blockPreviewAttachmentsLabel": "{count} bilagor (foto/dokument)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "Avdelare",
+  "blockPreviewChecklistLabel": "Checklista ({count} objekt)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(tom text)",
+  "reorderBlocksSheetTitle": "Ändra ordning på block",
+  "reorderBlocksMoveUpTooltip": "Flytta upp",
+  "reorderBlocksMoveDownTooltip": "Flytta ner",
+  "reorderBlocksCloseTooltip": "Stäng",
+  "reorderBlocksDescription": "Tryck på ett block för att markera det, använd sedan pilarna upp/ner för att flytta det.",
+  "reorderBlocksMenuItemLabel": "Ändra ordning",
+  "txtImportPickerDialogTitle": "Välj TXT-filen som ska importeras",
+  "txtImportReadFailedMessage": "TXT-filen kunde inte läsas",
+  "txtImportEmptyFileMessage": "TXT-filen är tom",
+  "txtImportSuccessMessage": "TXT importerad",
+  "txtImportMenuItemLabel": "Importera (txt)",
+  "exportMenuItemLabel": "Exportera",
+  "editorUndoTooltip": "Ångra",
+  "editorRedoTooltip": "Gör om",
+  "noteSavedMessage": "Anteckning sparad",
+  "dateAssignPickerHelpText": "Tilldela anteckning till en dag",
+  "dateAssignChangeOption": "Ändra datum",
+  "dateAssignRemoveOption": "Ta bort tilldelning",
+  "editorSubToolbarCloseTooltip": "Stäng",
+  "titleFieldHint": "Titel",
+  "textBlockHint": "Skriv din anteckning här...",
+  "drawingBoardMenuItemLabel": "Ritbord",
+  "voiceToTextTextNotesOnlyMessage": "Tal till text är endast tillgängligt för textanteckningar",
+  "selectionModeCancelTooltip": "Avbryt markering",
+  "selectionModeSelectedCountTitle": "{count} markerade",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "Ta bort",
+  "selectionModeArchiveTooltip": "Arkivera",
+  "selectionModeFolderTooltip": "Mapp",
+  "searchFieldHint": "Sök anteckningar...",
+  "emptyTrashDialogTitle": "Töm papperskorgen",
+  "emptyTrashDialogConfirmMessage": "Alla raderade anteckningar tas bort permanent. Är du säker?",
+  "emptyTrashDialogCancelButton": "Avbryt",
+  "restoreAllMenuItemLabel": "Återställ alla",
+  "sortMenuTooltip": "Sortera anteckningar",
+  "sortMenuAscendingLabel": "Ordning: Stigande (A-Ö)",
+  "sortMenuDescendingLabel": "Ordning: Fallande (Ö-A)",
+  "sortMenuByTitleLabel": "Sortera efter: Titel",
+  "sortMenuByModifiedDateLabel": "Sortera efter: Senast ändrad",
+  "sortMenuByCreatedDateLabel": "Sortera efter: Skapandedatum",
+  "sortMenuByFolderLabel": "Sortera efter: Mapp",
+  "viewToggleGridTooltip": "Rutnätsvy",
+  "viewToggleListTooltip": "Listvy",
+  "drawerHeaderSubtitle": "Din personliga anteckningsbok",
+  "drawerNotesSectionHeader": "ANTECKNINGAR",
+  "drawerAllNotesLabel": "Anteckningar",
+  "drawerFavoritesLabel": "Favorit",
+  "drawerAgendaLabel": "Agenda",
+  "drawerRemindersLabel": "Påminnelse",
+  "drawerLockedLabel": "Låst",
+  "drawerTrashLabel": "Papperskorg",
+  "drawerFoldersSectionHeader": "MAPPAR",
+  "drawerExpandLabel": "Expandera",
+  "drawerCollapseLabel": "Fäll ihop",
+  "drawerAddFolderLabel": "Lägg till mapp",
+  "drawerAppSectionHeader": "APP",
+  "drawerCalendarLabel": "Kalender",
+  "drawerSettingsLabel": "Inställningar",
+  "drawerBackupRestoreLabel": "Säkerhetskopiering & återställning",
+  "drawerUpgradeToProLabel": "Uppgradera till Pro",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "Stöd utvecklingen",
+  "drawerFeedbackLabel": "Feedback",
+  "drawerAboutLabel": "Om",
+  "noNotesFoundMessage": "Inga anteckningar hittades.",
+  "trashRestoreButtonLabel": "Återställ",
+  "trashPermanentDeleteButtonLabel": "Ta bort permanent",
+  "tagRenamedInfoMessage": "Taggen omdöpt",
+  "tagDeletedInfoMessage": "Taggen borttagen",
+  "tagOptionsRenameLabel": "Byt namn",
+  "tagOptionsDeleteLabel": "Ta bort",
+  "renameTagDialogTitle": "Byt namn på tagg",
+  "renameTagDialogHint": "Nytt taggnamn",
+  "renameTagDialogCancelButton": "Avbryt",
+  "renameTagDialogSaveButton": "Spara",
+  "deleteTagDialogMessageWithCount": "\"{tag}\" tas bort från {affectedCount} anteckningar. Fortsätta?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "Ta bort taggen \"{tag}\"?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "Ta bort tagg",
+  "deleteTagDialogCancelButton": "Avbryt",
+  "deleteTagDialogConfirmButton": "Ta bort",
+  "tagsSheetTitle": "Taggar",
+  "tagsSheetEmptyMessage": "Inga taggar på denna anteckning ännu.",
+  "tagsSheetInputHint": "Skriv en ny tagg...",
+  "tagsSheetSuggestionsLabel": "Befintliga taggar",
+  "noteDeletedInfoMessage": "Anteckning borttagen",
+  "noteDeletedUndoActionLabel": "Ångra",
+  "reminderSetInfoMessage": "Påminnelse inställd",
+  "reminderRemovedInfoMessage": "Påminnelse borttagen",
+  "noteDuplicatedInfoMessage": "Kopia skapad",
+  "speechTextAppendedInfoMessage": "Text tillagd i anteckning",
+  "pdfPreparingInfoMessage": "Förbereder PDF…",
+  "pdfSavedInfoMessage": "PDF sparad",
+  "jpgPreparingInfoMessage": "Förbereder JPG…",
+  "jpgSavedInfoMessage": "JPG sparad",
+  "jpgFailedInfoMessage": "Kunde inte skapa JPG",
+  "txtPreparingInfoMessage": "Förbereder TXT…",
+  "txtSavedInfoMessage": "TXT sparad",
+  "txtFailedInfoMessage": "Kunde inte skapa TXT",
+  "exportOpenActionLabel": "Öppna",
+  "wrongPasswordInfoMessage": "Fel lösenord.",
+  "noteArchivedInfoMessage": "Anteckning arkiverad",
+  "noteUnarchivedInfoMessage": "Borttagen från arkivet",
+  "noteUnlockedInfoMessage": "Upplåst",
+  "noteLockedInfoMessage": "Anteckning låst",
+  "notificationUnpinnedInfoMessage": "Nålen borttagen",
+  "emptyNotePinBlockedInfoMessage": "En tom anteckning kan inte nålas fast.",
+  "notificationPinnedInfoMessage": "Fastnålad i aviseringspanelen",
+  "noContentToReadInfoMessage": "Det finns inget innehåll att läsa",
+  "backPressExitInfoMessage": "Tryck tillbaka igen för att avsluta",
+  "reminderChannelName": "Anteckningspåminnelser",
+  "reminderChannelDescription": "Anteckningspåminnelser i appen Layout",
+  "pinnedChannelName": "Fastnålade anteckningar",
+  "pinnedChannelDescription": "Layout-anteckningar fastnålade i aviseringspanelen",
+  "notificationUnpinActionLabel": "Ta bort",
+  "reminderDefaultTitle": "Påminnelse",
+  "reminderChecklistBodyFallback": "Glöm inte att kontrollera din checklista",
+  "reminderTextBodyFallback": "Glöm inte att kontrollera din anteckning",
+  "pdfSaveDialogTitle": "Spara som PDF",
+  "jpgSaveDialogTitle": "Spara som JPG",
+  "txtSaveDialogTitle": "Spara som TXT",
+  "textSizeSheetTitle": "Textstorlek",
+  "textSizeSamplePreview": "Exempeltext",
+  "textSizeCancelButton": "Avbryt",
+  "textSizeApplyButton": "Verkställ",
+  "createPasswordDialogTitle": "Skapa lösenord",
+  "createPasswordNewPasswordHint": "Nytt lösenord",
+  "createPasswordConfirmHint": "Ange lösenord igen",
+  "createPasswordHintQuestionDescription": "Ställ in en säkerhetsfråga i fall du glömmer ditt lösenord (valfritt).",
+  "createPasswordHintQuestionHint": "Välj en säkerhetsfråga",
+  "createPasswordHintAnswerHint": "Ditt svar",
+  "createPasswordCancelButton": "Avbryt",
+  "createPasswordSaveButton": "Spara",
+  "passwordMismatchMessage": "Lösenorden matchar inte!",
+  "passwordRequiredDialogTitle": "Lösenord krävs",
+  "passwordRequiredHint": "Ange lösenord",
+  "forgotPasswordButtonLabel": "Jag har glömt mitt lösenord",
+  "passwordRequiredCancelButton": "Avbryt",
+  "passwordRequiredConfirmButton": "Verifiera",
+  "securityQuestionDialogTitle": "Säkerhetsfråga",
+  "securityQuestionAnswerHint": "Ditt svar",
+  "securityQuestionCancelButton": "Avbryt",
+  "securityQuestionConfirmButton": "Bekräfta",
+  "securityQuestionWrongAnswerMessage": "Fel svar. Försök igen.",
+  "revealedPasswordDialogTitle": "Ditt lösenord",
+  "revealedPasswordLabel": "Ditt anteckningslösenord:",
+  "revealedPasswordOkButton": "OK",
+  "securityQuestionPetName": "Vad heter ditt första husdjur?",
+  "securityQuestionFavoriteTeacher": "Vad heter din favoritlärare?",
+  "securityQuestionBirthCity": "I vilken stad är du född?",
+  "securityQuestionFavoriteFood": "Vad är din favoritmat?",
+  "securityQuestionMotherMaidenName": "Vad är din mors flicknamn?",
+  "securityQuestionFirstSchool": "Vad heter den första skolan du gick i?",
+  "securityQuestionFavoriteColor": "Vad är din favoritfärg?",
+  "editFolderDialogTitle": "Redigera mapp",
+  "newSubfolderDialogTitle": "Ny undermapp",
+  "addFolderDialogTitle": "Lägg till mapp",
+  "subfolderParentInfoMessage": "Skapas inuti \"{parentCategory}\"",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "Undermappens namn",
+  "folderNameFieldLabel": "Mappnamn",
+  "folderColorLabel": "Färg",
+  "folderDialogCancelButton": "Avbryt",
+  "folderDialogSaveButton": "Spara",
+  "folderDialogAddButton": "Lägg till",
+  "selectFolderSheetTitle": "Välj mapp",
+  "selectFolderAddOptionLabel": "Lägg till mapp",
+  "removeCurrentFolderLabel": "Ta bort nuvarande mapp",
+  "noteDetailsDialogTitle": "Detaljer",
+  "noteDetailsCreatedLabel": "Skapad",
+  "noteDetailsModifiedLabel": "Senast ändrad",
+  "noteDetailsCharCountLabel": "Antal tecken",
+  "noteDetailsCharCountValue": "{count} tecken",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "Antal ord",
+  "noteDetailsWordCountValue": "{count} ord",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "OK",
+  "noteDetailsUnknownDateLabel": "Okänt",
+  "addAttachmentSheetTitle": "Lägg till",
+  "addAttachmentImageOption": "Lägg till bild",
+  "addAttachmentCameraOption": "Kamera",
+  "addAttachmentFileOption": "Lägg till fil",
+  "addAttachmentVoiceOption": "Röstinspelning",
+  "addAttachmentVideoOption": "Spela in video",
+  "addAttachmentScanOption": "Skanna dokument",
+  "noteActionsSheetTitle": "Välj åtgärd",
+  "noteActionReminderLabel": "Påminnelse",
+  "noteActionEditReminderLabel": "Redigera påminnelse",
+  "noteActionSpeechToTextLabel": "Tal till text",
+  "noteActionArchiveLabel": "Arkivera",
+  "noteActionUnarchiveLabel": "Ta bort från arkivet",
+  "noteActionLockLabel": "Lås",
+  "noteActionUnlockLabel": "Lås upp",
+  "noteActionFavoriteLabel": "Favorit",
+  "noteActionUnfavoriteLabel": "Ta bort från favoriter",
+  "noteActionClassifyLabel": "Välj mapp",
+  "noteActionDeleteLabel": "Ta bort",
+  "noteActionPinToNotificationLabel": "Nåla fast i aviseringspanelen",
+  "noteActionUnpinFromNotificationLabel": "Ta bort nål",
+  "noteActionShareLabel": "Dela",
+  "noteActionDuplicateLabel": "Skapa kopia",
+  "noteActionCopyContentLabel": "Kopiera innehåll",
+  "noteActionTtsLabel": "Läs upp",
+  "noteActionTextSizeLabel": "Textstorlek",
+  "noteActionDetailsLabel": "Detaljer",
+  "noteActionDiscardChangesLabel": "Förkasta ändringar",
+  "noteActionSelectLabel": "Markera",
+  "reminderEditOptionLabel": "Ändra påminnelse",
+  "reminderRemoveOptionLabel": "Ta bort påminnelse",
+  "discardChangesDialogTitle": "Förkasta ändringar",
+  "discardChangesDialogMessage": "Osparade ändringar i denna anteckning går förlorade. Är du säker på att du vill förkasta dem?",
+  "discardChangesCancelButton": "Avbryt",
+  "discardChangesConfirmButton": "Förkasta",
+  "pinnedNotificationDefaultTitle": "Anteckning",
+  "pdfFailedInfoMessage": "Det gick inte att skapa PDF",
+  "drawingScreenTitle": "Teckning",
+  "drawingMinimizeTooltip": "Minimera",
+  "drawingEmptyExportWarningMessage": "Rita något först",
+  "drawingEraserPartialModeLabel": "Delvis",
+  "drawingEraserFullModeLabel": "Helt",
+  "drawingClearTooltip": "Rensa",
+  "drawingZoomOutTooltip": "Zooma ut",
+  "drawingZoomInTooltip": "Zooma in",
+  "drawingDeleteTooltip": "Ta bort",
+  "drawingEmptyPreviewHint": "Tryck för att rita",
+  "settingsPageTitle": "Inställningar",
+  "settingsSectionGeneral": "Allmänt",
+  "settingsSectionSecurity": "Säkerhet",
+  "settingsSectionTheme": "Tema",
+  "settingsSectionPersonalization": "Anpassning",
+  "settingsSectionWidget": "Widget",
+  "settingsSectionAbout": "Om",
+  "settingsHintQuestionPet": "Vad heter ditt första husdjur?",
+  "settingsHintQuestionTeacher": "Vad heter din favoritlärare?",
+  "settingsHintQuestionBirthCity": "I vilken stad är du född?",
+  "settingsHintQuestionFavoriteFood": "Vad är din favoritmat?",
+  "settingsHintQuestionMotherMaidenName": "Vad är din mors flicknamn?",
+  "settingsHintQuestionFirstSchool": "Vilken var den första skolan du gick i?",
+  "settingsHintQuestionFavoriteColor": "Vad är din favoritfärg?",
+  "settingsSecurityQuestionDialogTitle": "Säkerhetsfråga",
+  "settingsSecurityQuestionDialogDesc": "Om du glömmer ditt lösenord kan du återställa det genom att svara rätt på denna fråga.",
+  "settingsSecurityQuestionDropdownHint": "Välj en säkerhetsfråga",
+  "settingsSecurityQuestionAnswerHint": "Ditt svar",
+  "settingsSecurityQuestionCancelButton": "Avbryt",
+  "settingsSecurityQuestionEmptyWarning": "Fråga och svar kan inte vara tomma!",
+  "settingsSecurityQuestionSaveButton": "Spara",
+  "settingsCreatePasswordTitle": "Skapa lösenord",
+  "settingsPasswordRequiredTitle": "Lösenord krävs",
+  "settingsPasswordEnterHint": "Ange lösenord",
+  "settingsForgotPasswordButton": "Jag har glömt mitt lösenord",
+  "settingsNewPasswordHint": "Nytt lösenord",
+  "settingsConfirmPasswordHint": "Ange lösenord igen",
+  "settingsSecurityQuestionOptionalDesc": "Ställ in en säkerhetsfråga i fall du glömmer ditt lösenord (valfritt).",
+  "settingsPasswordDialogCancelButton": "Avbryt",
+  "settingsPasswordMismatchWarning": "Lösenorden matchar inte!",
+  "settingsWrongPasswordWarning": "Fel lösenord!",
+  "settingsPasswordSaveButton": "Spara",
+  "settingsPasswordRemoveButton": "Ta bort",
+  "settingsNotePasswordTitle": "Anteckningslösenord",
+  "settingsPasswordSetSubtitle": "Lösenord inställt ✓",
+  "settingsPasswordNotSetSubtitle": "Inget lösenord inställt",
+  "settingsSecurityQuestionTileTitle": "Säkerhetsfråga",
+  "settingsSecurityQuestionSetSubtitle": "Inställd ✓ — används om du glömmer ditt lösenord",
+  "settingsSecurityQuestionNotSetSubtitle": "Ej inställd — du kommer inte kunna återställa ditt lösenord om det tappas bort",
+  "settingsThemeDialogTitle": "Välj tema",
+  "settingsThemeSystemDefault": "Systemstandard",
+  "settingsThemeLightOption": "Ljust tema",
+  "settingsThemeDarkOption": "Mörkt tema",
+  "settingsAccentColorDialogTitle": "Välj accentfärg",
+  "settingsThemeChangeTileTitle": "Byt tema",
+  "settingsThemeLightLabel": "Ljust",
+  "settingsThemeDarkLabel": "Mörkt",
+  "settingsThemeSystemLabel": "System",
+  "settingsLanguageTileTitle": "Språk",
+  "settingsLanguageDialogTitle": "Välj språk",
+  "settingsLanguageSystemOption": "System",
+  "settingsAccentColorTileTitle": "Accentfärg",
+  "settingsAccentColorTileSubtitle": "Färg som används i appfältet, knappar och brytare",
+  "settingsColorfulNotesTitle": "Varierade anteckningsfärger",
+  "settingsColorfulNotesSubtitle": "Varje anteckningskort får en annan färgton.",
+  "settingsTextColorSheetTitle": "Textfärg",
+  "settingsTextColorSheetDesc": "Ställer in färgen på anteckningens textinnehåll.",
+  "settingsTextColorOkButton": "OK",
+  "settingsTextColorTileTitle": "Textfärg",
+  "settingsTextColorTileSubtitle": "Färg för anteckningens textinnehåll.",
+  "settingsWidgetFontSizeLabel": "Widgetens textstorlek",
+  "settingsWidgetFontSizeSample": "Exempelrubrik - {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "Avbryt",
+  "settingsWidgetFontSizeApplyButton": "Verkställ",
+  "settingsWidgetOpacityLabel": "Bakgrundens genomskinlighet",
+  "settingsWidgetOpacityValue": "{percent}% genomskinlighet",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "Avbryt",
+  "settingsWidgetOpacityApplyButton": "Verkställ",
+  "settingsWidgetDarkModeTitle": "Mörk widget",
+  "settingsWidgetDarkModeDesc": "Mörkt färgschema för widgeten.",
+  "settingsAboutVersionTitle": "Appversion",
+  "settingsFontFamilyTileTitle": "Typsnitt",
+  "settingsFontFamilyDefaultLabel": "Standard",
+  "settingsGlobalFontSizeTileTitle": "Textstorlek",
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt — tillämpas på alla anteckningar.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "Exempeltext - {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "Tillämpa på befintliga anteckningar",
+  "settingsGlobalFontSizeApplyToAllNote": "Om en anteckning har en individuell textstorlek inställd påverkas den inte av denna inställning.",
+  "settingsGlobalFontSizeCancelButton": "Avbryt",
+  "settingsGlobalFontSizeApplyButton": "Verkställ",
+  "settingsPreviewLinesTileTitle": "Förhandsvisningsrader",
+  "settingsPreviewLinesTileSubtitle": "Visa upp till {lines} rader. Om anteckningen är kortare visas det faktiska antalet rader.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "Nuvarande: {lines} rader",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "Ställer in det maximala antalet rader att förhandsvisa. Om anteckningen har färre rader visas det faktiska antalet.",
+  "settingsPreviewLinesCancelButton": "Avbryt",
+  "settingsPreviewLinesApplyButton": "Verkställ",
+  "backupCancelButton": "Avbryt",
+  "backupConnectButton": "Anslut",
+  "backupDisconnectButton": "Koppla från",
+  "backupContinueButton": "Fortsätt",
+  "backupCloseButton": "Stäng",
+  "backupShareButton": "Dela",
+  "backupRestoreButton": "Återställ",
+  "backupConfigureButton": "Konfigurera",
+  "backupUnknownDateLabel": "Okänt",
+  "backupProcessingDefaultLabel": "Bearbetar...",
+  "backupPermissionRequiredTitle": "Lagringsbehörighet krävs",
+  "backupPermissionRequiredBodyPermanent": "Denna Android-version kräver lagringsbehörighet för säkerhetskopiering/återställning. Eftersom behörigheten permanent nekades, vänligen aktivera den manuellt i appinställningarna.",
+  "backupPermissionRequiredBodyNormal": "Denna Android-version kräver lagringsbehörighet för säkerhetskopiering/återställning. Vänligen ge behörighet för att fortsätta.",
+  "backupGoToSettingsButton": "Gå till inställningar",
+  "backupRetryButton": "Försök igen",
+  "backupDriveConnectingLabel": "Ansluter till Google-konto...",
+  "backupDriveConnectedWithEmailMessage": "Ansluten till Google Drive-konto: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Ansluten till Google Drive-konto.",
+  "backupDriveConnectFailedMessage": "Det gick inte att ansluta till Google-kontot, eller så avbröts åtgärden.",
+  "backupDriveDisconnectTitle": "Koppla från Google Drive",
+  "backupDriveDisconnectBody": "Om du kopplar från går det inte att göra manuella eller automatiska säkerhetskopior till Drive. Säkerhetskopior som redan finns på Drive kommer inte att tas bort — endast åtkomsten från denna enhet tas bort.",
+  "backupDriveDisconnectedMessage": "Google Drive-anslutningen har tagits bort.",
+  "backupDriveRequiredTitle": "Google-konto krävs",
+  "backupDriveRequiredBody": "Denna åtgärd kräver att du ansluter ditt Google-konto. Vill du ansluta nu?",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: ansluten ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: ansluten",
+  "backupDriveStatusDisconnected": "Google Drive: inte ansluten",
+  "backupDriveAuthenticatingLabel": "Verifierar Google-konto...",
+  "backupDriveNotSignedInMessage": "Du är inte ansluten till Google Drive. Vänligen logga in med ditt Google-konto först.",
+  "backupDriveUploadingLabel": "Laddar upp säkerhetskopia till Drive...",
+  "backupDriveUploadTimeoutMessage": "Uppladdningen till Google Drive slutfördes inte inom 120 sekunder (inget svar från servern). Kontrollera din anslutning och försök igen.",
+  "backupDriveOperationCompletedLabel": "Slutförd",
+  "backupToDriveActionLabel": "säkerhetskopiering till Drive",
+  "backupToDeviceActionLabel": "säkerhetskopiering",
+  "backupCreatingLabel": "Skapar säkerhetskopia...",
+  "backupCreateFailedMessage": "Säkerhetskopian kunde inte skapas: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Uppladdning till Google Drive misslyckades: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "Säkerhetskopian har laddats upp till Google Drive.",
+  "backupCreatedMessage": "Säkerhetskopia skapad: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "Säkerhetskopia redo",
+  "backupOfferShareBody": "Din säkerhetskopieringsfil har sparats på din enhet. Vill du dela den nu (t.ex. molnlagring, e-post, en annan enhet)?",
+  "backupShareFileText": "layout säkerhetskopieringsfil",
+  "backupShareFailedMessage": "Delningen kunde inte startas: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "Stor säkerhetskopia",
+  "backupLargeOperationBody": "Data som ska bearbetas är cirka {sizeText}. En {actionLabel} av denna storlek kan ta ett tag beroende på din enhet. Lämna bara inte appen medan det pågår — vill du fortsätta?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "återställning",
+  "backupDriveListingLabel": "Listar Drive-säkerhetskopior...",
+  "backupDriveListFailedMessage": "Säkerhetskopiorna kunde inte listas: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "Det finns inga säkerhetskopior på Google Drive än.",
+  "backupDrivePickTitle": "Välj en säkerhetskopia från Drive",
+  "backupDriveDownloadingLabel": "Laddar ner säkerhetskopia från Drive...",
+  "backupDriveDownloadingWithSizeLabel": "Laddar ner säkerhetskopia från Drive... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "Sparar filen på enheten...",
+  "backupDriveUnknownBackupFileName": "unknown_backup.zip",
+  "backupDriveStorageFullMessage": "Din lagring på Google Drive är full. Frigör utrymme på Drive och försök igen.",
+  "backupDriveNetworkErrorMessage": "Det gick inte att upprätta en internetanslutning. Kontrollera din anslutning och försök igen.",
+  "backupDriveBackupNotFoundMessage": "Den angivna säkerhetskopian kunde inte hittas på Drive. Den kan ha tagits bort.",
+  "backupDriveUnknownErrorMessage": "Ett oväntat fel uppstod under Google Drive-åtgärden: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "Nedladdningen misslyckades: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "Filen kunde inte väljas: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "Den valda filen kunde inte nås.",
+  "backupCheckingLabel": "Kontrollerar säkerhetskopia...",
+  "backupReadFailedMessage": "Säkerhetskopian kunde inte läsas: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Återställ säkerhetskopia",
+  "backupPreviewContentsHeader": "Innehåll i den valda säkerhetskopian:",
+  "backupPreviewNoteCountLabel": "Antal anteckningar",
+  "backupPreviewTrashCountLabel": "Anteckningar i papperskorgen",
+  "backupPreviewCategoryCountLabel": "Antal kategorier",
+  "backupPreviewAttachmentLabel": "Bilagor",
+  "backupPreviewAttachmentNoneValue": "Inga",
+  "backupPreviewAttachmentCountValue": "{count} filer ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "Skapad",
+  "backupEmptyPreviewTitle": "Denna säkerhetskopia verkar vara tom",
+  "backupEmptyPreviewBody": "Inga anteckningar, kategorier eller bilagor hittades i den valda filen. Om du fortsätter kommer din nuvarande data ändå att raderas och ersättas med denna tomma säkerhetskopia.",
+  "backupMissingAttachmentsTitle": "{count} bilagor hittades inte i säkerhetskopian",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "Anteckningar med dessa filer kommer att återställas, men utan bilagorna (de kan ha saknats eller varit skadade när säkerhetskopian togs): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} och {remaining} till",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "Detta kommer att ERSÄTTA alla dina nuvarande anteckningar, papperskorg, kategorier, inställningar och bilagor med data från säkerhetskopian ovan. Din nuvarande data går permanent förlorad och denna åtgärd kan inte ångras.",
+  "backupRestoringLabel": "Återställer säkerhetskopia...",
+  "backupRestoreSuccessWithMissingMessage": "Säkerhetskopian återställd. Dock hittades inte {count} bilagor i säkerhetskopian och kunde inte återställas. Det rekommenderas att starta om appen för att ändringarna ska få full effekt.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "Säkerhetskopian återställdes. Det rekommenderas att starta om appen för att ändringarna ska få full effekt.",
+  "backupRestoreFailedMessage": "Ett fel uppstod vid återställning: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "Säkerhetskopiering & återställning",
+  "backupBlockedExitWarningMessage": "En åtgärd pågår, vänta tills den är klar.",
+  "backupBusyBackTooltip": "Åtgärd pågår",
+  "backupIntroText": "Du kan säkerhetskopiera dina anteckningar, kategorier, inställningar och bilagor som en enda .zip-fil, eller återställa en säkerhetskopia du tog tidigare.",
+  "backupDriveCardTitle": "Säkerhetskopiera till Google Drive",
+  "backupDriveCardSubtitle": "Skapa en ny säkerhetskopia och ladda upp den direkt till det privata området på din Google Drive.",
+  "backupDriveCardButtonLabel": "Säkerhetskopiera till Drive",
+  "backupDeviceCardTitle": "Säkerhetskopiera till enhet",
+  "backupDeviceCardSubtitle": "Spara all din data som en enda .zip-fil på din enhet och dela den om du vill.",
+  "backupDeviceCardButtonLabel": "Säkerhetskopiera till enhet",
+  "backupHistoryCardTitle": "Säkerhetskopieringshistorik",
+  "backupHistoryCardSubtitle": "Visa alla säkerhetskopior som lagras på din enhet med datum och storlek; du kan dela, återställa eller ta bort dem direkt härifrån.",
+  "backupHistoryTabDevice": "Enhet",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "Ta bort säkerhetskopia",
+  "backupHistoryDeleteDialogBody": "Är du säker på att du vill ta bort säkerhetskopieringsfilen \"{fileName}\" permanent? Denna åtgärd kan inte ångras.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "Säkerhetskopian borttagen.",
+  "backupHistoryDriveDeleteDialogTitle": "Ta bort Drive-säkerhetskopia",
+  "backupHistoryDriveDeleteDialogBody": "Är du säker på att du vill ta bort säkerhetskopian \"{fileName}\" permanent från Google Drive? Denna åtgärd kan inte ångras och filen flyttas inte till papperskorgen.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Drive-säkerhetskopian borttagen.",
+  "backupHistoryDriveDeleteFailedMessage": "Kunde inte ta bort: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "Inga säkerhetskopior sparade på denna enhet än.",
+  "backupHistoryDeviceEmptySubtitle": "Använd \"Säkerhetskopiera till enhet\" för att skapa din första säkerhetskopia.",
+  "backupHistoryDriveEmptySubtitle": "Använd \"Säkerhetskopiera till Google Drive\" för att skapa din första molnsäkerhetskopia.",
+  "backupHistoryDriveSignInPrompt": "Anslut ditt Google-konto för att se dina Drive-säkerhetskopior.",
+  "backupHistoryConnectGoogleButton": "Anslut med Google",
+  "backupHistoryDriveConnectedFallback": "Ansluten",
+  "backupHistoryUnknownErrorFallback": "Ett okänt fel uppstod.",
+  "backupHistoryDownloadStartingLabel": "Startar...",
+  "backupAutoBackupEnabledLabel": "Automatisk säkerhetskopiering: på",
+  "backupAutoBackupDisabledLabel": "Automatisk säkerhetskopiering: av",
+  "backupOverlayWarningMessage": "Vänta, lämna inte appen förrän åtgärden är klar.",
+  "pdfExportUntitledNoteLabel": "Namnlös anteckning",
+  "pdfExportDefaultAttachmentName": "Bilaga",
+  "pdfExportDefaultFileName": "anteckning",
+  "screenshotExportBoundaryNotFoundMessage": "Skärmbilden kunde inte tas (gräns hittades inte)",
+  "screenshotExportByteDataNullMessage": "Skärmbildsdata kunde inte genereras",
+  "screenshotExportPngDecodeFailedMessage": "Bilden kunde inte bearbetas (PNG-avkodning misslyckades)",
+  "screenshotCalcTableTotalLabel": "Totalt",
+  "gundemMenuRemoveFromAgenda": "Ta bort från agenda",
+  "gundemMenuDeleteNote": "Ta bort anteckning",
+  "gundemSectionOverdue": "Försenad",
+  "gundemSectionToday": "Idag",
+  "gundemSectionTomorrow": "Imorgon",
+  "gundemSectionNextWeek": "Nästa vecka",
+  "gundemSectionFurther": "Längre fram",
+  "gundemWeekdayMonday": "Måndag",
+  "gundemWeekdayTuesday": "Tisdag",
+  "gundemWeekdayWednesday": "Onsdag",
+  "gundemWeekdayThursday": "Torsdag",
+  "gundemWeekdayFriday": "Fredag",
+  "gundemWeekdaySaturday": "Lördag",
+  "gundemWeekdaySunday": "Söndag",
+  "gundemAppBarTitle": "Agenda",
+  "gundemCalendarTooltip": "Kalender",
+  "gundemEmptyTitle": "Inget i din agenda",
+  "gundemEmptySubtitle": "Anteckningar med en påminnelse eller ett tilldelat datum visas här.",
+  "gundemUntitledNote": "Namnlös anteckning",
+  "gundemRepeatHourly": "Varje timme",
+  "gundemRepeatDaily": "Dagligen",
+  "gundemRepeatWeekly": "Veckovis",
+  "gundemRepeatMonthly": "Månadsvis",
+  "gundemRepeatYearly": "Årligen",
+  "gundemPreviewCalcTableLabel": "[Beräkningslista]",
+  "gundemPreviewDrawingLabel": "[Teckning]",
+  "gundemPreviewImageLabel": "[Bild]",
+  "gundemMonthShortJan": "jan",
+  "gundemMonthShortFeb": "feb",
+  "gundemMonthShortMar": "mar",
+  "gundemMonthShortApr": "apr",
+  "gundemMonthShortMay": "maj",
+  "gundemMonthShortJun": "jun",
+  "gundemMonthShortJul": "jul",
+  "gundemMonthShortAug": "aug",
+  "gundemMonthShortSep": "sep",
+  "gundemMonthShortOct": "okt",
+  "gundemMonthShortNov": "nov",
+  "gundemMonthShortDec": "dec",
+  "calendarAppBarTitle": "Kalender",
+  "calendarTodayButton": "Idag",
+  "calendarLegendNoteLabel": "Anteckning",
+  "calendarLegendReminderLabel": "Påminnelse",
+  "calendarTodayBadge": "Idag",
+  "calendarEmptyDayMessage": "Inga anteckningar eller påminnelser för denna dag.",
+  "calendarReminderHourlyLabel": "Varje timme",
+  "calendarMonthJan": "januari",
+  "calendarMonthFeb": "februari",
+  "calendarMonthMar": "mars",
+  "calendarMonthApr": "april",
+  "calendarMonthMay": "maj",
+  "calendarMonthJun": "juni",
+  "calendarMonthJul": "juli",
+  "calendarMonthAug": "augusti",
+  "calendarMonthSep": "september",
+  "calendarMonthOct": "oktober",
+  "calendarMonthNov": "november",
+  "calendarMonthDec": "december",
+  "calendarWeekdayShortMon": "mån",
+  "calendarWeekdayShortTue": "tis",
+  "calendarWeekdayShortWed": "ons",
+  "calendarWeekdayShortThu": "tors",
+  "calendarWeekdayShortFri": "fre",
+  "calendarWeekdayShortSat": "lör",
+  "calendarWeekdayShortSun": "sön",
+  "calendarWeekdayFullMonday": "Måndag",
+  "calendarWeekdayFullTuesday": "Tisdag",
+  "calendarWeekdayFullWednesday": "Onsdag",
+  "calendarWeekdayFullThursday": "Torsdag",
+  "calendarWeekdayFullFriday": "Fredag",
+  "calendarWeekdayFullSaturday": "Lördag",
+  "calendarWeekdayFullSunday": "Söndag",
+  "wrongPasswordDialogTitle": "Fel lösenord",
+  "wrongPasswordDialogMessage": "Lösenordet du angav är felaktigt.",
+  "commonOkButton": "OK",
+  "unlockCategoryAction": "Lås upp",
+  "lockCategoryAction": "Lås",
+  "categoryUnlockedMessage": "Upplåst",
+  "categoryLockedMessage": "Mappen låst",
+  "deleteFolderMenuItemLabel": "Ta bort mapp",
+  "deleteFolderDialogTitle": "Ta bort mapp",
+  "deleteFolderDialogMessageWithSubfolders": "Är du säker på att du vill ta bort mappen \"{category}\" och alla dess undermappar? Anteckningar i dessa mappar blir okategoriserade.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "Är du säker på att du vill ta bort mappen \"{category}\"? Anteckningar i denna mapp blir okategoriserade.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "Avbryt",
+  "deleteFolderDialogConfirmButton": "Ta bort",
+  "editCategoryNameColorMenuItemLabel": "Redigera namn/färg",
+  "addSubfolderMenuItemLabel": "Skapa undermapp",
+  "expandSubfoldersMenuItemLabel": "Expandera undermappar",
+  "collapseSubfoldersMenuItemLabel": "Fäll ihop undermappar",
+  "saveErrorInfoMessage": "Sparfel: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "Välkommen till DNote! 🚀",
+  "welcomeNoteContent": "Nya funktioner har lagts till!",
+  "noteListDateGroupToday": "Idag",
+  "noteListDateGroupYesterday": "Igår",
+  "noteListDateGroupLast7Days": "Senaste 7 dagarna",
+  "noteListDateGroupLast30Days": "Senaste 30 dagarna",
+  "reminderRepeatNoneLabel": "Ingen upprepning",
+  "voiceRecorderPreparingLabel": "Förbereder…",
+  "voiceRecorderCancelButton": "Avbryt",
+  "voiceRecorderStopAddButton": "Stoppa och lägg till",
+  "speechToTextMicPermissionDeniedMessage": "Mikrofonåtkomst gavs inte.",
+  "speechToTextUnavailableMessage": "Taligenkänning är inte tillgängligt på denna enhet.",
+  "speechToTextPreparingLabel": "Förbereder…",
+  "speechToTextListeningLabel": "Lyssnar…",
+  "speechToTextStartSpeakingPlaceholder": "Börja tala…",
+  "speechToTextCancelButton": "Avbryt",
+  "speechToTextStopAddButton": "Stoppa och lägg till",
+  "textToSpeechNoContentMessage": "Det finns inget innehåll att läsa.",
+  "textToSpeechReadErrorMessage": "Ett fel uppstod vid uppläsning.",
+  "textToSpeechUnavailableMessage": "Text-till-tal är inte tillgängligt på denna enhet.",
+  "textToSpeechPreparingLabel": "Förbereder…",
+  "textToSpeechPausedLabel": "Pausad",
+  "textToSpeechFinishedLabel": "Uppläsning klar",
+  "textToSpeechReadingLabel": "Läser upp…",
+  "textToSpeechCloseErrorButton": "Stäng",
+  "textToSpeechReplayButton": "Läs igen",
+  "textToSpeechCloseFinishedButton": "Stäng",
+  "textToSpeechPauseButton": "Pausa",
+  "textToSpeechResumeButton": "Återuppta",
+  "textToSpeechStopButton": "Stoppa",
+  "textToSpeechSpeedSlow": "Långsam",
+  "textToSpeechSpeedNormal": "Normal",
+  "textToSpeechSpeedFast": "Snabb",
+  "calendarPickerCancelButton": "Avbryt",
+  "calendarPickerConfirmButton": "Välj",
+  "calendarPickerClearButton": "Rensa",
+  "reminderPickerDialogTitle": "Lägg till påminnelse",
+  "reminderPickerDateTodayOption": "Idag",
+  "reminderPickerDateTomorrowOption": "Imorgon",
+  "reminderPickerDatePickOption": "Välj datum",
+  "reminderRepeatHourlyLabel": "Varje timme",
+  "reminderRepeatDailyLabel": "Varje dag",
+  "reminderRepeatWeeklyLabel": "Varje vecka",
+  "reminderRepeatMonthlyLabel": "Varje månad",
+  "reminderRepeatYearlyLabel": "Varje år",
+  "reminderPickerCalendarHelpText": "Välj påminnelsedatum",
+  "reminderPickerCancelButton": "AVBRYT",
+  "reminderPickerSaveButton": "SPARA",
+  "reminderPickerPastTimeErrorMessage": "En tidpunkt i det förflutna kan inte väljas",
+  "calcTableTotalLabel": "Totalt: {amount}",
+  "backupCreatePreparingDataLabel": "Förbereder data...",
+  "backupCreatePackagingNotesLabel": "Paketerar anteckningar och kategorier...",
+  "backupCreateReadingAttachmentsLabel": "Läser bilagor...",
+  "backupCreateReadingAttachmentsProgressLabel": "Läser bilagor... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "Komprimerar zip-fil...",
+  "backupCreateSavingFileLabel": "Sparar fil...",
+  "backupRestoreValidatingLabel": "Validerar säkerhetskopia...",
+  "backupRestoreValidatedPreparingDataLabel": "Säkerhetskopian validerad, förbereder data...",
+  "backupRestoreWritingNotesLabel": "Skriver anteckningar...",
+  "backupRestoreWritingTrashLabel": "Skriver papperskorg...",
+  "backupRestoreTrashWrittenLabel": "Papperskorg skriven",
+  "backupRestoreWritingCategoriesLabel": "Skriver kategorier...",
+  "backupRestoreCategoriesWrittenLabel": "Kategorier skrivna",
+  "backupRestoreWritingSettingsLabel": "Skriver inställningar...",
+  "backupRestoreSettingsWrittenLabel": "Inställningar skrivna",
+  "backupRestoreCleaningOldAttachmentsLabel": "Rensar gamla bilagor...",
+  "backupRestoreNoAttachmentsFinishingLabel": "Inga bilagor hittades, avslutar...",
+  "backupRestoreAttachmentsProgressLabel": "Återställer bilagor... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "Slutförd",
+  "backupValidationCorruptedFileMessage": "Filen är skadad eller är inte en giltig säkerhetskopieringsfil.",
+  "backupValidationMissingDataMessage": "Ingen data hittades i säkerhetskopieringsfilen (backup_data.json saknas).",
+  "backupValidationInvalidJsonMessage": "Säkerhetskopieringsdata kunde inte läsas (skadad JSON).",
+  "backupValidationNotDnoteBackupMessage": "Denna fil är inte en säkerhetskopia från dnote-appen.",
+  "backupValidationVersionUnreadableMessage": "Säkerhetskopieringsfilens versionsinformation kunde inte läsas.",
+  "backupValidationIncompatibleVersionMessage": "Denna säkerhetskopia är i ett nyare format som den nuvarande appversionen inte stöder. Vänligen uppdatera appen.",
+  "backupValidationInvalidVersionMessage": "Säkerhetskopieringsfilens versionsinformation är ogiltig.",
+  "backupValidationMissingNotesFieldMessage": "Säkerhetskopieringsdata är inte i förväntat format (fältet för anteckningar saknas).",
+  "backupValidationMissingTrashFieldMessage": "Säkerhetskopieringsdata är inte i förväntat format (fältet för papperskorgen saknas).",
+  "backupValidationInvalidCategoriesFieldMessage": "Säkerhetskopieringsdata är inte i förväntat format (kategorilistan är ogiltig).",
+  "backupValidationInvalidSettingsFieldMessage": "Säkerhetskopieringsdata är inte i förväntat format (inställningsfältet är ogiltigt).",
+  "backupValidationInvalidNoteRecordMessage": "Säkerhetskopieringsdata är inte i förväntat format (en anteckningspost är ogiltig).",
+  "backupValidationMissingNoteIdMessage": "Säkerhetskopieringsdata är inte i förväntat format (en anteckningspost utan ID hittades).",
+  "backupValidationFileNotFoundMessage": "Säkerhetskopieringsfilen hittades inte.",
+  "backupErrorInsufficientStorageMessage": "Inte tillräckligt med ledigt lagringsutrymme på enheten. Frigör utrymme och försök igen.",
+  "backupErrorPermissionDeniedMessage": "Filåtkomstbehörighet nekades. Kontrollera appens behörigheter och försök igen.",
+  "backupErrorFileOperationMessage": "Ett fel uppstod under filåtgärden: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "Ett oväntat fel uppstod: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "Kunde inte skapa zip-arkivet (ZipEncoder returnerade null).",
+  "calcTableMenuItemLabel": "Beräkningslista",
+  "tagsMenuItemLabel": "Taggar",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "Lägg till objekt...",
+  "toolbarHighlightTooltip": "Markering",
+  "toolbarListTooltip": "Lista",
+  "toolbarHideKeyboardTooltip": "Dölj tangentbord",
+  "autoBackupLocalSuccessMessage": "Lokal säkerhetskopiering lyckades.",
+  "autoBackupLocalFailedMessage": "Lokal säkerhetskopiering misslyckades: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Drive-säkerhetskopiering hoppades över: Google-kontot är inte anslutet eller sessionen har gått ut. Öppna appen och återanslut.",
+  "autoBackupDriveSuccessMessage": "Drive-säkerhetskopiering lyckades.",
+  "autoBackupDriveFailedMessage": "Drive-säkerhetskopiering misslyckades: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "Inga anteckningar ännu",
+  "noteWidgetPreviewTotalLabel": "Totalt: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ Teckning",
+  "autoBackupSettingsAppBarTitle": "Inställningar för automatisk säkerhetskopiering",
+  "autoBackupSettingsMainSwitchTitle": "Aktivera automatisk säkerhetskopiering",
+  "autoBackupSettingsMainSwitchSubtitle": "Dina anteckningar säkerhetskopieras säkert periodvis i bakgrunden.",
+  "autoBackupSettingsTargetTitle": "Säkerhetskopieringsmål",
+  "autoBackupSettingsTargetSubtitle": "Välj var säkerhetskopior sparas.",
+  "autoBackupSettingsTargetLocalOption": "Lokalt",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "Båda",
+  "autoBackupSettingsDriveNotConnectedNote": "Anslut ditt konto först för att använda Google Drive-alternativ.",
+  "autoBackupSettingsConnectButton": "Anslut",
+  "autoBackupSettingsFrequencyTitle": "Säkerhetskopieringsfrekvens",
+  "autoBackupSettingsFrequencySubtitle": "En säkerhetskopia tas var {hours}:e timme.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 timmar",
+  "autoBackupSettingsFrequency12h": "12 timmar",
+  "autoBackupSettingsFrequency24h": "24 timmar (dagligen)",
+  "autoBackupSettingsFrequency48h": "48 timmar (2 dagar)",
+  "autoBackupSettingsFrequency168h": "168 timmar (veckovis)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "Använd endast Wi-Fi",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "Molnuppladdning sker endast via Wi-Fi för att skydda din mobildata.",
+  "autoBackupSettingsStatusCardTitle": "Systemstatus",
+  "autoBackupSettingsNeverRunMessage": "Automatisk säkerhetskopiering har inte körts än.",
+  "autoBackupSettingsLastRunInfo": "Senaste körning: {date} {time} ({status})\nMeddelande: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "Lyckades",
+  "autoBackupSettingsStatusFailedLabel": "Misslyckades",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Det gick inte att ansluta till Google-kontot.",
+  "autoBackupSettingsSavedSnackbar": "Inställningarna för automatisk säkerhetskopiering har uppdaterats.",
+  "selectionModeDeletedMessage": "{count} anteckningar borttagna",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "Arkiverad",
+  "selectionModeClassifySheetTitle": "Välj kategori för {count} anteckningar",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "Lägg till kategori",
+  "selectionModeRemoveCategoryOption": "Ta bort kategori",
+  "calcTableItemHint": "Objekt...",
+  "calcTableTotalRowLabel": "Totalt",
+  "textSelectionMenuShareButton": "Dela",
+  "textSelectionMenuTranslateButton": "Översätt",
+  "textSelectionMenuShareFailedSnackbar": "Delningen kunde inte startas.",
+  "textSelectionMenuTranslateFailedSnackbar": "Översättningen kunde inte öppnas.",
+  "lastBackupInfoTodayFormat": "Idag {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{month}/{day}/{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "Senaste säkerhetskopia: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "Ingen säkerhetskopia har tagits ännu."
+}

@@ -1,0 +1,1136 @@
+{
+  "@@locale": "ro",
+  "toolbarBoldTooltip": "Aldin",
+  "toolbarItalicTooltip": "Cursiv",
+  "toolbarUnderlineTooltip": "Subliniat",
+  "toolbarStrikethroughTooltip": "Tăiat",
+  "toolbarFontSizeTooltip": "Dimensiune font",
+  "toolbarColorTooltip": "Culoare text",
+  "toolbarBulletTooltip": "Listă cu marcatori",
+  "toolbarNumberTooltip": "Listă numerotată",
+  "toolbarIndentTooltip": "Indentare paragraf",
+  "toolbarLinkTooltip": "Adăugare / Editare / Eliminare link",
+  "toolbarDividerTooltip": "Inserare separator",
+  "toolbarChecklistTooltip": "Adăugare listă de verificare",
+  "linkSelectTextSnackbar": "Mai întâi selectați textul pe care doriți să îl asociați",
+  "linkDialogEditTitle": "Editare link",
+  "linkDialogAddTitle": "Adăugare link",
+  "linkDialogRemoveButton": "Eliminare link",
+  "linkDialogCancelButton": "Anulare",
+  "linkDialogConfirmButton": "Adăugare",
+  "cameraPermissionPermanentlyDeniedMessage": "Permisiunea pentru cameră a fost refuzată. Trebuie să o permiteți din setări pentru a înregistra video.",
+  "cameraPermissionRequiredMessage": "Este necesară permisiunea pentru cameră pentru a înregistra video.",
+  "openSettingsButtonLabel": "Setări",
+  "documentScanStartFailedMessage": "Scanarea nu a putut fi pornită: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "Recunoașterea textului a eșuat: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "Nu s-a găsit text lizibil în document",
+  "scanResultSheetTitle": "Cum ar trebui adăugat documentul scanat?",
+  "scanResultTextOnlyOption": "Adăugare doar ca text",
+  "scanResultTextAndImageOption": "Adăugare text + imagine scanată",
+  "scanResultCancelOption": "Anulare",
+  "audioPermissionPermanentlyDeniedMessage": "Permisiunea pentru microfon a fost refuzată. Trebuie să o permiteți din setări pentru a înregistra audio.",
+  "audioPermissionRequiredMessage": "Este necesară permisiunea pentru microfon pentru a înregistra audio.",
+  "voiceRecordingDefaultLabel": "Înregistrare vocală",
+  "blockPreviewCalcTableLabel": "Listă de calcul ({count} rânduri)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "Desen",
+  "blockPreviewAttachmentsLabel": "{count} atașamente (fotografie/document)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "Separator",
+  "blockPreviewChecklistLabel": "Listă de verificare ({count} elemente)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(text gol)",
+  "reorderBlocksSheetTitle": "Reordonare blocuri",
+  "reorderBlocksMoveUpTooltip": "Mutare în sus",
+  "reorderBlocksMoveDownTooltip": "Mutare în jos",
+  "reorderBlocksCloseTooltip": "Închidere",
+  "reorderBlocksDescription": "Atingeți un bloc pentru a-l selecta, apoi folosiți săgețile sus/jos pentru a-l muta.",
+  "reorderBlocksMenuItemLabel": "Reordonare",
+  "txtImportPickerDialogTitle": "Selectați fișierul TXT de importat",
+  "txtImportReadFailedMessage": "Fișierul TXT nu a putut fi citit",
+  "txtImportEmptyFileMessage": "Fișierul TXT este gol",
+  "txtImportSuccessMessage": "TXT importat",
+  "txtImportMenuItemLabel": "Import (txt)",
+  "exportMenuItemLabel": "Export",
+  "editorUndoTooltip": "Anulare",
+  "editorRedoTooltip": "Refacere",
+  "noteSavedMessage": "Notiță salvată",
+  "dateAssignPickerHelpText": "Atribuiți notița unei zile",
+  "dateAssignChangeOption": "Schimbare dată",
+  "dateAssignRemoveOption": "Eliminare atribuire",
+  "editorSubToolbarCloseTooltip": "Închidere",
+  "titleFieldHint": "Titlu",
+  "textBlockHint": "Scrieți notița aici...",
+  "drawingBoardMenuItemLabel": "Tablă de desen",
+  "voiceToTextTextNotesOnlyMessage": "Conversia voce în text este disponibilă doar pentru notițele text",
+  "selectionModeCancelTooltip": "Anulare selecție",
+  "selectionModeSelectedCountTitle": "{count} selectate",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "Ștergere",
+  "selectionModeArchiveTooltip": "Arhivare",
+  "selectionModeFolderTooltip": "Folder",
+  "searchFieldHint": "Căutare notițe...",
+  "emptyTrashDialogTitle": "Golire coș de gunoi",
+  "emptyTrashDialogConfirmMessage": "Toate notițele șterse vor fi eliminate definitiv. Sigur doriți să continuați?",
+  "emptyTrashDialogCancelButton": "Anulare",
+  "restoreAllMenuItemLabel": "Restaurare toate",
+  "sortMenuTooltip": "Sortare notițe",
+  "sortMenuAscendingLabel": "Ordine: Crescătoare (A-Z)",
+  "sortMenuDescendingLabel": "Ordine: Descrescătoare (Z-A)",
+  "sortMenuByTitleLabel": "Sortare după: Titlu",
+  "sortMenuByModifiedDateLabel": "Sortare după: Ultima modificare",
+  "sortMenuByCreatedDateLabel": "Sortare după: Data creării",
+  "sortMenuByFolderLabel": "Sortare după: Folder",
+  "viewToggleGridTooltip": "Vizualizare grilă",
+  "viewToggleListTooltip": "Vizualizare listă",
+  "drawerHeaderSubtitle": "Carnetul dvs. personal",
+  "drawerNotesSectionHeader": "NOTIȚE",
+  "drawerAllNotesLabel": "Notițe",
+  "drawerFavoritesLabel": "Favorite",
+  "drawerAgendaLabel": "Agendă",
+  "drawerRemindersLabel": "Memento",
+  "drawerLockedLabel": "Blocate",
+  "drawerTrashLabel": "Coș de gunoi",
+  "drawerFoldersSectionHeader": "FOLDERE",
+  "drawerExpandLabel": "Extindere",
+  "drawerCollapseLabel": "Restrângere",
+  "drawerAddFolderLabel": "Adăugare folder",
+  "drawerAppSectionHeader": "APLICAȚIE",
+  "drawerCalendarLabel": "Calendar",
+  "drawerSettingsLabel": "Setări",
+  "drawerBackupRestoreLabel": "Backup și restaurare",
+  "drawerUpgradeToProLabel": "Actualizare la Pro",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "Susțineți dezvoltarea",
+  "drawerFeedbackLabel": "Feedback",
+  "drawerAboutLabel": "Despre",
+  "noNotesFoundMessage": "Nu s-au găsit notițe.",
+  "trashRestoreButtonLabel": "Restaurare",
+  "trashPermanentDeleteButtonLabel": "Ștergere definitivă",
+  "tagRenamedInfoMessage": "Etichetă redenumită",
+  "tagDeletedInfoMessage": "Etichetă ștearsă",
+  "tagOptionsRenameLabel": "Redenumire",
+  "tagOptionsDeleteLabel": "Ștergere",
+  "renameTagDialogTitle": "Redenumire etichetă",
+  "renameTagDialogHint": "Nume nou etichetă",
+  "renameTagDialogCancelButton": "Anulare",
+  "renameTagDialogSaveButton": "Salvare",
+  "deleteTagDialogMessageWithCount": "\"{tag}\" va fi eliminată din {affectedCount} notițe. Continuați?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "Ștergeți eticheta \"{tag}\"?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "Ștergere etichetă",
+  "deleteTagDialogCancelButton": "Anulare",
+  "deleteTagDialogConfirmButton": "Ștergere",
+  "tagsSheetTitle": "Etichete",
+  "tagsSheetEmptyMessage": "Această notiță nu are încă etichete.",
+  "tagsSheetInputHint": "Scrieți o etichetă nouă...",
+  "tagsSheetSuggestionsLabel": "Etichete existente",
+  "noteDeletedInfoMessage": "Notiță ștearsă",
+  "noteDeletedUndoActionLabel": "Anulare",
+  "reminderSetInfoMessage": "Memento setat",
+  "reminderRemovedInfoMessage": "Memento eliminat",
+  "noteDuplicatedInfoMessage": "Copie creată",
+  "speechTextAppendedInfoMessage": "Text adăugat la notiță",
+  "pdfPreparingInfoMessage": "Se pregătește PDF-ul…",
+  "pdfSavedInfoMessage": "PDF salvat",
+  "jpgPreparingInfoMessage": "Se pregătește JPG-ul…",
+  "jpgSavedInfoMessage": "JPG salvat",
+  "jpgFailedInfoMessage": "JPG-ul nu a putut fi creat",
+  "txtPreparingInfoMessage": "Se pregătește TXT-ul…",
+  "txtSavedInfoMessage": "TXT salvat",
+  "txtFailedInfoMessage": "TXT-ul nu a putut fi creat",
+  "exportOpenActionLabel": "Deschidere",
+  "wrongPasswordInfoMessage": "Parolă greșită.",
+  "noteArchivedInfoMessage": "Notiță arhivată",
+  "noteUnarchivedInfoMessage": "Eliminată din arhivă",
+  "noteUnlockedInfoMessage": "Deblocată",
+  "noteLockedInfoMessage": "Notiță blocată",
+  "notificationUnpinnedInfoMessage": "Anulare fixare",
+  "emptyNotePinBlockedInfoMessage": "O notiță goală nu poate fi fixată.",
+  "notificationPinnedInfoMessage": "Fixată în panoul de notificări",
+  "noContentToReadInfoMessage": "Nu există conținut de citit",
+  "backPressExitInfoMessage": "Apăsați din nou înapoi pentru a ieși",
+  "reminderChannelName": "Mementouri notițe",
+  "reminderChannelDescription": "Mementouri pentru notițe în aplicația Layout",
+  "pinnedChannelName": "Notițe fixate",
+  "pinnedChannelDescription": "Notițe Layout fixate în panoul de notificări",
+  "notificationUnpinActionLabel": "Eliminare",
+  "reminderDefaultTitle": "Memento",
+  "reminderChecklistBodyFallback": "Nu uitați să verificați lista de verificare",
+  "reminderTextBodyFallback": "Nu uitați să verificați notița",
+  "pdfSaveDialogTitle": "Salvare ca PDF",
+  "jpgSaveDialogTitle": "Salvare ca JPG",
+  "txtSaveDialogTitle": "Salvare ca TXT",
+  "textSizeSheetTitle": "Dimensiune text",
+  "textSizeSamplePreview": "Text exemplu",
+  "textSizeCancelButton": "Anulare",
+  "textSizeApplyButton": "Aplicare",
+  "createPasswordDialogTitle": "Creare parolă",
+  "createPasswordNewPasswordHint": "Parolă nouă",
+  "createPasswordConfirmHint": "Reintroduceți parola",
+  "createPasswordHintQuestionDescription": "Setați o întrebare de securitate în cazul în care uitați parola (opțional).",
+  "createPasswordHintQuestionHint": "Alegeți o întrebare de securitate",
+  "createPasswordHintAnswerHint": "Răspunsul dvs.",
+  "createPasswordCancelButton": "Anulare",
+  "createPasswordSaveButton": "Salvare",
+  "passwordMismatchMessage": "Parolele nu se potrivesc!",
+  "passwordRequiredDialogTitle": "Parolă necesară",
+  "passwordRequiredHint": "Introduceți parola",
+  "forgotPasswordButtonLabel": "Am uitat parola",
+  "passwordRequiredCancelButton": "Anulare",
+  "passwordRequiredConfirmButton": "Verificare",
+  "securityQuestionDialogTitle": "Întrebare de securitate",
+  "securityQuestionAnswerHint": "Răspunsul dvs.",
+  "securityQuestionCancelButton": "Anulare",
+  "securityQuestionConfirmButton": "Confirmare",
+  "securityQuestionWrongAnswerMessage": "Răspuns greșit. Încercați din nou.",
+  "revealedPasswordDialogTitle": "Parola dvs.",
+  "revealedPasswordLabel": "Parola notiței dvs.:",
+  "revealedPasswordOkButton": "OK",
+  "securityQuestionPetName": "Care este numele primului dvs. animal de companie?",
+  "securityQuestionFavoriteTeacher": "Care este numele profesorului dvs. preferat?",
+  "securityQuestionBirthCity": "În ce oraș v-ați născut?",
+  "securityQuestionFavoriteFood": "Care este mâncarea dvs. preferată?",
+  "securityQuestionMotherMaidenName": "Care este numele de fată al mamei dvs.?",
+  "securityQuestionFirstSchool": "Care este numele primei școli pe care ați urmat-o?",
+  "securityQuestionFavoriteColor": "Care este culoarea dvs. preferată?",
+  "editFolderDialogTitle": "Editare folder",
+  "newSubfolderDialogTitle": "Subfolder nou",
+  "addFolderDialogTitle": "Adăugare folder",
+  "subfolderParentInfoMessage": "Va fi creat în interiorul \"{parentCategory}\"",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "Nume subfolder",
+  "folderNameFieldLabel": "Nume folder",
+  "folderColorLabel": "Culoare",
+  "folderDialogCancelButton": "Anulare",
+  "folderDialogSaveButton": "Salvare",
+  "folderDialogAddButton": "Adăugare",
+  "selectFolderSheetTitle": "Selectare folder",
+  "selectFolderAddOptionLabel": "Adăugare folder",
+  "removeCurrentFolderLabel": "Eliminare folder curent",
+  "noteDetailsDialogTitle": "Detalii",
+  "noteDetailsCreatedLabel": "Creată",
+  "noteDetailsModifiedLabel": "Ultima modificare",
+  "noteDetailsCharCountLabel": "Număr de caractere",
+  "noteDetailsCharCountValue": "{count} caractere",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "Număr de cuvinte",
+  "noteDetailsWordCountValue": "{count} cuvinte",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "OK",
+  "noteDetailsUnknownDateLabel": "Necunoscut",
+  "addAttachmentSheetTitle": "Adăugare",
+  "addAttachmentImageOption": "Adăugare imagine",
+  "addAttachmentCameraOption": "Cameră",
+  "addAttachmentFileOption": "Adăugare fișier",
+  "addAttachmentVoiceOption": "Înregistrare vocală",
+  "addAttachmentVideoOption": "Înregistrare video",
+  "addAttachmentScanOption": "Scanare document",
+  "noteActionsSheetTitle": "Alegeți acțiune",
+  "noteActionReminderLabel": "Memento",
+  "noteActionEditReminderLabel": "Editare memento",
+  "noteActionSpeechToTextLabel": "Voce în text",
+  "noteActionArchiveLabel": "Arhivare",
+  "noteActionUnarchiveLabel": "Eliminare din arhivă",
+  "noteActionLockLabel": "Blocare",
+  "noteActionUnlockLabel": "Deblocare",
+  "noteActionFavoriteLabel": "Favorite",
+  "noteActionUnfavoriteLabel": "Eliminare din favorite",
+  "noteActionClassifyLabel": "Selectare folder",
+  "noteActionDeleteLabel": "Ștergere",
+  "noteActionPinToNotificationLabel": "Fixare în panoul de notificări",
+  "noteActionUnpinFromNotificationLabel": "Eliminare fixare",
+  "noteActionShareLabel": "Distribuire",
+  "noteActionDuplicateLabel": "Creare copie",
+  "noteActionCopyContentLabel": "Copiere conținut",
+  "noteActionTtsLabel": "Citire cu voce tare",
+  "noteActionTextSizeLabel": "Dimensiune text",
+  "noteActionDetailsLabel": "Detalii",
+  "noteActionDiscardChangesLabel": "Anulare modificări",
+  "noteActionSelectLabel": "Selectare",
+  "reminderEditOptionLabel": "Schimbare memento",
+  "reminderRemoveOptionLabel": "Eliminare memento",
+  "discardChangesDialogTitle": "Anulare modificări",
+  "discardChangesDialogMessage": "Modificările nesalvate ale acestei notițe se vor pierde. Sigur doriți să le anulați?",
+  "discardChangesCancelButton": "Anulare",
+  "discardChangesConfirmButton": "Renunțare",
+  "pinnedNotificationDefaultTitle": "Notiță",
+  "pdfFailedInfoMessage": "Crearea PDF-ului a eșuat",
+  "drawingScreenTitle": "Desen",
+  "drawingMinimizeTooltip": "Minimizare",
+  "drawingEmptyExportWarningMessage": "Desenați ceva mai întâi",
+  "drawingEraserPartialModeLabel": "Parțial",
+  "drawingEraserFullModeLabel": "Complet",
+  "drawingClearTooltip": "Ștergere",
+  "drawingZoomOutTooltip": "Micșorare",
+  "drawingZoomInTooltip": "Mărire",
+  "drawingDeleteTooltip": "Ștergere",
+  "drawingEmptyPreviewHint": "Atingeți pentru a desena",
+  "settingsPageTitle": "Setări",
+  "settingsSectionGeneral": "General",
+  "settingsSectionSecurity": "Securitate",
+  "settingsSectionTheme": "Temă",
+  "settingsSectionPersonalization": "Personalizare",
+  "settingsSectionWidget": "Widget",
+  "settingsSectionAbout": "Despre",
+  "settingsHintQuestionPet": "Care este numele primului dvs. animal de companie?",
+  "settingsHintQuestionTeacher": "Care este numele profesorului dvs. preferat?",
+  "settingsHintQuestionBirthCity": "În ce oraș v-ați născut?",
+  "settingsHintQuestionFavoriteFood": "Care este mâncarea dvs. preferată?",
+  "settingsHintQuestionMotherMaidenName": "Care este numele de fată al mamei dvs.?",
+  "settingsHintQuestionFirstSchool": "Care a fost prima școală pe care ați urmat-o?",
+  "settingsHintQuestionFavoriteColor": "Care este culoarea dvs. preferată?",
+  "settingsSecurityQuestionDialogTitle": "Întrebare de securitate",
+  "settingsSecurityQuestionDialogDesc": "Dacă uitați parola, o puteți recupera răspunzând corect la această întrebare.",
+  "settingsSecurityQuestionDropdownHint": "Alegeți o întrebare de securitate",
+  "settingsSecurityQuestionAnswerHint": "Răspunsul dvs.",
+  "settingsSecurityQuestionCancelButton": "Anulare",
+  "settingsSecurityQuestionEmptyWarning": "Întrebarea și răspunsul nu pot fi goale!",
+  "settingsSecurityQuestionSaveButton": "Salvare",
+  "settingsCreatePasswordTitle": "Creare parolă",
+  "settingsPasswordRequiredTitle": "Parolă necesară",
+  "settingsPasswordEnterHint": "Introduceți parola",
+  "settingsForgotPasswordButton": "Am uitat parola",
+  "settingsNewPasswordHint": "Parolă nouă",
+  "settingsConfirmPasswordHint": "Reintroduceți parola",
+  "settingsSecurityQuestionOptionalDesc": "Setați o întrebare de securitate în cazul în care uitați parola (opțional).",
+  "settingsPasswordDialogCancelButton": "Anulare",
+  "settingsPasswordMismatchWarning": "Parolele nu se potrivesc!",
+  "settingsWrongPasswordWarning": "Parolă greșită!",
+  "settingsPasswordSaveButton": "Salvare",
+  "settingsPasswordRemoveButton": "Eliminare",
+  "settingsNotePasswordTitle": "Parola notiței",
+  "settingsPasswordSetSubtitle": "Parolă setată ✓",
+  "settingsPasswordNotSetSubtitle": "Parolă nesetată",
+  "settingsSecurityQuestionTileTitle": "Întrebare de securitate",
+  "settingsSecurityQuestionSetSubtitle": "Setată ✓ — folosită dacă uitați parola",
+  "settingsSecurityQuestionNotSetSubtitle": "Nesetată — nu veți putea recupera parola dacă o pierdeți",
+  "settingsThemeDialogTitle": "Selectare temă",
+  "settingsThemeSystemDefault": "Implicit sistem",
+  "settingsThemeLightOption": "Temă deschisă",
+  "settingsThemeDarkOption": "Temă închisă",
+  "settingsAccentColorDialogTitle": "Alegere culoare de accent",
+  "settingsThemeChangeTileTitle": "Schimbare temă",
+  "settingsThemeLightLabel": "Deschisă",
+  "settingsThemeDarkLabel": "Închisă",
+  "settingsThemeSystemLabel": "Sistem",
+  "settingsLanguageTileTitle": "Limbă",
+  "settingsLanguageDialogTitle": "Selectare limbă",
+  "settingsLanguageSystemOption": "Sistem",
+  "settingsAccentColorTileTitle": "Culoare de accent",
+  "settingsAccentColorTileSubtitle": "Culoare folosită în bara aplicației, butoane și comutatoare",
+  "settingsColorfulNotesTitle": "Culori variate pentru notițe",
+  "settingsColorfulNotesSubtitle": "Fiecare card de notiță primește o nuanță de culoare diferită.",
+  "settingsTextColorSheetTitle": "Culoare text",
+  "settingsTextColorSheetDesc": "Stabilește culoarea textului conținutului notiței.",
+  "settingsTextColorOkButton": "OK",
+  "settingsTextColorTileTitle": "Culoare text",
+  "settingsTextColorTileSubtitle": "Culoare pentru textul conținutului notiței.",
+  "settingsWidgetFontSizeLabel": "Dimensiune font widget",
+  "settingsWidgetFontSizeSample": "Titlu exemplu - {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "Anulare",
+  "settingsWidgetFontSizeApplyButton": "Aplicare",
+  "settingsWidgetOpacityLabel": "Transparență fundal",
+  "settingsWidgetOpacityValue": "Transparență {percent}%",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "Anulare",
+  "settingsWidgetOpacityApplyButton": "Aplicare",
+  "settingsWidgetDarkModeTitle": "Widget întunecat",
+  "settingsWidgetDarkModeDesc": "Schemă de culori întunecată pentru widget.",
+  "settingsAboutVersionTitle": "Versiune aplicație",
+  "settingsFontFamilyTileTitle": "Font",
+  "settingsFontFamilyDefaultLabel": "Implicit",
+  "settingsGlobalFontSizeTileTitle": "Dimensiune font",
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt — aplicat tuturor notițelor.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "Text exemplu - {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "Aplicare la notițele existente",
+  "settingsGlobalFontSizeApplyToAllNote": "Dacă o notiță are o dimensiune de font individuală setată, această setare nu o va afecta.",
+  "settingsGlobalFontSizeCancelButton": "Anulare",
+  "settingsGlobalFontSizeApplyButton": "Aplicare",
+  "settingsPreviewLinesTileTitle": "Rânduri de previzualizare notiță",
+  "settingsPreviewLinesTileSubtitle": "Se afișează până la {lines} rânduri. Dacă notița este mai scurtă, se afișează numărul real de rânduri.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "Curent: {lines} rânduri",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "Stabilește numărul maxim de rânduri de previzualizat. Dacă notița are mai puține rânduri, se afișează numărul real de rânduri.",
+  "settingsPreviewLinesCancelButton": "Anulare",
+  "settingsPreviewLinesApplyButton": "Aplicare",
+  "backupCancelButton": "Anulare",
+  "backupConnectButton": "Conectare",
+  "backupDisconnectButton": "Deconectare",
+  "backupContinueButton": "Continuare",
+  "backupCloseButton": "Închidere",
+  "backupShareButton": "Distribuire",
+  "backupRestoreButton": "Restaurare",
+  "backupConfigureButton": "Configurare",
+  "backupUnknownDateLabel": "Necunoscută",
+  "backupProcessingDefaultLabel": "Se procesează...",
+  "backupPermissionRequiredTitle": "Permisiune de stocare necesară",
+  "backupPermissionRequiredBodyPermanent": "Această versiune Android necesită permisiune de stocare pentru backup/restaurare. Deoarece permisiunea a fost refuzată definitiv, activați-o manual din setările aplicației.",
+  "backupPermissionRequiredBodyNormal": "Această versiune Android necesită permisiune de stocare pentru backup/restaurare. Acordați permisiunea pentru a continua.",
+  "backupGoToSettingsButton": "Mergeți la setări",
+  "backupRetryButton": "Reîncercare",
+  "backupDriveConnectingLabel": "Se conectează la contul Google...",
+  "backupDriveConnectedWithEmailMessage": "Conectat la contul Google Drive: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Conectat la contul Google Drive.",
+  "backupDriveConnectFailedMessage": "Nu s-a putut conecta la contul Google sau operațiunea a fost anulată.",
+  "backupDriveDisconnectTitle": "Deconectare Google Drive",
+  "backupDriveDisconnectBody": "Dacă vă deconectați, backup-urile manuale sau automate pe Drive nu vor mai fi posibile. Backup-urile deja stocate pe Drive nu vor fi șterse — doar accesul de pe acest dispozitiv va fi eliminat.",
+  "backupDriveDisconnectedMessage": "Conexiunea la Google Drive a fost eliminată.",
+  "backupDriveRequiredTitle": "Cont Google necesar",
+  "backupDriveRequiredBody": "Această acțiune necesită conectarea contului dvs. Google. Doriți să vă conectați acum?",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: conectat ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: conectat",
+  "backupDriveStatusDisconnected": "Google Drive: neconectat",
+  "backupDriveAuthenticatingLabel": "Se verifică contul Google...",
+  "backupDriveNotSignedInMessage": "Nu sunteți conectat la Google Drive. Conectați-vă mai întâi cu contul dvs. Google.",
+  "backupDriveUploadingLabel": "Se încarcă backup-ul pe Drive...",
+  "backupDriveUploadTimeoutMessage": "Încărcarea pe Google Drive nu s-a finalizat în 120 de secunde (niciun răspuns de la server). Verificați conexiunea și încercați din nou.",
+  "backupDriveOperationCompletedLabel": "Finalizat",
+  "backupToDriveActionLabel": "backup pe Drive",
+  "backupToDeviceActionLabel": "backup",
+  "backupCreatingLabel": "Se creează backup-ul...",
+  "backupCreateFailedMessage": "Backup-ul nu a putut fi creat: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Încărcarea pe Google Drive a eșuat: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "Backup încărcat cu succes pe Google Drive.",
+  "backupCreatedMessage": "Backup creat: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "Backup gata",
+  "backupOfferShareBody": "Fișierul de backup a fost salvat pe dispozitivul dvs. Doriți să îl distribuiți acum (de ex. stocare cloud, e-mail, alt dispozitiv)?",
+  "backupShareFileText": "fișier backup layout",
+  "backupShareFailedMessage": "Distribuirea nu a putut fi pornită: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "Backup mare",
+  "backupLargeOperationBody": "Datele de procesat sunt de aproximativ {sizeText}. Un {actionLabel} de această dimensiune poate dura ceva timp, în funcție de dispozitiv. Nu părăsiți aplicația cât timp este în desfășurare — doriți să continuați?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "restaurare",
+  "backupDriveListingLabel": "Se listează backup-urile de pe Drive...",
+  "backupDriveListFailedMessage": "Backup-urile nu au putut fi listate: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "Nu există încă backup-uri pe Google Drive.",
+  "backupDrivePickTitle": "Alegeți un backup din Drive",
+  "backupDriveDownloadingLabel": "Se descarcă backup-ul de pe Drive...",
+  "backupDriveDownloadingWithSizeLabel": "Se descarcă backup-ul de pe Drive... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "Se salvează fișierul pe dispozitiv...",
+  "backupDriveUnknownBackupFileName": "backup_necunoscut.zip",
+  "backupDriveStorageFullMessage": "Spațiul dvs. de stocare Google Drive este plin. Eliberați spațiu pe Drive și încercați din nou.",
+  "backupDriveNetworkErrorMessage": "Nu s-a putut stabili o conexiune la internet. Verificați conexiunea și încercați din nou.",
+  "backupDriveBackupNotFoundMessage": "Fișierul de backup specificat nu a putut fi găsit pe Drive. Este posibil să fi fost șters.",
+  "backupDriveUnknownErrorMessage": "A apărut o eroare neașteptată în timpul operațiunii Google Drive: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "Descărcarea a eșuat: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "Fișierul nu a putut fi selectat: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "Fișierul selectat nu a putut fi accesat.",
+  "backupCheckingLabel": "Se verifică backup-ul...",
+  "backupReadFailedMessage": "Fișierul de backup nu a putut fi citit: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Restaurare backup",
+  "backupPreviewContentsHeader": "Conținutul backup-ului selectat:",
+  "backupPreviewNoteCountLabel": "Număr de notițe",
+  "backupPreviewTrashCountLabel": "Notițe în coșul de gunoi",
+  "backupPreviewCategoryCountLabel": "Număr de categorii",
+  "backupPreviewAttachmentLabel": "Atașamente",
+  "backupPreviewAttachmentNoneValue": "Niciunul",
+  "backupPreviewAttachmentCountValue": "{count} fișiere ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "Creat la",
+  "backupEmptyPreviewTitle": "Acest backup pare gol",
+  "backupEmptyPreviewBody": "Nu s-au găsit notițe, categorii sau atașamente în fișierul selectat. Dacă continuați, datele dvs. actuale vor fi totuși șterse și înlocuite cu acest backup gol.",
+  "backupMissingAttachmentsTitle": "{count} atașamente negăsite în backup",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "Notițele cu aceste fișiere vor fi restaurate, dar fără atașamente (este posibil să fi lipsit sau să fi fost corupte la momentul creării backup-ului): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} și încă {remaining}",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "Această acțiune va ÎNLOCUI toate notițele, coșul de gunoi, categoriile, setările și atașamentele curente cu datele din backup-ul de mai sus. Datele dvs. actuale se vor pierde definitiv, iar această acțiune nu poate fi anulată.",
+  "backupRestoringLabel": "Se restaurează backup-ul...",
+  "backupRestoreSuccessWithMissingMessage": "Backup restaurat. Totuși, {count} atașamente nu au fost găsite în backup și nu au putut fi restaurate. Se recomandă repornirea aplicației pentru ca modificările să aibă efect complet.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "Backup restaurat cu succes. Se recomandă repornirea aplicației pentru ca modificările să aibă efect complet.",
+  "backupRestoreFailedMessage": "A apărut o eroare la restaurare: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "Backup și restaurare",
+  "backupBlockedExitWarningMessage": "O operațiune este în desfășurare, așteptați finalizarea acesteia.",
+  "backupBusyBackTooltip": "Operațiune în desfășurare",
+  "backupIntroText": "Puteți face backup notițelor, categoriilor, setărilor și atașamentelor dvs. într-un singur fișier .zip sau puteți restaura un backup făcut anterior.",
+  "backupDriveCardTitle": "Backup pe Google Drive",
+  "backupDriveCardSubtitle": "Creați un backup nou și încărcați-l direct în zona privată a Google Drive.",
+  "backupDriveCardButtonLabel": "Backup pe Drive",
+  "backupDeviceCardTitle": "Backup pe dispozitiv",
+  "backupDeviceCardSubtitle": "Salvați toate datele dvs. într-un singur fișier .zip pe dispozitiv și distribuiți-l dacă doriți.",
+  "backupDeviceCardButtonLabel": "Backup pe dispozitiv",
+  "backupHistoryCardTitle": "Istoric backup",
+  "backupHistoryCardSubtitle": "Vizualizați toate backup-urile stocate pe dispozitivul dvs., cu data și dimensiunea lor; le puteți distribui, restaura sau șterge direct de aici.",
+  "backupHistoryTabDevice": "Dispozitiv",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "Ștergere backup",
+  "backupHistoryDeleteDialogBody": "Sigur doriți să ștergeți definitiv fișierul de backup \"{fileName}\"? Această acțiune nu poate fi anulată.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "Backup șters.",
+  "backupHistoryDriveDeleteDialogTitle": "Ștergere backup de pe Drive",
+  "backupHistoryDriveDeleteDialogBody": "Sigur doriți să ștergeți definitiv backup-ul \"{fileName}\" de pe Google Drive? Această acțiune nu poate fi anulată, iar fișierul nu va fi mutat în coșul de gunoi.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Backup Drive șters.",
+  "backupHistoryDriveDeleteFailedMessage": "Nu s-a putut șterge: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "Nu există încă backup-uri salvate pe acest dispozitiv.",
+  "backupHistoryDeviceEmptySubtitle": "Folosiți \"Backup pe dispozitiv\" pentru a crea primul dvs. backup.",
+  "backupHistoryDriveEmptySubtitle": "Folosiți \"Backup pe Google Drive\" pentru a crea primul dvs. backup în cloud.",
+  "backupHistoryDriveSignInPrompt": "Conectați-vă contul Google pentru a vedea backup-urile de pe Drive.",
+  "backupHistoryConnectGoogleButton": "Conectare cu Google",
+  "backupHistoryDriveConnectedFallback": "Conectat",
+  "backupHistoryUnknownErrorFallback": "A apărut o eroare necunoscută.",
+  "backupHistoryDownloadStartingLabel": "Se pornește...",
+  "backupAutoBackupEnabledLabel": "Backup automat: activat",
+  "backupAutoBackupDisabledLabel": "Backup automat: dezactivat",
+  "backupOverlayWarningMessage": "Așteptați, nu părăsiți aplicația până la finalizarea operațiunii.",
+  "pdfExportUntitledNoteLabel": "Notiță fără titlu",
+  "pdfExportDefaultAttachmentName": "Atașament",
+  "pdfExportDefaultFileName": "notita",
+  "screenshotExportBoundaryNotFoundMessage": "Captura de ecran nu a putut fi realizată (limita nu a fost găsită)",
+  "screenshotExportByteDataNullMessage": "Datele capturii de ecran nu au putut fi generate",
+  "screenshotExportPngDecodeFailedMessage": "Imaginea nu a putut fi procesată (decodare PNG eșuată)",
+  "screenshotCalcTableTotalLabel": "Total",
+  "gundemMenuRemoveFromAgenda": "Eliminare din agendă",
+  "gundemMenuDeleteNote": "Ștergere notiță",
+  "gundemSectionOverdue": "Restante",
+  "gundemSectionToday": "Astăzi",
+  "gundemSectionTomorrow": "Mâine",
+  "gundemSectionNextWeek": "Săptămâna viitoare",
+  "gundemSectionFurther": "Mai departe",
+  "gundemWeekdayMonday": "Luni",
+  "gundemWeekdayTuesday": "Marți",
+  "gundemWeekdayWednesday": "Miercuri",
+  "gundemWeekdayThursday": "Joi",
+  "gundemWeekdayFriday": "Vineri",
+  "gundemWeekdaySaturday": "Sâmbătă",
+  "gundemWeekdaySunday": "Duminică",
+  "gundemAppBarTitle": "Agendă",
+  "gundemCalendarTooltip": "Calendar",
+  "gundemEmptyTitle": "Nimic în agenda dvs.",
+  "gundemEmptySubtitle": "Notițele cu un memento sau o dată atribuită vor apărea aici.",
+  "gundemUntitledNote": "Notiță fără titlu",
+  "gundemRepeatHourly": "Orar",
+  "gundemRepeatDaily": "Zilnic",
+  "gundemRepeatWeekly": "Săptămânal",
+  "gundemRepeatMonthly": "Lunar",
+  "gundemRepeatYearly": "Anual",
+  "gundemPreviewCalcTableLabel": "[Listă de calcul]",
+  "gundemPreviewDrawingLabel": "[Desen]",
+  "gundemPreviewImageLabel": "[Imagine]",
+  "gundemMonthShortJan": "Ian",
+  "gundemMonthShortFeb": "Feb",
+  "gundemMonthShortMar": "Mar",
+  "gundemMonthShortApr": "Apr",
+  "gundemMonthShortMay": "Mai",
+  "gundemMonthShortJun": "Iun",
+  "gundemMonthShortJul": "Iul",
+  "gundemMonthShortAug": "Aug",
+  "gundemMonthShortSep": "Sep",
+  "gundemMonthShortOct": "Oct",
+  "gundemMonthShortNov": "Noi",
+  "gundemMonthShortDec": "Dec",
+  "calendarAppBarTitle": "Calendar",
+  "calendarTodayButton": "Astăzi",
+  "calendarLegendNoteLabel": "Notiță",
+  "calendarLegendReminderLabel": "Memento",
+  "calendarTodayBadge": "Astăzi",
+  "calendarEmptyDayMessage": "Nicio notiță sau memento pentru această zi.",
+  "calendarReminderHourlyLabel": "Orar",
+  "calendarMonthJan": "Ianuarie",
+  "calendarMonthFeb": "Februarie",
+  "calendarMonthMar": "Martie",
+  "calendarMonthApr": "Aprilie",
+  "calendarMonthMay": "Mai",
+  "calendarMonthJun": "Iunie",
+  "calendarMonthJul": "Iulie",
+  "calendarMonthAug": "August",
+  "calendarMonthSep": "Septembrie",
+  "calendarMonthOct": "Octombrie",
+  "calendarMonthNov": "Noiembrie",
+  "calendarMonthDec": "Decembrie",
+  "calendarWeekdayShortMon": "Lun",
+  "calendarWeekdayShortTue": "Mar",
+  "calendarWeekdayShortWed": "Mie",
+  "calendarWeekdayShortThu": "Joi",
+  "calendarWeekdayShortFri": "Vin",
+  "calendarWeekdayShortSat": "Sâm",
+  "calendarWeekdayShortSun": "Dum",
+  "calendarWeekdayFullMonday": "Luni",
+  "calendarWeekdayFullTuesday": "Marți",
+  "calendarWeekdayFullWednesday": "Miercuri",
+  "calendarWeekdayFullThursday": "Joi",
+  "calendarWeekdayFullFriday": "Vineri",
+  "calendarWeekdayFullSaturday": "Sâmbătă",
+  "calendarWeekdayFullSunday": "Duminică",
+  "wrongPasswordDialogTitle": "Parolă greșită",
+  "wrongPasswordDialogMessage": "Parola introdusă este incorectă.",
+  "commonOkButton": "OK",
+  "unlockCategoryAction": "Deblocare",
+  "lockCategoryAction": "Blocare",
+  "categoryUnlockedMessage": "Deblocat",
+  "categoryLockedMessage": "Folder blocat",
+  "deleteFolderMenuItemLabel": "Ștergere folder",
+  "deleteFolderDialogTitle": "Ștergere folder",
+  "deleteFolderDialogMessageWithSubfolders": "Sigur doriți să ștergeți folderul \"{category}\" și toate subfolderele sale? Notițele din aceste foldere vor deveni neclasificate.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "Sigur doriți să ștergeți folderul \"{category}\"? Notițele din acest folder vor deveni neclasificate.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "Anulare",
+  "deleteFolderDialogConfirmButton": "Ștergere",
+  "editCategoryNameColorMenuItemLabel": "Editare nume / culoare",
+  "addSubfolderMenuItemLabel": "Creare subfolder",
+  "expandSubfoldersMenuItemLabel": "Extindere subfoldere",
+  "collapseSubfoldersMenuItemLabel": "Restrângere subfoldere",
+  "saveErrorInfoMessage": "Eroare de salvare: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "Bine ați venit la DNote! 🚀",
+  "welcomeNoteContent": "Funcții noi adăugate!",
+  "noteListDateGroupToday": "Astăzi",
+  "noteListDateGroupYesterday": "Ieri",
+  "noteListDateGroupLast7Days": "Ultimele 7 zile",
+  "noteListDateGroupLast30Days": "Ultimele 30 de zile",
+  "reminderRepeatNoneLabel": "Fără repetare",
+  "voiceRecorderPreparingLabel": "Se pregătește…",
+  "voiceRecorderCancelButton": "Anulare",
+  "voiceRecorderStopAddButton": "Oprire și adăugare",
+  "speechToTextMicPermissionDeniedMessage": "Permisiunea pentru microfon nu a fost acordată.",
+  "speechToTextUnavailableMessage": "Recunoașterea vocală nu este disponibilă pe acest dispozitiv.",
+  "speechToTextPreparingLabel": "Se pregătește…",
+  "speechToTextListeningLabel": "Se ascultă…",
+  "speechToTextStartSpeakingPlaceholder": "Începeți să vorbiți…",
+  "speechToTextCancelButton": "Anulare",
+  "speechToTextStopAddButton": "Oprire și adăugare",
+  "textToSpeechNoContentMessage": "Nu există conținut de citit.",
+  "textToSpeechReadErrorMessage": "A apărut o eroare la citire.",
+  "textToSpeechUnavailableMessage": "Sinteza vocală nu este disponibilă pe acest dispozitiv.",
+  "textToSpeechPreparingLabel": "Se pregătește…",
+  "textToSpeechPausedLabel": "Pauzat",
+  "textToSpeechFinishedLabel": "Citire finalizată",
+  "textToSpeechReadingLabel": "Se citește…",
+  "textToSpeechCloseErrorButton": "Închidere",
+  "textToSpeechReplayButton": "Citire din nou",
+  "textToSpeechCloseFinishedButton": "Închidere",
+  "textToSpeechPauseButton": "Pauză",
+  "textToSpeechResumeButton": "Reluare",
+  "textToSpeechStopButton": "Oprire",
+  "textToSpeechSpeedSlow": "Lent",
+  "textToSpeechSpeedNormal": "Normal",
+  "textToSpeechSpeedFast": "Rapid",
+  "calendarPickerCancelButton": "Anulare",
+  "calendarPickerConfirmButton": "Selectare",
+  "calendarPickerClearButton": "Golire",
+  "reminderPickerDialogTitle": "Adăugare memento",
+  "reminderPickerDateTodayOption": "Astăzi",
+  "reminderPickerDateTomorrowOption": "Mâine",
+  "reminderPickerDatePickOption": "Alegere dată",
+  "reminderRepeatHourlyLabel": "În fiecare oră",
+  "reminderRepeatDailyLabel": "În fiecare zi",
+  "reminderRepeatWeeklyLabel": "În fiecare săptămână",
+  "reminderRepeatMonthlyLabel": "În fiecare lună",
+  "reminderRepeatYearlyLabel": "În fiecare an",
+  "reminderPickerCalendarHelpText": "Selectați data mementoului",
+  "reminderPickerCancelButton": "ANULARE",
+  "reminderPickerSaveButton": "SALVARE",
+  "reminderPickerPastTimeErrorMessage": "Nu poate fi selectată o oră din trecut",
+  "calcTableTotalLabel": "Total: {amount}",
+  "backupCreatePreparingDataLabel": "Se pregătesc datele...",
+  "backupCreatePackagingNotesLabel": "Se împachetează notițele și categoriile...",
+  "backupCreateReadingAttachmentsLabel": "Se citesc atașamentele...",
+  "backupCreateReadingAttachmentsProgressLabel": "Se citesc atașamentele... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "Se comprimă fișierul zip...",
+  "backupCreateSavingFileLabel": "Se salvează fișierul...",
+  "backupRestoreValidatingLabel": "Se validează backup-ul...",
+  "backupRestoreValidatedPreparingDataLabel": "Backup validat, se pregătesc datele...",
+  "backupRestoreWritingNotesLabel": "Se scriu notițele...",
+  "backupRestoreWritingTrashLabel": "Se scrie coșul de gunoi...",
+  "backupRestoreTrashWrittenLabel": "Coș de gunoi scris",
+  "backupRestoreWritingCategoriesLabel": "Se scriu categoriile...",
+  "backupRestoreCategoriesWrittenLabel": "Categorii scrise",
+  "backupRestoreWritingSettingsLabel": "Se scriu setările...",
+  "backupRestoreSettingsWrittenLabel": "Setări scrise",
+  "backupRestoreCleaningOldAttachmentsLabel": "Se curăță atașamentele vechi...",
+  "backupRestoreNoAttachmentsFinishingLabel": "Niciun atașament găsit, se finalizează...",
+  "backupRestoreAttachmentsProgressLabel": "Se restaurează atașamentele... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "Finalizat",
+  "backupValidationCorruptedFileMessage": "Fișierul este corupt sau nu este un fișier de backup valid.",
+  "backupValidationMissingDataMessage": "Nu s-au găsit date în fișierul de backup (backup_data.json lipsește).",
+  "backupValidationInvalidJsonMessage": "Datele de backup nu au putut fi citite (JSON corupt).",
+  "backupValidationNotDnoteBackupMessage": "Acest fișier nu este un backup din aplicația dnote.",
+  "backupValidationVersionUnreadableMessage": "Informațiile despre versiunea fișierului de backup nu au putut fi citite.",
+  "backupValidationIncompatibleVersionMessage": "Acest backup are un format mai nou pe care versiunea curentă a aplicației nu îl acceptă. Actualizați aplicația.",
+  "backupValidationInvalidVersionMessage": "Informațiile despre versiunea fișierului de backup sunt nevalide.",
+  "backupValidationMissingNotesFieldMessage": "Datele de backup nu sunt în formatul așteptat (câmpul notes lipsește).",
+  "backupValidationMissingTrashFieldMessage": "Datele de backup nu sunt în formatul așteptat (câmpul trash lipsește).",
+  "backupValidationInvalidCategoriesFieldMessage": "Datele de backup nu sunt în formatul așteptat (lista de categorii este nevalidă).",
+  "backupValidationInvalidSettingsFieldMessage": "Datele de backup nu sunt în formatul așteptat (câmpul settings este nevalid).",
+  "backupValidationInvalidNoteRecordMessage": "Datele de backup nu sunt în formatul așteptat (o înregistrare de notiță este nevalidă).",
+  "backupValidationMissingNoteIdMessage": "Datele de backup nu sunt în formatul așteptat (s-a găsit o înregistrare de notiță fără ID).",
+  "backupValidationFileNotFoundMessage": "Fișierul de backup nu a fost găsit.",
+  "backupErrorInsufficientStorageMessage": "Nu există suficient spațiu de stocare liber pe dispozitiv. Eliberați spațiu și încercați din nou.",
+  "backupErrorPermissionDeniedMessage": "Permisiunea de acces la fișiere a fost refuzată. Verificați permisiunile aplicației și încercați din nou.",
+  "backupErrorFileOperationMessage": "A apărut o eroare în timpul operațiunii cu fișiere: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "A apărut o eroare neașteptată: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "Arhiva zip nu a putut fi creată (ZipEncoder a returnat null).",
+  "calcTableMenuItemLabel": "Listă de calcul",
+  "tagsMenuItemLabel": "Etichete",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "Adăugare element...",
+  "toolbarHighlightTooltip": "Evidențiere",
+  "toolbarListTooltip": "Listă",
+  "toolbarHideKeyboardTooltip": "Ascundere tastatură",
+  "autoBackupLocalSuccessMessage": "Backup local reușit.",
+  "autoBackupLocalFailedMessage": "Backup local eșuat: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Backup Drive omis: contul Google nu este conectat sau sesiunea a expirat. Deschideți aplicația și reconectați-vă.",
+  "autoBackupDriveSuccessMessage": "Backup Drive reușit.",
+  "autoBackupDriveFailedMessage": "Backup Drive eșuat: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "Nicio notiță încă",
+  "noteWidgetPreviewTotalLabel": "Total: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ Desen",
+  "autoBackupSettingsAppBarTitle": "Setări backup automat",
+  "autoBackupSettingsMainSwitchTitle": "Activare backup automat",
+  "autoBackupSettingsMainSwitchSubtitle": "Notițele dvs. sunt salvate periodic în siguranță, în fundal.",
+  "autoBackupSettingsTargetTitle": "Destinație backup",
+  "autoBackupSettingsTargetSubtitle": "Alegeți unde sunt salvate backup-urile.",
+  "autoBackupSettingsTargetLocalOption": "Local",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "Ambele",
+  "autoBackupSettingsDriveNotConnectedNote": "Conectați-vă mai întâi contul pentru a folosi opțiunile Google Drive.",
+  "autoBackupSettingsConnectButton": "Conectare",
+  "autoBackupSettingsFrequencyTitle": "Frecvență backup",
+  "autoBackupSettingsFrequencySubtitle": "Se face un backup la fiecare {hours} ore.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 ore",
+  "autoBackupSettingsFrequency12h": "12 ore",
+  "autoBackupSettingsFrequency24h": "24 ore (zilnic)",
+  "autoBackupSettingsFrequency48h": "48 ore (2 zile)",
+  "autoBackupSettingsFrequency168h": "168 ore (săptămânal)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "Doar prin Wi-Fi",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "Încărcarea în cloud se face doar prin Wi-Fi pentru a proteja datele mobile.",
+  "autoBackupSettingsStatusCardTitle": "Stare sistem",
+  "autoBackupSettingsNeverRunMessage": "Backup-ul automat nu a rulat încă.",
+  "autoBackupSettingsLastRunInfo": "Ultima rulare: {date} {time} ({status})\nMesaj: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "Reușit",
+  "autoBackupSettingsStatusFailedLabel": "Eșuat",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Nu s-a putut conecta la contul Google.",
+  "autoBackupSettingsSavedSnackbar": "Setările de backup automat au fost actualizate.",
+  "selectionModeDeletedMessage": "{count} notițe șterse",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "Arhivate",
+  "selectionModeClassifySheetTitle": "Alegeți categoria pentru {count} notițe",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "Adăugare categorie",
+  "selectionModeRemoveCategoryOption": "Eliminare categorie",
+  "calcTableItemHint": "Element...",
+  "calcTableTotalRowLabel": "Total",
+  "textSelectionMenuShareButton": "Distribuire",
+  "textSelectionMenuTranslateButton": "Traducere",
+  "textSelectionMenuShareFailedSnackbar": "Distribuirea nu a putut fi pornită.",
+  "textSelectionMenuTranslateFailedSnackbar": "Traducerea nu a putut fi deschisă.",
+  "lastBackupInfoTodayFormat": "Astăzi {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}.{month}.{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "Ultimul backup: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "Nu s-a făcut încă niciun backup."
+}

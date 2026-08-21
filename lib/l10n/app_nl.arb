@@ -1,0 +1,1136 @@
+{
+  "@@locale": "nl",
+  "toolbarBoldTooltip": "Vet",
+  "toolbarItalicTooltip": "Cursief",
+  "toolbarUnderlineTooltip": "Onderstrepen",
+  "toolbarStrikethroughTooltip": "Doorhalen",
+  "toolbarFontSizeTooltip": "Lettergrootte",
+  "toolbarColorTooltip": "Tekstkleur",
+  "toolbarBulletTooltip": "Opsommingslijst",
+  "toolbarNumberTooltip": "Genummerde lijst",
+  "toolbarIndentTooltip": "Alinea-inspringing",
+  "toolbarLinkTooltip": "Link toevoegen/bewerken/verwijderen",
+  "toolbarDividerTooltip": "Scheidingslijn invoegen",
+  "toolbarChecklistTooltip": "Checklist toevoegen",
+  "linkSelectTextSnackbar": "Selecteer eerst de tekst die u wilt koppelen",
+  "linkDialogEditTitle": "Link bewerken",
+  "linkDialogAddTitle": "Link toevoegen",
+  "linkDialogRemoveButton": "Link verwijderen",
+  "linkDialogCancelButton": "Annuleren",
+  "linkDialogConfirmButton": "Toevoegen",
+  "cameraPermissionPermanentlyDeniedMessage": "Camera-toestemming geweigerd. U moet dit via de instellingen toestaan om video op te nemen.",
+  "cameraPermissionRequiredMessage": "Camera-toestemming is vereist om video op te nemen.",
+  "openSettingsButtonLabel": "Instellingen",
+  "documentScanStartFailedMessage": "Scannen kon niet worden gestart: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "Tekstherkenning mislukt: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "Er is geen leesbare tekst gevonden in het document",
+  "scanResultSheetTitle": "Hoe moet het gescande document worden toegevoegd?",
+  "scanResultTextOnlyOption": "Alleen als tekst toevoegen",
+  "scanResultTextAndImageOption": "Tekst + gescande afbeelding toevoegen",
+  "scanResultCancelOption": "Annuleren",
+  "audioPermissionPermanentlyDeniedMessage": "Microfoontoestemming geweigerd. U moet dit via de instellingen toestaan om audio op te nemen.",
+  "audioPermissionRequiredMessage": "Microfoontoestemming is vereist om audio op te nemen.",
+  "voiceRecordingDefaultLabel": "Spraakopname",
+  "blockPreviewCalcTableLabel": "Rekenlijst ({count} rijen)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "Tekening",
+  "blockPreviewAttachmentsLabel": "{count} bijlagen (foto/document)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "Scheidingslijn",
+  "blockPreviewChecklistLabel": "Checklist ({count} items)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(lege tekst)",
+  "reorderBlocksSheetTitle": "Blokken opnieuw ordenen",
+  "reorderBlocksMoveUpTooltip": "Omhoog verplaatsen",
+  "reorderBlocksMoveDownTooltip": "Omlaag verplaatsen",
+  "reorderBlocksCloseTooltip": "Sluiten",
+  "reorderBlocksDescription": "Tik op een blok om het te selecteren en gebruik dan de pijlen omhoog/omlaag om het te verplaatsen.",
+  "reorderBlocksMenuItemLabel": "Opnieuw ordenen",
+  "txtImportPickerDialogTitle": "Selecteer het te importeren TXT-bestand",
+  "txtImportReadFailedMessage": "Het TXT-bestand kon niet worden gelezen",
+  "txtImportEmptyFileMessage": "Het TXT-bestand is leeg",
+  "txtImportSuccessMessage": "TXT geïmporteerd",
+  "txtImportMenuItemLabel": "Importeren (txt)",
+  "exportMenuItemLabel": "Exporteren",
+  "editorUndoTooltip": "Ongedaan maken",
+  "editorRedoTooltip": "Opnieuw uitvoeren",
+  "noteSavedMessage": "Notitie opgeslagen",
+  "dateAssignPickerHelpText": "Notitie toewijzen aan een dag",
+  "dateAssignChangeOption": "Datum wijzigen",
+  "dateAssignRemoveOption": "Toewijzing verwijderen",
+  "editorSubToolbarCloseTooltip": "Sluiten",
+  "titleFieldHint": "Titel",
+  "textBlockHint": "Schrijf hier uw notitie...",
+  "drawingBoardMenuItemLabel": "Tekenbord",
+  "voiceToTextTextNotesOnlyMessage": "Spraak naar tekst is alleen beschikbaar voor tekstnotities",
+  "selectionModeCancelTooltip": "Selectie annuleren",
+  "selectionModeSelectedCountTitle": "{count} geselecteerd",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "Verwijderen",
+  "selectionModeArchiveTooltip": "Archiveren",
+  "selectionModeFolderTooltip": "Map",
+  "searchFieldHint": "Notities zoeken...",
+  "emptyTrashDialogTitle": "Prullenbak legen",
+  "emptyTrashDialogConfirmMessage": "Alle verwijderde notities worden permanent verwijderd. Weet u het zeker?",
+  "emptyTrashDialogCancelButton": "Annuleren",
+  "restoreAllMenuItemLabel": "Alles herstellen",
+  "sortMenuTooltip": "Notities sorteren",
+  "sortMenuAscendingLabel": "Volgorde: Oplopend (A-Z)",
+  "sortMenuDescendingLabel": "Volgorde: Aflopend (Z-A)",
+  "sortMenuByTitleLabel": "Sorteren op: Titel",
+  "sortMenuByModifiedDateLabel": "Sorteren op: Laatst gewijzigd",
+  "sortMenuByCreatedDateLabel": "Sorteren op: Aanmaakdatum",
+  "sortMenuByFolderLabel": "Sorteren op: Map",
+  "viewToggleGridTooltip": "Rasterweergave",
+  "viewToggleListTooltip": "Lijstweergave",
+  "drawerHeaderSubtitle": "Uw persoonlijke notitieboek",
+  "drawerNotesSectionHeader": "NOTITIES",
+  "drawerAllNotesLabel": "Notities",
+  "drawerFavoritesLabel": "Favoriet",
+  "drawerAgendaLabel": "Agenda",
+  "drawerRemindersLabel": "Herinnering",
+  "drawerLockedLabel": "Vergrendeld",
+  "drawerTrashLabel": "Prullenbak",
+  "drawerFoldersSectionHeader": "MAPPEN",
+  "drawerExpandLabel": "Uitvouwen",
+  "drawerCollapseLabel": "Samenvouwen",
+  "drawerAddFolderLabel": "Map toevoegen",
+  "drawerAppSectionHeader": "APP",
+  "drawerCalendarLabel": "Kalender",
+  "drawerSettingsLabel": "Instellingen",
+  "drawerBackupRestoreLabel": "Back-up & Herstel",
+  "drawerUpgradeToProLabel": "Upgraden naar Pro",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "Ontwikkeling steunen",
+  "drawerFeedbackLabel": "Feedback",
+  "drawerAboutLabel": "Over",
+  "noNotesFoundMessage": "Geen notities gevonden.",
+  "trashRestoreButtonLabel": "Herstellen",
+  "trashPermanentDeleteButtonLabel": "Permanent verwijderen",
+  "tagRenamedInfoMessage": "Label hernoemd",
+  "tagDeletedInfoMessage": "Label verwijderd",
+  "tagOptionsRenameLabel": "Hernoemen",
+  "tagOptionsDeleteLabel": "Verwijderen",
+  "renameTagDialogTitle": "Label hernoemen",
+  "renameTagDialogHint": "Nieuwe labelnaam",
+  "renameTagDialogCancelButton": "Annuleren",
+  "renameTagDialogSaveButton": "Opslaan",
+  "deleteTagDialogMessageWithCount": "\"{tag}\" wordt verwijderd uit {affectedCount} notities. Doorgaan?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "Label \"{tag}\" verwijderen?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "Label verwijderen",
+  "deleteTagDialogCancelButton": "Annuleren",
+  "deleteTagDialogConfirmButton": "Verwijderen",
+  "tagsSheetTitle": "Labels",
+  "tagsSheetEmptyMessage": "Deze notitie heeft nog geen labels.",
+  "tagsSheetInputHint": "Schrijf een nieuw label...",
+  "tagsSheetSuggestionsLabel": "Bestaande labels",
+  "noteDeletedInfoMessage": "Notitie verwijderd",
+  "noteDeletedUndoActionLabel": "Ongedaan maken",
+  "reminderSetInfoMessage": "Herinnering ingesteld",
+  "reminderRemovedInfoMessage": "Herinnering verwijderd",
+  "noteDuplicatedInfoMessage": "Kopie gemaakt",
+  "speechTextAppendedInfoMessage": "Tekst toegevoegd aan notitie",
+  "pdfPreparingInfoMessage": "PDF wordt voorbereid…",
+  "pdfSavedInfoMessage": "PDF opgeslagen",
+  "jpgPreparingInfoMessage": "JPG wordt voorbereid…",
+  "jpgSavedInfoMessage": "JPG opgeslagen",
+  "jpgFailedInfoMessage": "JPG kon niet worden gemaakt",
+  "txtPreparingInfoMessage": "TXT wordt voorbereid…",
+  "txtSavedInfoMessage": "TXT opgeslagen",
+  "txtFailedInfoMessage": "TXT kon niet worden gemaakt",
+  "exportOpenActionLabel": "Openen",
+  "wrongPasswordInfoMessage": "Onjuist wachtwoord.",
+  "noteArchivedInfoMessage": "Notitie gearchiveerd",
+  "noteUnarchivedInfoMessage": "Verwijderd uit archief",
+  "noteUnlockedInfoMessage": "Ontgrendeld",
+  "noteLockedInfoMessage": "Notitie vergrendeld",
+  "notificationUnpinnedInfoMessage": "Losgemaakt",
+  "emptyNotePinBlockedInfoMessage": "Een lege notitie kan niet worden vastgezet.",
+  "notificationPinnedInfoMessage": "Vastgezet in het meldingenpaneel",
+  "noContentToReadInfoMessage": "Er is geen inhoud om voor te lezen",
+  "backPressExitInfoMessage": "Druk nogmaals op terug om af te sluiten",
+  "reminderChannelName": "Notitieherinneringen",
+  "reminderChannelDescription": "Notitieherinneringen in de Layout-app",
+  "pinnedChannelName": "Vastgezette notities",
+  "pinnedChannelDescription": "Layout-notities vastgezet in het meldingenpaneel",
+  "notificationUnpinActionLabel": "Verwijderen",
+  "reminderDefaultTitle": "Herinnering",
+  "reminderChecklistBodyFallback": "Vergeet niet uw checklist te bekijken",
+  "reminderTextBodyFallback": "Vergeet niet uw notitie te bekijken",
+  "pdfSaveDialogTitle": "Opslaan als PDF",
+  "jpgSaveDialogTitle": "Opslaan als JPG",
+  "txtSaveDialogTitle": "Opslaan als TXT",
+  "textSizeSheetTitle": "Tekstgrootte",
+  "textSizeSamplePreview": "Voorbeeldtekst",
+  "textSizeCancelButton": "Annuleren",
+  "textSizeApplyButton": "Toepassen",
+  "createPasswordDialogTitle": "Wachtwoord aanmaken",
+  "createPasswordNewPasswordHint": "Nieuw wachtwoord",
+  "createPasswordConfirmHint": "Wachtwoord opnieuw invoeren",
+  "createPasswordHintQuestionDescription": "Stel een beveiligingsvraag in voor het geval u uw wachtwoord vergeet (optioneel).",
+  "createPasswordHintQuestionHint": "Kies een beveiligingsvraag",
+  "createPasswordHintAnswerHint": "Uw antwoord",
+  "createPasswordCancelButton": "Annuleren",
+  "createPasswordSaveButton": "Opslaan",
+  "passwordMismatchMessage": "Wachtwoorden komen niet overeen!",
+  "passwordRequiredDialogTitle": "Wachtwoord vereist",
+  "passwordRequiredHint": "Voer wachtwoord in",
+  "forgotPasswordButtonLabel": "Ik ben mijn wachtwoord vergeten",
+  "passwordRequiredCancelButton": "Annuleren",
+  "passwordRequiredConfirmButton": "Bevestigen",
+  "securityQuestionDialogTitle": "Beveiligingsvraag",
+  "securityQuestionAnswerHint": "Uw antwoord",
+  "securityQuestionCancelButton": "Annuleren",
+  "securityQuestionConfirmButton": "Bevestigen",
+  "securityQuestionWrongAnswerMessage": "Onjuist antwoord. Probeer het opnieuw.",
+  "revealedPasswordDialogTitle": "Uw wachtwoord",
+  "revealedPasswordLabel": "Uw notitiewachtwoord:",
+  "revealedPasswordOkButton": "OK",
+  "securityQuestionPetName": "Wat is de naam van uw eerste huisdier?",
+  "securityQuestionFavoriteTeacher": "Wat is de naam van uw favoriete leraar/lerares?",
+  "securityQuestionBirthCity": "In welke stad bent u geboren?",
+  "securityQuestionFavoriteFood": "Wat is uw favoriete eten?",
+  "securityQuestionMotherMaidenName": "Wat is de meisjesnaam van uw moeder?",
+  "securityQuestionFirstSchool": "Wat is de naam van de eerste school die u bezocht?",
+  "securityQuestionFavoriteColor": "Wat is uw favoriete kleur?",
+  "editFolderDialogTitle": "Map bewerken",
+  "newSubfolderDialogTitle": "Nieuwe submap",
+  "addFolderDialogTitle": "Map toevoegen",
+  "subfolderParentInfoMessage": "Wordt aangemaakt binnen \"{parentCategory}\"",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "Naam van submap",
+  "folderNameFieldLabel": "Naam van map",
+  "folderColorLabel": "Kleur",
+  "folderDialogCancelButton": "Annuleren",
+  "folderDialogSaveButton": "Opslaan",
+  "folderDialogAddButton": "Toevoegen",
+  "selectFolderSheetTitle": "Map selecteren",
+  "selectFolderAddOptionLabel": "Map toevoegen",
+  "removeCurrentFolderLabel": "Huidige map verwijderen",
+  "noteDetailsDialogTitle": "Details",
+  "noteDetailsCreatedLabel": "Aangemaakt",
+  "noteDetailsModifiedLabel": "Laatst gewijzigd",
+  "noteDetailsCharCountLabel": "Aantal tekens",
+  "noteDetailsCharCountValue": "{count} tekens",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "Aantal woorden",
+  "noteDetailsWordCountValue": "{count} woorden",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "OK",
+  "noteDetailsUnknownDateLabel": "Onbekend",
+  "addAttachmentSheetTitle": "Toevoegen",
+  "addAttachmentImageOption": "Afbeelding toevoegen",
+  "addAttachmentCameraOption": "Camera",
+  "addAttachmentFileOption": "Bestand toevoegen",
+  "addAttachmentVoiceOption": "Spraakopname",
+  "addAttachmentVideoOption": "Video opnemen",
+  "addAttachmentScanOption": "Document scannen",
+  "noteActionsSheetTitle": "Actie kiezen",
+  "noteActionReminderLabel": "Herinnering",
+  "noteActionEditReminderLabel": "Herinnering bewerken",
+  "noteActionSpeechToTextLabel": "Spraak naar tekst",
+  "noteActionArchiveLabel": "Archiveren",
+  "noteActionUnarchiveLabel": "Uit archief verwijderen",
+  "noteActionLockLabel": "Vergrendelen",
+  "noteActionUnlockLabel": "Ontgrendelen",
+  "noteActionFavoriteLabel": "Favoriet",
+  "noteActionUnfavoriteLabel": "Uit favorieten verwijderen",
+  "noteActionClassifyLabel": "Map selecteren",
+  "noteActionDeleteLabel": "Verwijderen",
+  "noteActionPinToNotificationLabel": "Vastzetten in meldingenpaneel",
+  "noteActionUnpinFromNotificationLabel": "Vastzetten opheffen",
+  "noteActionShareLabel": "Delen",
+  "noteActionDuplicateLabel": "Kopie maken",
+  "noteActionCopyContentLabel": "Inhoud kopiëren",
+  "noteActionTtsLabel": "Voorlezen",
+  "noteActionTextSizeLabel": "Tekstgrootte",
+  "noteActionDetailsLabel": "Details",
+  "noteActionDiscardChangesLabel": "Wijzigingen verwerpen",
+  "noteActionSelectLabel": "Selecteren",
+  "reminderEditOptionLabel": "Herinnering wijzigen",
+  "reminderRemoveOptionLabel": "Herinnering verwijderen",
+  "discardChangesDialogTitle": "Wijzigingen verwerpen",
+  "discardChangesDialogMessage": "Niet-opgeslagen wijzigingen in deze notitie gaan verloren. Weet u zeker dat u ze wilt verwerpen?",
+  "discardChangesCancelButton": "Annuleren",
+  "discardChangesConfirmButton": "Verwerpen",
+  "pinnedNotificationDefaultTitle": "Notitie",
+  "pdfFailedInfoMessage": "PDF maken mislukt",
+  "drawingScreenTitle": "Tekening",
+  "drawingMinimizeTooltip": "Minimaliseren",
+  "drawingEmptyExportWarningMessage": "Teken eerst iets",
+  "drawingEraserPartialModeLabel": "Gedeeltelijk",
+  "drawingEraserFullModeLabel": "Volledig",
+  "drawingClearTooltip": "Wissen",
+  "drawingZoomOutTooltip": "Uitzoomen",
+  "drawingZoomInTooltip": "Inzoomen",
+  "drawingDeleteTooltip": "Verwijderen",
+  "drawingEmptyPreviewHint": "Tik om te tekenen",
+  "settingsPageTitle": "Instellingen",
+  "settingsSectionGeneral": "Algemeen",
+  "settingsSectionSecurity": "Beveiliging",
+  "settingsSectionTheme": "Thema",
+  "settingsSectionPersonalization": "Personalisatie",
+  "settingsSectionWidget": "Widget",
+  "settingsSectionAbout": "Over",
+  "settingsHintQuestionPet": "Wat is de naam van uw eerste huisdier?",
+  "settingsHintQuestionTeacher": "Wat is de naam van uw favoriete leraar/lerares?",
+  "settingsHintQuestionBirthCity": "In welke stad bent u geboren?",
+  "settingsHintQuestionFavoriteFood": "Wat is uw favoriete eten?",
+  "settingsHintQuestionMotherMaidenName": "Wat is de meisjesnaam van uw moeder?",
+  "settingsHintQuestionFirstSchool": "Wat was de eerste school die u bezocht?",
+  "settingsHintQuestionFavoriteColor": "Wat is uw favoriete kleur?",
+  "settingsSecurityQuestionDialogTitle": "Beveiligingsvraag",
+  "settingsSecurityQuestionDialogDesc": "Als u uw wachtwoord vergeet, kunt u het herstellen door deze vraag correct te beantwoorden.",
+  "settingsSecurityQuestionDropdownHint": "Kies een beveiligingsvraag",
+  "settingsSecurityQuestionAnswerHint": "Uw antwoord",
+  "settingsSecurityQuestionCancelButton": "Annuleren",
+  "settingsSecurityQuestionEmptyWarning": "Vraag en antwoord mogen niet leeg zijn!",
+  "settingsSecurityQuestionSaveButton": "Opslaan",
+  "settingsCreatePasswordTitle": "Wachtwoord aanmaken",
+  "settingsPasswordRequiredTitle": "Wachtwoord vereist",
+  "settingsPasswordEnterHint": "Voer wachtwoord in",
+  "settingsForgotPasswordButton": "Ik ben mijn wachtwoord vergeten",
+  "settingsNewPasswordHint": "Nieuw wachtwoord",
+  "settingsConfirmPasswordHint": "Wachtwoord opnieuw invoeren",
+  "settingsSecurityQuestionOptionalDesc": "Stel een beveiligingsvraag in voor het geval u uw wachtwoord vergeet (optioneel).",
+  "settingsPasswordDialogCancelButton": "Annuleren",
+  "settingsPasswordMismatchWarning": "Wachtwoorden komen niet overeen!",
+  "settingsWrongPasswordWarning": "Onjuist wachtwoord!",
+  "settingsPasswordSaveButton": "Opslaan",
+  "settingsPasswordRemoveButton": "Verwijderen",
+  "settingsNotePasswordTitle": "Notitiewachtwoord",
+  "settingsPasswordSetSubtitle": "Wachtwoord ingesteld ✓",
+  "settingsPasswordNotSetSubtitle": "Wachtwoord niet ingesteld",
+  "settingsSecurityQuestionTileTitle": "Beveiligingsvraag",
+  "settingsSecurityQuestionSetSubtitle": "Ingesteld ✓ — gebruikt als u uw wachtwoord vergeet",
+  "settingsSecurityQuestionNotSetSubtitle": "Niet ingesteld — u kunt uw wachtwoord niet herstellen als u het kwijtraakt",
+  "settingsThemeDialogTitle": "Thema selecteren",
+  "settingsThemeSystemDefault": "Systeemstandaard",
+  "settingsThemeLightOption": "Licht thema",
+  "settingsThemeDarkOption": "Donker thema",
+  "settingsAccentColorDialogTitle": "Accentkleur kiezen",
+  "settingsThemeChangeTileTitle": "Thema wijzigen",
+  "settingsThemeLightLabel": "Licht",
+  "settingsThemeDarkLabel": "Donker",
+  "settingsThemeSystemLabel": "Systeem",
+  "settingsLanguageTileTitle": "Taal",
+  "settingsLanguageDialogTitle": "Taal selecteren",
+  "settingsLanguageSystemOption": "Systeem",
+  "settingsAccentColorTileTitle": "Accentkleur",
+  "settingsAccentColorTileSubtitle": "Kleur gebruikt in de appbalk, knoppen en schakelaars",
+  "settingsColorfulNotesTitle": "Gevarieerde notitiekleuren",
+  "settingsColorfulNotesSubtitle": "Elke notitiekaart krijgt een andere kleurtint.",
+  "settingsTextColorSheetTitle": "Tekstkleur",
+  "settingsTextColorSheetDesc": "Stelt de kleur van de notitietekst in.",
+  "settingsTextColorOkButton": "OK",
+  "settingsTextColorTileTitle": "Tekstkleur",
+  "settingsTextColorTileSubtitle": "Kleur voor de notitietekst.",
+  "settingsWidgetFontSizeLabel": "Lettergrootte widget",
+  "settingsWidgetFontSizeSample": "Voorbeeldkop - {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "Annuleren",
+  "settingsWidgetFontSizeApplyButton": "Toepassen",
+  "settingsWidgetOpacityLabel": "Achtergrondtransparantie",
+  "settingsWidgetOpacityValue": "{percent}% transparantie",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "Annuleren",
+  "settingsWidgetOpacityApplyButton": "Toepassen",
+  "settingsWidgetDarkModeTitle": "Donkere widget",
+  "settingsWidgetDarkModeDesc": "Donker kleurenschema voor de widget.",
+  "settingsAboutVersionTitle": "App-versie",
+  "settingsFontFamilyTileTitle": "Lettertype",
+  "settingsFontFamilyDefaultLabel": "Standaard",
+  "settingsGlobalFontSizeTileTitle": "Lettergrootte",
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt — toegepast op alle notities.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "Voorbeeldtekst - {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "Toepassen op bestaande notities",
+  "settingsGlobalFontSizeApplyToAllNote": "Als voor een notitie een individuele lettergrootte is ingesteld, heeft deze instelling daar geen invloed op.",
+  "settingsGlobalFontSizeCancelButton": "Annuleren",
+  "settingsGlobalFontSizeApplyButton": "Toepassen",
+  "settingsPreviewLinesTileTitle": "Voorbeeldregels notitie",
+  "settingsPreviewLinesTileSubtitle": "Toon tot {lines} regels. Als de notitie korter is, wordt het werkelijke aantal regels getoond.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "Huidig: {lines} regels",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "Stelt het maximale aantal regels voor het voorbeeld in. Als de notitie minder regels heeft, wordt het werkelijke aantal getoond.",
+  "settingsPreviewLinesCancelButton": "Annuleren",
+  "settingsPreviewLinesApplyButton": "Toepassen",
+  "backupCancelButton": "Annuleren",
+  "backupConnectButton": "Verbinden",
+  "backupDisconnectButton": "Verbinding verbreken",
+  "backupContinueButton": "Doorgaan",
+  "backupCloseButton": "Sluiten",
+  "backupShareButton": "Delen",
+  "backupRestoreButton": "Herstellen",
+  "backupConfigureButton": "Configureren",
+  "backupUnknownDateLabel": "Onbekend",
+  "backupProcessingDefaultLabel": "Verwerken...",
+  "backupPermissionRequiredTitle": "Opslagtoestemming vereist",
+  "backupPermissionRequiredBodyPermanent": "Deze Android-versie vereist opslagtoestemming voor back-up/herstel. Omdat de toestemming permanent is geweigerd, schakelt u dit handmatig in via de app-instellingen.",
+  "backupPermissionRequiredBodyNormal": "Deze Android-versie vereist opslagtoestemming voor back-up/herstel. Verleen toestemming om door te gaan.",
+  "backupGoToSettingsButton": "Naar instellingen",
+  "backupRetryButton": "Opnieuw proberen",
+  "backupDriveConnectingLabel": "Verbinden met Google-account...",
+  "backupDriveConnectedWithEmailMessage": "Verbonden met Google Drive-account: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Verbonden met Google Drive-account.",
+  "backupDriveConnectFailedMessage": "Kon geen verbinding maken met het Google-account, of de bewerking is geannuleerd.",
+  "backupDriveDisconnectTitle": "Google Drive loskoppelen",
+  "backupDriveDisconnectBody": "Als u de verbinding verbreekt, zijn handmatige of automatische back-ups naar Drive niet meer mogelijk. Back-ups die al op Drive staan, worden niet verwijderd — alleen de toegang vanaf dit apparaat wordt verwijderd.",
+  "backupDriveDisconnectedMessage": "Google Drive-verbinding verwijderd.",
+  "backupDriveRequiredTitle": "Google-account vereist",
+  "backupDriveRequiredBody": "Voor deze actie moet u uw Google-account koppelen. Wilt u nu verbinding maken?",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: verbonden ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: verbonden",
+  "backupDriveStatusDisconnected": "Google Drive: niet verbonden",
+  "backupDriveAuthenticatingLabel": "Google-account verifiëren...",
+  "backupDriveNotSignedInMessage": "U bent niet verbonden met Google Drive. Meld u eerst aan met uw Google-account.",
+  "backupDriveUploadingLabel": "Back-up wordt geüpload naar Drive...",
+  "backupDriveUploadTimeoutMessage": "Uploaden naar Google Drive is niet binnen 120 seconden voltooid (geen reactie van de server). Controleer uw verbinding en probeer het opnieuw.",
+  "backupDriveOperationCompletedLabel": "Voltooid",
+  "backupToDriveActionLabel": "back-up naar Drive",
+  "backupToDeviceActionLabel": "back-up",
+  "backupCreatingLabel": "Back-up wordt gemaakt...",
+  "backupCreateFailedMessage": "Back-up kon niet worden gemaakt: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Uploaden naar Google Drive mislukt: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "Back-up succesvol geüpload naar Google Drive.",
+  "backupCreatedMessage": "Back-up gemaakt: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "Back-up klaar",
+  "backupOfferShareBody": "Uw back-upbestand is opgeslagen op uw apparaat. Wilt u het nu delen (bijv. cloudopslag, e-mail, ander apparaat)?",
+  "backupShareFileText": "layout back-upbestand",
+  "backupShareFailedMessage": "Delen kon niet worden gestart: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "Grote back-up",
+  "backupLargeOperationBody": "De te verwerken gegevens zijn ongeveer {sizeText}. Een {actionLabel} van deze omvang kan afhankelijk van uw apparaat even duren. Verlaat de app niet zolang dit bezig is — wilt u doorgaan?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "herstellen",
+  "backupDriveListingLabel": "Drive-back-ups worden weergegeven...",
+  "backupDriveListFailedMessage": "Back-ups konden niet worden weergegeven: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "Er zijn nog geen back-ups op Google Drive.",
+  "backupDrivePickTitle": "Kies een back-up van Drive",
+  "backupDriveDownloadingLabel": "Back-up wordt gedownload van Drive...",
+  "backupDriveDownloadingWithSizeLabel": "Back-up wordt gedownload van Drive... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "Bestand wordt opgeslagen op het apparaat...",
+  "backupDriveUnknownBackupFileName": "onbekende_back-up.zip",
+  "backupDriveStorageFullMessage": "Uw Google Drive-opslag is vol. Maak ruimte vrij op Drive en probeer het opnieuw.",
+  "backupDriveNetworkErrorMessage": "Er kon geen internetverbinding tot stand worden gebracht. Controleer uw verbinding en probeer het opnieuw.",
+  "backupDriveBackupNotFoundMessage": "Het opgegeven back-upbestand is niet gevonden op Drive. Het is mogelijk verwijderd.",
+  "backupDriveUnknownErrorMessage": "Er is een onverwachte fout opgetreden tijdens de Google Drive-bewerking: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "Downloaden mislukt: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "Bestand kon niet worden geselecteerd: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "Het geselecteerde bestand is niet toegankelijk.",
+  "backupCheckingLabel": "Back-up wordt gecontroleerd...",
+  "backupReadFailedMessage": "Back-upbestand kon niet worden gelezen: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Back-up herstellen",
+  "backupPreviewContentsHeader": "Inhoud van de geselecteerde back-up:",
+  "backupPreviewNoteCountLabel": "Aantal notities",
+  "backupPreviewTrashCountLabel": "Notities in prullenbak",
+  "backupPreviewCategoryCountLabel": "Aantal categorieën",
+  "backupPreviewAttachmentLabel": "Bijlagen",
+  "backupPreviewAttachmentNoneValue": "Geen",
+  "backupPreviewAttachmentCountValue": "{count} bestanden ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "Aangemaakt op",
+  "backupEmptyPreviewTitle": "Deze back-up lijkt leeg",
+  "backupEmptyPreviewBody": "Er zijn geen notities, categorieën of bijlagen gevonden in het geselecteerde bestand. Als u doorgaat, worden uw huidige gegevens toch verwijderd en vervangen door deze lege back-up.",
+  "backupMissingAttachmentsTitle": "{count} bijlagen niet gevonden in de back-up",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "Notities met deze bestanden worden hersteld, maar zonder de bijlagen (ze ontbraken mogelijk of waren beschadigd op het moment van de back-up): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} en {remaining} meer",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "Dit VERVANGT al uw huidige notities, prullenbak, categorieën, instellingen en bijlagen door de gegevens in de bovenstaande back-up. Uw huidige gegevens gaan permanent verloren en deze actie kan niet ongedaan worden gemaakt.",
+  "backupRestoringLabel": "Back-up wordt hersteld...",
+  "backupRestoreSuccessWithMissingMessage": "Back-up hersteld. Echter, {count} bijlagen zijn niet gevonden in de back-up en konden niet worden hersteld. Het wordt aanbevolen de app opnieuw te starten zodat de wijzigingen volledig worden toegepast.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "Back-up succesvol hersteld. Het wordt aanbevolen de app opnieuw te starten zodat de wijzigingen volledig worden toegepast.",
+  "backupRestoreFailedMessage": "Er is een fout opgetreden tijdens het herstellen: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "Back-up & Herstel",
+  "backupBlockedExitWarningMessage": "Er is een bewerking bezig, wacht tot deze is voltooid.",
+  "backupBusyBackTooltip": "Bewerking bezig",
+  "backupIntroText": "U kunt uw notities, categorieën, instellingen en bijlagen back-uppen als één .zip-bestand, of een eerder gemaakte back-up herstellen.",
+  "backupDriveCardTitle": "Back-uppen naar Google Drive",
+  "backupDriveCardSubtitle": "Maak een nieuwe back-up en upload deze rechtstreeks naar het privégedeelte van uw Google Drive.",
+  "backupDriveCardButtonLabel": "Back-uppen naar Drive",
+  "backupDeviceCardTitle": "Back-uppen naar apparaat",
+  "backupDeviceCardSubtitle": "Sla al uw gegevens op als één .zip-bestand op uw apparaat en deel het als u wilt.",
+  "backupDeviceCardButtonLabel": "Back-uppen naar apparaat",
+  "backupHistoryCardTitle": "Back-upgeschiedenis",
+  "backupHistoryCardSubtitle": "Bekijk alle back-ups die op uw apparaat zijn opgeslagen met hun datum en grootte; u kunt ze hier direct delen, herstellen of verwijderen.",
+  "backupHistoryTabDevice": "Apparaat",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "Back-up verwijderen",
+  "backupHistoryDeleteDialogBody": "Weet u zeker dat u het back-upbestand \"{fileName}\" permanent wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "Back-up verwijderd.",
+  "backupHistoryDriveDeleteDialogTitle": "Drive-back-up verwijderen",
+  "backupHistoryDriveDeleteDialogBody": "Weet u zeker dat u de back-up \"{fileName}\" permanent wilt verwijderen van Google Drive? Deze actie kan niet ongedaan worden gemaakt en het bestand wordt niet naar de prullenbak verplaatst.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Drive-back-up verwijderd.",
+  "backupHistoryDriveDeleteFailedMessage": "Kon niet worden verwijderd: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "Nog geen back-ups opgeslagen op dit apparaat.",
+  "backupHistoryDeviceEmptySubtitle": "Gebruik \"Back-uppen naar apparaat\" om uw eerste back-up te maken.",
+  "backupHistoryDriveEmptySubtitle": "Gebruik \"Back-uppen naar Google Drive\" om uw eerste cloudback-up te maken.",
+  "backupHistoryDriveSignInPrompt": "Koppel uw Google-account om uw Drive-back-ups te zien.",
+  "backupHistoryConnectGoogleButton": "Verbinden met Google",
+  "backupHistoryDriveConnectedFallback": "Verbonden",
+  "backupHistoryUnknownErrorFallback": "Er is een onbekende fout opgetreden.",
+  "backupHistoryDownloadStartingLabel": "Starten...",
+  "backupAutoBackupEnabledLabel": "Automatische back-up: aan",
+  "backupAutoBackupDisabledLabel": "Automatische back-up: uit",
+  "backupOverlayWarningMessage": "Even geduld, verlaat de app niet totdat de bewerking is voltooid.",
+  "pdfExportUntitledNoteLabel": "Naamloze notitie",
+  "pdfExportDefaultAttachmentName": "Bijlage",
+  "pdfExportDefaultFileName": "notitie",
+  "screenshotExportBoundaryNotFoundMessage": "Screenshot kon niet worden gemaakt (grens niet gevonden)",
+  "screenshotExportByteDataNullMessage": "Screenshotgegevens konden niet worden gegenereerd",
+  "screenshotExportPngDecodeFailedMessage": "Afbeelding kon niet worden verwerkt (PNG-decodering mislukt)",
+  "screenshotCalcTableTotalLabel": "Totaal",
+  "gundemMenuRemoveFromAgenda": "Verwijderen uit agenda",
+  "gundemMenuDeleteNote": "Notitie verwijderen",
+  "gundemSectionOverdue": "Te laat",
+  "gundemSectionToday": "Vandaag",
+  "gundemSectionTomorrow": "Morgen",
+  "gundemSectionNextWeek": "Volgende week",
+  "gundemSectionFurther": "Verder vooruit",
+  "gundemWeekdayMonday": "Maandag",
+  "gundemWeekdayTuesday": "Dinsdag",
+  "gundemWeekdayWednesday": "Woensdag",
+  "gundemWeekdayThursday": "Donderdag",
+  "gundemWeekdayFriday": "Vrijdag",
+  "gundemWeekdaySaturday": "Zaterdag",
+  "gundemWeekdaySunday": "Zondag",
+  "gundemAppBarTitle": "Agenda",
+  "gundemCalendarTooltip": "Kalender",
+  "gundemEmptyTitle": "Niets op uw agenda",
+  "gundemEmptySubtitle": "Notities met een herinnering of toegewezen datum verschijnen hier.",
+  "gundemUntitledNote": "Naamloze notitie",
+  "gundemRepeatHourly": "Elk uur",
+  "gundemRepeatDaily": "Dagelijks",
+  "gundemRepeatWeekly": "Wekelijks",
+  "gundemRepeatMonthly": "Maandelijks",
+  "gundemRepeatYearly": "Jaarlijks",
+  "gundemPreviewCalcTableLabel": "[Rekenlijst]",
+  "gundemPreviewDrawingLabel": "[Tekening]",
+  "gundemPreviewImageLabel": "[Afbeelding]",
+  "gundemMonthShortJan": "jan",
+  "gundemMonthShortFeb": "feb",
+  "gundemMonthShortMar": "mrt",
+  "gundemMonthShortApr": "apr",
+  "gundemMonthShortMay": "mei",
+  "gundemMonthShortJun": "jun",
+  "gundemMonthShortJul": "jul",
+  "gundemMonthShortAug": "aug",
+  "gundemMonthShortSep": "sep",
+  "gundemMonthShortOct": "okt",
+  "gundemMonthShortNov": "nov",
+  "gundemMonthShortDec": "dec",
+  "calendarAppBarTitle": "Kalender",
+  "calendarTodayButton": "Vandaag",
+  "calendarLegendNoteLabel": "Notitie",
+  "calendarLegendReminderLabel": "Herinnering",
+  "calendarTodayBadge": "Vandaag",
+  "calendarEmptyDayMessage": "Geen notities of herinneringen voor deze dag.",
+  "calendarReminderHourlyLabel": "Elk uur",
+  "calendarMonthJan": "januari",
+  "calendarMonthFeb": "februari",
+  "calendarMonthMar": "maart",
+  "calendarMonthApr": "april",
+  "calendarMonthMay": "mei",
+  "calendarMonthJun": "juni",
+  "calendarMonthJul": "juli",
+  "calendarMonthAug": "augustus",
+  "calendarMonthSep": "september",
+  "calendarMonthOct": "oktober",
+  "calendarMonthNov": "november",
+  "calendarMonthDec": "december",
+  "calendarWeekdayShortMon": "ma",
+  "calendarWeekdayShortTue": "di",
+  "calendarWeekdayShortWed": "wo",
+  "calendarWeekdayShortThu": "do",
+  "calendarWeekdayShortFri": "vr",
+  "calendarWeekdayShortSat": "za",
+  "calendarWeekdayShortSun": "zo",
+  "calendarWeekdayFullMonday": "Maandag",
+  "calendarWeekdayFullTuesday": "Dinsdag",
+  "calendarWeekdayFullWednesday": "Woensdag",
+  "calendarWeekdayFullThursday": "Donderdag",
+  "calendarWeekdayFullFriday": "Vrijdag",
+  "calendarWeekdayFullSaturday": "Zaterdag",
+  "calendarWeekdayFullSunday": "Zondag",
+  "wrongPasswordDialogTitle": "Onjuist wachtwoord",
+  "wrongPasswordDialogMessage": "Het ingevoerde wachtwoord is onjuist.",
+  "commonOkButton": "OK",
+  "unlockCategoryAction": "Ontgrendelen",
+  "lockCategoryAction": "Vergrendelen",
+  "categoryUnlockedMessage": "Ontgrendeld",
+  "categoryLockedMessage": "Map vergrendeld",
+  "deleteFolderMenuItemLabel": "Map verwijderen",
+  "deleteFolderDialogTitle": "Map verwijderen",
+  "deleteFolderDialogMessageWithSubfolders": "Weet u zeker dat u de map \"{category}\" en alle submappen wilt verwijderen? Notities in deze mappen worden ongecategoriseerd.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "Weet u zeker dat u de map \"{category}\" wilt verwijderen? Notities in deze map worden ongecategoriseerd.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "Annuleren",
+  "deleteFolderDialogConfirmButton": "Verwijderen",
+  "editCategoryNameColorMenuItemLabel": "Naam/kleur bewerken",
+  "addSubfolderMenuItemLabel": "Submap maken",
+  "expandSubfoldersMenuItemLabel": "Submappen uitvouwen",
+  "collapseSubfoldersMenuItemLabel": "Submappen samenvouwen",
+  "saveErrorInfoMessage": "Opslagfout: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "Welkom bij DNote! 🚀",
+  "welcomeNoteContent": "Nieuwe functies toegevoegd!",
+  "noteListDateGroupToday": "Vandaag",
+  "noteListDateGroupYesterday": "Gisteren",
+  "noteListDateGroupLast7Days": "Laatste 7 dagen",
+  "noteListDateGroupLast30Days": "Laatste 30 dagen",
+  "reminderRepeatNoneLabel": "Geen herhaling",
+  "voiceRecorderPreparingLabel": "Voorbereiden…",
+  "voiceRecorderCancelButton": "Annuleren",
+  "voiceRecorderStopAddButton": "Stoppen en toevoegen",
+  "speechToTextMicPermissionDeniedMessage": "Microfoontoestemming is niet verleend.",
+  "speechToTextUnavailableMessage": "Spraakherkenning is niet beschikbaar op dit apparaat.",
+  "speechToTextPreparingLabel": "Voorbereiden…",
+  "speechToTextListeningLabel": "Luisteren…",
+  "speechToTextStartSpeakingPlaceholder": "Begin met spreken…",
+  "speechToTextCancelButton": "Annuleren",
+  "speechToTextStopAddButton": "Stoppen en toevoegen",
+  "textToSpeechNoContentMessage": "Er is geen inhoud om voor te lezen.",
+  "textToSpeechReadErrorMessage": "Er is een fout opgetreden tijdens het voorlezen.",
+  "textToSpeechUnavailableMessage": "Tekst-naar-spraak is niet beschikbaar op dit apparaat.",
+  "textToSpeechPreparingLabel": "Voorbereiden…",
+  "textToSpeechPausedLabel": "Gepauzeerd",
+  "textToSpeechFinishedLabel": "Voorlezen voltooid",
+  "textToSpeechReadingLabel": "Voorlezen…",
+  "textToSpeechCloseErrorButton": "Sluiten",
+  "textToSpeechReplayButton": "Opnieuw voorlezen",
+  "textToSpeechCloseFinishedButton": "Sluiten",
+  "textToSpeechPauseButton": "Pauzeren",
+  "textToSpeechResumeButton": "Hervatten",
+  "textToSpeechStopButton": "Stoppen",
+  "textToSpeechSpeedSlow": "Langzaam",
+  "textToSpeechSpeedNormal": "Normaal",
+  "textToSpeechSpeedFast": "Snel",
+  "calendarPickerCancelButton": "Annuleren",
+  "calendarPickerConfirmButton": "Selecteren",
+  "calendarPickerClearButton": "Wissen",
+  "reminderPickerDialogTitle": "Herinnering toevoegen",
+  "reminderPickerDateTodayOption": "Vandaag",
+  "reminderPickerDateTomorrowOption": "Morgen",
+  "reminderPickerDatePickOption": "Datum kiezen",
+  "reminderRepeatHourlyLabel": "Elk uur",
+  "reminderRepeatDailyLabel": "Elke dag",
+  "reminderRepeatWeeklyLabel": "Elke week",
+  "reminderRepeatMonthlyLabel": "Elke maand",
+  "reminderRepeatYearlyLabel": "Elk jaar",
+  "reminderPickerCalendarHelpText": "Selecteer herinneringsdatum",
+  "reminderPickerCancelButton": "ANNULEREN",
+  "reminderPickerSaveButton": "OPSLAAN",
+  "reminderPickerPastTimeErrorMessage": "Er kan geen tijdstip in het verleden worden geselecteerd",
+  "calcTableTotalLabel": "Totaal: {amount}",
+  "backupCreatePreparingDataLabel": "Gegevens worden voorbereid...",
+  "backupCreatePackagingNotesLabel": "Notities en categorieën worden verpakt...",
+  "backupCreateReadingAttachmentsLabel": "Bijlagen worden gelezen...",
+  "backupCreateReadingAttachmentsProgressLabel": "Bijlagen worden gelezen... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "Zip-bestand wordt gecomprimeerd...",
+  "backupCreateSavingFileLabel": "Bestand wordt opgeslagen...",
+  "backupRestoreValidatingLabel": "Back-up wordt gevalideerd...",
+  "backupRestoreValidatedPreparingDataLabel": "Back-up gevalideerd, gegevens worden voorbereid...",
+  "backupRestoreWritingNotesLabel": "Notities worden geschreven...",
+  "backupRestoreWritingTrashLabel": "Prullenbak wordt geschreven...",
+  "backupRestoreTrashWrittenLabel": "Prullenbak geschreven",
+  "backupRestoreWritingCategoriesLabel": "Categorieën worden geschreven...",
+  "backupRestoreCategoriesWrittenLabel": "Categorieën geschreven",
+  "backupRestoreWritingSettingsLabel": "Instellingen worden geschreven...",
+  "backupRestoreSettingsWrittenLabel": "Instellingen geschreven",
+  "backupRestoreCleaningOldAttachmentsLabel": "Oude bijlagen worden opgeruimd...",
+  "backupRestoreNoAttachmentsFinishingLabel": "Geen bijlagen gevonden, afronden...",
+  "backupRestoreAttachmentsProgressLabel": "Bijlagen worden hersteld... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "Voltooid",
+  "backupValidationCorruptedFileMessage": "Het bestand is beschadigd of geen geldig back-upbestand.",
+  "backupValidationMissingDataMessage": "Geen gegevens gevonden in het back-upbestand (backup_data.json ontbreekt).",
+  "backupValidationInvalidJsonMessage": "Back-upgegevens konden niet worden gelezen (beschadigde JSON).",
+  "backupValidationNotDnoteBackupMessage": "Dit bestand is geen back-up van de dnote-app.",
+  "backupValidationVersionUnreadableMessage": "De versie-informatie van het back-upbestand kon niet worden gelezen.",
+  "backupValidationIncompatibleVersionMessage": "Deze back-up heeft een nieuwer formaat dat de huidige app-versie niet ondersteunt. Werk de app bij.",
+  "backupValidationInvalidVersionMessage": "De versie-informatie van het back-upbestand is ongeldig.",
+  "backupValidationMissingNotesFieldMessage": "Back-upgegevens hebben niet het verwachte formaat (notes-veld ontbreekt).",
+  "backupValidationMissingTrashFieldMessage": "Back-upgegevens hebben niet het verwachte formaat (trash-veld ontbreekt).",
+  "backupValidationInvalidCategoriesFieldMessage": "Back-upgegevens hebben niet het verwachte formaat (categorielijst is ongeldig).",
+  "backupValidationInvalidSettingsFieldMessage": "Back-upgegevens hebben niet het verwachte formaat (instellingenveld is ongeldig).",
+  "backupValidationInvalidNoteRecordMessage": "Back-upgegevens hebben niet het verwachte formaat (een notitierecord is ongeldig).",
+  "backupValidationMissingNoteIdMessage": "Back-upgegevens hebben niet het verwachte formaat (er is een notitierecord zonder ID gevonden).",
+  "backupValidationFileNotFoundMessage": "Back-upbestand niet gevonden.",
+  "backupErrorInsufficientStorageMessage": "Onvoldoende vrije opslagruimte op het apparaat. Maak ruimte vrij en probeer het opnieuw.",
+  "backupErrorPermissionDeniedMessage": "Bestandstoegang werd geweigerd. Controleer de app-machtigingen en probeer het opnieuw.",
+  "backupErrorFileOperationMessage": "Er is een fout opgetreden tijdens de bestandsbewerking: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "Er is een onverwachte fout opgetreden: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "Kon het zip-archief niet maken (ZipEncoder gaf null terug).",
+  "calcTableMenuItemLabel": "Rekenlijst",
+  "tagsMenuItemLabel": "Labels",
+  "linkDialogUrlHint": "https://voorbeeld.com",
+  "checklistItemHint": "Item toevoegen...",
+  "toolbarHighlightTooltip": "Markeren",
+  "toolbarListTooltip": "Lijst",
+  "toolbarHideKeyboardTooltip": "Toetsenbord verbergen",
+  "autoBackupLocalSuccessMessage": "Lokale back-up geslaagd.",
+  "autoBackupLocalFailedMessage": "Lokale back-up mislukt: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Drive-back-up overgeslagen: Google-account is niet gekoppeld of de sessie is verlopen. Open de app en maak opnieuw verbinding.",
+  "autoBackupDriveSuccessMessage": "Drive-back-up geslaagd.",
+  "autoBackupDriveFailedMessage": "Drive-back-up mislukt: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "Nog geen notities",
+  "noteWidgetPreviewTotalLabel": "Totaal: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ Tekening",
+  "autoBackupSettingsAppBarTitle": "Instellingen automatische back-up",
+  "autoBackupSettingsMainSwitchTitle": "Automatische back-up inschakelen",
+  "autoBackupSettingsMainSwitchSubtitle": "Uw notities worden periodiek veilig op de achtergrond geback-upt.",
+  "autoBackupSettingsTargetTitle": "Back-updoel",
+  "autoBackupSettingsTargetSubtitle": "Kies waar back-ups worden opgeslagen.",
+  "autoBackupSettingsTargetLocalOption": "Lokaal",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "Beide",
+  "autoBackupSettingsDriveNotConnectedNote": "Koppel eerst uw account om Google Drive-opties te gebruiken.",
+  "autoBackupSettingsConnectButton": "Verbinden",
+  "autoBackupSettingsFrequencyTitle": "Back-upfrequentie",
+  "autoBackupSettingsFrequencySubtitle": "Er wordt elke {hours} uur een back-up gemaakt.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 uur",
+  "autoBackupSettingsFrequency12h": "12 uur",
+  "autoBackupSettingsFrequency24h": "24 uur (dagelijks)",
+  "autoBackupSettingsFrequency48h": "48 uur (2 dagen)",
+  "autoBackupSettingsFrequency168h": "168 uur (wekelijks)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "Alleen wifi gebruiken",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "Uploaden naar de cloud gebeurt alleen via wifi om uw mobiele data te sparen.",
+  "autoBackupSettingsStatusCardTitle": "Systeemstatus",
+  "autoBackupSettingsNeverRunMessage": "Automatische back-up is nog niet uitgevoerd.",
+  "autoBackupSettingsLastRunInfo": "Laatste uitvoering: {date} {time} ({status})\nBericht: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "Geslaagd",
+  "autoBackupSettingsStatusFailedLabel": "Mislukt",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Kon geen verbinding maken met het Google-account.",
+  "autoBackupSettingsSavedSnackbar": "Instellingen voor automatische back-up bijgewerkt.",
+  "selectionModeDeletedMessage": "{count} notities verwijderd",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "Gearchiveerd",
+  "selectionModeClassifySheetTitle": "Kies categorie voor {count} notities",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "Categorie toevoegen",
+  "selectionModeRemoveCategoryOption": "Categorie verwijderen",
+  "calcTableItemHint": "Item...",
+  "calcTableTotalRowLabel": "Totaal",
+  "textSelectionMenuShareButton": "Delen",
+  "textSelectionMenuTranslateButton": "Vertalen",
+  "textSelectionMenuShareFailedSnackbar": "Delen kon niet worden gestart.",
+  "textSelectionMenuTranslateFailedSnackbar": "Vertaling kon niet worden geopend.",
+  "lastBackupInfoTodayFormat": "Vandaag {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}-{month}-{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "Laatste back-up: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "Er is nog geen back-up gemaakt."
+}
