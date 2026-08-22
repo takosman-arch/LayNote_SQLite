@@ -2370,4 +2370,7 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get lastBackupInfoNoBackupMessage =>
       'Ainda não foi feita nenhuma cópia de segurança.';
+
+  @override
+  String get backupFileNameLabel => 'Cópia de segurança';
 }

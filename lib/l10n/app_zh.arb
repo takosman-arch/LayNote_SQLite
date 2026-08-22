@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "尚未进行过备份。"
+  "lastBackupInfoNoBackupMessage": "尚未进行过备份。",
+  "backupFileNameLabel": "备份"
 }

@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "Der er endnu ikke taget en sikkerhedskopi."
+  "lastBackupInfoNoBackupMessage": "Der er endnu ikke taget en sikkerhedskopi.",
+  "backupFileNameLabel": "Sikkerhedskopi"
 }

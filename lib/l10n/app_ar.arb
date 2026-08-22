@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "لم يتم أخذ أي نسخة احتياطية بعد."
+  "lastBackupInfoNoBackupMessage": "لم يتم أخذ أي نسخة احتياطية بعد.",
+  "backupFileNameLabel": "نسخة احتياطية"
 }

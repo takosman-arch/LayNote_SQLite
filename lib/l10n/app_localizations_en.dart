@@ -2328,4 +2328,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lastBackupInfoNoBackupMessage => 'No backup has been taken yet.';
+
+  @override
+  String get backupFileNameLabel => 'Backup';
 }

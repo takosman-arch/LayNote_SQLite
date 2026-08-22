@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "Zatím nebyla vytvořena žádná záloha."
+  "lastBackupInfoNoBackupMessage": "Zatím nebyla vytvořena žádná záloha.",
+  "backupFileNameLabel": "Záloha"
 }

@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "Nu s-a făcut încă niciun backup."
+  "lastBackupInfoNoBackupMessage": "Nu s-a făcut încă niciun backup.",
+  "backupFileNameLabel": "Copie de rezervă"
 }

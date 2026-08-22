@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "Резервну копію ще не створено."
+  "lastBackupInfoNoBackupMessage": "Резервну копію ще не створено.",
+  "backupFileNameLabel": "Резервна копія"
 }

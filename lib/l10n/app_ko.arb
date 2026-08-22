@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "아직 백업이 없습니다."
+  "lastBackupInfoNoBackupMessage": "아직 백업이 없습니다.",
+  "backupFileNameLabel": "백업"
 }

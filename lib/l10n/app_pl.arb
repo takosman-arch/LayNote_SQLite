@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "Nie utworzono jeszcze żadnej kopii zapasowej."
+  "lastBackupInfoNoBackupMessage": "Nie utworzono jeszcze żadnej kopii zapasowej.",
+  "backupFileNameLabel": "Kopia zapasowa"
 }

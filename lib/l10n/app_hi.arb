@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "अभी तक कोई बैकअप नहीं लिया गया है।"
+  "lastBackupInfoNoBackupMessage": "अभी तक कोई बैकअप नहीं लिया गया है।",
+  "backupFileNameLabel": "बैकअप"
 }

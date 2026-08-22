@@ -698,5 +698,6 @@
   "lastBackupInfoTodayFormat": "Hoje {time}",
   "lastBackupInfoDateFormat": "{day}/{month}/{year} {time}",
   "lastBackupInfoLabel": "Última cópia de segurança: {date}",
-  "lastBackupInfoNoBackupMessage": "Ainda não foi feita nenhuma cópia de segurança."
+  "lastBackupInfoNoBackupMessage": "Ainda não foi feita nenhuma cópia de segurança.",
+  "backupFileNameLabel": "Cópia de segurança"
 }

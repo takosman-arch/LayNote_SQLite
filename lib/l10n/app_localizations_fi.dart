@@ -2343,4 +2343,7 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String get lastBackupInfoNoBackupMessage =>
       'Varmuuskopiota ei ole vielä otettu.';
+
+  @override
+  String get backupFileNameLabel => 'Varmuuskopio';
 }

@@ -2339,4 +2339,7 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get lastBackupInfoNoBackupMessage =>
       'अभी तक कोई बैकअप नहीं लिया गया है।';
+
+  @override
+  String get backupFileNameLabel => 'बैकअप';
 }

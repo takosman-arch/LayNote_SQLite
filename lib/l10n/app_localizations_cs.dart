@@ -2339,4 +2339,7 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get lastBackupInfoNoBackupMessage =>
       'Zatím nebyla vytvořena žádná záloha.';
+
+  @override
+  String get backupFileNameLabel => 'Záloha';
 }

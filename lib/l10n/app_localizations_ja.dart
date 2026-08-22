@@ -2282,4 +2282,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get lastBackupInfoNoBackupMessage => 'まだバックアップが取得されていません。';
+
+  @override
+  String get backupFileNameLabel => 'バックアップ';
 }

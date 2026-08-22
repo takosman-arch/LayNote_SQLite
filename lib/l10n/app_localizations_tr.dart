@@ -2321,4 +2321,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get lastBackupInfoNoBackupMessage => 'Henüz hiç yedek alınmadı.';
+
+  @override
+  String get backupFileNameLabel => 'Yedek';
 }

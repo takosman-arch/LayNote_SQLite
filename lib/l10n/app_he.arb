@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "עדיין לא בוצע גיבוי."
+  "lastBackupInfoNoBackupMessage": "עדיין לא בוצע גיבוי.",
+  "backupFileNameLabel": "גיבוי"
 }

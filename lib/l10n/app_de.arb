@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "Es wurde noch keine Sicherung erstellt."
+  "lastBackupInfoNoBackupMessage": "Es wurde noch keine Sicherung erstellt.",
+  "backupFileNameLabel": "Sicherung"
 }

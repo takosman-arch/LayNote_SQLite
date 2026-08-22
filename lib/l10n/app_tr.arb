@@ -3104,5 +3104,6 @@
   "lastBackupInfoNoBackupMessage": "Henüz hiç yedek alınmadı.",
   "@lastBackupInfoNoBackupMessage": {
     "description": "Son yedekleme bilgisi widget'ında hiç yedek alınmamışsa gösterilen metin"
-  }
+  },
+  "backupFileNameLabel": "Yedek"
 }

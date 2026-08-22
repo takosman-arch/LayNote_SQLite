@@ -2340,4 +2340,7 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get lastBackupInfoNoBackupMessage =>
       'Chưa có bản sao lưu nào được thực hiện.';
+
+  @override
+  String get backupFileNameLabel => 'Sao lưu';
 }

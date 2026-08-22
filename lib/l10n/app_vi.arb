@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "Chưa có bản sao lưu nào được thực hiện."
+  "lastBackupInfoNoBackupMessage": "Chưa có bản sao lưu nào được thực hiện.",
+  "backupFileNameLabel": "Sao lưu"
 }

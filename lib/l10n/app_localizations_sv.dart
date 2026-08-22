@@ -2341,4 +2341,7 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get lastBackupInfoNoBackupMessage =>
       'Ingen säkerhetskopia har tagits ännu.';
+
+  @override
+  String get backupFileNameLabel => 'Säkerhetskopia';
 }

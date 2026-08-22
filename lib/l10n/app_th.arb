@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "ยังไม่เคยมีการสำรองข้อมูล"
+  "lastBackupInfoNoBackupMessage": "ยังไม่เคยมีการสำรองข้อมูล",
+  "backupFileNameLabel": "สำรองข้อมูล"
 }

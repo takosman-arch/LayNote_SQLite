@@ -2308,4 +2308,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get lastBackupInfoNoBackupMessage => 'עדיין לא בוצע גיבוי.';
+
+  @override
+  String get backupFileNameLabel => 'גיבוי';
 }

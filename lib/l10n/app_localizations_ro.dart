@@ -2347,4 +2347,7 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get lastBackupInfoNoBackupMessage =>
       'Nu s-a făcut încă niciun backup.';
+
+  @override
+  String get backupFileNameLabel => 'Copie de rezervă';
 }

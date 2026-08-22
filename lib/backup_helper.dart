@@ -98,7 +98,7 @@ class BackupHelper {
     onProgress?.call(0.9, l10n.backupCreateSavingFileLabel);
 
     final dir = await backupsDir();
-    final fileName = 'dnote_yedek_${_timestampForFileName(DateTime.now())}.zip';
+    final fileName = 'Layout_${l10n.backupFileNameLabel}_${_timestampForFileName(DateTime.now())}.zip';
     final zipFile = File(p.join(dir.path, fileName));
     try {
       await zipFile.writeAsBytes(zipBytes, flush: true);

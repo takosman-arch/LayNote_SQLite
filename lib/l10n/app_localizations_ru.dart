@@ -2351,4 +2351,7 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get lastBackupInfoNoBackupMessage =>
       'Резервная копия ещё не создавалась.';
+
+  @override
+  String get backupFileNameLabel => 'Резервная копия';
 }

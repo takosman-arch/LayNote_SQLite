@@ -698,5 +698,6 @@
   "lastBackupInfoTodayFormat": "Сегодня {time}",
   "lastBackupInfoDateFormat": "{day}.{month}.{year} {time}",
   "lastBackupInfoLabel": "Последняя резервная копия: {date}",
-  "lastBackupInfoNoBackupMessage": "Резервная копия ещё не создавалась."
+  "lastBackupInfoNoBackupMessage": "Резервная копия ещё не создавалась.",
+  "backupFileNameLabel": "Резервная копия"
 }

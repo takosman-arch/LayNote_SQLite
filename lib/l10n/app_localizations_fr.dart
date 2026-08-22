@@ -2368,4 +2368,7 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get lastBackupInfoNoBackupMessage =>
       'Aucune sauvegarde n\'a encore été effectuée.';
+
+  @override
+  String get backupFileNameLabel => 'Sauvegarde';
 }

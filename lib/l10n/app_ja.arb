@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "まだバックアップが取得されていません。"
+  "lastBackupInfoNoBackupMessage": "まだバックアップが取得されていません。",
+  "backupFileNameLabel": "バックアップ"
 }

@@ -2356,4 +2356,7 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get lastBackupInfoNoBackupMessage =>
       'Nie utworzono jeszcze żadnej kopii zapasowej.';
+
+  @override
+  String get backupFileNameLabel => 'Kopia zapasowa';
 }

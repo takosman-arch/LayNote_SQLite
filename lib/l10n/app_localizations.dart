@@ -4349,6 +4349,12 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Henüz hiç yedek alınmadı.'**
   String get lastBackupInfoNoBackupMessage;
+
+  /// No description provided for @backupFileNameLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yedek'**
+  String get backupFileNameLabel;
 }
 
 class _AppLocalizationsDelegate

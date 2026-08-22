@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "Varmuuskopiota ei ole vielä otettu."
+  "lastBackupInfoNoBackupMessage": "Varmuuskopiota ei ole vielä otettu.",
+  "backupFileNameLabel": "Varmuuskopio"
 }

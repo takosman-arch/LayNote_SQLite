@@ -2354,4 +2354,7 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get lastBackupInfoNoBackupMessage =>
       'Es wurde noch keine Sicherung erstellt.';
+
+  @override
+  String get backupFileNameLabel => 'Sicherung';
 }

@@ -2328,4 +2328,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get lastBackupInfoNoBackupMessage =>
       'لم يتم أخذ أي نسخة احتياطية بعد.';
+
+  @override
+  String get backupFileNameLabel => 'نسخة احتياطية';
 }

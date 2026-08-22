@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "Belum ada cadangan yang dibuat."
+  "lastBackupInfoNoBackupMessage": "Belum ada cadangan yang dibuat.",
+  "backupFileNameLabel": "Cadangan"
 }

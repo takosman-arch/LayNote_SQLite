@@ -2356,4 +2356,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get lastBackupInfoNoBackupMessage => 'Er is nog geen back-up gemaakt.';
+
+  @override
+  String get backupFileNameLabel => 'Back-up';
 }

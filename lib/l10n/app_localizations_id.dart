@@ -2337,4 +2337,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get lastBackupInfoNoBackupMessage => 'Belum ada cadangan yang dibuat.';
+
+  @override
+  String get backupFileNameLabel => 'Cadangan';
 }

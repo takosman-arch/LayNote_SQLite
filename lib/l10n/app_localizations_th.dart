@@ -2326,4 +2326,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get lastBackupInfoNoBackupMessage => 'ยังไม่เคยมีการสำรองข้อมูล';
+
+  @override
+  String get backupFileNameLabel => 'สำรองข้อมูล';
 }

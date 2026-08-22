@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "No backup has been taken yet."
+  "lastBackupInfoNoBackupMessage": "No backup has been taken yet.",
+  "backupFileNameLabel": "Backup"
 }

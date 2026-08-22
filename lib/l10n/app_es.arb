@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "Todavía no se ha realizado ninguna copia de seguridad."
+  "lastBackupInfoNoBackupMessage": "Todavía no se ha realizado ninguna copia de seguridad.",
+  "backupFileNameLabel": "Copia de seguridad"
 }

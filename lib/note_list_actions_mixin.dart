@@ -1955,7 +1955,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       {
         'icon': Icons.image_outlined,
         'label': AppLocalizations.of(ctx)!.addAttachmentImageOption,
-        'color': Colors.tealAccent,
+        'color': Colors.teal,
         'key': 'image',
       },
       {

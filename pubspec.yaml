@@ -181,12 +181,6 @@ flutter:
     - family: DNoteGeometric
       fonts:
         - asset: assets/fonts/Geom-VariableFont_wght.ttf
-    - family: DNoteHandDE
-      fonts:
-        - asset: assets/fonts/PlaywriteDEGrund-VariableFont_wght.ttf
-    - family: DNoteHandUS
-      fonts:
-        - asset: assets/fonts/PlaywriteUSTrad-VariableFont_wght.ttf
     - family: DNoteElegant
       fonts:
         - asset: assets/fonts/ElmsSans-VariableFont_wght.ttf

@@ -2253,4 +2253,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get lastBackupInfoNoBackupMessage => '尚未进行过备份。';
+
+  @override
+  String get backupFileNameLabel => '备份';
 }

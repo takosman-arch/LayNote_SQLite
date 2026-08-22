@@ -2285,4 +2285,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get lastBackupInfoNoBackupMessage => '아직 백업이 없습니다.';
+
+  @override
+  String get backupFileNameLabel => '백업';
 }

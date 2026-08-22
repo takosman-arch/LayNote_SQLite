@@ -2365,4 +2365,7 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get lastBackupInfoNoBackupMessage =>
       'Todavía no se ha realizado ninguna copia de seguridad.';
+
+  @override
+  String get backupFileNameLabel => 'Copia de seguridad';
 }

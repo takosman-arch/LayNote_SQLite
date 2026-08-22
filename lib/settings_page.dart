@@ -47,10 +47,6 @@ String? dNoteFontFamilyValue(String? name) {
       return 'DNoteSansAlt';
     case 'Geometric':
       return 'DNoteGeometric';
-    case 'El Yazısı DE':
-      return 'DNoteHandDE';
-    case 'El Yazısı US':
-      return 'DNoteHandUS';
     case 'Elegant':
       return 'DNoteElegant';
     default:
@@ -133,8 +129,6 @@ class _SettingsPageState extends State<SettingsPage> {
     'Sans Alt',
     'Geometric',
     'Monospace',
-    'El Yazısı DE',
-    'El Yazısı US',
   ];
 
   static String? _fontFamilyValue(String name) => dNoteFontFamilyValue(name);

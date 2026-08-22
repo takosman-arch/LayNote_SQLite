@@ -1132,5 +1132,6 @@
       }
     }
   },
-  "lastBackupInfoNoBackupMessage": "Er is nog geen back-up gemaakt."
+  "lastBackupInfoNoBackupMessage": "Er is nog geen back-up gemaakt.",
+  "backupFileNameLabel": "Back-up"
 }
