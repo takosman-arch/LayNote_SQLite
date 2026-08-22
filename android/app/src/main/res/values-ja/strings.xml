@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">選択したメモをホーム画面に表示します</string>
+    <string name="note_widget_picker_label">既存のメモを追加</string>
+    <string name="new_note_widget_picker_label">新しいメモを追加</string>
+    <string name="new_note_widget_description">タップしてすぐに新しいメモを作成します</string>
+    <string name="widget_config_heading">ウィジェットに表示するメモを選択</string>
+    <string name="widget_config_empty_state">同期済みのメモがまだ見つかりません。\n\nまずLayoutアプリを開いてメモを1件以上作成するか（または既存のメモを編集して保存し）、その後もう一度ウィジェットの追加をお試しください。\n\nまたは、メモなしで一旦ウィジェットを追加することもできます。最初のメモが作成されると自動的に更新されます。</string>
+    <string name="widget_config_continue_without_note">メモなしで続ける</string>
+</resources>

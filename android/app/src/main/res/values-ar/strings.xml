@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">يعرض الملاحظة التي اخترتها على الشاشة الرئيسية</string>
+    <string name="note_widget_picker_label">إضافة ملاحظة موجودة</string>
+    <string name="new_note_widget_picker_label">إضافة ملاحظة جديدة</string>
+    <string name="new_note_widget_description">اضغط لإنشاء ملاحظة جديدة فورًا</string>
+    <string name="widget_config_heading">اختر الملاحظة التي ستظهر في الودجت</string>
+    <string name="widget_config_empty_state">لم يتم العثور على ملاحظات متزامنة بعد.\n\nافتح أولاً تطبيق Layout وأنشئ ملاحظة واحدة على الأقل (أو عدّل ملاحظة موجودة واحفظها)، ثم حاول إضافة الودجت مرة أخرى.\n\nأو يمكنك إضافة الودجت الآن بدون ملاحظة — سيتم تحديثه تلقائيًا بمجرد إنشاء أول ملاحظة.</string>
+    <string name="widget_config_continue_without_note">المتابعة بدون ملاحظة</string>
+</resources>

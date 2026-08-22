@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">Toont de door u geselecteerde notitie op het startscherm</string>
+    <string name="note_widget_picker_label">Bestaande notitie toevoegen</string>
+    <string name="new_note_widget_picker_label">Nieuwe notitie toevoegen</string>
+    <string name="new_note_widget_description">Tik om direct een nieuwe notitie te maken</string>
+    <string name="widget_config_heading">Selecteer de notitie die in de widget wordt weergegeven</string>
+    <string name="widget_config_empty_state">Nog geen gesynchroniseerde notities gevonden.\n\nOpen eerst de Layout-app en maak minstens één notitie aan (of bewerk en sla een bestaande op), en probeer de widget daarna opnieuw toe te voegen.\n\nOf voeg de widget voorlopig toe zonder notitie — deze wordt automatisch bijgewerkt zodra de eerste notitie is aangemaakt.</string>
+    <string name="widget_config_continue_without_note">Doorgaan zonder notitie</string>
+</resources>

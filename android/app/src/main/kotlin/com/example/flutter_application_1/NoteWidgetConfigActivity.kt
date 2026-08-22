@@ -142,7 +142,7 @@ class NoteWidgetConfigActivity : Activity() {
         }
 
         val heading = TextView(this).apply {
-            text = "Widget'ta gösterilecek notu seç"
+            text = getString(R.string.widget_config_heading)
             setTextColor(Color.parseColor(colorTitle()))
             textSize = 18f
             setPadding(dp(20), dp(24), dp(20), dp(12))
@@ -160,12 +160,7 @@ class NoteWidgetConfigActivity : Activity() {
             // NoteWidget.kt zaten notId boşken "Henüz not yok" göstermeye
             // hazır, ilk not kaydedildiğinde widget otomatik güncellenir.
             val empty = TextView(this).apply {
-                text = "Henüz senkronize edilmiş not bulunamadı.\n\n" +
-                    "Önce DNote uygulamasını açıp en az bir not oluşturun " +
-                    "(veya mevcut bir notu düzenleyip kaydedin), ardından " +
-                    "widget'ı tekrar eklemeyi deneyin.\n\n" +
-                    "Ya da widget'ı şimdilik notsuz ekleyebilirsiniz; " +
-                    "ilk not oluşturulduğunda otomatik güncellenecektir."
+                text = getString(R.string.widget_config_empty_state)
                 setTextColor(Color.parseColor(colorMutedText()))
                 textSize = 14f
                 setPadding(dp(20), dp(8), dp(20), dp(12))
@@ -173,7 +168,7 @@ class NoteWidgetConfigActivity : Activity() {
             root.addView(empty)
 
             val continueBtn = TextView(this).apply {
-                text = "Notsuz Devam Et"
+                text = getString(R.string.widget_config_continue_without_note)
                 setTextColor(Color.parseColor(COLOR_AMBER))
                 textSize = 15f
                 setTypeface(typeface, android.graphics.Typeface.BOLD)

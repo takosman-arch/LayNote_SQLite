@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">Mostra la nota selezionata nella schermata Home</string>
+    <string name="note_widget_picker_label">Aggiungi nota esistente</string>
+    <string name="new_note_widget_picker_label">Aggiungi nuova nota</string>
+    <string name="new_note_widget_description">Tocca per creare istantaneamente una nuova nota</string>
+    <string name="widget_config_heading">Seleziona la nota da mostrare nel widget</string>
+    <string name="widget_config_empty_state">Nessuna nota sincronizzata trovata.\n\nApri prima l\'app Layout e crea almeno una nota (oppure modifica e salva una nota esistente), quindi riprova ad aggiungere il widget.\n\nOppure aggiungi il widget senza una nota per ora: si aggiornerà automaticamente non appena verrà creata la prima nota.</string>
+    <string name="widget_config_continue_without_note">Continua senza nota</string>
+</resources>

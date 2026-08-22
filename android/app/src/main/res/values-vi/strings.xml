@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">Hiển thị ghi chú bạn đã chọn trên màn hình chính</string>
+    <string name="note_widget_picker_label">Thêm ghi chú hiện có</string>
+    <string name="new_note_widget_picker_label">Thêm ghi chú mới</string>
+    <string name="new_note_widget_description">Chạm để tạo ngay một ghi chú mới</string>
+    <string name="widget_config_heading">Chọn ghi chú sẽ hiển thị trong widget</string>
+    <string name="widget_config_empty_state">Chưa tìm thấy ghi chú nào được đồng bộ.\n\nHãy mở ứng dụng Layout trước và tạo ít nhất một ghi chú (hoặc chỉnh sửa và lưu một ghi chú có sẵn), sau đó thử thêm widget lại.\n\nHoặc bạn có thể thêm widget mà chưa cần ghi chú lúc này — widget sẽ tự động cập nhật ngay khi ghi chú đầu tiên được tạo.</string>
+    <string name="widget_config_continue_without_note">Tiếp tục mà không cần ghi chú</string>
+</resources>

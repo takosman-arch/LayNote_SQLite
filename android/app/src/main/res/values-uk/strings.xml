@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">Показує вибрану вами нотатку на головному екрані</string>
+    <string name="note_widget_picker_label">Додати наявну нотатку</string>
+    <string name="new_note_widget_picker_label">Додати нову нотатку</string>
+    <string name="new_note_widget_description">Торкніться, щоб миттєво створити нову нотатку</string>
+    <string name="widget_config_heading">Виберіть нотатку, яка відображатиметься у віджеті</string>
+    <string name="widget_config_empty_state">Синхронізованих нотаток поки не знайдено.\n\nСпочатку відкрийте застосунок Layout і створіть принаймні одну нотатку (або відредагуйте та збережіть наявну), а потім спробуйте додати віджет ще раз.\n\nАбо додайте віджет поки що без нотатки — він оновиться автоматично, щойно буде створено першу нотатку.</string>
+    <string name="widget_config_continue_without_note">Продовжити без нотатки</string>
+</resources>

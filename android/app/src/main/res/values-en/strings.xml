@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">Shows your selected note on the home screen</string>
+    <string name="note_widget_picker_label">Add Existing Note</string>
+    <string name="new_note_widget_picker_label">Add New Note</string>
+    <string name="new_note_widget_description">Tap to instantly create a new note</string>
+    <string name="widget_config_heading">Select the note to show in the widget</string>
+    <string name="widget_config_empty_state">No synced notes found yet.\n\nFirst open the Layout app and create at least one note (or edit and save an existing one), then try adding the widget again.\n\nOr you can add the widget without a note for now — it will update automatically once the first note is created.</string>
+    <string name="widget_config_continue_without_note">Continue Without a Note</string>
+</resources>

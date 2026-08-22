@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">Afișează nota selectată pe ecranul principal</string>
+    <string name="note_widget_picker_label">Adaugă notă existentă</string>
+    <string name="new_note_widget_picker_label">Adaugă notă nouă</string>
+    <string name="new_note_widget_description">Atinge pentru a crea instantaneu o notă nouă</string>
+    <string name="widget_config_heading">Selectează nota care va fi afișată în widget</string>
+    <string name="widget_config_empty_state">Nu s-a găsit încă nicio notă sincronizată.\n\nDeschide mai întâi aplicația Layout și creează cel puțin o notă (sau editează și salvează una existentă), apoi încearcă din nou să adaugi widgetul.\n\nSau poți adăuga widgetul deocamdată fără nicio notă — se va actualiza automat imediat ce este creată prima notă.</string>
+    <string name="widget_config_continue_without_note">Continuă fără notă</string>
+</resources>

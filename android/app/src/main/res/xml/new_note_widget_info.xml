@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    "Yeni Not Ekle" ikon widget'ının AppWidgetProviderInfo tanımı.
+    Not widget'ının aksine (bkz. note_widget_info.xml) bu widget'ın
+    yapılandırma ekranı yoktur (android:configure yok) — sürükleyip
+    bırakınca doğrudan eklenir.
+
+    Boyut: tek hücrelik (1x1) bir ikon widget'ı hedeflendiği için
+    minWidth/minHeight 40dp (Android'in tek hücre için standart minimum
+    boyutu) olarak ayarlandı. Kullanıcı büyütüp küçültemesin diye
+    resizeMode="none" verildi; istenirse "horizontal|vertical" yapılıp
+    büyütülebilir hale getirilebilir.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="40dp"
+    android:minHeight="40dp"
+    android:targetCellWidth="1"
+    android:targetCellHeight="1"
+    android:updatePeriodMillis="0"
+    android:initialLayout="@layout/widget_new_note"
+    android:previewLayout="@layout/widget_new_note"
+    android:resizeMode="none"
+    android:widgetCategory="home_screen"
+    android:description="@string/new_note_widget_description" />

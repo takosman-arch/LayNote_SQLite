@@ -169,7 +169,7 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
                 Log.e(TAG, "updateWidget GENEL COKME: ${e.javaClass.simpleName}: ${e.message}", e)
                 try {
                     val fallback = RemoteViews(context.packageName, R.layout.note_widget)
-                    fallback.setTextViewText(R.id.widget_title, "DNote")
+                    fallback.setTextViewText(R.id.widget_title, "Layout")
                     fallback.setViewVisibility(R.id.widget_content, View.GONE)
                     fallback.setViewVisibility(R.id.widget_lines_container, View.GONE)
                     fallback.setViewVisibility(R.id.widget_count, View.GONE)

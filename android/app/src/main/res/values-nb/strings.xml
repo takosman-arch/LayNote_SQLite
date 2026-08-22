@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">Viser notatet du har valgt, på startskjermen</string>
+    <string name="note_widget_picker_label">Legg til eksisterende notat</string>
+    <string name="new_note_widget_picker_label">Legg til nytt notat</string>
+    <string name="new_note_widget_description">Trykk for å opprette et nytt notat umiddelbart</string>
+    <string name="widget_config_heading">Velg notatet som skal vises i widgeten</string>
+    <string name="widget_config_empty_state">Fant ingen synkroniserte notater ennå.\n\nÅpne først Layout-appen og opprett minst ett notat (eller rediger og lagre et eksisterende), og prøv deretter å legge til widgeten igjen.\n\nEller legg til widgeten uten et notat foreløpig — den oppdateres automatisk så snart det første notatet er opprettet.</string>
+    <string name="widget_config_continue_without_note">Fortsett uten notat</string>
+</resources>

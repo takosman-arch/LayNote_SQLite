@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">Zeigt die von Ihnen ausgewählte Notiz auf dem Startbildschirm an</string>
+    <string name="note_widget_picker_label">Vorhandene Notiz hinzufügen</string>
+    <string name="new_note_widget_picker_label">Neue Notiz hinzufügen</string>
+    <string name="new_note_widget_description">Tippen, um sofort eine neue Notiz zu erstellen</string>
+    <string name="widget_config_heading">Wähle die Notiz aus, die im Widget angezeigt werden soll</string>
+    <string name="widget_config_empty_state">Es wurden noch keine synchronisierten Notizen gefunden.\n\nÖffne zuerst die Layout-App und erstelle mindestens eine Notiz (oder bearbeite und speichere eine vorhandene), und versuche dann erneut, das Widget hinzuzufügen.\n\nOder du fügst das Widget vorerst ohne Notiz hinzu — es wird automatisch aktualisiert, sobald die erste Notiz erstellt wurde.</string>
+    <string name="widget_config_continue_without_note">Ohne Notiz fortfahren</string>
+</resources>

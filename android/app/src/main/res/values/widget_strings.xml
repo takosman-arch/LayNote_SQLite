@@ -6,9 +6,23 @@
   taşıyabilirsin, fark etmez.
 -->
 <resources>
-    <string name="note_widget_description">Son notunuzu ana ekranda gösterir</string>
+    <string name="note_widget_description">Seçtiğiniz notu ana ekranda gösterir</string>
     <!-- Widget ekleme (seçim) ekranında görünen isim. AndroidManifest.xml
          içindeki NoteWidgetReceiverV2 receiver'ının android:label
          özniteliği buraya işaret ediyor. -->
-    <string name="note_widget_picker_label">Layout</string>
+    <string name="note_widget_picker_label">Mevcut Not Ekle</string>
+
+    <!-- "Yeni Not Ekle" ikon widget'ı (NewNoteWidgetReceiver) için isim ve
+         açıklama. İsim, widget ekleme (seçim) ekranında widget'ın adı olarak
+         görünür (manifest'teki android:label buraya işaret eder);
+         açıklama ise adın altındaki küçük metindir
+         (new_note_widget_info.xml -> android:description). -->
+    <string name="new_note_widget_picker_label">Yeni Not Ekle</string>
+    <string name="new_note_widget_description">Dokununca doğrudan yeni bir not oluşturur</string>
+
+    <!-- Widget'ta gösterilecek notu seçme (config) ekranındaki 3 metin.
+         NoteWidgetConfigActivity.kt bunları getString() ile okuyor. -->
+    <string name="widget_config_heading">Widget\'ta gösterilecek notu seç</string>
+    <string name="widget_config_empty_state">Henüz senkronize edilmiş not bulunamadı.\n\nÖnce Layout uygulamasını açıp en az bir not oluşturun (veya mevcut bir notu düzenleyip kaydedin), ardından widget\'ı tekrar eklemeyi deneyin.\n\nYa da widget\'ı şimdilik notsuz ekleyebilirsiniz; ilk not oluşturulduğunda otomatik güncellenecektir.</string>
+    <string name="widget_config_continue_without_note">Notsuz Devam Et</string>
 </resources>

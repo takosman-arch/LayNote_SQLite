@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">แสดงบันทึกที่คุณเลือกบนหน้าจอหลัก</string>
+    <string name="note_widget_picker_label">เพิ่มบันทึกที่มีอยู่</string>
+    <string name="new_note_widget_picker_label">เพิ่มบันทึกใหม่</string>
+    <string name="new_note_widget_description">แตะเพื่อสร้างบันทึกใหม่ทันที</string>
+    <string name="widget_config_heading">เลือกโน้ตที่จะแสดงในวิดเจ็ต</string>
+    <string name="widget_config_empty_state">ยังไม่พบโน้ตที่ซิงค์แล้ว\n\nเปิดแอป Layout ก่อน แล้วสร้างโน้ตอย่างน้อยหนึ่งรายการ (หรือแก้ไขและบันทึกโน้ตที่มีอยู่) จากนั้นลองเพิ่มวิดเจ็ตอีกครั้ง\n\nหรือเพิ่มวิดเจ็ตโดยยังไม่มีโน้ตไปก่อนก็ได้ วิดเจ็ตจะอัปเดตอัตโนมัติทันทีที่มีการสร้างโน้ตแรก</string>
+    <string name="widget_config_continue_without_note">ดำเนินการต่อโดยไม่มีโน้ต</string>
+</resources>

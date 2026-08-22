@@ -119,6 +119,24 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+
+        <!-- "Yeni Not Ekle" ikon widget'ı. Yapılandırma ekranı yok — hangi
+             notun gösterileceği gibi bir seçim söz konusu değil, sürükleyip
+             bırakınca doğrudan eklenir. exported="true" ZORUNLU: yukarıdaki
+             NoteWidgetReceiverV2 açıklamasındaki aynı sebepten — sistemden
+             gelen APPWIDGET_UPDATE broadcast'i ancak exported=true ise
+             alınabilir. -->
+        <receiver
+            android:name=".NewNoteWidgetReceiver"
+            android:exported="true"
+            android:label="@string/new_note_widget_picker_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/new_note_widget_info" />
+        </receiver>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

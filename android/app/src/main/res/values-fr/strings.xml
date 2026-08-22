@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">Affiche la note que vous avez sélectionnée sur l\'écran d\'accueil</string>
+    <string name="note_widget_picker_label">Ajouter une note existante</string>
+    <string name="new_note_widget_picker_label">Ajouter une note</string>
+    <string name="new_note_widget_description">Appuyez pour créer instantanément une nouvelle note</string>
+    <string name="widget_config_heading">Choisissez la note à afficher dans le widget</string>
+    <string name="widget_config_empty_state">Aucune note synchronisée trouvée pour le moment.\n\nOuvrez d\'abord l\'application Layout et créez au moins une note (ou modifiez et enregistrez une note existante), puis réessayez d\'ajouter le widget.\n\nOu ajoutez le widget sans note pour l\'instant — il se mettra à jour automatiquement dès qu\'une première note sera créée.</string>
+    <string name="widget_config_continue_without_note">Continuer sans note</string>
+</resources>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    "Yeni Not Ekle" ikon widget'ında kullanılan + simgesi.
+
+    Beyaz (#FFFFFF) dolgu ile tanımlanmıştır; widget her güncellendiğinde
+    NewNoteWidgetReceiver.updateWidget() içinde
+    RemoteViews.setInt(iconId, "setColorFilter", ...) ile açık/koyu temaya
+    göre renklendirilir (bkz. NewNoteWidgetReceiver.kt). Bu yüzden burada
+    sabit rengin ne olduğu önemli değil, sadece şeklin kendisi kullanılıyor.
+
+    NOT: Uygulamanın kendi "not ekle" ikonuyla birebir aynı olması
+    gerekiyorsa, bu dosyanın içeriğini o ikonun path verisiyle
+    değiştirmen yeterli — widget tarafında başka hiçbir yeri değiştirmen
+    gerekmez.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FFFFFF">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2zM17,13h-4v4h-2v-4H7v-2h4V7h2v4h4V13z" />
+</vector>

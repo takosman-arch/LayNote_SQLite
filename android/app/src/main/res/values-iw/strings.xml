@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">מציג את הפתק שבחרת במסך הבית</string>
+    <string name="note_widget_picker_label">הוספת פתק קיים</string>
+    <string name="new_note_widget_picker_label">הוספת פתק חדש</string>
+    <string name="new_note_widget_description">הקש כדי ליצור פתק חדש באופן מיידי</string>
+    <string name="widget_config_heading">בחר את הפתק שיוצג בווידג\'ט</string>
+    <string name="widget_config_empty_state">עדיין לא נמצאו פתקים מסונכרנים.\n\nפתח תחילה את אפליקציית Layout וצור לפחות פתק אחד (או ערוך ושמור פתק קיים), ולאחר מכן נסה להוסיף את הווידג\'ט שוב.\n\nאו הוסף את הווידג\'ט בינתיים בלי פתק — הוא יתעדכן אוטומטית ברגע שייווצר הפתק הראשון.</string>
+    <string name="widget_config_continue_without_note">המשך בלי פתק</string>
+</resources>

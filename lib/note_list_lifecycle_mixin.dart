@@ -176,8 +176,11 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
 
   // ── Ana ekran widget'ına tıklanınca ilgili notu açma ───────────────────
   // Widget'a tıklanınca native taraf (NoteWidgetReceiverV2.kt / NoteWidget.kt)
-  // uygulamayı "dnote://note?id=..." biçiminde bir URI ile açar. Bu URI iki
-  // farklı yoldan Dart'a ulaşabilir:
+  // uygulamayı "dnote://note?id=..." biçiminde bir URI ile açar. "Yeni Not
+  // Ekle" ikon widget'ı (NewNoteWidgetReceiver.kt) ise "dnote://newnote"
+  // biçiminde, id taşımayan ayrı bir URI ile açar (bkz. aşağıdaki
+  // _handleWidgetLaunchUri'deki host ayrımı). Bu URI'ler iki farklı yoldan
+  // Dart'a ulaşabilir:
   //   1) Uygulama tamamen kapalıyken widget'a tıklanırsa (soğuk başlangıç)
   //      -> HomeWidget.initiallyLaunchedFromHomeWidget()
   //   2) Uygulama zaten açıkken (ön/arka planda) widget'a tıklanırsa
@@ -187,11 +190,26 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
     _widgetClickSub = HomeWidget.widgetClicked.listen(_handleWidgetLaunchUri);
   }
 
-  // Bildirimdeki _openNoteByIdFromNotification ile birebir aynı mantık:
-  // id'ye göre _notes içinde arar, bulursa notu açar. Not bulunamazsa (ör.
-  // o arada silinmişse) sessizce hiçbir şey yapmaz.
+  // Widget URI'sini host'a göre iki dala ayırır:
+  //   - "dnote://newnote" -> boş bir not oluşturma dialogunu açar (bkz.
+  //     NewNoteWidgetReceiver.kt).
+  //   - "dnote://note?id=..." (veya id'siz "dnote://note") -> mevcut
+  //     davranış: id'ye göre _notes içinde arar, bulursa notu açar. Not
+  //     bulunamazsa (ör. o arada silinmişse) sessizce hiçbir şey yapmaz.
   void _handleWidgetLaunchUri(Uri? uri) {
-    final noteId = uri?.queryParameters['id'];
+    if (uri == null) return;
+
+    if (uri.host == 'newnote') {
+      // Widget ağacı henüz tam hazır olmayabilir (özellikle soğuk
+      // başlangıçta); bir sonraki frame'e ertelenir.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _showNoteDialog(type: 'text');
+      });
+      return;
+    }
+
+    final noteId = uri.queryParameters['id'];
     if (noteId == null || noteId.isEmpty) return;
     final index = _notes.indexWhere((n) => n['id']?.toString() == noteId);
     if (index == -1) return;

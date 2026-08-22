@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">在主屏幕上显示您选择的笔记</string>
+    <string name="note_widget_picker_label">添加现有笔记</string>
+    <string name="new_note_widget_picker_label">添加新笔记</string>
+    <string name="new_note_widget_description">点击即可立即创建新笔记</string>
+    <string name="widget_config_heading">选择要在小组件中显示的笔记</string>
+    <string name="widget_config_empty_state">尚未找到已同步的笔记。\n\n请先打开 Layout 应用并创建至少一条笔记（或编辑并保存一条现有笔记），然后再次尝试添加小组件。\n\n或者您也可以暂时不选笔记直接添加小组件，创建第一条笔记后它会自动更新。</string>
+    <string name="widget_config_continue_without_note">不选笔记继续</string>
+</resources>

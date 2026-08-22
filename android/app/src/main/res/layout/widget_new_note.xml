@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    "Yeni Not Ekle" ikon widget'ının layout'u. İçerik göstermez — tek bir
+    ikonu ortalanmış şekilde gösteren, tıklanabilir bir kutudur.
+
+    Arka plan rengi ve ikon rengi burada sabit tanımlanır ama
+    NewNoteWidgetReceiver.updateWidget() her güncellemede bunları
+    açık/koyu temaya göre runtime'da (setInt ile) değiştirir — buradaki
+    değerler sadece önizleme/varsayılan içindir.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/new_note_widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2D2D2D">
+
+    <ImageView
+        android:id="@+id/new_note_widget_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_widget_new_note"
+        android:contentDescription="Yeni not ekle" />
+
+</FrameLayout>

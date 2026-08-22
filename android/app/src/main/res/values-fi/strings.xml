@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">Näyttää valitsemasi muistiinpanon aloitusnäytöllä</string>
+    <string name="note_widget_picker_label">Lisää olemassa oleva muistiinpano</string>
+    <string name="new_note_widget_picker_label">Lisää uusi muistiinpano</string>
+    <string name="new_note_widget_description">Napauta luodaksesi uuden muistiinpanon välittömästi</string>
+    <string name="widget_config_heading">Valitse widgetissä näytettävä muistiinpano</string>
+    <string name="widget_config_empty_state">Synkronoituja muistiinpanoja ei löytynyt vielä.\n\nAvaa ensin Layout-sovellus ja luo vähintään yksi muistiinpano (tai muokkaa ja tallenna olemassa oleva), ja yritä sitten lisätä widget uudelleen.\n\nTai voit lisätä widgetin ilman muistiinpanoa toistaiseksi — se päivittyy automaattisesti, kun ensimmäinen muistiinpano luodaan.</string>
+    <string name="widget_config_continue_without_note">Jatka ilman muistiinpanoa</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">Menampilkan catatan yang Anda pilih di layar utama</string>
+    <string name="note_widget_picker_label">Tambah Catatan yang Ada</string>
+    <string name="new_note_widget_picker_label">Tambah Catatan Baru</string>
+    <string name="new_note_widget_description">Ketuk untuk langsung membuat catatan baru</string>
+    <string name="widget_config_heading">Pilih catatan yang akan ditampilkan di widget</string>
+    <string name="widget_config_empty_state">Belum ada catatan tersinkronisasi yang ditemukan.\n\nBuka dulu aplikasi Layout dan buat setidaknya satu catatan (atau edit dan simpan catatan yang sudah ada), lalu coba tambahkan widget lagi.\n\nAtau Anda bisa menambahkan widget tanpa catatan untuk saat ini — widget akan diperbarui otomatis begitu catatan pertama dibuat.</string>
+    <string name="widget_config_continue_without_note">Lanjutkan tanpa catatan</string>
+</resources>

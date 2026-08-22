@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">Viser den valgte note på startskærmen</string>
+    <string name="note_widget_picker_label">Tilføj eksisterende note</string>
+    <string name="new_note_widget_picker_label">Tilføj ny note</string>
+    <string name="new_note_widget_description">Tryk for straks at oprette en ny note</string>
+    <string name="widget_config_heading">Vælg den note, der skal vises i widgetten</string>
+    <string name="widget_config_empty_state">Der blev ikke fundet nogen synkroniserede noter endnu.\n\nÅbn først Layout-appen, og opret mindst én note (eller rediger og gem en eksisterende), og prøv derefter at tilføje widgetten igen.\n\nEller tilføj widgetten uden en note for nu — den opdateres automatisk, så snart den første note er oprettet.</string>
+    <string name="widget_config_continue_without_note">Fortsæt uden note</string>
+</resources>

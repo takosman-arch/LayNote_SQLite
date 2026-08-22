@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="note_widget_description">आपके द्वारा चुना गया नोट होम स्क्रीन पर दिखाता है</string>
+    <string name="note_widget_picker_label">मौजूदा नोट जोड़ें</string>
+    <string name="new_note_widget_picker_label">नया नोट जोड़ें</string>
+    <string name="new_note_widget_description">टैप करते ही तुरंत नया नोट बन जाता है</string>
+    <string name="widget_config_heading">विजेट में दिखाने के लिए नोट चुनें</string>
+    <string name="widget_config_empty_state">अभी तक कोई सिंक की गई नोट नहीं मिली।\n\nपहले Layout ऐप खोलें और कम से कम एक नोट बनाएं (या किसी मौजूदा नोट को संपादित करके सेव करें), फिर विजेट को दोबारा जोड़ने का प्रयास करें।\n\nया आप फ़िलहाल बिना किसी नोट के विजेट जोड़ सकते हैं; पहली नोट बनते ही यह अपने आप अपडेट हो जाएगा।</string>
+    <string name="widget_config_continue_without_note">बिना नोट के जारी रखें</string>
+</resources>
