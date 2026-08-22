@@ -715,41 +715,6 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       );
                     },
                   ),
-                  // DÜZELTME: Takvim satırı önceden "Uygulama" bölümünde,
-                  // Ayarlar'ın hemen üstünde duruyordu. Gündem'le içerik
-                  // olarak yakından ilişkili olduğundan (ikisi de tarihe
-                  // bağlı notları gösterir, üst barlarından birbirlerine
-                  // geçiş yapılabiliyor — bkz. _buildGundemScreen /
-                  // _buildCalendarScreen içindeki onOpenCalendar /
-                  // onOpenGundem) buraya, Gündem'in hemen altına taşındı.
-                  ListTile(
-                    leading: Icon(
-                      Icons.calendar_month,
-                      color: appAccentColor.value,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.drawerCalendarLabel,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    trailing: Text(
-                      _assignedNotesCount(_notes).toString(),
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => _buildCalendarScreen()),
-                      );
-                    },
-                  ),
                   Container(
                     color: _activeCategory == '__reminders__'
                         ? dNoteHighlight(context)
@@ -1010,6 +975,26 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         letterSpacing: 1.2,
                       ),
                     ),
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.calendar_month,
+                      color: appAccentColor.value,
+                    ),
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerCalendarLabel,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => _buildCalendarScreen()),
+                      );
+                    },
                   ),
                   ListTile(
                     leading: Icon(
@@ -3046,22 +3031,6 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     if (raw == null || raw.isEmpty) return false;
     final dt = DateTime.tryParse(raw);
     return dt != null && dt.isAfter(DateTime.now());
-  }
-
-  // Takvim satırının sağındaki rozet için: bir tarihe atanmış (assignedDate
-  // dolu) TÜM notların toplam sayısı — aynı güne birden fazla not
-  // atanmışsa her biri ayrı sayılır (Gündem/Hatırlatıcılar rozetleriyle
-  // aynı "not sayısı" mantığı, "farklı gün sayısı" değil). Kilitli ve
-  // arşivlenmiş notlar diğer çekmece rozetleriyle tutarlı olacak şekilde
-  // hariç tutulur.
-  int _assignedNotesCount(List<Map<String, dynamic>> notes) {
-    return notes.where((note) {
-      if (note['isLocked'] == true || note['isArchived'] == true) {
-        return false;
-      }
-      final raw = note['assignedDate']?.toString();
-      return raw != null && raw.isNotEmpty;
-    }).length;
   }
 
   // Hatırlatıcı tarihini "gg.aa.yyyy ss:dd" biçiminde döndürür (kartlarda ve

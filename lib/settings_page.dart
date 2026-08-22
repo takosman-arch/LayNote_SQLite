@@ -332,7 +332,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         child: Slider(
                           value: tempOpacity,
-                          min: 0.2,
+                          min: 0.0,
                           max: 1.0,
                           divisions: 16,
                           label: '%${(tempOpacity * 100).round()}',

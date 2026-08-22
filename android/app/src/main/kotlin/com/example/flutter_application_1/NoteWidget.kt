@@ -152,7 +152,10 @@ private fun NoteWidgetContent(context: Context, prefs: SharedPreferences) {
 
     val bgColor = if (dark) Color(0xFF1E1E1E) else Color(0xFFFFFFFF)
     val titleColor = if (dark) Color(0xFFFFFFFF) else Color(0xFF1A1A1A)
-    val subTextColor = if (dark) Color(0xFFB0B0B0) else Color(0xFF666666)
+    // DÜZELTME: soluk/silik görünmemesi için alt metin (içerik önizleme +
+    // "X not") artık başlıkla aynı tam kontrastlı rengi kullanıyor —
+    // koyu temada tam beyaz, açık temada tam koyu (notlardaki gibi).
+    val subTextColor = titleColor
 
     Column(
         modifier = GlanceModifier

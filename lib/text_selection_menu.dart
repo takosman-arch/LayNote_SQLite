@@ -2,46 +2,9 @@ part of 'main.dart';
 
 // ════════════════════════════════════════════════════════════════════════
 // ÖZEL METİN SEÇİM MENÜSÜ
-// Sıra: Kes, Kopyala, Yapıştır, Tümünü Seç, Paylaş, Çevir.
-// Metin Türkçe değilse "Çevir" en başa alınır.
+// Sıra: Kes, Kopyala, Yapıştır, Tümünü Seç, Paylaş.
 // Tüm butonlar Android'in native görünümünü korur (AdaptiveTextSelectionToolbar).
 // ════════════════════════════════════════════════════════════════════════
-
-// Türkçe tespiti: score >= 3 olursa Türkçe sayılır.
-// Türkçe karakter varsa +3 (güçlü sinyal), Türkçe kelime varsa +1.
-// Saf İngilizce metin genellikle 0 alır.
-bool _looksTurkish(String text) {
-  final trimmed = text.trim();
-  if (trimmed.length < 3) return true;
-  final lower = trimmed.toLowerCase();
-  int score = 0;
-  for (final ch in ['ı', 'ğ', 'ş', 'ç', 'ö', 'ü']) {
-    if (lower.contains(ch)) {
-      score += 3;
-      break;
-    } // bir tane yeter, Türkçe harf kesin
-  }
-  for (final word in [
-    'bir',
-    've',
-    'ile',
-    'için',
-    'değil',
-    'var',
-    'yok',
-    'gibi',
-    'ama',
-    'çünkü',
-    'daha',
-    'evet',
-    'hayır',
-    'olan',
-    'olarak',
-  ]) {
-    if (RegExp('\\b$word\\b').hasMatch(lower)) score += 1;
-  }
-  return score >= 3;
-}
 
 Future<void> _shareSelectedText(BuildContext context, String text) async {
   if (text.trim().isEmpty) return;
@@ -52,42 +15,6 @@ Future<void> _shareSelectedText(BuildContext context, String text) async {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.textSelectionMenuShareFailedSnackbar),
-        ),
-      );
-    }
-  }
-}
-
-Future<void> _openInTranslate(BuildContext context, String text) async {
-  if (text.trim().isEmpty) return;
-  // NOT: Google Translate uygulaması yüklüyse, Android App Links sayesinde
-  // 'translate.google.com' linki tarayıcı yerine doğrudan Translate
-  // uygulamasına yönleniyor — ama uygulama web sitesinin aksine
-  // 'text=' query parametresini işlemiyor, sadece boş açılıyor. Bu yüzden
-  // önce metni panoya kopyalayıp (uygulama boş açılsa bile kullanıcı
-  // yapıştırabilsin diye), ardından linki AÇIKÇA TARAYICIDA açıyoruz ki
-  // sl/tl/text parametreleri web sürümünde garanti çalışsın.
-  await Clipboard.setData(ClipboardData(text: text));
-  final uri = Uri.parse(
-    'https://translate.google.com/?sl=auto&tl=tr&text=${Uri.encodeComponent(text)}&op=translate',
-  );
-  try {
-    // inAppBrowserView: Translate uygulamasına yönlenmeyi engeller, Chrome
-    // Custom Tab (ya da eşdeğeri) içinde açar; böylece text parametresi
-    // web sayfasınca okunup çeviri kutusuna otomatik dolar.
-    final launched = await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
-    if (!launched && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.textSelectionMenuTranslateFailedSnackbar),
-        ),
-      );
-    }
-  } catch (_) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.textSelectionMenuTranslateFailedSnackbar),
         ),
       );
     }
@@ -116,7 +43,7 @@ Widget buildCustomContextMenu(
       : '';
   final hasSelection = selectedText.trim().isNotEmpty;
 
-  // İstenen sıra: Kes, Kopyala, Yapıştır, Tümünü Seç, Paylaş, Çevir
+  // İstenen sıra: Kes, Kopyala, Yapıştır, Tümünü Seç, Paylaş
   final ordered = <ContextMenuButtonItem>[];
 
   final cut = _findBtn(base, ContextMenuButtonType.cut);
@@ -141,30 +68,7 @@ Widget buildCustomContextMenu(
     );
   }
 
-  // Çevir butonu (yalnızca seçim varsa)
-  ContextMenuButtonItem? translateBtn;
-  if (hasSelection) {
-    translateBtn = ContextMenuButtonItem(
-      label: AppLocalizations.of(context)!.textSelectionMenuTranslateButton,
-      onPressed: () {
-        editableTextState.hideToolbar();
-        _openInTranslate(context, selectedText);
-      },
-    );
-  }
-
-  // Sıra: Çevir, Paylaş — metin Türkçe değilse Çevir en başa alınır
-  if (translateBtn != null) {
-    if (_looksTurkish(selectedText)) {
-      ordered.add(translateBtn);
-      if (shareBtn != null) ordered.add(shareBtn);
-    } else {
-      ordered.insert(0, translateBtn);
-      if (shareBtn != null) ordered.add(shareBtn);
-    }
-  } else {
-    if (shareBtn != null) ordered.add(shareBtn);
-  }
+  if (shareBtn != null) ordered.add(shareBtn);
 
   if (ordered.isEmpty) {
     return AdaptiveTextSelectionToolbar.editableText(

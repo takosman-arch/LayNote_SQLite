@@ -220,7 +220,10 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
 
             val bgColor = if (dark) 0xFF1E1E1E.toInt() else 0xFFFFFFFF.toInt()
             val titleColor = if (dark) 0xFFFFFFFF.toInt() else 0xFF1A1A1A.toInt()
-            val subTextColor = if (dark) 0xFFB0B0B0.toInt() else 0xFF666666.toInt()
+            // DÜZELTME: alt metin (içerik önizleme + satırlar) soluk/silik
+            // görünmemesi için artık başlıkla aynı tam kontrastlı rengi
+            // kullanıyor — koyu temada tam beyaz, açık temada tam koyu.
+            val subTextColor = titleColor
             val bgWithOpacity = ColorUtils.setAlphaComponent(
                 bgColor,
                 (bgOpacity * 255).toInt().coerceIn(0, 255)
