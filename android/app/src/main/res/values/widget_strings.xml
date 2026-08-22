@@ -6,5 +6,9 @@
   taşıyabilirsin, fark etmez.
 -->
 <resources>
-    <string name="note_widget_description">DNote — son notunuzu ana ekranda gösterir</string>
+    <string name="note_widget_description">Son notunuzu ana ekranda gösterir</string>
+    <!-- Widget ekleme (seçim) ekranında görünen isim. AndroidManifest.xml
+         içindeki NoteWidgetReceiverV2 receiver'ının android:label
+         özniteliği buraya işaret ediyor. -->
+    <string name="note_widget_picker_label">Layout</string>
 </resources>

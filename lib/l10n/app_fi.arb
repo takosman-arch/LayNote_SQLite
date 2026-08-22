@@ -1,0 +1,1136 @@
+{
+  "@@locale": "fi",
+  "toolbarBoldTooltip": "Lihavointi",
+  "toolbarItalicTooltip": "Kursivointi",
+  "toolbarUnderlineTooltip": "Alleviivaus",
+  "toolbarStrikethroughTooltip": "Yliviivaus",
+  "toolbarFontSizeTooltip": "Fonttikoko",
+  "toolbarColorTooltip": "Tekstin väri",
+  "toolbarBulletTooltip": "Luettelomerkit",
+  "toolbarNumberTooltip": "Numeroitu luettelo",
+  "toolbarIndentTooltip": "Kappaleen sisennys",
+  "toolbarLinkTooltip": "Lisää / muokkaa / poista linkki",
+  "toolbarDividerTooltip": "Lisää erotin",
+  "toolbarChecklistTooltip": "Lisää tehtävälista",
+  "linkSelectTextSnackbar": "Valitse ensin teksti, jonka haluat linkittää",
+  "linkDialogEditTitle": "Muokkaa linkkiä",
+  "linkDialogAddTitle": "Lisää linkki",
+  "linkDialogRemoveButton": "Poista linkki",
+  "linkDialogCancelButton": "Peruuta",
+  "linkDialogConfirmButton": "Lisää",
+  "cameraPermissionPermanentlyDeniedMessage": "Kameran käyttöoikeus evätty. Salli se asetuksista tallentaaksesi videota.",
+  "cameraPermissionRequiredMessage": "Kameran käyttöoikeus vaaditaan videon tallentamiseen.",
+  "openSettingsButtonLabel": "Asetukset",
+  "documentScanStartFailedMessage": "Skannausta ei voitu aloittaa: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "Tekstintunnistus epäonnistui: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "Asiakirjasta ei löytynyt luettavaa tekstiä",
+  "scanResultSheetTitle": "Miten skannattu asiakirja lisätään?",
+  "scanResultTextOnlyOption": "Lisää vain tekstinä",
+  "scanResultTextAndImageOption": "Lisää teksti + skannattu kuva",
+  "scanResultCancelOption": "Peruuta",
+  "audioPermissionPermanentlyDeniedMessage": "Mikrofonin käyttöoikeus evätty. Salli se asetuksista tallentaaksesi ääntä.",
+  "audioPermissionRequiredMessage": "Mikrofonin käyttöoikeus vaaditaan äänen tallentamiseen.",
+  "voiceRecordingDefaultLabel": "Ääninauhoite",
+  "blockPreviewCalcTableLabel": "Laskentalista ({count} riviä)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "Piirros",
+  "blockPreviewAttachmentsLabel": "{count} liitettä (kuva/asiakirja)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "Erotin",
+  "blockPreviewChecklistLabel": "Tehtävälista ({count} kohdetta)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(tyhjä teksti)",
+  "reorderBlocksSheetTitle": "Järjestä lohkot uudelleen",
+  "reorderBlocksMoveUpTooltip": "Siirrä ylös",
+  "reorderBlocksMoveDownTooltip": "Siirrä alas",
+  "reorderBlocksCloseTooltip": "Sulje",
+  "reorderBlocksDescription": "Napauta lohkoa valitaksesi sen ja siirrä sitä ylös-/alas-nuolilla.",
+  "reorderBlocksMenuItemLabel": "Järjestä uudelleen",
+  "txtImportPickerDialogTitle": "Valitse tuotava TXT-tiedosto",
+  "txtImportReadFailedMessage": "TXT-tiedostoa ei voitu lukea",
+  "txtImportEmptyFileMessage": "TXT-tiedosto on tyhjä",
+  "txtImportSuccessMessage": "TXT tuotu",
+  "txtImportMenuItemLabel": "Tuo (txt)",
+  "exportMenuItemLabel": "Vie",
+  "editorUndoTooltip": "Kumoa",
+  "editorRedoTooltip": "Tee uudelleen",
+  "noteSavedMessage": "Muistiinpano tallennettu",
+  "dateAssignPickerHelpText": "Määritä muistiinpano päivälle",
+  "dateAssignChangeOption": "Muuta päivämäärää",
+  "dateAssignRemoveOption": "Poista määritys",
+  "editorSubToolbarCloseTooltip": "Sulje",
+  "titleFieldHint": "Otsikko",
+  "textBlockHint": "Kirjoita muistiinpanosi tähän...",
+  "drawingBoardMenuItemLabel": "Piirustustaulu",
+  "voiceToTextTextNotesOnlyMessage": "Puheentunnistus on käytettävissä vain tekstimuistiinpanoille",
+  "selectionModeCancelTooltip": "Peruuta valinta",
+  "selectionModeSelectedCountTitle": "{count} valittu",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "Poista",
+  "selectionModeArchiveTooltip": "Arkistoi",
+  "selectionModeFolderTooltip": "Kansio",
+  "searchFieldHint": "Hae muistiinpanoja...",
+  "emptyTrashDialogTitle": "Tyhjennä roskakori",
+  "emptyTrashDialogConfirmMessage": "Kaikki poistetut muistiinpanot poistetaan pysyvästi. Oletko varma?",
+  "emptyTrashDialogCancelButton": "Peruuta",
+  "restoreAllMenuItemLabel": "Palauta kaikki",
+  "sortMenuTooltip": "Lajittele muistiinpanot",
+  "sortMenuAscendingLabel": "Järjestys: Nouseva (A-Ö)",
+  "sortMenuDescendingLabel": "Järjestys: Laskeva (Ö-A)",
+  "sortMenuByTitleLabel": "Lajitteluperuste: Otsikko",
+  "sortMenuByModifiedDateLabel": "Lajitteluperuste: Viimeksi muokattu",
+  "sortMenuByCreatedDateLabel": "Lajitteluperuste: Luontipäivä",
+  "sortMenuByFolderLabel": "Lajitteluperuste: Kansio",
+  "viewToggleGridTooltip": "Ruudukkonäkymä",
+  "viewToggleListTooltip": "Luettelonäkymä",
+  "drawerHeaderSubtitle": "Henkilökohtainen muistikirjasi",
+  "drawerNotesSectionHeader": "MUISTIINPANOT",
+  "drawerAllNotesLabel": "Muistiinpanot",
+  "drawerFavoritesLabel": "Suosikki",
+  "drawerAgendaLabel": "Ajankohtaiset",
+  "drawerRemindersLabel": "Muistutus",
+  "drawerLockedLabel": "Lukittu",
+  "drawerTrashLabel": "Roskakori",
+  "drawerFoldersSectionHeader": "KANSIOT",
+  "drawerExpandLabel": "Laajenna",
+  "drawerCollapseLabel": "Tiivistä",
+  "drawerAddFolderLabel": "Lisää kansio",
+  "drawerAppSectionHeader": "SOVELLUS",
+  "drawerCalendarLabel": "Kalenteri",
+  "drawerSettingsLabel": "Asetukset",
+  "drawerBackupRestoreLabel": "Varmuuskopiointi ja palautus",
+  "drawerUpgradeToProLabel": "Päivitä Pro-versioon",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "Tue kehitystä",
+  "drawerFeedbackLabel": "Palaute",
+  "drawerAboutLabel": "Tietoja",
+  "noNotesFoundMessage": "Muistiinpanoja ei löytynyt.",
+  "trashRestoreButtonLabel": "Palauta",
+  "trashPermanentDeleteButtonLabel": "Poista pysyvästi",
+  "tagRenamedInfoMessage": "Tunnisteen nimi vaihdettu",
+  "tagDeletedInfoMessage": "Tunniste poistettu",
+  "tagOptionsRenameLabel": "Nimeä uudelleen",
+  "tagOptionsDeleteLabel": "Poista",
+  "renameTagDialogTitle": "Nimeä tunniste uudelleen",
+  "renameTagDialogHint": "Uusi tunnisteen nimi",
+  "renameTagDialogCancelButton": "Peruuta",
+  "renameTagDialogSaveButton": "Tallenna",
+  "deleteTagDialogMessageWithCount": "\"{tag}\" poistetaan {affectedCount} muistiinpanosta. Jatketaanko?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "Poistetaanko tunniste \"{tag}\"?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "Poista tunniste",
+  "deleteTagDialogCancelButton": "Peruuta",
+  "deleteTagDialogConfirmButton": "Poista",
+  "tagsSheetTitle": "Tunnisteet",
+  "tagsSheetEmptyMessage": "Tällä muistiinpanolla ei ole vielä tunnisteita.",
+  "tagsSheetInputHint": "Kirjoita uusi tunniste...",
+  "tagsSheetSuggestionsLabel": "Olemassa olevat tunnisteet",
+  "noteDeletedInfoMessage": "Muistiinpano poistettu",
+  "noteDeletedUndoActionLabel": "Kumoa",
+  "reminderSetInfoMessage": "Muistutus asetettu",
+  "reminderRemovedInfoMessage": "Muistutus poistettu",
+  "noteDuplicatedInfoMessage": "Kopio luotu",
+  "speechTextAppendedInfoMessage": "Teksti lisätty muistiinpanoon",
+  "pdfPreparingInfoMessage": "Valmistellaan PDF:ää…",
+  "pdfSavedInfoMessage": "PDF tallennettu",
+  "jpgPreparingInfoMessage": "Valmistellaan JPG:tä…",
+  "jpgSavedInfoMessage": "JPG tallennettu",
+  "jpgFailedInfoMessage": "JPG:tä ei voitu luoda",
+  "txtPreparingInfoMessage": "Valmistellaan TXT:tä…",
+  "txtSavedInfoMessage": "TXT tallennettu",
+  "txtFailedInfoMessage": "TXT:tä ei voitu luoda",
+  "exportOpenActionLabel": "Avaa",
+  "wrongPasswordInfoMessage": "Väärä salasana.",
+  "noteArchivedInfoMessage": "Muistiinpano arkistoitu",
+  "noteUnarchivedInfoMessage": "Poistettu arkistosta",
+  "noteUnlockedInfoMessage": "Avattu",
+  "noteLockedInfoMessage": "Muistiinpano lukittu",
+  "notificationUnpinnedInfoMessage": "Kiinnitys poistettu",
+  "emptyNotePinBlockedInfoMessage": "Tyhjää muistiinpanoa ei voi kiinnittää.",
+  "notificationPinnedInfoMessage": "Kiinnitetty ilmoituspaneeliin",
+  "noContentToReadInfoMessage": "Ei luettavaa sisältöä",
+  "backPressExitInfoMessage": "Paina takaisin-painiketta uudelleen poistuaksesi",
+  "reminderChannelName": "Muistiinpanomuistutukset",
+  "reminderChannelDescription": "Muistiinpanomuistutukset Layout-sovelluksessa",
+  "pinnedChannelName": "Kiinnitetyt muistiinpanot",
+  "pinnedChannelDescription": "Ilmoituspaneeliin kiinnitetyt Layout-muistiinpanot",
+  "notificationUnpinActionLabel": "Poista",
+  "reminderDefaultTitle": "Muistutus",
+  "reminderChecklistBodyFallback": "Älä unohda tarkistaa tehtävälistaasi",
+  "reminderTextBodyFallback": "Älä unohda tarkistaa muistiinpanoasi",
+  "pdfSaveDialogTitle": "Tallenna PDF:nä",
+  "jpgSaveDialogTitle": "Tallenna JPG:nä",
+  "txtSaveDialogTitle": "Tallenna TXT:nä",
+  "textSizeSheetTitle": "Tekstin koko",
+  "textSizeSamplePreview": "Näyteteksti",
+  "textSizeCancelButton": "Peruuta",
+  "textSizeApplyButton": "Käytä",
+  "createPasswordDialogTitle": "Luo salasana",
+  "createPasswordNewPasswordHint": "Uusi salasana",
+  "createPasswordConfirmHint": "Anna salasana uudelleen",
+  "createPasswordHintQuestionDescription": "Aseta turvakysymys siltä varalta, että unohdat salasanasi (valinnainen).",
+  "createPasswordHintQuestionHint": "Valitse turvakysymys",
+  "createPasswordHintAnswerHint": "Vastauksesi",
+  "createPasswordCancelButton": "Peruuta",
+  "createPasswordSaveButton": "Tallenna",
+  "passwordMismatchMessage": "Salasanat eivät täsmää!",
+  "passwordRequiredDialogTitle": "Salasana vaaditaan",
+  "passwordRequiredHint": "Anna salasana",
+  "forgotPasswordButtonLabel": "Unohdin salasanani",
+  "passwordRequiredCancelButton": "Peruuta",
+  "passwordRequiredConfirmButton": "Vahvista",
+  "securityQuestionDialogTitle": "Turvakysymys",
+  "securityQuestionAnswerHint": "Vastauksesi",
+  "securityQuestionCancelButton": "Peruuta",
+  "securityQuestionConfirmButton": "Vahvista",
+  "securityQuestionWrongAnswerMessage": "Väärä vastaus. Yritä uudelleen.",
+  "revealedPasswordDialogTitle": "Salasanasi",
+  "revealedPasswordLabel": "Muistiinpanon salasanasi:",
+  "revealedPasswordOkButton": "OK",
+  "securityQuestionPetName": "Mikä on ensimmäisen lemmikkisi nimi?",
+  "securityQuestionFavoriteTeacher": "Mikä on suosikkiopettajasi nimi?",
+  "securityQuestionBirthCity": "Missä kaupungissa synnyit?",
+  "securityQuestionFavoriteFood": "Mikä on lempiruokasi?",
+  "securityQuestionMotherMaidenName": "Mikä on äitisi tyttönimi?",
+  "securityQuestionFirstSchool": "Mikä oli ensimmäisen koulusi nimi?",
+  "securityQuestionFavoriteColor": "Mikä on lempivärisi?",
+  "editFolderDialogTitle": "Muokkaa kansiota",
+  "newSubfolderDialogTitle": "Uusi alikansio",
+  "addFolderDialogTitle": "Lisää kansio",
+  "subfolderParentInfoMessage": "Luodaan kansion \"{parentCategory}\" sisään",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "Alikansion nimi",
+  "folderNameFieldLabel": "Kansion nimi",
+  "folderColorLabel": "Väri",
+  "folderDialogCancelButton": "Peruuta",
+  "folderDialogSaveButton": "Tallenna",
+  "folderDialogAddButton": "Lisää",
+  "selectFolderSheetTitle": "Valitse kansio",
+  "selectFolderAddOptionLabel": "Lisää kansio",
+  "removeCurrentFolderLabel": "Poista nykyinen kansio",
+  "noteDetailsDialogTitle": "Tiedot",
+  "noteDetailsCreatedLabel": "Luotu",
+  "noteDetailsModifiedLabel": "Viimeksi muokattu",
+  "noteDetailsCharCountLabel": "Merkkien määrä",
+  "noteDetailsCharCountValue": "{count} merkkiä",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "Sanojen määrä",
+  "noteDetailsWordCountValue": "{count} sanaa",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "OK",
+  "noteDetailsUnknownDateLabel": "Tuntematon",
+  "addAttachmentSheetTitle": "Lisää",
+  "addAttachmentImageOption": "Lisää kuva",
+  "addAttachmentCameraOption": "Kamera",
+  "addAttachmentFileOption": "Lisää tiedosto",
+  "addAttachmentVoiceOption": "Ääninauhoite",
+  "addAttachmentVideoOption": "Nauhoita video",
+  "addAttachmentScanOption": "Skannaa asiakirja",
+  "noteActionsSheetTitle": "Valitse toiminto",
+  "noteActionReminderLabel": "Muistutus",
+  "noteActionEditReminderLabel": "Muokkaa muistutusta",
+  "noteActionSpeechToTextLabel": "Puheentunnistus",
+  "noteActionArchiveLabel": "Arkistoi",
+  "noteActionUnarchiveLabel": "Poista arkistosta",
+  "noteActionLockLabel": "Lukitse",
+  "noteActionUnlockLabel": "Avaa lukitus",
+  "noteActionFavoriteLabel": "Suosikki",
+  "noteActionUnfavoriteLabel": "Poista suosikeista",
+  "noteActionClassifyLabel": "Valitse kansio",
+  "noteActionDeleteLabel": "Poista",
+  "noteActionPinToNotificationLabel": "Kiinnitä ilmoituspaneeliin",
+  "noteActionUnpinFromNotificationLabel": "Poista kiinnitys",
+  "noteActionShareLabel": "Jaa",
+  "noteActionDuplicateLabel": "Luo kopio",
+  "noteActionCopyContentLabel": "Kopioi sisältö",
+  "noteActionTtsLabel": "Lue ääneen",
+  "noteActionTextSizeLabel": "Tekstin koko",
+  "noteActionDetailsLabel": "Tiedot",
+  "noteActionDiscardChangesLabel": "Hylkää muutokset",
+  "noteActionSelectLabel": "Valitse",
+  "reminderEditOptionLabel": "Muuta muistutusta",
+  "reminderRemoveOptionLabel": "Poista muistutus",
+  "discardChangesDialogTitle": "Hylkää muutokset",
+  "discardChangesDialogMessage": "Tämän muistiinpanon tallentamattomat muutokset menetetään. Haluatko varmasti hylätä ne?",
+  "discardChangesCancelButton": "Peruuta",
+  "discardChangesConfirmButton": "Hylkää",
+  "pinnedNotificationDefaultTitle": "Muistiinpano",
+  "pdfFailedInfoMessage": "PDF:n luonti epäonnistui",
+  "drawingScreenTitle": "Piirros",
+  "drawingMinimizeTooltip": "Pienennä",
+  "drawingEmptyExportWarningMessage": "Piirrä ensin jotain",
+  "drawingEraserPartialModeLabel": "Osittainen",
+  "drawingEraserFullModeLabel": "Täysi",
+  "drawingClearTooltip": "Tyhjennä",
+  "drawingZoomOutTooltip": "Loitonna",
+  "drawingZoomInTooltip": "Lähennä",
+  "drawingDeleteTooltip": "Poista",
+  "drawingEmptyPreviewHint": "Napauta piirtääksesi",
+  "settingsPageTitle": "Asetukset",
+  "settingsSectionGeneral": "Yleiset",
+  "settingsSectionSecurity": "Turvallisuus",
+  "settingsSectionTheme": "Teema",
+  "settingsSectionPersonalization": "Mukauttaminen",
+  "settingsSectionWidget": "Widget",
+  "settingsSectionAbout": "Tietoja",
+  "settingsHintQuestionPet": "Mikä on ensimmäisen lemmikkisi nimi?",
+  "settingsHintQuestionTeacher": "Mikä on suosikkiopettajasi nimi?",
+  "settingsHintQuestionBirthCity": "Missä kaupungissa synnyit?",
+  "settingsHintQuestionFavoriteFood": "Mikä on lempiruokasi?",
+  "settingsHintQuestionMotherMaidenName": "Mikä on äitisi tyttönimi?",
+  "settingsHintQuestionFirstSchool": "Mikä oli ensimmäinen koulusi?",
+  "settingsHintQuestionFavoriteColor": "Mikä on lempivärisi?",
+  "settingsSecurityQuestionDialogTitle": "Turvakysymys",
+  "settingsSecurityQuestionDialogDesc": "Jos unohdat salasanasi, voit palauttaa sen vastaamalla tähän kysymykseen oikein.",
+  "settingsSecurityQuestionDropdownHint": "Valitse turvakysymys",
+  "settingsSecurityQuestionAnswerHint": "Vastauksesi",
+  "settingsSecurityQuestionCancelButton": "Peruuta",
+  "settingsSecurityQuestionEmptyWarning": "Kysymys ja vastaus eivät voi olla tyhjiä!",
+  "settingsSecurityQuestionSaveButton": "Tallenna",
+  "settingsCreatePasswordTitle": "Luo salasana",
+  "settingsPasswordRequiredTitle": "Salasana vaaditaan",
+  "settingsPasswordEnterHint": "Anna salasana",
+  "settingsForgotPasswordButton": "Unohdin salasanani",
+  "settingsNewPasswordHint": "Uusi salasana",
+  "settingsConfirmPasswordHint": "Anna salasana uudelleen",
+  "settingsSecurityQuestionOptionalDesc": "Aseta turvakysymys siltä varalta, että unohdat salasanasi (valinnainen).",
+  "settingsPasswordDialogCancelButton": "Peruuta",
+  "settingsPasswordMismatchWarning": "Salasanat eivät täsmää!",
+  "settingsWrongPasswordWarning": "Väärä salasana!",
+  "settingsPasswordSaveButton": "Tallenna",
+  "settingsPasswordRemoveButton": "Poista",
+  "settingsNotePasswordTitle": "Muistiinpanon salasana",
+  "settingsPasswordSetSubtitle": "Salasana asetettu ✓",
+  "settingsPasswordNotSetSubtitle": "Salasanaa ei ole asetettu",
+  "settingsSecurityQuestionTileTitle": "Turvakysymys",
+  "settingsSecurityQuestionSetSubtitle": "Asetettu ✓ — käytetään, jos unohdat salasanasi",
+  "settingsSecurityQuestionNotSetSubtitle": "Ei asetettu — et voi palauttaa salasanaasi, jos se katoaa",
+  "settingsThemeDialogTitle": "Valitse teema",
+  "settingsThemeSystemDefault": "Järjestelmän oletus",
+  "settingsThemeLightOption": "Vaalea teema",
+  "settingsThemeDarkOption": "Tumma teema",
+  "settingsAccentColorDialogTitle": "Valitse korostusväri",
+  "settingsThemeChangeTileTitle": "Vaihda teema",
+  "settingsThemeLightLabel": "Vaalea",
+  "settingsThemeDarkLabel": "Tumma",
+  "settingsThemeSystemLabel": "Järjestelmä",
+  "settingsLanguageTileTitle": "Kieli",
+  "settingsLanguageDialogTitle": "Valitse kieli",
+  "settingsLanguageSystemOption": "Järjestelmä",
+  "settingsAccentColorTileTitle": "Korostusväri",
+  "settingsAccentColorTileSubtitle": "Väri, jota käytetään sovelluspalkissa, painikkeissa ja kytkimissä",
+  "settingsColorfulNotesTitle": "Vaihtelevat muistiinpanovärit",
+  "settingsColorfulNotesSubtitle": "Jokainen muistiinpanokortti saa eri värisävyn.",
+  "settingsTextColorSheetTitle": "Tekstin väri",
+  "settingsTextColorSheetDesc": "Määrittää muistiinpanon sisältötekstin värin.",
+  "settingsTextColorOkButton": "OK",
+  "settingsTextColorTileTitle": "Tekstin väri",
+  "settingsTextColorTileSubtitle": "Muistiinpanon sisältötekstin väri.",
+  "settingsWidgetFontSizeLabel": "Widgetin fonttikoko",
+  "settingsWidgetFontSizeSample": "Esimerkkiotsikko - {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "Peruuta",
+  "settingsWidgetFontSizeApplyButton": "Käytä",
+  "settingsWidgetOpacityLabel": "Taustan läpinäkyvyys",
+  "settingsWidgetOpacityValue": "{percent}% läpinäkyvyys",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "Peruuta",
+  "settingsWidgetOpacityApplyButton": "Käytä",
+  "settingsWidgetDarkModeTitle": "Tumma widget",
+  "settingsWidgetDarkModeDesc": "Tumma väriteema widgetille.",
+  "settingsAboutVersionTitle": "Sovelluksen versio",
+  "settingsFontFamilyTileTitle": "Fontti",
+  "settingsFontFamilyDefaultLabel": "Oletus",
+  "settingsGlobalFontSizeTileTitle": "Fonttikoko",
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt — käytetään kaikissa muistiinpanoissa.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "Näyteteksti - {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "Käytä olemassa oleviin muistiinpanoihin",
+  "settingsGlobalFontSizeApplyToAllNote": "Jos muistiinpanolle on asetettu erillinen fonttikoko, tämä asetus ei vaikuta siihen.",
+  "settingsGlobalFontSizeCancelButton": "Peruuta",
+  "settingsGlobalFontSizeApplyButton": "Käytä",
+  "settingsPreviewLinesTileTitle": "Muistiinpanon esikatselurivit",
+  "settingsPreviewLinesTileSubtitle": "Näytä enintään {lines} riviä. Jos muistiinpano on lyhyempi, näytetään todellinen rivimäärä.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "Nykyinen: {lines} riviä",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "Määrittää esikatseltavien rivien enimmäismäärän. Jos muistiinpanossa on vähemmän rivejä, näytetään todellinen rivimäärä.",
+  "settingsPreviewLinesCancelButton": "Peruuta",
+  "settingsPreviewLinesApplyButton": "Käytä",
+  "backupCancelButton": "Peruuta",
+  "backupConnectButton": "Yhdistä",
+  "backupDisconnectButton": "Katkaise yhteys",
+  "backupContinueButton": "Jatka",
+  "backupCloseButton": "Sulje",
+  "backupShareButton": "Jaa",
+  "backupRestoreButton": "Palauta",
+  "backupConfigureButton": "Määritä",
+  "backupUnknownDateLabel": "Tuntematon",
+  "backupProcessingDefaultLabel": "Käsitellään...",
+  "backupPermissionRequiredTitle": "Tallennustilan käyttöoikeus vaaditaan",
+  "backupPermissionRequiredBodyPermanent": "Tämä Android-versio vaatii tallennustilan käyttöoikeuden varmuuskopiointia/palautusta varten. Koska käyttöoikeus evättiin pysyvästi, ota se käyttöön manuaalisesti sovelluksen asetuksista.",
+  "backupPermissionRequiredBodyNormal": "Tämä Android-versio vaatii tallennustilan käyttöoikeuden varmuuskopiointia/palautusta varten. Myönnä käyttöoikeus jatkaaksesi.",
+  "backupGoToSettingsButton": "Siirry asetuksiin",
+  "backupRetryButton": "Yritä uudelleen",
+  "backupDriveConnectingLabel": "Yhdistetään Google-tiliin...",
+  "backupDriveConnectedWithEmailMessage": "Yhdistetty Google Drive -tiliin: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Yhdistetty Google Drive -tiliin.",
+  "backupDriveConnectFailedMessage": "Google-tiliin ei voitu yhdistää, tai toiminto peruutettiin.",
+  "backupDriveDisconnectTitle": "Katkaise yhteys Google Driveen",
+  "backupDriveDisconnectBody": "Jos katkaiset yhteyden, manuaaliset tai automaattiset varmuuskopiot Driveen eivät ole mahdollisia. Driveen jo tallennettuja varmuuskopioita ei poisteta — vain pääsy tältä laitteelta poistetaan.",
+  "backupDriveDisconnectedMessage": "Google Drive -yhteys poistettu.",
+  "backupDriveRequiredTitle": "Google-tili vaaditaan",
+  "backupDriveRequiredBody": "Tämä toiminto vaatii Google-tilin yhdistämisen. Haluatko yhdistää nyt?",
+  "backupDriveStatusConnectedWithEmail": "Google Drive: yhdistetty ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Drive: yhdistetty",
+  "backupDriveStatusDisconnected": "Google Drive: ei yhdistetty",
+  "backupDriveAuthenticatingLabel": "Vahvistetaan Google-tiliä...",
+  "backupDriveNotSignedInMessage": "Et ole yhteydessä Google Driveen. Kirjaudu ensin sisään Google-tilillä.",
+  "backupDriveUploadingLabel": "Ladataan varmuuskopiota Driveen...",
+  "backupDriveUploadTimeoutMessage": "Lataus Google Driveen ei valmistunut 120 sekunnin kuluessa (ei vastausta palvelimelta). Tarkista yhteytesi ja yritä uudelleen.",
+  "backupDriveOperationCompletedLabel": "Valmis",
+  "backupToDriveActionLabel": "varmuuskopiointi Driveen",
+  "backupToDeviceActionLabel": "varmuuskopiointi",
+  "backupCreatingLabel": "Luodaan varmuuskopiota...",
+  "backupCreateFailedMessage": "Varmuuskopiota ei voitu luoda: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Lataus Google Driveen epäonnistui: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "Varmuuskopio ladattu onnistuneesti Google Driveen.",
+  "backupCreatedMessage": "Varmuuskopio luotu: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "Varmuuskopio valmis",
+  "backupOfferShareBody": "Varmuuskopiotiedostosi on tallennettu laitteellesi. Haluatko jakaa sen nyt (esim. pilvitallennus, sähköposti, toinen laite)?",
+  "backupShareFileText": "layout-varmuuskopiotiedosto",
+  "backupShareFailedMessage": "Jakamista ei voitu aloittaa: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "Suuri varmuuskopio",
+  "backupLargeOperationBody": "Käsiteltävän datan koko on noin {sizeText}. Tämän kokoinen {actionLabel} voi kestää hetken laitteestasi riippuen. Älä poistu sovelluksesta sen ollessa käynnissä — haluatko jatkaa?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "palautus",
+  "backupDriveListingLabel": "Luetellaan Drive-varmuuskopioita...",
+  "backupDriveListFailedMessage": "Varmuuskopioita ei voitu luetella: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "Google Drivessa ei ole vielä varmuuskopioita.",
+  "backupDrivePickTitle": "Valitse varmuuskopio Drivesta",
+  "backupDriveDownloadingLabel": "Ladataan varmuuskopiota Drivesta...",
+  "backupDriveDownloadingWithSizeLabel": "Ladataan varmuuskopiota Drivesta... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "Tallennetaan tiedostoa laitteelle...",
+  "backupDriveUnknownBackupFileName": "tuntematon_varmuuskopio.zip",
+  "backupDriveStorageFullMessage": "Google Drive -tallennustilasi on täynnä. Vapauta tilaa Drivesta ja yritä uudelleen.",
+  "backupDriveNetworkErrorMessage": "Internetyhteyttä ei voitu muodostaa. Tarkista yhteytesi ja yritä uudelleen.",
+  "backupDriveBackupNotFoundMessage": "Määritettyä varmuuskopiotiedostoa ei löytynyt Drivesta. Se on saatettu poistaa.",
+  "backupDriveUnknownErrorMessage": "Google Drive -toiminnon aikana tapahtui odottamaton virhe: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "Lataus epäonnistui: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "Tiedostoa ei voitu valita: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "Valittuun tiedostoon ei päästy käsiksi.",
+  "backupCheckingLabel": "Tarkistetaan varmuuskopiota...",
+  "backupReadFailedMessage": "Varmuuskopiotiedostoa ei voitu lukea: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Palauta varmuuskopio",
+  "backupPreviewContentsHeader": "Valitun varmuuskopion sisältö:",
+  "backupPreviewNoteCountLabel": "Muistiinpanojen määrä",
+  "backupPreviewTrashCountLabel": "Muistiinpanoja roskakorissa",
+  "backupPreviewCategoryCountLabel": "Kategorioiden määrä",
+  "backupPreviewAttachmentLabel": "Liitteet",
+  "backupPreviewAttachmentNoneValue": "Ei mitään",
+  "backupPreviewAttachmentCountValue": "{count} tiedostoa ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "Luotu",
+  "backupEmptyPreviewTitle": "Tämä varmuuskopio näyttää tyhjältä",
+  "backupEmptyPreviewBody": "Valitusta tiedostosta ei löytynyt muistiinpanoja, kategorioita tai liitteitä. Jos jatkat, nykyiset tietosi poistetaan silti ja korvataan tällä tyhjällä varmuuskopiolla.",
+  "backupMissingAttachmentsTitle": "{count} liitettä ei löytynyt varmuuskopiosta",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "Näiden tiedostojen muistiinpanot palautetaan, mutta ilman liitteitä (ne ovat saattaneet puuttua tai olla vioittuneet varmuuskopiota otettaessa): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} ja {remaining} muuta",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "Tämä KORVAA kaikki nykyiset muistiinpanosi, roskakorin, kategoriat, asetukset ja liitteet yllä olevan varmuuskopion tiedoilla. Nykyiset tietosi menetetään pysyvästi, eikä tätä toimintoa voi peruuttaa.",
+  "backupRestoringLabel": "Palautetaan varmuuskopiota...",
+  "backupRestoreSuccessWithMissingMessage": "Varmuuskopio palautettu. {count} liitettä ei kuitenkaan löytynyt varmuuskopiosta, eikä niitä voitu palauttaa. Sovelluksen uudelleenkäynnistystä suositellaan, jotta muutokset tulevat täysin voimaan.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "Varmuuskopio palautettu onnistuneesti. Sovelluksen uudelleenkäynnistystä suositellaan, jotta muutokset tulevat täysin voimaan.",
+  "backupRestoreFailedMessage": "Palautuksen aikana tapahtui virhe: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "Varmuuskopiointi ja palautus",
+  "backupBlockedExitWarningMessage": "Toiminto on käynnissä, odota sen valmistumista.",
+  "backupBusyBackTooltip": "Toiminto käynnissä",
+  "backupIntroText": "Voit varmuuskopioida muistiinpanosi, kategoriasi, asetuksesi ja liitteesi yhtenä .zip-tiedostona tai palauttaa aiemmin ottamasi varmuuskopion.",
+  "backupDriveCardTitle": "Varmuuskopioi Google Driveen",
+  "backupDriveCardSubtitle": "Luo uusi varmuuskopio ja lataa se suoraan Google Drivesi yksityiselle alueelle.",
+  "backupDriveCardButtonLabel": "Varmuuskopioi Driveen",
+  "backupDeviceCardTitle": "Varmuuskopioi laitteeseen",
+  "backupDeviceCardSubtitle": "Tallenna kaikki tietosi yhtenä .zip-tiedostona laitteellesi ja jaa se halutessasi.",
+  "backupDeviceCardButtonLabel": "Varmuuskopioi laitteeseen",
+  "backupHistoryCardTitle": "Varmuuskopiohistoria",
+  "backupHistoryCardSubtitle": "Näytä kaikki laitteellesi tallennetut varmuuskopiot päivämäärineen ja kokoineen; voit jakaa, palauttaa tai poistaa ne suoraan täältä.",
+  "backupHistoryTabDevice": "Laite",
+  "backupHistoryTabDrive": "Google Drive",
+  "backupHistoryDeleteDialogTitle": "Poista varmuuskopio",
+  "backupHistoryDeleteDialogBody": "Haluatko varmasti poistaa varmuuskopiotiedoston \"{fileName}\" pysyvästi? Tätä toimintoa ei voi peruuttaa.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "Varmuuskopio poistettu.",
+  "backupHistoryDriveDeleteDialogTitle": "Poista Drive-varmuuskopio",
+  "backupHistoryDriveDeleteDialogBody": "Haluatko varmasti poistaa varmuuskopion \"{fileName}\" pysyvästi Google Drivesta? Tätä toimintoa ei voi peruuttaa, eikä tiedostoa siirretä roskakoriin.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Drive-varmuuskopio poistettu.",
+  "backupHistoryDriveDeleteFailedMessage": "Poistaminen epäonnistui: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "Tälle laitteelle ei ole vielä tallennettu varmuuskopioita.",
+  "backupHistoryDeviceEmptySubtitle": "Käytä \"Varmuuskopioi laitteeseen\" luodaksesi ensimmäisen varmuuskopiosi.",
+  "backupHistoryDriveEmptySubtitle": "Käytä \"Varmuuskopioi Google Driveen\" luodaksesi ensimmäisen pilvivarmuuskopiosi.",
+  "backupHistoryDriveSignInPrompt": "Yhdistä Google-tilisi nähdäksesi Drive-varmuuskopiosi.",
+  "backupHistoryConnectGoogleButton": "Yhdistä Google-tilillä",
+  "backupHistoryDriveConnectedFallback": "Yhdistetty",
+  "backupHistoryUnknownErrorFallback": "Tapahtui tuntematon virhe.",
+  "backupHistoryDownloadStartingLabel": "Aloitetaan...",
+  "backupAutoBackupEnabledLabel": "Automaattinen varmuuskopiointi: päällä",
+  "backupAutoBackupDisabledLabel": "Automaattinen varmuuskopiointi: pois",
+  "backupOverlayWarningMessage": "Odota hetki, älä poistu sovelluksesta ennen kuin toiminto on valmis.",
+  "pdfExportUntitledNoteLabel": "Nimetön muistiinpano",
+  "pdfExportDefaultAttachmentName": "Liite",
+  "pdfExportDefaultFileName": "muistiinpano",
+  "screenshotExportBoundaryNotFoundMessage": "Kuvakaappausta ei voitu ottaa (rajaa ei löytynyt)",
+  "screenshotExportByteDataNullMessage": "Kuvakaappausdataa ei voitu luoda",
+  "screenshotExportPngDecodeFailedMessage": "Kuvaa ei voitu käsitellä (PNG-purku epäonnistui)",
+  "screenshotCalcTableTotalLabel": "Yhteensä",
+  "gundemMenuRemoveFromAgenda": "Poista ajankohtaisista",
+  "gundemMenuDeleteNote": "Poista muistiinpano",
+  "gundemSectionOverdue": "Myöhässä",
+  "gundemSectionToday": "Tänään",
+  "gundemSectionTomorrow": "Huomenna",
+  "gundemSectionNextWeek": "Ensi viikolla",
+  "gundemSectionFurther": "Myöhemmin",
+  "gundemWeekdayMonday": "Maanantai",
+  "gundemWeekdayTuesday": "Tiistai",
+  "gundemWeekdayWednesday": "Keskiviikko",
+  "gundemWeekdayThursday": "Torstai",
+  "gundemWeekdayFriday": "Perjantai",
+  "gundemWeekdaySaturday": "Lauantai",
+  "gundemWeekdaySunday": "Sunnuntai",
+  "gundemAppBarTitle": "Ajankohtaiset",
+  "gundemCalendarTooltip": "Kalenteri",
+  "gundemEmptyTitle": "Ei ajankohtaisia tapahtumia",
+  "gundemEmptySubtitle": "Muistiinpanot, joissa on muistutus tai päivämäärä, näkyvät täällä.",
+  "gundemUntitledNote": "Nimetön muistiinpano",
+  "gundemRepeatHourly": "Tunneittain",
+  "gundemRepeatDaily": "Päivittäin",
+  "gundemRepeatWeekly": "Viikoittain",
+  "gundemRepeatMonthly": "Kuukausittain",
+  "gundemRepeatYearly": "Vuosittain",
+  "gundemPreviewCalcTableLabel": "[Laskentalista]",
+  "gundemPreviewDrawingLabel": "[Piirros]",
+  "gundemPreviewImageLabel": "[Kuva]",
+  "gundemMonthShortJan": "Tammi",
+  "gundemMonthShortFeb": "Helmi",
+  "gundemMonthShortMar": "Maalis",
+  "gundemMonthShortApr": "Huhti",
+  "gundemMonthShortMay": "Touko",
+  "gundemMonthShortJun": "Kesä",
+  "gundemMonthShortJul": "Heinä",
+  "gundemMonthShortAug": "Elo",
+  "gundemMonthShortSep": "Syys",
+  "gundemMonthShortOct": "Loka",
+  "gundemMonthShortNov": "Marras",
+  "gundemMonthShortDec": "Joulu",
+  "calendarAppBarTitle": "Kalenteri",
+  "calendarTodayButton": "Tänään",
+  "calendarLegendNoteLabel": "Muistiinpano",
+  "calendarLegendReminderLabel": "Muistutus",
+  "calendarTodayBadge": "Tänään",
+  "calendarEmptyDayMessage": "Ei muistiinpanoja tai muistutuksia tälle päivälle.",
+  "calendarReminderHourlyLabel": "Tunneittain",
+  "calendarMonthJan": "Tammikuu",
+  "calendarMonthFeb": "Helmikuu",
+  "calendarMonthMar": "Maaliskuu",
+  "calendarMonthApr": "Huhtikuu",
+  "calendarMonthMay": "Toukokuu",
+  "calendarMonthJun": "Kesäkuu",
+  "calendarMonthJul": "Heinäkuu",
+  "calendarMonthAug": "Elokuu",
+  "calendarMonthSep": "Syyskuu",
+  "calendarMonthOct": "Lokakuu",
+  "calendarMonthNov": "Marraskuu",
+  "calendarMonthDec": "Joulukuu",
+  "calendarWeekdayShortMon": "Ma",
+  "calendarWeekdayShortTue": "Ti",
+  "calendarWeekdayShortWed": "Ke",
+  "calendarWeekdayShortThu": "To",
+  "calendarWeekdayShortFri": "Pe",
+  "calendarWeekdayShortSat": "La",
+  "calendarWeekdayShortSun": "Su",
+  "calendarWeekdayFullMonday": "Maanantai",
+  "calendarWeekdayFullTuesday": "Tiistai",
+  "calendarWeekdayFullWednesday": "Keskiviikko",
+  "calendarWeekdayFullThursday": "Torstai",
+  "calendarWeekdayFullFriday": "Perjantai",
+  "calendarWeekdayFullSaturday": "Lauantai",
+  "calendarWeekdayFullSunday": "Sunnuntai",
+  "wrongPasswordDialogTitle": "Väärä salasana",
+  "wrongPasswordDialogMessage": "Antamasi salasana on väärä.",
+  "commonOkButton": "OK",
+  "unlockCategoryAction": "Avaa lukitus",
+  "lockCategoryAction": "Lukitse",
+  "categoryUnlockedMessage": "Avattu",
+  "categoryLockedMessage": "Kansio lukittu",
+  "deleteFolderMenuItemLabel": "Poista kansio",
+  "deleteFolderDialogTitle": "Poista kansio",
+  "deleteFolderDialogMessageWithSubfolders": "Haluatko varmasti poistaa kansion \"{category}\" ja kaikki sen alikansiot? Näiden kansioiden muistiinpanot jäävät luokittelemattomiksi.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "Haluatko varmasti poistaa kansion \"{category}\"? Tämän kansion muistiinpanot jäävät luokittelemattomiksi.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "Peruuta",
+  "deleteFolderDialogConfirmButton": "Poista",
+  "editCategoryNameColorMenuItemLabel": "Muokkaa nimeä / väriä",
+  "addSubfolderMenuItemLabel": "Luo alikansio",
+  "expandSubfoldersMenuItemLabel": "Laajenna alikansiot",
+  "collapseSubfoldersMenuItemLabel": "Tiivistä alikansiot",
+  "saveErrorInfoMessage": "Tallennusvirhe: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "Tervetuloa DNoteen! 🚀",
+  "welcomeNoteContent": "Uusia ominaisuuksia lisätty!",
+  "noteListDateGroupToday": "Tänään",
+  "noteListDateGroupYesterday": "Eilen",
+  "noteListDateGroupLast7Days": "Viimeiset 7 päivää",
+  "noteListDateGroupLast30Days": "Viimeiset 30 päivää",
+  "reminderRepeatNoneLabel": "Ei toistoa",
+  "voiceRecorderPreparingLabel": "Valmistellaan…",
+  "voiceRecorderCancelButton": "Peruuta",
+  "voiceRecorderStopAddButton": "Pysäytä ja lisää",
+  "speechToTextMicPermissionDeniedMessage": "Mikrofonin käyttöoikeutta ei myönnetty.",
+  "speechToTextUnavailableMessage": "Puheentunnistus ei ole käytettävissä tällä laitteella.",
+  "speechToTextPreparingLabel": "Valmistellaan…",
+  "speechToTextListeningLabel": "Kuunnellaan…",
+  "speechToTextStartSpeakingPlaceholder": "Ala puhua…",
+  "speechToTextCancelButton": "Peruuta",
+  "speechToTextStopAddButton": "Pysäytä ja lisää",
+  "textToSpeechNoContentMessage": "Ei luettavaa sisältöä.",
+  "textToSpeechReadErrorMessage": "Lukemisen aikana tapahtui virhe.",
+  "textToSpeechUnavailableMessage": "Tekstistä puheeksi -toiminto ei ole käytettävissä tällä laitteella.",
+  "textToSpeechPreparingLabel": "Valmistellaan…",
+  "textToSpeechPausedLabel": "Keskeytetty",
+  "textToSpeechFinishedLabel": "Lukeminen valmis",
+  "textToSpeechReadingLabel": "Luetaan…",
+  "textToSpeechCloseErrorButton": "Sulje",
+  "textToSpeechReplayButton": "Lue uudelleen",
+  "textToSpeechCloseFinishedButton": "Sulje",
+  "textToSpeechPauseButton": "Keskeytä",
+  "textToSpeechResumeButton": "Jatka",
+  "textToSpeechStopButton": "Pysäytä",
+  "textToSpeechSpeedSlow": "Hidas",
+  "textToSpeechSpeedNormal": "Normaali",
+  "textToSpeechSpeedFast": "Nopea",
+  "calendarPickerCancelButton": "Peruuta",
+  "calendarPickerConfirmButton": "Valitse",
+  "calendarPickerClearButton": "Tyhjennä",
+  "reminderPickerDialogTitle": "Lisää muistutus",
+  "reminderPickerDateTodayOption": "Tänään",
+  "reminderPickerDateTomorrowOption": "Huomenna",
+  "reminderPickerDatePickOption": "Valitse päivämäärä",
+  "reminderRepeatHourlyLabel": "Joka tunti",
+  "reminderRepeatDailyLabel": "Joka päivä",
+  "reminderRepeatWeeklyLabel": "Joka viikko",
+  "reminderRepeatMonthlyLabel": "Joka kuukausi",
+  "reminderRepeatYearlyLabel": "Joka vuosi",
+  "reminderPickerCalendarHelpText": "Valitse muistutuksen päivämäärä",
+  "reminderPickerCancelButton": "PERUUTA",
+  "reminderPickerSaveButton": "TALLENNA",
+  "reminderPickerPastTimeErrorMessage": "Menneisyydessä olevaa aikaa ei voi valita",
+  "calcTableTotalLabel": "Yhteensä: {amount}",
+  "backupCreatePreparingDataLabel": "Valmistellaan tietoja...",
+  "backupCreatePackagingNotesLabel": "Pakataan muistiinpanoja ja kategorioita...",
+  "backupCreateReadingAttachmentsLabel": "Luetaan liitteitä...",
+  "backupCreateReadingAttachmentsProgressLabel": "Luetaan liitteitä... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "Pakataan zip-tiedostoa...",
+  "backupCreateSavingFileLabel": "Tallennetaan tiedostoa...",
+  "backupRestoreValidatingLabel": "Tarkistetaan varmuuskopiota...",
+  "backupRestoreValidatedPreparingDataLabel": "Varmuuskopio tarkistettu, valmistellaan tietoja...",
+  "backupRestoreWritingNotesLabel": "Kirjoitetaan muistiinpanoja...",
+  "backupRestoreWritingTrashLabel": "Kirjoitetaan roskakoria...",
+  "backupRestoreTrashWrittenLabel": "Roskakori kirjoitettu",
+  "backupRestoreWritingCategoriesLabel": "Kirjoitetaan kategorioita...",
+  "backupRestoreCategoriesWrittenLabel": "Kategoriat kirjoitettu",
+  "backupRestoreWritingSettingsLabel": "Kirjoitetaan asetuksia...",
+  "backupRestoreSettingsWrittenLabel": "Asetukset kirjoitettu",
+  "backupRestoreCleaningOldAttachmentsLabel": "Siivotaan vanhoja liitteitä...",
+  "backupRestoreNoAttachmentsFinishingLabel": "Liitteitä ei löytynyt, viimeistellään...",
+  "backupRestoreAttachmentsProgressLabel": "Palautetaan liitteitä... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "Valmis",
+  "backupValidationCorruptedFileMessage": "Tiedosto on vioittunut tai se ei ole kelvollinen varmuuskopiotiedosto.",
+  "backupValidationMissingDataMessage": "Varmuuskopiotiedostosta ei löytynyt tietoja (backup_data.json puuttuu).",
+  "backupValidationInvalidJsonMessage": "Varmuuskopiotietoja ei voitu lukea (vioittunut JSON).",
+  "backupValidationNotDnoteBackupMessage": "Tämä tiedosto ei ole dnote-sovelluksen varmuuskopio.",
+  "backupValidationVersionUnreadableMessage": "Varmuuskopiotiedoston versiotietoja ei voitu lukea.",
+  "backupValidationIncompatibleVersionMessage": "Tämä varmuuskopio on uudemmassa muodossa, jota nykyinen sovellusversio ei tue. Päivitä sovellus.",
+  "backupValidationInvalidVersionMessage": "Varmuuskopiotiedoston versiotiedot ovat virheelliset.",
+  "backupValidationMissingNotesFieldMessage": "Varmuuskopiotiedot eivät ole odotetussa muodossa (notes-kenttä puuttuu).",
+  "backupValidationMissingTrashFieldMessage": "Varmuuskopiotiedot eivät ole odotetussa muodossa (trash-kenttä puuttuu).",
+  "backupValidationInvalidCategoriesFieldMessage": "Varmuuskopiotiedot eivät ole odotetussa muodossa (kategorialista on virheellinen).",
+  "backupValidationInvalidSettingsFieldMessage": "Varmuuskopiotiedot eivät ole odotetussa muodossa (settings-kenttä on virheellinen).",
+  "backupValidationInvalidNoteRecordMessage": "Varmuuskopiotiedot eivät ole odotetussa muodossa (muistiinpanotietue on virheellinen).",
+  "backupValidationMissingNoteIdMessage": "Varmuuskopiotiedot eivät ole odotetussa muodossa (löytyi muistiinpanotietue ilman tunnusta).",
+  "backupValidationFileNotFoundMessage": "Varmuuskopiotiedostoa ei löytynyt.",
+  "backupErrorInsufficientStorageMessage": "Laitteella ei ole tarpeeksi vapaata tallennustilaa. Vapauta tilaa ja yritä uudelleen.",
+  "backupErrorPermissionDeniedMessage": "Tiedoston käyttöoikeus evättiin. Tarkista sovelluksen käyttöoikeudet ja yritä uudelleen.",
+  "backupErrorFileOperationMessage": "Tiedostotoiminnon aikana tapahtui virhe: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "Odottamaton virhe tapahtui: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "Zip-arkistoa ei voitu luoda (ZipEncoder palautti nullin).",
+  "calcTableMenuItemLabel": "Laskentalista",
+  "tagsMenuItemLabel": "Tunnisteet",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "Lisää kohde...",
+  "toolbarHighlightTooltip": "Korostus",
+  "toolbarListTooltip": "Luettelo",
+  "toolbarHideKeyboardTooltip": "Piilota näppäimistö",
+  "autoBackupLocalSuccessMessage": "Paikallinen varmuuskopiointi onnistui.",
+  "autoBackupLocalFailedMessage": "Paikallinen varmuuskopiointi epäonnistui: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Drive-varmuuskopiointi ohitettu: Google-tiliä ei ole yhdistetty tai istunto on vanhentunut. Avaa sovellus ja yhdistä uudelleen.",
+  "autoBackupDriveSuccessMessage": "Drive-varmuuskopiointi onnistui.",
+  "autoBackupDriveFailedMessage": "Drive-varmuuskopiointi epäonnistui: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "Ei vielä muistiinpanoja",
+  "noteWidgetPreviewTotalLabel": "Yhteensä: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ Piirros",
+  "autoBackupSettingsAppBarTitle": "Automaattisen varmuuskopioinnin asetukset",
+  "autoBackupSettingsMainSwitchTitle": "Ota automaattinen varmuuskopiointi käyttöön",
+  "autoBackupSettingsMainSwitchSubtitle": "Muistiinpanosi varmuuskopioidaan turvallisesti säännöllisesti taustalla.",
+  "autoBackupSettingsTargetTitle": "Varmuuskopion kohde",
+  "autoBackupSettingsTargetSubtitle": "Valitse, mihin varmuuskopiot tallennetaan.",
+  "autoBackupSettingsTargetLocalOption": "Paikallinen",
+  "autoBackupSettingsTargetDriveOption": "Google Drive",
+  "autoBackupSettingsTargetBothOption": "Molemmat",
+  "autoBackupSettingsDriveNotConnectedNote": "Yhdistä tilisi ensin käyttääksesi Google Drive -vaihtoehtoja.",
+  "autoBackupSettingsConnectButton": "Yhdistä",
+  "autoBackupSettingsFrequencyTitle": "Varmuuskopiointitiheys",
+  "autoBackupSettingsFrequencySubtitle": "Varmuuskopio otetaan {hours} tunnin välein.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 tuntia",
+  "autoBackupSettingsFrequency12h": "12 tuntia",
+  "autoBackupSettingsFrequency24h": "24 tuntia (päivittäin)",
+  "autoBackupSettingsFrequency48h": "48 tuntia (2 päivää)",
+  "autoBackupSettingsFrequency168h": "168 tuntia (viikoittain)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "Käytä vain Wi-Fiä",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "Pilvilataus tapahtuu vain Wi-Fi-yhteydellä mobiilidatasi säästämiseksi.",
+  "autoBackupSettingsStatusCardTitle": "Järjestelmän tila",
+  "autoBackupSettingsNeverRunMessage": "Automaattista varmuuskopiointia ei ole vielä suoritettu.",
+  "autoBackupSettingsLastRunInfo": "Viimeksi suoritettu: {date} {time} ({status})\nViesti: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "Onnistui",
+  "autoBackupSettingsStatusFailedLabel": "Epäonnistui",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Google-tiliin ei voitu yhdistää.",
+  "autoBackupSettingsSavedSnackbar": "Automaattisen varmuuskopioinnin asetukset päivitetty.",
+  "selectionModeDeletedMessage": "{count} muistiinpanoa poistettu",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "Arkistoitu",
+  "selectionModeClassifySheetTitle": "Valitse kategoria {count} muistiinpanolle",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "Lisää kategoria",
+  "selectionModeRemoveCategoryOption": "Poista kategoria",
+  "calcTableItemHint": "Kohde...",
+  "calcTableTotalRowLabel": "Yhteensä",
+  "textSelectionMenuShareButton": "Jaa",
+  "textSelectionMenuTranslateButton": "Käännä",
+  "textSelectionMenuShareFailedSnackbar": "Jakamista ei voitu aloittaa.",
+  "textSelectionMenuTranslateFailedSnackbar": "Käännöstä ei voitu avata.",
+  "lastBackupInfoTodayFormat": "Tänään {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}.{month}.{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "Viimeisin varmuuskopio: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "Varmuuskopiota ei ole vielä otettu."
+}

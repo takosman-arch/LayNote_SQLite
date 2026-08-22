@@ -1,0 +1,1136 @@
+{
+  "@@locale": "no",
+  "toolbarBoldTooltip": "Fet",
+  "toolbarItalicTooltip": "Kursiv",
+  "toolbarUnderlineTooltip": "Understrek",
+  "toolbarStrikethroughTooltip": "Gjennomstreking",
+  "toolbarFontSizeTooltip": "Skriftstørrelse",
+  "toolbarColorTooltip": "Tekstfarge",
+  "toolbarBulletTooltip": "Punktliste",
+  "toolbarNumberTooltip": "Nummerert liste",
+  "toolbarIndentTooltip": "Avsnittsinnrykk",
+  "toolbarLinkTooltip": "Legg til / rediger / fjern lenke",
+  "toolbarDividerTooltip": "Sett inn skillelinje",
+  "toolbarChecklistTooltip": "Legg til sjekkliste",
+  "linkSelectTextSnackbar": "Velg teksten du vil lenke først",
+  "linkDialogEditTitle": "Rediger lenke",
+  "linkDialogAddTitle": "Legg til lenke",
+  "linkDialogRemoveButton": "Fjern lenke",
+  "linkDialogCancelButton": "Avbryt",
+  "linkDialogConfirmButton": "Legg til",
+  "cameraPermissionPermanentlyDeniedMessage": "Kameratilgang ble avslått. Du må tillate det fra innstillingene for å spille inn video.",
+  "cameraPermissionRequiredMessage": "Kameratilgang er nødvendig for å spille inn video.",
+  "openSettingsButtonLabel": "Innstillinger",
+  "documentScanStartFailedMessage": "Skanning kunne ikke startes: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "Tekstgjenkjenning mislyktes: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "Ingen lesbar tekst ble funnet i dokumentet",
+  "scanResultSheetTitle": "Hvordan skal det skannede dokumentet legges til?",
+  "scanResultTextOnlyOption": "Legg til bare som tekst",
+  "scanResultTextAndImageOption": "Legg til tekst + skannet bilde",
+  "scanResultCancelOption": "Avbryt",
+  "audioPermissionPermanentlyDeniedMessage": "Mikrofontilgang ble avslått. Du må tillate det fra innstillingene for å ta opp lyd.",
+  "audioPermissionRequiredMessage": "Mikrofontilgang er nødvendig for å ta opp lyd.",
+  "voiceRecordingDefaultLabel": "Lydopptak",
+  "blockPreviewCalcTableLabel": "Beregningsliste ({count} rader)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "Tegning",
+  "blockPreviewAttachmentsLabel": "{count} vedlegg (bilde/dokument)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "Skillelinje",
+  "blockPreviewChecklistLabel": "Sjekkliste ({count} elementer)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(tom tekst)",
+  "reorderBlocksSheetTitle": "Endre rekkefølge på blokker",
+  "reorderBlocksMoveUpTooltip": "Flytt opp",
+  "reorderBlocksMoveDownTooltip": "Flytt ned",
+  "reorderBlocksCloseTooltip": "Lukk",
+  "reorderBlocksDescription": "Trykk på en blokk for å velge den, og bruk deretter pilene opp/ned for å flytte den.",
+  "reorderBlocksMenuItemLabel": "Endre rekkefølge",
+  "txtImportPickerDialogTitle": "Velg TXT-filen som skal importeres",
+  "txtImportReadFailedMessage": "TXT-filen kunne ikke leses",
+  "txtImportEmptyFileMessage": "TXT-filen er tom",
+  "txtImportSuccessMessage": "TXT importert",
+  "txtImportMenuItemLabel": "Importer (txt)",
+  "exportMenuItemLabel": "Eksporter",
+  "editorUndoTooltip": "Angre",
+  "editorRedoTooltip": "Gjør om",
+  "noteSavedMessage": "Notat lagret",
+  "dateAssignPickerHelpText": "Tildel notat til en dag",
+  "dateAssignChangeOption": "Endre dato",
+  "dateAssignRemoveOption": "Fjern tildeling",
+  "editorSubToolbarCloseTooltip": "Lukk",
+  "titleFieldHint": "Tittel",
+  "textBlockHint": "Skriv notatet ditt her...",
+  "drawingBoardMenuItemLabel": "Tegnebrett",
+  "voiceToTextTextNotesOnlyMessage": "Tale til tekst er bare tilgjengelig for tekstnotater",
+  "selectionModeCancelTooltip": "Avbryt valg",
+  "selectionModeSelectedCountTitle": "{count} valgt",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "Slett",
+  "selectionModeArchiveTooltip": "Arkiver",
+  "selectionModeFolderTooltip": "Mappe",
+  "searchFieldHint": "Søk i notater...",
+  "emptyTrashDialogTitle": "Tøm papirkurv",
+  "emptyTrashDialogConfirmMessage": "Alle slettede notater vil bli fjernet permanent. Er du sikker?",
+  "emptyTrashDialogCancelButton": "Avbryt",
+  "restoreAllMenuItemLabel": "Gjenopprett alle",
+  "sortMenuTooltip": "Sorter notater",
+  "sortMenuAscendingLabel": "Rekkefølge: Stigende (A-Å)",
+  "sortMenuDescendingLabel": "Rekkefølge: Synkende (Å-A)",
+  "sortMenuByTitleLabel": "Sorter etter: Tittel",
+  "sortMenuByModifiedDateLabel": "Sorter etter: Sist endret",
+  "sortMenuByCreatedDateLabel": "Sorter etter: Opprettelsesdato",
+  "sortMenuByFolderLabel": "Sorter etter: Mappe",
+  "viewToggleGridTooltip": "Rutenettvisning",
+  "viewToggleListTooltip": "Listevisning",
+  "drawerHeaderSubtitle": "Din personlige notatbok",
+  "drawerNotesSectionHeader": "NOTATER",
+  "drawerAllNotesLabel": "Notater",
+  "drawerFavoritesLabel": "Favoritt",
+  "drawerAgendaLabel": "Agenda",
+  "drawerRemindersLabel": "Påminnelse",
+  "drawerLockedLabel": "Låst",
+  "drawerTrashLabel": "Papirkurv",
+  "drawerFoldersSectionHeader": "MAPPER",
+  "drawerExpandLabel": "Utvid",
+  "drawerCollapseLabel": "Skjul",
+  "drawerAddFolderLabel": "Legg til mappe",
+  "drawerAppSectionHeader": "APP",
+  "drawerCalendarLabel": "Kalender",
+  "drawerSettingsLabel": "Innstillinger",
+  "drawerBackupRestoreLabel": "Sikkerhetskopi og gjenoppretting",
+  "drawerUpgradeToProLabel": "Oppgrader til Pro",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "Støtt utviklingen",
+  "drawerFeedbackLabel": "Tilbakemelding",
+  "drawerAboutLabel": "Om",
+  "noNotesFoundMessage": "Ingen notater funnet.",
+  "trashRestoreButtonLabel": "Gjenopprett",
+  "trashPermanentDeleteButtonLabel": "Slett permanent",
+  "tagRenamedInfoMessage": "Emneknagg omdøpt",
+  "tagDeletedInfoMessage": "Emneknagg slettet",
+  "tagOptionsRenameLabel": "Endre navn",
+  "tagOptionsDeleteLabel": "Slett",
+  "renameTagDialogTitle": "Endre navn på emneknagg",
+  "renameTagDialogHint": "Nytt navn på emneknagg",
+  "renameTagDialogCancelButton": "Avbryt",
+  "renameTagDialogSaveButton": "Lagre",
+  "deleteTagDialogMessageWithCount": "\"{tag}\" vil bli fjernet fra {affectedCount} notater. Fortsette?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "Slette emneknaggen \"{tag}\"?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "Slett emneknagg",
+  "deleteTagDialogCancelButton": "Avbryt",
+  "deleteTagDialogConfirmButton": "Slett",
+  "tagsSheetTitle": "Emneknagger",
+  "tagsSheetEmptyMessage": "Ingen emneknagger på dette notatet ennå.",
+  "tagsSheetInputHint": "Skriv en ny emneknagg...",
+  "tagsSheetSuggestionsLabel": "Eksisterende emneknagger",
+  "noteDeletedInfoMessage": "Notat slettet",
+  "noteDeletedUndoActionLabel": "Angre",
+  "reminderSetInfoMessage": "Påminnelse satt",
+  "reminderRemovedInfoMessage": "Påminnelse fjernet",
+  "noteDuplicatedInfoMessage": "Kopi opprettet",
+  "speechTextAppendedInfoMessage": "Tekst lagt til i notat",
+  "pdfPreparingInfoMessage": "Forbereder PDF…",
+  "pdfSavedInfoMessage": "PDF lagret",
+  "jpgPreparingInfoMessage": "Forbereder JPG…",
+  "jpgSavedInfoMessage": "JPG lagret",
+  "jpgFailedInfoMessage": "Kunne ikke opprette JPG",
+  "txtPreparingInfoMessage": "Forbereder TXT…",
+  "txtSavedInfoMessage": "TXT lagret",
+  "txtFailedInfoMessage": "Kunne ikke opprette TXT",
+  "exportOpenActionLabel": "Åpne",
+  "wrongPasswordInfoMessage": "Feil passord.",
+  "noteArchivedInfoMessage": "Notat arkivert",
+  "noteUnarchivedInfoMessage": "Fjernet fra arkiv",
+  "noteUnlockedInfoMessage": "Låst opp",
+  "noteLockedInfoMessage": "Notat låst",
+  "notificationUnpinnedInfoMessage": "Frigjort",
+  "emptyNotePinBlockedInfoMessage": "Et tomt notat kan ikke festes.",
+  "notificationPinnedInfoMessage": "Festet til varslingspanelet",
+  "noContentToReadInfoMessage": "Det er ikke noe innhold å lese",
+  "backPressExitInfoMessage": "Trykk tilbake igjen for å avslutte",
+  "reminderChannelName": "Notatpåminnelser",
+  "reminderChannelDescription": "Notatpåminnelser i Layout-appen",
+  "pinnedChannelName": "Festede notater",
+  "pinnedChannelDescription": "Layout-notater festet til varslingspanelet",
+  "notificationUnpinActionLabel": "Fjern",
+  "reminderDefaultTitle": "Påminnelse",
+  "reminderChecklistBodyFallback": "Ikke glem å sjekke sjekklisten din",
+  "reminderTextBodyFallback": "Ikke glem å sjekke notatet ditt",
+  "pdfSaveDialogTitle": "Lagre som PDF",
+  "jpgSaveDialogTitle": "Lagre som JPG",
+  "txtSaveDialogTitle": "Lagre som TXT",
+  "textSizeSheetTitle": "Tekststørrelse",
+  "textSizeSamplePreview": "Eksempeltekst",
+  "textSizeCancelButton": "Avbryt",
+  "textSizeApplyButton": "Bruk",
+  "createPasswordDialogTitle": "Opprett passord",
+  "createPasswordNewPasswordHint": "Nytt passord",
+  "createPasswordConfirmHint": "Skriv inn passordet på nytt",
+  "createPasswordHintQuestionDescription": "Angi et sikkerhetsspørsmål i tilfelle du glemmer passordet (valgfritt).",
+  "createPasswordHintQuestionHint": "Velg et sikkerhetsspørsmål",
+  "createPasswordHintAnswerHint": "Ditt svar",
+  "createPasswordCancelButton": "Avbryt",
+  "createPasswordSaveButton": "Lagre",
+  "passwordMismatchMessage": "Passordene stemmer ikke overens!",
+  "passwordRequiredDialogTitle": "Passord kreves",
+  "passwordRequiredHint": "Skriv inn passord",
+  "forgotPasswordButtonLabel": "Glemt passordet",
+  "passwordRequiredCancelButton": "Avbryt",
+  "passwordRequiredConfirmButton": "Bekreft",
+  "securityQuestionDialogTitle": "Sikkerhetsspørsmål",
+  "securityQuestionAnswerHint": "Ditt svar",
+  "securityQuestionCancelButton": "Avbryt",
+  "securityQuestionConfirmButton": "Bekreft",
+  "securityQuestionWrongAnswerMessage": "Feil svar. Prøv igjen.",
+  "revealedPasswordDialogTitle": "Ditt passord",
+  "revealedPasswordLabel": "Passordet til notatet ditt:",
+  "revealedPasswordOkButton": "OK",
+  "securityQuestionPetName": "Hva heter ditt første kjæledyr?",
+  "securityQuestionFavoriteTeacher": "Hva heter din favorittlærer?",
+  "securityQuestionBirthCity": "Hvilken by ble du født i?",
+  "securityQuestionFavoriteFood": "Hva er favorittmaten din?",
+  "securityQuestionMotherMaidenName": "Hva er morens pikenavn?",
+  "securityQuestionFirstSchool": "Hva heter den første skolen du gikk på?",
+  "securityQuestionFavoriteColor": "Hva er favorittfargen din?",
+  "editFolderDialogTitle": "Rediger mappe",
+  "newSubfolderDialogTitle": "Ny undermappe",
+  "addFolderDialogTitle": "Legg til mappe",
+  "subfolderParentInfoMessage": "Vil bli opprettet inne i \"{parentCategory}\"",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "Navn på undermappe",
+  "folderNameFieldLabel": "Mappenavn",
+  "folderColorLabel": "Farge",
+  "folderDialogCancelButton": "Avbryt",
+  "folderDialogSaveButton": "Lagre",
+  "folderDialogAddButton": "Legg til",
+  "selectFolderSheetTitle": "Velg mappe",
+  "selectFolderAddOptionLabel": "Legg til mappe",
+  "removeCurrentFolderLabel": "Fjern gjeldende mappe",
+  "noteDetailsDialogTitle": "Detaljer",
+  "noteDetailsCreatedLabel": "Opprettet",
+  "noteDetailsModifiedLabel": "Sist endret",
+  "noteDetailsCharCountLabel": "Antall tegn",
+  "noteDetailsCharCountValue": "{count} tegn",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "Antall ord",
+  "noteDetailsWordCountValue": "{count} ord",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "OK",
+  "noteDetailsUnknownDateLabel": "Ukjent",
+  "addAttachmentSheetTitle": "Legg til",
+  "addAttachmentImageOption": "Legg til bilde",
+  "addAttachmentCameraOption": "Kamera",
+  "addAttachmentFileOption": "Legg til fil",
+  "addAttachmentVoiceOption": "Lydopptak",
+  "addAttachmentVideoOption": "Spill inn video",
+  "addAttachmentScanOption": "Skann dokument",
+  "noteActionsSheetTitle": "Velg handling",
+  "noteActionReminderLabel": "Påminnelse",
+  "noteActionEditReminderLabel": "Rediger påminnelse",
+  "noteActionSpeechToTextLabel": "Tale til tekst",
+  "noteActionArchiveLabel": "Arkiver",
+  "noteActionUnarchiveLabel": "Fjern fra arkiv",
+  "noteActionLockLabel": "Lås",
+  "noteActionUnlockLabel": "Lås opp",
+  "noteActionFavoriteLabel": "Favoritt",
+  "noteActionUnfavoriteLabel": "Fjern fra favoritter",
+  "noteActionClassifyLabel": "Velg mappe",
+  "noteActionDeleteLabel": "Slett",
+  "noteActionPinToNotificationLabel": "Fest til varslingspanel",
+  "noteActionUnpinFromNotificationLabel": "Fjern feste",
+  "noteActionShareLabel": "Del",
+  "noteActionDuplicateLabel": "Opprett kopi",
+  "noteActionCopyContentLabel": "Kopier innhold",
+  "noteActionTtsLabel": "Les høyt",
+  "noteActionTextSizeLabel": "Tekststørrelse",
+  "noteActionDetailsLabel": "Detaljer",
+  "noteActionDiscardChangesLabel": "Forkast endringer",
+  "noteActionSelectLabel": "Velg",
+  "reminderEditOptionLabel": "Endre påminnelse",
+  "reminderRemoveOptionLabel": "Fjern påminnelse",
+  "discardChangesDialogTitle": "Forkast endringer",
+  "discardChangesDialogMessage": "Ulagrede endringer i dette notatet vil gå tapt. Er du sikker på at du vil forkaste dem?",
+  "discardChangesCancelButton": "Avbryt",
+  "discardChangesConfirmButton": "Forkast",
+  "pinnedNotificationDefaultTitle": "Notat",
+  "pdfFailedInfoMessage": "Kunne ikke opprette PDF",
+  "drawingScreenTitle": "Tegning",
+  "drawingMinimizeTooltip": "Minimer",
+  "drawingEmptyExportWarningMessage": "Tegn noe først",
+  "drawingEraserPartialModeLabel": "Delvis",
+  "drawingEraserFullModeLabel": "Full",
+  "drawingClearTooltip": "Tøm",
+  "drawingZoomOutTooltip": "Zoom ut",
+  "drawingZoomInTooltip": "Zoom inn",
+  "drawingDeleteTooltip": "Slett",
+  "drawingEmptyPreviewHint": "Trykk for å tegne",
+  "settingsPageTitle": "Innstillinger",
+  "settingsSectionGeneral": "Generelt",
+  "settingsSectionSecurity": "Sikkerhet",
+  "settingsSectionTheme": "Tema",
+  "settingsSectionPersonalization": "Personalisering",
+  "settingsSectionWidget": "Widget",
+  "settingsSectionAbout": "Om",
+  "settingsHintQuestionPet": "Hva heter ditt første kjæledyr?",
+  "settingsHintQuestionTeacher": "Hva heter din favorittlærer?",
+  "settingsHintQuestionBirthCity": "Hvilken by ble du født i?",
+  "settingsHintQuestionFavoriteFood": "Hva er favorittmaten din?",
+  "settingsHintQuestionMotherMaidenName": "Hva er morens pikenavn?",
+  "settingsHintQuestionFirstSchool": "Hva var den første skolen du gikk på?",
+  "settingsHintQuestionFavoriteColor": "Hva er favorittfargen din?",
+  "settingsSecurityQuestionDialogTitle": "Sikkerhetsspørsmål",
+  "settingsSecurityQuestionDialogDesc": "Hvis du glemmer passordet, kan du gjenopprette det ved å svare riktig på dette spørsmålet.",
+  "settingsSecurityQuestionDropdownHint": "Velg et sikkerhetsspørsmål",
+  "settingsSecurityQuestionAnswerHint": "Ditt svar",
+  "settingsSecurityQuestionCancelButton": "Avbryt",
+  "settingsSecurityQuestionEmptyWarning": "Spørsmål og svar kan ikke være tomme!",
+  "settingsSecurityQuestionSaveButton": "Lagre",
+  "settingsCreatePasswordTitle": "Opprett passord",
+  "settingsPasswordRequiredTitle": "Passord kreves",
+  "settingsPasswordEnterHint": "Skriv inn passord",
+  "settingsForgotPasswordButton": "Glemt passordet",
+  "settingsNewPasswordHint": "Nytt passord",
+  "settingsConfirmPasswordHint": "Skriv inn passordet på nytt",
+  "settingsSecurityQuestionOptionalDesc": "Angi et sikkerhetsspørsmål i tilfelle du glemmer passordet (valgfritt).",
+  "settingsPasswordDialogCancelButton": "Avbryt",
+  "settingsPasswordMismatchWarning": "Passordene stemmer ikke overens!",
+  "settingsWrongPasswordWarning": "Feil passord!",
+  "settingsPasswordSaveButton": "Lagre",
+  "settingsPasswordRemoveButton": "Fjern",
+  "settingsNotePasswordTitle": "Notatpassord",
+  "settingsPasswordSetSubtitle": "Passord angitt ✓",
+  "settingsPasswordNotSetSubtitle": "Passord ikke angitt",
+  "settingsSecurityQuestionTileTitle": "Sikkerhetsspørsmål",
+  "settingsSecurityQuestionSetSubtitle": "Angitt ✓ — brukes hvis du glemmer passordet",
+  "settingsSecurityQuestionNotSetSubtitle": "Ikke angitt — du vil ikke kunne gjenopprette passordet hvis det går tapt",
+  "settingsThemeDialogTitle": "Velg tema",
+  "settingsThemeSystemDefault": "Systemstandard",
+  "settingsThemeLightOption": "Lyst tema",
+  "settingsThemeDarkOption": "Mørkt tema",
+  "settingsAccentColorDialogTitle": "Velg aksentfarge",
+  "settingsThemeChangeTileTitle": "Bytt tema",
+  "settingsThemeLightLabel": "Lyst",
+  "settingsThemeDarkLabel": "Mørkt",
+  "settingsThemeSystemLabel": "System",
+  "settingsLanguageTileTitle": "Språk",
+  "settingsLanguageDialogTitle": "Velg språk",
+  "settingsLanguageSystemOption": "System",
+  "settingsAccentColorTileTitle": "Aksentfarge",
+  "settingsAccentColorTileSubtitle": "Farge brukt i topplinjen, knapper og brytere",
+  "settingsColorfulNotesTitle": "Varierte notatfarger",
+  "settingsColorfulNotesSubtitle": "Hvert notatkort får en annen fargetone.",
+  "settingsTextColorSheetTitle": "Tekstfarge",
+  "settingsTextColorSheetDesc": "Angir fargen på notatinnholdets tekst.",
+  "settingsTextColorOkButton": "OK",
+  "settingsTextColorTileTitle": "Tekstfarge",
+  "settingsTextColorTileSubtitle": "Farge for notatinnholdets tekst.",
+  "settingsWidgetFontSizeLabel": "Skriftstørrelse for widget",
+  "settingsWidgetFontSizeSample": "Eksempeloverskrift - {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "Avbryt",
+  "settingsWidgetFontSizeApplyButton": "Bruk",
+  "settingsWidgetOpacityLabel": "Bakgrunnsgjennomsiktighet",
+  "settingsWidgetOpacityValue": "{percent}% gjennomsiktighet",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "Avbryt",
+  "settingsWidgetOpacityApplyButton": "Bruk",
+  "settingsWidgetDarkModeTitle": "Mørk widget",
+  "settingsWidgetDarkModeDesc": "Mørkt fargeskjema for widgeten.",
+  "settingsAboutVersionTitle": "Appversjon",
+  "settingsFontFamilyTileTitle": "Skrift",
+  "settingsFontFamilyDefaultLabel": "Standard",
+  "settingsGlobalFontSizeTileTitle": "Skriftstørrelse",
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt — brukes på alle notater.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "Eksempeltekst - {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "Bruk på eksisterende notater",
+  "settingsGlobalFontSizeApplyToAllNote": "Hvis et notat har en individuell skriftstørrelse angitt, vil ikke denne innstillingen påvirke det.",
+  "settingsGlobalFontSizeCancelButton": "Avbryt",
+  "settingsGlobalFontSizeApplyButton": "Bruk",
+  "settingsPreviewLinesTileTitle": "Forhåndsvisningslinjer for notat",
+  "settingsPreviewLinesTileSubtitle": "Vis opptil {lines} linjer. Hvis notatet er kortere, vises det faktiske antallet linjer.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "Nåværende: {lines} linjer",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "Angir maksimalt antall linjer å forhåndsvise. Hvis notatet har færre linjer, vises det faktiske antallet linjer.",
+  "settingsPreviewLinesCancelButton": "Avbryt",
+  "settingsPreviewLinesApplyButton": "Bruk",
+  "backupCancelButton": "Avbryt",
+  "backupConnectButton": "Koble til",
+  "backupDisconnectButton": "Koble fra",
+  "backupContinueButton": "Fortsett",
+  "backupCloseButton": "Lukk",
+  "backupShareButton": "Del",
+  "backupRestoreButton": "Gjenopprett",
+  "backupConfigureButton": "Konfigurer",
+  "backupUnknownDateLabel": "Ukjent",
+  "backupProcessingDefaultLabel": "Behandler…",
+  "backupPermissionRequiredTitle": "Lagringstillatelse kreves",
+  "backupPermissionRequiredBodyPermanent": "Denne Android-versjonen krever lagringstillatelse for sikkerhetskopiering/gjenoppretting. Siden tillatelsen ble avslått permanent, må du aktivere den manuelt fra appinnstillingene.",
+  "backupPermissionRequiredBodyNormal": "Denne Android-versjonen krever lagringstillatelse for sikkerhetskopiering/gjenoppretting. Gi tillatelse for å fortsette.",
+  "backupGoToSettingsButton": "Gå til innstillinger",
+  "backupRetryButton": "Prøv igjen",
+  "backupDriveConnectingLabel": "Kobler til Google-konto…",
+  "backupDriveConnectedWithEmailMessage": "Koblet til Google Disk-konto: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Koblet til Google Disk-konto.",
+  "backupDriveConnectFailedMessage": "Kunne ikke koble til Google-konto, eller handlingen ble avbrutt.",
+  "backupDriveDisconnectTitle": "Koble fra Google Disk",
+  "backupDriveDisconnectBody": "Hvis du kobler fra, vil ikke manuelle eller automatiske sikkerhetskopier til Disk være mulig. Sikkerhetskopier som allerede er lagret på Disk, blir ikke slettet — bare tilgangen fra denne enheten fjernes.",
+  "backupDriveDisconnectedMessage": "Google Disk-tilkoblingen er fjernet.",
+  "backupDriveRequiredTitle": "Google-konto kreves",
+  "backupDriveRequiredBody": "Denne handlingen krever at du kobler til Google-kontoen din. Vil du koble til nå?",
+  "backupDriveStatusConnectedWithEmail": "Google Disk: tilkoblet ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Disk: tilkoblet",
+  "backupDriveStatusDisconnected": "Google Disk: ikke tilkoblet",
+  "backupDriveAuthenticatingLabel": "Bekrefter Google-konto…",
+  "backupDriveNotSignedInMessage": "Du er ikke koblet til Google Disk. Logg inn med Google-kontoen din først.",
+  "backupDriveUploadingLabel": "Laster opp sikkerhetskopi til Disk…",
+  "backupDriveUploadTimeoutMessage": "Opplasting til Google Disk ble ikke fullført innen 120 sekunder (ingen respons fra serveren). Kontroller tilkoblingen din og prøv igjen.",
+  "backupDriveOperationCompletedLabel": "Fullført",
+  "backupToDriveActionLabel": "sikkerhetskopiering til Disk",
+  "backupToDeviceActionLabel": "sikkerhetskopiering",
+  "backupCreatingLabel": "Oppretter sikkerhetskopi…",
+  "backupCreateFailedMessage": "Sikkerhetskopi kunne ikke opprettes: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Opplasting til Google Disk mislyktes: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "Sikkerhetskopien ble lastet opp til Google Disk.",
+  "backupCreatedMessage": "Sikkerhetskopi opprettet: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "Sikkerhetskopi klar",
+  "backupOfferShareBody": "Sikkerhetskopifilen din er lagret på enheten. Vil du dele den nå (f.eks. skylagring, e-post, en annen enhet)?",
+  "backupShareFileText": "layout sikkerhetskopifil",
+  "backupShareFailedMessage": "Deling kunne ikke startes: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "Stor sikkerhetskopi",
+  "backupLargeOperationBody": "Dataene som skal behandles er omtrent {sizeText}. En {actionLabel} av denne størrelsen kan ta en stund avhengig av enheten din. Bare ikke forlat appen mens den pågår — vil du fortsette?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "gjenoppretting",
+  "backupDriveListingLabel": "Lister sikkerhetskopier på Disk…",
+  "backupDriveListFailedMessage": "Sikkerhetskopier kunne ikke listes: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "Det finnes ingen sikkerhetskopier på Google Disk ennå.",
+  "backupDrivePickTitle": "Velg en sikkerhetskopi fra Disk",
+  "backupDriveDownloadingLabel": "Laster ned sikkerhetskopi fra Disk…",
+  "backupDriveDownloadingWithSizeLabel": "Laster ned sikkerhetskopi fra Disk… ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "Lagrer fil til enhet…",
+  "backupDriveUnknownBackupFileName": "ukjent_sikkerhetskopi.zip",
+  "backupDriveStorageFullMessage": "Google Disk-lagringen din er full. Frigjør plass på Disk og prøv igjen.",
+  "backupDriveNetworkErrorMessage": "Kunne ikke opprette en internettforbindelse. Kontroller tilkoblingen din og prøv igjen.",
+  "backupDriveBackupNotFoundMessage": "Den angitte sikkerhetskopifilen ble ikke funnet på Disk. Den kan ha blitt slettet.",
+  "backupDriveUnknownErrorMessage": "En uventet feil oppstod under Google Disk-operasjonen: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "Nedlasting mislyktes: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "Filen kunne ikke velges: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "Den valgte filen kunne ikke nås.",
+  "backupCheckingLabel": "Kontrollerer sikkerhetskopi…",
+  "backupReadFailedMessage": "Sikkerhetskopifilen kunne ikke leses: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Gjenopprett sikkerhetskopi",
+  "backupPreviewContentsHeader": "Innhold i den valgte sikkerhetskopien:",
+  "backupPreviewNoteCountLabel": "Antall notater",
+  "backupPreviewTrashCountLabel": "Notater i papirkurven",
+  "backupPreviewCategoryCountLabel": "Antall kategorier",
+  "backupPreviewAttachmentLabel": "Vedlegg",
+  "backupPreviewAttachmentNoneValue": "Ingen",
+  "backupPreviewAttachmentCountValue": "{count} filer ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "Opprettet",
+  "backupEmptyPreviewTitle": "Denne sikkerhetskopien ser tom ut",
+  "backupEmptyPreviewBody": "Ingen notater, kategorier eller vedlegg ble funnet i den valgte filen. Hvis du fortsetter, vil de nåværende dataene dine likevel bli slettet og erstattet med denne tomme sikkerhetskopien.",
+  "backupMissingAttachmentsTitle": "{count} vedlegg ble ikke funnet i sikkerhetskopien",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "Notater med disse filene vil bli gjenopprettet, men uten vedleggene (de kan ha manglet eller vært skadet da sikkerhetskopien ble tatt): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} og {remaining} til",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "Dette vil ERSTATTE alle dine nåværende notater, papirkurv, kategorier, innstillinger og vedlegg med dataene i sikkerhetskopien ovenfor. De nåværende dataene dine vil gå permanent tapt, og denne handlingen kan ikke angres.",
+  "backupRestoringLabel": "Gjenoppretter sikkerhetskopi…",
+  "backupRestoreSuccessWithMissingMessage": "Sikkerhetskopi gjenopprettet. Imidlertid ble {count} vedlegg ikke funnet i sikkerhetskopien og kunne ikke gjenopprettes. Det anbefales å starte appen på nytt for at endringene skal tre fullt i kraft.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "Sikkerhetskopien ble gjenopprettet. Det anbefales å starte appen på nytt for at endringene skal tre fullt i kraft.",
+  "backupRestoreFailedMessage": "Det oppstod en feil under gjenoppretting: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "Sikkerhetskopi og gjenoppretting",
+  "backupBlockedExitWarningMessage": "En operasjon pågår, vennligst vent til den er fullført.",
+  "backupBusyBackTooltip": "Operasjon pågår",
+  "backupIntroText": "Du kan sikkerhetskopiere notatene, kategoriene, innstillingene og vedleggene dine som én enkelt .zip-fil, eller gjenopprette en sikkerhetskopi du tok tidligere.",
+  "backupDriveCardTitle": "Sikkerhetskopier til Google Disk",
+  "backupDriveCardSubtitle": "Opprett en ny sikkerhetskopi og last den opp direkte til det private området på Google Disk.",
+  "backupDriveCardButtonLabel": "Sikkerhetskopier til Disk",
+  "backupDeviceCardTitle": "Sikkerhetskopier til enhet",
+  "backupDeviceCardSubtitle": "Lagre alle dataene dine som én enkelt .zip-fil på enheten din, og del den om du ønsker.",
+  "backupDeviceCardButtonLabel": "Sikkerhetskopier til enhet",
+  "backupHistoryCardTitle": "Sikkerhetskopihistorikk",
+  "backupHistoryCardSubtitle": "Se alle sikkerhetskopier lagret på enheten din med dato og størrelse; du kan dele, gjenopprette eller slette dem direkte herfra.",
+  "backupHistoryTabDevice": "Enhet",
+  "backupHistoryTabDrive": "Google Disk",
+  "backupHistoryDeleteDialogTitle": "Slett sikkerhetskopi",
+  "backupHistoryDeleteDialogBody": "Er du sikker på at du vil slette sikkerhetskopifilen \"{fileName}\" permanent? Denne handlingen kan ikke angres.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "Sikkerhetskopi slettet.",
+  "backupHistoryDriveDeleteDialogTitle": "Slett sikkerhetskopi på Disk",
+  "backupHistoryDriveDeleteDialogBody": "Er du sikker på at du vil slette sikkerhetskopien \"{fileName}\" fra Google Disk permanent? Denne handlingen kan ikke angres, og filen vil ikke bli flyttet til papirkurven.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Sikkerhetskopi på Disk slettet.",
+  "backupHistoryDriveDeleteFailedMessage": "Kunne ikke slette: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "Ingen sikkerhetskopier lagret på denne enheten ennå.",
+  "backupHistoryDeviceEmptySubtitle": "Bruk \"Sikkerhetskopier til enhet\" for å opprette din første sikkerhetskopi.",
+  "backupHistoryDriveEmptySubtitle": "Bruk \"Sikkerhetskopier til Google Disk\" for å opprette din første skysikkerhetskopi.",
+  "backupHistoryDriveSignInPrompt": "Koble til Google-kontoen din for å se sikkerhetskopiene dine på Disk.",
+  "backupHistoryConnectGoogleButton": "Koble til med Google",
+  "backupHistoryDriveConnectedFallback": "Tilkoblet",
+  "backupHistoryUnknownErrorFallback": "En ukjent feil oppstod.",
+  "backupHistoryDownloadStartingLabel": "Starter…",
+  "backupAutoBackupEnabledLabel": "Automatisk sikkerhetskopiering: på",
+  "backupAutoBackupDisabledLabel": "Automatisk sikkerhetskopiering: av",
+  "backupOverlayWarningMessage": "Vennligst vent, ikke forlat appen før operasjonen er fullført.",
+  "pdfExportUntitledNoteLabel": "Notat uten tittel",
+  "pdfExportDefaultAttachmentName": "Vedlegg",
+  "pdfExportDefaultFileName": "notat",
+  "screenshotExportBoundaryNotFoundMessage": "Skjermbilde kunne ikke tas (grense ikke funnet)",
+  "screenshotExportByteDataNullMessage": "Skjermbildedata kunne ikke genereres",
+  "screenshotExportPngDecodeFailedMessage": "Bildet kunne ikke behandles (PNG-dekoding mislyktes)",
+  "screenshotCalcTableTotalLabel": "Totalt",
+  "gundemMenuRemoveFromAgenda": "Fjern fra agenda",
+  "gundemMenuDeleteNote": "Slett notat",
+  "gundemSectionOverdue": "Forfalt",
+  "gundemSectionToday": "I dag",
+  "gundemSectionTomorrow": "I morgen",
+  "gundemSectionNextWeek": "Neste uke",
+  "gundemSectionFurther": "Lenger fram",
+  "gundemWeekdayMonday": "Mandag",
+  "gundemWeekdayTuesday": "Tirsdag",
+  "gundemWeekdayWednesday": "Onsdag",
+  "gundemWeekdayThursday": "Torsdag",
+  "gundemWeekdayFriday": "Fredag",
+  "gundemWeekdaySaturday": "Lørdag",
+  "gundemWeekdaySunday": "Søndag",
+  "gundemAppBarTitle": "Agenda",
+  "gundemCalendarTooltip": "Kalender",
+  "gundemEmptyTitle": "Ingenting på agendaen",
+  "gundemEmptySubtitle": "Notater med en påminnelse eller tildelt dato vises her.",
+  "gundemUntitledNote": "Notat uten tittel",
+  "gundemRepeatHourly": "Hver time",
+  "gundemRepeatDaily": "Daglig",
+  "gundemRepeatWeekly": "Ukentlig",
+  "gundemRepeatMonthly": "Månedlig",
+  "gundemRepeatYearly": "Årlig",
+  "gundemPreviewCalcTableLabel": "[Beregningsliste]",
+  "gundemPreviewDrawingLabel": "[Tegning]",
+  "gundemPreviewImageLabel": "[Bilde]",
+  "gundemMonthShortJan": "jan.",
+  "gundemMonthShortFeb": "feb.",
+  "gundemMonthShortMar": "mar.",
+  "gundemMonthShortApr": "apr.",
+  "gundemMonthShortMay": "mai",
+  "gundemMonthShortJun": "jun.",
+  "gundemMonthShortJul": "jul.",
+  "gundemMonthShortAug": "aug.",
+  "gundemMonthShortSep": "sep.",
+  "gundemMonthShortOct": "okt.",
+  "gundemMonthShortNov": "nov.",
+  "gundemMonthShortDec": "des.",
+  "calendarAppBarTitle": "Kalender",
+  "calendarTodayButton": "I dag",
+  "calendarLegendNoteLabel": "Notat",
+  "calendarLegendReminderLabel": "Påminnelse",
+  "calendarTodayBadge": "I dag",
+  "calendarEmptyDayMessage": "Ingen notater eller påminnelser for denne dagen.",
+  "calendarReminderHourlyLabel": "Hver time",
+  "calendarMonthJan": "januar",
+  "calendarMonthFeb": "februar",
+  "calendarMonthMar": "mars",
+  "calendarMonthApr": "april",
+  "calendarMonthMay": "mai",
+  "calendarMonthJun": "juni",
+  "calendarMonthJul": "juli",
+  "calendarMonthAug": "august",
+  "calendarMonthSep": "september",
+  "calendarMonthOct": "oktober",
+  "calendarMonthNov": "november",
+  "calendarMonthDec": "desember",
+  "calendarWeekdayShortMon": "man.",
+  "calendarWeekdayShortTue": "tir.",
+  "calendarWeekdayShortWed": "ons.",
+  "calendarWeekdayShortThu": "tor.",
+  "calendarWeekdayShortFri": "fre.",
+  "calendarWeekdayShortSat": "lør.",
+  "calendarWeekdayShortSun": "søn.",
+  "calendarWeekdayFullMonday": "Mandag",
+  "calendarWeekdayFullTuesday": "Tirsdag",
+  "calendarWeekdayFullWednesday": "Onsdag",
+  "calendarWeekdayFullThursday": "Torsdag",
+  "calendarWeekdayFullFriday": "Fredag",
+  "calendarWeekdayFullSaturday": "Lørdag",
+  "calendarWeekdayFullSunday": "Søndag",
+  "wrongPasswordDialogTitle": "Feil passord",
+  "wrongPasswordDialogMessage": "Passordet du skrev inn er feil.",
+  "commonOkButton": "OK",
+  "unlockCategoryAction": "Lås opp",
+  "lockCategoryAction": "Lås",
+  "categoryUnlockedMessage": "Låst opp",
+  "categoryLockedMessage": "Mappe låst",
+  "deleteFolderMenuItemLabel": "Slett mappe",
+  "deleteFolderDialogTitle": "Slett mappe",
+  "deleteFolderDialogMessageWithSubfolders": "Er du sikker på at du vil slette mappen \"{category}\" og alle undermapper? Notater i disse mappene vil bli ukategorisert.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "Er du sikker på at du vil slette mappen \"{category}\"? Notater i denne mappen vil bli ukategorisert.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "Avbryt",
+  "deleteFolderDialogConfirmButton": "Slett",
+  "editCategoryNameColorMenuItemLabel": "Rediger navn/farge",
+  "addSubfolderMenuItemLabel": "Opprett undermappe",
+  "expandSubfoldersMenuItemLabel": "Utvid undermapper",
+  "collapseSubfoldersMenuItemLabel": "Skjul undermapper",
+  "saveErrorInfoMessage": "Lagringsfeil: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "Velkommen til DNote! 🚀",
+  "welcomeNoteContent": "Nye funksjoner er lagt til!",
+  "noteListDateGroupToday": "I dag",
+  "noteListDateGroupYesterday": "I går",
+  "noteListDateGroupLast7Days": "Siste 7 dager",
+  "noteListDateGroupLast30Days": "Siste 30 dager",
+  "reminderRepeatNoneLabel": "Ingen gjentakelse",
+  "voiceRecorderPreparingLabel": "Forbereder…",
+  "voiceRecorderCancelButton": "Avbryt",
+  "voiceRecorderStopAddButton": "Stopp og legg til",
+  "speechToTextMicPermissionDeniedMessage": "Mikrofontilgang ble ikke gitt.",
+  "speechToTextUnavailableMessage": "Talegjenkjenning er ikke tilgjengelig på denne enheten.",
+  "speechToTextPreparingLabel": "Forbereder…",
+  "speechToTextListeningLabel": "Lytter…",
+  "speechToTextStartSpeakingPlaceholder": "Begynn å snakke…",
+  "speechToTextCancelButton": "Avbryt",
+  "speechToTextStopAddButton": "Stopp og legg til",
+  "textToSpeechNoContentMessage": "Det er ikke noe innhold å lese.",
+  "textToSpeechReadErrorMessage": "Det oppstod en feil under opplesing.",
+  "textToSpeechUnavailableMessage": "Tekst til tale er ikke tilgjengelig på denne enheten.",
+  "textToSpeechPreparingLabel": "Forbereder…",
+  "textToSpeechPausedLabel": "Pauset",
+  "textToSpeechFinishedLabel": "Opplesing fullført",
+  "textToSpeechReadingLabel": "Leser…",
+  "textToSpeechCloseErrorButton": "Lukk",
+  "textToSpeechReplayButton": "Les på nytt",
+  "textToSpeechCloseFinishedButton": "Lukk",
+  "textToSpeechPauseButton": "Pause",
+  "textToSpeechResumeButton": "Fortsett",
+  "textToSpeechStopButton": "Stopp",
+  "textToSpeechSpeedSlow": "Sakte",
+  "textToSpeechSpeedNormal": "Normal",
+  "textToSpeechSpeedFast": "Rask",
+  "calendarPickerCancelButton": "Avbryt",
+  "calendarPickerConfirmButton": "Velg",
+  "calendarPickerClearButton": "Tøm",
+  "reminderPickerDialogTitle": "Legg til påminnelse",
+  "reminderPickerDateTodayOption": "I dag",
+  "reminderPickerDateTomorrowOption": "I morgen",
+  "reminderPickerDatePickOption": "Velg dato",
+  "reminderRepeatHourlyLabel": "Hver time",
+  "reminderRepeatDailyLabel": "Hver dag",
+  "reminderRepeatWeeklyLabel": "Hver uke",
+  "reminderRepeatMonthlyLabel": "Hver måned",
+  "reminderRepeatYearlyLabel": "Hvert år",
+  "reminderPickerCalendarHelpText": "Velg påminnelsesdato",
+  "reminderPickerCancelButton": "AVBRYT",
+  "reminderPickerSaveButton": "LAGRE",
+  "reminderPickerPastTimeErrorMessage": "Et tidspunkt i fortiden kan ikke velges",
+  "calcTableTotalLabel": "Totalt: {amount}",
+  "backupCreatePreparingDataLabel": "Forbereder data…",
+  "backupCreatePackagingNotesLabel": "Pakker notater og kategorier…",
+  "backupCreateReadingAttachmentsLabel": "Leser vedlegg…",
+  "backupCreateReadingAttachmentsProgressLabel": "Leser vedlegg… ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "Komprimerer zip-fil…",
+  "backupCreateSavingFileLabel": "Lagrer fil…",
+  "backupRestoreValidatingLabel": "Validerer sikkerhetskopi…",
+  "backupRestoreValidatedPreparingDataLabel": "Sikkerhetskopi validert, forbereder data…",
+  "backupRestoreWritingNotesLabel": "Skriver notater…",
+  "backupRestoreWritingTrashLabel": "Skriver papirkurv…",
+  "backupRestoreTrashWrittenLabel": "Papirkurv skrevet",
+  "backupRestoreWritingCategoriesLabel": "Skriver kategorier…",
+  "backupRestoreCategoriesWrittenLabel": "Kategorier skrevet",
+  "backupRestoreWritingSettingsLabel": "Skriver innstillinger…",
+  "backupRestoreSettingsWrittenLabel": "Innstillinger skrevet",
+  "backupRestoreCleaningOldAttachmentsLabel": "Rydder opp gamle vedlegg…",
+  "backupRestoreNoAttachmentsFinishingLabel": "Ingen vedlegg funnet, fullfører…",
+  "backupRestoreAttachmentsProgressLabel": "Gjenoppretter vedlegg… ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "Fullført",
+  "backupValidationCorruptedFileMessage": "Filen er skadet eller er ikke en gyldig sikkerhetskopifil.",
+  "backupValidationMissingDataMessage": "Ingen data ble funnet i sikkerhetskopifilen (backup_data.json mangler).",
+  "backupValidationInvalidJsonMessage": "Sikkerhetskopidataene kunne ikke leses (skadet JSON).",
+  "backupValidationNotDnoteBackupMessage": "Denne filen er ikke en sikkerhetskopi fra dnote-appen.",
+  "backupValidationVersionUnreadableMessage": "Versjonsinformasjonen til sikkerhetskopifilen kunne ikke leses.",
+  "backupValidationIncompatibleVersionMessage": "Denne sikkerhetskopien er i et nyere format som den nåværende appversjonen ikke støtter. Vennligst oppdater appen.",
+  "backupValidationInvalidVersionMessage": "Versjonsinformasjonen til sikkerhetskopifilen er ugyldig.",
+  "backupValidationMissingNotesFieldMessage": "Sikkerhetskopidataene er ikke i forventet format (notes-feltet mangler).",
+  "backupValidationMissingTrashFieldMessage": "Sikkerhetskopidataene er ikke i forventet format (trash-feltet mangler).",
+  "backupValidationInvalidCategoriesFieldMessage": "Sikkerhetskopidataene er ikke i forventet format (kategorilisten er ugyldig).",
+  "backupValidationInvalidSettingsFieldMessage": "Sikkerhetskopidataene er ikke i forventet format (settings-feltet er ugyldig).",
+  "backupValidationInvalidNoteRecordMessage": "Sikkerhetskopidataene er ikke i forventet format (en notatpost er ugyldig).",
+  "backupValidationMissingNoteIdMessage": "Sikkerhetskopidataene er ikke i forventet format (en notatpost uten ID ble funnet).",
+  "backupValidationFileNotFoundMessage": "Sikkerhetskopifil ikke funnet.",
+  "backupErrorInsufficientStorageMessage": "Ikke nok ledig lagringsplass på enheten. Frigjør plass og prøv igjen.",
+  "backupErrorPermissionDeniedMessage": "Filtilgangstillatelse ble avslått. Kontroller appens tillatelser og prøv igjen.",
+  "backupErrorFileOperationMessage": "Det oppstod en feil under filoperasjonen: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "En uventet feil oppstod: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "Kunne ikke opprette zip-arkivet (ZipEncoder returnerte null).",
+  "calcTableMenuItemLabel": "Beregningsliste",
+  "tagsMenuItemLabel": "Emneknagger",
+  "linkDialogUrlHint": "https://eksempel.com",
+  "checklistItemHint": "Legg til element…",
+  "toolbarHighlightTooltip": "Uthev",
+  "toolbarListTooltip": "Liste",
+  "toolbarHideKeyboardTooltip": "Skjul tastatur",
+  "autoBackupLocalSuccessMessage": "Lokal sikkerhetskopi vellykket.",
+  "autoBackupLocalFailedMessage": "Lokal sikkerhetskopi mislyktes: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Sikkerhetskopiering til Disk hoppet over: Google-kontoen er ikke tilkoblet, eller økten har utløpt. Åpne appen og koble til på nytt.",
+  "autoBackupDriveSuccessMessage": "Sikkerhetskopiering til Disk vellykket.",
+  "autoBackupDriveFailedMessage": "Sikkerhetskopiering til Disk mislyktes: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "Ingen notater ennå",
+  "noteWidgetPreviewTotalLabel": "Totalt: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ Tegning",
+  "autoBackupSettingsAppBarTitle": "Innstillinger for automatisk sikkerhetskopiering",
+  "autoBackupSettingsMainSwitchTitle": "Aktiver automatisk sikkerhetskopiering",
+  "autoBackupSettingsMainSwitchSubtitle": "Notatene dine sikkerhetskopieres jevnlig og trygt i bakgrunnen.",
+  "autoBackupSettingsTargetTitle": "Sikkerhetskopimål",
+  "autoBackupSettingsTargetSubtitle": "Velg hvor sikkerhetskopier lagres.",
+  "autoBackupSettingsTargetLocalOption": "Lokalt",
+  "autoBackupSettingsTargetDriveOption": "Google Disk",
+  "autoBackupSettingsTargetBothOption": "Begge",
+  "autoBackupSettingsDriveNotConnectedNote": "Koble til kontoen din først for å bruke Google Disk-alternativene.",
+  "autoBackupSettingsConnectButton": "Koble til",
+  "autoBackupSettingsFrequencyTitle": "Sikkerhetskopieringsfrekvens",
+  "autoBackupSettingsFrequencySubtitle": "En sikkerhetskopi tas hver {hours}. time.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 timer",
+  "autoBackupSettingsFrequency12h": "12 timer",
+  "autoBackupSettingsFrequency24h": "24 timer (daglig)",
+  "autoBackupSettingsFrequency48h": "48 timer (2 dager)",
+  "autoBackupSettingsFrequency168h": "168 timer (ukentlig)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "Bruk kun Wi-Fi",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "Skyopplasting skjer bare over Wi-Fi for å spare mobildataforbruket ditt.",
+  "autoBackupSettingsStatusCardTitle": "Systemstatus",
+  "autoBackupSettingsNeverRunMessage": "Automatisk sikkerhetskopiering har ikke kjørt ennå.",
+  "autoBackupSettingsLastRunInfo": "Siste kjøring: {date} {time} ({status})\nMelding: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "Vellykket",
+  "autoBackupSettingsStatusFailedLabel": "Mislyktes",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Kunne ikke koble til Google-konto.",
+  "autoBackupSettingsSavedSnackbar": "Innstillinger for automatisk sikkerhetskopiering oppdatert.",
+  "selectionModeDeletedMessage": "{count} notater slettet",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "Arkivert",
+  "selectionModeClassifySheetTitle": "Velg kategori for {count} notater",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "Legg til kategori",
+  "selectionModeRemoveCategoryOption": "Fjern kategori",
+  "calcTableItemHint": "Element…",
+  "calcTableTotalRowLabel": "Totalt",
+  "textSelectionMenuShareButton": "Del",
+  "textSelectionMenuTranslateButton": "Oversett",
+  "textSelectionMenuShareFailedSnackbar": "Deling kunne ikke startes.",
+  "textSelectionMenuTranslateFailedSnackbar": "Oversettelse kunne ikke åpnes.",
+  "lastBackupInfoTodayFormat": "I dag {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}.{month}.{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "Siste sikkerhetskopi: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "Ingen sikkerhetskopi er tatt ennå."
+}

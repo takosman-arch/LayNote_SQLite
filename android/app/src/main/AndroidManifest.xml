@@ -98,7 +98,7 @@
         <receiver
             android:name=".NoteWidgetReceiverV2"
             android:exported="true"
-            android:label="DNote">
+            android:label="@string/note_widget_picker_label">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

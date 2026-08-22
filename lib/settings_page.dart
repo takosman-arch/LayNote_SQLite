@@ -1015,6 +1015,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       const MapEntry('he', 'עברית'),
                       const MapEntry('uk', 'Українська'),
                       const MapEntry('ro', 'Română'),
+                      const MapEntry('cs', 'Čeština'),
+                      const MapEntry('da', 'Dansk'),
+                      const MapEntry('no', 'Norsk'),
+                      const MapEntry('fi', 'Suomi'),
                       // Yeni dil eklerken buraya bir satır eklemek yeterli;
                       // aşağıdaki sort otomatik doğru sıraya koyar.
                     ]..sort((a, b) => a.value.compareTo(b.value));
@@ -1215,6 +1219,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       'he' => 'עברית',
                       'uk' => 'Українська',
                       'ro' => 'Română',
+                      'cs' => 'Čeština',
+                      'da' => 'Dansk',
+                      'no' => 'Norsk',
+                      'fi' => 'Suomi',
                       _ => AppLocalizations.of(context)!.settingsLanguageSystemOption,
                     },
                     trailing: null,

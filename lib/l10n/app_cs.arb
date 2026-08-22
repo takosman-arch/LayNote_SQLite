@@ -1,0 +1,1136 @@
+{
+  "@@locale": "cs",
+  "toolbarBoldTooltip": "Tučné",
+  "toolbarItalicTooltip": "Kurzíva",
+  "toolbarUnderlineTooltip": "Podtržení",
+  "toolbarStrikethroughTooltip": "Přeškrtnutí",
+  "toolbarFontSizeTooltip": "Velikost písma",
+  "toolbarColorTooltip": "Barva textu",
+  "toolbarBulletTooltip": "Odrážky",
+  "toolbarNumberTooltip": "Číslovaný seznam",
+  "toolbarIndentTooltip": "Odsazení odstavce",
+  "toolbarLinkTooltip": "Přidat / upravit / odebrat odkaz",
+  "toolbarDividerTooltip": "Vložit oddělovač",
+  "toolbarChecklistTooltip": "Přidat seznam úkolů",
+  "linkSelectTextSnackbar": "Nejprve vyberte text, který chcete propojit",
+  "linkDialogEditTitle": "Upravit odkaz",
+  "linkDialogAddTitle": "Přidat odkaz",
+  "linkDialogRemoveButton": "Odebrat odkaz",
+  "linkDialogCancelButton": "Zrušit",
+  "linkDialogConfirmButton": "Přidat",
+  "cameraPermissionPermanentlyDeniedMessage": "Přístup ke kameře byl zamítnut. Pro nahrávání videa jej musíte povolit v nastavení.",
+  "cameraPermissionRequiredMessage": "Pro nahrávání videa je vyžadováno povolení kamery.",
+  "openSettingsButtonLabel": "Nastavení",
+  "documentScanStartFailedMessage": "Skenování se nepodařilo spustit: {error}",
+  "@documentScanStartFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrRecognitionFailedMessage": "Rozpoznání textu se nezdařilo: {error}",
+  "@ocrRecognitionFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "ocrNoReadableTextMessage": "V dokumentu nebyl nalezen žádný čitelný text",
+  "scanResultSheetTitle": "Jak se má naskenovaný dokument přidat?",
+  "scanResultTextOnlyOption": "Přidat pouze jako text",
+  "scanResultTextAndImageOption": "Přidat text + naskenovaný obrázek",
+  "scanResultCancelOption": "Zrušit",
+  "audioPermissionPermanentlyDeniedMessage": "Přístup k mikrofonu byl zamítnut. Pro nahrávání zvuku jej musíte povolit v nastavení.",
+  "audioPermissionRequiredMessage": "Pro nahrávání zvuku je vyžadováno povolení mikrofonu.",
+  "voiceRecordingDefaultLabel": "Hlasová nahrávka",
+  "blockPreviewCalcTableLabel": "Výpočtový seznam ({count} řádků)",
+  "@blockPreviewCalcTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDrawingLabel": "Kresba",
+  "blockPreviewAttachmentsLabel": "{count} příloh (fotka/dokument)",
+  "@blockPreviewAttachmentsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewDividerLabel": "Oddělovač",
+  "blockPreviewChecklistLabel": "Seznam úkolů ({count} položek)",
+  "@blockPreviewChecklistLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "blockPreviewEmptyTextLabel": "(prázdný text)",
+  "reorderBlocksSheetTitle": "Přeuspořádat bloky",
+  "reorderBlocksMoveUpTooltip": "Posunout nahoru",
+  "reorderBlocksMoveDownTooltip": "Posunout dolů",
+  "reorderBlocksCloseTooltip": "Zavřít",
+  "reorderBlocksDescription": "Klepnutím na blok jej vyberte a poté jej přesuňte pomocí šipek nahoru/dolů.",
+  "reorderBlocksMenuItemLabel": "Přeuspořádat",
+  "txtImportPickerDialogTitle": "Vyberte soubor TXT k importu",
+  "txtImportReadFailedMessage": "Soubor TXT se nepodařilo přečíst",
+  "txtImportEmptyFileMessage": "Soubor TXT je prázdný",
+  "txtImportSuccessMessage": "TXT importován",
+  "txtImportMenuItemLabel": "Import (txt)",
+  "exportMenuItemLabel": "Export",
+  "editorUndoTooltip": "Zpět",
+  "editorRedoTooltip": "Znovu",
+  "noteSavedMessage": "Poznámka uložena",
+  "dateAssignPickerHelpText": "Přiřadit poznámku ke dni",
+  "dateAssignChangeOption": "Změnit datum",
+  "dateAssignRemoveOption": "Odebrat přiřazení",
+  "editorSubToolbarCloseTooltip": "Zavřít",
+  "titleFieldHint": "Název",
+  "textBlockHint": "Napište sem svou poznámku...",
+  "drawingBoardMenuItemLabel": "Kreslicí plocha",
+  "voiceToTextTextNotesOnlyMessage": "Převod hlasu na text je dostupný pouze pro textové poznámky",
+  "selectionModeCancelTooltip": "Zrušit výběr",
+  "selectionModeSelectedCountTitle": "Vybráno: {count}",
+  "@selectionModeSelectedCountTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeDeleteTooltip": "Smazat",
+  "selectionModeArchiveTooltip": "Archivovat",
+  "selectionModeFolderTooltip": "Složka",
+  "searchFieldHint": "Hledat poznámky...",
+  "emptyTrashDialogTitle": "Vyprázdnit koš",
+  "emptyTrashDialogConfirmMessage": "Všechny smazané poznámky budou trvale odstraněny. Opravdu chcete pokračovat?",
+  "emptyTrashDialogCancelButton": "Zrušit",
+  "restoreAllMenuItemLabel": "Obnovit vše",
+  "sortMenuTooltip": "Seřadit poznámky",
+  "sortMenuAscendingLabel": "Pořadí: Vzestupně (A-Z)",
+  "sortMenuDescendingLabel": "Pořadí: Sestupně (Z-A)",
+  "sortMenuByTitleLabel": "Řadit podle: Název",
+  "sortMenuByModifiedDateLabel": "Řadit podle: Poslední úpravy",
+  "sortMenuByCreatedDateLabel": "Řadit podle: Datum vytvoření",
+  "sortMenuByFolderLabel": "Řadit podle: Složka",
+  "viewToggleGridTooltip": "Zobrazení mřížky",
+  "viewToggleListTooltip": "Zobrazení seznamu",
+  "drawerHeaderSubtitle": "Váš osobní zápisník",
+  "drawerNotesSectionHeader": "POZNÁMKY",
+  "drawerAllNotesLabel": "Poznámky",
+  "drawerFavoritesLabel": "Oblíbené",
+  "drawerAgendaLabel": "Agenda",
+  "drawerRemindersLabel": "Připomínky",
+  "drawerLockedLabel": "Uzamčené",
+  "drawerTrashLabel": "Koš",
+  "drawerFoldersSectionHeader": "SLOŽKY",
+  "drawerExpandLabel": "Rozbalit",
+  "drawerCollapseLabel": "Sbalit",
+  "drawerAddFolderLabel": "Přidat složku",
+  "drawerAppSectionHeader": "APLIKACE",
+  "drawerCalendarLabel": "Kalendář",
+  "drawerSettingsLabel": "Nastavení",
+  "drawerBackupRestoreLabel": "Zálohování a obnovení",
+  "drawerUpgradeToProLabel": "Přejít na Pro",
+  "drawerProBadgeLabel": "PRO",
+  "drawerSupportDevelopmentLabel": "Podpořit vývoj",
+  "drawerFeedbackLabel": "Zpětná vazba",
+  "drawerAboutLabel": "O aplikaci",
+  "noNotesFoundMessage": "Nebyly nalezeny žádné poznámky.",
+  "trashRestoreButtonLabel": "Obnovit",
+  "trashPermanentDeleteButtonLabel": "Trvale smazat",
+  "tagRenamedInfoMessage": "Štítek přejmenován",
+  "tagDeletedInfoMessage": "Štítek smazán",
+  "tagOptionsRenameLabel": "Přejmenovat",
+  "tagOptionsDeleteLabel": "Smazat",
+  "renameTagDialogTitle": "Přejmenovat štítek",
+  "renameTagDialogHint": "Nový název štítku",
+  "renameTagDialogCancelButton": "Zrušit",
+  "renameTagDialogSaveButton": "Uložit",
+  "deleteTagDialogMessageWithCount": "„{tag}“ bude odebrán z {affectedCount} poznámek. Pokračovat?",
+  "@deleteTagDialogMessageWithCount": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      },
+      "affectedCount": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteTagDialogMessage": "Smazat štítek „{tag}“?",
+  "@deleteTagDialogMessage": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteTagDialogTitle": "Smazat štítek",
+  "deleteTagDialogCancelButton": "Zrušit",
+  "deleteTagDialogConfirmButton": "Smazat",
+  "tagsSheetTitle": "Štítky",
+  "tagsSheetEmptyMessage": "Tato poznámka zatím nemá žádné štítky.",
+  "tagsSheetInputHint": "Napište nový štítek...",
+  "tagsSheetSuggestionsLabel": "Existující štítky",
+  "noteDeletedInfoMessage": "Poznámka smazána",
+  "noteDeletedUndoActionLabel": "Zpět",
+  "reminderSetInfoMessage": "Připomínka nastavena",
+  "reminderRemovedInfoMessage": "Připomínka odebrána",
+  "noteDuplicatedInfoMessage": "Kopie vytvořena",
+  "speechTextAppendedInfoMessage": "Text přidán do poznámky",
+  "pdfPreparingInfoMessage": "Připravuje se PDF…",
+  "pdfSavedInfoMessage": "PDF uloženo",
+  "jpgPreparingInfoMessage": "Připravuje se JPG…",
+  "jpgSavedInfoMessage": "JPG uloženo",
+  "jpgFailedInfoMessage": "Soubor JPG se nepodařilo vytvořit",
+  "txtPreparingInfoMessage": "Připravuje se TXT…",
+  "txtSavedInfoMessage": "TXT uloženo",
+  "txtFailedInfoMessage": "Soubor TXT se nepodařilo vytvořit",
+  "exportOpenActionLabel": "Otevřít",
+  "wrongPasswordInfoMessage": "Nesprávné heslo.",
+  "noteArchivedInfoMessage": "Poznámka archivována",
+  "noteUnarchivedInfoMessage": "Odebráno z archivu",
+  "noteUnlockedInfoMessage": "Odemčeno",
+  "noteLockedInfoMessage": "Poznámka uzamčena",
+  "notificationUnpinnedInfoMessage": "Odepnuto",
+  "emptyNotePinBlockedInfoMessage": "Prázdnou poznámku nelze připnout.",
+  "notificationPinnedInfoMessage": "Připnuto na panel oznámení",
+  "noContentToReadInfoMessage": "Není zde žádný obsah ke čtení",
+  "backPressExitInfoMessage": "Pro ukončení stiskněte znovu tlačítko zpět",
+  "reminderChannelName": "Připomínky poznámek",
+  "reminderChannelDescription": "Připomínky poznámek v aplikaci Layout",
+  "pinnedChannelName": "Připnuté poznámky",
+  "pinnedChannelDescription": "Poznámky aplikace Layout připnuté na panelu oznámení",
+  "notificationUnpinActionLabel": "Odebrat",
+  "reminderDefaultTitle": "Připomínka",
+  "reminderChecklistBodyFallback": "Nezapomeňte zkontrolovat svůj seznam úkolů",
+  "reminderTextBodyFallback": "Nezapomeňte zkontrolovat svou poznámku",
+  "pdfSaveDialogTitle": "Uložit jako PDF",
+  "jpgSaveDialogTitle": "Uložit jako JPG",
+  "txtSaveDialogTitle": "Uložit jako TXT",
+  "textSizeSheetTitle": "Velikost textu",
+  "textSizeSamplePreview": "Ukázkový text",
+  "textSizeCancelButton": "Zrušit",
+  "textSizeApplyButton": "Použít",
+  "createPasswordDialogTitle": "Vytvořit heslo",
+  "createPasswordNewPasswordHint": "Nové heslo",
+  "createPasswordConfirmHint": "Zadejte heslo znovu",
+  "createPasswordHintQuestionDescription": "Nastavte bezpečnostní otázku pro případ, že zapomenete heslo (volitelné).",
+  "createPasswordHintQuestionHint": "Vyberte bezpečnostní otázku",
+  "createPasswordHintAnswerHint": "Vaše odpověď",
+  "createPasswordCancelButton": "Zrušit",
+  "createPasswordSaveButton": "Uložit",
+  "passwordMismatchMessage": "Hesla se neshodují!",
+  "passwordRequiredDialogTitle": "Je vyžadováno heslo",
+  "passwordRequiredHint": "Zadejte heslo",
+  "forgotPasswordButtonLabel": "Zapomněl(a) jsem heslo",
+  "passwordRequiredCancelButton": "Zrušit",
+  "passwordRequiredConfirmButton": "Ověřit",
+  "securityQuestionDialogTitle": "Bezpečnostní otázka",
+  "securityQuestionAnswerHint": "Vaše odpověď",
+  "securityQuestionCancelButton": "Zrušit",
+  "securityQuestionConfirmButton": "Potvrdit",
+  "securityQuestionWrongAnswerMessage": "Nesprávná odpověď. Zkuste to znovu.",
+  "revealedPasswordDialogTitle": "Vaše heslo",
+  "revealedPasswordLabel": "Heslo vaší poznámky:",
+  "revealedPasswordOkButton": "OK",
+  "securityQuestionPetName": "Jak se jmenoval váš první domácí mazlíček?",
+  "securityQuestionFavoriteTeacher": "Jak se jmenoval váš oblíbený učitel?",
+  "securityQuestionBirthCity": "Ve kterém městě jste se narodil(a)?",
+  "securityQuestionFavoriteFood": "Jaké je vaše oblíbené jídlo?",
+  "securityQuestionMotherMaidenName": "Jaké je rodné příjmení vaší matky?",
+  "securityQuestionFirstSchool": "Jak se jmenovala první škola, kterou jste navštěvoval(a)?",
+  "securityQuestionFavoriteColor": "Jaká je vaše oblíbená barva?",
+  "editFolderDialogTitle": "Upravit složku",
+  "newSubfolderDialogTitle": "Nová podsložka",
+  "addFolderDialogTitle": "Přidat složku",
+  "subfolderParentInfoMessage": "Bude vytvořena uvnitř „{parentCategory}“",
+  "@subfolderParentInfoMessage": {
+    "placeholders": {
+      "parentCategory": {
+        "type": "String"
+      }
+    }
+  },
+  "subfolderNameFieldLabel": "Název podsložky",
+  "folderNameFieldLabel": "Název složky",
+  "folderColorLabel": "Barva",
+  "folderDialogCancelButton": "Zrušit",
+  "folderDialogSaveButton": "Uložit",
+  "folderDialogAddButton": "Přidat",
+  "selectFolderSheetTitle": "Vybrat složku",
+  "selectFolderAddOptionLabel": "Přidat složku",
+  "removeCurrentFolderLabel": "Odebrat aktuální složku",
+  "noteDetailsDialogTitle": "Podrobnosti",
+  "noteDetailsCreatedLabel": "Vytvořeno",
+  "noteDetailsModifiedLabel": "Poslední úprava",
+  "noteDetailsCharCountLabel": "Počet znaků",
+  "noteDetailsCharCountValue": "{count} znaků",
+  "@noteDetailsCharCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsWordCountLabel": "Počet slov",
+  "noteDetailsWordCountValue": "{count} slov",
+  "@noteDetailsWordCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noteDetailsOkButton": "OK",
+  "noteDetailsUnknownDateLabel": "Neznámé",
+  "addAttachmentSheetTitle": "Přidat",
+  "addAttachmentImageOption": "Přidat obrázek",
+  "addAttachmentCameraOption": "Fotoaparát",
+  "addAttachmentFileOption": "Přidat soubor",
+  "addAttachmentVoiceOption": "Hlasová nahrávka",
+  "addAttachmentVideoOption": "Nahrát video",
+  "addAttachmentScanOption": "Skenovat dokument",
+  "noteActionsSheetTitle": "Vyberte akci",
+  "noteActionReminderLabel": "Připomínka",
+  "noteActionEditReminderLabel": "Upravit připomínku",
+  "noteActionSpeechToTextLabel": "Řeč na text",
+  "noteActionArchiveLabel": "Archivovat",
+  "noteActionUnarchiveLabel": "Odebrat z archivu",
+  "noteActionLockLabel": "Uzamknout",
+  "noteActionUnlockLabel": "Odemknout",
+  "noteActionFavoriteLabel": "Oblíbené",
+  "noteActionUnfavoriteLabel": "Odebrat z oblíbených",
+  "noteActionClassifyLabel": "Vybrat složku",
+  "noteActionDeleteLabel": "Smazat",
+  "noteActionPinToNotificationLabel": "Připnout na panel oznámení",
+  "noteActionUnpinFromNotificationLabel": "Odepnout",
+  "noteActionShareLabel": "Sdílet",
+  "noteActionDuplicateLabel": "Vytvořit kopii",
+  "noteActionCopyContentLabel": "Kopírovat obsah",
+  "noteActionTtsLabel": "Přečíst nahlas",
+  "noteActionTextSizeLabel": "Velikost textu",
+  "noteActionDetailsLabel": "Podrobnosti",
+  "noteActionDiscardChangesLabel": "Zahodit změny",
+  "noteActionSelectLabel": "Vybrat",
+  "reminderEditOptionLabel": "Změnit připomínku",
+  "reminderRemoveOptionLabel": "Odebrat připomínku",
+  "discardChangesDialogTitle": "Zahodit změny",
+  "discardChangesDialogMessage": "Neuložené změny v této poznámce budou ztraceny. Opravdu je chcete zahodit?",
+  "discardChangesCancelButton": "Zrušit",
+  "discardChangesConfirmButton": "Zahodit",
+  "pinnedNotificationDefaultTitle": "Poznámka",
+  "pdfFailedInfoMessage": "Soubor PDF se nepodařilo vytvořit",
+  "drawingScreenTitle": "Kresba",
+  "drawingMinimizeTooltip": "Minimalizovat",
+  "drawingEmptyExportWarningMessage": "Nejprve něco nakreslete",
+  "drawingEraserPartialModeLabel": "Částečná",
+  "drawingEraserFullModeLabel": "Úplná",
+  "drawingClearTooltip": "Vymazat",
+  "drawingZoomOutTooltip": "Oddálit",
+  "drawingZoomInTooltip": "Přiblížit",
+  "drawingDeleteTooltip": "Smazat",
+  "drawingEmptyPreviewHint": "Klepnutím kreslete",
+  "settingsPageTitle": "Nastavení",
+  "settingsSectionGeneral": "Obecné",
+  "settingsSectionSecurity": "Zabezpečení",
+  "settingsSectionTheme": "Motiv",
+  "settingsSectionPersonalization": "Přizpůsobení",
+  "settingsSectionWidget": "Widget",
+  "settingsSectionAbout": "O aplikaci",
+  "settingsHintQuestionPet": "Jak se jmenoval váš první domácí mazlíček?",
+  "settingsHintQuestionTeacher": "Jak se jmenoval váš oblíbený učitel?",
+  "settingsHintQuestionBirthCity": "Ve kterém městě jste se narodil(a)?",
+  "settingsHintQuestionFavoriteFood": "Jaké je vaše oblíbené jídlo?",
+  "settingsHintQuestionMotherMaidenName": "Jaké je rodné příjmení vaší matky?",
+  "settingsHintQuestionFirstSchool": "Jaká byla první škola, kterou jste navštěvoval(a)?",
+  "settingsHintQuestionFavoriteColor": "Jaká je vaše oblíbená barva?",
+  "settingsSecurityQuestionDialogTitle": "Bezpečnostní otázka",
+  "settingsSecurityQuestionDialogDesc": "Pokud zapomenete heslo, můžete je obnovit správnou odpovědí na tuto otázku.",
+  "settingsSecurityQuestionDropdownHint": "Vyberte bezpečnostní otázku",
+  "settingsSecurityQuestionAnswerHint": "Vaše odpověď",
+  "settingsSecurityQuestionCancelButton": "Zrušit",
+  "settingsSecurityQuestionEmptyWarning": "Otázka a odpověď nesmí být prázdné!",
+  "settingsSecurityQuestionSaveButton": "Uložit",
+  "settingsCreatePasswordTitle": "Vytvořit heslo",
+  "settingsPasswordRequiredTitle": "Je vyžadováno heslo",
+  "settingsPasswordEnterHint": "Zadejte heslo",
+  "settingsForgotPasswordButton": "Zapomněl(a) jsem heslo",
+  "settingsNewPasswordHint": "Nové heslo",
+  "settingsConfirmPasswordHint": "Zadejte heslo znovu",
+  "settingsSecurityQuestionOptionalDesc": "Nastavte bezpečnostní otázku pro případ, že zapomenete heslo (volitelné).",
+  "settingsPasswordDialogCancelButton": "Zrušit",
+  "settingsPasswordMismatchWarning": "Hesla se neshodují!",
+  "settingsWrongPasswordWarning": "Nesprávné heslo!",
+  "settingsPasswordSaveButton": "Uložit",
+  "settingsPasswordRemoveButton": "Odebrat",
+  "settingsNotePasswordTitle": "Heslo poznámky",
+  "settingsPasswordSetSubtitle": "Heslo nastaveno ✓",
+  "settingsPasswordNotSetSubtitle": "Heslo není nastaveno",
+  "settingsSecurityQuestionTileTitle": "Bezpečnostní otázka",
+  "settingsSecurityQuestionSetSubtitle": "Nastaveno ✓ — použije se, pokud zapomenete heslo",
+  "settingsSecurityQuestionNotSetSubtitle": "Nenastaveno — pokud heslo ztratíte, nebudete jej moci obnovit",
+  "settingsThemeDialogTitle": "Vybrat motiv",
+  "settingsThemeSystemDefault": "Výchozí systémový",
+  "settingsThemeLightOption": "Světlý motiv",
+  "settingsThemeDarkOption": "Tmavý motiv",
+  "settingsAccentColorDialogTitle": "Vybrat zvýrazňující barvu",
+  "settingsThemeChangeTileTitle": "Změnit motiv",
+  "settingsThemeLightLabel": "Světlý",
+  "settingsThemeDarkLabel": "Tmavý",
+  "settingsThemeSystemLabel": "Systémový",
+  "settingsLanguageTileTitle": "Jazyk",
+  "settingsLanguageDialogTitle": "Vybrat jazyk",
+  "settingsLanguageSystemOption": "Systémový",
+  "settingsAccentColorTileTitle": "Zvýrazňující barva",
+  "settingsAccentColorTileSubtitle": "Barva použitá na horní liště, tlačítkách a přepínačích",
+  "settingsColorfulNotesTitle": "Různobarevné poznámky",
+  "settingsColorfulNotesSubtitle": "Každá karta poznámky získá jiný barevný odstín.",
+  "settingsTextColorSheetTitle": "Barva textu",
+  "settingsTextColorSheetDesc": "Nastaví barvu textu obsahu poznámky.",
+  "settingsTextColorOkButton": "OK",
+  "settingsTextColorTileTitle": "Barva textu",
+  "settingsTextColorTileSubtitle": "Barva textu obsahu poznámky.",
+  "settingsWidgetFontSizeLabel": "Velikost písma widgetu",
+  "settingsWidgetFontSizeSample": "Ukázkový nadpis – {size} pt",
+  "@settingsWidgetFontSizeSample": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetFontSizeCancelButton": "Zrušit",
+  "settingsWidgetFontSizeApplyButton": "Použít",
+  "settingsWidgetOpacityLabel": "Průhlednost pozadí",
+  "settingsWidgetOpacityValue": "Průhlednost {percent} %",
+  "@settingsWidgetOpacityValue": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsWidgetOpacityCancelButton": "Zrušit",
+  "settingsWidgetOpacityApplyButton": "Použít",
+  "settingsWidgetDarkModeTitle": "Tmavý widget",
+  "settingsWidgetDarkModeDesc": "Tmavé barevné schéma pro widget.",
+  "settingsAboutVersionTitle": "Verze aplikace",
+  "settingsFontFamilyTileTitle": "Písmo",
+  "settingsFontFamilyDefaultLabel": "Výchozí",
+  "settingsGlobalFontSizeTileTitle": "Velikost písma",
+  "settingsGlobalFontSizeTileSubtitle": "{size} pt — použito na všechny poznámky.",
+  "@settingsGlobalFontSizeTileSubtitle": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeSamplePreview": "Ukázkový text – {size} pt",
+  "@settingsGlobalFontSizeSamplePreview": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsGlobalFontSizeApplyToAllLabel": "Použít na existující poznámky",
+  "settingsGlobalFontSizeApplyToAllNote": "Pokud má poznámka nastavenou vlastní velikost písma, toto nastavení ji neovlivní.",
+  "settingsGlobalFontSizeCancelButton": "Zrušit",
+  "settingsGlobalFontSizeApplyButton": "Použít",
+  "settingsPreviewLinesTileTitle": "Řádky náhledu poznámky",
+  "settingsPreviewLinesTileSubtitle": "Zobrazit až {lines} řádků. Pokud je poznámka kratší, zobrazí se skutečný počet řádků.",
+  "@settingsPreviewLinesTileSubtitle": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesCurrentLabel": "Aktuálně: {lines} řádků",
+  "@settingsPreviewLinesCurrentLabel": {
+    "placeholders": {
+      "lines": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsPreviewLinesDescription": "Nastaví maximální počet řádků v náhledu. Pokud má poznámka méně řádků, zobrazí se skutečný počet.",
+  "settingsPreviewLinesCancelButton": "Zrušit",
+  "settingsPreviewLinesApplyButton": "Použít",
+  "backupCancelButton": "Zrušit",
+  "backupConnectButton": "Připojit",
+  "backupDisconnectButton": "Odpojit",
+  "backupContinueButton": "Pokračovat",
+  "backupCloseButton": "Zavřít",
+  "backupShareButton": "Sdílet",
+  "backupRestoreButton": "Obnovit",
+  "backupConfigureButton": "Nastavit",
+  "backupUnknownDateLabel": "Neznámé",
+  "backupProcessingDefaultLabel": "Zpracovává se...",
+  "backupPermissionRequiredTitle": "Je vyžadováno oprávnění k úložišti",
+  "backupPermissionRequiredBodyPermanent": "Tato verze Androidu vyžaduje pro zálohování/obnovení oprávnění k úložišti. Protože bylo oprávnění trvale zamítnuto, povolte je ručně v nastavení aplikace.",
+  "backupPermissionRequiredBodyNormal": "Tato verze Androidu vyžaduje pro zálohování/obnovení oprávnění k úložišti. Pro pokračování udělte oprávnění.",
+  "backupGoToSettingsButton": "Přejít do nastavení",
+  "backupRetryButton": "Zkusit znovu",
+  "backupDriveConnectingLabel": "Připojování k účtu Google...",
+  "backupDriveConnectedWithEmailMessage": "Připojeno k účtu Google Disk: {email}",
+  "@backupDriveConnectedWithEmailMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveConnectedMessage": "Připojeno k účtu Google Disk.",
+  "backupDriveConnectFailedMessage": "Nepodařilo se připojit k účtu Google nebo byla operace zrušena.",
+  "backupDriveDisconnectTitle": "Odpojit Google Disk",
+  "backupDriveDisconnectBody": "Pokud se odpojíte, nebude možné ruční ani automatické zálohování na Disk. Zálohy již uložené na Disku nebudou smazány – odebere se pouze přístup z tohoto zařízení.",
+  "backupDriveDisconnectedMessage": "Připojení ke Google Disku bylo odebráno.",
+  "backupDriveRequiredTitle": "Je vyžadován účet Google",
+  "backupDriveRequiredBody": "Tato akce vyžaduje připojení účtu Google. Chcete se připojit nyní?",
+  "backupDriveStatusConnectedWithEmail": "Google Disk: připojeno ({email})",
+  "@backupDriveStatusConnectedWithEmail": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveStatusConnected": "Google Disk: připojeno",
+  "backupDriveStatusDisconnected": "Google Disk: nepřipojeno",
+  "backupDriveAuthenticatingLabel": "Ověřování účtu Google...",
+  "backupDriveNotSignedInMessage": "Nejste připojeni ke Google Disku. Nejprve se prosím přihlaste ke svému účtu Google.",
+  "backupDriveUploadingLabel": "Nahrávání zálohy na Disk...",
+  "backupDriveUploadTimeoutMessage": "Nahrávání na Google Disk se nedokončilo do 120 sekund (žádná odpověď ze serveru). Zkontrolujte připojení a zkuste to znovu.",
+  "backupDriveOperationCompletedLabel": "Dokončeno",
+  "backupToDriveActionLabel": "zálohu na Disk",
+  "backupToDeviceActionLabel": "zálohu",
+  "backupCreatingLabel": "Vytváření zálohy...",
+  "backupCreateFailedMessage": "Zálohu se nepodařilo vytvořit: {error}",
+  "@backupCreateFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadFailedMessage": "Nahrání na Google Disk se nezdařilo: {error}",
+  "@backupDriveUploadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveUploadSuccessMessage": "Záloha byla úspěšně nahrána na Google Disk.",
+  "backupCreatedMessage": "Záloha vytvořena: {fileName} ({size})",
+  "@backupCreatedMessage": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupOfferShareTitle": "Záloha je připravena",
+  "backupOfferShareBody": "Soubor zálohy byl uložen do vašeho zařízení. Chcete jej nyní sdílet (např. do cloudového úložiště, e-mailem, na jiné zařízení)?",
+  "backupShareFileText": "soubor zálohy Layout",
+  "backupShareFailedMessage": "Sdílení se nepodařilo spustit: {error}",
+  "@backupShareFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLargeOperationTitle": "Velká záloha",
+  "backupLargeOperationBody": "Zpracovávaná data mají přibližně {sizeText}. {actionLabel} takové velikosti může chvíli trvat v závislosti na zařízení. Během zpracování neopouštějte aplikaci – chcete pokračovat?",
+  "@backupLargeOperationBody": {
+    "placeholders": {
+      "sizeText": {
+        "type": "String"
+      },
+      "actionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreActionLabel": "obnovení",
+  "backupDriveListingLabel": "Načítání záloh z Disku...",
+  "backupDriveListFailedMessage": "Zálohy se nepodařilo načíst: {error}",
+  "@backupDriveListFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveNoBackupsMessage": "Na Google Disku zatím nejsou žádné zálohy.",
+  "backupDrivePickTitle": "Vyberte zálohu z Disku",
+  "backupDriveDownloadingLabel": "Stahování zálohy z Disku...",
+  "backupDriveDownloadingWithSizeLabel": "Stahování zálohy z Disku... ({downloaded} / {total})",
+  "@backupDriveDownloadingWithSizeLabel": {
+    "placeholders": {
+      "downloaded": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveSavingToDeviceLabel": "Ukládání souboru do zařízení...",
+  "backupDriveUnknownBackupFileName": "neznama_zaloha.zip",
+  "backupDriveStorageFullMessage": "Vaše úložiště Google Disk je plné. Uvolněte místo na Disku a zkuste to znovu.",
+  "backupDriveNetworkErrorMessage": "Nepodařilo se navázat internetové připojení. Zkontrolujte připojení a zkuste to znovu.",
+  "backupDriveBackupNotFoundMessage": "Zadaný soubor zálohy se na Disku nepodařilo najít. Možná byl smazán.",
+  "backupDriveUnknownErrorMessage": "Během operace s Google Diskem došlo k neočekávané chybě: {error}",
+  "@backupDriveUnknownErrorMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDriveDownloadFailedMessage": "Stahování se nezdařilo: {error}",
+  "@backupDriveDownloadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickFileFailedMessage": "Soubor se nepodařilo vybrat: {error}",
+  "@backupPickFileFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPickedFileUnreachableMessage": "K vybranému souboru se nepodařilo získat přístup.",
+  "backupCheckingLabel": "Kontrola zálohy...",
+  "backupReadFailedMessage": "Soubor zálohy se nepodařilo přečíst: {error}",
+  "@backupReadFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupRestoreConfirmTitle": "Obnovit zálohu",
+  "backupPreviewContentsHeader": "Obsah vybrané zálohy:",
+  "backupPreviewNoteCountLabel": "Počet poznámek",
+  "backupPreviewTrashCountLabel": "Poznámky v koši",
+  "backupPreviewCategoryCountLabel": "Počet složek",
+  "backupPreviewAttachmentLabel": "Přílohy",
+  "backupPreviewAttachmentNoneValue": "Žádné",
+  "backupPreviewAttachmentCountValue": "{count} souborů ({size})",
+  "@backupPreviewAttachmentCountValue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "backupPreviewCreatedAtLabel": "Vytvořeno dne",
+  "backupEmptyPreviewTitle": "Tato záloha vypadá prázdně",
+  "backupEmptyPreviewBody": "Ve vybraném souboru nebyly nalezeny žádné poznámky, složky ani přílohy. Pokud budete pokračovat, vaše aktuální data budou přesto smazána a nahrazena touto prázdnou zálohou.",
+  "backupMissingAttachmentsTitle": "V záloze nebylo nalezeno {count} příloh",
+  "@backupMissingAttachmentsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupMissingAttachmentsBody": "Poznámky s těmito soubory budou obnoveny, ale bez příloh (mohly chybět nebo být poškozené v době vytvoření zálohy): {names}",
+  "@backupMissingAttachmentsBody": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  },
+  "backupMissingAttachmentsMoreSuffix": "{shown} a dalších {remaining}",
+  "@backupMissingAttachmentsMoreSuffix": {
+    "placeholders": {
+      "shown": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreConfirmBody": "Tímto NAHRADÍTE všechny své aktuální poznámky, koš, složky, nastavení a přílohy daty z výše uvedené zálohy. Vaše aktuální data budou trvale ztracena a tuto akci nelze vrátit zpět.",
+  "backupRestoringLabel": "Obnovování zálohy...",
+  "backupRestoreSuccessWithMissingMessage": "Záloha byla obnovena. Nicméně {count} příloh nebylo v záloze nalezeno a nepodařilo se je obnovit. Pro plné projevení změn se doporučuje aplikaci restartovat.",
+  "@backupRestoreSuccessWithMissingMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreSuccessMessage": "Záloha byla úspěšně obnovena. Pro plné projevení změn se doporučuje aplikaci restartovat.",
+  "backupRestoreFailedMessage": "Při obnovování došlo k chybě: {error}",
+  "@backupRestoreFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupScreenTitle": "Zálohování a obnovení",
+  "backupBlockedExitWarningMessage": "Probíhá operace, počkejte prosím na její dokončení.",
+  "backupBusyBackTooltip": "Probíhá operace",
+  "backupIntroText": "Své poznámky, složky, nastavení a přílohy můžete zálohovat jako jeden soubor .zip nebo obnovit dříve vytvořenou zálohu.",
+  "backupDriveCardTitle": "Zálohovat na Google Disk",
+  "backupDriveCardSubtitle": "Vytvořte novou zálohu a nahrajte ji přímo do soukromé oblasti svého Google Disku.",
+  "backupDriveCardButtonLabel": "Zálohovat na Disk",
+  "backupDeviceCardTitle": "Zálohovat do zařízení",
+  "backupDeviceCardSubtitle": "Uložte všechna svá data jako jeden soubor .zip do zařízení a případně je sdílejte.",
+  "backupDeviceCardButtonLabel": "Zálohovat do zařízení",
+  "backupHistoryCardTitle": "Historie záloh",
+  "backupHistoryCardSubtitle": "Zobrazte všechny zálohy uložené v zařízení s jejich datem a velikostí; můžete je přímo odsud sdílet, obnovit nebo smazat.",
+  "backupHistoryTabDevice": "Zařízení",
+  "backupHistoryTabDrive": "Google Disk",
+  "backupHistoryDeleteDialogTitle": "Smazat zálohu",
+  "backupHistoryDeleteDialogBody": "Opravdu chcete trvale smazat soubor zálohy „{fileName}“? Tuto akci nelze vrátit zpět.",
+  "@backupHistoryDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceDeletedMessage": "Záloha smazána.",
+  "backupHistoryDriveDeleteDialogTitle": "Smazat zálohu z Disku",
+  "backupHistoryDriveDeleteDialogBody": "Opravdu chcete trvale smazat zálohu „{fileName}“ z Google Disku? Tuto akci nelze vrátit zpět a soubor nebude přesunut do koše.",
+  "@backupHistoryDriveDeleteDialogBody": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDriveDeletedMessage": "Záloha z Disku smazána.",
+  "backupHistoryDriveDeleteFailedMessage": "Nepodařilo se smazat: {error}",
+  "@backupHistoryDriveDeleteFailedMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "backupHistoryDeviceEmptyTitle": "Na tomto zařízení zatím nejsou uloženy žádné zálohy.",
+  "backupHistoryDeviceEmptySubtitle": "Pomocí možnosti „Zálohovat do zařízení“ vytvořte svou první zálohu.",
+  "backupHistoryDriveEmptySubtitle": "Pomocí možnosti „Zálohovat na Google Disk“ vytvořte svou první cloudovou zálohu.",
+  "backupHistoryDriveSignInPrompt": "Připojte svůj účet Google, abyste viděli zálohy na Disku.",
+  "backupHistoryConnectGoogleButton": "Připojit přes Google",
+  "backupHistoryDriveConnectedFallback": "Připojeno",
+  "backupHistoryUnknownErrorFallback": "Došlo k neznámé chybě.",
+  "backupHistoryDownloadStartingLabel": "Spouštění...",
+  "backupAutoBackupEnabledLabel": "Automatická záloha: zapnuta",
+  "backupAutoBackupDisabledLabel": "Automatická záloha: vypnuta",
+  "backupOverlayWarningMessage": "Počkejte prosím, neopouštějte aplikaci, dokud operace neskončí.",
+  "pdfExportUntitledNoteLabel": "Poznámka bez názvu",
+  "pdfExportDefaultAttachmentName": "Příloha",
+  "pdfExportDefaultFileName": "poznamka",
+  "screenshotExportBoundaryNotFoundMessage": "Snímek obrazovky se nepodařilo zachytit (hranice nenalezena)",
+  "screenshotExportByteDataNullMessage": "Data snímku obrazovky se nepodařilo vygenerovat",
+  "screenshotExportPngDecodeFailedMessage": "Obrázek se nepodařilo zpracovat (dekódování PNG selhalo)",
+  "screenshotCalcTableTotalLabel": "Celkem",
+  "gundemMenuRemoveFromAgenda": "Odebrat z agendy",
+  "gundemMenuDeleteNote": "Smazat poznámku",
+  "gundemSectionOverdue": "Po termínu",
+  "gundemSectionToday": "Dnes",
+  "gundemSectionTomorrow": "Zítra",
+  "gundemSectionNextWeek": "Příští týden",
+  "gundemSectionFurther": "Později",
+  "gundemWeekdayMonday": "Pondělí",
+  "gundemWeekdayTuesday": "Úterý",
+  "gundemWeekdayWednesday": "Středa",
+  "gundemWeekdayThursday": "Čtvrtek",
+  "gundemWeekdayFriday": "Pátek",
+  "gundemWeekdaySaturday": "Sobota",
+  "gundemWeekdaySunday": "Neděle",
+  "gundemAppBarTitle": "Agenda",
+  "gundemCalendarTooltip": "Kalendář",
+  "gundemEmptyTitle": "Ve vaší agendě nic není",
+  "gundemEmptySubtitle": "Zde se zobrazí poznámky s připomínkou nebo přiřazeným datem.",
+  "gundemUntitledNote": "Poznámka bez názvu",
+  "gundemRepeatHourly": "Každou hodinu",
+  "gundemRepeatDaily": "Denně",
+  "gundemRepeatWeekly": "Týdně",
+  "gundemRepeatMonthly": "Měsíčně",
+  "gundemRepeatYearly": "Ročně",
+  "gundemPreviewCalcTableLabel": "[Výpočtový seznam]",
+  "gundemPreviewDrawingLabel": "[Kresba]",
+  "gundemPreviewImageLabel": "[Obrázek]",
+  "gundemMonthShortJan": "led",
+  "gundemMonthShortFeb": "úno",
+  "gundemMonthShortMar": "bře",
+  "gundemMonthShortApr": "dub",
+  "gundemMonthShortMay": "kvě",
+  "gundemMonthShortJun": "čvn",
+  "gundemMonthShortJul": "čvc",
+  "gundemMonthShortAug": "srp",
+  "gundemMonthShortSep": "zář",
+  "gundemMonthShortOct": "říj",
+  "gundemMonthShortNov": "lis",
+  "gundemMonthShortDec": "pro",
+  "calendarAppBarTitle": "Kalendář",
+  "calendarTodayButton": "Dnes",
+  "calendarLegendNoteLabel": "Poznámka",
+  "calendarLegendReminderLabel": "Připomínka",
+  "calendarTodayBadge": "Dnes",
+  "calendarEmptyDayMessage": "Pro tento den nejsou žádné poznámky ani připomínky.",
+  "calendarReminderHourlyLabel": "Každou hodinu",
+  "calendarMonthJan": "Leden",
+  "calendarMonthFeb": "Únor",
+  "calendarMonthMar": "Březen",
+  "calendarMonthApr": "Duben",
+  "calendarMonthMay": "Květen",
+  "calendarMonthJun": "Červen",
+  "calendarMonthJul": "Červenec",
+  "calendarMonthAug": "Srpen",
+  "calendarMonthSep": "Září",
+  "calendarMonthOct": "Říjen",
+  "calendarMonthNov": "Listopad",
+  "calendarMonthDec": "Prosinec",
+  "calendarWeekdayShortMon": "Po",
+  "calendarWeekdayShortTue": "Út",
+  "calendarWeekdayShortWed": "St",
+  "calendarWeekdayShortThu": "Čt",
+  "calendarWeekdayShortFri": "Pá",
+  "calendarWeekdayShortSat": "So",
+  "calendarWeekdayShortSun": "Ne",
+  "calendarWeekdayFullMonday": "Pondělí",
+  "calendarWeekdayFullTuesday": "Úterý",
+  "calendarWeekdayFullWednesday": "Středa",
+  "calendarWeekdayFullThursday": "Čtvrtek",
+  "calendarWeekdayFullFriday": "Pátek",
+  "calendarWeekdayFullSaturday": "Sobota",
+  "calendarWeekdayFullSunday": "Neděle",
+  "wrongPasswordDialogTitle": "Nesprávné heslo",
+  "wrongPasswordDialogMessage": "Zadané heslo je nesprávné.",
+  "commonOkButton": "OK",
+  "unlockCategoryAction": "Odemknout",
+  "lockCategoryAction": "Uzamknout",
+  "categoryUnlockedMessage": "Odemčeno",
+  "categoryLockedMessage": "Složka uzamčena",
+  "deleteFolderMenuItemLabel": "Smazat složku",
+  "deleteFolderDialogTitle": "Smazat složku",
+  "deleteFolderDialogMessageWithSubfolders": "Opravdu chcete smazat složku „{category}“ a všechny její podsložky? Poznámky v těchto složkách zůstanou nezařazené.",
+  "@deleteFolderDialogMessageWithSubfolders": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogMessage": "Opravdu chcete smazat složku „{category}“? Poznámky v této složce zůstanou nezařazené.",
+  "@deleteFolderDialogMessage": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFolderDialogCancelButton": "Zrušit",
+  "deleteFolderDialogConfirmButton": "Smazat",
+  "editCategoryNameColorMenuItemLabel": "Upravit název / barvu",
+  "addSubfolderMenuItemLabel": "Vytvořit podsložku",
+  "expandSubfoldersMenuItemLabel": "Rozbalit podsložky",
+  "collapseSubfoldersMenuItemLabel": "Sbalit podsložky",
+  "saveErrorInfoMessage": "Chyba při ukládání: {error}",
+  "@saveErrorInfoMessage": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "welcomeNoteTitle": "Vítejte v DNote! 🚀",
+  "welcomeNoteContent": "Byly přidány nové funkce!",
+  "noteListDateGroupToday": "Dnes",
+  "noteListDateGroupYesterday": "Včera",
+  "noteListDateGroupLast7Days": "Posledních 7 dní",
+  "noteListDateGroupLast30Days": "Posledních 30 dní",
+  "reminderRepeatNoneLabel": "Bez opakování",
+  "voiceRecorderPreparingLabel": "Připravuje se…",
+  "voiceRecorderCancelButton": "Zrušit",
+  "voiceRecorderStopAddButton": "Zastavit a přidat",
+  "speechToTextMicPermissionDeniedMessage": "Oprávnění k mikrofonu nebylo uděleno.",
+  "speechToTextUnavailableMessage": "Rozpoznávání řeči není v tomto zařízení k dispozici.",
+  "speechToTextPreparingLabel": "Připravuje se…",
+  "speechToTextListeningLabel": "Naslouchá se…",
+  "speechToTextStartSpeakingPlaceholder": "Začněte mluvit…",
+  "speechToTextCancelButton": "Zrušit",
+  "speechToTextStopAddButton": "Zastavit a přidat",
+  "textToSpeechNoContentMessage": "Není zde žádný obsah ke čtení.",
+  "textToSpeechReadErrorMessage": "Při čtení došlo k chybě.",
+  "textToSpeechUnavailableMessage": "Převod textu na řeč není v tomto zařízení k dispozici.",
+  "textToSpeechPreparingLabel": "Připravuje se…",
+  "textToSpeechPausedLabel": "Pozastaveno",
+  "textToSpeechFinishedLabel": "Čtení dokončeno",
+  "textToSpeechReadingLabel": "Čte se…",
+  "textToSpeechCloseErrorButton": "Zavřít",
+  "textToSpeechReplayButton": "Přečíst znovu",
+  "textToSpeechCloseFinishedButton": "Zavřít",
+  "textToSpeechPauseButton": "Pozastavit",
+  "textToSpeechResumeButton": "Pokračovat",
+  "textToSpeechStopButton": "Zastavit",
+  "textToSpeechSpeedSlow": "Pomalé",
+  "textToSpeechSpeedNormal": "Normální",
+  "textToSpeechSpeedFast": "Rychlé",
+  "calendarPickerCancelButton": "Zrušit",
+  "calendarPickerConfirmButton": "Vybrat",
+  "calendarPickerClearButton": "Vymazat",
+  "reminderPickerDialogTitle": "Přidat připomínku",
+  "reminderPickerDateTodayOption": "Dnes",
+  "reminderPickerDateTomorrowOption": "Zítra",
+  "reminderPickerDatePickOption": "Vybrat datum",
+  "reminderRepeatHourlyLabel": "Každou hodinu",
+  "reminderRepeatDailyLabel": "Každý den",
+  "reminderRepeatWeeklyLabel": "Každý týden",
+  "reminderRepeatMonthlyLabel": "Každý měsíc",
+  "reminderRepeatYearlyLabel": "Každý rok",
+  "reminderPickerCalendarHelpText": "Vyberte datum připomínky",
+  "reminderPickerCancelButton": "ZRUŠIT",
+  "reminderPickerSaveButton": "ULOŽIT",
+  "reminderPickerPastTimeErrorMessage": "Nelze vybrat čas v minulosti",
+  "calcTableTotalLabel": "Celkem: {amount}",
+  "backupCreatePreparingDataLabel": "Příprava dat...",
+  "backupCreatePackagingNotesLabel": "Balení poznámek a složek...",
+  "backupCreateReadingAttachmentsLabel": "Čtení příloh...",
+  "backupCreateReadingAttachmentsProgressLabel": "Čtení příloh... ({current}/{total})",
+  "@backupCreateReadingAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupCreateCompressingLabel": "Komprimace souboru zip...",
+  "backupCreateSavingFileLabel": "Ukládání souboru...",
+  "backupRestoreValidatingLabel": "Ověřování zálohy...",
+  "backupRestoreValidatedPreparingDataLabel": "Záloha ověřena, příprava dat...",
+  "backupRestoreWritingNotesLabel": "Zapisování poznámek...",
+  "backupRestoreWritingTrashLabel": "Zapisování koše...",
+  "backupRestoreTrashWrittenLabel": "Koš zapsán",
+  "backupRestoreWritingCategoriesLabel": "Zapisování složek...",
+  "backupRestoreCategoriesWrittenLabel": "Složky zapsány",
+  "backupRestoreWritingSettingsLabel": "Zapisování nastavení...",
+  "backupRestoreSettingsWrittenLabel": "Nastavení zapsáno",
+  "backupRestoreCleaningOldAttachmentsLabel": "Čištění starých příloh...",
+  "backupRestoreNoAttachmentsFinishingLabel": "Nebyly nalezeny žádné přílohy, dokončování...",
+  "backupRestoreAttachmentsProgressLabel": "Obnovování příloh... ({current}/{total})",
+  "@backupRestoreAttachmentsProgressLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "backupRestoreCompletedLabel": "Dokončeno",
+  "backupValidationCorruptedFileMessage": "Soubor je poškozený nebo se nejedná o platný soubor zálohy.",
+  "backupValidationMissingDataMessage": "V souboru zálohy nebyla nalezena žádná data (chybí backup_data.json).",
+  "backupValidationInvalidJsonMessage": "Data zálohy se nepodařilo přečíst (poškozený JSON).",
+  "backupValidationNotDnoteBackupMessage": "Tento soubor není zálohou z aplikace dnote.",
+  "backupValidationVersionUnreadableMessage": "Informace o verzi souboru zálohy se nepodařilo přečíst.",
+  "backupValidationIncompatibleVersionMessage": "Tato záloha je v novějším formátu, který aktuální verze aplikace nepodporuje. Aktualizujte prosím aplikaci.",
+  "backupValidationInvalidVersionMessage": "Informace o verzi souboru zálohy je neplatná.",
+  "backupValidationMissingNotesFieldMessage": "Data zálohy nemají očekávaný formát (chybí pole poznámek).",
+  "backupValidationMissingTrashFieldMessage": "Data zálohy nemají očekávaný formát (chybí pole koše).",
+  "backupValidationInvalidCategoriesFieldMessage": "Data zálohy nemají očekávaný formát (seznam složek je neplatný).",
+  "backupValidationInvalidSettingsFieldMessage": "Data zálohy nemají očekávaný formát (pole nastavení je neplatné).",
+  "backupValidationInvalidNoteRecordMessage": "Data zálohy nemají očekávaný formát (záznam poznámky je neplatný).",
+  "backupValidationMissingNoteIdMessage": "Data zálohy nemají očekávaný formát (byl nalezen záznam poznámky bez ID).",
+  "backupValidationFileNotFoundMessage": "Soubor zálohy nebyl nalezen.",
+  "backupErrorInsufficientStorageMessage": "Na zařízení není dostatek volného místa. Uvolněte místo a zkuste to znovu.",
+  "backupErrorPermissionDeniedMessage": "Přístup k souboru byl zamítnut. Zkontrolujte oprávnění aplikace a zkuste to znovu.",
+  "backupErrorFileOperationMessage": "Při operaci se souborem došlo k chybě: {detail}",
+  "@backupErrorFileOperationMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorUnexpectedMessage": "Došlo k neočekávané chybě: {detail}",
+  "@backupErrorUnexpectedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "backupErrorZipEncodeFailedMessage": "Nepodařilo se vytvořit archiv zip (ZipEncoder vrátil null).",
+  "calcTableMenuItemLabel": "Výpočtový seznam",
+  "tagsMenuItemLabel": "Štítky",
+  "linkDialogUrlHint": "https://example.com",
+  "checklistItemHint": "Přidat položku...",
+  "toolbarHighlightTooltip": "Zvýraznění",
+  "toolbarListTooltip": "Seznam",
+  "toolbarHideKeyboardTooltip": "Skrýt klávesnici",
+  "autoBackupLocalSuccessMessage": "Místní záloha byla úspěšná.",
+  "autoBackupLocalFailedMessage": "Místní záloha selhala: {detail}",
+  "@autoBackupLocalFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupDriveSkippedNotConnectedMessage": "Záloha na Disk přeskočena: účet Google není připojen nebo relace vypršela. Otevřete aplikaci a připojte se znovu.",
+  "autoBackupDriveSuccessMessage": "Záloha na Disk byla úspěšná.",
+  "autoBackupDriveFailedMessage": "Záloha na Disk selhala: {detail}",
+  "@autoBackupDriveFailedMessage": {
+    "placeholders": {
+      "detail": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetNoNotesPlaceholder": "Zatím žádné poznámky",
+  "noteWidgetPreviewTotalLabel": "Celkem: {total}",
+  "@noteWidgetPreviewTotalLabel": {
+    "placeholders": {
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "noteWidgetPreviewDrawingLabel": "✏️ Kresba",
+  "autoBackupSettingsAppBarTitle": "Nastavení automatické zálohy",
+  "autoBackupSettingsMainSwitchTitle": "Povolit automatickou zálohu",
+  "autoBackupSettingsMainSwitchSubtitle": "Vaše poznámky jsou pravidelně bezpečně zálohovány na pozadí.",
+  "autoBackupSettingsTargetTitle": "Cíl zálohy",
+  "autoBackupSettingsTargetSubtitle": "Vyberte, kam se budou zálohy ukládat.",
+  "autoBackupSettingsTargetLocalOption": "Místní",
+  "autoBackupSettingsTargetDriveOption": "Google Disk",
+  "autoBackupSettingsTargetBothOption": "Obojí",
+  "autoBackupSettingsDriveNotConnectedNote": "Chcete-li použít možnosti Google Disku, nejprve připojte svůj účet.",
+  "autoBackupSettingsConnectButton": "Připojit",
+  "autoBackupSettingsFrequencyTitle": "Frekvence zálohování",
+  "autoBackupSettingsFrequencySubtitle": "Záloha se vytváří každých {hours} hodin.",
+  "@autoBackupSettingsFrequencySubtitle": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "autoBackupSettingsFrequency6h": "6 hodin",
+  "autoBackupSettingsFrequency12h": "12 hodin",
+  "autoBackupSettingsFrequency24h": "24 hodin (denně)",
+  "autoBackupSettingsFrequency48h": "48 hodin (2 dny)",
+  "autoBackupSettingsFrequency168h": "168 hodin (týdně)",
+  "autoBackupSettingsWifiOnlySwitchTitle": "Použít pouze Wi-Fi",
+  "autoBackupSettingsWifiOnlySwitchSubtitle": "Nahrávání do cloudu probíhá pouze přes Wi-Fi, aby se ušetřila mobilní data.",
+  "autoBackupSettingsStatusCardTitle": "Stav systému",
+  "autoBackupSettingsNeverRunMessage": "Automatická záloha zatím neproběhla.",
+  "autoBackupSettingsLastRunInfo": "Poslední spuštění: {date} {time} ({status})\nZpráva: {message}",
+  "@autoBackupSettingsLastRunInfo": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "status": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "autoBackupSettingsStatusSuccessLabel": "Úspěšné",
+  "autoBackupSettingsStatusFailedLabel": "Neúspěšné",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Nepodařilo se připojit k účtu Google.",
+  "autoBackupSettingsSavedSnackbar": "Nastavení automatické zálohy bylo aktualizováno.",
+  "selectionModeDeletedMessage": "Smazáno poznámek: {count}",
+  "@selectionModeDeletedMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeArchivedMessage": "Archivováno",
+  "selectionModeClassifySheetTitle": "Vyberte složku pro {count} poznámek",
+  "@selectionModeClassifySheetTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectionModeAddCategoryOption": "Přidat složku",
+  "selectionModeRemoveCategoryOption": "Odebrat složku",
+  "calcTableItemHint": "Položka...",
+  "calcTableTotalRowLabel": "Celkem",
+  "textSelectionMenuShareButton": "Sdílet",
+  "textSelectionMenuTranslateButton": "Přeložit",
+  "textSelectionMenuShareFailedSnackbar": "Sdílení se nepodařilo spustit.",
+  "textSelectionMenuTranslateFailedSnackbar": "Překlad se nepodařilo otevřít.",
+  "lastBackupInfoTodayFormat": "Dnes {time}",
+  "@lastBackupInfoTodayFormat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoDateFormat": "{day}.{month}.{year} {time}",
+  "@lastBackupInfoDateFormat": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoLabel": "Poslední záloha: {date}",
+  "@lastBackupInfoLabel": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "lastBackupInfoNoBackupMessage": "Zatím nebyla vytvořena žádná záloha."
+}

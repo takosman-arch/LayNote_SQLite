@@ -687,6 +687,7 @@ class DNoteApp extends StatelessWidget {
                   supportedLocales: const [
                     Locale('tr', 'TR'),
                     Locale('en', 'US'),
+                    Locale('da', 'DK'),
                     Locale('de', 'DE'),
                     Locale('fr', 'FR'),
                     Locale('it', 'IT'),
@@ -707,6 +708,9 @@ class DNoteApp extends StatelessWidget {
                     Locale('he', 'IL'),
                     Locale('uk', 'UA'),
                     Locale('ro', 'RO'),
+                    Locale('cs', 'CZ'),
+                    Locale('no', 'NO'),
+                    Locale('fi', 'FI'),
                   ],
                   // 'system' ise locale: null verilir ve aşağıdaki
                   // localeResolutionCallback devreye girer: cihaz dili
@@ -767,6 +771,14 @@ class DNoteApp extends StatelessWidget {
                                                                                                   ? const Locale('uk', 'UA')
                                                                                               : lang == 'ro'
                                                                                                   ? const Locale('ro', 'RO')
+                                                                                              : lang == 'cs'
+                                                                                                  ? const Locale('cs', 'CZ')
+                                                                                              : lang == 'da'
+                                                                                                  ? const Locale('da', 'DK')
+                                                                                              : lang == 'no'
+                                                                                                  ? const Locale('no', 'NO')
+                                                                                              : lang == 'fi'
+                                                                                                  ? const Locale('fi', 'FI')
                                                                                                   : null,
                   themeMode: mode,
                   theme: _dNoteLightTheme.copyWith(primaryColor: accentColor),
