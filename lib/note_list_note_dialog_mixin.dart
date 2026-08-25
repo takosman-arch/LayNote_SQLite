@@ -2858,6 +2858,83 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           // bir setModalState çağırıp çökmesini engeller.
           bool isEditorOpen = true;
           dNoteNoteEditorOpen.value = true;
+          // OTOMATİK KAYIT (uygulama kapatılırken not kaybı düzeltmesi):
+          // Önceden not YALNIZCA geri tuşuna (PopScope / AppBar geri ikonu)
+          // basılınca kaydediliyordu. Kullanıcı editör açıkken uygulamayı
+          // doğrudan kapatırsa (görev değiştiriciden kaydırma, ana ekran
+          // tuşu + sistem tarafından süreç öldürülmesi vb.) bu geri
+          // basma olayı HİÇ tetiklenmiyor, dolayısıyla not hiç
+          // kaydedilmeden kayboluyordu. AppLifecycleListener, editör
+          // açıkken uygulama arka plana geçtiği/duraklatıldığı her an
+          // (kullanıcı geri tuşuna basmasa bile) notu sessizce diske
+          // yazar. blocks/checkItems/tags gibi tüm not verisi zaten her
+          // tuş vuruşunda bu closure değişkenlerinde güncel tutulduğu
+          // için _saveNoteIfValid'i burada context'e ihtiyaç duymadan
+          // güvenle çağırabiliyoruz.
+          final AppLifecycleListener autoSaveLifecycleListener =
+              AppLifecycleListener(
+            onPause: () {
+              if (deletingAttachmentId != null) return;
+              final saved = _saveNoteIfValid(
+                index,
+                noteType,
+                checkItems,
+                attachments,
+                blocks,
+                noteReminder,
+                noteAssignedDateSet ? noteAssignedDate : null,
+                noteReminderRepeat,
+                noteBgColor,
+                tags,
+              );
+              // DÜZELTME (çift not kopyası): index == null iken
+              // _saveNoteIfValid notu _notes listesine YENİ olarak ekliyor;
+              // burada da (satır ~6064-6076'daki kategori seçme akışıyla
+              // aynı desen) index bunu yansıtacak şekilde güncellenmezse,
+              // editör normal şekilde kapatılırken (PopScope/AppBar geri
+              // tuşu) index hâlâ null olduğundan _saveNoteIfValid tekrar
+              // yeni bir not ekliyor ve aynı içerikten iki kopya oluşuyordu.
+              if (saved && index == null && _notes.isNotEmpty) {
+                index = _notes.length - 1;
+              }
+            },
+            onHide: () {
+              if (deletingAttachmentId != null) return;
+              final saved = _saveNoteIfValid(
+                index,
+                noteType,
+                checkItems,
+                attachments,
+                blocks,
+                noteReminder,
+                noteAssignedDateSet ? noteAssignedDate : null,
+                noteReminderRepeat,
+                noteBgColor,
+                tags,
+              );
+              if (saved && index == null && _notes.isNotEmpty) {
+                index = _notes.length - 1;
+              }
+            },
+            onDetach: () {
+              if (deletingAttachmentId != null) return;
+              final saved = _saveNoteIfValid(
+                index,
+                noteType,
+                checkItems,
+                attachments,
+                blocks,
+                noteReminder,
+                noteAssignedDateSet ? noteAssignedDate : null,
+                noteReminderRepeat,
+                noteBgColor,
+                tags,
+              );
+              if (saved && index == null && _notes.isNotEmpty) {
+                index = _notes.length - 1;
+              }
+            },
+          );
           // Sağ üstteki üç nokta menüsündeki "Dışa Aktar" öğesine basılınca
           // açılan alt menüyü, düğmenin tam altında konumlandırabilmek için
           // düğmenin RenderBox'ına erişmeye yarayan sabit anahtar.
@@ -4017,6 +4094,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   }
                   isEditorOpen = false;
                   dNoteNoteEditorOpen.value = false;
+                  autoSaveLifecycleListener.dispose();
                   // Sayfa kapatılırken hâlâ odaklı bir TextField (ör. hesap
                   // tablosu tutar hücresi) varsa, önce odağı kaldırıp bir
                   // sonraki frame'e kadar bekliyoruz. Aksi halde o alanın
@@ -4092,6 +4170,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                         }
                         isEditorOpen = false;
                         dNoteNoteEditorOpen.value = false;
+                        autoSaveLifecycleListener.dispose();
                         // Bkz. PopScope'taki aynı isimli not: odaklı bir
                         // alan varken hemen pop etmek dependents hatasına
                         // yol açabiliyordu.
@@ -6856,6 +6935,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       );
                                       isEditorOpen = false;
                                       dNoteNoteEditorOpen.value = false;
+                                      autoSaveLifecycleListener.dispose();
                                       FocusManager.instance.primaryFocus
                                           ?.unfocus();
                                       WidgetsBinding.instance
