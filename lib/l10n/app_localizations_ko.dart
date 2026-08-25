@@ -1793,7 +1793,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => 'DNote에 오신 것을 환영합니다! 🚀';
+  String get welcomeNoteTitle => 'Layout에 오신 것을 환영합니다! 🚀';
 
   @override
   String get welcomeNoteContent => '새로운 기능이 추가되었습니다!';
@@ -2020,7 +2020,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backupValidationNotDnoteBackupMessage =>
-      '이 파일은 dnote 앱의 백업이 아닙니다.';
+      '이 파일은 layout 앱의 백업이 아닙니다.';
 
   @override
   String get backupValidationVersionUnreadableMessage =>

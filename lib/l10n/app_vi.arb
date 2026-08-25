@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "Chào mừng đến với DNote! 🚀",
+  "welcomeNoteTitle": "Chào mừng đến với Layout! 🚀",
   "welcomeNoteContent": "Đã thêm tính năng mới!",
   "noteListDateGroupToday": "Hôm nay",
   "noteListDateGroupYesterday": "Hôm qua",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "Tệp bị hỏng hoặc không phải là tệp sao lưu hợp lệ.",
   "backupValidationMissingDataMessage": "Không tìm thấy dữ liệu bên trong tệp sao lưu (thiếu backup_data.json).",
   "backupValidationInvalidJsonMessage": "Không thể đọc dữ liệu sao lưu (JSON bị hỏng).",
-  "backupValidationNotDnoteBackupMessage": "Tệp này không phải là bản sao lưu từ ứng dụng dnote.",
+  "backupValidationNotDnoteBackupMessage": "Tệp này không phải là bản sao lưu từ ứng dụng layout.",
   "backupValidationVersionUnreadableMessage": "Không thể đọc thông tin phiên bản của tệp sao lưu.",
   "backupValidationIncompatibleVersionMessage": "Bản sao lưu này có định dạng mới hơn mà phiên bản ứng dụng hiện tại không hỗ trợ. Vui lòng cập nhật ứng dụng.",
   "backupValidationInvalidVersionMessage": "Thông tin phiên bản của tệp sao lưu không hợp lệ.",

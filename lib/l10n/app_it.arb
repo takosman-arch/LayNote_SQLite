@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "Benvenuto su DNote! 🚀",
+  "welcomeNoteTitle": "Benvenuto su Layout! 🚀",
   "welcomeNoteContent": "Nuove funzionalità aggiunte!",
   "noteListDateGroupToday": "Oggi",
   "noteListDateGroupYesterday": "Ieri",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "Il file è danneggiato o non è un file di backup valido.",
   "backupValidationMissingDataMessage": "Nessun dato trovato all'interno del file di backup (backup_data.json mancante).",
   "backupValidationInvalidJsonMessage": "Impossibile leggere i dati di backup (JSON danneggiato).",
-  "backupValidationNotDnoteBackupMessage": "Questo file non è un backup dell'app dnote.",
+  "backupValidationNotDnoteBackupMessage": "Questo file non è un backup dell'app layout.",
   "backupValidationVersionUnreadableMessage": "Impossibile leggere le informazioni sulla versione del file di backup.",
   "backupValidationIncompatibleVersionMessage": "Questo backup è in un formato più recente non supportato dalla versione attuale dell'app. Aggiorna l'app.",
   "backupValidationInvalidVersionMessage": "Le informazioni sulla versione del file di backup non sono valide.",

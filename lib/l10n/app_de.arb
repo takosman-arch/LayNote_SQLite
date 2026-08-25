@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "Willkommen bei DNote! 🚀",
+  "welcomeNoteTitle": "Willkommen bei Layout! 🚀",
   "welcomeNoteContent": "Neue Funktionen hinzugefügt!",
   "noteListDateGroupToday": "Heute",
   "noteListDateGroupYesterday": "Gestern",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "Die Datei ist beschädigt oder keine gültige Sicherungsdatei.",
   "backupValidationMissingDataMessage": "Keine Daten in der Sicherungsdatei gefunden (backup_data.json fehlt).",
   "backupValidationInvalidJsonMessage": "Sicherungsdaten konnten nicht gelesen werden (beschädigtes JSON).",
-  "backupValidationNotDnoteBackupMessage": "Diese Datei ist keine Sicherung der dnote-App.",
+  "backupValidationNotDnoteBackupMessage": "Diese Datei ist keine Sicherung der layout-App.",
   "backupValidationVersionUnreadableMessage": "Die Versionsinformationen der Sicherungsdatei konnten nicht gelesen werden.",
   "backupValidationIncompatibleVersionMessage": "Diese Sicherung liegt in einem neueren Format vor, das von der aktuellen App-Version nicht unterstützt wird. Bitte aktualisiere die App.",
   "backupValidationInvalidVersionMessage": "Die Versionsinformationen der Sicherungsdatei sind ungültig.",

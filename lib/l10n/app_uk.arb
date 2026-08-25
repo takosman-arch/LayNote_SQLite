@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "Ласкаво просимо до DNote! 🚀",
+  "welcomeNoteTitle": "Ласкаво просимо до Layout! 🚀",
   "welcomeNoteContent": "Додано нові функції!",
   "noteListDateGroupToday": "Сьогодні",
   "noteListDateGroupYesterday": "Учора",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "Файл пошкоджено або він не є дійсним файлом резервної копії.",
   "backupValidationMissingDataMessage": "У файлі резервної копії не знайдено даних (відсутній backup_data.json).",
   "backupValidationInvalidJsonMessage": "Не вдалося прочитати дані резервної копії (пошкоджений JSON).",
-  "backupValidationNotDnoteBackupMessage": "Цей файл не є резервною копією додатку dnote.",
+  "backupValidationNotDnoteBackupMessage": "Цей файл не є резервною копією додатку layout.",
   "backupValidationVersionUnreadableMessage": "Не вдалося прочитати інформацію про версію файлу резервної копії.",
   "backupValidationIncompatibleVersionMessage": "Ця резервна копія має новіший формат, який не підтримується поточною версією додатку. Оновіть додаток.",
   "backupValidationInvalidVersionMessage": "Інформація про версію файлу резервної копії недійсна.",

@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "¡Bienvenido a DNote! 🚀",
+  "welcomeNoteTitle": "¡Bienvenido a Layout! 🚀",
   "welcomeNoteContent": "¡Nuevas funciones añadidas!",
   "noteListDateGroupToday": "Hoy",
   "noteListDateGroupYesterday": "Ayer",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "El archivo está dañado o no es un archivo de copia de seguridad válido.",
   "backupValidationMissingDataMessage": "No se encontraron datos dentro del archivo de copia de seguridad (falta backup_data.json).",
   "backupValidationInvalidJsonMessage": "No se pudieron leer los datos de la copia de seguridad (JSON dañado).",
-  "backupValidationNotDnoteBackupMessage": "Este archivo no es una copia de seguridad de la aplicación dnote.",
+  "backupValidationNotDnoteBackupMessage": "Este archivo no es una copia de seguridad de la aplicación layout.",
   "backupValidationVersionUnreadableMessage": "No se pudo leer la información de versión del archivo de copia de seguridad.",
   "backupValidationIncompatibleVersionMessage": "Esta copia de seguridad tiene un formato más nuevo que no es compatible con la versión actual de la aplicación. Actualiza la aplicación.",
   "backupValidationInvalidVersionMessage": "La información de versión del archivo de copia de seguridad no es válida.",

@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "Velkommen til DNote! 🚀",
+  "welcomeNoteTitle": "Velkommen til Layout! 🚀",
   "welcomeNoteContent": "Nye funktioner tilføjet!",
   "noteListDateGroupToday": "I dag",
   "noteListDateGroupYesterday": "I går",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "Filen er beskadiget eller er ikke en gyldig sikkerhedskopifil.",
   "backupValidationMissingDataMessage": "Der blev ikke fundet data i sikkerhedskopifilen (backup_data.json mangler).",
   "backupValidationInvalidJsonMessage": "Sikkerhedskopidata kunne ikke læses (beskadiget JSON).",
-  "backupValidationNotDnoteBackupMessage": "Denne fil er ikke en sikkerhedskopi fra dnote-appen.",
+  "backupValidationNotDnoteBackupMessage": "Denne fil er ikke en sikkerhedskopi fra layout-appen.",
   "backupValidationVersionUnreadableMessage": "Sikkerhedskopifilens versionsoplysninger kunne ikke læses.",
   "backupValidationIncompatibleVersionMessage": "Denne sikkerhedskopi er i et nyere format, som den nuværende appversion ikke understøtter. Opdater venligst appen.",
   "backupValidationInvalidVersionMessage": "Sikkerhedskopifilens versionsoplysninger er ugyldige.",

@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "مرحبًا بك في DNote! 🚀",
+  "welcomeNoteTitle": "مرحبًا بك في Layout! 🚀",
   "welcomeNoteContent": "تمت إضافة ميزات جديدة!",
   "noteListDateGroupToday": "اليوم",
   "noteListDateGroupYesterday": "أمس",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "الملف تالف أو ليس ملف نسخة احتياطية صالحًا.",
   "backupValidationMissingDataMessage": "لم يتم العثور على بيانات داخل ملف النسخة الاحتياطية (backup_data.json مفقود).",
   "backupValidationInvalidJsonMessage": "تعذرت قراءة بيانات النسخة الاحتياطية (JSON تالف).",
-  "backupValidationNotDnoteBackupMessage": "هذا الملف ليس نسخة احتياطية من تطبيق dnote.",
+  "backupValidationNotDnoteBackupMessage": "هذا الملف ليس نسخة احتياطية من تطبيق layout.",
   "backupValidationVersionUnreadableMessage": "تعذرت قراءة معلومات إصدار ملف النسخة الاحتياطية.",
   "backupValidationIncompatibleVersionMessage": "هذه النسخة الاحتياطية بتنسيق أحدث لا يدعمه إصدار التطبيق الحالي. يرجى تحديث التطبيق.",
   "backupValidationInvalidVersionMessage": "معلومات إصدار ملف النسخة الاحتياطية غير صالحة.",

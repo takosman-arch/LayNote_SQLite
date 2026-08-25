@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "DNote में आपका स्वागत है! 🚀",
+  "welcomeNoteTitle": "Layout में आपका स्वागत है! 🚀",
   "welcomeNoteContent": "नई सुविधाएं जोड़ी गईं!",
   "noteListDateGroupToday": "आज",
   "noteListDateGroupYesterday": "कल",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "फ़ाइल करप्ट है या एक मान्य बैकअप फ़ाइल नहीं है।",
   "backupValidationMissingDataMessage": "बैकअप फ़ाइल के अंदर कोई डेटा नहीं मिला (backup_data.json गायब है)।",
   "backupValidationInvalidJsonMessage": "बैकअप डेटा पढ़ा नहीं जा सका (करप्ट JSON)।",
-  "backupValidationNotDnoteBackupMessage": "यह फ़ाइल dnote ऐप का बैकअप नहीं है।",
+  "backupValidationNotDnoteBackupMessage": "यह फ़ाइल layout ऐप का बैकअप नहीं है।",
   "backupValidationVersionUnreadableMessage": "बैकअप फ़ाइल की वर्शन जानकारी पढ़ी नहीं जा सकी।",
   "backupValidationIncompatibleVersionMessage": "यह बैकअप एक नए फॉर्मेट में है जिसे मौजूदा ऐप वर्शन सपोर्ट नहीं करता। कृपया ऐप को अपडेट करें।",
   "backupValidationInvalidVersionMessage": "बैकअप फ़ाइल की वर्शन जानकारी अमान्य है।",

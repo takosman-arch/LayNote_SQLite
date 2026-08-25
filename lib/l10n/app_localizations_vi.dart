@@ -1835,7 +1835,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => 'Chào mừng đến với DNote! 🚀';
+  String get welcomeNoteTitle => 'Chào mừng đến với Layout! 🚀';
 
   @override
   String get welcomeNoteContent => 'Đã thêm tính năng mới!';
@@ -2069,7 +2069,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get backupValidationNotDnoteBackupMessage =>
-      'Tệp này không phải là bản sao lưu từ ứng dụng dnote.';
+      'Tệp này không phải là bản sao lưu từ ứng dụng layout.';
 
   @override
   String get backupValidationVersionUnreadableMessage =>

@@ -1771,7 +1771,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => '欢迎使用 DNote！🚀';
+  String get welcomeNoteTitle => '欢迎使用 Layout！🚀';
 
   @override
   String get welcomeNoteContent => '新增了一些功能！';
@@ -1994,7 +1994,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backupValidationInvalidJsonMessage => '无法读取备份数据（JSON 已损坏）。';
 
   @override
-  String get backupValidationNotDnoteBackupMessage => '该文件不是来自 dnote 应用的备份。';
+  String get backupValidationNotDnoteBackupMessage => '该文件不是来自 layout 应用的备份。';
 
   @override
   String get backupValidationVersionUnreadableMessage => '无法读取备份文件的版本信息。';

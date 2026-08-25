@@ -1831,7 +1831,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => 'Tervetuloa DNoteen! 🚀';
+  String get welcomeNoteTitle => 'Tervetuloa Layouten! 🚀';
 
   @override
   String get welcomeNoteContent => 'Uusia ominaisuuksia lisätty!';
@@ -2067,7 +2067,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get backupValidationNotDnoteBackupMessage =>
-      'Tämä tiedosto ei ole dnote-sovelluksen varmuuskopio.';
+      'Tämä tiedosto ei ole layout-sovelluksen varmuuskopio.';
 
   @override
   String get backupValidationVersionUnreadableMessage =>

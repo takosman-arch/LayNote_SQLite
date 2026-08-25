@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "DNoteへようこそ！🚀",
+  "welcomeNoteTitle": "Layoutへようこそ！🚀",
   "welcomeNoteContent": "新機能が追加されました！",
   "noteListDateGroupToday": "今日",
   "noteListDateGroupYesterday": "昨日",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "ファイルが破損しているか、有効なバックアップファイルではありません。",
   "backupValidationMissingDataMessage": "バックアップファイル内にデータが見つかりません（backup_data.jsonがありません）。",
   "backupValidationInvalidJsonMessage": "バックアップデータを読み込めませんでした（JSONが破損しています）。",
-  "backupValidationNotDnoteBackupMessage": "このファイルはdnoteアプリのバックアップではありません。",
+  "backupValidationNotDnoteBackupMessage": "このファイルはlayoutアプリのバックアップではありません。",
   "backupValidationVersionUnreadableMessage": "バックアップファイルのバージョン情報を読み込めませんでした。",
   "backupValidationIncompatibleVersionMessage": "このバックアップは現在のアプリバージョンがサポートしていない新しい形式です。アプリを更新してください。",
   "backupValidationInvalidVersionMessage": "バックアップファイルのバージョン情報が無効です。",

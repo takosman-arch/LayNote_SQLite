@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "欢迎使用 DNote！🚀",
+  "welcomeNoteTitle": "欢迎使用 Layout！🚀",
   "welcomeNoteContent": "新增了一些功能！",
   "noteListDateGroupToday": "今天",
   "noteListDateGroupYesterday": "昨天",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "该文件已损坏或不是有效的备份文件。",
   "backupValidationMissingDataMessage": "备份文件内未找到数据（缺少 backup_data.json）。",
   "backupValidationInvalidJsonMessage": "无法读取备份数据（JSON 已损坏）。",
-  "backupValidationNotDnoteBackupMessage": "该文件不是来自 dnote 应用的备份。",
+  "backupValidationNotDnoteBackupMessage": "该文件不是来自 layout 应用的备份。",
   "backupValidationVersionUnreadableMessage": "无法读取备份文件的版本信息。",
   "backupValidationIncompatibleVersionMessage": "此备份的格式较新，当前应用版本不支持。请更新应用。",
   "backupValidationInvalidVersionMessage": "备份文件的版本信息无效。",

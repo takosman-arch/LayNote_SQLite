@@ -1841,7 +1841,7 @@ class AppLocalizationsRo extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => 'Bine ați venit la DNote! 🚀';
+  String get welcomeNoteTitle => 'Bine ați venit la Layout! 🚀';
 
   @override
   String get welcomeNoteContent => 'Funcții noi adăugate!';
@@ -2075,7 +2075,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get backupValidationNotDnoteBackupMessage =>
-      'Acest fișier nu este un backup din aplicația dnote.';
+      'Acest fișier nu este un backup din aplicația layout.';
 
   @override
   String get backupValidationVersionUnreadableMessage =>

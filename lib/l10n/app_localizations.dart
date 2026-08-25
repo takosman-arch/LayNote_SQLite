@@ -3479,7 +3479,7 @@ abstract class AppLocalizations {
   /// Uygulama ilk kez açıldığında otomatik eklenen örnek hoş geldin notunun başlığı
   ///
   /// In tr, this message translates to:
-  /// **'DNote\'a Hoş Geldiniz! 🚀'**
+  /// **'Layout\'a Hoş Geldiniz! 🚀'**
   String get welcomeNoteTitle;
 
   /// Uygulama ilk kez açıldığında otomatik eklenen örnek hoş geldin notunun içeriği
@@ -3908,10 +3908,10 @@ abstract class AppLocalizations {
   /// **'Yedek verisi okunamadı (bozuk JSON).'**
   String get backupValidationInvalidJsonMessage;
 
-  /// Yedek verisindeki appName alanı 'dnote' değilse gösterilen hata mesajı
+  /// Yedek verisindeki appName alanı 'layout' değilse gösterilen hata mesajı
   ///
   /// In tr, this message translates to:
-  /// **'Bu dosya dnote uygulamasına ait bir yedek değil.'**
+  /// **'Bu dosya layout uygulamasına ait bir yedek değil.'**
   String get backupValidationNotDnoteBackupMessage;
 
   /// Yedek verisindeki formatVersion alanı sayı olarak okunamadığında gösterilen hata mesajı

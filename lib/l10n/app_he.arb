@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "ברוכים הבאים ל-DNote! 🚀",
+  "welcomeNoteTitle": "ברוכים הבאים ל-Layout! 🚀",
   "welcomeNoteContent": "נוספו תכונות חדשות!",
   "noteListDateGroupToday": "היום",
   "noteListDateGroupYesterday": "אתמול",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "הקובץ פגום או שאינו קובץ גיבוי תקין.",
   "backupValidationMissingDataMessage": "לא נמצאו נתונים בתוך קובץ הגיבוי (backup_data.json חסר).",
   "backupValidationInvalidJsonMessage": "לא ניתן היה לקרוא את נתוני הגיבוי (JSON פגום).",
-  "backupValidationNotDnoteBackupMessage": "קובץ זה אינו גיבוי מאפליקציית dnote.",
+  "backupValidationNotDnoteBackupMessage": "קובץ זה אינו גיבוי מאפליקציית layout.",
   "backupValidationVersionUnreadableMessage": "לא ניתן היה לקרוא את פרטי הגרסה של קובץ הגיבוי.",
   "backupValidationIncompatibleVersionMessage": "גיבוי זה בפורמט חדש יותר שאינו נתמך על ידי גרסת האפליקציה הנוכחית. יש לעדכן את האפליקציה.",
   "backupValidationInvalidVersionMessage": "פרטי הגרסה של קובץ הגיבוי אינם תקינים.",

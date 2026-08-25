@@ -2448,7 +2448,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "DNote'a Hoş Geldiniz! 🚀",
+  "welcomeNoteTitle": "Layout'a Hoş Geldiniz! 🚀",
   "@welcomeNoteTitle": {
     "description": "Uygulama ilk kez açıldığında otomatik eklenen örnek hoş geldin notunun başlığı"
   },
@@ -2757,9 +2757,9 @@
   "@backupValidationInvalidJsonMessage": {
     "description": "backup_data.json içeriği geçerli JSON olarak çözümlenemediğinde gösterilen hata mesajı"
   },
-  "backupValidationNotDnoteBackupMessage": "Bu dosya dnote uygulamasına ait bir yedek değil.",
+  "backupValidationNotDnoteBackupMessage": "Bu dosya layout uygulamasına ait bir yedek değil.",
   "@backupValidationNotDnoteBackupMessage": {
-    "description": "Yedek verisindeki appName alanı 'dnote' değilse gösterilen hata mesajı"
+    "description": "Yedek verisindeki appName alanı 'layout' değilse gösterilen hata mesajı"
   },
   "backupValidationVersionUnreadableMessage": "Yedek dosyasının sürüm bilgisi okunamadı.",
   "@backupValidationVersionUnreadableMessage": {

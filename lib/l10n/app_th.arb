@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "ยินดีต้อนรับสู่ DNote! 🚀",
+  "welcomeNoteTitle": "ยินดีต้อนรับสู่ Layout! 🚀",
   "welcomeNoteContent": "เพิ่มฟีเจอร์ใหม่แล้ว!",
   "noteListDateGroupToday": "วันนี้",
   "noteListDateGroupYesterday": "เมื่อวาน",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "ไฟล์เสียหายหรือไม่ใช่ไฟล์สำรองข้อมูลที่ถูกต้อง",
   "backupValidationMissingDataMessage": "ไม่พบข้อมูลภายในไฟล์สำรองข้อมูล (ไม่มีไฟล์ backup_data.json)",
   "backupValidationInvalidJsonMessage": "ไม่สามารถอ่านข้อมูลสำรองได้ (JSON เสียหาย)",
-  "backupValidationNotDnoteBackupMessage": "ไฟล์นี้ไม่ใช่ข้อมูลสำรองจากแอป dnote",
+  "backupValidationNotDnoteBackupMessage": "ไฟล์นี้ไม่ใช่ข้อมูลสำรองจากแอป layout",
   "backupValidationVersionUnreadableMessage": "ไม่สามารถอ่านข้อมูลเวอร์ชันของไฟล์สำรองข้อมูลได้",
   "backupValidationIncompatibleVersionMessage": "ข้อมูลสำรองนี้อยู่ในรูปแบบใหม่ที่แอปเวอร์ชันปัจจุบันไม่รองรับ กรุณาอัปเดตแอป",
   "backupValidationInvalidVersionMessage": "ข้อมูลเวอร์ชันของไฟล์สำรองข้อมูลไม่ถูกต้อง",

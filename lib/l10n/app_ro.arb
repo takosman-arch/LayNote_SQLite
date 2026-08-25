@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "Bine ați venit la DNote! 🚀",
+  "welcomeNoteTitle": "Bine ați venit la Layout! 🚀",
   "welcomeNoteContent": "Funcții noi adăugate!",
   "noteListDateGroupToday": "Astăzi",
   "noteListDateGroupYesterday": "Ieri",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "Fișierul este corupt sau nu este un fișier de backup valid.",
   "backupValidationMissingDataMessage": "Nu s-au găsit date în fișierul de backup (backup_data.json lipsește).",
   "backupValidationInvalidJsonMessage": "Datele de backup nu au putut fi citite (JSON corupt).",
-  "backupValidationNotDnoteBackupMessage": "Acest fișier nu este un backup din aplicația dnote.",
+  "backupValidationNotDnoteBackupMessage": "Acest fișier nu este un backup din aplicația layout.",
   "backupValidationVersionUnreadableMessage": "Informațiile despre versiunea fișierului de backup nu au putut fi citite.",
   "backupValidationIncompatibleVersionMessage": "Acest backup are un format mai nou pe care versiunea curentă a aplicației nu îl acceptă. Actualizați aplicația.",
   "backupValidationInvalidVersionMessage": "Informațiile despre versiunea fișierului de backup sunt nevalide.",

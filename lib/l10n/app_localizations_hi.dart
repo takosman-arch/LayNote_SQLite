@@ -1829,7 +1829,7 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => 'DNote में आपका स्वागत है! 🚀';
+  String get welcomeNoteTitle => 'Layout में आपका स्वागत है! 🚀';
 
   @override
   String get welcomeNoteContent => 'नई सुविधाएं जोड़ी गईं!';
@@ -2067,7 +2067,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backupValidationNotDnoteBackupMessage =>
-      'यह फ़ाइल dnote ऐप का बैकअप नहीं है।';
+      'यह फ़ाइल layout ऐप का बैकअप नहीं है।';
 
   @override
   String get backupValidationVersionUnreadableMessage =>

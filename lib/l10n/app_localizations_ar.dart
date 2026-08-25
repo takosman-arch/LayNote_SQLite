@@ -1821,7 +1821,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => 'مرحبًا بك في DNote! 🚀';
+  String get welcomeNoteTitle => 'مرحبًا بك في Layout! 🚀';
 
   @override
   String get welcomeNoteContent => 'تمت إضافة ميزات جديدة!';
@@ -2056,7 +2056,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backupValidationNotDnoteBackupMessage =>
-      'هذا الملف ليس نسخة احتياطية من تطبيق dnote.';
+      'هذا الملف ليس نسخة احتياطية من تطبيق layout.';
 
   @override
   String get backupValidationVersionUnreadableMessage =>

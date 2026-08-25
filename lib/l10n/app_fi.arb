@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "Tervetuloa DNoteen! 🚀",
+  "welcomeNoteTitle": "Tervetuloa Layouten! 🚀",
   "welcomeNoteContent": "Uusia ominaisuuksia lisätty!",
   "noteListDateGroupToday": "Tänään",
   "noteListDateGroupYesterday": "Eilen",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "Tiedosto on vioittunut tai se ei ole kelvollinen varmuuskopiotiedosto.",
   "backupValidationMissingDataMessage": "Varmuuskopiotiedostosta ei löytynyt tietoja (backup_data.json puuttuu).",
   "backupValidationInvalidJsonMessage": "Varmuuskopiotietoja ei voitu lukea (vioittunut JSON).",
-  "backupValidationNotDnoteBackupMessage": "Tämä tiedosto ei ole dnote-sovelluksen varmuuskopio.",
+  "backupValidationNotDnoteBackupMessage": "Tämä tiedosto ei ole layout-sovelluksen varmuuskopio.",
   "backupValidationVersionUnreadableMessage": "Varmuuskopiotiedoston versiotietoja ei voitu lukea.",
   "backupValidationIncompatibleVersionMessage": "Tämä varmuuskopio on uudemmassa muodossa, jota nykyinen sovellusversio ei tue. Päivitä sovellus.",
   "backupValidationInvalidVersionMessage": "Varmuuskopiotiedoston versiotiedot ovat virheelliset.",

@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "Selamat Datang di DNote! 🚀",
+  "welcomeNoteTitle": "Selamat Datang di Layout! 🚀",
   "welcomeNoteContent": "Fitur baru telah ditambahkan!",
   "noteListDateGroupToday": "Hari Ini",
   "noteListDateGroupYesterday": "Kemarin",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "File rusak atau bukan file cadangan yang valid.",
   "backupValidationMissingDataMessage": "Tidak ditemukan data di dalam file cadangan (backup_data.json tidak ada).",
   "backupValidationInvalidJsonMessage": "Data cadangan tidak dapat dibaca (JSON rusak).",
-  "backupValidationNotDnoteBackupMessage": "File ini bukan cadangan dari aplikasi dnote.",
+  "backupValidationNotDnoteBackupMessage": "File ini bukan cadangan dari aplikasi layout.",
   "backupValidationVersionUnreadableMessage": "Informasi versi file cadangan tidak dapat dibaca.",
   "backupValidationIncompatibleVersionMessage": "Cadangan ini dalam format yang lebih baru yang tidak didukung oleh versi aplikasi saat ini. Silakan perbarui aplikasi.",
   "backupValidationInvalidVersionMessage": "Informasi versi file cadangan tidak valid.",

@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "Vítejte v DNote! 🚀",
+  "welcomeNoteTitle": "Vítejte v Layout! 🚀",
   "welcomeNoteContent": "Byly přidány nové funkce!",
   "noteListDateGroupToday": "Dnes",
   "noteListDateGroupYesterday": "Včera",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "Soubor je poškozený nebo se nejedná o platný soubor zálohy.",
   "backupValidationMissingDataMessage": "V souboru zálohy nebyla nalezena žádná data (chybí backup_data.json).",
   "backupValidationInvalidJsonMessage": "Data zálohy se nepodařilo přečíst (poškozený JSON).",
-  "backupValidationNotDnoteBackupMessage": "Tento soubor není zálohou z aplikace dnote.",
+  "backupValidationNotDnoteBackupMessage": "Tento soubor není zálohou z aplikace layout.",
   "backupValidationVersionUnreadableMessage": "Informace o verzi souboru zálohy se nepodařilo přečíst.",
   "backupValidationIncompatibleVersionMessage": "Tato záloha je v novějším formátu, který aktuální verze aplikace nepodporuje. Aktualizujte prosím aplikaci.",
   "backupValidationInvalidVersionMessage": "Informace o verzi souboru zálohy je neplatná.",

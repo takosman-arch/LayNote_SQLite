@@ -867,7 +867,7 @@
       }
     }
   },
-  "welcomeNoteTitle": "Welkom bij DNote! 🚀",
+  "welcomeNoteTitle": "Welkom bij Layout! 🚀",
   "welcomeNoteContent": "Nieuwe functies toegevoegd!",
   "noteListDateGroupToday": "Vandaag",
   "noteListDateGroupYesterday": "Gisteren",
@@ -959,7 +959,7 @@
   "backupValidationCorruptedFileMessage": "Het bestand is beschadigd of geen geldig back-upbestand.",
   "backupValidationMissingDataMessage": "Geen gegevens gevonden in het back-upbestand (backup_data.json ontbreekt).",
   "backupValidationInvalidJsonMessage": "Back-upgegevens konden niet worden gelezen (beschadigde JSON).",
-  "backupValidationNotDnoteBackupMessage": "Dit bestand is geen back-up van de dnote-app.",
+  "backupValidationNotDnoteBackupMessage": "Dit bestand is geen back-up van de layout-app.",
   "backupValidationVersionUnreadableMessage": "De versie-informatie van het back-upbestand kon niet worden gelezen.",
   "backupValidationIncompatibleVersionMessage": "Deze back-up heeft een nieuwer formaat dat de huidige app-versie niet ondersteunt. Werk de app bij.",
   "backupValidationInvalidVersionMessage": "De versie-informatie van het back-upbestand is ongeldig.",

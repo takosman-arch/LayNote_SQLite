@@ -1834,7 +1834,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => 'Vítejte v DNote! 🚀';
+  String get welcomeNoteTitle => 'Vítejte v Layout! 🚀';
 
   @override
   String get welcomeNoteContent => 'Byly přidány nové funkce!';
@@ -2067,7 +2067,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get backupValidationNotDnoteBackupMessage =>
-      'Tento soubor není zálohou z aplikace dnote.';
+      'Tento soubor není zálohou z aplikace layout.';
 
   @override
   String get backupValidationVersionUnreadableMessage =>
