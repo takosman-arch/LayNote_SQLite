@@ -64,6 +64,15 @@ part of 'main.dart';
 AppLocalizations get _driveL10n =>
     AppLocalizations.of(navigatorKey.currentContext!)!;
 
+// Tek bir Drive oturumunu (API istemcisi + kapatılabilir http client)
+// taşıyan kısa isimli tip. uploadBackup/listBackups/deleteBackup/
+// enforceRetention artık isteğe bağlı olarak dışarıdan bir DriveSession
+// alabilir; verilirse KENDİ auth client'ını oluşturup kapatmak yerine
+// verileni kullanır — bu sayede tek bir yedekleme akışında (upload +
+// retention temizliği gibi) birden fazla kez sıfırdan kimlik doğrulama
+// yapılmaz. Bkz. AutoBackupService._runBackupTask() içindeki kullanım.
+typedef DriveSession = ({drive.DriveApi api, dynamic client});
+
 class GoogleDriveHelper {
   GoogleDriveHelper._internal();
   static final GoogleDriveHelper instance = GoogleDriveHelper._internal();
@@ -152,17 +161,21 @@ class GoogleDriveHelper {
   // saklanıyor). Bu yüzden burada DriveApi ile birlikte, işiniz bitince
   // kapatabilmeniz için orijinal client de bir Dart "record" içinde
   // döndürülüyor.
-  Future<({drive.DriveApi api, dynamic client})?> getDriveApi() async {
+  Future<DriveSession?> getDriveApi() async {
+    final swTotal = Stopwatch()..start();
     // Oturum düşmüş olabilir ihtimaline karşı önce sessiz girişi dene.
     if (_currentUser == null) {
+      final swSilent = Stopwatch()..start();
       final restored = await trySilentSignIn();
+      debugPrint('[DRIVE TIMING] trySilentSignIn(): ${swSilent.elapsedMilliseconds}ms');
       if (!restored) return null;
     }
 
     try {
-      debugPrint('[DRIVE DEBUG] authenticatedClient() çağrılıyor...');
+      debugPrint('[DRIVE DEBUG] authenticatedClient() çağrılıyor... (t=${swTotal.elapsedMilliseconds}ms)');
+      final swAuth = Stopwatch()..start();
       final client = await _googleSignIn.authenticatedClient();
-      debugPrint('[DRIVE DEBUG] authenticatedClient() sonucu: ${client != null ? "ALINDI" : "NULL"}');
+      debugPrint('[DRIVE TIMING] authenticatedClient(): ${swAuth.elapsedMilliseconds}ms — sonuç: ${client != null ? "ALINDI" : "NULL"}');
       if (client == null) return null;
       return (api: drive.DriveApi(client), client: client);
     } catch (e, stack) {
@@ -206,20 +219,31 @@ class GoogleDriveHelper {
   // HATA DURUMU: giriş yapılmamışsa veya yükleme sırasında bir ağ/izin
   // hatası oluşursa GoogleDriveException fırlatılır. Arayüz katmanı
   // (Aşama 6.6) bunu yakalayıp kullanıcıya anlaşılır bir mesaj gösterir.
+  // [session]: dışarıdan (örn. AutoBackupService._runBackupTask()'tan) zaten
+  // açılmış bir DriveSession verilebilir. Verilirse bu fonksiyon KENDİ
+  // client'ını oluşturup kapatmaz — çağıranın sorumluluğunda olan session'ı
+  // kullanır. Bu, aynı akışta upload + retention gibi birden fazla Drive
+  // çağrısı yapılacaksa her seferinde sıfırdan kimlik doğrulama (ve bunun
+  // getirdiği ekstra network round-trip) yapılmasını önler.
   Future<GoogleDriveBackupFile> uploadBackup(
     File localZipFile, {
     void Function(double progress, String step)? onProgress,
+    DriveSession? session,
   }) async {
     onProgress?.call(0.05, _l10n.backupDriveAuthenticatingLabel);
-    final session = await getDriveApi();
-    if (session == null) {
+    final swUploadTotal = Stopwatch()..start();
+    final ownsSession = session == null;
+    final swGetSession = Stopwatch()..start();
+    final activeSession = session ?? await getDriveApi();
+    debugPrint('[DRIVE TIMING] session hazırlama (uploadBackup): ${swGetSession.elapsedMilliseconds}ms — dışarıdan mı geldi: ${!ownsSession}');
+    if (activeSession == null) {
       throw GoogleDriveException(
         _l10n.backupDriveNotSignedInMessage,
         type: GoogleDriveErrorType.notSignedIn,
         retryable: false,
       );
     }
-    final driveApi = session.api;
+    final driveApi = activeSession.api;
 
     try {
       onProgress?.call(0.2, _l10n.backupDriveUploadingLabel);
@@ -237,25 +261,93 @@ class GoogleDriveHelper {
       // göndermek bu sorunu ortadan kaldırır. Yedek dosyaları (özellikle
       // ek/attachment içermeyenler) küçük olduğu için tamamını belleğe
       // almak sorun yaratmaz.
+      final swRead = Stopwatch()..start();
       final bytes = await localZipFile.readAsBytes();
-      debugPrint('[DRIVE DEBUG] Yüklenecek dosya boyutu: ${bytes.length} byte');
+      debugPrint('[DRIVE TIMING] readAsBytes(): ${swRead.elapsedMilliseconds}ms — ${bytes.length} byte');
       final metadata = drive.File()
         ..name = p.basename(localZipFile.path)
         ..parents = ['appDataFolder'];
 
       final media = drive.Media(Stream.value(bytes), bytes.length);
 
-      debugPrint('[DRIVE DEBUG] files.create() çağrılıyor...');
+      // Google Drive API kuralı: chunkSize değeri 256 KB'nin (262144 byte)
+      // TAM KATI olmak zorundadır — aksi halde "Must be > 0 and a multiple
+      // of 262144" hatası fırlatılır (küçük test dosyalarında bu hatayı
+      // tetikleyen tam olarak buydu).
+      //
+      // İLK DENEME — dosyanın TAMAMINI tek PUT isteğinde göndermek — küçük
+      // test dosyasında sorunsuz çalıştı, ama gerçek boyutlu (görselli,
+      // ~3.6 MB) bir yedekte "ClientException: Software caused connection
+      // abort" hatasına yol açtı: tek bir HTTP isteğiyle birkaç MB'lık veri
+      // göndermek, orta/zayıf ağlarda (özellikle Wi-Fi'de) bağlantının
+      // ortada kesilmesine sebep olabiliyor.
+      //
+      // DENGE: ne varsayılan küçük chunk'lar (çok fazla round-trip → yavaş)
+      // ne de tüm dosya tek seferde (büyük dosyalarda bağlantı kopması
+      // riski) — 1 MB'lık sabit bir chunk boyutu kullanılıyor. Böylece:
+      //   • Küçük dosyalar (≤1 MB) yine tek PUT isteğinde gider.
+      //   • Büyük dosyalar (örn. 3.6 MB) birkaç (burada ~4) parçaya bölünür;
+      //     bir parça başarısız olursa SADECE o parça yeniden denenir
+      //     (numberOfAttempts=3), tüm dosya baştan gönderilmez.
+      const chunkUnit = 262144; // 256 KB
+      const maxChunkSize = chunkUnit * 4; // 1 MB üst sınır
+      final idealChunkSize = bytes.isEmpty
+          ? chunkUnit
+          : ((bytes.length + chunkUnit - 1) ~/ chunkUnit) * chunkUnit;
+      final chunkSize =
+          idealChunkSize > maxChunkSize ? maxChunkSize : idealChunkSize;
+
+      // ── DOSYA BOYUTUNA GÖRE DİNAMİK TIMEOUT ─────────────────────────
+      // Sabit 120s'lik timeout büyük dosyalarda (özellikle chunk sınırı
+      // 1 MB olduğu için parça sayısı artan yedeklerde, bkz. yukarıdaki
+      // not) yetersiz kalabiliyordu. Bunun yerine, varsayılan olarak
+      // zayıf/orta bir bağlantı hızı (500 Kbps = 0.5 Mbps) varsayılarak
+      // dosya boyutundan bir süre hesaplanıyor:
+      //   süre = taban + (dosya boyutu (MB) × saniye/MB)
+      //   saniye/MB = 8 bit/byte / 0.5 Mbps = 16 saniye/MB
+      // Taban (30s) bağlantı kurulumu + metadata isteği gibi sabit
+      // giderleri karşılar. Sonuç, çok küçük dosyalarda gereksiz kısa
+      // (120s alt sınır) ve çok büyük dosyalarda sınırsız (300s üst
+      // sınır) olmayacak şekilde sınırlanır.
+      const uploadTimeoutBaseSeconds = 30;
+      const uploadTimeoutSecondsPerMb = 16; // 500 Kbps varsayımı
+      const uploadTimeoutMinSeconds = 120;
+      const uploadTimeoutMaxSeconds = 300;
+      final fileSizeMb = bytes.length / (1024 * 1024);
+      final calculatedTimeoutSeconds =
+          uploadTimeoutBaseSeconds + (fileSizeMb * uploadTimeoutSecondsPerMb);
+      final uploadTimeoutSeconds = calculatedTimeoutSeconds
+          .clamp(uploadTimeoutMinSeconds, uploadTimeoutMaxSeconds)
+          .round();
+
+      debugPrint('[DRIVE DEBUG] files.create() çağrılıyor... (t=${swUploadTotal.elapsedMilliseconds}ms, chunkSize=$chunkSize, timeout=${uploadTimeoutSeconds}s, dosyaBoyutu=${fileSizeMb.toStringAsFixed(2)}MB)');
+      final swCreate = Stopwatch()..start();
       final created = await driveApi.files
           .create(
             metadata,
             uploadMedia: media,
+            // NOT: googleapis paketi, uploadMedia verildiğinde varsayılan
+            // olarak resumable upload protokolünü kullanır ve dosyayı
+            // içeride kendi belirlediği sabit boyutlu parçalara (chunk)
+            // bölüp her birini AYRI bir PUT isteğiyle gönderir. 6-7 MB'lık
+            // bir yedek için bu, aralarında tam bir round-trip bulunan
+            // birden fazla HTTP isteği anlamına gelir (1 initiate + N adet
+            // PUT). Zayıf/orta hızlı ağlarda bu round-trip'lerin toplamı
+            // upload süresini önemli ölçüde uzatabiliyordu (bkz. 84s'lik
+            // upload logu). chunkSize'ı 1 MB üst sınırıyla (aşağıdaki
+            // notta açıklanan bağlantı-kopması riskine karşı) vererek
+            // büyük dosyalar birkaç parçaya bölünüyor; her parça
+            // ayrı ayrı yeniden denenebiliyor (numberOfAttempts=3).
+            uploadOptions: drive.ResumableUploadOptions(
+              chunkSize: chunkSize,
+              numberOfAttempts: 3,
+            ),
             $fields: 'id, name, size, modifiedTime',
           )
           .timeout(
-            const Duration(seconds: 120),
+            Duration(seconds: uploadTimeoutSeconds),
             onTimeout: () {
-              debugPrint('[DRIVE DEBUG] files.create() 120 saniyede CEVAP VERMEDİ (timeout)');
+              debugPrint('[DRIVE DEBUG] files.create() ${uploadTimeoutSeconds} saniyede CEVAP VERMEDİ (timeout)');
               throw GoogleDriveException(
                 _l10n.backupDriveUploadTimeoutMessage,
                 type: GoogleDriveErrorType.network,
@@ -263,8 +355,10 @@ class GoogleDriveHelper {
               );
             },
           );
+      debugPrint('[DRIVE TIMING] files.create() (asıl upload): ${swCreate.elapsedMilliseconds}ms');
 
       debugPrint('[DRIVE DEBUG] files.create() BAŞARILI: id=${created.id}, name=${created.name}');
+      debugPrint('[DRIVE TIMING] uploadBackup() TOPLAM: ${swUploadTotal.elapsedMilliseconds}ms');
       onProgress?.call(1.0, _l10n.backupDriveOperationCompletedLabel);
       return GoogleDriveBackupFile.fromDriveFile(created);
     } catch (e, stack) {
@@ -272,7 +366,7 @@ class GoogleDriveHelper {
       debugPrint('[DRIVE DEBUG] Stack: $stack');
       throw GoogleDriveException.fromError(e);
     } finally {
-      session.client.close();
+      if (ownsSession) activeSession.client.close();
     }
   }
 
@@ -293,16 +387,18 @@ class GoogleDriveHelper {
   // dosya birikeceği için (özellikle Aşama 6.5'teki otomatik temizlik
   // devreye girdiğinde) tek sayfa yeterli olur, ama doğruluk için
   // aşağıda tüm sayfalar dolaşılır.
-  Future<List<GoogleDriveBackupFile>> listBackups() async {
-    final session = await getDriveApi();
-    if (session == null) {
+  Future<List<GoogleDriveBackupFile>> listBackups({DriveSession? session}) async {
+    final swTotal = Stopwatch()..start();
+    final ownsSession = session == null;
+    final activeSession = session ?? await getDriveApi();
+    if (activeSession == null) {
       throw GoogleDriveException(
         _l10n.backupDriveNotSignedInMessage,
         type: GoogleDriveErrorType.notSignedIn,
         retryable: false,
       );
     }
-    final driveApi = session.api;
+    final driveApi = activeSession.api;
 
     try {
       final results = <GoogleDriveBackupFile>[];
@@ -324,7 +420,8 @@ class GoogleDriveHelper {
     } catch (e) {
       throw GoogleDriveException.fromError(e);
     } finally {
-      session.client.close();
+      debugPrint('[DRIVE TIMING] listBackups() TOPLAM: ${swTotal.elapsedMilliseconds}ms');
+      if (ownsSession) activeSession.client.close();
     }
   }
 
@@ -427,9 +524,10 @@ class GoogleDriveHelper {
   // normal Drive çöp kutusunda da görünmez). Bu yüzden cihaz tarafındaki
   // silme onay diyaloğuyla (Aşama 5.1) aynı ciddiyette ele alınmalıdır —
   // arayüz katmanı (Aşama 6.7) burada da bir onay diyaloğu göstermelidir.
-  Future<void> deleteBackup(String fileId) async {
-    final session = await getDriveApi();
-    if (session == null) {
+  Future<void> deleteBackup(String fileId, {DriveSession? session}) async {
+    final ownsSession = session == null;
+    final activeSession = session ?? await getDriveApi();
+    if (activeSession == null) {
       throw GoogleDriveException(
         _l10n.backupDriveNotSignedInMessage,
         type: GoogleDriveErrorType.notSignedIn,
@@ -437,11 +535,11 @@ class GoogleDriveHelper {
       );
     }
     try {
-      await session.api.files.delete(fileId);
+      await activeSession.api.files.delete(fileId);
     } catch (e) {
       throw GoogleDriveException.fromError(e);
     } finally {
-      session.client.close();
+      if (ownsSession) activeSession.client.close();
     }
   }
 
@@ -468,8 +566,9 @@ class GoogleDriveHelper {
 
   Future<RetentionResult> enforceRetention({
     int maxBackupsToKeep = defaultMaxDriveBackupsToKeep,
+    DriveSession? session,
   }) async {
-    final all = await listBackups(); // zaten en yeni en üstte sıralı
+    final all = await listBackups(session: session); // zaten en yeni en üstte sıralı
     if (all.length <= maxBackupsToKeep) {
       return RetentionResult(deletedCount: 0, failedCount: 0);
     }
@@ -479,7 +578,7 @@ class GoogleDriveHelper {
     var failed = 0;
     for (final backup in toDelete) {
       try {
-        await deleteBackup(backup.id);
+        await deleteBackup(backup.id, session: session);
         deleted++;
       } catch (_) {
         // Tek bir dosyanın silinememesi tüm temizliği durdurmaz; bir

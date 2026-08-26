@@ -172,6 +172,14 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
     ReminderService.instance.onUnpinRequested =
         _handleUnpinRequestedFromNotification;
     _initWidgetClickListener();
+    // BUG DÜZELTMESİ: bir yedek geri yüklendiğinde (cihazdan veya Google
+    // Drive'dan) veritabanı güncelleniyordu ama bu ekranın bellekteki
+    // _notes/_categories listeleri tazelenmiyordu — kullanıcı uygulamayı
+    // kapatıp açana kadar geri yüklenen notları göremiyordu. BackupHelper,
+    // restoreBackup() başarıyla bittiğinde bu callback'i tetikler.
+    BackupHelper.instance.onRestoreCompleted = () {
+      if (mounted) _loadData();
+    };
   }
 
   // ── Ana ekran widget'ına tıklanınca ilgili notu açma ───────────────────
@@ -263,6 +271,7 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
     _snackOverlay?.remove();
     _shareIntentSub?.cancel();
     _widgetClickSub?.cancel();
+    BackupHelper.instance.onRestoreCompleted = null;
     _titleController.dispose();
     _searchController.dispose();
     super.dispose();

@@ -98,7 +98,12 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
 
   String _formatDriveDate(BuildContext context, DateTime? dt) {
     if (dt == null) return AppLocalizations.of(context)!.backupUnknownDateLabel;
-    return _formatDate(dt);
+    // Google Drive API modifiedTime alanını UTC olarak döner. toLocal()
+    // olmadan doğrudan gösterilirse, UTC'nin gerisinde kalan saat
+    // dilimlerinde (örn. Türkiye UTC+3) tarih/saat yerel saatten geri
+    // görünür. Cihaz tarafındaki yedekler zaten DateTime.now() (yerel)
+    // ile kaydedildiği için bu sorun sadece Drive sekmesinde yaşanıyordu.
+    return _formatDate(dt.toLocal());
   }
 
   // ══════════════════════════════════════════════════════════════════

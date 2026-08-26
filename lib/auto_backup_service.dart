@@ -301,6 +301,7 @@ class AutoBackupService {
 
     // 3. Google Drive yedekleme (target: drive veya both)
     if (target == AutoBackupTarget.drive || target == AutoBackupTarget.both) {
+      final swDriveBlock = Stopwatch()..start();
       try {
         // Arka plan isolate'inde kullanıcı etkileşimli signIn() ÇAĞRILAMAZ
         // (hiçbir diyalog gösterilemez); sadece daha önce verilmiş bir
@@ -309,41 +310,60 @@ class AutoBackupService {
         if (!signedIn) {
           messages.add(l10n.autoBackupDriveSkippedNotConnectedMessage);
         } else {
-          // Drive'a yüklenecek zip'i önce yerel olarak üretmemiz gerekir
-          // (target sadece 'drive' ise 2. adımda hiç oluşturulmamış
-          // olabilir).
-          File zipFile;
-          // Hedef sadece 'drive' iken oluşturulan bu zip, Drive'a
-          // yüklendikten sonra cihazda TUTULMAMASI gereken, sadece
-          // yükleme için üretilmiş geçici bir dosyadır (bkz. aşağıdaki
-          // "temiz çözüm" notu). 'both' hedefinde ise zaten 2. adımda
-          // kasıtlı olarak kalıcı bir yerel yedek isteniyor, o yüzden
-          // silinmez.
-          final isDriveOnly = target == AutoBackupTarget.drive;
-          if (target == AutoBackupTarget.both) {
-            // 2. adımda zaten oluşturuldu; en yeni yerel yedeği kullan.
-            final backups = await BackupHelper.instance.listBackups();
-            zipFile = backups.first;
+          // PERFORMANS: Bu adımda yapılacak tüm Drive işlemleri (yükleme +
+          // eski yedekleri temizleme) için TEK bir DriveSession açılır ve
+          // en sonda (finally'de) tek seferde kapatılır. Önceden
+          // uploadBackup()/enforceRetention() her biri kendi içinde
+          // sıfırdan authenticatedClient() çağırıyordu (+ enforceRetention
+          // içindeki her deleteBackup() de ayrıca); bu, tek bir yedekleme
+          // döngüsünde 3+ kez tam kimlik doğrulama + yeni bağlantı kurma
+          // anlamına geliyordu ve zayıf/yüksek gecikmeli ağlarda gözle
+          // görülür bir yavaşlığın (onlarca saniye) asıl sebebiydi. Session
+          // artık tüm alt çağrılara paylaşılarak sadece bir kez açılıyor.
+          final session = await GoogleDriveHelper.instance.getDriveApi();
+          if (session == null) {
+            messages.add(l10n.autoBackupDriveSkippedNotConnectedMessage);
           } else {
-            zipFile = await BackupHelper.instance.createBackup(l10n: l10n);
-          }
-          try {
-            await GoogleDriveHelper.instance.uploadBackup(zipFile);
-            await GoogleDriveHelper.instance.enforceRetention();
-            messages.add(l10n.autoBackupDriveSuccessMessage);
-            anySuccess = true;
-          } catch (e) {
-            rethrow;
-          } finally {
-            // Hedef sadece 'drive' ise, bu zip Drive'a yükleme için
-            // üretilmiş geçici bir dosyadır — kullanıcı yerel kopya hiç
-            // istemedi. Yükleme BAŞARILI da olsa BAŞARISIZ da olsa
-            // cihazda tutulmaz: başarısız denemede yerelde "fallback"
-            // bırakmak, art arda başarısız denemelerde gereksiz
-            // dosya birikimine yol açardı; bunun yerine hiç iz
-            // bırakılmaması tercih edildi.
-            if (isDriveOnly) {
-              await BackupHelper.instance.deleteBackupFile(zipFile);
+            try {
+              // Drive'a yüklenecek zip'i önce yerel olarak üretmemiz gerekir
+              // (target sadece 'drive' ise 2. adımda hiç oluşturulmamış
+              // olabilir).
+              File zipFile;
+              // Hedef sadece 'drive' iken oluşturulan bu zip, Drive'a
+              // yüklendikten sonra cihazda TUTULMAMASI gereken, sadece
+              // yükleme için üretilmiş geçici bir dosyadır (bkz. aşağıdaki
+              // "temiz çözüm" notu). 'both' hedefinde ise zaten 2. adımda
+              // kasıtlı olarak kalıcı bir yerel yedek isteniyor, o yüzden
+              // silinmez.
+              final isDriveOnly = target == AutoBackupTarget.drive;
+              if (target == AutoBackupTarget.both) {
+                // 2. adımda zaten oluşturuldu; en yeni yerel yedeği kullan.
+                final backups = await BackupHelper.instance.listBackups();
+                zipFile = backups.first;
+              } else {
+                zipFile = await BackupHelper.instance.createBackup(l10n: l10n);
+              }
+              try {
+                await GoogleDriveHelper.instance.uploadBackup(zipFile, session: session);
+                await GoogleDriveHelper.instance.enforceRetention(session: session);
+                messages.add(l10n.autoBackupDriveSuccessMessage);
+                anySuccess = true;
+              } catch (e) {
+                rethrow;
+              } finally {
+                // Hedef sadece 'drive' ise, bu zip Drive'a yükleme için
+                // üretilmiş geçici bir dosyadır — kullanıcı yerel kopya hiç
+                // istemedi. Yükleme BAŞARILI da olsa BAŞARISIZ da olsa
+                // cihazda tutulmaz: başarısız denemede yerelde "fallback"
+                // bırakmak, art arda başarısız denemelerde gereksiz
+                // dosya birikimine yol açardı; bunun yerine hiç iz
+                // bırakılmaması tercih edildi.
+                if (isDriveOnly) {
+                  await BackupHelper.instance.deleteBackupFile(zipFile);
+                }
+              }
+            } finally {
+              session.client.close();
             }
           }
         }
@@ -351,6 +371,7 @@ class AutoBackupService {
         final ex = GoogleDriveException.fromError(e);
         messages.add(l10n.autoBackupDriveFailedMessage(ex.message));
       }
+      debugPrint('[DRIVE TIMING] Drive bloğu (adım 3) TOPLAM: ${swDriveBlock.elapsedMilliseconds}ms');
     }
 
     await _saveLastRun(success: anySuccess, message: messages.join(' '));

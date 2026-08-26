@@ -1025,6 +1025,13 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           }
         },
       );
+      // BUG DÜZELTMESİ: restoreBackup() veritabanını doğru şekilde
+      // güncelliyordu ama NoteListScreen'in bellekteki not/kategori
+      // listeleri buradan haberdar olmadığı için ekranda görünmüyordu
+      // (yalnızca uygulama kapatılıp açılınca güncelleniyordu — bkz.
+      // BackupHelper.onRestoreCompleted). Bu satır NoteListScreen'i
+      // ANINDA tazeler; ekran kapalı/pop edilmiş olsa bile zararsızdır.
+      BackupHelper.instance.onRestoreCompleted?.call();
       _setBusy(false);
       if (!mounted) return;
       // AŞAMA 4.3c: geri yükleme sonrası bilgilendirme, önizlemede tespit

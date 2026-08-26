@@ -12,6 +12,18 @@ class BackupHelper {
   static const int backupFormatVersion = 1;
   static const String _dataFileName = 'backup_data.json';
 
+  // BUG DÜZELTMESİ: Drive'dan (veya cihazdan) bir yedek geri yüklendiğinde
+  // veriler veritabanına doğru şekilde yazılıyordu, ama NoteListScreen'in
+  // bellekte tuttuğu _notes/_categories listeleri sadece initState()'te bir
+  // kez _loadData() ile okunduğu için güncellenmiyordu — bu yüzden geri
+  // yüklenen notlar uygulama kapatılıp yeniden açılana kadar ekranda
+  // görünmüyordu. Çözüm: ReminderService.instance.onNotificationTapped ile
+  // AYNI desende bir callback. NoteListLifecycleMixin.initState() bunu kendi
+  // _loadData()'sına bağlar; restoreBackup() başarıyla tamamlandığında
+  // BackupRestoreScreen bu callback'i tetikleyerek ekranı, kullanıcı geri
+  // dönmeden ANINDA tazeler.
+  VoidCallback? onRestoreCompleted;
+
   Future<Directory> backupsDir() async {
     final docsDir = await getApplicationDocumentsDirectory();
     final dir = Directory(p.join(docsDir.path, 'dnote_backups'));
@@ -65,7 +77,32 @@ class BackupHelper {
     final attachmentNames = <String>[];
     final attachmentBytesList = <Uint8List>[];
     if (await attDir.exists()) {
-      final files = attDir.listSync().whereType<File>().toList();
+      // Yedeğe SADECE aktif notlara (çöp kutusu HARİÇ) referans veren ek
+      // dosyaları dahil ediyoruz. Bu tek satır iki sorunu birden çözer:
+      //  1) Öksüz (orphan) ekler: bir nota eklenmiş dosya sonradan
+      //     silinmiş olsa bile fiziksel dosya attachmentsDir()'da kalıp
+      //     her yedekte gereksiz yer kaplıyordu — artık hiçbir aktif nota
+      //     referans vermeyen dosyalar zip'e hiç girmiyor.
+      //  2) Çöp kutusundaki notların ekleri: kasıtlı bir tasarım kararı
+      //     olarak yedeğe (ve dolayısıyla Drive'a) dahil edilmiyor — bir
+      //     not çöpe atıldığında eki de artık "gidici" kabul ediliyor.
+      //     (Not: deletedNotes'un kendisi JSON'da hâlâ yer alıyor, sadece
+      //     fiziksel ek dosyası paketlenmiyor; restore tarafındaki
+      //     "eksik ek" tespiti bu durumu zaten kullanıcıya bildiriyor.)
+      // Notları referans kontrolünden önce JSON temsiline normalize
+      // ediyoruz. db.getNotes() düz Map değil de toJson() içeren özel bir
+      // model döndürüyorsa, _referencedAttachmentNames() içindeki
+      // "note is! Map" kontrolü onu sessizce atlardı — bu da referans
+      // listesinin boş kalıp AKTİF notların eklerinin bile yanlışlıkla
+      // filtrelenmesine yol açardı. jsonEncode/jsonDecode round-trip'i,
+      // backup_data.json'a giden ile birebir aynı şekli garanti eder.
+      final notesJson = jsonDecode(jsonEncode(backupData['notes'])) as List<dynamic>;
+      final referencedNames = _referencedAttachmentNames(notesJson);
+      final files = attDir
+          .listSync()
+          .whereType<File>()
+          .where((f) => referencedNames.contains(p.basename(f.path)))
+          .toList();
       for (var i = 0; i < files.length; i++) {
         final file = files[i];
         final bytes = await file.readAsBytes();
@@ -345,8 +382,8 @@ class BackupHelper {
       final atts = note['attachments'];
       if (atts is! List) continue;
       for (final att in atts) {
-        if (att is Map && att['fileName'] != null) {
-          final name = att['fileName'].toString();
+        if (att is Map && att['storedName'] != null) {
+          final name = att['storedName'].toString();
           if (name.isNotEmpty) names.add(name);
         }
       }
