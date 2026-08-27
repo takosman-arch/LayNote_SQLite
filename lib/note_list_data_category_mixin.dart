@@ -106,14 +106,24 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       if (notes.isNotEmpty || !neverInitialized) {
         _notes = notes;
       } else {
+        // Hoş geldin notu artık sabit bir tarih yerine, uygulamanın ilk
+        // açıldığı (kullanıcının indirdiği) ana tarih olarak damgalanır.
+        final welcomeNow = DateTime.now();
+        final welcomeRawTime = welcomeNow.toString();
+        final welcomeDay = welcomeNow.day.toString().padLeft(2, '0');
+        final welcomeMonth = welcomeNow.month.toString().padLeft(2, '0');
+        final welcomeHour = welcomeNow.hour.toString().padLeft(2, '0');
+        final welcomeMinute = welcomeNow.minute.toString().padLeft(2, '0');
+        final welcomeFormattedDate =
+            '$welcomeDay.$welcomeMonth.${welcomeNow.year} $welcomeHour:$welcomeMinute';
         _notes = [
           {
-            'id': '2026-06-18 22:05:00',
+            'id': welcomeRawTime,
             'title': AppLocalizations.of(context)!.welcomeNoteTitle,
             'content': AppLocalizations.of(context)!.welcomeNoteContent,
-            'date': '18.06.2026 22:05',
-            'createdDate': '2026-06-18 22:05:00',
-            'modifiedDate': '2026-06-18 22:05:00',
+            'date': welcomeFormattedDate,
+            'createdDate': welcomeRawTime,
+            'modifiedDate': welcomeRawTime,
             'category': null,
             'color': 'Amber',
             'type': 'text',
@@ -164,10 +174,10 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       _colorfulNotes = (settings['colorful_notes'] ?? 'false') == 'true';
       _fontFamily = settings['font_family'] ?? 'Varsayılan';
       _globalFontSize =
-          double.tryParse(settings['global_font_size'] ?? '') ?? 16.0;
+          double.tryParse(settings['global_font_size'] ?? '') ?? 19.0;
       final textColorVal = int.tryParse(settings['text_color'] ?? '');
       _textColor = textColorVal != null ? Color(textColorVal) : null;
-      _previewLines = int.tryParse(settings['preview_lines'] ?? '') ?? 3;
+      _previewLines = int.tryParse(settings['preview_lines'] ?? '') ?? 6;
       _widgetFontSize =
           double.tryParse(settings['widget_font_size'] ?? '') ?? 14.0;
       _widgetBgOpacity =
@@ -452,7 +462,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       child: ListTile(
         contentPadding: EdgeInsets.only(
           left: isSubfolder ? 40 : 16,
-          right: 16,
+          right: 20,
         ),
         leading: Stack(
           clipBehavior: Clip.none,

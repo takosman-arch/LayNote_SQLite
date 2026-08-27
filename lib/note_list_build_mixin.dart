@@ -633,6 +633,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
+                      contentPadding: const EdgeInsets.only(
+                        left: 16,
+                        right: 20,
+                      ),
                       leading: Icon(Icons.notes, color: appAccentColor.value),
                       title: Text(
                         AppLocalizations.of(context)!.drawerAllNotesLabel,
@@ -661,6 +665,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
+                      contentPadding: const EdgeInsets.only(
+                        left: 16,
+                        right: 20,
+                      ),
                       leading: Icon(
                         Icons.star_outline,
                         color: appAccentColor.value,
@@ -688,6 +696,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     ),
                   ),
                   ListTile(
+                    contentPadding: const EdgeInsets.only(
+                      left: 16,
+                      right: 20,
+                    ),
                     leading: Icon(
                       Icons.event_note_outlined,
                       color: appAccentColor.value,
@@ -720,6 +732,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
+                      contentPadding: const EdgeInsets.only(
+                        left: 16,
+                        right: 20,
+                      ),
                       leading: Icon(
                         Icons.notifications_active_outlined,
                         color: appAccentColor.value,
@@ -751,6 +767,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
+                      contentPadding: const EdgeInsets.only(
+                        left: 16,
+                        right: 20,
+                      ),
                       leading: Icon(
                         Icons.lock_outline,
                         color: appAccentColor.value,
@@ -778,6 +798,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
+                      contentPadding: const EdgeInsets.only(
+                        left: 16,
+                        right: 20,
+                      ),
                       leading: Icon(
                         Icons.archive_outlined,
                         color: appAccentColor.value,
@@ -809,6 +833,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ? dNoteHighlight(context)
                         : Colors.transparent,
                     child: ListTile(
+                      contentPadding: const EdgeInsets.only(
+                        left: 16,
+                        right: 20,
+                      ),
                       leading: Icon(
                         Icons.delete_outline,
                         color: appAccentColor.value,

@@ -1442,7 +1442,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               // (kullanıcı dilerse aşağıdan farklı bir renk seçebilir) ama
               // başlangıç rengi üst klasörle aynı olur.
               ? _getCategoryColor(parentCategory)
-              : _categoryPalette[_categories.length % _categoryPalette.length]);
+              : _categoryPalette[math.Random().nextInt(_categoryPalette.length)]);
 
     showDialog(
       context: context,
@@ -1925,7 +1925,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             children: [
               Text(
                 label,
-                style: const TextStyle(color: Colors.grey, fontSize: 13),
+                style: const TextStyle(color: Colors.grey, fontSize: 15),
               ),
               const SizedBox(height: 3),
               Text(
@@ -2037,6 +2037,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 itemBuilder: (_, i) {
                   final action = actions[i];
                   return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: () {
                       Navigator.pop(ctx);
                       onSelected(action['key'] as String);
@@ -2308,6 +2309,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                 itemBuilder: (_, i) {
                   final action = actions[i];
                   return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: () async {
                       final key = action['key'] as String;
                       Navigator.pop(ctx);

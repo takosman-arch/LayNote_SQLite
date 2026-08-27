@@ -6882,7 +6882,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                                           TextAlign.center,
                                                       style: TextStyle(
                                                         color: barColor,
-                                                        fontSize: 13,
+                                                        fontSize: 14,
                                                         fontWeight:
                                                             FontWeight.normal,
                                                       ),
