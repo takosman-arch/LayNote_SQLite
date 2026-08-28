@@ -2129,7 +2129,7 @@ abstract class AppLocalizations {
   /// Hakkında ekranında Geliştirici bölümünün başlığı
   ///
   /// In tr, this message translates to:
-  /// **'Geliştirici'**
+  /// **'Geri Bildirim'**
   String get aboutSectionDeveloper;
 
   /// Hakkında ekranında geliştirici adı satırının başlığı
@@ -2183,7 +2183,7 @@ abstract class AppLocalizations {
   /// Hakkında ekranında Destek bölümünün başlığı
   ///
   /// In tr, this message translates to:
-  /// **'Destek'**
+  /// **'Değerlendir'**
   String get aboutSectionSupport;
 
   /// Hakkında ekranında Uygulamayı Değerlendir satırının başlığı
@@ -2227,18 +2227,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Örnek metin - {size} pt'**
   String settingsGlobalFontSizeSamplePreview(int size);
-
-  /// Yazı boyutu seçim sheet'inde, seçilen boyutun mevcut notlara da uygulanmasını sağlayan onay kutusunun etiketi
-  ///
-  /// In tr, this message translates to:
-  /// **'Mevcut notlara uygula'**
-  String get settingsGlobalFontSizeApplyToAllLabel;
-
-  /// Yazı boyutu seçim sheet'inde onay kutusunun altında gösterilen açıklama metni
-  ///
-  /// In tr, this message translates to:
-  /// **'Bireysel not boyutu ayarı varsa bu ayar o notları etkilemez.'**
-  String get settingsGlobalFontSizeApplyToAllNote;
 
   /// Yazı boyutu seçim sheet'inde iptal düğmesi
   ///

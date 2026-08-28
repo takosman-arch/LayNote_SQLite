@@ -1034,7 +1034,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsAboutVersionLoading => '버전 불러오는 중…';
 
   @override
-  String get aboutSectionDeveloper => '개발자';
+  String get aboutSectionDeveloper => '피드백';
 
   @override
   String get aboutDeveloperTitle => '개발자';
@@ -1061,7 +1061,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get aboutLicensesTitle => '오픈소스 라이선스';
 
   @override
-  String get aboutSectionSupport => '지원';
+  String get aboutSectionSupport => '평가';
 
   @override
   String get aboutRateAppTitle => '앱 평가하기';
@@ -1087,13 +1087,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return '샘플 텍스트 - ${size}pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel => '기존 노트에도 적용';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      '노트에 개별 글자 크기가 설정되어 있으면 이 설정이 적용되지 않습니다.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => '취소';

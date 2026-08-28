@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "위젯에 어두운 색상 구성표를 적용합니다.",
   "settingsAboutVersionTitle": "앱 버전",
   "settingsAboutVersionLoading": "버전 불러오는 중…",
-  "aboutSectionDeveloper": "개발자",
+  "aboutSectionDeveloper": "피드백",
   "aboutDeveloperTitle": "개발자",
   "aboutContactTitle": "문의하기",
   "aboutWebsiteTitle": "웹사이트",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "개인정보 처리방침",
   "aboutTermsTitle": "이용 약관",
   "aboutLicensesTitle": "오픈소스 라이선스",
-  "aboutSectionSupport": "지원",
+  "aboutSectionSupport": "평가",
   "aboutRateAppTitle": "앱 평가하기",
   "aboutLinkOpenError": "링크를 열 수 없습니다.",
   "settingsFontFamilyTileTitle": "글꼴",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "기존 노트에도 적용",
-  "settingsGlobalFontSizeApplyToAllNote": "노트에 개별 글자 크기가 설정되어 있으면 이 설정이 적용되지 않습니다.",
   "settingsGlobalFontSizeCancelButton": "취소",
   "settingsGlobalFontSizeApplyButton": "적용",
   "settingsPreviewLinesTileTitle": "노트 미리보기 줄 수",

@@ -1056,7 +1056,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settingsAboutVersionLoading => 'संस्करण लोड हो रहा है…';
 
   @override
-  String get aboutSectionDeveloper => 'डेवलपर';
+  String get aboutSectionDeveloper => 'फ़ीडबैक';
 
   @override
   String get aboutDeveloperTitle => 'डेवलपर';
@@ -1083,7 +1083,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get aboutLicensesTitle => 'ओपन सोर्स लाइसेंस';
 
   @override
-  String get aboutSectionSupport => 'सहायता';
+  String get aboutSectionSupport => 'रेटिंग';
 
   @override
   String get aboutRateAppTitle => 'ऐप को रेट करें';
@@ -1109,14 +1109,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'नमूना टेक्स्ट - $size pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel =>
-      'मौजूदा नोट्स पर लागू करें';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'यदि किसी नोट में अलग फ़ॉन्ट आकार सेट है, तो यह सेटिंग उसे प्रभावित नहीं करेगी।';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'रद्द करें';

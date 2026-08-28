@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "Темна колірна схема для віджета.",
   "settingsAboutVersionTitle": "Версія додатку",
   "settingsAboutVersionLoading": "Завантаження версії…",
-  "aboutSectionDeveloper": "Розробник",
+  "aboutSectionDeveloper": "Зворотний зв’язок",
   "aboutDeveloperTitle": "Розробник",
   "aboutContactTitle": "Контакти",
   "aboutWebsiteTitle": "Веб-сайт",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "Політика конфіденційності",
   "aboutTermsTitle": "Умови використання",
   "aboutLicensesTitle": "Ліцензії відкритого коду",
-  "aboutSectionSupport": "Підтримка",
+  "aboutSectionSupport": "Оцінити",
   "aboutRateAppTitle": "Оцінити застосунок",
   "aboutLinkOpenError": "Не вдалося відкрити посилання.",
   "settingsFontFamilyTileTitle": "Шрифт",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "Застосувати до наявних нотаток",
-  "settingsGlobalFontSizeApplyToAllNote": "Якщо для нотатки встановлено індивідуальний розмір шрифту, це налаштування на неї не вплине.",
   "settingsGlobalFontSizeCancelButton": "Скасувати",
   "settingsGlobalFontSizeApplyButton": "Застосувати",
   "settingsPreviewLinesTileTitle": "Рядки попереднього перегляду нотатки",

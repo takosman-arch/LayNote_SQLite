@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "Ciemny schemat kolorów widżetu.",
   "settingsAboutVersionTitle": "Wersja aplikacji",
   "settingsAboutVersionLoading": "Wczytywanie wersji…",
-  "aboutSectionDeveloper": "Deweloper",
+  "aboutSectionDeveloper": "Opinie",
   "aboutDeveloperTitle": "Deweloper",
   "aboutContactTitle": "Kontakt",
   "aboutWebsiteTitle": "Strona internetowa",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "Polityka prywatności",
   "aboutTermsTitle": "Warunki użytkowania",
   "aboutLicensesTitle": "Licencje open source",
-  "aboutSectionSupport": "Wsparcie",
+  "aboutSectionSupport": "Ocena",
   "aboutRateAppTitle": "Oceń aplikację",
   "aboutLinkOpenError": "Nie udało się otworzyć linku.",
   "settingsFontFamilyTileTitle": "Czcionka",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "Zastosuj do istniejących notatek",
-  "settingsGlobalFontSizeApplyToAllNote": "Jeśli notatka ma ustawiony indywidualny rozmiar czcionki, to ustawienie jej nie dotyczy.",
   "settingsGlobalFontSizeCancelButton": "Anuluj",
   "settingsGlobalFontSizeApplyButton": "Zastosuj",
   "settingsPreviewLinesTileTitle": "Liczba linii podglądu notatki",

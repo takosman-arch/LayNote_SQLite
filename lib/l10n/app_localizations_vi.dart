@@ -1060,7 +1060,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get settingsAboutVersionLoading => 'Đang tải phiên bản…';
 
   @override
-  String get aboutSectionDeveloper => 'Nhà phát triển';
+  String get aboutSectionDeveloper => 'Phản hồi';
 
   @override
   String get aboutDeveloperTitle => 'Nhà phát triển';
@@ -1087,7 +1087,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get aboutLicensesTitle => 'Giấy phép mã nguồn mở';
 
   @override
-  String get aboutSectionSupport => 'Hỗ trợ';
+  String get aboutSectionSupport => 'Đánh giá';
 
   @override
   String get aboutRateAppTitle => 'Đánh giá ứng dụng';
@@ -1113,14 +1113,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'Văn bản mẫu - $size pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel =>
-      'Áp dụng cho ghi chú hiện có';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'Nếu một ghi chú đã đặt cỡ chữ riêng, cài đặt này sẽ không ảnh hưởng đến nó.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'Hủy';

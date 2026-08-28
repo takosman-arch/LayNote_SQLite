@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "ウィジェット用のダークカラースキーム。",
   "settingsAboutVersionTitle": "アプリバージョン",
   "settingsAboutVersionLoading": "バージョンを読み込み中…",
-  "aboutSectionDeveloper": "開発者",
+  "aboutSectionDeveloper": "フィードバック",
   "aboutDeveloperTitle": "開発者",
   "aboutContactTitle": "お問い合わせ",
   "aboutWebsiteTitle": "ウェブサイト",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "プライバシーポリシー",
   "aboutTermsTitle": "利用規約",
   "aboutLicensesTitle": "オープンソースライセンス",
-  "aboutSectionSupport": "サポート",
+  "aboutSectionSupport": "評価",
   "aboutRateAppTitle": "アプリを評価する",
   "aboutLinkOpenError": "リンクを開けませんでした。",
   "settingsFontFamilyTileTitle": "フォント",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "既存のメモにも適用",
-  "settingsGlobalFontSizeApplyToAllNote": "メモ個別に文字サイズが設定されている場合、この設定は影響しません。",
   "settingsGlobalFontSizeCancelButton": "キャンセル",
   "settingsGlobalFontSizeApplyButton": "適用",
   "settingsPreviewLinesTileTitle": "メモのプレビュー行数",

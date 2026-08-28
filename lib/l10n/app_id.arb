@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "Skema warna gelap untuk widget.",
   "settingsAboutVersionTitle": "Versi Aplikasi",
   "settingsAboutVersionLoading": "Memuat versi…",
-  "aboutSectionDeveloper": "Pengembang",
+  "aboutSectionDeveloper": "Masukan",
   "aboutDeveloperTitle": "Pengembang",
   "aboutContactTitle": "Kontak",
   "aboutWebsiteTitle": "Situs Web",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "Kebijakan Privasi",
   "aboutTermsTitle": "Ketentuan Penggunaan",
   "aboutLicensesTitle": "Lisensi Sumber Terbuka",
-  "aboutSectionSupport": "Dukungan",
+  "aboutSectionSupport": "Nilai",
   "aboutRateAppTitle": "Beri Rating Aplikasi",
   "aboutLinkOpenError": "Tautan tidak dapat dibuka.",
   "settingsFontFamilyTileTitle": "Font",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "Terapkan ke catatan yang ada",
-  "settingsGlobalFontSizeApplyToAllNote": "Jika sebuah catatan memiliki ukuran font tersendiri, pengaturan ini tidak akan memengaruhinya.",
   "settingsGlobalFontSizeCancelButton": "Batal",
   "settingsGlobalFontSizeApplyButton": "Terapkan",
   "settingsPreviewLinesTileTitle": "Baris Pratinjau Catatan",

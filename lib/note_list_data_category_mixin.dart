@@ -70,6 +70,16 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
   Future<void> _loadData() async {
     final db = DBHelper.instance;
 
+    // PERFORMANS DÜZELTMESİ: Uygulama tamamen kapalıyken bir bildirime
+    // dokunulduğunda notun açılması çok uzun sürüyordu, çünkü
+    // getLaunchNoteId() eskiden bu fonksiyonun EN SONUNDA, dört DB
+    // sorgusu ve aşağıdaki setState bloğu tamamen bitene kadar hiç
+    // çağrılmıyordu. Şimdi diğer sorgularla AYNI ANDA (paralel)
+    // başlatılıyor ki sıraya girip onları beklemesin; sonucu aşağıda,
+    // notlar yüklenir yüklenmez (widget senkronu / pinned bildirim
+    // geri yükleme gibi kritik olmayan işlerden ÖNCE) kullanılıyor.
+    final launchNoteIdFuture = ReminderService.instance.getLaunchNoteId();
+
     final catData = await db.getCategoriesData();
     final notes = await db.getNotes();
     final deletedNotes = await db.getDeletedNotes();
@@ -134,8 +144,8 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
 
       _deletedNotes = deletedNotes;
 
-      _sortCriteria = settings['sort_criteria'] ?? 'Oluşturulma';
-      _isAscending = (settings['is_ascending'] ?? 'true') == 'true';
+      _sortCriteria = settings['sort_criteria'] ?? 'Son Düzenleme';
+      _isAscending = (settings['is_ascending'] ?? 'false') == 'true';
       _isListView = (settings['is_list_view'] ?? 'true') == 'true';
       _activeCategory = 'Tümü'; // Her açılışta Notlar ekranından başlat
       // Güvenlik: uygulama kapanıp açıldığında "Kilitli" klasörü şifre
@@ -161,9 +171,13 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       // Uygulama genelindeki temayı da senkronize et (açılışta main() zaten
       // ayarlamıştı, ama eski 'dark_theme' göçü burada da tutarlı olsun).
       appThemeMode.value = _themeMode;
-      // Vurgu rengi — kayıtlı bir değer yoksa (veya bozuksa) varsayılan
-      // olarak Colors.amber kullanılır (bkz. accentColorFromSettingValue).
-      _accentColor = accentColorFromSettingValue(settings['accent_color']);
+      // Vurgu rengi — kayıtlı bir değer yoksa (ilk kurulum), az önce
+      // belirlenen tema moduna göre varsayılan renk kullanılır: koyu
+      // temada Amber, açık temada Blue (bkz. theme.dart).
+      _accentColor = accentColorFromSettingValue(
+        settings['accent_color'],
+        fallback: dNoteDefaultAccentColorForThemeMode(_themeMode),
+      );
       // Uygulama genelindeki vurgu rengini de senkronize et (açılışta
       // main() zaten ayarlamıştı; burada tutarlılık için tekrar yapılır).
       appAccentColor.value = _accentColor;
@@ -179,11 +193,21 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       _textColor = textColorVal != null ? Color(textColorVal) : null;
       _previewLines = int.tryParse(settings['preview_lines'] ?? '') ?? 6;
       _widgetFontSize =
-          double.tryParse(settings['widget_font_size'] ?? '') ?? 14.0;
+          double.tryParse(settings['widget_font_size'] ?? '') ?? 22.0;
       _widgetBgOpacity =
           double.tryParse(settings['widget_bg_opacity'] ?? '') ?? 1.0;
       _widgetDark = (settings['widget_dark'] ?? 'true') == 'true';
     });
+
+    // Uygulama tamamen kapalıyken bir DNote bildirimine (hatırlatıcı veya
+    // bildirim paneline sabitlenmiş not) dokunularak açılmışsa, o notu
+    // HEMEN aç — aşağıdaki widget senkronu / pinned bildirim geri yükleme
+    // / ilk-açılış hoş geldin notu yazımı gibi işler notun açılması için
+    // gerekli değildir ve onu geciktirmemelidir.
+    final launchNoteId = await launchNoteIdFuture;
+    if (launchNoteId != null) {
+      _openNoteByIdFromNotification(launchNoteId);
+    }
 
     // Kayıtlı widget görünüm ayarlarını (yazı boyutu, saydamlık, koyu/açık
     // tema) native tarafa da yansıt; böylece ör. bir yedekten geri
@@ -217,14 +241,6 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
     // sabitlenmiş" not bildirimlerini yeniden göster (bkz. ReminderService
     // .restorePinnedNotes). Ekranı bloklamaması için bekletilmez.
     ReminderService.instance.restorePinnedNotes(_notes);
-
-    // Uygulama tamamen kapalıyken bir DNote bildirimine (hatırlatıcı veya
-    // bildirim paneline sabitlenmiş not) dokunularak açılmışsa, o notu
-    // doğrudan aç.
-    final launchNoteId = await ReminderService.instance.getLaunchNoteId();
-    if (launchNoteId != null) {
-      _openNoteByIdFromNotification(launchNoteId);
-    }
   }
 
   Future<void> _saveData() async {

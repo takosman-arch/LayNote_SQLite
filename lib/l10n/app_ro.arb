@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "Schemă de culori întunecată pentru widget.",
   "settingsAboutVersionTitle": "Versiune aplicație",
   "settingsAboutVersionLoading": "Se încarcă versiunea…",
-  "aboutSectionDeveloper": "Dezvoltator",
+  "aboutSectionDeveloper": "Feedback",
   "aboutDeveloperTitle": "Dezvoltator",
   "aboutContactTitle": "Contact",
   "aboutWebsiteTitle": "Site web",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "Politica de confidențialitate",
   "aboutTermsTitle": "Termeni de utilizare",
   "aboutLicensesTitle": "Licențe open source",
-  "aboutSectionSupport": "Asistență",
+  "aboutSectionSupport": "Evaluează",
   "aboutRateAppTitle": "Evaluează aplicația",
   "aboutLinkOpenError": "Linkul nu a putut fi deschis.",
   "settingsFontFamilyTileTitle": "Font",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "Aplicare la notițele existente",
-  "settingsGlobalFontSizeApplyToAllNote": "Dacă o notiță are o dimensiune de font individuală setată, această setare nu o va afecta.",
   "settingsGlobalFontSizeCancelButton": "Anulare",
   "settingsGlobalFontSizeApplyButton": "Aplicare",
   "settingsPreviewLinesTileTitle": "Rânduri de previzualizare notiță",

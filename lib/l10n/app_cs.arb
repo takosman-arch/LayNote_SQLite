@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "Tmavé barevné schéma pro widget.",
   "settingsAboutVersionTitle": "Verze aplikace",
   "settingsAboutVersionLoading": "Načítání verze…",
-  "aboutSectionDeveloper": "Vývojář",
+  "aboutSectionDeveloper": "Zpětná vazba",
   "aboutDeveloperTitle": "Vývojář",
   "aboutContactTitle": "Kontakt",
   "aboutWebsiteTitle": "Web",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "Zásady ochrany osobních údajů",
   "aboutTermsTitle": "Podmínky použití",
   "aboutLicensesTitle": "Licence open source",
-  "aboutSectionSupport": "Podpora",
+  "aboutSectionSupport": "Hodnocení",
   "aboutRateAppTitle": "Ohodnotit aplikaci",
   "aboutLinkOpenError": "Odkaz se nepodařilo otevřít.",
   "settingsFontFamilyTileTitle": "Písmo",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "Použít na existující poznámky",
-  "settingsGlobalFontSizeApplyToAllNote": "Pokud má poznámka nastavenou vlastní velikost písma, toto nastavení ji neovlivní.",
   "settingsGlobalFontSizeCancelButton": "Zrušit",
   "settingsGlobalFontSizeApplyButton": "Použít",
   "settingsPreviewLinesTileTitle": "Řádky náhledu poznámky",

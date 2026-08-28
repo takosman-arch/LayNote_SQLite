@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "Dunkles Farbschema für das Widget.",
   "settingsAboutVersionTitle": "App-Version",
   "settingsAboutVersionLoading": "Version wird geladen…",
-  "aboutSectionDeveloper": "Entwickler",
+  "aboutSectionDeveloper": "Feedback",
   "aboutDeveloperTitle": "Entwickler",
   "aboutContactTitle": "Kontakt",
   "aboutWebsiteTitle": "Website",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "Datenschutzerklärung",
   "aboutTermsTitle": "Nutzungsbedingungen",
   "aboutLicensesTitle": "Open-Source-Lizenzen",
-  "aboutSectionSupport": "Support",
+  "aboutSectionSupport": "Bewerten",
   "aboutRateAppTitle": "App bewerten",
   "aboutLinkOpenError": "Der Link konnte nicht geöffnet werden.",
   "settingsFontFamilyTileTitle": "Schriftart",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "Auf bestehende Notizen anwenden",
-  "settingsGlobalFontSizeApplyToAllNote": "Wenn für eine Notiz eine individuelle Schriftgröße festgelegt ist, wirkt sich diese Einstellung nicht darauf aus.",
   "settingsGlobalFontSizeCancelButton": "Abbrechen",
   "settingsGlobalFontSizeApplyButton": "Anwenden",
   "settingsPreviewLinesTileTitle": "Notizvorschauzeilen",

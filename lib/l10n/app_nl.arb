@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "Donker kleurenschema voor de widget.",
   "settingsAboutVersionTitle": "App-versie",
   "settingsAboutVersionLoading": "Versie laden…",
-  "aboutSectionDeveloper": "Ontwikkelaar",
+  "aboutSectionDeveloper": "Feedback",
   "aboutDeveloperTitle": "Ontwikkelaar",
   "aboutContactTitle": "Contact",
   "aboutWebsiteTitle": "Website",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "Privacybeleid",
   "aboutTermsTitle": "Gebruiksvoorwaarden",
   "aboutLicensesTitle": "Opensource-licenties",
-  "aboutSectionSupport": "Ondersteuning",
+  "aboutSectionSupport": "Beoordelen",
   "aboutRateAppTitle": "Beoordeel de app",
   "aboutLinkOpenError": "Kan de link niet openen.",
   "settingsFontFamilyTileTitle": "Lettertype",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "Toepassen op bestaande notities",
-  "settingsGlobalFontSizeApplyToAllNote": "Als voor een notitie een individuele lettergrootte is ingesteld, heeft deze instelling daar geen invloed op.",
   "settingsGlobalFontSizeCancelButton": "Annuleren",
   "settingsGlobalFontSizeApplyButton": "Toepassen",
   "settingsPreviewLinesTileTitle": "Voorbeeldregels notitie",

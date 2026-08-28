@@ -1046,7 +1046,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsAboutVersionLoading => 'جارٍ تحميل الإصدار…';
 
   @override
-  String get aboutSectionDeveloper => 'المطوّر';
+  String get aboutSectionDeveloper => 'ملاحظات';
 
   @override
   String get aboutDeveloperTitle => 'المطوّر';
@@ -1073,7 +1073,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aboutLicensesTitle => 'تراخيص المصادر المفتوحة';
 
   @override
-  String get aboutSectionSupport => 'الدعم';
+  String get aboutSectionSupport => 'تقييم';
 
   @override
   String get aboutRateAppTitle => 'قيّم التطبيق';
@@ -1099,14 +1099,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'نص تجريبي - $size نقطة';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel =>
-      'تطبيق على الملاحظات الحالية';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'إذا كانت الملاحظة تحتوي على حجم خط مخصص، فلن يؤثر هذا الإعداد عليها.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'إلغاء';

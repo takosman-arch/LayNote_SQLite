@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "Schema di colori scuro per il widget.",
   "settingsAboutVersionTitle": "Versione app",
   "settingsAboutVersionLoading": "Caricamento versione…",
-  "aboutSectionDeveloper": "Sviluppatore",
+  "aboutSectionDeveloper": "Feedback",
   "aboutDeveloperTitle": "Sviluppatore",
   "aboutContactTitle": "Contatto",
   "aboutWebsiteTitle": "Sito web",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "Informativa sulla privacy",
   "aboutTermsTitle": "Termini di utilizzo",
   "aboutLicensesTitle": "Licenze open source",
-  "aboutSectionSupport": "Supporto",
+  "aboutSectionSupport": "Valuta",
   "aboutRateAppTitle": "Valuta l'app",
   "aboutLinkOpenError": "Impossibile aprire il link.",
   "settingsFontFamilyTileTitle": "Carattere",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "Applica alle note esistenti",
-  "settingsGlobalFontSizeApplyToAllNote": "Se una nota ha una dimensione del carattere impostata individualmente, questa impostazione non la influenzerà.",
   "settingsGlobalFontSizeCancelButton": "Annulla",
   "settingsGlobalFontSizeApplyButton": "Applica",
   "settingsPreviewLinesTileTitle": "Righe di anteprima nota",

@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "विजेट के लिए डार्क रंग योजना।",
   "settingsAboutVersionTitle": "ऐप संस्करण",
   "settingsAboutVersionLoading": "संस्करण लोड हो रहा है…",
-  "aboutSectionDeveloper": "डेवलपर",
+  "aboutSectionDeveloper": "फ़ीडबैक",
   "aboutDeveloperTitle": "डेवलपर",
   "aboutContactTitle": "संपर्क करें",
   "aboutWebsiteTitle": "वेबसाइट",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "गोपनीयता नीति",
   "aboutTermsTitle": "उपयोग की शर्तें",
   "aboutLicensesTitle": "ओपन सोर्स लाइसेंस",
-  "aboutSectionSupport": "सहायता",
+  "aboutSectionSupport": "रेटिंग",
   "aboutRateAppTitle": "ऐप को रेट करें",
   "aboutLinkOpenError": "लिंक नहीं खोला जा सका.",
   "settingsFontFamilyTileTitle": "फ़ॉन्ट",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "मौजूदा नोट्स पर लागू करें",
-  "settingsGlobalFontSizeApplyToAllNote": "यदि किसी नोट में अलग फ़ॉन्ट आकार सेट है, तो यह सेटिंग उसे प्रभावित नहीं करेगी।",
   "settingsGlobalFontSizeCancelButton": "रद्द करें",
   "settingsGlobalFontSizeApplyButton": "लागू करें",
   "settingsPreviewLinesTileTitle": "नोट पूर्वावलोकन पंक्तियाँ",

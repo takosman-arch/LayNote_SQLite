@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "Dark color scheme for the widget.",
   "settingsAboutVersionTitle": "App Version",
   "settingsAboutVersionLoading": "Loading version…",
-  "aboutSectionDeveloper": "Developer",
+  "aboutSectionDeveloper": "Feedback",
   "aboutDeveloperTitle": "Developer",
   "aboutContactTitle": "Contact",
   "aboutWebsiteTitle": "Website",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "Privacy Policy",
   "aboutTermsTitle": "Terms of Use",
   "aboutLicensesTitle": "Open Source Licenses",
-  "aboutSectionSupport": "Support",
+  "aboutSectionSupport": "Rate",
   "aboutRateAppTitle": "Rate the App",
   "aboutLinkOpenError": "Couldn't open the link.",
   "settingsFontFamilyTileTitle": "Font",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "Apply to existing notes",
-  "settingsGlobalFontSizeApplyToAllNote": "If a note has an individual font size set, this setting will not affect it.",
   "settingsGlobalFontSizeCancelButton": "Cancel",
   "settingsGlobalFontSizeApplyButton": "Apply",
   "settingsPreviewLinesTileTitle": "Note Preview Lines",

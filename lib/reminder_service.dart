@@ -51,6 +51,16 @@ class ReminderService {
   final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
   bool _initialized = false;
+  // Devam eden init() çağrısının Future'ı. init() birden fazla yerden
+  // (main.dart -> _initBackgroundServices ve NoteListScreen._loadData ->
+  // getLaunchNoteId) neredeyse aynı anda çağrılabiliyor; ikisi de ilk
+  // await'e ulaşmadan _initialized hâlâ false görebiliyordu ve
+  // _plugin.initialize() iki kez, yarış hâlinde tetikleniyordu. Bu da soğuk
+  // başlangıçta getNotificationAppLaunchDetails()'in "launch" bilgisini
+  // kaybetmesine yol açıyordu (bkz. getLaunchNoteId). Artık ikinci çağrı,
+  // yeni bir initialize() başlatmak yerine zaten devam eden future'a
+  // katılıyor.
+  Future<void>? _initFuture;
 
   // Bir bildirime (hatırlatıcı veya bildirim paneline sabitlenmiş not)
   // dokunulduğunda çağrılır; parametre, o bildirimin ait olduğu notun id'si
@@ -67,8 +77,18 @@ class ReminderService {
   // devreye girer (bkz. yukarısı).
   void Function(String noteId)? onUnpinRequested;
 
-  Future<void> init() async {
-    if (_initialized) return;
+  // Senkron giriş: birden fazla çağrı aynı anda (await olmadan art arda)
+  // gelse bile yalnızca İLK çağrı _doInit()'i başlatır; sonrakiler
+  // _initFuture zaten dolu olduğu için aynı future'ı bekler. Bu kontrolün
+  // async bir fonksiyonun İÇİNDE değil, burada (senkron) olması kritik —
+  // aksi halde ilk await noktasına kadar iki çağrı da "henüz initialized
+  // değil" görüp yarışa devam edebilir.
+  Future<void> init() {
+    if (_initialized) return Future.value();
+    return _initFuture ??= _doInit();
+  }
+
+  Future<void> _doInit() async {
     tzdata.initializeTimeZones();
     try {
       tz.setLocalLocation(tz.local);

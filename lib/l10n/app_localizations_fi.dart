@@ -1056,7 +1056,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get settingsAboutVersionLoading => 'Ladataan versiota…';
 
   @override
-  String get aboutSectionDeveloper => 'Kehittäjä';
+  String get aboutSectionDeveloper => 'Palaute';
 
   @override
   String get aboutDeveloperTitle => 'Kehittäjä';
@@ -1083,7 +1083,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get aboutLicensesTitle => 'Avoimen lähdekoodin lisenssit';
 
   @override
-  String get aboutSectionSupport => 'Tuki';
+  String get aboutSectionSupport => 'Arvostele';
 
   @override
   String get aboutRateAppTitle => 'Arvostele sovellus';
@@ -1109,14 +1109,6 @@ class AppLocalizationsFi extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'Näyteteksti - $size pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel =>
-      'Käytä olemassa oleviin muistiinpanoihin';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'Jos muistiinpanolle on asetettu erillinen fonttikoko, tämä asetus ei vaikuta siihen.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'Peruuta';

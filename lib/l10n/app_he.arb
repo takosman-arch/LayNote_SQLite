@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "ערכת צבעים כהה עבור הווידג'ט.",
   "settingsAboutVersionTitle": "גרסת האפליקציה",
   "settingsAboutVersionLoading": "טוען גרסה…",
-  "aboutSectionDeveloper": "מפתח",
+  "aboutSectionDeveloper": "משוב",
   "aboutDeveloperTitle": "מפתח",
   "aboutContactTitle": "יצירת קשר",
   "aboutWebsiteTitle": "אתר אינטרנט",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "מדיניות פרטיות",
   "aboutTermsTitle": "תנאי שימוש",
   "aboutLicensesTitle": "רישיונות קוד פתוח",
-  "aboutSectionSupport": "תמיכה",
+  "aboutSectionSupport": "דירוג",
   "aboutRateAppTitle": "דרג את האפליקציה",
   "aboutLinkOpenError": "לא ניתן היה לפתוח את הקישור.",
   "settingsFontFamilyTileTitle": "גופן",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "החל על פתקיות קיימות",
-  "settingsGlobalFontSizeApplyToAllNote": "אם לפתקית מוגדר גודל גופן אישי, הגדרה זו לא תשפיע עליה.",
   "settingsGlobalFontSizeCancelButton": "ביטול",
   "settingsGlobalFontSizeApplyButton": "החל",
   "settingsPreviewLinesTileTitle": "שורות תצוגה מקדימה לפתקית",

@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "โทนสีมืดสำหรับวิดเจ็ต",
   "settingsAboutVersionTitle": "เวอร์ชันแอป",
   "settingsAboutVersionLoading": "กำลังโหลดเวอร์ชัน…",
-  "aboutSectionDeveloper": "นักพัฒนา",
+  "aboutSectionDeveloper": "ข้อเสนอแนะ",
   "aboutDeveloperTitle": "นักพัฒนา",
   "aboutContactTitle": "ติดต่อ",
   "aboutWebsiteTitle": "เว็บไซต์",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "นโยบายความเป็นส่วนตัว",
   "aboutTermsTitle": "ข้อกำหนดการใช้งาน",
   "aboutLicensesTitle": "สัญญาอนุญาตโอเพนซอร์ส",
-  "aboutSectionSupport": "การสนับสนุน",
+  "aboutSectionSupport": "ให้คะแนน",
   "aboutRateAppTitle": "ให้คะแนนแอป",
   "aboutLinkOpenError": "ไม่สามารถเปิดลิงก์ได้",
   "settingsFontFamilyTileTitle": "แบบอักษร",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "ใช้กับโน้ตที่มีอยู่",
-  "settingsGlobalFontSizeApplyToAllNote": "หากโน้ตมีการตั้งค่าขนาดตัวอักษรเฉพาะไว้ การตั้งค่านี้จะไม่มีผลกับโน้ตนั้น",
   "settingsGlobalFontSizeCancelButton": "ยกเลิก",
   "settingsGlobalFontSizeApplyButton": "ใช้",
   "settingsPreviewLinesTileTitle": "จำนวนบรรทัดตัวอย่างโน้ต",

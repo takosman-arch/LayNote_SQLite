@@ -1061,7 +1061,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settingsAboutVersionLoading => 'Завантаження версії…';
 
   @override
-  String get aboutSectionDeveloper => 'Розробник';
+  String get aboutSectionDeveloper => 'Зворотний зв’язок';
 
   @override
   String get aboutDeveloperTitle => 'Розробник';
@@ -1088,7 +1088,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get aboutLicensesTitle => 'Ліцензії відкритого коду';
 
   @override
-  String get aboutSectionSupport => 'Підтримка';
+  String get aboutSectionSupport => 'Оцінити';
 
   @override
   String get aboutRateAppTitle => 'Оцінити застосунок';
@@ -1114,14 +1114,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'Приклад тексту - $size пт';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel =>
-      'Застосувати до наявних нотаток';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'Якщо для нотатки встановлено індивідуальний розмір шрифту, це налаштування на неї не вплине.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'Скасувати';

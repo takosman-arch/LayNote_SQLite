@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "Bảng màu tối cho widget.",
   "settingsAboutVersionTitle": "Phiên bản ứng dụng",
   "settingsAboutVersionLoading": "Đang tải phiên bản…",
-  "aboutSectionDeveloper": "Nhà phát triển",
+  "aboutSectionDeveloper": "Phản hồi",
   "aboutDeveloperTitle": "Nhà phát triển",
   "aboutContactTitle": "Liên hệ",
   "aboutWebsiteTitle": "Trang web",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "Chính sách bảo mật",
   "aboutTermsTitle": "Điều khoản sử dụng",
   "aboutLicensesTitle": "Giấy phép mã nguồn mở",
-  "aboutSectionSupport": "Hỗ trợ",
+  "aboutSectionSupport": "Đánh giá",
   "aboutRateAppTitle": "Đánh giá ứng dụng",
   "aboutLinkOpenError": "Không thể mở liên kết.",
   "settingsFontFamilyTileTitle": "Phông chữ",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "Áp dụng cho ghi chú hiện có",
-  "settingsGlobalFontSizeApplyToAllNote": "Nếu một ghi chú đã đặt cỡ chữ riêng, cài đặt này sẽ không ảnh hưởng đến nó.",
   "settingsGlobalFontSizeCancelButton": "Hủy",
   "settingsGlobalFontSizeApplyButton": "Áp dụng",
   "settingsPreviewLinesTileTitle": "Số dòng xem trước ghi chú",

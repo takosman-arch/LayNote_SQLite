@@ -1054,7 +1054,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settingsAboutVersionLoading => 'Läser in version…';
 
   @override
-  String get aboutSectionDeveloper => 'Utvecklare';
+  String get aboutSectionDeveloper => 'Feedback';
 
   @override
   String get aboutDeveloperTitle => 'Utvecklare';
@@ -1081,7 +1081,7 @@ class AppLocalizationsSv extends AppLocalizations {
   String get aboutLicensesTitle => 'Licenser med öppen källkod';
 
   @override
-  String get aboutSectionSupport => 'Support';
+  String get aboutSectionSupport => 'Betygsätt';
 
   @override
   String get aboutRateAppTitle => 'Betygsätt appen';
@@ -1107,14 +1107,6 @@ class AppLocalizationsSv extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'Exempeltext - $size pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel =>
-      'Tillämpa på befintliga anteckningar';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'Om en anteckning har en individuell textstorlek inställd påverkas den inte av denna inställning.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'Avbryt';

@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "Tumma väriteema widgetille.",
   "settingsAboutVersionTitle": "Sovelluksen versio",
   "settingsAboutVersionLoading": "Ladataan versiota…",
-  "aboutSectionDeveloper": "Kehittäjä",
+  "aboutSectionDeveloper": "Palaute",
   "aboutDeveloperTitle": "Kehittäjä",
   "aboutContactTitle": "Yhteystiedot",
   "aboutWebsiteTitle": "Verkkosivusto",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "Tietosuojakäytäntö",
   "aboutTermsTitle": "Käyttöehdot",
   "aboutLicensesTitle": "Avoimen lähdekoodin lisenssit",
-  "aboutSectionSupport": "Tuki",
+  "aboutSectionSupport": "Arvostele",
   "aboutRateAppTitle": "Arvostele sovellus",
   "aboutLinkOpenError": "Linkkiä ei voitu avata.",
   "settingsFontFamilyTileTitle": "Fontti",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "Käytä olemassa oleviin muistiinpanoihin",
-  "settingsGlobalFontSizeApplyToAllNote": "Jos muistiinpanolle on asetettu erillinen fonttikoko, tämä asetus ei vaikuta siihen.",
   "settingsGlobalFontSizeCancelButton": "Peruuta",
   "settingsGlobalFontSizeApplyButton": "Käytä",
   "settingsPreviewLinesTileTitle": "Muistiinpanon esikatselurivit",

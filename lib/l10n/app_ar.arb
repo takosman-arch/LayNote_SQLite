@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "نظام ألوان داكن للودجت.",
   "settingsAboutVersionTitle": "إصدار التطبيق",
   "settingsAboutVersionLoading": "جارٍ تحميل الإصدار…",
-  "aboutSectionDeveloper": "المطوّر",
+  "aboutSectionDeveloper": "ملاحظات",
   "aboutDeveloperTitle": "المطوّر",
   "aboutContactTitle": "التواصل",
   "aboutWebsiteTitle": "الموقع الإلكتروني",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "سياسة الخصوصية",
   "aboutTermsTitle": "شروط الاستخدام",
   "aboutLicensesTitle": "تراخيص المصادر المفتوحة",
-  "aboutSectionSupport": "الدعم",
+  "aboutSectionSupport": "تقييم",
   "aboutRateAppTitle": "قيّم التطبيق",
   "aboutLinkOpenError": "تعذّر فتح الرابط.",
   "settingsFontFamilyTileTitle": "الخط",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "تطبيق على الملاحظات الحالية",
-  "settingsGlobalFontSizeApplyToAllNote": "إذا كانت الملاحظة تحتوي على حجم خط مخصص، فلن يؤثر هذا الإعداد عليها.",
   "settingsGlobalFontSizeCancelButton": "إلغاء",
   "settingsGlobalFontSizeApplyButton": "تطبيق",
   "settingsPreviewLinesTileTitle": "أسطر معاينة الملاحظة",

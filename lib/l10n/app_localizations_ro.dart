@@ -1066,7 +1066,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get settingsAboutVersionLoading => 'Se încarcă versiunea…';
 
   @override
-  String get aboutSectionDeveloper => 'Dezvoltator';
+  String get aboutSectionDeveloper => 'Feedback';
 
   @override
   String get aboutDeveloperTitle => 'Dezvoltator';
@@ -1093,7 +1093,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get aboutLicensesTitle => 'Licențe open source';
 
   @override
-  String get aboutSectionSupport => 'Asistență';
+  String get aboutSectionSupport => 'Evaluează';
 
   @override
   String get aboutRateAppTitle => 'Evaluează aplicația';
@@ -1119,14 +1119,6 @@ class AppLocalizationsRo extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'Text exemplu - $size pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel =>
-      'Aplicare la notițele existente';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'Dacă o notiță are o dimensiune de font individuală setată, această setare nu o va afecta.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'Anulare';

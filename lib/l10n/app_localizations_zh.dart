@@ -1028,7 +1028,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAboutVersionLoading => '正在加载版本…';
 
   @override
-  String get aboutSectionDeveloper => '开发者';
+  String get aboutSectionDeveloper => '反馈';
 
   @override
   String get aboutDeveloperTitle => '开发者';
@@ -1055,7 +1055,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutLicensesTitle => '开源许可';
 
   @override
-  String get aboutSectionSupport => '支持';
+  String get aboutSectionSupport => '评价';
 
   @override
   String get aboutRateAppTitle => '给应用评分';
@@ -1081,12 +1081,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return '示例文字 - $size pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel => '应用到现有笔记';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote => '如果某条笔记已单独设置字号，此设置将不会影响它。';
 
   @override
   String get settingsGlobalFontSizeCancelButton => '取消';

@@ -54,6 +54,16 @@ bool dNoteResolveEffectiveDark(ThemeMode mode) {
   }
 }
 
+// Tema moduna göre varsayılan vurgu rengini döndürür: koyu temada Amber,
+// açık temada Blue. İlk kurulumda (hiç kayıtlı vurgu rengi yokken) ve
+// kullanıcı Ayarlar'dan temayı elle değiştirdiğinde kullanılır. Kullanıcı
+// daha sonra Vurgu Rengi seçiciden kendi rengini seçerse, o seçim
+// appAccentColor/DB'ye yazılır ve bu varsayılan bir daha devreye girmez
+// (yalnızca tema değişimlerinde tekrar tetiklenir).
+Color dNoteDefaultAccentColorForThemeMode(ThemeMode mode) {
+  return dNoteResolveEffectiveDark(mode) ? Colors.amber : Colors.blue;
+}
+
 Future<void> dNoteSyncThemeToWidgetStorage() async {
   try {
     final isDark = dNoteResolveEffectiveDark(appThemeMode.value);
@@ -106,10 +116,10 @@ final ValueNotifier<Color> appAccentColor = ValueNotifier<Color>(
 // DB'de rengi Color.toARGB32() sonucunun String'e çevrilmiş hâli olarak
 // saklıyoruz (bkz. NoteListDataCategoryMixin._saveData / _loadData).
 // Bu, projede _textColor için zaten kullanılan yöntemle birebir aynıdır.
-Color accentColorFromSettingValue(String? value) {
-  if (value == null || value.isEmpty) return Colors.amber;
+Color accentColorFromSettingValue(String? value, {Color fallback = Colors.amber}) {
+  if (value == null || value.isEmpty) return fallback;
   final argb = int.tryParse(value);
-  if (argb == null) return Colors.amber;
+  if (argb == null) return fallback;
   return Color(argb);
 }
 

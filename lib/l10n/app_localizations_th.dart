@@ -1050,7 +1050,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get settingsAboutVersionLoading => 'กำลังโหลดเวอร์ชัน…';
 
   @override
-  String get aboutSectionDeveloper => 'นักพัฒนา';
+  String get aboutSectionDeveloper => 'ข้อเสนอแนะ';
 
   @override
   String get aboutDeveloperTitle => 'นักพัฒนา';
@@ -1077,7 +1077,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get aboutLicensesTitle => 'สัญญาอนุญาตโอเพนซอร์ส';
 
   @override
-  String get aboutSectionSupport => 'การสนับสนุน';
+  String get aboutSectionSupport => 'ให้คะแนน';
 
   @override
   String get aboutRateAppTitle => 'ให้คะแนนแอป';
@@ -1103,13 +1103,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'ข้อความตัวอย่าง - $size pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel => 'ใช้กับโน้ตที่มีอยู่';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'หากโน้ตมีการตั้งค่าขนาดตัวอักษรเฉพาะไว้ การตั้งค่านี้จะไม่มีผลกับโน้ตนั้น';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'ยกเลิก';

@@ -1056,7 +1056,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get settingsAboutVersionLoading => 'Indlæser version…';
 
   @override
-  String get aboutSectionDeveloper => 'Udvikler';
+  String get aboutSectionDeveloper => 'Feedback';
 
   @override
   String get aboutDeveloperTitle => 'Udvikler';
@@ -1083,7 +1083,7 @@ class AppLocalizationsDa extends AppLocalizations {
   String get aboutLicensesTitle => 'Open source-licenser';
 
   @override
-  String get aboutSectionSupport => 'Support';
+  String get aboutSectionSupport => 'Bedøm';
 
   @override
   String get aboutRateAppTitle => 'Bedøm appen';
@@ -1109,14 +1109,6 @@ class AppLocalizationsDa extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'Eksempeltekst - $size pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel =>
-      'Anvend på eksisterende noter';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'Hvis en note har en individuel skriftstørrelse angivet, påvirker denne indstilling den ikke.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'Annuller';

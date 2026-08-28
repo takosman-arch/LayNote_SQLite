@@ -78,7 +78,7 @@ class _AboutScreenState extends State<AboutScreen> {
     child: Text(
       title.toUpperCase(),
       style: TextStyle(
-        color: Theme.of(context).primaryColor,
+        color: dNoteTextColor(context),
         fontSize: 11,
         fontWeight: FontWeight.bold,
         letterSpacing: 1.4,
@@ -93,15 +93,7 @@ class _AboutScreenState extends State<AboutScreen> {
     String? subtitle,
     VoidCallback? onTap,
   }) => ListTile(
-    leading: Container(
-      width: 36,
-      height: 36,
-      decoration: BoxDecoration(
-        color: iconColor.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Icon(icon, color: iconColor, size: 20),
-    ),
+    leading: Icon(icon, color: iconColor, size: 22),
     title: Text(
       title,
       style: TextStyle(color: dNoteTextColor(context), fontSize: 14),
@@ -138,56 +130,14 @@ class _AboutScreenState extends State<AboutScreen> {
         child: ListView(
           children: [
             const SizedBox(height: 24),
-            // ── Uygulama ikonu + adı + sürüm ────────────────────────────
-            Center(
-              child: Column(
-                children: [
-                  Container(
-                    width: 84,
-                    height: 84,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    // TODO: İstersen buraya gerçek uygulama ikonunu koy:
-                    // Image.asset('assets/icon/app_icon.png', width: 84, height: 84)
-                    child: Icon(
-                      Icons.sticky_note_2_outlined,
-                      color: Theme.of(context).primaryColor,
-                      size: 44,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Layout',
-                    style: TextStyle(
-                      color: dNoteTextColor(context),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    versionLabel ?? l10n.settingsAboutVersionLoading,
-                    style: TextStyle(color: Colors.grey[500], fontSize: 12),
-                  ),
-                ],
-              ),
-            ),
 
             // ── Geliştirici ──────────────────────────────────────────────
             _sectionHeader(l10n.aboutSectionDeveloper),
             _card([
-              _tile(
-                icon: Icons.person_outline,
-                iconColor: Colors.blueAccent,
-                title: l10n.aboutDeveloperTitle,
-                subtitle: kLayoutDeveloperName,
-              ),
               if (kLayoutContactEmail.isNotEmpty)
                 _tile(
                   icon: Icons.email_outlined,
-                  iconColor: Colors.orangeAccent,
+                  iconColor: Theme.of(context).primaryColor,
                   title: l10n.aboutContactTitle,
                   subtitle: kLayoutContactEmail,
                   onTap: () => _sendEmail(kLayoutContactEmail),
@@ -195,7 +145,7 @@ class _AboutScreenState extends State<AboutScreen> {
               if (kLayoutWebsiteUrl.isNotEmpty)
                 _tile(
                   icon: Icons.language,
-                  iconColor: Colors.tealAccent,
+                  iconColor: Theme.of(context).primaryColor,
                   title: l10n.aboutWebsiteTitle,
                   subtitle: kLayoutWebsiteUrl,
                   onTap: () => _openUrl(kLayoutWebsiteUrl),
@@ -203,7 +153,7 @@ class _AboutScreenState extends State<AboutScreen> {
               if (kLayoutGithubUrl.isNotEmpty)
                 _tile(
                   icon: Icons.code,
-                  iconColor: Colors.grey,
+                  iconColor: Theme.of(context).primaryColor,
                   title: l10n.aboutGithubTitle,
                   subtitle: kLayoutGithubUrl,
                   onTap: () => _openUrl(kLayoutGithubUrl),
@@ -216,20 +166,20 @@ class _AboutScreenState extends State<AboutScreen> {
               if (kLayoutPrivacyPolicyUrl.isNotEmpty)
                 _tile(
                   icon: Icons.privacy_tip_outlined,
-                  iconColor: Colors.purpleAccent,
+                  iconColor: Theme.of(context).primaryColor,
                   title: l10n.aboutPrivacyPolicyTitle,
                   onTap: () => _openUrl(kLayoutPrivacyPolicyUrl),
                 ),
               if (kLayoutTermsUrl.isNotEmpty)
                 _tile(
                   icon: Icons.description_outlined,
-                  iconColor: Colors.indigoAccent,
+                  iconColor: Theme.of(context).primaryColor,
                   title: l10n.aboutTermsTitle,
                   onTap: () => _openUrl(kLayoutTermsUrl),
                 ),
               _tile(
                 icon: Icons.gavel_outlined,
-                iconColor: Colors.brown,
+                iconColor: Theme.of(context).primaryColor,
                 title: l10n.aboutLicensesTitle,
                 onTap: () {
                   final info = _packageInfo;
@@ -258,7 +208,7 @@ class _AboutScreenState extends State<AboutScreen> {
               _card([
                 _tile(
                   icon: Icons.star_outline,
-                  iconColor: Colors.amber,
+                  iconColor: Theme.of(context).primaryColor,
                   title: l10n.aboutRateAppTitle,
                   onTap: () => _openUrl(
                     'https://play.google.com/store/apps/details?id=$kLayoutPlayStorePackageId',
@@ -267,6 +217,13 @@ class _AboutScreenState extends State<AboutScreen> {
               ]),
             ],
 
+            const SizedBox(height: 24),
+            Center(
+              child: Text(
+                versionLabel ?? l10n.settingsAboutVersionLoading,
+                style: TextStyle(color: Colors.grey[500], fontSize: 12),
+              ),
+            ),
             const SizedBox(height: 24),
           ],
         ),

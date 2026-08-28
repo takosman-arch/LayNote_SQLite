@@ -79,11 +79,28 @@ class _SettingsPageState extends State<SettingsPage> {
     child: Text(
       title.toUpperCase(),
       style: TextStyle(
-        color: Theme.of(context).primaryColor,
+        color: dNoteTextColor(context),
         fontSize: 11,
         fontWeight: FontWeight.bold,
         letterSpacing: 1.4,
       ),
+    ),
+  );
+
+  // Standart Switch biraz kalın durduğu için, tüm ayarlar ekranında
+  // kullanılan aç/kapa anahtarlarını %20 oranında orantılı olarak
+  // küçültüyoruz (hem genişlik hem yükseklik birlikte azalır, doğal
+  // görünüm korunur).
+  Widget _compactSwitch({
+    required bool value,
+    required ValueChanged<bool> onChanged,
+    Color? activeThumbColor,
+  }) => Transform.scale(
+    scale: 0.8,
+    child: Switch(
+      value: value,
+      activeThumbColor: activeThumbColor,
+      onChanged: onChanged,
     ),
   );
 
@@ -95,15 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
     Widget? trailing,
     VoidCallback? onTap,
   }) => ListTile(
-    leading: Container(
-      width: 36,
-      height: 36,
-      decoration: BoxDecoration(
-        color: iconColor.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Icon(icon, color: iconColor, size: 20),
-    ),
+    leading: Icon(icon, color: iconColor, size: 22),
     title: Text(
       title,
       style: TextStyle(color: dNoteTextColor(context), fontSize: 14),
@@ -111,7 +120,7 @@ class _SettingsPageState extends State<SettingsPage> {
     subtitle: subtitle != null
         ? Text(
             subtitle,
-            style: TextStyle(color: Colors.grey[500], fontSize: 11),
+            style: TextStyle(color: Colors.grey[500], fontSize: 13),
           )
         : null,
     trailing: trailing,
@@ -932,9 +941,17 @@ class _SettingsPageState extends State<SettingsPage> {
     void Function(void Function()) dialogSetState,
   ) async {
     if (mode == null) return;
-    s.setState(() => s._themeMode = mode);
+    s.setState(() {
+      s._themeMode = mode;
+      // Kullanıcı temayı elle değiştirdiğinde vurgu rengi de otomatik
+      // olarak o temanın varsayılanına döner: koyu temada Amber, açık
+      // temada Blue (bkz. theme.dart). Kullanıcı bunu istemiyorsa, Vurgu
+      // Rengi seçiciden dilediği zaman kendi rengini yeniden seçebilir.
+      s._accentColor = dNoteDefaultAccentColorForThemeMode(mode);
+    });
     dialogSetState(() {});
     appThemeMode.value = mode;
+    appAccentColor.value = s._accentColor;
     await s._saveData();
     setState(() {});
     if (context.mounted) Navigator.pop(context);
@@ -1163,7 +1180,7 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Text(
           AppLocalizations.of(context)!.settingsPageTitle,
           style: TextStyle(
-            color: Theme.of(context).primaryColor,
+            color: dNoteTextColor(context),
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -1188,7 +1205,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   _settingTile(
                     icon: Icons.language_outlined,
-                    iconColor: Colors.tealAccent,
+                    iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsLanguageTileTitle,
                     subtitle: switch (s._appLanguage) {
                       'tr' => 'Türkçe',
@@ -1222,28 +1239,19 @@ class _SettingsPageState extends State<SettingsPage> {
                     trailing: null,
                     onTap: () => _showLanguageDialog(context),
                   ),
-                ],
-              ),
-            ),
-
-            // ── 2. GÜVENLİK ─────────────────────────────────────────────
-            _sectionHeader(AppLocalizations.of(context)!.settingsSectionSecurity),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: dNoteCardColor(context),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Column(
-                children: [
+                  Divider(
+                    color: Theme.of(context).dividerColor,
+                    height: 1,
+                    indent: 56,
+                  ),
                   _settingTile(
                     icon: Icons.lock_outline,
-                    iconColor: Colors.blueAccent,
+                    iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsNotePasswordTitle,
                     subtitle: s._notePasswordEnabled
                         ? AppLocalizations.of(context)!.settingsPasswordSetSubtitle
                         : AppLocalizations.of(context)!.settingsPasswordNotSetSubtitle,
-                    trailing: Switch(
+                    trailing: _compactSwitch(
                       value: s._notePasswordEnabled,
                       activeThumbColor: Theme.of(context).primaryColor,
                       onChanged: (val) {
@@ -1269,7 +1277,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     _settingTile(
                       icon: Icons.help_outline,
-                      iconColor: Colors.orangeAccent,
+                      iconColor: Theme.of(context).primaryColor,
                       title: AppLocalizations.of(context)!.settingsSecurityQuestionTileTitle,
                       subtitle: s._passwordHintQuestion.isNotEmpty
                           ? AppLocalizations.of(context)!.settingsSecurityQuestionSetSubtitle
@@ -1282,7 +1290,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
 
-            // ── 3. TEMA ──────────────────────────────────────────────────
+            // ── 2. TEMA ──────────────────────────────────────────────────
             _sectionHeader(AppLocalizations.of(context)!.settingsSectionTheme),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -1294,7 +1302,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   _settingTile(
                     icon: Icons.palette_outlined,
-                    iconColor: Colors.indigoAccent,
+                    iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsThemeChangeTileTitle,
                     subtitle: switch (s._themeMode) {
                       ThemeMode.light => AppLocalizations.of(context)!.settingsThemeLightLabel,
@@ -1340,10 +1348,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   _settingTile(
                     icon: Icons.color_lens_outlined,
-                    iconColor: Colors.orangeAccent,
+                    iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsColorfulNotesTitle,
                     subtitle: AppLocalizations.of(context)!.settingsColorfulNotesSubtitle,
-                    trailing: Switch(
+                    trailing: _compactSwitch(
                       value: s._colorfulNotes,
                       activeThumbColor: Theme.of(context).primaryColor,
                       onChanged: (val) {
@@ -1357,7 +1365,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
 
-            // ── 4. KİŞİSELLEŞTİRME ──────────────────────────────────────
+            // ── 3. KİŞİSELLEŞTİRME ──────────────────────────────────────
             _sectionHeader(AppLocalizations.of(context)!.settingsSectionPersonalization),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -1370,7 +1378,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Yazı tipi
                   _settingTile(
                     icon: Icons.font_download_outlined,
-                    iconColor: Colors.tealAccent,
+                    iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsFontFamilyTileTitle,
                     subtitle: s._fontFamily,
                     trailing: null,
@@ -1459,7 +1467,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Metin boyutu
                   _settingTile(
                     icon: Icons.text_fields,
-                    iconColor: Colors.pinkAccent,
+                    iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsGlobalFontSizeTileTitle,
                     subtitle: AppLocalizations.of(context)!.settingsGlobalFontSizeTileSubtitle(
                       s._globalFontSize.round(),
@@ -1467,7 +1475,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     trailing: null,
                     onTap: () {
                       double tempSize = s._globalFontSize;
-                      bool applyToAll = false;
                       showModalBottomSheet(
                         context: context,
                         backgroundColor: dNoteCardColor(context),
@@ -1571,41 +1578,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                   const SizedBox(height: 16),
                                   Row(
                                     children: [
-                                      Checkbox(
-                                        value: applyToAll,
-                                        activeColor: Theme.of(context).primaryColor,
-                                        onChanged: (v) => setSheet(
-                                          () => applyToAll = v ?? false,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          AppLocalizations.of(context)!.settingsGlobalFontSizeApplyToAllLabel,
-                                          style: TextStyle(
-                                            color: dNoteTextColor(
-                                              ctx,
-                                            ).withValues(alpha: 0.7),
-                                            fontSize: 13,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 12,
-                                      bottom: 16,
-                                    ),
-                                    child: Text(
-                                      AppLocalizations.of(context)!.settingsGlobalFontSizeApplyToAllNote,
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
                                       Expanded(
                                         child: TextButton(
                                           onPressed: () => Navigator.pop(ctx),
@@ -1626,11 +1598,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                           onPressed: () {
                                             s.setState(() {
                                               s._globalFontSize = tempSize;
-                                              if (applyToAll) {
-                                                for (final note in s._notes) {
-                                                  note['fontSize'] = tempSize;
-                                                }
-                                              }
                                             });
                                             setState(() {});
                                             s._saveData();
@@ -1663,7 +1630,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   // Metin rengi
                   _settingTile(
                     icon: Icons.format_color_text,
-                    iconColor: Colors.lightBlueAccent,
+                    iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsTextColorTileTitle,
                     subtitle: AppLocalizations.of(context)!.settingsTextColorTileSubtitle,
                     trailing: Row(
@@ -1841,7 +1808,7 @@ class _SettingsPageState extends State<SettingsPage> {
             // Yükle" girişi (BackupRestoreScreen). Bkz.
             // note_list_build_mixin.dart ve backup_restore_screen.dart.
 
-            // ── 5. WİDGET ────────────────────────────────────────────────
+            // ── 4. WİDGET ────────────────────────────────────────────────
             _sectionHeader(AppLocalizations.of(context)!.settingsSectionWidget),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -1853,7 +1820,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   _settingTile(
                     icon: Icons.text_fields,
-                    iconColor: Colors.cyanAccent,
+                    iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsWidgetFontSizeLabel,
                     subtitle: '${s._widgetFontSize.round()} pt',
                     trailing: null,
@@ -1866,7 +1833,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   _settingTile(
                     icon: Icons.opacity,
-                    iconColor: Colors.lightBlueAccent,
+                    iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsWidgetOpacityLabel,
                     subtitle: '%${(s._widgetBgOpacity * 100).round()}',
                     trailing: null,
@@ -1879,10 +1846,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   _settingTile(
                     icon: Icons.dark_mode_outlined,
-                    iconColor: Colors.deepPurpleAccent,
+                    iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsWidgetDarkModeTitle,
                     subtitle: AppLocalizations.of(context)!.settingsWidgetDarkModeDesc,
-                    trailing: Switch(
+                    trailing: _compactSwitch(
                       value: s._widgetDark,
                       activeThumbColor: Theme.of(context).primaryColor,
                       onChanged: (v) {
@@ -1901,7 +1868,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
 
-            // ── 6. UYGULAMA HAKKINDA ─────────────────────────────────────
+            // ── 5. UYGULAMA HAKKINDA ─────────────────────────────────────
             _sectionHeader(AppLocalizations.of(context)!.settingsSectionAbout),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -1913,8 +1880,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   _settingTile(
                     icon: Icons.info_outline,
-                    iconColor: Colors.grey,
-                    title: AppLocalizations.of(context)!.settingsAboutVersionTitle,
+                    iconColor: Theme.of(context).primaryColor,
+                    title: 'Layout',
                     trailing: Icon(
                       Icons.chevron_right,
                       color: Colors.grey[500],

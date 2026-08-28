@@ -93,17 +93,6 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Otomatik yedekleme: WorkManager'ı başlat ve kayıtlı ayarlara göre
-  // periyodik görevi yeniden zamanla (bkz. auto_backup_service.dart
-  // başındaki açıklama — bazı OEM'lerde görev kaydı silinebildiğinden
-  // her açılışta tekrar çağrılması güvenli ve gereklidir).
-  await AutoBackupService.instance.initializeWorkmanager();
-  await AutoBackupService.instance.rescheduleFromSavedSettings();
-
-  // Hatırlatıcı bildirimleri için bildirim eklentisini ve zaman dilimi
-  // verisini uygulama açılışında bir kez hazırla.
-  await ReminderService.instance.init();
-
   // Uygulama ilk kez çizilmeden önce kayıtlı tema tercihini oku; böylece
   // açılışta koyu tema bir an için yanıp sönmez.
   final settings = await DBHelper.instance.getAllSettings();
@@ -122,8 +111,13 @@ void main() async {
   }
 
   // Vurgu rengi tercihini de aynı şekilde ilk çizimden önce oku; böylece
-  // açılışta bir an için eski (varsayılan) renk yanıp sönmez.
-  appAccentColor.value = accentColorFromSettingValue(settings['accent_color']);
+  // açılışta bir an için eski (varsayılan) renk yanıp sönmez. Hiç kayıtlı
+  // değer yoksa (ilk kurulum), yukarıda okunan tema moduna göre varsayılan
+  // renk kullanılır: koyu temada Amber, açık temada Blue.
+  appAccentColor.value = accentColorFromSettingValue(
+    settings['accent_color'],
+    fallback: dNoteDefaultAccentColorForThemeMode(appThemeMode.value),
+  );
 
   // Widget yapılandırma (not seçim) ekranının Açık/Koyu tema tercihiyle
   // tutarlı açılabilmesi için geçerli parlaklığı native tarafa yaz (bkz.
@@ -142,6 +136,37 @@ void main() async {
     dNoteSystemBarsStyleForMode(appThemeMode.value),
   );
   runApp(const DNoteApp());
+
+  // AŞAĞIDAKİLER İLK FRAME'İ BLOKLAMASIN DİYE runApp()'TAN SONRAYA
+  // ALINDI: Bildirime dokunarak soğuk başlangıçta açılan bir notun,
+  // Workmanager/otomatik yedekleme/ReminderService başlatma işleri
+  // bitene kadar beklemesine yol açıyordu. Bu işler notu açmak için
+  // gerekli değildir; NoteListScreen zaten kendi initState/_loadData
+  // akışında ReminderService.instance.getLaunchNoteId() ile bildirimden
+  // gelen notu ayrıca kontrol edip açıyor (bkz.
+  // note_list_data_category_mixin.dart -> _loadData,
+  // note_list_lifecycle_mixin.dart -> _openNoteByIdFromNotification).
+  unawaited(_initBackgroundServices());
+}
+
+// Uygulamanın ilk frame'i çizildikten sonra arka planda başlatılan,
+// kullanıcının notu görmesi için beklenmesi gerekmeyen servisler.
+Future<void> _initBackgroundServices() async {
+  // Hatırlatıcı bildirimleri için bildirim eklentisini ve zaman dilimi
+  // verisini hazırla. NoteListScreen._loadData() içindeki
+  // getLaunchNoteId() çağrısı zaten kendi içinde "if (!_initialized)
+  // await init()" ile bunu bekliyor; burada erken başlatmak sadece o
+  // beklemeyi kısaltır.
+  await ReminderService.instance.init();
+
+  // Otomatik yedekleme: WorkManager'ı başlat ve kayıtlı ayarlara göre
+  // periyodik görevi yeniden zamanla (bkz. auto_backup_service.dart
+  // başındaki açıklama — bazı OEM'lerde görev kaydı silinebildiğinden
+  // her açılışta tekrar çağrılması güvenli ve gereklidir). Bu, notun
+  // açılmasıyla hiçbir ilgisi olmadığından ilk frame'den sonraya
+  // bırakıldı.
+  await AutoBackupService.instance.initializeWorkmanager();
+  await AutoBackupService.instance.rescheduleFromSavedSettings();
 }
 
 final ThemeData _dNoteDarkTheme = ThemeData(

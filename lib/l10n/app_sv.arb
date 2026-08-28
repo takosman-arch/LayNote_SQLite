@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "Mörkt färgschema för widgeten.",
   "settingsAboutVersionTitle": "Appversion",
   "settingsAboutVersionLoading": "Läser in version…",
-  "aboutSectionDeveloper": "Utvecklare",
+  "aboutSectionDeveloper": "Feedback",
   "aboutDeveloperTitle": "Utvecklare",
   "aboutContactTitle": "Kontakt",
   "aboutWebsiteTitle": "Webbplats",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "Integritetspolicy",
   "aboutTermsTitle": "Användarvillkor",
   "aboutLicensesTitle": "Licenser med öppen källkod",
-  "aboutSectionSupport": "Support",
+  "aboutSectionSupport": "Betygsätt",
   "aboutRateAppTitle": "Betygsätt appen",
   "aboutLinkOpenError": "Kunde inte öppna länken.",
   "settingsFontFamilyTileTitle": "Typsnitt",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "Tillämpa på befintliga anteckningar",
-  "settingsGlobalFontSizeApplyToAllNote": "Om en anteckning har en individuell textstorlek inställd påverkas den inte av denna inställning.",
   "settingsGlobalFontSizeCancelButton": "Avbryt",
   "settingsGlobalFontSizeApplyButton": "Verkställ",
   "settingsPreviewLinesTileTitle": "Förhandsvisningsrader",

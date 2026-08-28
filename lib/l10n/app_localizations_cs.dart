@@ -1063,7 +1063,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get settingsAboutVersionLoading => 'Načítání verze…';
 
   @override
-  String get aboutSectionDeveloper => 'Vývojář';
+  String get aboutSectionDeveloper => 'Zpětná vazba';
 
   @override
   String get aboutDeveloperTitle => 'Vývojář';
@@ -1090,7 +1090,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get aboutLicensesTitle => 'Licence open source';
 
   @override
-  String get aboutSectionSupport => 'Podpora';
+  String get aboutSectionSupport => 'Hodnocení';
 
   @override
   String get aboutRateAppTitle => 'Ohodnotit aplikaci';
@@ -1116,14 +1116,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'Ukázkový text – $size pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel =>
-      'Použít na existující poznámky';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'Pokud má poznámka nastavenou vlastní velikost písma, toto nastavení ji neovlivní.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'Zrušit';

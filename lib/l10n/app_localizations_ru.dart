@@ -1060,7 +1060,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsAboutVersionLoading => 'Загрузка версии…';
 
   @override
-  String get aboutSectionDeveloper => 'Разработчик';
+  String get aboutSectionDeveloper => 'Обратная связь';
 
   @override
   String get aboutDeveloperTitle => 'Разработчик';
@@ -1087,7 +1087,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get aboutLicensesTitle => 'Лицензии с открытым исходным кодом';
 
   @override
-  String get aboutSectionSupport => 'Поддержка';
+  String get aboutSectionSupport => 'Оценить';
 
   @override
   String get aboutRateAppTitle => 'Оценить приложение';
@@ -1113,14 +1113,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'Пример текста — $size пт';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel =>
-      'Применить к существующим заметкам';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'Если для заметки задан индивидуальный размер шрифта, этот параметр на неё не повлияет.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'Отмена';

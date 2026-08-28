@@ -1060,7 +1060,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get settingsAboutVersionLoading => 'Memuat versi…';
 
   @override
-  String get aboutSectionDeveloper => 'Pengembang';
+  String get aboutSectionDeveloper => 'Masukan';
 
   @override
   String get aboutDeveloperTitle => 'Pengembang';
@@ -1087,7 +1087,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get aboutLicensesTitle => 'Lisensi Sumber Terbuka';
 
   @override
-  String get aboutSectionSupport => 'Dukungan';
+  String get aboutSectionSupport => 'Nilai';
 
   @override
   String get aboutRateAppTitle => 'Beri Rating Aplikasi';
@@ -1113,14 +1113,6 @@ class AppLocalizationsId extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'Contoh teks - $size pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel =>
-      'Terapkan ke catatan yang ada';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'Jika sebuah catatan memiliki ukuran font tersendiri, pengaturan ini tidak akan memengaruhinya.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'Batal';

@@ -1042,7 +1042,7 @@ class AppLocalizationsHe extends AppLocalizations {
   String get settingsAboutVersionLoading => 'טוען גרסה…';
 
   @override
-  String get aboutSectionDeveloper => 'מפתח';
+  String get aboutSectionDeveloper => 'משוב';
 
   @override
   String get aboutDeveloperTitle => 'מפתח';
@@ -1069,7 +1069,7 @@ class AppLocalizationsHe extends AppLocalizations {
   String get aboutLicensesTitle => 'רישיונות קוד פתוח';
 
   @override
-  String get aboutSectionSupport => 'תמיכה';
+  String get aboutSectionSupport => 'דירוג';
 
   @override
   String get aboutRateAppTitle => 'דרג את האפליקציה';
@@ -1095,13 +1095,6 @@ class AppLocalizationsHe extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'טקסט לדוגמה - $size נק\'';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel => 'החל על פתקיות קיימות';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'אם לפתקית מוגדר גודל גופן אישי, הגדרה זו לא תשפיע עליה.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'ביטול';

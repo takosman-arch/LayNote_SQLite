@@ -6866,7 +6866,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                                   if (noteAssignedDateSet) ...[
                                                     Icon(
                                                       Icons.event,
-                                                      size: 12,
+                                                      size: 13,
                                                       color: barColor,
                                                     ),
                                                     const SizedBox(width: 3),

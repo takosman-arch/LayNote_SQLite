@@ -1070,7 +1070,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsAboutVersionLoading => 'A carregar versão…';
 
   @override
-  String get aboutSectionDeveloper => 'Programador';
+  String get aboutSectionDeveloper => 'Feedback';
 
   @override
   String get aboutDeveloperTitle => 'Programador';
@@ -1097,7 +1097,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get aboutLicensesTitle => 'Licenças de Código Aberto';
 
   @override
-  String get aboutSectionSupport => 'Suporte';
+  String get aboutSectionSupport => 'Avaliar';
 
   @override
   String get aboutRateAppTitle => 'Avaliar a Aplicação';
@@ -1123,14 +1123,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'Texto de exemplo - $size pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel =>
-      'Aplicar às notas existentes';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'Se uma nota tiver um tamanho de fonte individual definido, esta definição não a afetará.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'Cancelar';

@@ -424,7 +424,7 @@
   "settingsWidgetDarkModeDesc": "Mørkt fargeskjema for widgeten.",
   "settingsAboutVersionTitle": "Appversjon",
   "settingsAboutVersionLoading": "Laster versjon…",
-  "aboutSectionDeveloper": "Utvikler",
+  "aboutSectionDeveloper": "Tilbakemelding",
   "aboutDeveloperTitle": "Utvikler",
   "aboutContactTitle": "Kontakt",
   "aboutWebsiteTitle": "Nettsted",
@@ -433,7 +433,7 @@
   "aboutPrivacyPolicyTitle": "Personvernerklæring",
   "aboutTermsTitle": "Bruksvilkår",
   "aboutLicensesTitle": "Åpen kildekode-lisenser",
-  "aboutSectionSupport": "Støtte",
+  "aboutSectionSupport": "Vurder",
   "aboutRateAppTitle": "Vurder appen",
   "aboutLinkOpenError": "Kunne ikke åpne lenken.",
   "settingsFontFamilyTileTitle": "Skrift",
@@ -455,8 +455,6 @@
       }
     }
   },
-  "settingsGlobalFontSizeApplyToAllLabel": "Bruk på eksisterende notater",
-  "settingsGlobalFontSizeApplyToAllNote": "Hvis et notat har en individuell skriftstørrelse angitt, vil ikke denne innstillingen påvirke det.",
   "settingsGlobalFontSizeCancelButton": "Avbryt",
   "settingsGlobalFontSizeApplyButton": "Bruk",
   "settingsPreviewLinesTileTitle": "Forhåndsvisningslinjer for notat",

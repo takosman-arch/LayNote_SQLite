@@ -69,8 +69,8 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
   String _searchQuery = "";
   bool _isSearching = false;
 
-  String _sortCriteria = "Oluşturulma";
-  bool _isAscending = true;
+  String _sortCriteria = "Son Düzenleme";
+  bool _isAscending = false;
   bool _isListView = true;
 
   // ── Ayarlar ──────────────────────────────────────────────
@@ -101,7 +101,7 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
   int _previewLines = 3;
 
   // Widget
-  double _widgetFontSize = 16.0;
+  double _widgetFontSize = 22.0;
   double _widgetBgOpacity = 1.0;
   bool _widgetDark = true;
   // ─────────────────────────────────────────────────────────

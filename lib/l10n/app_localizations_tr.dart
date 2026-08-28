@@ -1052,7 +1052,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsAboutVersionLoading => 'Sürüm bilgisi yükleniyor…';
 
   @override
-  String get aboutSectionDeveloper => 'Geliştirici';
+  String get aboutSectionDeveloper => 'Geri Bildirim';
 
   @override
   String get aboutDeveloperTitle => 'Geliştirici';
@@ -1079,7 +1079,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get aboutLicensesTitle => 'Açık Kaynak Lisansları';
 
   @override
-  String get aboutSectionSupport => 'Destek';
+  String get aboutSectionSupport => 'Değerlendir';
 
   @override
   String get aboutRateAppTitle => 'Uygulamayı Değerlendir';
@@ -1105,13 +1105,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'Örnek metin - $size pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel => 'Mevcut notlara uygula';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'Bireysel not boyutu ayarı varsa bu ayar o notları etkilemez.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'İptal';

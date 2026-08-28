@@ -1065,7 +1065,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get settingsAboutVersionLoading => 'Wczytywanie wersji…';
 
   @override
-  String get aboutSectionDeveloper => 'Deweloper';
+  String get aboutSectionDeveloper => 'Opinie';
 
   @override
   String get aboutDeveloperTitle => 'Deweloper';
@@ -1092,7 +1092,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get aboutLicensesTitle => 'Licencje open source';
 
   @override
-  String get aboutSectionSupport => 'Wsparcie';
+  String get aboutSectionSupport => 'Ocena';
 
   @override
   String get aboutRateAppTitle => 'Oceń aplikację';
@@ -1118,14 +1118,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'Przykładowy tekst - $size pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel =>
-      'Zastosuj do istniejących notatek';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'Jeśli notatka ma ustawiony indywidualny rozmiar czcionki, to ustawienie jej nie dotyczy.';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'Anuluj';

@@ -1031,7 +1031,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsAboutVersionLoading => 'バージョンを読み込み中…';
 
   @override
-  String get aboutSectionDeveloper => '開発者';
+  String get aboutSectionDeveloper => 'フィードバック';
 
   @override
   String get aboutDeveloperTitle => '開発者';
@@ -1058,7 +1058,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aboutLicensesTitle => 'オープンソースライセンス';
 
   @override
-  String get aboutSectionSupport => 'サポート';
+  String get aboutSectionSupport => '評価';
 
   @override
   String get aboutRateAppTitle => 'アプリを評価する';
@@ -1084,13 +1084,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String settingsGlobalFontSizeSamplePreview(int size) {
     return 'サンプルテキスト - ${size}pt';
   }
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllLabel => '既存のメモにも適用';
-
-  @override
-  String get settingsGlobalFontSizeApplyToAllNote =>
-      'メモ個別に文字サイズが設定されている場合、この設定は影響しません。';
 
   @override
   String get settingsGlobalFontSizeCancelButton => 'キャンセル';
