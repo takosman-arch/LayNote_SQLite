@@ -1053,6 +1053,45 @@ class AppLocalizationsFi extends AppLocalizations {
   String get settingsAboutVersionTitle => 'Sovelluksen versio';
 
   @override
+  String get settingsAboutVersionLoading => 'Ladataan versiota…';
+
+  @override
+  String get aboutSectionDeveloper => 'Kehittäjä';
+
+  @override
+  String get aboutDeveloperTitle => 'Kehittäjä';
+
+  @override
+  String get aboutContactTitle => 'Yhteystiedot';
+
+  @override
+  String get aboutWebsiteTitle => 'Verkkosivusto';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Oikeudelliset tiedot';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Tietosuojakäytäntö';
+
+  @override
+  String get aboutTermsTitle => 'Käyttöehdot';
+
+  @override
+  String get aboutLicensesTitle => 'Avoimen lähdekoodin lisenssit';
+
+  @override
+  String get aboutSectionSupport => 'Tuki';
+
+  @override
+  String get aboutRateAppTitle => 'Arvostele sovellus';
+
+  @override
+  String get aboutLinkOpenError => 'Linkkiä ei voitu avata.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Fontti';
 
   @override

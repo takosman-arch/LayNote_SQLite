@@ -72,6 +72,10 @@ dependencies:
   device_info_plus: ^12.4.0
   permission_handler: ^12.0.3
 
+  # ── Ayarlar > Hakkında ekranında sürüm/build numarasını pubspec.yaml'dan
+  # dinamik okumak için (elle 'v1.0.0' yazmak yerine) ──
+  package_info_plus: ^9.0.0
+
   # ── Ana ekran widget'ı (Android/iOS) için ──
   home_widget: ^0.9.1
 

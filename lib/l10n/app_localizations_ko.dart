@@ -1031,6 +1031,45 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsAboutVersionTitle => '앱 버전';
 
   @override
+  String get settingsAboutVersionLoading => '버전 불러오는 중…';
+
+  @override
+  String get aboutSectionDeveloper => '개발자';
+
+  @override
+  String get aboutDeveloperTitle => '개발자';
+
+  @override
+  String get aboutContactTitle => '문의하기';
+
+  @override
+  String get aboutWebsiteTitle => '웹사이트';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => '법적 정보';
+
+  @override
+  String get aboutPrivacyPolicyTitle => '개인정보 처리방침';
+
+  @override
+  String get aboutTermsTitle => '이용 약관';
+
+  @override
+  String get aboutLicensesTitle => '오픈소스 라이선스';
+
+  @override
+  String get aboutSectionSupport => '지원';
+
+  @override
+  String get aboutRateAppTitle => '앱 평가하기';
+
+  @override
+  String get aboutLinkOpenError => '링크를 열 수 없습니다.';
+
+  @override
   String get settingsFontFamilyTileTitle => '글꼴';
 
   @override

@@ -1063,6 +1063,45 @@ class AppLocalizationsRo extends AppLocalizations {
   String get settingsAboutVersionTitle => 'Versiune aplicație';
 
   @override
+  String get settingsAboutVersionLoading => 'Se încarcă versiunea…';
+
+  @override
+  String get aboutSectionDeveloper => 'Dezvoltator';
+
+  @override
+  String get aboutDeveloperTitle => 'Dezvoltator';
+
+  @override
+  String get aboutContactTitle => 'Contact';
+
+  @override
+  String get aboutWebsiteTitle => 'Site web';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Informații legale';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Politica de confidențialitate';
+
+  @override
+  String get aboutTermsTitle => 'Termeni de utilizare';
+
+  @override
+  String get aboutLicensesTitle => 'Licențe open source';
+
+  @override
+  String get aboutSectionSupport => 'Asistență';
+
+  @override
+  String get aboutRateAppTitle => 'Evaluează aplicația';
+
+  @override
+  String get aboutLinkOpenError => 'Linkul nu a putut fi deschis.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Font';
 
   @override

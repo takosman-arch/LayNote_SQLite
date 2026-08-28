@@ -1057,6 +1057,45 @@ class AppLocalizationsId extends AppLocalizations {
   String get settingsAboutVersionTitle => 'Versi Aplikasi';
 
   @override
+  String get settingsAboutVersionLoading => 'Memuat versi…';
+
+  @override
+  String get aboutSectionDeveloper => 'Pengembang';
+
+  @override
+  String get aboutDeveloperTitle => 'Pengembang';
+
+  @override
+  String get aboutContactTitle => 'Kontak';
+
+  @override
+  String get aboutWebsiteTitle => 'Situs Web';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Legal';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Kebijakan Privasi';
+
+  @override
+  String get aboutTermsTitle => 'Ketentuan Penggunaan';
+
+  @override
+  String get aboutLicensesTitle => 'Lisensi Sumber Terbuka';
+
+  @override
+  String get aboutSectionSupport => 'Dukungan';
+
+  @override
+  String get aboutRateAppTitle => 'Beri Rating Aplikasi';
+
+  @override
+  String get aboutLinkOpenError => 'Tautan tidak dapat dibuka.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Font';
 
   @override

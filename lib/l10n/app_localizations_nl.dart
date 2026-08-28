@@ -1064,6 +1064,45 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsAboutVersionTitle => 'App-versie';
 
   @override
+  String get settingsAboutVersionLoading => 'Versie laden…';
+
+  @override
+  String get aboutSectionDeveloper => 'Ontwikkelaar';
+
+  @override
+  String get aboutDeveloperTitle => 'Ontwikkelaar';
+
+  @override
+  String get aboutContactTitle => 'Contact';
+
+  @override
+  String get aboutWebsiteTitle => 'Website';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Juridisch';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Privacybeleid';
+
+  @override
+  String get aboutTermsTitle => 'Gebruiksvoorwaarden';
+
+  @override
+  String get aboutLicensesTitle => 'Opensource-licenties';
+
+  @override
+  String get aboutSectionSupport => 'Ondersteuning';
+
+  @override
+  String get aboutRateAppTitle => 'Beoordeel de app';
+
+  @override
+  String get aboutLinkOpenError => 'Kan de link niet openen.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Lettertype';
 
   @override

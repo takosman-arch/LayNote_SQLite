@@ -1051,6 +1051,45 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settingsAboutVersionTitle => 'Appversion';
 
   @override
+  String get settingsAboutVersionLoading => 'Läser in version…';
+
+  @override
+  String get aboutSectionDeveloper => 'Utvecklare';
+
+  @override
+  String get aboutDeveloperTitle => 'Utvecklare';
+
+  @override
+  String get aboutContactTitle => 'Kontakt';
+
+  @override
+  String get aboutWebsiteTitle => 'Webbplats';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Juridiskt';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Integritetspolicy';
+
+  @override
+  String get aboutTermsTitle => 'Användarvillkor';
+
+  @override
+  String get aboutLicensesTitle => 'Licenser med öppen källkod';
+
+  @override
+  String get aboutSectionSupport => 'Support';
+
+  @override
+  String get aboutRateAppTitle => 'Betygsätt appen';
+
+  @override
+  String get aboutLinkOpenError => 'Kunde inte öppna länken.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Typsnitt';
 
   @override

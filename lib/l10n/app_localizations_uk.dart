@@ -1058,6 +1058,45 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settingsAboutVersionTitle => 'Версія додатку';
 
   @override
+  String get settingsAboutVersionLoading => 'Завантаження версії…';
+
+  @override
+  String get aboutSectionDeveloper => 'Розробник';
+
+  @override
+  String get aboutDeveloperTitle => 'Розробник';
+
+  @override
+  String get aboutContactTitle => 'Контакти';
+
+  @override
+  String get aboutWebsiteTitle => 'Веб-сайт';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Юридична інформація';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Політика конфіденційності';
+
+  @override
+  String get aboutTermsTitle => 'Умови використання';
+
+  @override
+  String get aboutLicensesTitle => 'Ліцензії відкритого коду';
+
+  @override
+  String get aboutSectionSupport => 'Підтримка';
+
+  @override
+  String get aboutRateAppTitle => 'Оцінити застосунок';
+
+  @override
+  String get aboutLinkOpenError => 'Не вдалося відкрити посилання.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Шрифт';
 
   @override

@@ -1060,6 +1060,45 @@ class AppLocalizationsCs extends AppLocalizations {
   String get settingsAboutVersionTitle => 'Verze aplikace';
 
   @override
+  String get settingsAboutVersionLoading => 'Načítání verze…';
+
+  @override
+  String get aboutSectionDeveloper => 'Vývojář';
+
+  @override
+  String get aboutDeveloperTitle => 'Vývojář';
+
+  @override
+  String get aboutContactTitle => 'Kontakt';
+
+  @override
+  String get aboutWebsiteTitle => 'Web';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Právní informace';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Zásady ochrany osobních údajů';
+
+  @override
+  String get aboutTermsTitle => 'Podmínky použití';
+
+  @override
+  String get aboutLicensesTitle => 'Licence open source';
+
+  @override
+  String get aboutSectionSupport => 'Podpora';
+
+  @override
+  String get aboutRateAppTitle => 'Ohodnotit aplikaci';
+
+  @override
+  String get aboutLinkOpenError => 'Odkaz se nepodařilo otevřít.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Písmo';
 
   @override

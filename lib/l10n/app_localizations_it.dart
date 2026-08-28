@@ -1066,6 +1066,45 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsAboutVersionTitle => 'Versione app';
 
   @override
+  String get settingsAboutVersionLoading => 'Caricamento versione…';
+
+  @override
+  String get aboutSectionDeveloper => 'Sviluppatore';
+
+  @override
+  String get aboutDeveloperTitle => 'Sviluppatore';
+
+  @override
+  String get aboutContactTitle => 'Contatto';
+
+  @override
+  String get aboutWebsiteTitle => 'Sito web';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Informazioni legali';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Informativa sulla privacy';
+
+  @override
+  String get aboutTermsTitle => 'Termini di utilizzo';
+
+  @override
+  String get aboutLicensesTitle => 'Licenze open source';
+
+  @override
+  String get aboutSectionSupport => 'Supporto';
+
+  @override
+  String get aboutRateAppTitle => 'Valuta l\'app';
+
+  @override
+  String get aboutLinkOpenError => 'Impossibile aprire il link.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Carattere';
 
   @override

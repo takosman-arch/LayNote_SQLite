@@ -2120,6 +2120,84 @@ abstract class AppLocalizations {
   /// **'Uygulama Sürümü'**
   String get settingsAboutVersionTitle;
 
+  /// Hakkında ekranında sürüm bilgisi henüz yüklenirken gösterilen geçici metin
+  ///
+  /// In tr, this message translates to:
+  /// **'Sürüm bilgisi yükleniyor…'**
+  String get settingsAboutVersionLoading;
+
+  /// Hakkında ekranında Geliştirici bölümünün başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Geliştirici'**
+  String get aboutSectionDeveloper;
+
+  /// Hakkında ekranında geliştirici adı satırının başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Geliştirici'**
+  String get aboutDeveloperTitle;
+
+  /// Hakkında ekranında iletişim (e-posta) satırının başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'İletişim'**
+  String get aboutContactTitle;
+
+  /// Hakkında ekranında web sitesi satırının başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Web Sitesi'**
+  String get aboutWebsiteTitle;
+
+  /// Hakkında ekranında GitHub satırının başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'GitHub'**
+  String get aboutGithubTitle;
+
+  /// Hakkında ekranında Yasal bölümünün başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Yasal'**
+  String get aboutSectionLegal;
+
+  /// Hakkında ekranında Gizlilik Politikası satırının başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Gizlilik Politikası'**
+  String get aboutPrivacyPolicyTitle;
+
+  /// Hakkında ekranında Kullanım Koşulları satırının başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanım Koşulları'**
+  String get aboutTermsTitle;
+
+  /// Hakkında ekranında Açık Kaynak Lisansları satırının başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık Kaynak Lisansları'**
+  String get aboutLicensesTitle;
+
+  /// Hakkında ekranında Destek bölümünün başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Destek'**
+  String get aboutSectionSupport;
+
+  /// Hakkında ekranında Uygulamayı Değerlendir satırının başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygulamayı Değerlendir'**
+  String get aboutRateAppTitle;
+
+  /// Bir bağlantı (URL/e-posta) açılamadığında gösterilen hata mesajı
+  ///
+  /// In tr, this message translates to:
+  /// **'Bağlantı açılamadı.'**
+  String get aboutLinkOpenError;
+
   /// Kişiselleştirme bölümündeki yazı tipi satırının başlığı ve yazı tipi seçim sheet'inin başlığı
   ///
   /// In tr, this message translates to:

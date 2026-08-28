@@ -1025,6 +1025,45 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAboutVersionTitle => '应用版本';
 
   @override
+  String get settingsAboutVersionLoading => '正在加载版本…';
+
+  @override
+  String get aboutSectionDeveloper => '开发者';
+
+  @override
+  String get aboutDeveloperTitle => '开发者';
+
+  @override
+  String get aboutContactTitle => '联系方式';
+
+  @override
+  String get aboutWebsiteTitle => '网站';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => '法律信息';
+
+  @override
+  String get aboutPrivacyPolicyTitle => '隐私政策';
+
+  @override
+  String get aboutTermsTitle => '使用条款';
+
+  @override
+  String get aboutLicensesTitle => '开源许可';
+
+  @override
+  String get aboutSectionSupport => '支持';
+
+  @override
+  String get aboutRateAppTitle => '给应用评分';
+
+  @override
+  String get aboutLinkOpenError => '无法打开链接。';
+
+  @override
   String get settingsFontFamilyTileTitle => '字体';
 
   @override

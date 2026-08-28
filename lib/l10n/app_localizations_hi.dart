@@ -1053,6 +1053,45 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settingsAboutVersionTitle => 'ऐप संस्करण';
 
   @override
+  String get settingsAboutVersionLoading => 'संस्करण लोड हो रहा है…';
+
+  @override
+  String get aboutSectionDeveloper => 'डेवलपर';
+
+  @override
+  String get aboutDeveloperTitle => 'डेवलपर';
+
+  @override
+  String get aboutContactTitle => 'संपर्क करें';
+
+  @override
+  String get aboutWebsiteTitle => 'वेबसाइट';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'कानूनी';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'गोपनीयता नीति';
+
+  @override
+  String get aboutTermsTitle => 'उपयोग की शर्तें';
+
+  @override
+  String get aboutLicensesTitle => 'ओपन सोर्स लाइसेंस';
+
+  @override
+  String get aboutSectionSupport => 'सहायता';
+
+  @override
+  String get aboutRateAppTitle => 'ऐप को रेट करें';
+
+  @override
+  String get aboutLinkOpenError => 'लिंक नहीं खोला जा सका.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'फ़ॉन्ट';
 
   @override

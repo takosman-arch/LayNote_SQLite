@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart'; // compute için
 import 'package:device_info_plus/device_info_plus.dart'; // DeviceInfoPlugin için
+import 'package:package_info_plus/package_info_plus.dart'; // Ayarlar > Hakkında ekranında sürüm bilgisi için
 import 'package:permission_handler/permission_handler.dart'; // Permission, openAppSettings için
 import 'dart:async';
 import 'dart:convert';
@@ -65,6 +66,7 @@ part 'note_list_note_dialog_mixin.dart';
 part 'note_tags_sheet.dart';
 part 'note_list_build_mixin.dart';
 part 'settings_page.dart';
+part 'about_screen.dart';
 part 'calendar_screen.dart';
 part 'gundem_screen.dart';
 part 'backup_history_screen.dart';

@@ -1049,6 +1049,45 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsAboutVersionTitle => 'Uygulama Sürümü';
 
   @override
+  String get settingsAboutVersionLoading => 'Sürüm bilgisi yükleniyor…';
+
+  @override
+  String get aboutSectionDeveloper => 'Geliştirici';
+
+  @override
+  String get aboutDeveloperTitle => 'Geliştirici';
+
+  @override
+  String get aboutContactTitle => 'İletişim';
+
+  @override
+  String get aboutWebsiteTitle => 'Web Sitesi';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Yasal';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Gizlilik Politikası';
+
+  @override
+  String get aboutTermsTitle => 'Kullanım Koşulları';
+
+  @override
+  String get aboutLicensesTitle => 'Açık Kaynak Lisansları';
+
+  @override
+  String get aboutSectionSupport => 'Destek';
+
+  @override
+  String get aboutRateAppTitle => 'Uygulamayı Değerlendir';
+
+  @override
+  String get aboutLinkOpenError => 'Bağlantı açılamadı.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Yazı Tipi';
 
   @override

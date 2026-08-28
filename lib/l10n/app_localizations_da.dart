@@ -1053,6 +1053,45 @@ class AppLocalizationsDa extends AppLocalizations {
   String get settingsAboutVersionTitle => 'App-version';
 
   @override
+  String get settingsAboutVersionLoading => 'Indlæser version…';
+
+  @override
+  String get aboutSectionDeveloper => 'Udvikler';
+
+  @override
+  String get aboutDeveloperTitle => 'Udvikler';
+
+  @override
+  String get aboutContactTitle => 'Kontakt';
+
+  @override
+  String get aboutWebsiteTitle => 'Websted';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Juridisk';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Privatlivspolitik';
+
+  @override
+  String get aboutTermsTitle => 'Anvendelsesvilkår';
+
+  @override
+  String get aboutLicensesTitle => 'Open source-licenser';
+
+  @override
+  String get aboutSectionSupport => 'Support';
+
+  @override
+  String get aboutRateAppTitle => 'Bedøm appen';
+
+  @override
+  String get aboutLinkOpenError => 'Linket kunne ikke åbnes.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Skrifttype';
 
   @override

@@ -1915,7 +1915,16 @@ class _SettingsPageState extends State<SettingsPage> {
                     icon: Icons.info_outline,
                     iconColor: Colors.grey,
                     title: AppLocalizations.of(context)!.settingsAboutVersionTitle,
-                    subtitle: 'v1.0.0',
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: Colors.grey[500],
+                      size: 20,
+                    ),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const AboutScreen()),
+                      );
+                    },
                   ),
                 ],
               ),

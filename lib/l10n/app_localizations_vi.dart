@@ -1057,6 +1057,45 @@ class AppLocalizationsVi extends AppLocalizations {
   String get settingsAboutVersionTitle => 'Phiên bản ứng dụng';
 
   @override
+  String get settingsAboutVersionLoading => 'Đang tải phiên bản…';
+
+  @override
+  String get aboutSectionDeveloper => 'Nhà phát triển';
+
+  @override
+  String get aboutDeveloperTitle => 'Nhà phát triển';
+
+  @override
+  String get aboutContactTitle => 'Liên hệ';
+
+  @override
+  String get aboutWebsiteTitle => 'Trang web';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Pháp lý';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Chính sách bảo mật';
+
+  @override
+  String get aboutTermsTitle => 'Điều khoản sử dụng';
+
+  @override
+  String get aboutLicensesTitle => 'Giấy phép mã nguồn mở';
+
+  @override
+  String get aboutSectionSupport => 'Hỗ trợ';
+
+  @override
+  String get aboutRateAppTitle => 'Đánh giá ứng dụng';
+
+  @override
+  String get aboutLinkOpenError => 'Không thể mở liên kết.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Phông chữ';
 
   @override

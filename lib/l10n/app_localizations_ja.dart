@@ -1028,6 +1028,45 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsAboutVersionTitle => 'アプリバージョン';
 
   @override
+  String get settingsAboutVersionLoading => 'バージョンを読み込み中…';
+
+  @override
+  String get aboutSectionDeveloper => '開発者';
+
+  @override
+  String get aboutDeveloperTitle => '開発者';
+
+  @override
+  String get aboutContactTitle => 'お問い合わせ';
+
+  @override
+  String get aboutWebsiteTitle => 'ウェブサイト';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => '法的情報';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'プライバシーポリシー';
+
+  @override
+  String get aboutTermsTitle => '利用規約';
+
+  @override
+  String get aboutLicensesTitle => 'オープンソースライセンス';
+
+  @override
+  String get aboutSectionSupport => 'サポート';
+
+  @override
+  String get aboutRateAppTitle => 'アプリを評価する';
+
+  @override
+  String get aboutLinkOpenError => 'リンクを開けませんでした。';
+
+  @override
   String get settingsFontFamilyTileTitle => 'フォント';
 
   @override

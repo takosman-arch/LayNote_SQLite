@@ -1047,6 +1047,45 @@ class AppLocalizationsTh extends AppLocalizations {
   String get settingsAboutVersionTitle => 'เวอร์ชันแอป';
 
   @override
+  String get settingsAboutVersionLoading => 'กำลังโหลดเวอร์ชัน…';
+
+  @override
+  String get aboutSectionDeveloper => 'นักพัฒนา';
+
+  @override
+  String get aboutDeveloperTitle => 'นักพัฒนา';
+
+  @override
+  String get aboutContactTitle => 'ติดต่อ';
+
+  @override
+  String get aboutWebsiteTitle => 'เว็บไซต์';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'ข้อกฎหมาย';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'นโยบายความเป็นส่วนตัว';
+
+  @override
+  String get aboutTermsTitle => 'ข้อกำหนดการใช้งาน';
+
+  @override
+  String get aboutLicensesTitle => 'สัญญาอนุญาตโอเพนซอร์ส';
+
+  @override
+  String get aboutSectionSupport => 'การสนับสนุน';
+
+  @override
+  String get aboutRateAppTitle => 'ให้คะแนนแอป';
+
+  @override
+  String get aboutLinkOpenError => 'ไม่สามารถเปิดลิงก์ได้';
+
+  @override
   String get settingsFontFamilyTileTitle => 'แบบอักษร';
 
   @override

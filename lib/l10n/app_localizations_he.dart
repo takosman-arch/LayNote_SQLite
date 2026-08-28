@@ -1039,6 +1039,45 @@ class AppLocalizationsHe extends AppLocalizations {
   String get settingsAboutVersionTitle => 'גרסת האפליקציה';
 
   @override
+  String get settingsAboutVersionLoading => 'טוען גרסה…';
+
+  @override
+  String get aboutSectionDeveloper => 'מפתח';
+
+  @override
+  String get aboutDeveloperTitle => 'מפתח';
+
+  @override
+  String get aboutContactTitle => 'יצירת קשר';
+
+  @override
+  String get aboutWebsiteTitle => 'אתר אינטרנט';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'מידע משפטי';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'מדיניות פרטיות';
+
+  @override
+  String get aboutTermsTitle => 'תנאי שימוש';
+
+  @override
+  String get aboutLicensesTitle => 'רישיונות קוד פתוח';
+
+  @override
+  String get aboutSectionSupport => 'תמיכה';
+
+  @override
+  String get aboutRateAppTitle => 'דרג את האפליקציה';
+
+  @override
+  String get aboutLinkOpenError => 'לא ניתן היה לפתוח את הקישור.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'גופן';
 
   @override

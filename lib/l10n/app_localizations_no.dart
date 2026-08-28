@@ -1049,6 +1049,45 @@ class AppLocalizationsNo extends AppLocalizations {
   String get settingsAboutVersionTitle => 'Appversjon';
 
   @override
+  String get settingsAboutVersionLoading => 'Laster versjon…';
+
+  @override
+  String get aboutSectionDeveloper => 'Utvikler';
+
+  @override
+  String get aboutDeveloperTitle => 'Utvikler';
+
+  @override
+  String get aboutContactTitle => 'Kontakt';
+
+  @override
+  String get aboutWebsiteTitle => 'Nettsted';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Juridisk';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Personvernerklæring';
+
+  @override
+  String get aboutTermsTitle => 'Bruksvilkår';
+
+  @override
+  String get aboutLicensesTitle => 'Åpen kildekode-lisenser';
+
+  @override
+  String get aboutSectionSupport => 'Støtte';
+
+  @override
+  String get aboutRateAppTitle => 'Vurder appen';
+
+  @override
+  String get aboutLinkOpenError => 'Kunne ikke åpne lenken.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Skrift';
 
   @override

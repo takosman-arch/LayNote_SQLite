@@ -1384,6 +1384,58 @@
   "@settingsAboutVersionTitle": {
     "description": "Hakkında bölümünde uygulama sürümü satırının başlığı"
   },
+  "settingsAboutVersionLoading": "Sürüm bilgisi yükleniyor…",
+  "@settingsAboutVersionLoading": {
+    "description": "Hakkında ekranında sürüm bilgisi henüz yüklenirken gösterilen geçici metin"
+  },
+  "aboutSectionDeveloper": "Geliştirici",
+  "@aboutSectionDeveloper": {
+    "description": "Hakkında ekranında Geliştirici bölümünün başlığı"
+  },
+  "aboutDeveloperTitle": "Geliştirici",
+  "@aboutDeveloperTitle": {
+    "description": "Hakkında ekranında geliştirici adı satırının başlığı"
+  },
+  "aboutContactTitle": "İletişim",
+  "@aboutContactTitle": {
+    "description": "Hakkında ekranında iletişim (e-posta) satırının başlığı"
+  },
+  "aboutWebsiteTitle": "Web Sitesi",
+  "@aboutWebsiteTitle": {
+    "description": "Hakkında ekranında web sitesi satırının başlığı"
+  },
+  "aboutGithubTitle": "GitHub",
+  "@aboutGithubTitle": {
+    "description": "Hakkında ekranında GitHub satırının başlığı"
+  },
+  "aboutSectionLegal": "Yasal",
+  "@aboutSectionLegal": {
+    "description": "Hakkında ekranında Yasal bölümünün başlığı"
+  },
+  "aboutPrivacyPolicyTitle": "Gizlilik Politikası",
+  "@aboutPrivacyPolicyTitle": {
+    "description": "Hakkında ekranında Gizlilik Politikası satırının başlığı"
+  },
+  "aboutTermsTitle": "Kullanım Koşulları",
+  "@aboutTermsTitle": {
+    "description": "Hakkında ekranında Kullanım Koşulları satırının başlığı"
+  },
+  "aboutLicensesTitle": "Açık Kaynak Lisansları",
+  "@aboutLicensesTitle": {
+    "description": "Hakkında ekranında Açık Kaynak Lisansları satırının başlığı"
+  },
+  "aboutSectionSupport": "Destek",
+  "@aboutSectionSupport": {
+    "description": "Hakkında ekranında Destek bölümünün başlığı"
+  },
+  "aboutRateAppTitle": "Uygulamayı Değerlendir",
+  "@aboutRateAppTitle": {
+    "description": "Hakkında ekranında Uygulamayı Değerlendir satırının başlığı"
+  },
+  "aboutLinkOpenError": "Bağlantı açılamadı.",
+  "@aboutLinkOpenError": {
+    "description": "Bir bağlantı (URL/e-posta) açılamadığında gösterilen hata mesajı"
+  },
   "settingsFontFamilyTileTitle": "Yazı Tipi",
   "@settingsFontFamilyTileTitle": {
     "description": "Kişiselleştirme bölümündeki yazı tipi satırının başlığı ve yazı tipi seçim sheet'inin başlığı"

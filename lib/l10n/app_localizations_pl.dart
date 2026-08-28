@@ -1062,6 +1062,45 @@ class AppLocalizationsPl extends AppLocalizations {
   String get settingsAboutVersionTitle => 'Wersja aplikacji';
 
   @override
+  String get settingsAboutVersionLoading => 'Wczytywanie wersji…';
+
+  @override
+  String get aboutSectionDeveloper => 'Deweloper';
+
+  @override
+  String get aboutDeveloperTitle => 'Deweloper';
+
+  @override
+  String get aboutContactTitle => 'Kontakt';
+
+  @override
+  String get aboutWebsiteTitle => 'Strona internetowa';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Informacje prawne';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Polityka prywatności';
+
+  @override
+  String get aboutTermsTitle => 'Warunki użytkowania';
+
+  @override
+  String get aboutLicensesTitle => 'Licencje open source';
+
+  @override
+  String get aboutSectionSupport => 'Wsparcie';
+
+  @override
+  String get aboutRateAppTitle => 'Oceń aplikację';
+
+  @override
+  String get aboutLinkOpenError => 'Nie udało się otworzyć linku.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Czcionka';
 
   @override

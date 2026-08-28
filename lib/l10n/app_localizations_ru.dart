@@ -1057,6 +1057,45 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsAboutVersionTitle => 'Версия приложения';
 
   @override
+  String get settingsAboutVersionLoading => 'Загрузка версии…';
+
+  @override
+  String get aboutSectionDeveloper => 'Разработчик';
+
+  @override
+  String get aboutDeveloperTitle => 'Разработчик';
+
+  @override
+  String get aboutContactTitle => 'Контакты';
+
+  @override
+  String get aboutWebsiteTitle => 'Веб-сайт';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'Правовая информация';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'Политика конфиденциальности';
+
+  @override
+  String get aboutTermsTitle => 'Условия использования';
+
+  @override
+  String get aboutLicensesTitle => 'Лицензии с открытым исходным кодом';
+
+  @override
+  String get aboutSectionSupport => 'Поддержка';
+
+  @override
+  String get aboutRateAppTitle => 'Оценить приложение';
+
+  @override
+  String get aboutLinkOpenError => 'Не удалось открыть ссылку.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'Шрифт';
 
   @override

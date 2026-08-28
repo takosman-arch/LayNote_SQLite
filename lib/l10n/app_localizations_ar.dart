@@ -1043,6 +1043,45 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsAboutVersionTitle => 'إصدار التطبيق';
 
   @override
+  String get settingsAboutVersionLoading => 'جارٍ تحميل الإصدار…';
+
+  @override
+  String get aboutSectionDeveloper => 'المطوّر';
+
+  @override
+  String get aboutDeveloperTitle => 'المطوّر';
+
+  @override
+  String get aboutContactTitle => 'التواصل';
+
+  @override
+  String get aboutWebsiteTitle => 'الموقع الإلكتروني';
+
+  @override
+  String get aboutGithubTitle => 'GitHub';
+
+  @override
+  String get aboutSectionLegal => 'قانوني';
+
+  @override
+  String get aboutPrivacyPolicyTitle => 'سياسة الخصوصية';
+
+  @override
+  String get aboutTermsTitle => 'شروط الاستخدام';
+
+  @override
+  String get aboutLicensesTitle => 'تراخيص المصادر المفتوحة';
+
+  @override
+  String get aboutSectionSupport => 'الدعم';
+
+  @override
+  String get aboutRateAppTitle => 'قيّم التطبيق';
+
+  @override
+  String get aboutLinkOpenError => 'تعذّر فتح الرابط.';
+
+  @override
   String get settingsFontFamilyTileTitle => 'الخط';
 
   @override
