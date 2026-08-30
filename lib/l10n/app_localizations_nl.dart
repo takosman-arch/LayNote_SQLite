@@ -300,9 +300,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get drawerTrashLabel => 'Prullenbak';
 
   @override
-  String get drawerPlanningSectionHeader => 'PLANNING';
-
-  @override
   String get drawerFoldersSectionHeader => 'MAPPEN';
 
   @override

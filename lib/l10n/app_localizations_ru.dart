@@ -296,9 +296,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get drawerTrashLabel => 'Корзина';
 
   @override
-  String get drawerPlanningSectionHeader => 'ПЛАНИРОВАНИЕ';
-
-  @override
   String get drawerFoldersSectionHeader => 'ПАПКИ';
 
   @override

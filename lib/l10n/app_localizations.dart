@@ -674,12 +674,6 @@ abstract class AppLocalizations {
   /// **'Çöp'**
   String get drawerTrashLabel;
 
-  /// Çekmece menüsünde Gündem/Hatırlatıcı/Takvim satırlarının üstünde yer alan bölüm başlığı
-  ///
-  /// In tr, this message translates to:
-  /// **'PLANLAMA'**
-  String get drawerPlanningSectionHeader;
-
   /// Çekmece menüsünde klasör listesinin üstünde yer alan bölüm başlığı
   ///
   /// In tr, this message translates to:

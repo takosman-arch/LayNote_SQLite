@@ -300,9 +300,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get drawerTrashLabel => 'Lixo';
 
   @override
-  String get drawerPlanningSectionHeader => 'PLANEAMENTO';
-
-  @override
   String get drawerFoldersSectionHeader => 'PASTAS';
 
   @override

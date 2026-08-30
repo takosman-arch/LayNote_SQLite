@@ -702,6 +702,82 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       },
                     ),
                   ),
+                  ListTile(
+                    contentPadding: const EdgeInsets.only(
+                      left: 16,
+                      right: 20,
+                    ),
+                    leading: Icon(
+                      Icons.event_note_outlined,
+                      color: appAccentColor.value,
+                    ),
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerAgendaLabel,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    trailing: Text(
+                      _gundemNoteCount(_notes).toString(),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => _buildGundemScreen()),
+                      );
+                    },
+                  ),
+                  Builder(
+                    builder: (context) {
+                      final remindersCount = _getCountForCategory(
+                        '__reminders__',
+                      );
+                      return Container(
+                        color: _activeCategory == '__reminders__'
+                            ? dNoteHighlight(context)
+                            : Colors.transparent,
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.only(
+                            left: 16,
+                            right: 20,
+                          ),
+                          leading: Icon(
+                            remindersCount > 0
+                                ? Icons.notifications_active_outlined
+                                : Icons.notifications_outlined,
+                            color: appAccentColor.value,
+                          ),
+                          title: Text(
+                            AppLocalizations.of(context)!.drawerRemindersLabel,
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          trailing: Text(
+                            remindersCount.toString(),
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          onTap: () {
+                            setState(() => _activeCategory = '__reminders__');
+                            _saveData();
+                            Navigator.pop(context);
+                          },
+                        ),
+                      );
+                    },
+                  ),
                   Container(
                     color: _activeCategory == '__locked__'
                         ? dNoteHighlight(context)
@@ -808,95 +884,6 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     color: Theme.of(context).dividerColor,
                     thickness: 1,
                     height: 18,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 16, top: 6, bottom: 4),
-                    child: Text(
-                      AppLocalizations.of(context)!.drawerPlanningSectionHeader,
-                      style: TextStyle(
-                        color: dNoteIsDark(context)
-                            ? Colors.grey
-                            : Colors.grey[700],
-                        fontSize: 12,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                  ),
-                  ListTile(
-                    contentPadding: const EdgeInsets.only(
-                      left: 16,
-                      right: 20,
-                    ),
-                    leading: Icon(
-                      Icons.event_note_outlined,
-                      color: appAccentColor.value,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.drawerAgendaLabel,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    trailing: Text(
-                      _gundemNoteCount(_notes).toString(),
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => _buildGundemScreen()),
-                      );
-                    },
-                  ),
-                  Builder(
-                    builder: (context) {
-                      final remindersCount = _getCountForCategory(
-                        '__reminders__',
-                      );
-                      return Container(
-                        color: _activeCategory == '__reminders__'
-                            ? dNoteHighlight(context)
-                            : Colors.transparent,
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.only(
-                            left: 16,
-                            right: 20,
-                          ),
-                          leading: Icon(
-                            remindersCount > 0
-                                ? Icons.notifications_active_outlined
-                                : Icons.notifications_outlined,
-                            color: appAccentColor.value,
-                          ),
-                          title: Text(
-                            AppLocalizations.of(context)!.drawerRemindersLabel,
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          trailing: Text(
-                            remindersCount.toString(),
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          onTap: () {
-                            setState(() => _activeCategory = '__reminders__');
-                            _saveData();
-                            Navigator.pop(context);
-                          },
-                        ),
-                      );
-                    },
                   ),
                   ListTile(
                     contentPadding: const EdgeInsets.only(

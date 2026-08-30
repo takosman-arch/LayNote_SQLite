@@ -300,9 +300,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get drawerTrashLabel => 'Papierkorb';
 
   @override
-  String get drawerPlanningSectionHeader => 'PLANUNG';
-
-  @override
   String get drawerFoldersSectionHeader => 'ORDNER';
 
   @override

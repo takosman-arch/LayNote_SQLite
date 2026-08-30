@@ -295,9 +295,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get drawerTrashLabel => 'سلة المهملات';
 
   @override
-  String get drawerPlanningSectionHeader => 'التخطيط';
-
-  @override
   String get drawerFoldersSectionHeader => 'المجلدات';
 
   @override

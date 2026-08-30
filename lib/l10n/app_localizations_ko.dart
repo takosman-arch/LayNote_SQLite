@@ -291,9 +291,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get drawerTrashLabel => '휴지통';
 
   @override
-  String get drawerPlanningSectionHeader => '일정';
-
-  @override
   String get drawerFoldersSectionHeader => '폴더';
 
   @override

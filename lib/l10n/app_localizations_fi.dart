@@ -297,9 +297,6 @@ class AppLocalizationsFi extends AppLocalizations {
   String get drawerTrashLabel => 'Roskakori';
 
   @override
-  String get drawerPlanningSectionHeader => 'SUUNNITTELU';
-
-  @override
   String get drawerFoldersSectionHeader => 'KANSIOT';
 
   @override

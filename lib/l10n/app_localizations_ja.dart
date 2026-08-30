@@ -289,9 +289,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get drawerTrashLabel => 'ゴミ箱';
 
   @override
-  String get drawerPlanningSectionHeader => '予定';
-
-  @override
   String get drawerFoldersSectionHeader => 'フォルダ';
 
   @override

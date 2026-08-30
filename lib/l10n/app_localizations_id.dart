@@ -299,9 +299,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get drawerTrashLabel => 'Sampah';
 
   @override
-  String get drawerPlanningSectionHeader => 'PERENCANAAN';
-
-  @override
   String get drawerFoldersSectionHeader => 'FOLDER';
 
   @override

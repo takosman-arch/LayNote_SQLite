@@ -296,9 +296,6 @@ class AppLocalizationsNo extends AppLocalizations {
   String get drawerTrashLabel => 'Papirkurv';
 
   @override
-  String get drawerPlanningSectionHeader => 'PLANLEGGING';
-
-  @override
   String get drawerFoldersSectionHeader => 'MAPPER';
 
   @override

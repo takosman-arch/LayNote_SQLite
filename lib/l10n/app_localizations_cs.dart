@@ -297,9 +297,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get drawerTrashLabel => 'Koš';
 
   @override
-  String get drawerPlanningSectionHeader => 'PLÁNOVÁNÍ';
-
-  @override
   String get drawerFoldersSectionHeader => 'SLOŽKY';
 
   @override

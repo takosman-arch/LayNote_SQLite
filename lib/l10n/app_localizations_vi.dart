@@ -296,9 +296,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get drawerTrashLabel => 'Thùng rác';
 
   @override
-  String get drawerPlanningSectionHeader => 'LẬP KẾ HOẠCH';
-
-  @override
   String get drawerFoldersSectionHeader => 'THƯ MỤC';
 
   @override

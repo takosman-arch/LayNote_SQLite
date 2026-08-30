@@ -295,9 +295,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get drawerTrashLabel => 'Çöp';
 
   @override
-  String get drawerPlanningSectionHeader => 'PLANLAMA';
-
-  @override
   String get drawerFoldersSectionHeader => 'KLASÖRLER';
 
   @override

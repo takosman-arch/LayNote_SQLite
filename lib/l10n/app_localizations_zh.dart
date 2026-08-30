@@ -289,9 +289,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get drawerTrashLabel => '回收站';
 
   @override
-  String get drawerPlanningSectionHeader => '计划';
-
-  @override
   String get drawerFoldersSectionHeader => '文件夹';
 
   @override

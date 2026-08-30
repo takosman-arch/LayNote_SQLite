@@ -298,9 +298,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get drawerTrashLabel => 'Cestino';
 
   @override
-  String get drawerPlanningSectionHeader => 'PIANIFICAZIONE';
-
-  @override
   String get drawerFoldersSectionHeader => 'CARTELLE';
 
   @override

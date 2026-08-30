@@ -387,10 +387,6 @@
   "@drawerTrashLabel": {
     "description": "Çekmece menüsünde çöp (silinen notlar) ekranını gösteren satırın etiketi"
   },
-  "drawerPlanningSectionHeader": "PLANLAMA",
-  "@drawerPlanningSectionHeader": {
-    "description": "Çekmece menüsünde Gündem/Hatırlatıcı/Takvim satırlarının üstünde yer alan bölüm başlığı"
-  },
   "drawerFoldersSectionHeader": "KLASÖRLER",
   "@drawerFoldersSectionHeader": {
     "description": "Çekmece menüsünde klasör listesinin üstünde yer alan bölüm başlığı"
