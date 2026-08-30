@@ -5494,7 +5494,6 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   ),
                                   child: NoteTableBlock(
                                     rows: rows,
-                                    borderColor: dNoteBorderColor(context),
                                     fontSize: fontSize,
                                     fontFamily: dNoteFontFamilyValue(_fontFamily),
                                     textColor: _textColor,

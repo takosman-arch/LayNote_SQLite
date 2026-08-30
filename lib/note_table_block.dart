@@ -556,7 +556,7 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
         Color.lerp(
           dNoteBorderColor(context),
           isDark ? Colors.white : Colors.black,
-          0.25,
+          0.1,
         )!;
     final effectiveTextColor = dNoteEffectiveTextColor(context, widget.textColor);
     final cellTextStyle = TextStyle(

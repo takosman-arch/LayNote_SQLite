@@ -57,6 +57,12 @@ class NoteCalcTableBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveDividerColor = Color.lerp(
+      dNoteBorderColor(context),
+      isDark ? Colors.white : Colors.black,
+      0.1,
+    )!;
     double total = 0;
     for (final r in rows) {
       total += ContentBlocks.parseCalcValue(r['value']);
@@ -166,7 +172,7 @@ class NoteCalcTableBlock extends StatelessWidget {
                 ),
             ],
           ),
-          Divider(color: dNoteBorderColor(context)),
+          Divider(color: effectiveDividerColor, thickness: 2),
           Row(
             children: [
               Expanded(
