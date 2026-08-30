@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "ตาราง ({count} แถว)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "ภาพวาด",
   "blockPreviewAttachmentsLabel": "ไฟล์แนบ {count} รายการ (รูปภาพ/เอกสาร)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "การแจ้งเตือน",
   "drawerLockedLabel": "ล็อกไว้",
   "drawerTrashLabel": "ถังขยะ",
+  "drawerPlanningSectionHeader": "การวางแผน",
   "drawerFoldersSectionHeader": "โฟลเดอร์",
   "drawerExpandLabel": "ขยาย",
   "drawerCollapseLabel": "ย่อ",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "สนับสนุนการพัฒนา",
   "drawerFeedbackLabel": "ความคิดเห็น",
+  "drawerRateAppLabel": "ให้คะแนนแอป",
   "drawerAboutLabel": "เกี่ยวกับ",
   "noNotesFoundMessage": "ไม่พบโน้ต",
   "trashRestoreButtonLabel": "กู้คืน",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "เพิ่มข้อความลงในโน้ตแล้ว",
   "pdfPreparingInfoMessage": "กำลังเตรียม PDF…",
   "pdfSavedInfoMessage": "บันทึก PDF แล้ว",
+  "pdfPreviewSaveActionLabel": "บันทึก",
   "jpgPreparingInfoMessage": "กำลังเตรียม JPG…",
   "jpgSavedInfoMessage": "บันทึก JPG แล้ว",
   "jpgFailedInfoMessage": "ไม่สามารถสร้าง JPG ได้",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "ไม่สามารถสร้างไฟล์ zip ได้ (ZipEncoder ส่งค่า null กลับมา)",
   "calcTableMenuItemLabel": "รายการคำนวณ",
+  "tableBlockMenuItemLabel": "ตาราง",
+  "tableSizePickerTitle": "เลือกขนาดตาราง",
+  "tableSizePickerCancel": "ยกเลิก",
+  "tableSizePickerDeleteTooltip": "ลบตาราง",
   "tagsMenuItemLabel": "แท็ก",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "เพิ่มรายการ...",

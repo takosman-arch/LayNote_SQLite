@@ -118,6 +118,11 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'Tabulka ($count řádků)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'Kresba';
 
   @override
@@ -292,6 +297,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get drawerTrashLabel => 'Koš';
 
   @override
+  String get drawerPlanningSectionHeader => 'PLÁNOVÁNÍ';
+
+  @override
   String get drawerFoldersSectionHeader => 'SLOŽKY';
 
   @override
@@ -326,6 +334,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'Zpětná vazba';
+
+  @override
+  String get drawerRateAppLabel => 'Ohodnotit aplikaci';
 
   @override
   String get drawerAboutLabel => 'O aplikaci';
@@ -417,6 +428,9 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'PDF uloženo';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'Uložit';
 
   @override
   String get jpgPreparingInfoMessage => 'Připravuje se JPG…';
@@ -2164,6 +2178,18 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'Výpočtový seznam';
+
+  @override
+  String get tableBlockMenuItemLabel => 'Tabulka';
+
+  @override
+  String get tableSizePickerTitle => 'Vyberte velikost tabulky';
+
+  @override
+  String get tableSizePickerCancel => 'Zrušit';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'Smazat tabulku';
 
   @override
   String get tagsMenuItemLabel => 'Štítky';

@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabelle ({count} Zeilen)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "Zeichnung",
   "blockPreviewAttachmentsLabel": "{count} Anhänge (Foto/Dokument)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "Erinnerung",
   "drawerLockedLabel": "Gesperrt",
   "drawerTrashLabel": "Papierkorb",
+  "drawerPlanningSectionHeader": "PLANUNG",
   "drawerFoldersSectionHeader": "ORDNER",
   "drawerExpandLabel": "Erweitern",
   "drawerCollapseLabel": "Einklappen",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "Entwicklung unterstützen",
   "drawerFeedbackLabel": "Feedback",
+  "drawerRateAppLabel": "App bewerten",
   "drawerAboutLabel": "Über",
   "noNotesFoundMessage": "Keine Notizen gefunden.",
   "trashRestoreButtonLabel": "Wiederherstellen",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "Text zur Notiz hinzugefügt",
   "pdfPreparingInfoMessage": "PDF wird vorbereitet…",
   "pdfSavedInfoMessage": "PDF gespeichert",
+  "pdfPreviewSaveActionLabel": "Speichern",
   "jpgPreparingInfoMessage": "JPG wird vorbereitet…",
   "jpgSavedInfoMessage": "JPG gespeichert",
   "jpgFailedInfoMessage": "JPG konnte nicht erstellt werden",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "Das ZIP-Archiv konnte nicht erstellt werden (ZipEncoder gab null zurück).",
   "calcTableMenuItemLabel": "Berechnungsliste",
+  "tableBlockMenuItemLabel": "Tabelle",
+  "tableSizePickerTitle": "Tabellengröße auswählen",
+  "tableSizePickerCancel": "Abbrechen",
+  "tableSizePickerDeleteTooltip": "Tabelle löschen",
   "tagsMenuItemLabel": "Tags",
   "linkDialogUrlHint": "https://beispiel.de",
   "checklistItemHint": "Eintrag hinzufügen...",

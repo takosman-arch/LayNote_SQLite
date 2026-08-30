@@ -116,6 +116,11 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'جدول ($count صفوف)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'رسم';
 
   @override
@@ -290,6 +295,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get drawerTrashLabel => 'سلة المهملات';
 
   @override
+  String get drawerPlanningSectionHeader => 'التخطيط';
+
+  @override
   String get drawerFoldersSectionHeader => 'المجلدات';
 
   @override
@@ -324,6 +332,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'ملاحظات وآراء';
+
+  @override
+  String get drawerRateAppLabel => 'قيّم التطبيق';
 
   @override
   String get drawerAboutLabel => 'حول التطبيق';
@@ -415,6 +426,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'تم حفظ PDF';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'حفظ';
 
   @override
   String get jpgPreparingInfoMessage => 'جارٍ تجهيز JPG…';
@@ -2153,6 +2167,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'قائمة حسابية';
+
+  @override
+  String get tableBlockMenuItemLabel => 'جدول';
+
+  @override
+  String get tableSizePickerTitle => 'اختر حجم الجدول';
+
+  @override
+  String get tableSizePickerCancel => 'إلغاء';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'حذف الجدول';
 
   @override
   String get tagsMenuItemLabel => 'الوسوم';

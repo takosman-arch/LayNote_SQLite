@@ -113,6 +113,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return '表格（$count 行）';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => '绘图';
 
   @override
@@ -284,6 +289,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get drawerTrashLabel => '回收站';
 
   @override
+  String get drawerPlanningSectionHeader => '计划';
+
+  @override
   String get drawerFoldersSectionHeader => '文件夹';
 
   @override
@@ -318,6 +326,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => '反馈';
+
+  @override
+  String get drawerRateAppLabel => '给应用评分';
 
   @override
   String get drawerAboutLabel => '关于';
@@ -409,6 +420,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'PDF 已保存';
+
+  @override
+  String get pdfPreviewSaveActionLabel => '保存';
 
   @override
   String get jpgPreparingInfoMessage => '正在准备 JPG…';
@@ -2088,6 +2102,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => '计算列表';
+
+  @override
+  String get tableBlockMenuItemLabel => '表格';
+
+  @override
+  String get tableSizePickerTitle => '选择表格大小';
+
+  @override
+  String get tableSizePickerCancel => '取消';
+
+  @override
+  String get tableSizePickerDeleteTooltip => '删除表格';
 
   @override
   String get tagsMenuItemLabel => '标签';

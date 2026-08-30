@@ -113,6 +113,11 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'テーブル（$count行）';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => '図形描画';
 
   @override
@@ -284,6 +289,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get drawerTrashLabel => 'ゴミ箱';
 
   @override
+  String get drawerPlanningSectionHeader => '予定';
+
+  @override
   String get drawerFoldersSectionHeader => 'フォルダ';
 
   @override
@@ -318,6 +326,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'フィードバック';
+
+  @override
+  String get drawerRateAppLabel => 'アプリを評価する';
 
   @override
   String get drawerAboutLabel => 'アプリについて';
@@ -409,6 +420,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'PDFを保存しました';
+
+  @override
+  String get pdfPreviewSaveActionLabel => '保存';
 
   @override
   String get jpgPreparingInfoMessage => 'JPGを準備中…';
@@ -2114,6 +2128,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => '計算リスト';
+
+  @override
+  String get tableBlockMenuItemLabel => 'テーブル';
+
+  @override
+  String get tableSizePickerTitle => 'テーブルサイズを選択';
+
+  @override
+  String get tableSizePickerCancel => 'キャンセル';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'テーブルを削除';
 
   @override
   String get tagsMenuItemLabel => 'タグ';

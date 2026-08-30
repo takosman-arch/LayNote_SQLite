@@ -118,6 +118,11 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'Таблиця ($count рядків)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'Малюнок';
 
   @override
@@ -292,6 +297,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get drawerTrashLabel => 'Кошик';
 
   @override
+  String get drawerPlanningSectionHeader => 'ПЛАНУВАННЯ';
+
+  @override
   String get drawerFoldersSectionHeader => 'ПАПКИ';
 
   @override
@@ -326,6 +334,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'Зворотний зв\'язок';
+
+  @override
+  String get drawerRateAppLabel => 'Оцінити застосунок';
 
   @override
   String get drawerAboutLabel => 'Про додаток';
@@ -417,6 +428,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'PDF збережено';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'Зберегти';
 
   @override
   String get jpgPreparingInfoMessage => 'Підготовка JPG…';
@@ -2174,6 +2188,18 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'Список розрахунків';
+
+  @override
+  String get tableBlockMenuItemLabel => 'Таблиця';
+
+  @override
+  String get tableSizePickerTitle => 'Виберіть розмір таблиці';
+
+  @override
+  String get tableSizePickerCancel => 'Скасувати';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'Видалити таблицю';
 
   @override
   String get tagsMenuItemLabel => 'Теги';

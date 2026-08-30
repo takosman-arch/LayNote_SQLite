@@ -117,6 +117,11 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'Taulukko ($count riviä)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'Piirros';
 
   @override
@@ -292,6 +297,9 @@ class AppLocalizationsFi extends AppLocalizations {
   String get drawerTrashLabel => 'Roskakori';
 
   @override
+  String get drawerPlanningSectionHeader => 'SUUNNITTELU';
+
+  @override
   String get drawerFoldersSectionHeader => 'KANSIOT';
 
   @override
@@ -326,6 +334,9 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'Palaute';
+
+  @override
+  String get drawerRateAppLabel => 'Arvostele sovellus';
 
   @override
   String get drawerAboutLabel => 'Tietoja';
@@ -418,6 +429,9 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'PDF tallennettu';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'Tallenna';
 
   @override
   String get jpgPreparingInfoMessage => 'Valmistellaan JPG:tä…';
@@ -2164,6 +2178,18 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'Laskentalista';
+
+  @override
+  String get tableBlockMenuItemLabel => 'Taulukko';
+
+  @override
+  String get tableSizePickerTitle => 'Valitse taulukon koko';
+
+  @override
+  String get tableSizePickerCancel => 'Peruuta';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'Poista taulukko';
 
   @override
   String get tagsMenuItemLabel => 'Tunnisteet';

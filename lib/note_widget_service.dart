@@ -226,6 +226,23 @@ class NoteWidgetService {
       }
     }
 
+    // "table" (Notion tarzı basit satır/sütun tablosu) bloğunun her
+    // satırını, hücreleri " | " ile ayrılmış tek bir düz metin satırına
+    // çevirir — content_blocks.dart -> ContentBlocks.toPlainTextLines'taki
+    // AYNI birleştirme deseni. Native widget tarafında bu tablo tipi için
+    // ayrı bir composable YOK; bu yüzden 'table_row'/'table_total' gibi
+    // yeni bir tip icat etmek yerine, native tarafın zaten bildiği düz
+    // 'text' satırı olarak ekleniyor (bkz. _buildStructuredLines'taki
+    // eşleniği).
+    void addTableRows(List rows) {
+      for (final r in rows) {
+        final cells = (r as List).map((c) => ContentBlocks._tableCellText(c));
+        final line = cells.join(' | ');
+        if (line.trim().replaceAll('|', '').isEmpty) continue;
+        lines.add(line);
+      }
+    }
+
     if (note['type']?.toString() == 'checklist') {
       addChecklistItems(note['checkItems'] as List? ?? const []);
     } else {
@@ -243,6 +260,9 @@ class NoteWidgetService {
             break;
           case 'calc_table':
             addCalcTableRows(b['rows'] as List? ?? const []);
+            break;
+          case 'table':
+            addTableRows(b['rows'] as List? ?? const []);
             break;
           case 'attachments':
             // İstek üzerine widget'ta fotoğraf gösterilmiyor VE fotoğraf
@@ -332,6 +352,19 @@ class NoteWidgetService {
       }
     }
 
+    // "table" bloğu için native tarafta özel bir composable yok (bkz.
+    // _buildPreview'daki addTableRows üzerindeki açıklama) — bu yüzden
+    // her satır, native widget'ın zaten bildiği düz 'text' satırı olarak
+    // eklenir; hücreler " | " ile ayrılır.
+    void addTableRows(List rows) {
+      for (final r in rows) {
+        final cells = (r as List).map((c) => ContentBlocks._tableCellText(c));
+        final line = cells.join(' | ');
+        if (line.trim().replaceAll('|', '').isEmpty) continue;
+        addLine({'type': 'text', 'text': line});
+      }
+    }
+
     if (note['type']?.toString() == 'checklist') {
       addChecklistItems(note['checkItems'] as List? ?? const []);
     } else {
@@ -351,6 +384,9 @@ class NoteWidgetService {
             break;
           case 'calc_table':
             addCalcTableRows(b['rows'] as List? ?? const []);
+            break;
+          case 'table':
+            addTableRows(b['rows'] as List? ?? const []);
             break;
           case 'attachments':
             // İstek üzerine widget'ta fotoğraf gösterilmiyor VE fotoğraf

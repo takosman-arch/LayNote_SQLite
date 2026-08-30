@@ -609,18 +609,25 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         SizedBox(height: 6),
                         Text(
                           AppLocalizations.of(context)!.drawerHeaderSubtitle,
-                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                          style: TextStyle(
+                            color: dNoteIsDark(context)
+                                ? Colors.grey
+                                : Colors.grey[700],
+                            fontSize: 13,
+                          ),
                         ),
                       ],
                     ),
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
+                    padding: const EdgeInsets.only(left: 16, top: 6, bottom: 4),
                     child: Text(
                       AppLocalizations.of(context)!.drawerNotesSectionHeader,
-                      style: const TextStyle(
-                        color: Colors.grey,
+                      style: TextStyle(
+                        color: dNoteIsDark(context)
+                            ? Colors.grey
+                            : Colors.grey[700],
                         fontSize: 12,
                         letterSpacing: 1.2,
                       ),
@@ -690,73 +697,6 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       ),
                       onTap: () {
                         setState(() => _activeCategory = '__favorites__');
-                        _saveData();
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                  ListTile(
-                    contentPadding: const EdgeInsets.only(
-                      left: 16,
-                      right: 20,
-                    ),
-                    leading: Icon(
-                      Icons.event_note_outlined,
-                      color: appAccentColor.value,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.drawerAgendaLabel,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    trailing: Text(
-                      _gundemNoteCount(_notes).toString(),
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => _buildGundemScreen()),
-                      );
-                    },
-                  ),
-                  Container(
-                    color: _activeCategory == '__reminders__'
-                        ? dNoteHighlight(context)
-                        : Colors.transparent,
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.only(
-                        left: 16,
-                        right: 20,
-                      ),
-                      leading: Icon(
-                        Icons.notifications_active_outlined,
-                        color: appAccentColor.value,
-                      ),
-                      title: Text(
-                        AppLocalizations.of(context)!.drawerRemindersLabel,
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      trailing: Text(
-                        _getCountForCategory('__reminders__').toString(),
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 17,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      onTap: () {
-                        setState(() => _activeCategory = '__reminders__');
                         _saveData();
                         Navigator.pop(context);
                       },
@@ -867,7 +807,125 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                   Divider(
                     color: Theme.of(context).dividerColor,
                     thickness: 1,
-                    height: 24,
+                    height: 18,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, top: 6, bottom: 4),
+                    child: Text(
+                      AppLocalizations.of(context)!.drawerPlanningSectionHeader,
+                      style: TextStyle(
+                        color: dNoteIsDark(context)
+                            ? Colors.grey
+                            : Colors.grey[700],
+                        fontSize: 12,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    contentPadding: const EdgeInsets.only(
+                      left: 16,
+                      right: 20,
+                    ),
+                    leading: Icon(
+                      Icons.event_note_outlined,
+                      color: appAccentColor.value,
+                    ),
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerAgendaLabel,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    trailing: Text(
+                      _gundemNoteCount(_notes).toString(),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => _buildGundemScreen()),
+                      );
+                    },
+                  ),
+                  Builder(
+                    builder: (context) {
+                      final remindersCount = _getCountForCategory(
+                        '__reminders__',
+                      );
+                      return Container(
+                        color: _activeCategory == '__reminders__'
+                            ? dNoteHighlight(context)
+                            : Colors.transparent,
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.only(
+                            left: 16,
+                            right: 20,
+                          ),
+                          leading: Icon(
+                            remindersCount > 0
+                                ? Icons.notifications_active_outlined
+                                : Icons.notifications_outlined,
+                            color: appAccentColor.value,
+                          ),
+                          title: Text(
+                            AppLocalizations.of(context)!.drawerRemindersLabel,
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          trailing: Text(
+                            remindersCount.toString(),
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          onTap: () {
+                            setState(() => _activeCategory = '__reminders__');
+                            _saveData();
+                            Navigator.pop(context);
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    contentPadding: const EdgeInsets.only(
+                      left: 16,
+                      right: 20,
+                    ),
+                    leading: Icon(
+                      Icons.calendar_month,
+                      color: appAccentColor.value,
+                    ),
+                    title: Text(
+                      AppLocalizations.of(context)!.drawerCalendarLabel,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => _buildCalendarScreen()),
+                      );
+                    },
+                  ),
+                  Divider(
+                    color: Theme.of(context).dividerColor,
+                    thickness: 1,
+                    height: 18,
                   ),
                   Builder(
                     builder: (context) {
@@ -900,8 +958,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                           children: [
                             Text(
                               AppLocalizations.of(context)!.drawerFoldersSectionHeader,
-                              style: const TextStyle(
-                                color: Colors.grey,
+                              style: TextStyle(
+                                color: dNoteIsDark(context)
+                                    ? Colors.grey
+                                    : Colors.grey[700],
                                 fontSize: 12,
                                 letterSpacing: 1.2,
                               ),
@@ -989,40 +1049,23 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     },
                   ),
 
-                  const Divider(
+                  Divider(
+                    color: Theme.of(context).dividerColor,
                     thickness: 1,
-                    height: 24,
+                    height: 18,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 16, top: 4, bottom: 4),
                     child: Text(
                       AppLocalizations.of(context)!.drawerAppSectionHeader,
-                      style: const TextStyle(
-                        color: Colors.grey,
+                      style: TextStyle(
+                        color: dNoteIsDark(context)
+                            ? Colors.grey
+                            : Colors.grey[700],
                         fontSize: 12,
                         letterSpacing: 1.2,
                       ),
                     ),
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.calendar_month,
-                      color: appAccentColor.value,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.drawerCalendarLabel,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => _buildCalendarScreen()),
-                      );
-                    },
                   ),
                   ListTile(
                     leading: Icon(
@@ -1118,21 +1161,53 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    onTap: () => Navigator.pop(context),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      final uri = Uri(scheme: 'mailto', path: kLayoutContactEmail);
+                      try {
+                        await launchUrl(uri);
+                      } catch (_) {
+                        if (!mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              AppLocalizations.of(context)!.aboutLinkOpenError,
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
                   ListTile(
                     leading: Icon(
-                      Icons.info_outline,
+                      Icons.star_outline,
                       color: appAccentColor.value,
                     ),
                     title: Text(
-                      AppLocalizations.of(context)!.drawerAboutLabel,
+                      AppLocalizations.of(context)!.drawerRateAppLabel,
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    onTap: () => Navigator.pop(context),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      final uri = Uri.parse(
+                        'https://play.google.com/store/apps/details?id=$kLayoutPlayStorePackageId',
+                      );
+                      try {
+                        await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      } catch (_) {
+                        if (!mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              AppLocalizations.of(context)!.aboutLinkOpenError,
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
@@ -1817,7 +1892,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                             note['reminderRepeat'] == null
                                                 ? Icons.notifications
                                                 : Icons.repeat,
-                                            color: Colors.grey,
+                                            color: Colors.lightBlueAccent,
                                             size: 16,
                                           ),
                                           const SizedBox(width: 4),
@@ -1852,7 +1927,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                         children: [
                                           Icon(
                                             Icons.today_outlined,
-                                            color: Colors.grey,
+                                            color: appAccentColor.value,
                                             size: 16,
                                           ),
                                           const SizedBox(width: 4),
@@ -1891,7 +1966,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                           children: [
                                             Icon(
                                               Icons.folder_outlined,
-                                              color: Colors.grey,
+                                              color: _getCategoryColor(
+                                                note['category'] as String,
+                                              ),
                                               size: 16,
                                             ),
                                             const SizedBox(width: 4),
@@ -2769,7 +2846,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                 note['reminderRepeat'] == null
                                     ? Icons.notifications
                                     : Icons.repeat,
-                                color: Colors.grey,
+                                color: Colors.lightBlueAccent,
                                 size: 16,
                               ),
                               const SizedBox(width: 4),
@@ -2804,7 +2881,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             children: [
                               Icon(
                                 Icons.today_outlined,
-                                color: Colors.grey,
+                                color: appAccentColor.value,
                                 size: 16,
                               ),
                               const SizedBox(width: 4),
@@ -2839,7 +2916,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             children: [
                               Icon(
                                 Icons.folder_outlined,
-                                color: Colors.grey,
+                                color: _getCategoryColor(
+                                  note['category'] as String,
+                                ),
                                 size: 16,
                               ),
                               const SizedBox(width: 4),

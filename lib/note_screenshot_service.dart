@@ -425,6 +425,51 @@ class _NoteScreenshotContent extends StatelessWidget {
               ),
             );
           }
+        } else if (type == 'table') {
+          // "table" (Notion tarzı basit satır/sütun tablosu) bloğu.
+          // Hücreler zengin metin taşıyabilir ({"text","spans"}, bkz.
+          // content_blocks.dart) — RichTextSpans.buildStaticSpan ile
+          // AYNI algoritma (buildTextSpan'ın salt-okunur karşılığı)
+          // kullanılarak her hücre kendi kalın/italik/altı çizili/vurgu
+          // biçimiyle çiziliyor. Eski (düz String) hücreler
+          // ContentBlocks._tableCellText/_tableCellSpans ile sorunsuz okunur.
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final rawRows = block['rows'] as List? ?? const [];
+          final hasContent = rawRows.any((r) => (r as List)
+              .any((c) => ContentBlocks._tableCellText(c).trim().isNotEmpty));
+          if (hasContent) {
+            final tableRows = rawRows.map((r) {
+              final cells = (r as List).map((c) {
+                final cellText = ContentBlocks._tableCellText(c);
+                final cellSpans = ContentBlocks._tableCellSpans(c);
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
+                  child: Text.rich(
+                    RichTextSpans.buildStaticSpan(
+                      text: cellText,
+                      rawSpans: cellSpans,
+                      style: TextStyle(
+                        fontSize: fontSize,
+                        fontFamily: fontFamily,
+                        color: textColor,
+                      ),
+                      isDark: isDark,
+                    ),
+                  ),
+                );
+              }).toList();
+              return TableRow(children: cells);
+            }).toList();
+            children.add(
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Table(
+                  border: TableBorder.all(color: borderColor, width: 0.5),
+                  children: tableRows,
+                ),
+              ),
+            );
+          }
         } else if (type == 'divider') {
           children.add(
             Padding(

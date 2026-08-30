@@ -118,6 +118,11 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'Tabel ($count baris)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'Gambar';
 
   @override
@@ -294,6 +299,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get drawerTrashLabel => 'Sampah';
 
   @override
+  String get drawerPlanningSectionHeader => 'PERENCANAAN';
+
+  @override
   String get drawerFoldersSectionHeader => 'FOLDER';
 
   @override
@@ -328,6 +336,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'Masukan';
+
+  @override
+  String get drawerRateAppLabel => 'Beri Rating Aplikasi';
 
   @override
   String get drawerAboutLabel => 'Tentang';
@@ -419,6 +430,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'PDF disimpan';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'Simpan';
 
   @override
   String get jpgPreparingInfoMessage => 'Menyiapkan JPG…';
@@ -2163,6 +2177,18 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'Daftar Perhitungan';
+
+  @override
+  String get tableBlockMenuItemLabel => 'Tabel';
+
+  @override
+  String get tableSizePickerTitle => 'Pilih ukuran tabel';
+
+  @override
+  String get tableSizePickerCancel => 'Batal';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'Hapus tabel';
 
   @override
   String get tagsMenuItemLabel => 'Tag';

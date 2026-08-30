@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "テーブル（{count}行）",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "図形描画",
   "blockPreviewAttachmentsLabel": "添付ファイル{count}件（写真・文書）",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "リマインダー",
   "drawerLockedLabel": "ロック済み",
   "drawerTrashLabel": "ゴミ箱",
+  "drawerPlanningSectionHeader": "予定",
   "drawerFoldersSectionHeader": "フォルダ",
   "drawerExpandLabel": "展開",
   "drawerCollapseLabel": "折りたたむ",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "開発を応援する",
   "drawerFeedbackLabel": "フィードバック",
+  "drawerRateAppLabel": "アプリを評価する",
   "drawerAboutLabel": "アプリについて",
   "noNotesFoundMessage": "メモが見つかりません。",
   "trashRestoreButtonLabel": "復元",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "メモにテキストを追加しました",
   "pdfPreparingInfoMessage": "PDFを準備中…",
   "pdfSavedInfoMessage": "PDFを保存しました",
+  "pdfPreviewSaveActionLabel": "保存",
   "jpgPreparingInfoMessage": "JPGを準備中…",
   "jpgSavedInfoMessage": "JPGを保存しました",
   "jpgFailedInfoMessage": "JPGを作成できませんでした",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "zipアーカイブを作成できませんでした（ZipEncoderがnullを返しました）。",
   "calcTableMenuItemLabel": "計算リスト",
+  "tableBlockMenuItemLabel": "テーブル",
+  "tableSizePickerTitle": "テーブルサイズを選択",
+  "tableSizePickerCancel": "キャンセル",
+  "tableSizePickerDeleteTooltip": "テーブルを削除",
   "tagsMenuItemLabel": "タグ",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "項目を追加...",

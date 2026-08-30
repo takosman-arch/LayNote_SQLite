@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabla ({count} filas)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "Dibujo",
   "blockPreviewAttachmentsLabel": "{count} adjuntos (foto/documento)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "Recordatorio",
   "drawerLockedLabel": "Bloqueadas",
   "drawerTrashLabel": "Papelera",
+  "drawerPlanningSectionHeader": "PLANIFICACIÓN",
   "drawerFoldersSectionHeader": "CARPETAS",
   "drawerExpandLabel": "Expandir",
   "drawerCollapseLabel": "Contraer",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "Apoyar el desarrollo",
   "drawerFeedbackLabel": "Comentarios",
+  "drawerRateAppLabel": "Valorar la app",
   "drawerAboutLabel": "Acerca de",
   "noNotesFoundMessage": "No se encontraron notas.",
   "trashRestoreButtonLabel": "Restaurar",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "Texto añadido a la nota",
   "pdfPreparingInfoMessage": "Preparando PDF…",
   "pdfSavedInfoMessage": "PDF guardado",
+  "pdfPreviewSaveActionLabel": "Guardar",
   "jpgPreparingInfoMessage": "Preparando JPG…",
   "jpgSavedInfoMessage": "JPG guardado",
   "jpgFailedInfoMessage": "No se pudo crear el JPG",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "No se pudo crear el archivo zip (ZipEncoder devolvió null).",
   "calcTableMenuItemLabel": "Lista de cálculo",
+  "tableBlockMenuItemLabel": "Tabla",
+  "tableSizePickerTitle": "Seleccionar tamaño de tabla",
+  "tableSizePickerCancel": "Cancelar",
+  "tableSizePickerDeleteTooltip": "Eliminar tabla",
   "tagsMenuItemLabel": "Etiquetas",
   "linkDialogUrlHint": "https://ejemplo.com",
   "checklistItemHint": "Añadir elemento...",

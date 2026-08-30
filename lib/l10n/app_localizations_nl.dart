@@ -119,6 +119,11 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'Tabel ($count rijen)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'Tekening';
 
   @override
@@ -295,6 +300,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get drawerTrashLabel => 'Prullenbak';
 
   @override
+  String get drawerPlanningSectionHeader => 'PLANNING';
+
+  @override
   String get drawerFoldersSectionHeader => 'MAPPEN';
 
   @override
@@ -329,6 +337,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'Feedback';
+
+  @override
+  String get drawerRateAppLabel => 'Beoordeel de app';
 
   @override
   String get drawerAboutLabel => 'Over';
@@ -420,6 +431,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'PDF opgeslagen';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'Opslaan';
 
   @override
   String get jpgPreparingInfoMessage => 'JPG wordt voorbereid…';
@@ -2180,6 +2194,18 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'Rekenlijst';
+
+  @override
+  String get tableBlockMenuItemLabel => 'Tabel';
+
+  @override
+  String get tableSizePickerTitle => 'Tabelgrootte selecteren';
+
+  @override
+  String get tableSizePickerCancel => 'Annuleren';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'Tabel verwijderen';
 
   @override
   String get tagsMenuItemLabel => 'Labels';

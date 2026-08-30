@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "तालिका ({count} पंक्तियाँ)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "ड्राइंग",
   "blockPreviewAttachmentsLabel": "{count} अटैचमेंट (फोटो/दस्तावेज़)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "रिमाइंडर",
   "drawerLockedLabel": "लॉक्ड",
   "drawerTrashLabel": "ट्रैश",
+  "drawerPlanningSectionHeader": "योजना",
   "drawerFoldersSectionHeader": "फ़ोल्डर",
   "drawerExpandLabel": "विस्तृत करें",
   "drawerCollapseLabel": "संक्षिप्त करें",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "प्रो",
   "drawerSupportDevelopmentLabel": "विकास का समर्थन करें",
   "drawerFeedbackLabel": "फीडबैक",
+  "drawerRateAppLabel": "ऐप को रेट करें",
   "drawerAboutLabel": "के बारे में",
   "noNotesFoundMessage": "कोई नोट नहीं मिला।",
   "trashRestoreButtonLabel": "पुनर्स्थापित करें",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "नोट में टेक्स्ट जोड़ा गया",
   "pdfPreparingInfoMessage": "PDF तैयार किया जा रहा है…",
   "pdfSavedInfoMessage": "PDF सहेजा गया",
+  "pdfPreviewSaveActionLabel": "सहेजें",
   "jpgPreparingInfoMessage": "JPG तैयार किया जा रहा है…",
   "jpgSavedInfoMessage": "JPG सहेजा गया",
   "jpgFailedInfoMessage": "JPG नहीं बनाया जा सका",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "ज़िप आर्काइव नहीं बनाया जा सका (ZipEncoder ने null लौटाया)।",
   "calcTableMenuItemLabel": "कैलकुलेशन सूची",
+  "tableBlockMenuItemLabel": "तालिका",
+  "tableSizePickerTitle": "तालिका का आकार चुनें",
+  "tableSizePickerCancel": "रद्द करें",
+  "tableSizePickerDeleteTooltip": "तालिका हटाएं",
   "tagsMenuItemLabel": "टैग",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "आइटम जोड़ें...",

@@ -96,10 +96,10 @@ class _AboutScreenState extends State<AboutScreen> {
     leading: Icon(icon, color: iconColor, size: 22),
     title: Text(
       title,
-      style: TextStyle(color: dNoteTextColor(context), fontSize: 14),
+      style: TextStyle(color: dNoteTextColor(context), fontSize: 15),
     ),
     subtitle: subtitle != null
-        ? Text(subtitle, style: TextStyle(color: Colors.grey[500], fontSize: 11))
+        ? Text(subtitle, style: TextStyle(color: Colors.grey[500], fontSize: 14))
         : null,
     trailing: onTap != null
         ? Icon(Icons.chevron_right, color: Colors.grey[500], size: 20)

@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabel ({count} rijen)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "Tekening",
   "blockPreviewAttachmentsLabel": "{count} bijlagen (foto/document)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "Herinnering",
   "drawerLockedLabel": "Vergrendeld",
   "drawerTrashLabel": "Prullenbak",
+  "drawerPlanningSectionHeader": "PLANNING",
   "drawerFoldersSectionHeader": "MAPPEN",
   "drawerExpandLabel": "Uitvouwen",
   "drawerCollapseLabel": "Samenvouwen",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "Ontwikkeling steunen",
   "drawerFeedbackLabel": "Feedback",
+  "drawerRateAppLabel": "Beoordeel de app",
   "drawerAboutLabel": "Over",
   "noNotesFoundMessage": "Geen notities gevonden.",
   "trashRestoreButtonLabel": "Herstellen",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "Tekst toegevoegd aan notitie",
   "pdfPreparingInfoMessage": "PDF wordt voorbereid…",
   "pdfSavedInfoMessage": "PDF opgeslagen",
+  "pdfPreviewSaveActionLabel": "Opslaan",
   "jpgPreparingInfoMessage": "JPG wordt voorbereid…",
   "jpgSavedInfoMessage": "JPG opgeslagen",
   "jpgFailedInfoMessage": "JPG kon niet worden gemaakt",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "Kon het zip-archief niet maken (ZipEncoder gaf null terug).",
   "calcTableMenuItemLabel": "Rekenlijst",
+  "tableBlockMenuItemLabel": "Tabel",
+  "tableSizePickerTitle": "Tabelgrootte selecteren",
+  "tableSizePickerCancel": "Annuleren",
+  "tableSizePickerDeleteTooltip": "Tabel verwijderen",
   "tagsMenuItemLabel": "Labels",
   "linkDialogUrlHint": "https://voorbeeld.com",
   "checklistItemHint": "Item toevoegen...",

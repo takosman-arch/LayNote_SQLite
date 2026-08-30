@@ -117,6 +117,11 @@ class AppLocalizationsRo extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'Tabel ($count rânduri)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'Desen';
 
   @override
@@ -291,6 +296,9 @@ class AppLocalizationsRo extends AppLocalizations {
   String get drawerTrashLabel => 'Coș de gunoi';
 
   @override
+  String get drawerPlanningSectionHeader => 'PLANIFICARE';
+
+  @override
   String get drawerFoldersSectionHeader => 'FOLDERE';
 
   @override
@@ -325,6 +333,9 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'Feedback';
+
+  @override
+  String get drawerRateAppLabel => 'Evaluează aplicația';
 
   @override
   String get drawerAboutLabel => 'Despre';
@@ -416,6 +427,9 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'PDF salvat';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'Salvează';
 
   @override
   String get jpgPreparingInfoMessage => 'Se pregătește JPG-ul…';
@@ -2172,6 +2186,18 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'Listă de calcul';
+
+  @override
+  String get tableBlockMenuItemLabel => 'Tabel';
+
+  @override
+  String get tableSizePickerTitle => 'Selectați dimensiunea tabelului';
+
+  @override
+  String get tableSizePickerCancel => 'Anulează';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'Șterge tabelul';
 
   @override
   String get tagsMenuItemLabel => 'Etichete';

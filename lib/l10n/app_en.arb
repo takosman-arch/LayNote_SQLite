@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Table ({count} rows)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "Drawing",
   "blockPreviewAttachmentsLabel": "{count} attachments (photo/document)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "Reminder",
   "drawerLockedLabel": "Locked",
   "drawerTrashLabel": "Trash",
+  "drawerPlanningSectionHeader": "PLANNING",
   "drawerFoldersSectionHeader": "FOLDERS",
   "drawerExpandLabel": "Expand",
   "drawerCollapseLabel": "Collapse",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "Support Development",
   "drawerFeedbackLabel": "Feedback",
+  "drawerRateAppLabel": "Rate the App",
   "drawerAboutLabel": "About",
   "noNotesFoundMessage": "No notes found.",
   "trashRestoreButtonLabel": "Restore",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "Text added to note",
   "pdfPreparingInfoMessage": "Preparing PDF…",
   "pdfSavedInfoMessage": "PDF saved",
+  "pdfPreviewSaveActionLabel": "Save",
   "jpgPreparingInfoMessage": "Preparing JPG…",
   "jpgSavedInfoMessage": "JPG saved",
   "jpgFailedInfoMessage": "Could not create JPG",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "Could not create the zip archive (ZipEncoder returned null).",
   "calcTableMenuItemLabel": "Calculation List",
+  "tableBlockMenuItemLabel": "Table",
+  "tableSizePickerTitle": "Select table size",
+  "tableSizePickerCancel": "Cancel",
+  "tableSizePickerDeleteTooltip": "Delete table",
   "tagsMenuItemLabel": "Tags",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "Add item...",

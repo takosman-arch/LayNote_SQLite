@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabel ({count} baris)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "Gambar",
   "blockPreviewAttachmentsLabel": "{count} lampiran (foto/dokumen)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "Pengingat",
   "drawerLockedLabel": "Terkunci",
   "drawerTrashLabel": "Sampah",
+  "drawerPlanningSectionHeader": "PERENCANAAN",
   "drawerFoldersSectionHeader": "FOLDER",
   "drawerExpandLabel": "Perluas",
   "drawerCollapseLabel": "Ciutkan",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "Dukung Pengembangan",
   "drawerFeedbackLabel": "Masukan",
+  "drawerRateAppLabel": "Beri Rating Aplikasi",
   "drawerAboutLabel": "Tentang",
   "noNotesFoundMessage": "Tidak ada catatan ditemukan.",
   "trashRestoreButtonLabel": "Pulihkan",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "Teks ditambahkan ke catatan",
   "pdfPreparingInfoMessage": "Menyiapkan PDF…",
   "pdfSavedInfoMessage": "PDF disimpan",
+  "pdfPreviewSaveActionLabel": "Simpan",
   "jpgPreparingInfoMessage": "Menyiapkan JPG…",
   "jpgSavedInfoMessage": "JPG disimpan",
   "jpgFailedInfoMessage": "Gagal membuat JPG",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "Tidak dapat membuat arsip zip (ZipEncoder mengembalikan null).",
   "calcTableMenuItemLabel": "Daftar Perhitungan",
+  "tableBlockMenuItemLabel": "Tabel",
+  "tableSizePickerTitle": "Pilih ukuran tabel",
+  "tableSizePickerCancel": "Batal",
+  "tableSizePickerDeleteTooltip": "Hapus tabel",
   "tagsMenuItemLabel": "Tag",
   "linkDialogUrlHint": "https://contoh.com",
   "checklistItemHint": "Tambah item...",

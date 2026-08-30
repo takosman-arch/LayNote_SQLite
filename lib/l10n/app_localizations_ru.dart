@@ -117,6 +117,11 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'Таблица ($count строк)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'Рисунок';
 
   @override
@@ -291,6 +296,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get drawerTrashLabel => 'Корзина';
 
   @override
+  String get drawerPlanningSectionHeader => 'ПЛАНИРОВАНИЕ';
+
+  @override
   String get drawerFoldersSectionHeader => 'ПАПКИ';
 
   @override
@@ -326,6 +334,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'Обратная связь';
+
+  @override
+  String get drawerRateAppLabel => 'Оценить приложение';
 
   @override
   String get drawerAboutLabel => 'О приложении';
@@ -417,6 +428,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'PDF сохранён';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'Сохранить';
 
   @override
   String get jpgPreparingInfoMessage => 'Подготовка JPG…';
@@ -2171,6 +2185,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'Список вычислений';
+
+  @override
+  String get tableBlockMenuItemLabel => 'Таблица';
+
+  @override
+  String get tableSizePickerTitle => 'Выберите размер таблицы';
+
+  @override
+  String get tableSizePickerCancel => 'Отмена';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'Удалить таблицу';
 
   @override
   String get tagsMenuItemLabel => 'Теги';

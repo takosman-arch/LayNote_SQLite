@@ -116,6 +116,11 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'Tablo ($count satır)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'Çizim';
 
   @override
@@ -290,6 +295,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get drawerTrashLabel => 'Çöp';
 
   @override
+  String get drawerPlanningSectionHeader => 'PLANLAMA';
+
+  @override
   String get drawerFoldersSectionHeader => 'KLASÖRLER';
 
   @override
@@ -324,6 +332,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'Geri Bildirim';
+
+  @override
+  String get drawerRateAppLabel => 'Değerlendir';
 
   @override
   String get drawerAboutLabel => 'Hakkında';
@@ -415,6 +426,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'PDF kaydedildi';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'Kaydet';
 
   @override
   String get jpgPreparingInfoMessage => 'JPG hazırlanıyor…';
@@ -2149,6 +2163,18 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'Hesap Listesi';
+
+  @override
+  String get tableBlockMenuItemLabel => 'Tablo';
+
+  @override
+  String get tableSizePickerTitle => 'Tablo boyutu seç';
+
+  @override
+  String get tableSizePickerCancel => 'Vazgeç';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'Tabloyu sil';
 
   @override
   String get tagsMenuItemLabel => 'Etiketler';

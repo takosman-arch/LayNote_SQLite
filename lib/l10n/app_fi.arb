@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Taulukko ({count} riviä)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "Piirros",
   "blockPreviewAttachmentsLabel": "{count} liitettä (kuva/asiakirja)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "Muistutus",
   "drawerLockedLabel": "Lukittu",
   "drawerTrashLabel": "Roskakori",
+  "drawerPlanningSectionHeader": "SUUNNITTELU",
   "drawerFoldersSectionHeader": "KANSIOT",
   "drawerExpandLabel": "Laajenna",
   "drawerCollapseLabel": "Tiivistä",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "Tue kehitystä",
   "drawerFeedbackLabel": "Palaute",
+  "drawerRateAppLabel": "Arvostele sovellus",
   "drawerAboutLabel": "Tietoja",
   "noNotesFoundMessage": "Muistiinpanoja ei löytynyt.",
   "trashRestoreButtonLabel": "Palauta",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "Teksti lisätty muistiinpanoon",
   "pdfPreparingInfoMessage": "Valmistellaan PDF:ää…",
   "pdfSavedInfoMessage": "PDF tallennettu",
+  "pdfPreviewSaveActionLabel": "Tallenna",
   "jpgPreparingInfoMessage": "Valmistellaan JPG:tä…",
   "jpgSavedInfoMessage": "JPG tallennettu",
   "jpgFailedInfoMessage": "JPG:tä ei voitu luoda",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "Zip-arkistoa ei voitu luoda (ZipEncoder palautti nullin).",
   "calcTableMenuItemLabel": "Laskentalista",
+  "tableBlockMenuItemLabel": "Taulukko",
+  "tableSizePickerTitle": "Valitse taulukon koko",
+  "tableSizePickerCancel": "Peruuta",
+  "tableSizePickerDeleteTooltip": "Poista taulukko",
   "tagsMenuItemLabel": "Tunnisteet",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "Lisää kohde...",

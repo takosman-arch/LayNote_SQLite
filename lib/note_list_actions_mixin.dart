@@ -480,6 +480,23 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
           ? AppLocalizations.of(context)!.pdfExportDefaultFileName
           : title.trim();
 
+      // Kaydetme diyaloğunu açmadan önce kullanıcıya PDF'in nasıl
+      // göründüğünü gösteren tam ekran bir önizleme sunulur. Kullanıcı
+      // önizlemedeki "Kaydet" butonuna basarsa true ile geri döner ve
+      // aşağıdaki native "Farklı Kaydet" akışı devam eder; geri tuşuyla
+      // kapatırsa (null) hiçbir şey kaydedilmez.
+      if (!mounted) return;
+      final shouldSave = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(
+          builder: (_) => _PdfPreviewScreen(
+            bytes: bytes,
+            title: safeTitle,
+          ),
+        ),
+      );
+      if (shouldSave != true) return;
+      if (!mounted) return;
+
       // bytes: verildiğinde file_picker, Android'de SAF (Storage Access
       // Framework) üzerinden seçilen konuma dosyayı kendisi yazar; bu
       // yüzden savedPath bazı cihazlarda gerçek bir dosya yolu değil,
@@ -2932,3 +2949,63 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     return true;
   }
 }
+
+// PDF dışa aktarımında, native "Farklı Kaydet" diyaloğu açılmadan önce
+// kullanıcıya tam ekran bir önizleme gösteren yardımcı ekran (bkz.
+// _exportNoteAsPdf). Kaydet butonuna basılırsa true, geri tuşuyla
+// kapatılırsa null döner (bkz. Navigator.pop çağrıları).
+class _PdfPreviewScreen extends StatefulWidget {
+  final Uint8List bytes;
+  final String title;
+
+  const _PdfPreviewScreen({required this.bytes, required this.title});
+
+  @override
+  State<_PdfPreviewScreen> createState() => _PdfPreviewScreenState();
+}
+
+class _PdfPreviewScreenState extends State<_PdfPreviewScreen> {
+  late final PdfController _pdfController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pdfController = PdfController(
+      document: PdfDocument.openData(widget.bytes),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pdfController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          widget.title,
+          overflow: TextOverflow.ellipsis,
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: TextButton.icon(
+              onPressed: () => Navigator.of(context).pop(true),
+              icon: const Icon(Icons.save_alt, color: Colors.white),
+              label: Text(
+                AppLocalizations.of(context)!.pdfPreviewSaveActionLabel,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: Colors.grey.shade900,
+      body: PdfView(controller: _pdfController),
+    );
+  }
+}
+

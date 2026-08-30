@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabell ({count} rader)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "Teckning",
   "blockPreviewAttachmentsLabel": "{count} bilagor (foto/dokument)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "Påminnelse",
   "drawerLockedLabel": "Låst",
   "drawerTrashLabel": "Papperskorg",
+  "drawerPlanningSectionHeader": "PLANERING",
   "drawerFoldersSectionHeader": "MAPPAR",
   "drawerExpandLabel": "Expandera",
   "drawerCollapseLabel": "Fäll ihop",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "Stöd utvecklingen",
   "drawerFeedbackLabel": "Feedback",
+  "drawerRateAppLabel": "Betygsätt appen",
   "drawerAboutLabel": "Om",
   "noNotesFoundMessage": "Inga anteckningar hittades.",
   "trashRestoreButtonLabel": "Återställ",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "Text tillagd i anteckning",
   "pdfPreparingInfoMessage": "Förbereder PDF…",
   "pdfSavedInfoMessage": "PDF sparad",
+  "pdfPreviewSaveActionLabel": "Spara",
   "jpgPreparingInfoMessage": "Förbereder JPG…",
   "jpgSavedInfoMessage": "JPG sparad",
   "jpgFailedInfoMessage": "Kunde inte skapa JPG",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "Kunde inte skapa zip-arkivet (ZipEncoder returnerade null).",
   "calcTableMenuItemLabel": "Beräkningslista",
+  "tableBlockMenuItemLabel": "Tabell",
+  "tableSizePickerTitle": "Välj tabellstorlek",
+  "tableSizePickerCancel": "Avbryt",
+  "tableSizePickerDeleteTooltip": "Ta bort tabell",
   "tagsMenuItemLabel": "Taggar",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "Lägg till objekt...",

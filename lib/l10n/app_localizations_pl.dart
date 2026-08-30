@@ -117,6 +117,11 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'Tabela ($count wierszy)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'Rysunek';
 
   @override
@@ -292,6 +297,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get drawerTrashLabel => 'Kosz';
 
   @override
+  String get drawerPlanningSectionHeader => 'PLANOWANIE';
+
+  @override
   String get drawerFoldersSectionHeader => 'FOLDERY';
 
   @override
@@ -326,6 +334,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'Opinia';
+
+  @override
+  String get drawerRateAppLabel => 'Oceń aplikację';
 
   @override
   String get drawerAboutLabel => 'O aplikacji';
@@ -417,6 +428,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'Zapisano PDF';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'Zapisz';
 
   @override
   String get jpgPreparingInfoMessage => 'Przygotowywanie JPG…';
@@ -2176,6 +2190,18 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'Lista obliczeniowa';
+
+  @override
+  String get tableBlockMenuItemLabel => 'Tabela';
+
+  @override
+  String get tableSizePickerTitle => 'Wybierz rozmiar tabeli';
+
+  @override
+  String get tableSizePickerCancel => 'Anuluj';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'Usuń tabelę';
 
   @override
   String get tagsMenuItemLabel => 'Tagi';

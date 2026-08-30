@@ -6,6 +6,7 @@ part of 'main.dart';
 //   {"type": "text", "text": "..."}
 //   {"type": "attachments", "ids": ["att1", "att2", ...]}
 //   {"type": "calc_table", "rows": [{"label": "...", "value": "..."}, ...]}
+//   {"type": "table", "rows": [["hücre", "hücre", ...], ["hücre", ...], ...]}
 //   {"type": "drawing", "strokes": [
 //       {"color": <int argb>, "width": <double>, "points": [[x, y], ...]},
 //       ...
@@ -29,7 +30,65 @@ class ContentBlocks {
     'drawing',
     'divider',
     'checklist',
+    'table',
   ];
+
+  // Tek bir tablo hücresini normalize eder: her zaman {"text": "...",
+  // "spans": [...]} biçiminde bir Map döner. Eski notlarda hücre düz bir
+  // String'ti (span'sız); bu durumda text o String, spans boş liste olur.
+  // Yeni notlarda hücre zaten {"text":..., "spans":...} biçiminde bir Map
+  // olabilir — bu durumda spans RichTextSpans.parse ile normalize edilir
+  // (bozuk/eksik span verisi sessizce elenir, bkz. RichTextSpans.parse).
+  static Map<String, dynamic> _normalizeTableCell(dynamic c) {
+    if (c is Map) {
+      return {
+        'text': (c['text'] ?? '').toString(),
+        'spans': RichTextSpans.parse(c['spans']),
+      };
+    }
+    return {
+      'text': (c ?? '').toString(),
+      'spans': <Map<String, dynamic>>[],
+    };
+  }
+
+  // 'table' bloğunun rows verisini normalize eder: her satırı
+  // List<Map<String,dynamic>> (her hücre {"text":..., "spans":...})
+  // olarak döner, böylece UI katmanı her zaman düzenli bir "satırlar
+  // listesi -> zengin metin hücre listesi" yapısıyla çalışabilir.
+  static List<List<Map<String, dynamic>>> _parseTableRows(dynamic raw) {
+    final rows = raw as List? ?? const [];
+    return rows.map((r) {
+      final cells = r as List? ?? const [];
+      return cells.map(_normalizeTableCell).toList();
+    }).toList();
+  }
+
+  // 'table' bloğundaki tek bir hücreden düz metni okur. Hücre eski
+  // notlarda düz bir String'ti; yeni notlarda ise zengin metin (kalın/
+  // italik/altı çizili) taşıyabilmesi için {"text": "...", "spans": [...]}
+  // biçiminde bir Map olarak saklanıyor (bkz. _tableCellSpans, ve 'text'
+  // bloğundaki aynı desen). Bu metot her iki biçimi de tek bir düz
+  // String'e indirger. note_widget_service.dart, note_screenshot_service.dart
+  // ve pdf_export_service.dart bu metodu kullanır (aynı kütüphanenin
+  // part'ı oldukları için private üyeye buradan erişebilirler).
+  static String _tableCellText(dynamic c) {
+    if (c is Map) {
+      return (c['text'] ?? '').toString();
+    }
+    return (c ?? '').toString();
+  }
+
+  // Aynı hücrenin zengin metin span verisini döner (kalın/italik/altı
+  // çizili aralıkları). Eski (düz String) hücrelerde span bilgisi hiç
+  // yoktur, bu yüzden null döner; RichTextSpans.parse(null) boş bir liste
+  // üretir ve hücre düz metin olarak çizilir.
+  static dynamic _tableCellSpans(dynamic c) {
+    if (c is Map) {
+      return c['spans'];
+    }
+    return null;
+  }
 
   // Checklist bloğunun items listesini normalize eder.
   // Her eleman {"text": "...", "checked": false} şeklinde döner.
@@ -144,6 +203,9 @@ class ContentBlocks {
             if (m['type'] == 'text') {
               m['spans'] = RichTextSpans.parse(m['spans']);
             }
+            if (m['type'] == 'table') {
+              m['rows'] = _parseTableRows(m['rows']);
+            }
             return m;
           }),
         );
@@ -170,11 +232,28 @@ class ContentBlocks {
       if (b['type'] == 'checklist') {
         return (b['items'] as List?)?.isNotEmpty == true;
       }
+      if (b['type'] == 'table') {
+        final rows = b['rows'] as List? ?? const [];
+        return rows.isNotEmpty &&
+            rows.any((r) => (r as List).any(
+                (c) => _tableCellText(c).trim().isNotEmpty));
+      }
       return true;
     }).map((b) {
       if (b['type'] == 'text') {
         final m = Map<String, dynamic>.from(b);
         m['spans'] = RichTextSpans.clean(b['spans'] as List?);
+        return m;
+      }
+      if (b['type'] == 'table') {
+        final m = Map<String, dynamic>.from(b);
+        m['rows'] = (b['rows'] as List? ?? const []).map((r) {
+          return (r as List).map((c) {
+            final cell = _normalizeTableCell(c);
+            cell['spans'] = RichTextSpans.clean(cell['spans'] as List?);
+            return cell;
+          }).toList();
+        }).toList();
         return m;
       }
       return b;
@@ -205,7 +284,8 @@ class ContentBlocks {
         .where((b) =>
             b['type'] == 'text' ||
             b['type'] == 'calc_table' ||
-            b['type'] == 'checklist')
+            b['type'] == 'checklist' ||
+            b['type'] == 'table')
         .map((b) {
           if (b['type'] == 'checklist') {
             final items = (b['items'] as List? ?? const []);
@@ -234,6 +314,23 @@ class ContentBlocks {
             if (lines.isEmpty) return '';
             lines.add(buildTotalLabel(formatCalcNumber(total)));
             return lines.join('\n');
+          }
+          if (b['type'] == 'table') {
+            final rows = (b['rows'] as List? ?? const []);
+            // DÜZELTME (önizlemede boş hücrelerin yanında da " | " çizgisi
+            // görünmesi): önceden TÜM hücreler (boş olanlar dahil) ' | '
+            // ile birleştiriliyordu, bu da "Elma |  | 5" gibi boş hücre
+            // etrafında da çizgi kalmasına yol açıyordu. Artık her satırda
+            // ÖNCE boş hücreler filtreleniyor, SONRA sadece dolu hücreler
+            // ' | ' ile birleştiriliyor — böylece çizgi yalnızca iki dolu
+            // hücre arasında görünür.
+            return rows
+                .map((r) => (r as List)
+                    .map((c) => _tableCellText(c))
+                    .where((cell) => cell.trim().isNotEmpty)
+                    .join(' | '))
+                .where((line) => line.trim().isNotEmpty)
+                .join('\n');
           }
           return (b['text'] ?? '').toString();
         })
@@ -267,7 +364,8 @@ class ContentBlocks {
         .where((b) =>
             b['type'] == 'text' ||
             b['type'] == 'calc_table' ||
-            b['type'] == 'checklist')
+            b['type'] == 'checklist' ||
+            b['type'] == 'table')
         .toList();
 
     final segments = <String>[];
@@ -298,6 +396,24 @@ class ContentBlocks {
         segmentText = lines.isEmpty
             ? ''
             : (lines..add(buildTotalLabel(formatCalcNumber(total)))).join('\n');
+      } else if (b['type'] == 'table') {
+        final rows = (b['rows'] as List? ?? const []);
+        // DÜZELTME (önizlemede "text. spans" gibi bozuk metin görünmesi):
+        // hücreler artık düz String değil {"text":...,"spans":...} Map'i
+        // (bkz. _normalizeTableCell); (c ?? '').toString() bir Map
+        // üzerinde çağrıldığında Map'in kendi toString() temsilini
+        // (ör. "{text: ..., spans: []}") üretiyordu. plainText() ile
+        // AYNI şekilde _tableCellText(c) kullanılmalı.
+        // DÜZELTME (boş hücrelerin yanında da " | " çizgisi görünmesi):
+        // plainText() ile AYNI mantık — önce boş hücreler filtrelenir,
+        // sonra sadece dolu hücreler ' | ' ile birleştirilir.
+        segmentText = rows
+            .map((r) => (r as List)
+                .map((c) => _tableCellText(c))
+                .where((cell) => cell.trim().isNotEmpty)
+                .join(' | '))
+            .where((line) => line.trim().isNotEmpty)
+            .join('\n');
       } else {
         // 'text' bloğu: hem metni hem de o bloğun kendi span'larını
         // (offset'lenerek) al.
@@ -390,6 +506,22 @@ class ContentBlocks {
             'text': buildTotalLabel(formatCalcNumber(total)),
           });
         }
+      } else if (b['type'] == 'table') {
+        final rows = (b['rows'] as List? ?? const []);
+        // DÜZELTME: aynı "text. spans" bozuk-metin hatası (bkz.
+        // previewTextWithSpans yorumu) — hücre artık bir Map olduğundan
+        // _tableCellText(c) ile okunmalı, (c ?? '').toString() değil.
+        // DÜZELTME: boş hücrelerin yanında da " | " çizgisi görünmesi
+        // (bkz. plainText() yorumu) — önce boş hücreler filtrelenir,
+        // sonra sadece dolu hücreler ' | ' ile birleştirilir.
+        for (final r in rows) {
+          final cells = (r as List)
+              .map((c) => _tableCellText(c))
+              .where((cell) => cell.trim().isNotEmpty);
+          final line = cells.join(' | ');
+          if (line.trim().isEmpty) continue;
+          lines.add({'checklist': false, 'text': line});
+        }
       }
     }
     return lines;
@@ -423,6 +555,11 @@ class ContentBlocks {
       if (b['type'] == 'checklist' &&
           (b['items'] as List? ?? const []).any((it) =>
               (it as Map)['text'].toString().trim().isNotEmpty)) {
+        return true;
+      }
+      if (b['type'] == 'table' &&
+          (b['rows'] as List? ?? const []).any((r) =>
+              (r as List).any((c) => _tableCellText(c).trim().isNotEmpty))) {
         return true;
       }
     }
@@ -487,6 +624,28 @@ class ContentBlocks {
           if ((ai[j]['text'] ?? '') != (bi[j]['text'] ?? '') ||
               ai[j]['checked'] != bi[j]['checked']) {
             return false;
+          }
+        }
+      } else if (a['type'] == 'table') {
+        final ar = List<List>.from(
+          (a['rows'] as List? ?? const []).map((r) => List.from(r as List)),
+        );
+        final br = List<List>.from(
+          (b['rows'] as List? ?? const []).map((r) => List.from(r as List)),
+        );
+        if (ar.length != br.length) return false;
+        for (int j = 0; j < ar.length; j++) {
+          if (ar[j].length != br[j].length) return false;
+          for (int k = 0; k < ar[j].length; k++) {
+            if (_tableCellText(ar[j][k]) != _tableCellText(br[j][k])) {
+              return false;
+            }
+            if (!RichTextSpans.listEquals(
+              _tableCellSpans(ar[j][k]) as List?,
+              _tableCellSpans(br[j][k]) as List?,
+            )) {
+              return false;
+            }
           }
         }
       } else if (a['type'] == 'divider') {

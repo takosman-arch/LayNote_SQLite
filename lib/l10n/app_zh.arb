@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "表格（{count} 行）",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "绘图",
   "blockPreviewAttachmentsLabel": "{count} 个附件（照片/文档）",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "提醒",
   "drawerLockedLabel": "已锁定",
   "drawerTrashLabel": "回收站",
+  "drawerPlanningSectionHeader": "计划",
   "drawerFoldersSectionHeader": "文件夹",
   "drawerExpandLabel": "展开",
   "drawerCollapseLabel": "收起",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "专业版",
   "drawerSupportDevelopmentLabel": "支持开发",
   "drawerFeedbackLabel": "反馈",
+  "drawerRateAppLabel": "给应用评分",
   "drawerAboutLabel": "关于",
   "noNotesFoundMessage": "未找到笔记。",
   "trashRestoreButtonLabel": "恢复",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "文字已添加到笔记",
   "pdfPreparingInfoMessage": "正在准备 PDF…",
   "pdfSavedInfoMessage": "PDF 已保存",
+  "pdfPreviewSaveActionLabel": "保存",
   "jpgPreparingInfoMessage": "正在准备 JPG…",
   "jpgSavedInfoMessage": "JPG 已保存",
   "jpgFailedInfoMessage": "无法创建 JPG",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "无法创建 zip 压缩包（ZipEncoder 返回了 null）。",
   "calcTableMenuItemLabel": "计算列表",
+  "tableBlockMenuItemLabel": "表格",
+  "tableSizePickerTitle": "选择表格大小",
+  "tableSizePickerCancel": "取消",
+  "tableSizePickerDeleteTooltip": "删除表格",
   "tagsMenuItemLabel": "标签",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "添加项目……",

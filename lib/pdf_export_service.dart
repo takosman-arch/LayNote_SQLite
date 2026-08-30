@@ -751,6 +751,55 @@ class PdfExportService {
               ),
             );
           }
+        } else if (type == 'table') {
+          // "table" (Notion tarzı basit satır/sütun tablosu) bloğu. Her
+          // hücre artık zengin metin taşıyabilir ({"text","spans"}, bkz.
+          // content_blocks.dart/rich_text_spans.dart); eski notlarda hücre
+          // düz bir String'ti — ContentBlocks._tableCellText/_tableCellSpans
+          // (aynı kütüphanenin part'ı olduğumuzdan buradan erişilebilir)
+          // her iki biçimi de sorunsuz okur. calc_table'dan farkı: sabit
+          // sütun sayısı ve toplam satırı YOK; sütun genişlikleri
+          // pw.Table'ın varsayılanına bırakılır (columnWidths hiç
+          // verilmez), her hücre kendi span'larıyla (kalın/italik/altı
+          // çizili) çiziliyor.
+          final rawRows = block['rows'] as List? ?? const [];
+          final hasContent = rawRows.any((r) => (r as List)
+              .any((c) => ContentBlocks._tableCellText(c).trim().isNotEmpty));
+          if (hasContent) {
+            final tableRows = rawRows.map((r) {
+              final cells = (r as List).map((c) {
+                final cellText = ContentBlocks._tableCellText(c);
+                final cellSpans =
+                    RichTextSpans.parse(ContentBlocks._tableCellSpans(c));
+                return pw.Padding(
+                  padding: const pw.EdgeInsets.symmetric(
+                    vertical: 3,
+                    horizontal: 4,
+                  ),
+                  child: _buildRichTextWidget(
+                    cellText,
+                    cellSpans,
+                    regular,
+                    bold,
+                    effectiveFontSize,
+                  ),
+                );
+              }).toList();
+              return pw.TableRow(children: cells);
+            }).toList();
+            content.add(
+              pw.Padding(
+                padding: const pw.EdgeInsets.only(bottom: 8),
+                child: pw.Table(
+                  border: pw.TableBorder.all(
+                    color: PdfColors.grey400,
+                    width: 0.5,
+                  ),
+                  children: tableRows,
+                ),
+              ),
+            );
+          }
         } else if (type == 'divider') {
           content.add(
             pw.Padding(

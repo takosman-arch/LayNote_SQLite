@@ -117,6 +117,11 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'Bảng ($count dòng)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'Bản vẽ';
 
   @override
@@ -291,6 +296,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get drawerTrashLabel => 'Thùng rác';
 
   @override
+  String get drawerPlanningSectionHeader => 'LẬP KẾ HOẠCH';
+
+  @override
   String get drawerFoldersSectionHeader => 'THƯ MỤC';
 
   @override
@@ -325,6 +333,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'Phản hồi';
+
+  @override
+  String get drawerRateAppLabel => 'Đánh giá ứng dụng';
 
   @override
   String get drawerAboutLabel => 'Giới thiệu';
@@ -416,6 +427,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'Đã lưu PDF';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'Lưu';
 
   @override
   String get jpgPreparingInfoMessage => 'Đang chuẩn bị JPG…';
@@ -2166,6 +2180,18 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'Bảng tính';
+
+  @override
+  String get tableBlockMenuItemLabel => 'Bảng';
+
+  @override
+  String get tableSizePickerTitle => 'Chọn kích thước bảng';
+
+  @override
+  String get tableSizePickerCancel => 'Hủy';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'Xóa bảng';
 
   @override
   String get tagsMenuItemLabel => 'Thẻ';

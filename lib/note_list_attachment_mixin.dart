@@ -244,6 +244,17 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
         helpText: helpText,
         cancelText: AppLocalizations.of(context)!.calendarPickerCancelButton,
         confirmText: AppLocalizations.of(context)!.calendarPickerConfirmButton,
+        builder: (context, child) {
+          final base = Theme.of(context);
+          return Theme(
+            data: base.copyWith(
+              colorScheme: base.colorScheme.copyWith(
+                primary: appAccentColor.value,
+              ),
+            ),
+            child: child!,
+          );
+        },
       );
     }
 
@@ -271,11 +282,18 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                     ),
                   ),
                 ),
-                CalendarDatePicker(
-                  initialDate: initialDate,
-                  firstDate: firstDate,
-                  lastDate: lastDate,
-                  onDateChanged: (d) => selected = d,
+                Theme(
+                  data: Theme.of(dialogContext).copyWith(
+                    colorScheme: Theme.of(dialogContext).colorScheme.copyWith(
+                      primary: appAccentColor.value,
+                    ),
+                  ),
+                  child: CalendarDatePicker(
+                    initialDate: initialDate,
+                    firstDate: firstDate,
+                    lastDate: lastDate,
+                    onDateChanged: (d) => selected = d,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
@@ -286,6 +304,9 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                           dialogContext,
                           _clearAssignedDateSentinel,
                         ),
+                        style: TextButton.styleFrom(
+                          foregroundColor: appAccentColor.value,
+                        ),
                         child: Text(
                           AppLocalizations.of(dialogContext)!.calendarPickerClearButton,
                         ),
@@ -293,6 +314,9 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                       const Spacer(),
                       TextButton(
                         onPressed: () => Navigator.pop(dialogContext, null),
+                        style: TextButton.styleFrom(
+                          foregroundColor: appAccentColor.value,
+                        ),
                         child: Text(
                           AppLocalizations.of(dialogContext)!.calendarPickerCancelButton,
                         ),
@@ -300,6 +324,9 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                       TextButton(
                         onPressed: () =>
                             Navigator.pop(dialogContext, selected),
+                        style: TextButton.styleFrom(
+                          foregroundColor: appAccentColor.value,
+                        ),
                         child: Text(
                           AppLocalizations.of(dialogContext)!.calendarPickerConfirmButton,
                         ),

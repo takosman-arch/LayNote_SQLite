@@ -143,6 +143,15 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tablo ({count} satır)",
+  "@blockPreviewTableLabel": {
+    "description": "Blokları Sırala listesinde bir tablo bloğu için gösterilen önizleme metni",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "Çizim",
   "@blockPreviewDrawingLabel": {
     "description": "Blokları Sırala listesinde bir çizim bloğu için gösterilen önizleme metni"
@@ -352,7 +361,7 @@
   },
   "drawerNotesSectionHeader": "NOTLAR",
   "@drawerNotesSectionHeader": {
-    "description": "Çekmece menüsünde Notlar/Favori/Gündem/Hatırlatıcı/Kilitli/Arşiv/Çöp satırlarının üstünde yer alan bölüm başlığı"
+    "description": "Çekmece menüsünde Notlar/Favori/Kilitli/Arşiv/Çöp satırlarının üstünde yer alan bölüm başlığı"
   },
   "drawerAllNotesLabel": "Notlar",
   "@drawerAllNotesLabel": {
@@ -378,6 +387,10 @@
   "@drawerTrashLabel": {
     "description": "Çekmece menüsünde çöp (silinen notlar) ekranını gösteren satırın etiketi"
   },
+  "drawerPlanningSectionHeader": "PLANLAMA",
+  "@drawerPlanningSectionHeader": {
+    "description": "Çekmece menüsünde Gündem/Hatırlatıcı/Takvim satırlarının üstünde yer alan bölüm başlığı"
+  },
   "drawerFoldersSectionHeader": "KLASÖRLER",
   "@drawerFoldersSectionHeader": {
     "description": "Çekmece menüsünde klasör listesinin üstünde yer alan bölüm başlığı"
@@ -396,7 +409,7 @@
   },
   "drawerAppSectionHeader": "UYGULAMA",
   "@drawerAppSectionHeader": {
-    "description": "Çekmece menüsünde Takvim/Ayarlar/Yedekle/Pro/Destek/Geri Bildirim/Hakkında satırlarının üstünde yer alan bölüm başlığı"
+    "description": "Çekmece menüsünde Ayarlar/Yedekle/Pro/Destek/Geri Bildirim/Hakkında satırlarının üstünde yer alan bölüm başlığı"
   },
   "drawerCalendarLabel": "Takvim",
   "@drawerCalendarLabel": {
@@ -425,6 +438,10 @@
   "drawerFeedbackLabel": "Geri Bildirim",
   "@drawerFeedbackLabel": {
     "description": "Çekmece menüsünde geri bildirim gönderme satırının etiketi"
+  },
+  "drawerRateAppLabel": "Değerlendir",
+  "@drawerRateAppLabel": {
+    "description": "Çekmece menüsünde Play Store'da uygulamayı değerlendirme sayfasını açan satırın etiketi"
   },
   "drawerAboutLabel": "Hakkında",
   "@drawerAboutLabel": {
@@ -554,6 +571,10 @@
   "pdfSavedInfoMessage": "PDF kaydedildi",
   "@pdfSavedInfoMessage": {
     "description": "Not PDF olarak başarıyla kaydedildiğinde gösterilen bilgi çubuğu mesajı"
+  },
+  "pdfPreviewSaveActionLabel": "Kaydet",
+  "@pdfPreviewSaveActionLabel": {
+    "description": "PDF önizleme ekranındaki kaydet butonunun etiketi"
   },
   "jpgPreparingInfoMessage": "JPG hazırlanıyor…",
   "@jpgPreparingInfoMessage": {
@@ -2876,6 +2897,10 @@
     "description": "Yedek oluşturulurken zip kodlama işlemi beklenmedik şekilde null döndürdüğünde gösterilen hata mesajı"
   },
   "calcTableMenuItemLabel": "Hesap Listesi",
+  "tableBlockMenuItemLabel": "Tablo",
+  "tableSizePickerTitle": "Tablo boyutu seç",
+  "tableSizePickerCancel": "Vazgeç",
+  "tableSizePickerDeleteTooltip": "Tabloyu sil",
   "tagsMenuItemLabel": "Etiketler",
   "linkDialogUrlHint": "https://ornek.com",
   "checklistItemHint": "Madde ekle...",

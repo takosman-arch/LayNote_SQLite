@@ -227,6 +227,17 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     bool pendingUnderline = false;
     bool pendingStrikethrough = false;
     bool pendingHighlight = false;
+    // DÜZELTME (tablo hücrelerinde zengin metin barı çıkmıyordu): 'table'
+    // bloğu (NoteTableBlock) hücre controller'larını kendi kapalı
+    // state'inde tutar (blockControllers/blockFocusNodes'ta değil), bu
+    // yüzden paylaşılan araç çubuğu hangi hücrenin odaklı olduğunu
+    // bilemiyordu. NoteTableBlock.onActiveCellChanged bir hücre odağı
+    // kazandığında/kaybettiğinde bu ikisini günceller;
+    // _resolveFocusedFormatController/_resolveFocusedSpansHolder ve araç
+    // çubuğu görünürlük kontrolü artık 'table' tipini de bu ikisi
+    // üzerinden ele alır (bkz. aşağıda).
+    RichBlockTextController? focusedTableCellController;
+    Map<String, dynamic>? focusedTableCellSpansHolder;
     // Araç çubuğundaki "Liste" butonuna basılınca, ana araç çubuğu satırı
     // yerine madde/numara işareti seçeneklerini içeren bir ALT BAR
     // gösterilir (bkz. aşağıdaki araç çubuğu Row'u). X ikonuna basılınca
@@ -322,6 +333,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // (bkz. NoteDrawingBlock.autoOpenOnce). Yalnızca eklendiği anda bir
     // sonraki widget kurulumunda bir kez tüketilir, sonra null'a döner.
     int? autoOpenDrawingBlockIndex;
+    // "Tablo Ekle" ile yeni eklenen table bloğunun ilk hücresine otomatik
+    // odaklanması gerektiğini işaretlemek için kullanılır (bkz.
+    // NoteTableBlock.autofocus) — autoOpenDrawingBlockIndex ile birebir
+    // aynı desen: yalnızca eklendiği anda bir sonraki widget kurulumunda
+    // bir kez tüketilir, sonra null'a döner.
+    int? autoFocusTableBlockIndex;
     // 'checklist' tipindeki bloklar için: her blok indeksine karşılık gelen
     // madde controller/focus node listesi (metin bloklarında null).
     List<List<TextEditingController>?> blockItemControllers = [];
@@ -899,6 +916,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         }
         return ctrls[itemIdx];
       }
+      if (type == 'table') {
+        // NoteTableBlock.onActiveCellChanged tarafından güncellenir (bkz.
+        // yukarıdaki focusedTableCellController tanımı) — hücre
+        // controller'ları bu widget'ın dışında saklanmadığından, hangi
+        // hücrenin odaklı olduğu doğrudan bu değişkenden okunur.
+        return focusedTableCellController;
+      }
       return null;
     }
 
@@ -923,6 +947,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           return null;
         }
         return items[itemIdx] as Map<String, dynamic>;
+      }
+      if (block['type'] == 'table') {
+        // focusedTableCellSpansHolder, NoteTableBlock içindeki hücre
+        // Map'inin (block['rows'][r][c]) KENDİSİDİR (bkz. note_table_block
+        // .dart'taki referans-koruma açıklaması) — üzerine yazılan
+        // ['spans'] = newSpans doğrudan gerçek veriye işler.
+        return focusedTableCellSpansHolder;
       }
       return null;
     }
@@ -3560,6 +3591,37 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 });
               }
 
+              // "table" (basit satır/sütun tablosu) bloğunun tamamını
+              // kaldırır — removeDrawingBlockAt ile birebir aynı desen:
+              // komşu iki taraf da metin bloğuysa birleştirilir, değilse
+              // blok sadece çıkarılır; blok listesi tamamen boş kalırsa
+              // boş bir metin bloğu eklenir.
+              void removeTableBlockAt(int i) {
+                pushUndoCheckpoint();
+                setModalState(() {
+                  if (i < 0 || i >= blocks.length) return;
+                  final prevIsText =
+                      i > 0 && blocks[i - 1]['type'] == 'text';
+                  final nextIsText =
+                      i < blocks.length - 1 &&
+                      blocks[i + 1]['type'] == 'text';
+                  if (prevIsText && nextIsText) {
+                    final mergedText =
+                        ((blocks[i - 1]['text'] ?? '').toString()) +
+                        ((blocks[i + 1]['text'] ?? '').toString());
+                    blocks[i - 1]['text'] = mergedText;
+                    blocks.removeAt(i + 1);
+                    blocks.removeAt(i);
+                  } else {
+                    blocks.removeAt(i);
+                  }
+                  if (blocks.isEmpty) {
+                    blocks.add({'type': 'text', 'text': ''});
+                  }
+                  rebuildBlockControllers();
+                });
+              }
+
               // Yatay çizgi (divider) bloğunu kaldırır. Çizim/ek/hesap
               // tablosu bloklarını kaldırırken kullanılan aynı desen: komşu
               // iki taraf da metin bloğuysa birleştirilir, değilse blok
@@ -3743,6 +3805,17 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     );
                     return AppLocalizations.of(context)!
                         .blockPreviewChecklistLabel(items.length);
+                  case 'table':
+                    final rows = List.from(b['rows'] ?? const []);
+                    // NOT: diğer bloklarla aynı desende localization
+                    // kullanmak için AppLocalizations .arb dosyalarınıza
+                    // şu anahtarı eklemeniz gerekir (bkz. mevcut
+                    // blockPreviewCalcTableLabel örneği):
+                    //   "blockPreviewTableLabel": "{count, plural, one{1 satır} other{{count} satır}} tablo"
+                    // Eklendikten sonra aşağıdaki satırı şununla
+                    // değiştirin:
+                    //   AppLocalizations.of(context)!.blockPreviewTableLabel(rows.length)
+                    return 'Tablo (${rows.length} satır)';
                   default:
                     final t = (b['text'] ?? '').toString().trim();
                     return t.isEmpty
@@ -3763,6 +3836,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     return Icons.horizontal_rule;
                   case 'checklist':
                     return Icons.checklist_rounded;
+                  case 'table':
+                    return Icons.border_all_rounded;
                   default:
                     return Icons.notes;
                 }
@@ -4251,7 +4326,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           Icons.more_vert,
                           color: dNoteEditorAppBarColor(context),
                         ),
-                        onSelected: (value) {
+                        onSelected: (value) async {
                           if (value == 'calc_table') {
                             if (noteType != 'text') return;
                             pushUndoCheckpoint();
@@ -4365,6 +4440,66 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   newFocusNode.requestFocus();
                                 });
                               }
+                            });
+                          } else if (value == 'table') {
+                            if (noteType != 'text') return;
+                            // Satır/sütun sayısı artık sabit 2x2 değil —
+                            // önce ızgara seçici dialogla kullanıcıya
+                            // sordurulur. Kullanıcı vazgeçerse (null döner)
+                            // hiçbir blok eklenmez, undo checkpoint'i de
+                            // alınmaz.
+                            final pickedRows = await NoteTableBlock.pickSize(
+                              context,
+                            );
+                            if (pickedRows == null) return;
+                            pushUndoCheckpoint();
+                            setModalState(() {
+                              // İmlecin bulunduğu metin bloğunu bul; imleç
+                              // orada yoksa son metin bloğuna eklenir (bkz.
+                              // checklist/calc_table/drawing ekleme
+                              // mantığı — birebir aynı desen).
+                              int idx = focusedBlockIndex;
+                              if (idx < 0 ||
+                                  idx >= blocks.length ||
+                                  blocks[idx]['type'] != 'text') {
+                                idx = blocks.lastIndexWhere(
+                                  (b) => b['type'] == 'text',
+                                );
+                                if (idx == -1) {
+                                  blocks.add({'type': 'text', 'text': ''});
+                                  idx = blocks.length - 1;
+                                }
+                              }
+                              final controller = blockControllers[idx];
+                              final text =
+                                  controller?.text.replaceAll(emptyTextSentinel, '') ??
+                                  (blocks[idx]['text'] ?? '').toString();
+                              int offset =
+                                  controller?.selection.baseOffset ?? -1;
+                              if (offset < 0 || offset > text.length) {
+                                offset = text.length;
+                              }
+                              final leftText = text.substring(0, offset);
+                              final rightText = text.substring(offset);
+
+                              blocks[idx]['text'] = leftText;
+                              blocks.insert(idx + 1, {
+                                'type': 'table',
+                                'rows': pickedRows,
+                              });
+                              blocks.insert(idx + 2, {
+                                'type': 'text',
+                                'text': rightText,
+                              });
+
+                              rebuildBlockControllers();
+                              // Odak, metin bloklarındaki gibi FocusNode ile
+                              // değil, NoteTableBlock'un kendi ilk hücresine
+                              // (autofocus: true) verilir — bkz.
+                              // autoOpenDrawingBlockIndex ile aynı "bir kez
+                              // tüket" deseni.
+                              autoFocusTableBlockIndex = idx + 1;
+                              focusedBlockIndex = idx + 2;
                             });
                           } else if (value == 'reorder_blocks') {
                             showBlockReorderSheet();
@@ -4562,6 +4697,26 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           // artık notlarda arka plan rengi seçilemiyor.
                           if (noteType == 'text')
                             PopupMenuItem(
+                              value: 'drawing',
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.drawingBoardMenuItemLabel,
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Icon(
+                                    Icons.draw,
+                                    color: appAccentColor.value,
+                                    size: 24,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          if (noteType == 'text')
+                            PopupMenuItem(
                               value: 'calc_table',
                               child: Row(
                                 children: [
@@ -4582,18 +4737,18 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                             ),
                           if (noteType == 'text')
                             PopupMenuItem(
-                              value: 'drawing',
+                              value: 'table',
                               child: Row(
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      AppLocalizations.of(context)!.drawingBoardMenuItemLabel,
+                                      AppLocalizations.of(context)!.tableBlockMenuItemLabel,
                                       style: const TextStyle(fontSize: 16),
                                     ),
                                   ),
-                                  SizedBox(width: 10),
+                                  const SizedBox(width: 10),
                                   Icon(
-                                    Icons.draw,
+                                    Icons.border_all_rounded,
                                     color: appAccentColor.value,
                                     size: 24,
                                   ),
@@ -4621,6 +4776,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                 ],
                               ),
                             ),
+                          const PopupMenuDivider(),
                           PopupMenuItem(
                             value: 'tags',
                             child: Row(
@@ -4812,6 +4968,27 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       return strokes.isNotEmpty;
                                     case 'divider':
                                       return true;
+                                    case 'table':
+                                      final rows = List.from(
+                                        b['rows'] ?? const [],
+                                      );
+                                      // DÜZELTME: hücreler artık düz String
+                                      // değil {"text":...,"spans":...}
+                                      // Map'i (bkz. content_blocks.dart ->
+                                      // _normalizeTableCell); (c ?? '')
+                                      // .toString() bir Map üzerinde hep
+                                      // dolu bir metin üretip bu kontrolü
+                                      // anlamsız kılıyordu.
+                                      // ContentBlocks._tableCellText her
+                                      // iki biçimi de (eski String, yeni
+                                      // Map) doğru okur.
+                                      return rows.any(
+                                        (r) => (r as List).any(
+                                          (c) => ContentBlocks._tableCellText(
+                                            c,
+                                          ).isNotEmpty,
+                                        ),
+                                      );
                                     default:
                                       return (b['text'] ?? '')
                                           .toString()
@@ -5281,6 +5458,130 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       itemFns.insert(target, movedFn);
                                     });
                                   },
+                                );
+                              }
+                              if (block['type'] == 'table') {
+                                // ÖNEMLİ: List.from burada yalnızca satır
+                                // LİSTELERİNİ kopyalar — her hücrenin
+                                // kendisi (Map<String,dynamic>,
+                                // içerisinde 'text'/'spans') block['rows']
+                                // ile AYNI nesne olarak kalır (cast, klon
+                                // DEĞİL). Bu, NoteTableBlock'un
+                                // onActiveCellChanged ile dışarı verdiği
+                                // spansHolder'ın gerçekten block['rows']
+                                // [r][c] olmasını, dolayısıyla araç
+                                // çubuğunun spansHolder['spans'] = ...
+                                // yazımının doğrudan gerçek veriye
+                                // işlemesini sağlar (bkz. note_table_block
+                                // .dart başındaki açıklama).
+                                final rows =
+                                    List<List<Map<String, dynamic>>>.from(
+                                  (block['rows'] as List? ?? const []).map(
+                                    (r) => List<Map<String, dynamic>>.from(
+                                      (r as List).cast<Map<String, dynamic>>(),
+                                    ),
+                                  ),
+                                );
+                                final fontSize = index != null
+                                    ? ((_notes[index!]['fontSize'] as num?)
+                                              ?.toDouble() ??
+                                          _globalFontSize)
+                                    : _globalFontSize;
+                                return Padding(
+                                  key: ValueKey('blk_table_$i'),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 4,
+                                  ),
+                                  child: NoteTableBlock(
+                                    rows: rows,
+                                    borderColor: dNoteBorderColor(context),
+                                    fontSize: fontSize,
+                                    fontFamily: dNoteFontFamilyValue(_fontFamily),
+                                    textColor: _textColor,
+                                    autofocus: i == autoFocusTableBlockIndex,
+                                    onChanged: (newRows) {
+                                      // Metin bloklarının aksine tek tuş
+                                      // vuruşunda tüm modalı yeniden
+                                      // kurmuyoruz (NoteTableBlock kendi
+                                      // controller'larıyla zaten güncel
+                                      // görünüyor) — sadece veriyi kalıcı
+                                      // hale getiriyoruz. Satır/sütun
+                                      // ekleme-silme gibi yapısal
+                                      // değişiklikler NoteTableBlock
+                                      // içinde zaten kendi setState'iyle
+                                      // yeniden çiziliyor.
+                                      block['rows'] = newRows;
+                                    },
+                                    // Bir hücrede yazı değişince, span
+                                    // kaydırma / "önce butona bas sonra
+                                    // yaz" mantığını metin bloklarıyla
+                                    // BİREBİR AYNI merkezi fonksiyona
+                                    // yönlendirir (bkz. yukarıdaki
+                                    // _shiftSpansForTextChange tanımı).
+                                    // Ayrıca undo/redo için bir kelime
+                                    // sınırı checkpoint'i açar (diğer
+                                    // metin alanlarıyla aynı desen).
+                                    onCellTextEdited:
+                                        (cell, oldText, newText, cursorPos) {
+                                      // Diğer metin alanlarıyla aynı
+                                      // kelime-sınırı undo checkpoint
+                                      // deseni: sessionKey olarak hücrenin
+                                      // kimliğini (identityHashCode)
+                                      // kullanıyoruz, çünkü hücrenin
+                                      // satır/sütun konumu bu callback'e
+                                      // iletilmiyor ama Map referansı zaten
+                                      // tekil ve kararlı.
+                                      final activeCtrl =
+                                          focusedTableCellController;
+                                      if (activeCtrl != null) {
+                                        noteTextEdited(
+                                          'table_cell_${identityHashCode(cell)}',
+                                          activeCtrl,
+                                        );
+                                      }
+                                      _shiftSpansForTextChange(
+                                        cell,
+                                        oldText,
+                                        newText,
+                                        cursorPosition: cursorPos,
+                                      );
+                                    },
+                                    // Hücre odağı değiştiğinde paylaşılan
+                                    // araç çubuğunun hedefini günceller —
+                                    // metin bloklarının onTap'indeki
+                                    // "başka bir alana geçince bekleyen
+                                    // kalın/italik durumunu sıfırla"
+                                    // deseniyle birebir aynı (bkz. bu
+                                    // dosyadaki diğer onTap'ler).
+                                    onActiveCellChanged:
+                                        (controller, spansHolder) {
+                                      if (controller != null) {
+                                        if (focusedBlockIndex != i ||
+                                            _titleFocused) {
+                                          pendingBold = false;
+                                          pendingItalic = false;
+                                          pendingUnderline = false;
+                                          pendingStrikethrough = false;
+                                          pendingHighlight = false;
+                                          pendingFontSize = null;
+                                          pendingColor = null;
+                                          pendingFontFamily = null;
+                                          showListSubToolbar = false;
+                                          showStyleSubToolbar = false;
+                                          showColorSubToolbar = false;
+                                          showFontSizeSubToolbar = false;
+                                        }
+                                        focusedBlockIndex = i;
+                                        focusedItemIndex = -1;
+                                        _titleFocused = false;
+                                      }
+                                      focusedTableCellController = controller;
+                                      focusedTableCellSpansHolder =
+                                          spansHolder;
+                                      requestEditorRebuild?.call(() {});
+                                    },
+                                    onDelete: () => removeTableBlockAt(i),
+                                  ),
                                 );
                               }
                               if (block['type'] == 'drawing') {
@@ -6172,12 +6473,20 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           // ediyor) bu şart hiçbir zaman true olmuyor, bar da
                           // hiç görünmüyordu. _titleFocused burada da
                           // koşula eklendi.
+                          // DÜZELTME (tabloda zengin metin barı çıkmıyordu):
+                          // tablo hücrelerinin FocusNode'ları
+                          // blockFocusNodes içinde YOK (NoteTableBlock
+                          // kendi state'inde tutuyor) — bu yüzden aşağıdaki
+                          // şart, NoteTableBlock.onActiveCellChanged
+                          // tarafından güncellenen focusedTableCellController
+                          // ile de OR'lanıyor.
                           final hasFocusedTextBlock =
                               _titleFocused ||
                               (focusedBlockIndex >= 0 &&
                               focusedBlockIndex < blockFocusNodes.length &&
                               blockFocusNodes[focusedBlockIndex]?.hasFocus ==
-                                  true);
+                                  true) ||
+                              focusedTableCellController != null;
                           final focusedItemFocusNodes =
                               focusedBlockIndex >= 0 &&
                                   focusedBlockIndex < blockItemFocusNodes.length

@@ -118,6 +118,11 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'तालिका ($count पंक्तियाँ)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'ड्राइंग';
 
   @override
@@ -294,6 +299,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get drawerTrashLabel => 'ट्रैश';
 
   @override
+  String get drawerPlanningSectionHeader => 'योजना';
+
+  @override
   String get drawerFoldersSectionHeader => 'फ़ोल्डर';
 
   @override
@@ -328,6 +336,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'फीडबैक';
+
+  @override
+  String get drawerRateAppLabel => 'ऐप को रेट करें';
 
   @override
   String get drawerAboutLabel => 'के बारे में';
@@ -419,6 +430,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'PDF सहेजा गया';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'सहेजें';
 
   @override
   String get jpgPreparingInfoMessage => 'JPG तैयार किया जा रहा है…';
@@ -2163,6 +2177,18 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'कैलकुलेशन सूची';
+
+  @override
+  String get tableBlockMenuItemLabel => 'तालिका';
+
+  @override
+  String get tableSizePickerTitle => 'तालिका का आकार चुनें';
+
+  @override
+  String get tableSizePickerCancel => 'रद्द करें';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'तालिका हटाएं';
 
   @override
   String get tagsMenuItemLabel => 'टैग';

@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Таблиця ({count} рядків)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "Малюнок",
   "blockPreviewAttachmentsLabel": "{count} вкладень (фото/документ)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "Нагадування",
   "drawerLockedLabel": "Заблоковані",
   "drawerTrashLabel": "Кошик",
+  "drawerPlanningSectionHeader": "ПЛАНУВАННЯ",
   "drawerFoldersSectionHeader": "ПАПКИ",
   "drawerExpandLabel": "Розгорнути",
   "drawerCollapseLabel": "Згорнути",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "Підтримати розробку",
   "drawerFeedbackLabel": "Зворотний зв'язок",
+  "drawerRateAppLabel": "Оцінити застосунок",
   "drawerAboutLabel": "Про додаток",
   "noNotesFoundMessage": "Нотаток не знайдено.",
   "trashRestoreButtonLabel": "Відновити",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "Текст додано до нотатки",
   "pdfPreparingInfoMessage": "Підготовка PDF…",
   "pdfSavedInfoMessage": "PDF збережено",
+  "pdfPreviewSaveActionLabel": "Зберегти",
   "jpgPreparingInfoMessage": "Підготовка JPG…",
   "jpgSavedInfoMessage": "JPG збережено",
   "jpgFailedInfoMessage": "Не вдалося створити JPG",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "Не вдалося створити zip-архів (ZipEncoder повернув null).",
   "calcTableMenuItemLabel": "Список розрахунків",
+  "tableBlockMenuItemLabel": "Таблиця",
+  "tableSizePickerTitle": "Виберіть розмір таблиці",
+  "tableSizePickerCancel": "Скасувати",
+  "tableSizePickerDeleteTooltip": "Видалити таблицю",
   "tagsMenuItemLabel": "Теги",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "Додати пункт...",

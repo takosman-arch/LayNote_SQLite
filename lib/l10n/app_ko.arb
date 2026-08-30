@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "표 ({count}행)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "그림",
   "blockPreviewAttachmentsLabel": "첨부파일 {count}개 (사진/문서)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "알림",
   "drawerLockedLabel": "잠김",
   "drawerTrashLabel": "휴지통",
+  "drawerPlanningSectionHeader": "일정",
   "drawerFoldersSectionHeader": "폴더",
   "drawerExpandLabel": "펼치기",
   "drawerCollapseLabel": "접기",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "개발 후원하기",
   "drawerFeedbackLabel": "피드백",
+  "drawerRateAppLabel": "앱 평가하기",
   "drawerAboutLabel": "정보",
   "noNotesFoundMessage": "노트를 찾을 수 없습니다.",
   "trashRestoreButtonLabel": "복원",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "노트에 텍스트가 추가되었습니다",
   "pdfPreparingInfoMessage": "PDF 준비 중…",
   "pdfSavedInfoMessage": "PDF가 저장되었습니다",
+  "pdfPreviewSaveActionLabel": "저장",
   "jpgPreparingInfoMessage": "JPG 준비 중…",
   "jpgSavedInfoMessage": "JPG가 저장되었습니다",
   "jpgFailedInfoMessage": "JPG를 생성할 수 없습니다",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "zip 압축 파일을 생성할 수 없습니다 (ZipEncoder가 null을 반환함).",
   "calcTableMenuItemLabel": "계산 목록",
+  "tableBlockMenuItemLabel": "표",
+  "tableSizePickerTitle": "표 크기 선택",
+  "tableSizePickerCancel": "취소",
+  "tableSizePickerDeleteTooltip": "표 삭제",
   "tagsMenuItemLabel": "태그",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "항목 추가...",

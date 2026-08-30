@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "جدول ({count} صفوف)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "رسم",
   "blockPreviewAttachmentsLabel": "{count} مرفقات (صورة/مستند)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "التذكير",
   "drawerLockedLabel": "مقفلة",
   "drawerTrashLabel": "سلة المهملات",
+  "drawerPlanningSectionHeader": "التخطيط",
   "drawerFoldersSectionHeader": "المجلدات",
   "drawerExpandLabel": "توسيع",
   "drawerCollapseLabel": "طي",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "دعم التطوير",
   "drawerFeedbackLabel": "ملاحظات وآراء",
+  "drawerRateAppLabel": "قيّم التطبيق",
   "drawerAboutLabel": "حول التطبيق",
   "noNotesFoundMessage": "لم يتم العثور على ملاحظات.",
   "trashRestoreButtonLabel": "استعادة",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "تمت إضافة النص إلى الملاحظة",
   "pdfPreparingInfoMessage": "جارٍ تجهيز PDF…",
   "pdfSavedInfoMessage": "تم حفظ PDF",
+  "pdfPreviewSaveActionLabel": "حفظ",
   "jpgPreparingInfoMessage": "جارٍ تجهيز JPG…",
   "jpgSavedInfoMessage": "تم حفظ JPG",
   "jpgFailedInfoMessage": "تعذر إنشاء JPG",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "تعذر إنشاء أرشيف zip (أعاد ZipEncoder قيمة null).",
   "calcTableMenuItemLabel": "قائمة حسابية",
+  "tableBlockMenuItemLabel": "جدول",
+  "tableSizePickerTitle": "اختر حجم الجدول",
+  "tableSizePickerCancel": "إلغاء",
+  "tableSizePickerDeleteTooltip": "حذف الجدول",
   "tagsMenuItemLabel": "الوسوم",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "إضافة عنصر...",

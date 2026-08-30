@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabulka ({count} řádků)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "Kresba",
   "blockPreviewAttachmentsLabel": "{count} příloh (fotka/dokument)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "Připomínky",
   "drawerLockedLabel": "Uzamčené",
   "drawerTrashLabel": "Koš",
+  "drawerPlanningSectionHeader": "PLÁNOVÁNÍ",
   "drawerFoldersSectionHeader": "SLOŽKY",
   "drawerExpandLabel": "Rozbalit",
   "drawerCollapseLabel": "Sbalit",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "Podpořit vývoj",
   "drawerFeedbackLabel": "Zpětná vazba",
+  "drawerRateAppLabel": "Ohodnotit aplikaci",
   "drawerAboutLabel": "O aplikaci",
   "noNotesFoundMessage": "Nebyly nalezeny žádné poznámky.",
   "trashRestoreButtonLabel": "Obnovit",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "Text přidán do poznámky",
   "pdfPreparingInfoMessage": "Připravuje se PDF…",
   "pdfSavedInfoMessage": "PDF uloženo",
+  "pdfPreviewSaveActionLabel": "Uložit",
   "jpgPreparingInfoMessage": "Připravuje se JPG…",
   "jpgSavedInfoMessage": "JPG uloženo",
   "jpgFailedInfoMessage": "Soubor JPG se nepodařilo vytvořit",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "Nepodařilo se vytvořit archiv zip (ZipEncoder vrátil null).",
   "calcTableMenuItemLabel": "Výpočtový seznam",
+  "tableBlockMenuItemLabel": "Tabulka",
+  "tableSizePickerTitle": "Vyberte velikost tabulky",
+  "tableSizePickerCancel": "Zrušit",
+  "tableSizePickerDeleteTooltip": "Smazat tabulku",
   "tagsMenuItemLabel": "Štítky",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "Přidat položku...",

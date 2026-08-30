@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabel ({count} rânduri)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "Desen",
   "blockPreviewAttachmentsLabel": "{count} atașamente (fotografie/document)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "Memento",
   "drawerLockedLabel": "Blocate",
   "drawerTrashLabel": "Coș de gunoi",
+  "drawerPlanningSectionHeader": "PLANIFICARE",
   "drawerFoldersSectionHeader": "FOLDERE",
   "drawerExpandLabel": "Extindere",
   "drawerCollapseLabel": "Restrângere",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "Susțineți dezvoltarea",
   "drawerFeedbackLabel": "Feedback",
+  "drawerRateAppLabel": "Evaluează aplicația",
   "drawerAboutLabel": "Despre",
   "noNotesFoundMessage": "Nu s-au găsit notițe.",
   "trashRestoreButtonLabel": "Restaurare",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "Text adăugat la notiță",
   "pdfPreparingInfoMessage": "Se pregătește PDF-ul…",
   "pdfSavedInfoMessage": "PDF salvat",
+  "pdfPreviewSaveActionLabel": "Salvează",
   "jpgPreparingInfoMessage": "Se pregătește JPG-ul…",
   "jpgSavedInfoMessage": "JPG salvat",
   "jpgFailedInfoMessage": "JPG-ul nu a putut fi creat",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "Arhiva zip nu a putut fi creată (ZipEncoder a returnat null).",
   "calcTableMenuItemLabel": "Listă de calcul",
+  "tableBlockMenuItemLabel": "Tabel",
+  "tableSizePickerTitle": "Selectați dimensiunea tabelului",
+  "tableSizePickerCancel": "Anulează",
+  "tableSizePickerDeleteTooltip": "Șterge tabelul",
   "tagsMenuItemLabel": "Etichete",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "Adăugare element...",

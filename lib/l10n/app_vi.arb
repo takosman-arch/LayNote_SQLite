@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Bảng ({count} dòng)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "Bản vẽ",
   "blockPreviewAttachmentsLabel": "{count} tệp đính kèm (ảnh/tài liệu)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "Nhắc nhở",
   "drawerLockedLabel": "Đã khóa",
   "drawerTrashLabel": "Thùng rác",
+  "drawerPlanningSectionHeader": "LẬP KẾ HOẠCH",
   "drawerFoldersSectionHeader": "THƯ MỤC",
   "drawerExpandLabel": "Mở rộng",
   "drawerCollapseLabel": "Thu gọn",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "Ủng hộ phát triển",
   "drawerFeedbackLabel": "Phản hồi",
+  "drawerRateAppLabel": "Đánh giá ứng dụng",
   "drawerAboutLabel": "Giới thiệu",
   "noNotesFoundMessage": "Không tìm thấy ghi chú nào.",
   "trashRestoreButtonLabel": "Khôi phục",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "Đã thêm văn bản vào ghi chú",
   "pdfPreparingInfoMessage": "Đang chuẩn bị PDF…",
   "pdfSavedInfoMessage": "Đã lưu PDF",
+  "pdfPreviewSaveActionLabel": "Lưu",
   "jpgPreparingInfoMessage": "Đang chuẩn bị JPG…",
   "jpgSavedInfoMessage": "Đã lưu JPG",
   "jpgFailedInfoMessage": "Không thể tạo JPG",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "Không thể tạo tệp zip (ZipEncoder trả về null).",
   "calcTableMenuItemLabel": "Bảng tính",
+  "tableBlockMenuItemLabel": "Bảng",
+  "tableSizePickerTitle": "Chọn kích thước bảng",
+  "tableSizePickerCancel": "Hủy",
+  "tableSizePickerDeleteTooltip": "Xóa bảng",
   "tagsMenuItemLabel": "Thẻ",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "Thêm mục...",

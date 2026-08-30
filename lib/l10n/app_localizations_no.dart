@@ -117,6 +117,11 @@ class AppLocalizationsNo extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'Tabell ($count rader)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'Tegning';
 
   @override
@@ -291,6 +296,9 @@ class AppLocalizationsNo extends AppLocalizations {
   String get drawerTrashLabel => 'Papirkurv';
 
   @override
+  String get drawerPlanningSectionHeader => 'PLANLEGGING';
+
+  @override
   String get drawerFoldersSectionHeader => 'MAPPER';
 
   @override
@@ -325,6 +333,9 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'Tilbakemelding';
+
+  @override
+  String get drawerRateAppLabel => 'Vurder appen';
 
   @override
   String get drawerAboutLabel => 'Om';
@@ -417,6 +428,9 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'PDF lagret';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'Lagre';
 
   @override
   String get jpgPreparingInfoMessage => 'Forbereder JPG…';
@@ -2159,6 +2173,18 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'Beregningsliste';
+
+  @override
+  String get tableBlockMenuItemLabel => 'Tabell';
+
+  @override
+  String get tableSizePickerTitle => 'Velg tabellstørrelse';
+
+  @override
+  String get tableSizePickerCancel => 'Avbryt';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'Slett tabell';
 
   @override
   String get tagsMenuItemLabel => 'Emneknagger';

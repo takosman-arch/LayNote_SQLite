@@ -116,6 +116,11 @@ class AppLocalizationsTh extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'ตาราง ($count แถว)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'ภาพวาด';
 
   @override
@@ -290,6 +295,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get drawerTrashLabel => 'ถังขยะ';
 
   @override
+  String get drawerPlanningSectionHeader => 'การวางแผน';
+
+  @override
   String get drawerFoldersSectionHeader => 'โฟลเดอร์';
 
   @override
@@ -324,6 +332,9 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'ความคิดเห็น';
+
+  @override
+  String get drawerRateAppLabel => 'ให้คะแนนแอป';
 
   @override
   String get drawerAboutLabel => 'เกี่ยวกับ';
@@ -415,6 +426,9 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'บันทึก PDF แล้ว';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'บันทึก';
 
   @override
   String get jpgPreparingInfoMessage => 'กำลังเตรียม JPG…';
@@ -2153,6 +2167,18 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'รายการคำนวณ';
+
+  @override
+  String get tableBlockMenuItemLabel => 'ตาราง';
+
+  @override
+  String get tableSizePickerTitle => 'เลือกขนาดตาราง';
+
+  @override
+  String get tableSizePickerCancel => 'ยกเลิก';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'ลบตาราง';
 
   @override
   String get tagsMenuItemLabel => 'แท็ก';

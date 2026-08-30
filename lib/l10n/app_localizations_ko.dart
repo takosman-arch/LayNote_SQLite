@@ -113,6 +113,11 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return '표 ($count행)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => '그림';
 
   @override
@@ -286,6 +291,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get drawerTrashLabel => '휴지통';
 
   @override
+  String get drawerPlanningSectionHeader => '일정';
+
+  @override
   String get drawerFoldersSectionHeader => '폴더';
 
   @override
@@ -320,6 +328,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => '피드백';
+
+  @override
+  String get drawerRateAppLabel => '앱 평가하기';
 
   @override
   String get drawerAboutLabel => '정보';
@@ -411,6 +422,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'PDF가 저장되었습니다';
+
+  @override
+  String get pdfPreviewSaveActionLabel => '저장';
 
   @override
   String get jpgPreparingInfoMessage => 'JPG 준비 중…';
@@ -2117,6 +2131,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => '계산 목록';
+
+  @override
+  String get tableBlockMenuItemLabel => '표';
+
+  @override
+  String get tableSizePickerTitle => '표 크기 선택';
+
+  @override
+  String get tableSizePickerCancel => '취소';
+
+  @override
+  String get tableSizePickerDeleteTooltip => '표 삭제';
 
   @override
   String get tagsMenuItemLabel => '태그';

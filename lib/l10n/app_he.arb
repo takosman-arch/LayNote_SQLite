@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "טבלה ({count} שורות)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "ציור",
   "blockPreviewAttachmentsLabel": "{count} קבצים מצורפים (תמונה/מסמך)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "תזכורת",
   "drawerLockedLabel": "נעול",
   "drawerTrashLabel": "אשפה",
+  "drawerPlanningSectionHeader": "תכנון",
   "drawerFoldersSectionHeader": "תיקיות",
   "drawerExpandLabel": "הרחב",
   "drawerCollapseLabel": "כווץ",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "תמוך בפיתוח",
   "drawerFeedbackLabel": "משוב",
+  "drawerRateAppLabel": "דרג את האפליקציה",
   "drawerAboutLabel": "אודות",
   "noNotesFoundMessage": "לא נמצאו פתקיות.",
   "trashRestoreButtonLabel": "שחזר",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "הטקסט נוסף לפתקית",
   "pdfPreparingInfoMessage": "מכין PDF…",
   "pdfSavedInfoMessage": "ה-PDF נשמר",
+  "pdfPreviewSaveActionLabel": "שמור",
   "jpgPreparingInfoMessage": "מכין JPG…",
   "jpgSavedInfoMessage": "ה-JPG נשמר",
   "jpgFailedInfoMessage": "לא ניתן היה ליצור JPG",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "לא ניתן היה ליצור את קובץ ה-zip (ZipEncoder החזיר null).",
   "calcTableMenuItemLabel": "רשימת חישוב",
+  "tableBlockMenuItemLabel": "טבלה",
+  "tableSizePickerTitle": "בחר גודל טבלה",
+  "tableSizePickerCancel": "ביטול",
+  "tableSizePickerDeleteTooltip": "מחק טבלה",
   "tagsMenuItemLabel": "תגים",
   "linkDialogUrlHint": "https://example.com",
   "checklistItemHint": "הוסף פריט...",

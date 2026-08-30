@@ -53,6 +53,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabell ({count} rader)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewDrawingLabel": "Tegning",
   "blockPreviewAttachmentsLabel": "{count} vedlegg (bilde/dokument)",
   "@blockPreviewAttachmentsLabel": {
@@ -129,6 +137,7 @@
   "drawerRemindersLabel": "Påminnelse",
   "drawerLockedLabel": "Låst",
   "drawerTrashLabel": "Papirkurv",
+  "drawerPlanningSectionHeader": "PLANLEGGING",
   "drawerFoldersSectionHeader": "MAPPER",
   "drawerExpandLabel": "Utvid",
   "drawerCollapseLabel": "Skjul",
@@ -141,6 +150,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "Støtt utviklingen",
   "drawerFeedbackLabel": "Tilbakemelding",
+  "drawerRateAppLabel": "Vurder appen",
   "drawerAboutLabel": "Om",
   "noNotesFoundMessage": "Ingen notater funnet.",
   "trashRestoreButtonLabel": "Gjenopprett",
@@ -187,6 +197,7 @@
   "speechTextAppendedInfoMessage": "Tekst lagt til i notat",
   "pdfPreparingInfoMessage": "Forbereder PDF…",
   "pdfSavedInfoMessage": "PDF lagret",
+  "pdfPreviewSaveActionLabel": "Lagre",
   "jpgPreparingInfoMessage": "Forbereder JPG…",
   "jpgSavedInfoMessage": "JPG lagret",
   "jpgFailedInfoMessage": "Kunne ikke opprette JPG",
@@ -1001,6 +1012,10 @@
   },
   "backupErrorZipEncodeFailedMessage": "Kunne ikke opprette zip-arkivet (ZipEncoder returnerte null).",
   "calcTableMenuItemLabel": "Beregningsliste",
+  "tableBlockMenuItemLabel": "Tabell",
+  "tableSizePickerTitle": "Velg tabellstørrelse",
+  "tableSizePickerCancel": "Avbryt",
+  "tableSizePickerDeleteTooltip": "Slett tabell",
   "tagsMenuItemLabel": "Emneknagger",
   "linkDialogUrlHint": "https://eksempel.com",
   "checklistItemHint": "Legg til element…",

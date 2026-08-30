@@ -115,6 +115,11 @@ class AppLocalizationsHe extends AppLocalizations {
   }
 
   @override
+  String blockPreviewTableLabel(int count) {
+    return 'טבלה ($count שורות)';
+  }
+
+  @override
   String get blockPreviewDrawingLabel => 'ציור';
 
   @override
@@ -289,6 +294,9 @@ class AppLocalizationsHe extends AppLocalizations {
   String get drawerTrashLabel => 'אשפה';
 
   @override
+  String get drawerPlanningSectionHeader => 'תכנון';
+
+  @override
   String get drawerFoldersSectionHeader => 'תיקיות';
 
   @override
@@ -323,6 +331,9 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get drawerFeedbackLabel => 'משוב';
+
+  @override
+  String get drawerRateAppLabel => 'דרג את האפליקציה';
 
   @override
   String get drawerAboutLabel => 'אודות';
@@ -414,6 +425,9 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get pdfSavedInfoMessage => 'ה-PDF נשמר';
+
+  @override
+  String get pdfPreviewSaveActionLabel => 'שמור';
 
   @override
   String get jpgPreparingInfoMessage => 'מכין JPG…';
@@ -2136,6 +2150,18 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get calcTableMenuItemLabel => 'רשימת חישוב';
+
+  @override
+  String get tableBlockMenuItemLabel => 'טבלה';
+
+  @override
+  String get tableSizePickerTitle => 'בחר גודל טבלה';
+
+  @override
+  String get tableSizePickerCancel => 'ביטול';
+
+  @override
+  String get tableSizePickerDeleteTooltip => 'מחק טבלה';
 
   @override
   String get tagsMenuItemLabel => 'תגים';

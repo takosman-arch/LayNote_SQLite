@@ -338,6 +338,12 @@ abstract class AppLocalizations {
   /// **'Hesap Listesi ({count} satır)'**
   String blockPreviewCalcTableLabel(int count);
 
+  /// Blokları Sırala listesinde bir tablo bloğu için gösterilen önizleme metni
+  ///
+  /// In tr, this message translates to:
+  /// **'Tablo ({count} satır)'**
+  String blockPreviewTableLabel(int count);
+
   /// Blokları Sırala listesinde bir çizim bloğu için gösterilen önizleme metni
   ///
   /// In tr, this message translates to:
@@ -626,7 +632,7 @@ abstract class AppLocalizations {
   /// **'Kişisel Not Defteriniz'**
   String get drawerHeaderSubtitle;
 
-  /// Çekmece menüsünde Notlar/Favori/Gündem/Hatırlatıcı/Kilitli/Arşiv/Çöp satırlarının üstünde yer alan bölüm başlığı
+  /// Çekmece menüsünde Notlar/Favori/Kilitli/Arşiv/Çöp satırlarının üstünde yer alan bölüm başlığı
   ///
   /// In tr, this message translates to:
   /// **'NOTLAR'**
@@ -668,6 +674,12 @@ abstract class AppLocalizations {
   /// **'Çöp'**
   String get drawerTrashLabel;
 
+  /// Çekmece menüsünde Gündem/Hatırlatıcı/Takvim satırlarının üstünde yer alan bölüm başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'PLANLAMA'**
+  String get drawerPlanningSectionHeader;
+
   /// Çekmece menüsünde klasör listesinin üstünde yer alan bölüm başlığı
   ///
   /// In tr, this message translates to:
@@ -692,7 +704,7 @@ abstract class AppLocalizations {
   /// **'Klasör Ekle'**
   String get drawerAddFolderLabel;
 
-  /// Çekmece menüsünde Takvim/Ayarlar/Yedekle/Pro/Destek/Geri Bildirim/Hakkında satırlarının üstünde yer alan bölüm başlığı
+  /// Çekmece menüsünde Ayarlar/Yedekle/Pro/Destek/Geri Bildirim/Hakkında satırlarının üstünde yer alan bölüm başlığı
   ///
   /// In tr, this message translates to:
   /// **'UYGULAMA'**
@@ -739,6 +751,12 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Geri Bildirim'**
   String get drawerFeedbackLabel;
+
+  /// Çekmece menüsünde Play Store'da uygulamayı değerlendirme sayfasını açan satırın etiketi
+  ///
+  /// In tr, this message translates to:
+  /// **'Değerlendir'**
+  String get drawerRateAppLabel;
 
   /// Çekmece menüsünde uygulama hakkında bilgi ekranını açan satırın etiketi
   ///
@@ -913,6 +931,12 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'PDF kaydedildi'**
   String get pdfSavedInfoMessage;
+
+  /// PDF önizleme ekranındaki kaydet butonunun etiketi
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydet'**
+  String get pdfPreviewSaveActionLabel;
 
   /// Not JPG olarak dışa aktarılırken, görsel hazırlanırken gösterilen bilgi çubuğu mesajı
   ///
@@ -4075,6 +4099,30 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Hesap Listesi'**
   String get calcTableMenuItemLabel;
+
+  /// No description provided for @tableBlockMenuItemLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tablo'**
+  String get tableBlockMenuItemLabel;
+
+  /// No description provided for @tableSizePickerTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tablo boyutu seç'**
+  String get tableSizePickerTitle;
+
+  /// No description provided for @tableSizePickerCancel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vazgeç'**
+  String get tableSizePickerCancel;
+
+  /// No description provided for @tableSizePickerDeleteTooltip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tabloyu sil'**
+  String get tableSizePickerDeleteTooltip;
 
   /// No description provided for @tagsMenuItemLabel.
   ///
