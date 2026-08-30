@@ -423,10 +423,13 @@ void showNoteTagsSheet(
                       ),
                       isDense: true,
                       border: const OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: appAccentColor.value),
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
                           Icons.add,
-                          color: Theme.of(sheetCtx).primaryColor,
+                          color: appAccentColor.value,
                         ),
                         onPressed: () => addTag(tagInputController.text),
                       ),

@@ -5660,6 +5660,21 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                 )!;
                                 return GestureDetector(
                                   key: ValueKey('blk_divider_$i'),
+                                  // DÜZELTME (uzun basma neredeyse hiç
+                                  // algılanmıyordu): GestureDetector'ın
+                                  // varsayılan davranışı (deferToChild),
+                                  // dokunulabilir alanı ÇOCUĞUN GERÇEKTEN
+                                  // BOYADIĞI alanla sınırlıyor. Divider ise
+                                  // yalnızca ince (thickness: 2) bir çizgi
+                                  // çiziyor; çevresindeki 16'şar pikseli
+                                  // padding görsel olarak boş kaldığından
+                                  // dokunulabilir DEĞİLDİ — kullanıcı
+                                  // pratikte o birkaç piksellik çizginin tam
+                                  // üzerine basmak zorunda kalıyordu. opaque
+                                  // davranışı, Padding'in kapladığı TÜM
+                                  // dikdörtgeni (görünmez kısımlar dahil)
+                                  // dokunulabilir/basılabilir yapar.
+                                  behavior: HitTestBehavior.opaque,
                                   onLongPress: () => removeDividerBlockAt(i),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(

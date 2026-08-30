@@ -418,7 +418,7 @@ class _NoteScreenshotContent extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Table(
-                  border: TableBorder.all(color: borderColor, width: 0.5),
+                  border: TableBorder.all(color: borderColor, width: 1),
                   columnWidths: const {0: FlexColumnWidth(2), 1: FlexColumnWidth(1)},
                   children: tableRows,
                 ),
@@ -464,7 +464,7 @@ class _NoteScreenshotContent extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Table(
-                  border: TableBorder.all(color: borderColor, width: 0.5),
+                  border: TableBorder.all(color: borderColor, width: 1),
                   children: tableRows,
                 ),
               ),

@@ -196,6 +196,19 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
   /// ihtiyaç duymaz.
   (int, int)? _activeCell;
 
+  /// [onSubmitted] içinde bir sonraki odak hedefinin AYNI satırda olduğu
+  /// (yatay geçiş) önceden bilindiğinde true yapılır; bu durumda hedef
+  /// hücrenin FocusNode dinleyicisi gereksiz bir Scrollable.ensureVisible
+  /// çağrısını atlar. _activeCell'e bakarak "aynı satır mı" sonucunu
+  /// çıkarmak GÜVENİLMEZDİ: Flutter genelde eski hücrenin odağı kaybetme
+  /// olayını yeni hücrenin odağı kazanma olayından ÖNCE tetikliyor, bu da
+  /// yeni hücrenin dinleyicisi çalıştığında _activeCell'in çoktan null'a
+  /// çekilmiş olmasına ve "farklı satır" sanılıp gereksiz yere yine
+  /// kaydırma yapılmasına yol açıyordu. Bunun yerine hedefin aynı satırda
+  /// olup olmadığını [onSubmitted] içinde KESİN olarak biliyoruz; bunu
+  /// burada bir bayrakla taşıyoruz.
+  bool _suppressNextAutoScroll = false;
+
   /// Tabloya uzun basılınca true olur, sağ üstte silme ikonu belirir;
   /// ikonun dışına dokununca tekrar false olur.
   bool _showDeleteButton = false;
@@ -248,6 +261,43 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
     }
   }
 
+  /// Odaklanan hücreyi klavyenin üstünde görünür tutar. Sabit bir gecikme
+  /// yerine, MediaQuery.viewInsets.bottom değeri art arda İKİ karede AYNI
+  /// kalana kadar (yani klavye animasyonu gerçekten bitene kadar) her
+  /// kareyi kontrol eder; ancak o zaman Scrollable.ensureVisible çağrılır.
+  /// Böylece animasyon süresi cihazdan cihaza değişse bile doğru anda
+  /// kaydırma yapılır — ne erken (hücre henüz "görünür" sanılıp atlanmaz)
+  /// ne geç (zaten görünürken gereksiz kaydırma yapılmaz).
+  void _scrollFocusedCellIntoView(
+    FocusNode node, {
+    double? lastBottomInset,
+    int attemptsLeft = 30,
+  }) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !node.hasFocus) return;
+      final currentBottomInset = MediaQuery.of(context).viewInsets.bottom;
+      final stabilized = lastBottomInset != null &&
+          (currentBottomInset - lastBottomInset).abs() < 0.5;
+      if (stabilized || attemptsLeft <= 0) {
+        final cellContext = node.context;
+        if (cellContext != null) {
+          Scrollable.ensureVisible(
+            cellContext,
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+            alignment: 1.0,
+          );
+        }
+        return;
+      }
+      _scrollFocusedCellIntoView(
+        node,
+        lastBottomInset: currentBottomInset,
+        attemptsLeft: attemptsLeft - 1,
+      );
+    });
+  }
+
   void _rebuildControllers() {
     _controllers = List.generate(
       _rows.length,
@@ -270,6 +320,34 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
           if (node.hasFocus) {
             _activeCell = (r, c);
             widget.onActiveCellChanged(_controllers[r][c], _rows[r][c]);
+            // DÜZELTME (Enter ile alt satıra geçince klavyenin arkasında
+            // kalma): Sabit bir gecikme (ör. 300ms) İŞE YARAMADI çünkü
+            // klavye açılma animasyonu kare kare (MediaQuery.viewInsets.
+            // bottom kademeli artarak) ilerliyor ve süresi cihaza/duruma
+            // göre değişebiliyor — sabit süre bazen animasyon bitmeden
+            // (kaydırma hesaplanıp hücre "zaten görünür" sanılıyor, sonra
+            // klavye üzerine biniyor), bazen gereksiz yere sonra çalışıp
+            // zaten görünür hücreyi kaydırıyordu. Çözüm: sabit süre
+            // beklemek yerine viewInsets.bottom'un kare kare STABİLİZE
+            // OLMASINI (art arda iki karede aynı kalmasını) bekliyoruz —
+            // bkz. _scrollFocusedCellIntoView.
+            //
+            // DÜZELTME 2 (Enter ile sağdaki hücreye geçince ekranın
+            // "aşağı kayıp sonra yukarı zıplaması"): Scrollable.ensureVisible
+            // varsayılan olarak "explicit" hizalama politikasıyla çalışır —
+            // yani hücre zaten tam görünür olsa BİLE her çağrıldığında
+            // viewport'u alignment: 1.0'a göre YENİDEN hizalar. Aynı
+            // satırda yan hücreye geçerken dikey konum HİÇ değişmediği
+            // için bu zorlamalı yeniden hizalama gereksizdi ve her Enter'da
+            // küçük bir aşağı kaymaya (ardından yazarken düzelmeye) yol
+            // açıyordu. [onSubmitted] hedefin aynı satırda olduğunu zaten
+            // bildiğinde [_suppressNextAutoScroll]'u true yapar; burada da
+            // bu durumda kaydırmayı tamamen atlıyoruz.
+            if (_suppressNextAutoScroll) {
+              _suppressNextAutoScroll = false;
+            } else {
+              _scrollFocusedCellIntoView(node);
+            }
           } else if (_activeCell == (r, c)) {
             // Yalnızca kaybeden hücre HALEN "aktif" sayılan hücreyse
             // sıfırla — aksi halde, odak aynı tablo içinde bir hücreden
@@ -464,7 +542,22 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
   @override
   Widget build(BuildContext context) {
     final colCount = _rows.isEmpty ? 0 : _rows[0].length;
-    final effectiveBorderColor = widget.borderColor ?? dNoteBorderColor(context);
+    // DÜZELTME (ayraç bloğuyla tutarlılık): tablo çizgileri eskiden
+    // doğrudan dNoteBorderColor(context) kullanıyordu — bu paylaşılan
+    // tema rengi ayraç (divider) bloğu için de silik bulunmuş ve orada
+    // koyu temada beyaza, açık temada siyaha %25 yaklaştırılan bir
+    // düzeltme uygulanmıştı (bkz. note_list_note_dialog_mixin.dart ->
+    // block['type'] == 'divider'). Aynı belirginliği tablo çizgilerine de
+    // vermek için BURADA da aynı karışım uygulanıyor — YALNIZCA
+    // widget.borderColor dışarıdan verilmediğinde (override edilmediğinde)
+    // devreye girer; dışarıdan açıkça bir renk verilmişse ona dokunulmaz.
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveBorderColor = widget.borderColor ??
+        Color.lerp(
+          dNoteBorderColor(context),
+          isDark ? Colors.white : Colors.black,
+          0.25,
+        )!;
     final effectiveTextColor = dNoteEffectiveTextColor(context, widget.textColor);
     final cellTextStyle = TextStyle(
       fontSize: widget.fontSize,
@@ -500,7 +593,40 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
                       Container(
                         width: cellWidth,
                         decoration: BoxDecoration(
-                          border: Border.all(color: effectiveBorderColor),
+                          // DÜZELTME (iç/dış çizgi kalınlığı eşitsizliği):
+                          // Border.all() her hücreye TÜM kenarlarında sınır
+                          // çiziyordu; komşu iki hücrenin bitişik kenarları
+                          // üst üste bindiğinden iç çizgiler (iki kat) dış
+                          // çizgilerin (tek kat) yaklaşık iki katı kalın
+                          // görünüyordu. Çözüm: her hücre yalnızca üst VE
+                          // sol kenarını çizer; sağ kenarı sadece SON
+                          // sütundaki, alt kenarı sadece SON satırdaki
+                          // hücreler çizer. Böylece paylaşılan her çizgi
+                          // (iç ya da dış fark etmeksizin) tam olarak BİR
+                          // hücre tarafından ve tek katman olarak çizilir —
+                          // tüm çizgiler eşit kalınlıkta görünür.
+                          border: Border(
+                            top: BorderSide(
+                              color: effectiveBorderColor,
+                              width: 2,
+                            ),
+                            left: BorderSide(
+                              color: effectiveBorderColor,
+                              width: 2,
+                            ),
+                            right: c == _rows[r].length - 1
+                                ? BorderSide(
+                                    color: effectiveBorderColor,
+                                    width: 2,
+                                  )
+                                : BorderSide.none,
+                            bottom: r == _rows.length - 1
+                                ? BorderSide(
+                                    color: effectiveBorderColor,
+                                    width: 2,
+                                  )
+                                : BorderSide.none,
+                          ),
                         ),
                         child: TextField(
                           controller: _controllers[r][c],
@@ -510,6 +636,44 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
                           minLines: 1,
                           maxLines: 4,
                           textInputAction: TextInputAction.next,
+                          // DÜZELTME: Enter'a basılınca önce AYNI satırdaki
+                          // sağdaki hücreye geçilir; satırın son hücresine
+                          // gelindiğinde ise bir alt satırın ilk (en
+                          // soldaki) hücresine geçilir (klasik satır-sonu
+                          // sarma davranışı). Varsayılan
+                          // FocusScope.nextFocus() yerine hedef hücreyi
+                          // kendimiz hesaplıyoruz ki davranış öngörülebilir
+                          // olsun ve odaklanan hücre klavyenin üstünde
+                          // görünür kalsın (_scrollFocusedCellIntoView).
+                          // Son satırın son hücresindeysek klavyeyi kapatıp
+                          // odağı bırakırız.
+                          onEditingComplete: () {},
+                          onSubmitted: (_) {
+                            final rowLen = _rows[r].length;
+                            FocusNode? targetNode;
+                            final sameRow = c + 1 < rowLen;
+                            if (sameRow) {
+                              // Aynı satırda sağdaki hücreye geç.
+                              targetNode = _focusNodes[r][c + 1];
+                            } else if (r + 1 < _rows.length &&
+                                _rows[r + 1].isNotEmpty) {
+                              // Satır bittiyse alt satırın ilk hücresine geç.
+                              targetNode = _focusNodes[r + 1][0];
+                            }
+                            // Hedef AYNI satırdaysa dikey konum değişmez,
+                            // dolayısıyla hedefin FocusNode dinleyicisinin
+                            // gereksiz bir Scrollable.ensureVisible çağrısı
+                            // yapmasını (aşağı kayıp sonra yukarı zıplama
+                            // etkisine yol açan zorlamalı hizalamayı)
+                            // önceden bastırıyoruz.
+                            _suppressNextAutoScroll = sameRow;
+                            if (targetNode != null) {
+                              FocusScope.of(context).requestFocus(targetNode);
+                            } else {
+                              _suppressNextAutoScroll = false;
+                              _focusNodes[r][c].unfocus();
+                            }
+                          },
                           decoration: const InputDecoration(
                             isDense: true,
                             border: InputBorder.none,

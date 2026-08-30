@@ -211,7 +211,7 @@ Color dNoteSurfaceVariant(BuildContext context) =>
     dNoteIsDark(context) ? const Color(0xFF2A2A2A) : const Color(0xFFEDEDED);
 
 Color dNoteBorderColor(BuildContext context) =>
-    dNoteIsDark(context) ? const Color(0xFF3A3A3A) : const Color(0xFFDADADA);
+    dNoteIsDark(context) ? const Color(0xFF565656) : const Color(0xFFB5B5B5);
 
 Color dNoteHeaderColor(BuildContext context) =>
     dNoteIsDark(context) ? const Color(0xFF161616) : const Color(0xFFEDEDED);

@@ -739,8 +739,8 @@ class PdfExportService {
                 padding: const pw.EdgeInsets.only(bottom: 8),
                 child: pw.Table(
                   border: pw.TableBorder.all(
-                    color: PdfColors.grey400,
-                    width: 0.5,
+                    color: PdfColors.grey700,
+                    width: 0.75,
                   ),
                   columnWidths: const {
                     0: pw.FlexColumnWidth(2),
@@ -792,8 +792,8 @@ class PdfExportService {
                 padding: const pw.EdgeInsets.only(bottom: 8),
                 child: pw.Table(
                   border: pw.TableBorder.all(
-                    color: PdfColors.grey400,
-                    width: 0.5,
+                    color: PdfColors.grey700,
+                    width: 0.75,
                   ),
                   children: tableRows,
                 ),
