@@ -2379,4 +2379,16 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Yedek';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Satır Ekle';
+
+  @override
+  String get tableMenuDeleteRow => 'Satır Sil';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Sütun Ekle';
+
+  @override
+  String get tableMenuDeleteColumn => 'Sütun Sil';
 }

@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "لم يتم أخذ أي نسخة احتياطية بعد.",
-  "backupFileNameLabel": "نسخة احتياطية"
+  "backupFileNameLabel": "نسخة احتياطية",
+  "tableMenuInsertRowAfter": "إضافة صف",
+  "tableMenuDeleteRow": "حذف صف",
+  "tableMenuInsertColumnAfter": "إضافة عمود",
+  "tableMenuDeleteColumn": "حذف عمود"
 }

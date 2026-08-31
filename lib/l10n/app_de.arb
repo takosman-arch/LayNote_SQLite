@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "Es wurde noch keine Sicherung erstellt.",
-  "backupFileNameLabel": "Sicherung"
+  "backupFileNameLabel": "Sicherung",
+  "tableMenuInsertRowAfter": "Zeile hinzufügen",
+  "tableMenuDeleteRow": "Zeile löschen",
+  "tableMenuInsertColumnAfter": "Spalte hinzufügen",
+  "tableMenuDeleteColumn": "Spalte löschen"
 }

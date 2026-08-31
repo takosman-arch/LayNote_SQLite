@@ -2398,4 +2398,16 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Säkerhetskopia';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Lägg till rad';
+
+  @override
+  String get tableMenuDeleteRow => 'Ta bort rad';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Lägg till kolumn';
+
+  @override
+  String get tableMenuDeleteColumn => 'Ta bort kolumn';
 }

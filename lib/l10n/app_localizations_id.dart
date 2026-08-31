@@ -2394,4 +2394,16 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Cadangan';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Tambah Baris';
+
+  @override
+  String get tableMenuDeleteRow => 'Hapus Baris';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Tambah Kolom';
+
+  @override
+  String get tableMenuDeleteColumn => 'Hapus Kolom';
 }

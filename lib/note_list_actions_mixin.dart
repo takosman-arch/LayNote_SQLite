@@ -724,9 +724,17 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       );
 
       final bytes = await jpgFile.readAsBytes();
+      // Kaydetme diyaloğunda kullanıcıya, tıpkı PDF/TXT'de olduğu gibi
+      // temiz bir isim (başlık, çakışma önleme amaçlı zaman damgası
+      // OLMADAN) gösterilir. jpgFile.path'teki zaman damgalı isim sadece
+      // uygulamanın kendi geçici (temp) dosyası için kullanılır ve "Aç"
+      // aksiyonunda (bkz. aşağıdaki onAction) hâlâ o dosyaya başvurulur.
+      final safeTitle = title.trim().isEmpty
+          ? AppLocalizations.of(context)!.pdfExportDefaultFileName
+          : title.trim().replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
       final savedPath = await FilePicker.platform.saveFile(
         dialogTitle: AppLocalizations.of(context)!.jpgSaveDialogTitle,
-        fileName: p.basename(jpgFile.path),
+        fileName: '$safeTitle.jpg',
         type: FileType.custom,
         allowedExtensions: ['jpg'],
         bytes: bytes,

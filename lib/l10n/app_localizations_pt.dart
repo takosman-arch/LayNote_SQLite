@@ -2427,4 +2427,16 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Cópia de segurança';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Adicionar linha';
+
+  @override
+  String get tableMenuDeleteRow => 'Excluir linha';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Adicionar coluna';
+
+  @override
+  String get tableMenuDeleteColumn => 'Excluir coluna';
 }

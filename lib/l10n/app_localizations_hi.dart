@@ -2396,4 +2396,16 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'बैकअप';
+
+  @override
+  String get tableMenuInsertRowAfter => 'पंक्ति जोड़ें';
+
+  @override
+  String get tableMenuDeleteRow => 'पंक्ति हटाएं';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'कॉलम जोड़ें';
+
+  @override
+  String get tableMenuDeleteColumn => 'कॉलम हटाएं';
 }

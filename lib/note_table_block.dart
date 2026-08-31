@@ -173,6 +173,167 @@ class NoteTableBlock extends StatefulWidget {
   State<NoteTableBlock> createState() => _NoteTableBlockState();
 }
 
+// ════════════════════════════════════════════════════════════════════════
+// AŞAMA 3: satır/sütun ekle-sil popup menüsündeki 4 seçeneği temsil eder.
+// Aşama 4'te bu seçimler _NoteTableBlockState içindeki Aşama 1 veri
+// mutasyon metodlarına (_insertRowAfter/_deleteRow/_insertColumnAfter/
+// _deleteColumn) bağlanacak; bu aşamada yalnızca menünün kendisi ve
+// etkin/pasif kuralları kuruluyor.
+// ════════════════════════════════════════════════════════════════════════
+enum _TableRowColMenuAction {
+  insertRowAfter,
+  deleteRow,
+  insertColumnAfter,
+  deleteColumn,
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// _RowColMenuGrid
+// Satır/sütun üç-nokta menüsünü klasik alt alta 4 satırlık liste yerine
+// 2x2 bir ızgara olarak gösterir:
+//   [Satır Ekle]  [Sütun Ekle]
+//   [Satır Sil]   [Sütun Sil]
+// showMenu()'nün beklediği PopupMenuEntry<T> arayüzünü uygular, ama
+// PopupMenuItem'in "tüm satıra dokununca TEK bir value ile kapan" davranışı
+// burada işimize yaramaz (dört farklı aksiyon aynı "satır" içinde yan yana
+// durmalı). Bunun yerine kendi InkWell'lerimizle DOĞRUDAN
+// Navigator.of(context).pop(action) çağırıyoruz — PopupMenuItem'in
+// içeride yaptığı da tam olarak budur, biz sadece 4 ayrı dokunma alanı
+// için tekrarlıyoruz.
+// ════════════════════════════════════════════════════════════════════════
+class _RowColMenuGrid extends PopupMenuEntry<_TableRowColMenuAction> {
+  const _RowColMenuGrid({
+    required this.insertRowLabel,
+    required this.deleteRowLabel,
+    required this.insertColumnLabel,
+    required this.deleteColumnLabel,
+    required this.canInsertRow,
+    required this.canDeleteRow,
+    required this.canInsertColumn,
+    required this.canDeleteColumn,
+  });
+
+  final String insertRowLabel;
+  final String deleteRowLabel;
+  final String insertColumnLabel;
+  final String deleteColumnLabel;
+  final bool canInsertRow;
+  final bool canDeleteRow;
+  final bool canInsertColumn;
+  final bool canDeleteColumn;
+
+  // İki satır x standart menü satırı yüksekliği (kMinInteractiveDimension
+  // ~48) + aradaki ince ayraç çizgisi.
+  static const double _cellHeight = 48;
+
+  @override
+  double get height => _cellHeight * 2 + 1;
+
+  @override
+  bool represents(_TableRowColMenuAction? value) => false;
+
+  @override
+  State<_RowColMenuGrid> createState() => _RowColMenuGridState();
+}
+
+class _RowColMenuGridState extends State<_RowColMenuGrid> {
+  // DÜZELTME (popup gereğinden geniş görünüyordu): eskiden her hücre
+  // sabit 132px genişlikteydi — "Satır Ekle" gibi kısa metinlerin
+  // etrafında gereksiz boşluk bırakıyordu. Artık Table widget'ı
+  // kullanılıyor: her sütunun genişliği IntrinsicColumnWidth ile o
+  // sütundaki EN UZUN metne göre otomatik hesaplanıyor (ör. "Sütun
+  // Ekle"), böylece popup içeriğe göre daralıp genişliyor. Table ayrıca
+  // (Row+Expanded'ın aksine) showMenu()'nün IntrinsicWidth ölçümüyle
+  // sorunsuz çalışıyor.
+  Widget _cell({
+    required String label,
+    required bool enabled,
+    required _TableRowColMenuAction action,
+  }) {
+    final disabledColor = Theme.of(context).disabledColor;
+    return InkWell(
+      onTap: enabled
+          ? () => Navigator.of(context).pop<_TableRowColMenuAction>(action)
+          : null,
+      child: Container(
+        height: _RowColMenuGrid._cellHeight,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+          style: enabled ? null : TextStyle(color: disabledColor),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // DÜZELTME (ayraç görünmüyordu): Theme.of(context).dividerColor
+    // buradaki gibi doğrudan kullanıldığında Flutter'ın varsayılan koyu
+    // temasında ~%14 opaklıkta beyaz (Colors.white24) gibi çok düşük
+    // kontrastlı bir renk oluyor; showMenu()'nün ürettiği (Material 3'te
+    // hafif yükseltilmiş/daha açık tonlu) popup arka planı üzerinde bu
+    // neredeyse hiç seçilmiyordu. Tablo çizgilerinde (bkz. yukarıdaki
+    // effectiveBorderColor) uygulanan aynı çözüm burada da kullanılıyor:
+    // dividerColor, temanın parlaklığına göre siyaha/beyaza belirgin
+    // şekilde yaklaştırılıyor — popup'ın gerçek arka plan tonu ne olursa
+    // olsun çizgi görünür kalır.
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final dividerColor = Color.lerp(
+      Theme.of(context).dividerColor,
+      isDark ? Colors.white : Colors.black,
+      0.35,
+    )!;
+    return Table(
+      defaultColumnWidth: const IntrinsicColumnWidth(),
+      // DÜZELTME (ayraç isteği): eskiden her satırın kendi (o satırla
+      // sınırlı, kısa) VerticalDivider'ı vardı ve aradaki yatay Divider
+      // bunu ikiye bölüyordu — sonuç, "Satır" bölümüyle "Sütun" bölümünü
+      // TEK bir çizgiyle değil, aradan kesilmiş iki kısa çizgiyle
+      // ayırıyordu. TableBorder.verticalInside, sütunlar arasına TABLONUN
+      // TAMAMI boyunca (boydan boya) TEK bir dikey çizgi çizer;
+      // horizontalInside de Ekle/Sil satırları arasına ince bir yatay
+      // çizgi ekler.
+      border: TableBorder(
+        verticalInside: BorderSide(color: dividerColor, width: 1),
+        horizontalInside: BorderSide(color: dividerColor, width: 1),
+      ),
+      children: [
+        TableRow(
+          children: [
+            _cell(
+              label: widget.insertRowLabel,
+              enabled: widget.canInsertRow,
+              action: _TableRowColMenuAction.insertRowAfter,
+            ),
+            _cell(
+              label: widget.insertColumnLabel,
+              enabled: widget.canInsertColumn,
+              action: _TableRowColMenuAction.insertColumnAfter,
+            ),
+          ],
+        ),
+        TableRow(
+          children: [
+            _cell(
+              label: widget.deleteRowLabel,
+              enabled: widget.canDeleteRow,
+              action: _TableRowColMenuAction.deleteRow,
+            ),
+            _cell(
+              label: widget.deleteColumnLabel,
+              enabled: widget.canDeleteColumn,
+              action: _TableRowColMenuAction.deleteColumn,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
 class _NoteTableBlockState extends State<NoteTableBlock> {
   /// Çok satırlı/az sütunlu tablolarda hücrelerin okunamayacak kadar
   /// daralmasını önleyen alt sınır. Boyut artık [pickSize] ile en fazla
@@ -195,6 +356,40 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
   /// argümanlarla çağırmak için tutulur — tablo kendi çizimi için buna
   /// ihtiyaç duymaz.
   (int, int)? _activeCell;
+
+  /// DÜZELTME (Geri Al sonrası imleç tablo dışında kalıyordu — devamı):
+  /// [_activeCell] bir hücre odağı kaybettiğinde HEMEN null'a düşüyor.
+  /// Sorun şu ki AppBar'daki Geri Al/İleri Al IKON BUTONUNA dokunmak
+  /// zaten KENDİSİ (dokunma anında) odaklı hücrenin klavye odağını
+  /// kaybetmesine yol açıyor — yani [applySnapshot]/[didUpdateWidget]
+  /// çalıştığında [_activeCell] ÇOKTAN null olmuş oluyor, dolayısıyla
+  /// "Geri Al'dan önce neredeydim" bilgisi kaybolmuş oluyordu. Bu alan
+  /// AYNI bilgiyi tutar ama SADECE bir hücre odağı KAZANDIĞINDA güncellenir,
+  /// odağı KAYBETTİĞİNDE asla sıfırlanmaz — bu sayede "kullanıcının en son
+  /// gerçekten üzerinde işlem yaptığı hücre" bilgisi, ara odak kayıplarına
+  /// (menü açma, Geri Al butonuna dokunma vb.) rağmen hayatta kalır.
+  (int, int)? _lastKnownActiveCell;
+
+  /// DÜZELTME (satır/sütun ekleyince "değişen hücre bir yerde, imleç
+  /// başka yerde" hatası): [_sameCellIdentities] en başta a.length !=
+  /// b.length kontrolü yapıyor — ama satır/sütun EKLEME-SİLME de
+  /// uzunluğu değiştiriyor. Yani _insertRowAfter/_deleteRow/
+  /// _insertColumnAfter/_deleteColumn kendi widget.onChanged'i
+  /// üzerinden parent'ı rebuild edip AYNI widget'a yeni (satır/sütun
+  /// sayısı değişmiş) bir widget.rows geri gönderdiğinde,
+  /// didUpdateWidget bunu YANLIŞLIKLA "dışarıdan (undo/redo) geldi"
+  /// sanıyor: _rows'u sıfırdan kurup controller'ları İKİNCİ KEZ dispose
+  /// edip yeniden kuruyor, ÜSTELİK bayat [_lastKnownActiveCell]'e göre
+  /// KENDİ odak kararını veriyor — bu da mutasyon metodunun zaten
+  /// planladığı [_focusCellAfterMutation] çağrısıyla YARIŞA giriyor;
+  /// frame sıralamasına göre kazanan değişiyor. Bu bayrak, dört
+  /// mutasyon metodundan biri _notifyChanged() çağırmadan HEMEN önce
+  /// true yapılır; didUpdateWidget başında true bulunursa TÜM
+  /// dış-değişiklik senkronizasyonu (ve onunla gelen ikinci odak kararı)
+  /// tamamen atlanır — çünkü _rows/_controllers zaten mutasyon metodu
+  /// tarafından doğru şekilde güncellenmiş, odak da zaten doğru hücreye
+  /// planlanmıştır.
+  bool _suppressNextExternalSync = false;
 
   /// [onSubmitted] içinde bir sonraki odak hedefinin AYNI satırda olduğu
   /// (yatay geçiş) önceden bilindiğinde true yapılır; bu durumda hedef
@@ -261,13 +456,36 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
     }
   }
 
-  /// Odaklanan hücreyi klavyenin üstünde görünür tutar. Sabit bir gecikme
-  /// yerine, MediaQuery.viewInsets.bottom değeri art arda İKİ karede AYNI
-  /// kalana kadar (yani klavye animasyonu gerçekten bitene kadar) her
-  /// kareyi kontrol eder; ancak o zaman Scrollable.ensureVisible çağrılır.
-  /// Böylece animasyon süresi cihazdan cihaza değişse bile doğru anda
-  /// kaydırma yapılır — ne erken (hücre henüz "görünür" sanılıp atlanmaz)
-  /// ne geç (zaten görünürken gereksiz kaydırma yapılmaz).
+  /// Klavye-üstü zengin metin araç çubuğunun (kalın/italik/vb.) sabit
+  /// yüksekliği (bkz. note_list_note_dialog_mixin.dart ->
+  /// `SizedBox(height: 44)`). Bu bar klavyenin KENDİSİ değildir, ayrı bir
+  /// widget olarak klavyenin üstüne oturur — dolayısıyla
+  /// MediaQuery.viewInsets.bottom bu barın yüksekliğini HİÇ bilmez.
+  /// [_scrollFocusedCellIntoView] bu payı manuel olarak eklemezse, hücre
+  /// tam klavyenin üstüne (araç çubuğunun ARKASINA/ALTINA) hizalanır ve
+  /// görünürde yazma konumundan "biraz aşağıda" kalır.
+  static const double _keyboardToolbarHeight = 44;
+
+  /// Odaklanan hücreyi klavyenin (VE üstündeki araç çubuğunun) üstünde
+  /// görünür tutar. Sabit bir gecikme yerine, MediaQuery.viewInsets.bottom
+  /// değeri art arda İKİ karede AYNI kalana kadar (yani klavye animasyonu
+  /// gerçekten bitene kadar) her kareyi kontrol eder; ancak o zaman
+  /// kaydırma hedefi hesaplanır. Böylece animasyon süresi cihazdan cihaza
+  /// değişse bile doğru anda kaydırma yapılır — ne erken (hücre henüz
+  /// "görünür" sanılıp atlanmaz) ne geç (zaten görünürken gereksiz
+  /// kaydırma yapılmaz).
+  ///
+  /// DÜZELTME (imleç hücreye gelince TEK hareketle yazma konumuna
+  /// gelsin): eskiden burada Scrollable.ensureVisible(alignment: 1.0)
+  /// kullanılıyordu — bu, hücreyi klavyenin (yalnızca) üstüne, araç
+  /// çubuğu payı OLMADAN hizalıyordu; sonuç, hücrenin araç çubuğunun
+  /// arkasında/altında kalması ve kullanıcının bunu ancak yazmaya
+  /// başladığında (rastgele bir sonraki rebuild'de) fark etmesiydi —
+  /// "iki ayrı hareket" hissi buradan geliyordu. Artık hedef offset
+  /// RenderAbstractViewport.getOffsetToReveal ile TEK SEFERDE manuel
+  /// hesaplanıyor ve üzerine [_keyboardToolbarHeight] payı ekleniyor;
+  /// tek bir animateTo çağrısıyla doğrudan nihai (araç çubuğunun da
+  /// üstünde kalan) konuma gidiliyor.
   void _scrollFocusedCellIntoView(
     FocusNode node, {
     double? lastBottomInset,
@@ -280,13 +498,37 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
           (currentBottomInset - lastBottomInset).abs() < 0.5;
       if (stabilized || attemptsLeft <= 0) {
         final cellContext = node.context;
-        if (cellContext != null) {
-          Scrollable.ensureVisible(
-            cellContext,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOut,
-            alignment: 1.0,
-          );
+        final renderObject = cellContext?.findRenderObject();
+        if (cellContext != null && renderObject != null) {
+          final scrollable = Scrollable.maybeOf(cellContext);
+          final viewport = RenderAbstractViewport.maybeOf(renderObject);
+          if (scrollable != null && viewport != null) {
+            final position = scrollable.position;
+            // alignment: 1.0 ile aynı hesap (hücreyi viewport'un tam
+            // altına hizalayan offset), + araç çubuğu payı.
+            final revealOffset =
+                viewport.getOffsetToReveal(renderObject, 1.0).offset;
+            final targetOffset =
+                (revealOffset + _keyboardToolbarHeight).clamp(
+              position.minScrollExtent,
+              position.maxScrollExtent,
+            );
+            position.animateTo(
+              targetOffset,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+            );
+          } else {
+            // Beklenmedik yapı (Scrollable/viewport bulunamadı) —
+            // eski davranışa geri düş, en azından hücre klavyenin
+            // üstünde kalsın.
+            Scrollable.ensureVisible(
+              cellContext,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+              alignment: 1.0,
+            );
+          }
         }
         return;
       }
@@ -318,7 +560,16 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
         // (bkz. sınıf başındaki [onActiveCellChanged] açıklaması).
         node.addListener(() {
           if (node.hasFocus) {
-            _activeCell = (r, c);
+            // DÜZELTME (Aşama 2 — üç nokta ikonu): _activeCell artık
+            // sadece dahili bir bayrak değil, build() içinde "bu hücrede
+            // üç nokta ikonu görünsün mü?" kararını da veriyor. Bu yüzden
+            // atama setState içine alınıyor ki hücre odağı
+            // kazandığında/kaybettiğinde ikon görünürlüğü yeniden
+            // çizilsin. Geri kalan yan etkiler (onActiveCellChanged,
+            // otomatik kaydırma) rebuild'e ihtiyaç duymadığından setState
+            // dışında bırakıldı.
+            setState(() => _activeCell = (r, c));
+            _lastKnownActiveCell = (r, c);
             widget.onActiveCellChanged(_controllers[r][c], _rows[r][c]);
             // DÜZELTME (Enter ile alt satıra geçince klavyenin arkasında
             // kalma): Sabit bir gecikme (ör. 300ms) İŞE YARAMADI çünkü
@@ -354,7 +605,7 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
             // diğerine geçerken (kayıp olayı kazanç olayından SONRA
             // gelirse) az önce doğru şekilde ayarlanmış yeni aktif hücreyi
             // yanlışlıkla null'a çekebilirdi.
-            _activeCell = null;
+            setState(() => _activeCell = null);
             widget.onActiveCellChanged(null, null);
           }
         });
@@ -384,6 +635,32 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
     return true;
   }
 
+  /// AŞAMA 4 (uç durum düzeltmesi): [a] ve [b] AYNI satır sayısına ve HER
+  /// satırda aynı sütun sayısına sahip mi? _findChangedCell'in
+  /// "aynı pozisyondaki (r, c) hücrenin metni değişti mi" karşılaştırması,
+  /// yalnızca tablo BOYUTU (satır/sütun sayısı) değişmediğinde anlamlıdır
+  /// — yani gerçek "metin-only" undo/redo senaryosunda. Satır/sütun
+  /// EKLEME-SİLME sonrası (bu widget'ın kendi _insertRowAfter/_deleteRow/
+  /// _insertColumnAfter/_deleteColumn'u tetiklediği didUpdateWidget
+  /// döngüsünde) tüm sonraki hücreler indekste KAYDIĞI için pozisyon
+  /// bazlı karşılaştırma, hiç düzenlenmemiş hücreleri "değişmiş" sanıp
+  /// odağı YANLIŞ bir hücreye taşıyabilir — bu da satır/sütun
+  /// mutasyonlarının kendi (Aşama 4 _focusCellAfterMutation) odak
+  /// talebiyle çakışıp onu ezebilirdi. Bu yüzden şekil değiştiğinde
+  /// _findChangedCell HİÇ çağrılmaz; odak tamamen mutasyonu tetikleyen
+  /// tarafın (satır/sütun menüsü ya da başka bir çağıran) sorumluluğuna
+  /// bırakılır.
+  bool _sameShape(
+    List<List<Map<String, dynamic>>> a,
+    List<List<Map<String, dynamic>>> b,
+  ) {
+    if (a.length != b.length) return false;
+    for (int r = 0; r < a.length; r++) {
+      if (a[r].length != b[r].length) return false;
+    }
+    return true;
+  }
+
   @override
   void didUpdateWidget(covariant NoteTableBlock oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -393,6 +670,35 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
     // anındaki eski veriyle kalıyor, dışarıdaki block['rows'] gerçekten
     // eski haline dönse bile ekrandaki hücreler HİÇ güncellenmiyordu —
     // "tablo içinde undo/redo çalışmıyor" sorununun kök nedeni buydu.
+    // DÜZELTME (yeni sorun: "satır ekleyip Geri Al'a basınca imleç tablo
+    // dışına çıkıyor"): satır/sütun EKLEME-SİLME sonrası uygulamanın kendi
+    // Geri Al/İleri Al (undo/redo) özelliği tüm notun eski bir anlık
+    // görüntüsünü geri yükleyince, bu tabloya AYNI ŞEKİLDE farklı satır/
+    // sütun sayısına sahip YENİ bir widget.rows geliyor. Az aşağıdaki
+    // _sameShape kontrolü bu durumda true DEĞİL olduğundan (bkz. o
+    // kontrolün dokümantasyonu) _findChangedCell hiç çağrılmıyordu ve
+    // odak tamamen dokunulmadan bırakılıyordu — sonuç: hiçbir hücre
+    // yeniden odaklanmadığı için imleç görünürde tablo dışına
+    // "kayboluyordu". Çözüm: [_activeCell] DEĞİL, [_lastKnownActiveCell]
+    // kullanıyoruz — çünkü AppBar'daki Geri Al ikonuna dokunmanın
+    // KENDİSİ zaten hücrenin odağını kaybettirip [_activeCell]'i null'a
+    // düşürüyor, bu yüzden _activeCell bu noktada güvenilmezdi.
+    // [_lastKnownActiveCell] odak kaybında sıfırlanmadığından "Geri
+    // Al'dan hemen önce gerçekten üzerinde işlem yapılan hücre" bilgisini
+    // hâlâ taşır; şekil değiştiği için TAM olarak aynı hücreye dönmek
+    // anlamsız olsa da (o hücre artık olmayabilir), konumunu YENİ
+    // sınırlara kırpıp en yakın makul hücreye odağı geri veriyoruz.
+    //
+    // DÜZELTME: bu tur, _insertRowAfter/_deleteRow/_insertColumnAfter/
+    // _deleteColumn'un KENDİ tetiklediği bir echo ise (bkz.
+    // [_suppressNextExternalSync] dokümantasyonu), _rows/_controllers
+    // ZATEN doğru ve odak ZATEN [_focusCellAfterMutation] tarafından
+    // doğru hücreye planlanmış demektir — aşağıdaki tüm senkronizasyon
+    // ve İKİNCİ odak kararı burada tamamen atlanır.
+    if (_suppressNextExternalSync) {
+      _suppressNextExternalSync = false;
+      return;
+    }
     if (!_sameCellIdentities(oldWidget.rows, widget.rows)) {
       _activeCell = null;
       _disposeControllers();
@@ -410,7 +716,16 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
       // etkilediyse imleç tam olarak o hücrede kalır. Tablo bu undo/redo
       // adımından hiç etkilenmediyse (değişiklik başka bir blokta
       // olduysa) hiçbir hücre farklı çıkmaz ve odağa dokunulmaz.
-      final changedCell = _findChangedCell(oldWidget.rows, _rows);
+      //
+      // AŞAMA 4 DÜZELTMESİ: bu pozisyon bazlı karşılaştırma yalnızca
+      // ŞEKİL (satır/sütun sayısı) AYNIYSA güvenlidir (bkz. _sameShape
+      // dokümantasyonu). Şekil farklıysa (satır/sütun ekleme-silme sonrası
+      // didUpdateWidget'ın kendisi tetiklendiğinde) hiç çağrılmaz — odak,
+      // mutasyonu başlatan tarafın kendi mantığına (_focusCellAfterMutation)
+      // bırakılır — YA DA (yeni) bu undo/redo ile geldiyse, aşağıdaki
+      // "şekil değişti" dalına düşer.
+      final sameShape = _sameShape(oldWidget.rows, _rows);
+      final changedCell = sameShape ? _findChangedCell(oldWidget.rows, _rows) : null;
       if (changedCell != null) {
         final (row, col) = changedCell;
         // DÜZELTME ("setState() or markNeedsBuild() called during
@@ -432,14 +747,55 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
           controller.selection = TextSelection.collapsed(
             offset: controller.text.length,
           );
+          // DÜZELTME (normal yazı yazarken Geri Al'a basınca ekran "bir
+          // aşağı bir yukarı kayıyordu"): [_scrollFocusedCellIntoView]
+          // Scrollable.ensureVisible'ı alignment: 1.0 (viewport'un ALT
+          // KENARINA hizala) ile çağırıyor — bu, hücre zaten tam
+          // görünürken BİLE onu zorla yeniden hizalar (bkz. dosyanın
+          // başındaki "DÜZELTME 2" notu, Enter ile yan hücreye geçerken
+          // aynı sorun). Undo sırasında kullanıcı zaten az önce o
+          // hücrede yazı yazıyordu — hücre neredeyse her zaman ZATEN
+          // görünür durumda, dolayısıyla bu zorlamalı hizalama gereksiz
+          // bir sıçramaya yol açıyordu. Enter/yatay-geçiş yolunda
+          // kullanılan AYNI bastırma bayrağını burada da kullanıyoruz.
+          _suppressNextAutoScroll = true;
           _focusNodes[row][col].requestFocus();
           // FocusNode listener zaten widget.onActiveCellChanged'i doğru
           // argümanlarla çağıracak (bkz. _rebuildControllers), burada
           // ayrıca çağırmaya gerek yok.
         });
+      } else if (!sameShape &&
+          _lastKnownActiveCell != null &&
+          _rows.isNotEmpty) {
+        // YENİ DÜZELTME: satır/sütun ekleme-silme bir undo/redo ile geri
+        // alındı/yinelendi (şekil değişti, bu yüzden hücre-hücre metin
+        // karşılaştırması anlamlı değil). Geri Al'dan HEMEN önce
+        // GERÇEKTEN odaklı olan (satır, sütun) konumunu ([_lastKnownActiveCell])
+        // YENİ tablo sınırlarına kırpıp o hücreye odağı geri veriyoruz —
+        // böylece imleç tamamen tablo dışına düşmüyor, en azından "son
+        // bulunduğu yere yakın" bir hücrede kalıyor.
+        final (prevRow, prevCol) = _lastKnownActiveCell!;
+        final targetRow =
+            prevRow < 0 ? 0 : (prevRow >= _rows.length ? _rows.length - 1 : prevRow);
+        final rowLen = _rows[targetRow].length;
+        final targetCol =
+            prevCol < 0 ? 0 : (prevCol >= rowLen ? rowLen - 1 : prevCol);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          final controller = _controllers[targetRow][targetCol];
+          controller.selection = TextSelection.collapsed(
+            offset: controller.text.length,
+          );
+          // Aynı gerekçeyle (bkz. yukarıdaki changedCell dalındaki
+          // açıklama) burada da zorlamalı yeniden hizalamayı bastırıyoruz.
+          _suppressNextAutoScroll = true;
+          _focusNodes[targetRow][targetCol].requestFocus();
+        });
       }
-      // changedCell == null: bu undo/redo bu tabloyu hiç etkilemedi —
-      // odağa DOKUNULMUYOR, imleç undo'nun asıl etkilediği yerde kalır.
+      // changedCell == null && sameShape: bu undo/redo bu tabloyu hiç
+      // etkilemedi (değişiklik başka bir blokta olduysa) — odağa
+      // DOKUNULMUYOR, imleç mutasyonu tetikleyen tarafın bıraktığı yerde
+      // kalır.
     }
   }
 
@@ -499,6 +855,105 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
     );
   }
 
+  // ──────────────────────────────────────────────────────────────────────
+  // AŞAMA 1: Satır/sütun ekleme-silme — saf veri mutasyonları.
+  // Bu dört metod yalnızca _rows'u değiştirir; hiçbir UI/menü mantığı
+  // içermez (bkz. Aşama 2/3). Her biri sonunda:
+  //   1) _rebuildControllers() — yeni satır/sütun sayısına göre
+  //      controller/FocusNode ızgarasını YENİDEN kurar (eskiler dispose
+  //      edilip yenileri oluşturulur, tıpkı didUpdateWidget'taki
+  //      undo/redo akışında olduğu gibi).
+  //   2) _notifyChanged() — güncel _rows'u dışarıya bildirir
+  //      (çağıran taraf block['rows'] = ... yapar).
+  // çağırır. Aktif hücre (_activeCell) ekleme/silme sonrası artık geçersiz
+  // olabileceğinden (ör. silinen satır/sütun aktif hücreyi içeriyorsa,
+  // ya da controller'lar zaten yeniden kurulduğundan) temizlenir; Aşama 4
+  // bu noktada gerekirse yeni bir hücreye odağı açıkça geri verecek.
+  // ──────────────────────────────────────────────────────────────────────
+
+  /// Yeni boş bir hücre — 'text' bloğu ve [NoteTableBlock.newRows] ile
+  /// aynı desende: {"text": "", "spans": []}.
+  Map<String, dynamic> _newEmptyCell() => <String, dynamic>{
+        'text': '',
+        'spans': <Map<String, dynamic>>[],
+      };
+
+  /// [afterRow] indeksli satırın ALTINA, mevcut sütun sayısı kadar boş
+  /// hücreden oluşan yeni bir satır ekler. Tablo boşsa (satır yoksa)
+  /// hiçbir şey yapmaz (bu durumda zaten UI'dan çağrılmamalı).
+  void _insertRowAfter(int afterRow) {
+    if (_rows.isEmpty) return;
+    final colCount = _rows[0].length;
+    final newRow = List.generate(colCount, (_) => _newEmptyCell());
+    setState(() {
+      _rows.insert(afterRow + 1, newRow);
+      _activeCell = null;
+    });
+    widget.onActiveCellChanged(null, null);
+    _disposeControllers();
+    _rebuildControllers();
+    _suppressNextExternalSync = true;
+    _notifyChanged();
+  }
+
+  /// [row] indeksindeki satırı tamamen kaldırır. Tabloyu 0 satıra
+  /// düşürmemek için tek satır kaldıysa (_rows.length <= 1) hiçbir şey
+  /// yapmaz — çağıran taraf (Aşama 3'teki menü) bu durumda "Satır Sil"
+  /// seçeneğini zaten pasif göstermeli, bu kontrol burada bir güvenlik
+  /// ağı olarak tekrarlanır.
+  void _deleteRow(int row) {
+    if (_rows.length <= 1) return;
+    if (row < 0 || row >= _rows.length) return;
+    setState(() {
+      _rows.removeAt(row);
+      _activeCell = null;
+    });
+    widget.onActiveCellChanged(null, null);
+    _disposeControllers();
+    _rebuildControllers();
+    _suppressNextExternalSync = true;
+    _notifyChanged();
+  }
+
+  /// [afterCol] indeksli sütunun SAĞINA, HER satıra bir boş hücre ekleyerek
+  /// yeni bir sütun ekler. Üst sınır (mevcut ızgara seçicideki _maxCols=4
+  /// ile tutarlı) burada DENETLENMEZ — Aşama 3'teki menü zaten sütun
+  /// sayısı 4'e ulaştığında "Sütun Ekle"yi pasif gösterecek; bu metod saf
+  /// bir veri mutasyonu olarak sınırsız kalır.
+  void _insertColumnAfter(int afterCol) {
+    if (_rows.isEmpty) return;
+    setState(() {
+      for (final row in _rows) {
+        row.insert(afterCol + 1, _newEmptyCell());
+      }
+      _activeCell = null;
+    });
+    widget.onActiveCellChanged(null, null);
+    _disposeControllers();
+    _rebuildControllers();
+    _suppressNextExternalSync = true;
+    _notifyChanged();
+  }
+
+  /// [col] indeksindeki sütunu HER satırdan kaldırır. Tabloyu 0 sütuna
+  /// düşürmemek için tek sütun kaldıysa (_rows[0].length <= 1) hiçbir şey
+  /// yapmaz.
+  void _deleteColumn(int col) {
+    if (_rows.isEmpty || _rows[0].length <= 1) return;
+    if (col < 0 || col >= _rows[0].length) return;
+    setState(() {
+      for (final row in _rows) {
+        row.removeAt(col);
+      }
+      _activeCell = null;
+    });
+    widget.onActiveCellChanged(null, null);
+    _disposeControllers();
+    _rebuildControllers();
+    _suppressNextExternalSync = true;
+    _notifyChanged();
+  }
+
   void _onCellChanged(int r, int c, String value) {
     final cell = _rows[r][c];
     final oldText = (cell['text'] ?? '').toString();
@@ -537,6 +992,240 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
     _holdTimer?.cancel();
     _holdTimer = null;
     _holdStartPosition = null;
+  }
+
+  // ──────────────────────────────────────────────────────────────────────
+  // AŞAMA 3: satır/sütun ekle-sil popup menüsü — etkin/pasif kuralları.
+  // Bu metodlar SAF birer sorgu; hiçbir veriyi değiştirmezler (mutasyon
+  // Aşama 1'deki _insertRowAfter/_deleteRow/_insertColumnAfter/
+  // _deleteColumn'da, bağlama ise Aşama 4'te yapılıyor).
+  // ──────────────────────────────────────────────────────────────────────
+
+  /// "Satır Sil" seçeneği yalnızca birden fazla satır varken etkindir —
+  /// tabloyu 0 satıra düşürmemek için.
+  bool get _canDeleteRow => _rows.length > 1;
+
+  /// "Sütun Sil" seçeneği yalnızca birden fazla sütun varken etkindir.
+  bool get _canDeleteColumn => _rows.isNotEmpty && _rows[0].length > 1;
+
+  /// "Sütun Ekle" seçeneği, tablo oluşturma ızgarasındaki üst sınırla
+  /// (_NoteTableSizePickerDialogState._maxCols = 4) tutarlı olacak şekilde,
+  /// sütun sayısı bu sınıra ulaştığında pasif olur. Aynı dosyadaki tek
+  /// gerçek kaynaktan ("single source of truth") okunuyor, sınır burada
+  /// TEKRAR tanımlanmıyor.
+  bool get _canInsertColumn =>
+      _rows.isEmpty ||
+      _rows[0].length < _NoteTableSizePickerDialogState._maxCols;
+
+  /// "Satır Ekle" için üst sınır yok — her zaman etkin (mevcut ızgara
+  /// seçicideki 8 satır yalnızca ilk oluşturmadaki öneriydi, burada
+  /// geçerli değil).
+  bool get _canInsertRow => true;
+
+  /// Menüdeki metinler artık .arb dosyalarındaki tableMenuInsertRowAfter /
+  /// tableMenuDeleteRow / tableMenuInsertColumnAfter / tableMenuDeleteColumn
+  /// anahtarlarından geliyor (önceden burada sabit Türkçe metinler
+  /// kullanılıyordu — popup diğer dillerde de Türkçe görünüyordu).
+  String _menuActionLabel(_TableRowColMenuAction action) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (action) {
+      case _TableRowColMenuAction.insertRowAfter:
+        return l10n.tableMenuInsertRowAfter;
+      case _TableRowColMenuAction.deleteRow:
+        return l10n.tableMenuDeleteRow;
+      case _TableRowColMenuAction.insertColumnAfter:
+        return l10n.tableMenuInsertColumnAfter;
+      case _TableRowColMenuAction.deleteColumn:
+        return l10n.tableMenuDeleteColumn;
+    }
+  }
+
+  /// Satırın (r) veya sütunun (c) — hangi hücreden açıldığına bağlı —
+  /// 4 seçenekli menü ızgarasının içeriği artık [_openRowColMenu] içinde
+  /// doğrudan kuruluyor (showGeneralDialog + Align geçişiyle birlikte);
+  /// bu yardımcı, showMenu()'ye özgü PopupMenuEntry listesi üretiyordu ve
+  /// artık gerekmiyor.
+
+  /// AŞAMA 4 (odak yönetimi): satır/sütun ekleme-silme sonrası
+  /// [_rebuildControllers] TÜM hücreler için YENİ FocusNode/controller
+  /// nesneleri kurduğundan (eskiler _disposeControllers ile atılır), eski
+  /// odağı "taşımak" mümkün değildir — imleci [row]/[col] konumundaki
+  /// TAZE hücreye açıkça geri vermemiz gerekir. Bunu, mevcut initState/
+  /// didUpdateWidget'taki desenle AYNI şekilde bir sonraki frame'e
+  /// erteliyoruz (build sırasında senkron odak talebi "setState called
+  /// during build" hatasına yol açabilir). [row]/[col], çağıran tarafça
+  /// mutasyon SONRASI geçerli _rows sınırlarına göre ÖNCEDEN kırpılmış
+  /// (clamp edilmiş) olmalıdır; burada yalnızca ekstra bir güvenlik
+  /// kontrolü olarak sınır dışıysa sessizce hiçbir şey yapılmaz.
+  void _focusCellAfterMutation(int row, int col) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      if (row < 0 || row >= _focusNodes.length) return;
+      if (col < 0 || col >= _focusNodes[row].length) return;
+      // İmleci metnin sonuna koy — undo/redo odak mantığındaki (bkz.
+      // didUpdateWidget) aynı gerekçeyle: yeni eklenen hücre zaten boş
+      // olduğundan bu pratikte offset 0 ile aynı sonucu verir, ama
+      // silme sonrası komşu hücreye düşüldüğünde (o hücrenin metni dolu
+      // olabilir) imlecin metnin ORTASINDA geçersiz bir konumda
+      // kalmamasını garanti eder.
+      final controller = _controllers[row][col];
+      controller.selection = TextSelection.collapsed(
+        offset: controller.text.length,
+      );
+      _focusNodes[row][col].requestFocus();
+      // FocusNode listener zaten widget.onActiveCellChanged'i ve
+      // _activeCell güncellemesini (dolayısıyla üç nokta ikonunun yeni
+      // hücrede belirmesini) kendiliğinden tetikleyecek — burada ayrıca
+      // çağırmaya gerek yok.
+    });
+  }
+
+  /// Menüden bir seçenek seçildiğinde çağrılır. [r]/[c], menünün hangi
+  /// hücreden açıldığını belirtir (üç nokta ikonu yalnızca aktif
+  /// hücrede göründüğünden, bu her zaman "menü açılırken odaklı olan
+  /// hücre" ile aynıdır). Aşama 1'deki saf veri mutasyonlarını çağırır
+  /// ve ardından mutasyon sonrası MANTIKLI bir hücreye odağı taşır:
+  ///   - Satır Ekle  → yeni satır (r+1) içinde AYNI sütun (c).
+  ///   - Sütun Ekle  → yeni sütun (c+1) içinde AYNI satır (r).
+  ///   - Satır Sil   → silinen satırın YERİNE gelen satır (ya da tablo
+  ///     kısaldıysa artık son satır olan satır), AYNI sütun (sütun
+  ///     sayısı da azaldıysa kırpılmış).
+  ///   - Sütun Sil   → silinen sütunun YERİNE gelen sütun (ya da artık
+  ///     son sütun), AYNI satır.
+  /// "Sil" aksiyonları için _canDeleteRow/_canDeleteColumn burada TEKRAR
+  /// kontrol edilir — menüde zaten pasif gösterilseler de (bkz. Aşama 3),
+  /// bu ikinci kontrol tabloyu yanlışlıkla 0 satır/sütuna düşürecek bir
+  /// çağrıya karşı bir güvenlik ağıdır (ör. menü açıkken tablo başka bir
+  /// yoldan -undo/redo- değişmiş olabilir).
+  void _onRowColMenuSelected(_TableRowColMenuAction action, int r, int c) {
+    switch (action) {
+      case _TableRowColMenuAction.insertRowAfter:
+        _insertRowAfter(r);
+        _focusCellAfterMutation(r + 1, c);
+        break;
+
+      case _TableRowColMenuAction.deleteRow:
+        if (!_canDeleteRow) return;
+        _deleteRow(r);
+        if (_rows.isEmpty) return; // Teorik güvenlik ağı; pratikte oluşmaz.
+        final targetRow = r < _rows.length ? r : _rows.length - 1;
+        final targetCol =
+            c < _rows[targetRow].length ? c : _rows[targetRow].length - 1;
+        _focusCellAfterMutation(targetRow, targetCol);
+        break;
+
+      case _TableRowColMenuAction.insertColumnAfter:
+        _insertColumnAfter(c);
+        _focusCellAfterMutation(r, c + 1);
+        break;
+
+      case _TableRowColMenuAction.deleteColumn:
+        if (!_canDeleteColumn) return;
+        _deleteColumn(c);
+        if (_rows.isEmpty || _rows[0].isEmpty) return; // Güvenlik ağı.
+        final targetCol = c < _rows[0].length ? c : _rows[0].length - 1;
+        _focusCellAfterMutation(r, targetCol);
+        break;
+    }
+  }
+
+  /// DÜZELTME (üç nokta menüsü sessizce hiç açılmıyordu — kök neden
+  /// analizi için bkz. proje notları): PopupMenuButton kendi (dahili)
+  /// State'ine sahiptir ve menü kapanırken onSelected'ı çağırmadan ÖNCE
+  /// KENDİ mounted durumunu kontrol eder. Bu ikon [_activeCell] koşuluna
+  /// bağlı olarak ağaçta durduğundan, menü açılır açılmaz arkadaki
+  /// TextField odağı kaybediyor (overlay öne çıkınca) → FocusNode
+  /// listener'ımız _activeCell = null yapıyor → bu widget rebuild oluyor
+  /// → PopupMenuButton ağaçtan kaldırılıp DISPOSE ediliyor →
+  /// PopupMenuButton'ın kendi mounted kontrolü false dönüyor → onSelected
+  /// SESSİZCE hiç çağrılmıyor (hata da fırlamıyor, çünkü bu kontrol
+  /// PopupMenuButton'ın kendi kodunda `if (!mounted) return;` şeklinde
+  /// bilerek yutuluyor).
+  ///
+  /// ÇÖZÜM: PopupMenuButton'a hiç güvenmiyoruz. Menüyü [showMenu] ile
+  /// ELLE açıyoruz; bunun sonucunu işleyen kod _NoteTableBlockState'in
+  /// (yani BU widget'ın) kendi mounted durumuna bağlı — o da yalnızca
+  /// hücrenin (satırın/sütunun) kendisi tablo dışına gerçekten
+  /// kaldırıldığında false olur, ikon geçici olarak gizlendiğinde DEĞİL.
+  /// Konum bilgisi de ikonun kendi context'i üzerinden DEĞİL, dokunma
+  /// olayının globalPosition'ından alınıyor — böylece ikonun alttaki
+  /// GestureDetector'ı disposed olsa bile showMenu çağrısının kendisi
+  /// zaten yapılmış ve bağımsız bir Future döndürmüş oluyor.
+  void _openRowColMenu(Offset globalPosition, int r, int c) {
+    final overlayBox =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    // DÜZELTME (popup HİÇBİR ZAMAN gerçekten ortalanmıyordu): showMenu()'nün
+    // 'position' (RelativeRect) parametresi, Flutter'ın kendi
+    // _PopupMenuRouteLayout.getPositionForChild mantığı gereği menünün bir
+    // KENARINI verilen noktaya hizalayıp DİĞER yöne doğru büyütür — asla bir
+    // noktanın ortasına yerleştirmez. x koordinatını ekran genişliğinin
+    // yarısına ayarlamak bile bu yüzden işe yaramıyordu: menünün SAĞ kenarı
+    // o noktaya hizalanıp SOLA doğru büyüyordu, yani popup her zaman ekranın
+    // sol yarısında kalmaya devam ediyordu. showMenu() API'siyle gerçek bir
+    // "ortalama" yapmak mümkün değil.
+    //
+    // ÇÖZÜM: showMenu()'yü tamamen bırakıp kendi overlay'imizi kuruyoruz —
+    // showGeneralDialog + Align(alignment: Alignment(0, ...)). Align, çocuğun
+    // genişliği ne olursa olsun onu GERÇEKTEN yatayda ortalar (x=0 yatay
+    // ortayı ifade eder); dikey konum ise dokunulan noktaya yakın kalması
+    // için ekran yüksekliğine oranlanıp -1..1 aralığına eşleniyor.
+    // Menünün rengi/gölgesi/köşe yuvarlaklığı, showMenu()'nün otomatik
+    // uyguladığı görünümle aynı kalsın diye PopupMenuThemeData'dan elle
+    // okunuyor.
+    final screenHeight = overlayBox.size.height;
+    final verticalAlignment =
+        ((globalPosition.dy / screenHeight) * 2 - 1).clamp(-1.0, 1.0);
+    final popupMenuTheme = PopupMenuTheme.of(context);
+
+    showGeneralDialog<_TableRowColMenuAction>(
+      context: context,
+      barrierLabel: 'tableRowColMenu',
+      barrierDismissible: true,
+      barrierColor: Colors.transparent,
+      transitionDuration: const Duration(milliseconds: 120),
+      pageBuilder: (dialogContext, animation, secondaryAnimation) {
+        return SafeArea(
+          child: Align(
+            alignment: Alignment(0, verticalAlignment),
+            child: Material(
+              color: popupMenuTheme.color ??
+                  Theme.of(context).colorScheme.surface,
+              elevation: popupMenuTheme.elevation ?? 8,
+              shadowColor: popupMenuTheme.shadowColor,
+              surfaceTintColor: popupMenuTheme.surfaceTintColor,
+              shape: popupMenuTheme.shape ??
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+              clipBehavior: Clip.antiAlias,
+              child: IntrinsicWidth(
+                child: _RowColMenuGrid(
+                  insertRowLabel:
+                      _menuActionLabel(_TableRowColMenuAction.insertRowAfter),
+                  deleteRowLabel:
+                      _menuActionLabel(_TableRowColMenuAction.deleteRow),
+                  insertColumnLabel: _menuActionLabel(
+                      _TableRowColMenuAction.insertColumnAfter),
+                  deleteColumnLabel:
+                      _menuActionLabel(_TableRowColMenuAction.deleteColumn),
+                  canInsertRow: _canInsertRow,
+                  canDeleteRow: _canDeleteRow,
+                  canInsertColumn: _canInsertColumn,
+                  canDeleteColumn: _canDeleteColumn,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    ).then((action) {
+      // KRİTİK: burada _NoteTableBlockState.mounted kontrol ediliyor —
+      // ikonu barındıran alt ağacın değil. Menü açılırken _activeCell
+      // zaten null'a düşmüş (ve ikon ağaçtan kaldırılmış) olabilir, ama
+      // bu State hücre var olduğu sürece ayakta kalmaya devam eder.
+      if (!mounted) return;
+      if (action != null) _onRowColMenuSelected(action, r, c);
+    });
   }
 
   @override
@@ -590,6 +1279,38 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     for (int c = 0; c < _rows[r].length; c++)
+                      // AŞAMA 2 (üç nokta ikonu): hücre artık tek başına
+                      // bir Container değil, bir Stack — asıl hücre
+                      // (Container+TextField, non-positioned çocuk olarak
+                      // Stack'in boyutunu belirler) ve üzerine bindirilen,
+                      // yalnızca bu hücre aktifken (_activeCell == (r, c))
+                      // görünen Icons.more_vert ikonu. Silme ikonundaki
+                      // Positioned deseniyle tutarlı olarak clipBehavior:
+                      // Clip.none kullanılıyor ki ikon hücre sağ kenarının
+                      // hafif dışına taşabilsin. Menü bağlantısı (onPressed)
+                      // Aşama 3'te eklenecek — şimdilik boş.
+                      Stack(
+                        clipBehavior: Clip.none,
+                        // DÜZELTME (bir hücredeki yazı aşağı doğru
+                        // büyüyünce DİĞER hücrelerin dikey çizgileri
+                        // aşağı uzamıyordu): Stack'in varsayılan
+                        // davranışı (StackFit.loose) üst Row'dan gelen
+                        // TIGHT yükseklik kısıtını (crossAxisAlignment.
+                        // stretch + IntrinsicHeight ile satırın en uzun
+                        // hücresine göre belirlenen yükseklik) kendi
+                        // non-positioned çocuğuna (bordürlü Container)
+                        // GEÇİRMİYORDU — Stack'in KENDİSİ doğru
+                        // yükseklikte oluyordu ama içindeki Container
+                        // sadece TextField'ının doğal (kısa) yüksekliği
+                        // kadar çiziliyordu, bu da kısa hücrelerin sol/
+                        // sağ çizgilerinin satırın altına kadar
+                        // uzamamasına yol açıyordu. StackFit.passthrough,
+                        // gelen kısıtı non-positioned çocuğa OLDUĞU GİBİ
+                        // iletir (Positioned olan ⋮ ikonunu etkilemez),
+                        // böylece Container satırın tam yüksekliğini
+                        // doldurur.
+                        fit: StackFit.passthrough,
+                        children: [
                       Container(
                         width: cellWidth,
                         decoration: BoxDecoration(
@@ -684,6 +1405,59 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
                           ),
                           onChanged: (v) => _onCellChanged(r, c, v),
                         ),
+                      ),
+                      if (_activeCell == (r, c))
+                        Positioned(
+                          top: 0,
+                          bottom: 0,
+                          // DÜZELTME (dokunma kolaylığı): ikon sağdaki
+                          // tablo dış çizgisine değecek kadar dışarı
+                          // taşıyordu (right: -8). Birkaç ince ayardan
+                          // sonra right: -9 ile hafifçe sağa alındı.
+                          right: -9,
+                          child: Center(
+                            child: Material(
+                              color: Colors.transparent,
+                              // DÜZELTME: PopupMenuButton yerine elle
+                              // showMenu() çağıran bir GestureDetector.
+                              // Kök neden ve gerekçe için bkz.
+                              // [_openRowColMenu] üzerindeki açıklama —
+                              // özetle: PopupMenuButton'ın kendi
+                              // (odağa bağlı, dispose'a açık) yaşam
+                              // döngüsüne güvenmek onSelected'ın SESSİZCE
+                              // hiç çağrılmamasına yol açıyordu.
+                              // DÜZELTME (dokunma kolaylığı): eski 24x24
+                              // dairesel arka plan + 16px ikon parmakla
+                              // dokunmak için çok küçüktü ve rengi
+                              // (effectiveBorderColor, ince çizgi rengi)
+                              // arka planda neredeyse kayboluyordu.
+                              // Dokunma alanı 32x32'ye büyütüldü, ikon
+                              // 20px'e çıkarıldı ve rengi temanın birincil
+                              // rengine (daha belirgin) çevrildi.
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTapDown: (details) => _openRowColMenu(
+                                  details.globalPosition,
+                                  r,
+                                  c,
+                                ),
+                                child: SizedBox(
+                                  width: 32,
+                                  height: 32,
+                                  child: Icon(
+                                    Icons.more_vert,
+                                    size: 20,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withOpacity(0.75),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        ],
                       ),
                   ],
                 ),

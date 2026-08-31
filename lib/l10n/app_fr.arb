@@ -717,5 +717,9 @@
   "lastBackupInfoDateFormat": "{day}.{month}.{year} {time}",
   "lastBackupInfoLabel": "Dernière sauvegarde : {date}",
   "lastBackupInfoNoBackupMessage": "Aucune sauvegarde n'a encore été effectuée.",
-  "backupFileNameLabel": "Sauvegarde"
+  "backupFileNameLabel": "Sauvegarde",
+  "tableMenuInsertRowAfter": "Ajouter une ligne",
+  "tableMenuDeleteRow": "Supprimer la ligne",
+  "tableMenuInsertColumnAfter": "Ajouter une colonne",
+  "tableMenuDeleteColumn": "Supprimer la colonne"
 }

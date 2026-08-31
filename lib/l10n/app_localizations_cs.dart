@@ -2396,4 +2396,16 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Záloha';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Přidat řádek';
+
+  @override
+  String get tableMenuDeleteRow => 'Odstranit řádek';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Přidat sloupec';
+
+  @override
+  String get tableMenuDeleteColumn => 'Odstranit sloupec';
 }

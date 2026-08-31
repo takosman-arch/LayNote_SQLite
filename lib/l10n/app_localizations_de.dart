@@ -2411,4 +2411,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Sicherung';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Zeile hinzufügen';
+
+  @override
+  String get tableMenuDeleteRow => 'Zeile löschen';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Spalte hinzufügen';
+
+  @override
+  String get tableMenuDeleteColumn => 'Spalte löschen';
 }

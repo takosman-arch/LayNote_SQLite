@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "Nie utworzono jeszcze żadnej kopii zapasowej.",
-  "backupFileNameLabel": "Kopia zapasowa"
+  "backupFileNameLabel": "Kopia zapasowa",
+  "tableMenuInsertRowAfter": "Dodaj wiersz",
+  "tableMenuDeleteRow": "Usuń wiersz",
+  "tableMenuInsertColumnAfter": "Dodaj kolumnę",
+  "tableMenuDeleteColumn": "Usuń kolumnę"
 }

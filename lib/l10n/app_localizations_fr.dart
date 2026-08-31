@@ -2425,4 +2425,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Sauvegarde';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Ajouter une ligne';
+
+  @override
+  String get tableMenuDeleteRow => 'Supprimer la ligne';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Ajouter une colonne';
+
+  @override
+  String get tableMenuDeleteColumn => 'Supprimer la colonne';
 }

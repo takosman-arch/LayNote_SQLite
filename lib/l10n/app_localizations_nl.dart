@@ -2413,4 +2413,16 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Back-up';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Rij toevoegen';
+
+  @override
+  String get tableMenuDeleteRow => 'Rij verwijderen';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Kolom toevoegen';
+
+  @override
+  String get tableMenuDeleteColumn => 'Kolom verwijderen';
 }

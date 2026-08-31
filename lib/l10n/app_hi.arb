@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "अभी तक कोई बैकअप नहीं लिया गया है।",
-  "backupFileNameLabel": "बैकअप"
+  "backupFileNameLabel": "बैकअप",
+  "tableMenuInsertRowAfter": "पंक्ति जोड़ें",
+  "tableMenuDeleteRow": "पंक्ति हटाएं",
+  "tableMenuInsertColumnAfter": "कॉलम जोड़ें",
+  "tableMenuDeleteColumn": "कॉलम हटाएं"
 }

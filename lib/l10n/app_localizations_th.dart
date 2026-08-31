@@ -2384,4 +2384,16 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'สำรองข้อมูล';
+
+  @override
+  String get tableMenuInsertRowAfter => 'เพิ่มแถว';
+
+  @override
+  String get tableMenuDeleteRow => 'ลบแถว';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'เพิ่มคอลัมน์';
+
+  @override
+  String get tableMenuDeleteColumn => 'ลบคอลัมน์';
 }

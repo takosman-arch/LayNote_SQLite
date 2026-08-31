@@ -717,5 +717,9 @@
   "lastBackupInfoDateFormat": "{day}.{month}.{year} {time}",
   "lastBackupInfoLabel": "Последняя резервная копия: {date}",
   "lastBackupInfoNoBackupMessage": "Резервная копия ещё не создавалась.",
-  "backupFileNameLabel": "Резервная копия"
+  "backupFileNameLabel": "Резервная копия",
+  "tableMenuInsertRowAfter": "Добавить строку",
+  "tableMenuDeleteRow": "Удалить строку",
+  "tableMenuInsertColumnAfter": "Добавить столбец",
+  "tableMenuDeleteColumn": "Удалить столбец"
 }

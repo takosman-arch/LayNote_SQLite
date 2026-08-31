@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "עדיין לא בוצע גיבוי.",
-  "backupFileNameLabel": "גיבוי"
+  "backupFileNameLabel": "גיבוי",
+  "tableMenuInsertRowAfter": "הוסף שורה",
+  "tableMenuDeleteRow": "מחק שורה",
+  "tableMenuInsertColumnAfter": "הוסף עמודה",
+  "tableMenuDeleteColumn": "מחק עמודה"
 }

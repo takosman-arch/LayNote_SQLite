@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "Belum ada cadangan yang dibuat.",
-  "backupFileNameLabel": "Cadangan"
+  "backupFileNameLabel": "Cadangan",
+  "tableMenuInsertRowAfter": "Tambah Baris",
+  "tableMenuDeleteRow": "Hapus Baris",
+  "tableMenuInsertColumnAfter": "Tambah Kolom",
+  "tableMenuDeleteColumn": "Hapus Kolom"
 }

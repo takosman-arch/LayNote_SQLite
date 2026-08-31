@@ -2408,4 +2408,16 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Резервная копия';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Добавить строку';
+
+  @override
+  String get tableMenuDeleteRow => 'Удалить строку';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Добавить столбец';
+
+  @override
+  String get tableMenuDeleteColumn => 'Удалить столбец';
 }

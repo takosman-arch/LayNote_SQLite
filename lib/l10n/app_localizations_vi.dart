@@ -2397,4 +2397,16 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Sao lưu';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Thêm hàng';
+
+  @override
+  String get tableMenuDeleteRow => 'Xóa hàng';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Thêm cột';
+
+  @override
+  String get tableMenuDeleteColumn => 'Xóa cột';
 }

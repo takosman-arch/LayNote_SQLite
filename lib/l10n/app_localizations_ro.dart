@@ -2404,4 +2404,16 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Copie de rezervă';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Adaugă rând';
+
+  @override
+  String get tableMenuDeleteRow => 'Șterge rând';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Adaugă coloană';
+
+  @override
+  String get tableMenuDeleteColumn => 'Șterge coloană';
 }

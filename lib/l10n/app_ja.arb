@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "まだバックアップが取得されていません。",
-  "backupFileNameLabel": "バックアップ"
+  "backupFileNameLabel": "バックアップ",
+  "tableMenuInsertRowAfter": "行を追加",
+  "tableMenuDeleteRow": "行を削除",
+  "tableMenuInsertColumnAfter": "列を追加",
+  "tableMenuDeleteColumn": "列を削除"
 }

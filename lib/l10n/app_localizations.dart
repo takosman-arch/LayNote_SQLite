@@ -4463,6 +4463,30 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Yedek'**
   String get backupFileNameLabel;
+
+  /// No description provided for @tableMenuInsertRowAfter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Satır Ekle'**
+  String get tableMenuInsertRowAfter;
+
+  /// No description provided for @tableMenuDeleteRow.
+  ///
+  /// In tr, this message translates to:
+  /// **'Satır Sil'**
+  String get tableMenuDeleteRow;
+
+  /// No description provided for @tableMenuInsertColumnAfter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sütun Ekle'**
+  String get tableMenuInsertColumnAfter;
+
+  /// No description provided for @tableMenuDeleteColumn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sütun Sil'**
+  String get tableMenuDeleteColumn;
 }
 
 class _AppLocalizationsDelegate

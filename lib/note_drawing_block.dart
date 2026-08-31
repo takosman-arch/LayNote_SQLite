@@ -1009,6 +1009,19 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
           final canvasKey = GlobalKey<_NoteDrawingBlockState>();
           final exportButtonKey = GlobalKey();
           return Scaffold(
+            // Bu ekranda hiçbir TextField yok; dolayısıyla klavyenin
+            // (ör. bir önceki ekranda hâlâ kapanmakta olan) hiçbir etkisi
+            // olmamalı. resizeToAvoidBottomInset varsayılanı (true) ile,
+            // route push edildiği anda klavye tam kapanmamışsa Scaffold
+            // body'si geçici olarak viewInsets.bottom kadar sıkışıyor;
+            // ama bigHeight zaten media.size.height üzerinden (klavyeyi
+            // hiç hesaba katmadan) hesaplanmış oluyor. Bu uyumsuzluk,
+            // klavye kapanana kadar süren bir anlık "bottom overflowed"
+            // (sarı/siyah şerit) uyarısına yol açıyordu. false vererek
+            // body'nin klavye durumundan tamamen bağımsız, her zaman
+            // bigHeight'a göre hesaplanan sabit alanı kullanmasını
+            // sağlıyoruz.
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               leading: IconButton(
                 tooltip: AppLocalizations.of(routeContext)!.drawingMinimizeTooltip,

@@ -3170,5 +3170,9 @@
   "@lastBackupInfoNoBackupMessage": {
     "description": "Son yedekleme bilgisi widget'ında hiç yedek alınmamışsa gösterilen metin"
   },
-  "backupFileNameLabel": "Yedek"
+  "backupFileNameLabel": "Yedek",
+  "tableMenuInsertRowAfter": "Satır Ekle",
+  "tableMenuDeleteRow": "Satır Sil",
+  "tableMenuInsertColumnAfter": "Sütun Ekle",
+  "tableMenuDeleteColumn": "Sütun Sil"
 }

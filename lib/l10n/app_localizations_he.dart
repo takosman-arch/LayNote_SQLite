@@ -2366,4 +2366,16 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'גיבוי';
+
+  @override
+  String get tableMenuInsertRowAfter => 'הוסף שורה';
+
+  @override
+  String get tableMenuDeleteRow => 'מחק שורה';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'הוסף עמודה';
+
+  @override
+  String get tableMenuDeleteColumn => 'מחק עמודה';
 }

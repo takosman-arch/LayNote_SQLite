@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "Zatím nebyla vytvořena žádná záloha.",
-  "backupFileNameLabel": "Záloha"
+  "backupFileNameLabel": "Záloha",
+  "tableMenuInsertRowAfter": "Přidat řádek",
+  "tableMenuDeleteRow": "Odstranit řádek",
+  "tableMenuInsertColumnAfter": "Přidat sloupec",
+  "tableMenuDeleteColumn": "Odstranit sloupec"
 }

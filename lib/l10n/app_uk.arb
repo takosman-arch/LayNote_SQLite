@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "Резервну копію ще не створено.",
-  "backupFileNameLabel": "Резервна копія"
+  "backupFileNameLabel": "Резервна копія",
+  "tableMenuInsertRowAfter": "Додати рядок",
+  "tableMenuDeleteRow": "Видалити рядок",
+  "tableMenuInsertColumnAfter": "Додати стовпець",
+  "tableMenuDeleteColumn": "Видалити стовпець"
 }

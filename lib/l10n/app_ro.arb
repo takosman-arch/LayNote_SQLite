@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "Nu s-a făcut încă niciun backup.",
-  "backupFileNameLabel": "Copie de rezervă"
+  "backupFileNameLabel": "Copie de rezervă",
+  "tableMenuInsertRowAfter": "Adaugă rând",
+  "tableMenuDeleteRow": "Șterge rând",
+  "tableMenuInsertColumnAfter": "Adaugă coloană",
+  "tableMenuDeleteColumn": "Șterge coloană"
 }

@@ -2385,4 +2385,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'نسخة احتياطية';
+
+  @override
+  String get tableMenuInsertRowAfter => 'إضافة صف';
+
+  @override
+  String get tableMenuDeleteRow => 'حذف صف';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'إضافة عمود';
+
+  @override
+  String get tableMenuDeleteColumn => 'حذف عمود';
 }

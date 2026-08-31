@@ -5509,6 +5509,60 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       // değişiklikler NoteTableBlock
                                       // içinde zaten kendi setState'iyle
                                       // yeniden çiziliyor.
+                                      //
+                                      // DÜZELTME (Geri Al, eklenen satırı
+                                      // VE hücreye yazılan metni AYNI ANDA
+                                      // birlikte siliyordu): satır/sütun
+                                      // ekleme-silme (NoteTableBlock
+                                      // içindeki _insertRowAfter/_deleteRow/
+                                      // _insertColumnAfter/_deleteColumn)
+                                      // SADECE bu onChanged'i çağırıyor —
+                                      // metin düzenlemesindeki gibi ayrı bir
+                                      // "checkpoint aç" kancası (bkz.
+                                      // onCellTextEdited -> noteTextEdited)
+                                      // yok. Bu yüzden satır eklendikten
+                                      // hemen sonra hücreye yazı yazılırsa,
+                                      // o yazının açtığı İLK checkpoint
+                                      // satır eklemeyi de İÇİNE ALAN bir
+                                      // "önceki" durumu yakalıyordu.
+                                      // Çözüm: calc_table'ın
+                                      // onSubmitRow/onRemoveRow'undaki
+                                      // pushUndoCheckpoint() deseniyle
+                                      // BİREBİR AYNI mantık: satır/sütun
+                                      // SAYISI (şekli) değiştiğinde burada
+                                      // AYRI bir checkpoint açılır —
+                                      // böylece satır/sütun ekleme-silme
+                                      // kendi başına bir "Geri Al" adımı
+                                      // olur, ardından yazılan metin ayrı
+                                      // bir adım olarak kalır. Salt metin
+                                      // düzenlemesinde (şekil aynı kalır)
+                                      // buradan checkpoint AÇILMAZ — o
+                                      // zaten onCellTextEdited üzerinden
+                                      // ayrıca yönetiliyor, burada tekrar
+                                      // açmak çift checkpoint'e yol açardı.
+                                      final oldRowsRaw =
+                                          block['rows'] as List?;
+                                      bool shapeChanged;
+                                      if (oldRowsRaw == null ||
+                                          oldRowsRaw.length !=
+                                              newRows.length) {
+                                        shapeChanged = true;
+                                      } else {
+                                        shapeChanged = false;
+                                        for (int r = 0;
+                                            r < oldRowsRaw.length;
+                                            r++) {
+                                          final oldRowLen =
+                                              (oldRowsRaw[r] as List).length;
+                                          if (oldRowLen != newRows[r].length) {
+                                            shapeChanged = true;
+                                            break;
+                                          }
+                                        }
+                                      }
+                                      if (shapeChanged) {
+                                        pushUndoCheckpoint();
+                                      }
                                       block['rows'] = newRows;
                                     },
                                     // Bir hücrede yazı değişince, span

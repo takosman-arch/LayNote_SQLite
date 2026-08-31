@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "Chưa có bản sao lưu nào được thực hiện.",
-  "backupFileNameLabel": "Sao lưu"
+  "backupFileNameLabel": "Sao lưu",
+  "tableMenuInsertRowAfter": "Thêm hàng",
+  "tableMenuDeleteRow": "Xóa hàng",
+  "tableMenuInsertColumnAfter": "Thêm cột",
+  "tableMenuDeleteColumn": "Xóa cột"
 }

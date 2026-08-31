@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "Ingen säkerhetskopia har tagits ännu.",
-  "backupFileNameLabel": "Säkerhetskopia"
+  "backupFileNameLabel": "Säkerhetskopia",
+  "tableMenuInsertRowAfter": "Lägg till rad",
+  "tableMenuDeleteRow": "Ta bort rad",
+  "tableMenuInsertColumnAfter": "Lägg till kolumn",
+  "tableMenuDeleteColumn": "Ta bort kolumn"
 }

@@ -2386,4 +2386,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Backup';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Add Row';
+
+  @override
+  String get tableMenuDeleteRow => 'Delete Row';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Add Column';
+
+  @override
+  String get tableMenuDeleteColumn => 'Delete Column';
 }

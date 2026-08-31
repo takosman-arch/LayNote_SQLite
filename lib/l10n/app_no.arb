@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "Ingen sikkerhetskopi er tatt ennå.",
-  "backupFileNameLabel": "Sikkerhetskopi"
+  "backupFileNameLabel": "Sikkerhetskopi",
+  "tableMenuInsertRowAfter": "Legg til rad",
+  "tableMenuDeleteRow": "Slett rad",
+  "tableMenuInsertColumnAfter": "Legg til kolonne",
+  "tableMenuDeleteColumn": "Slett kolonne"
 }

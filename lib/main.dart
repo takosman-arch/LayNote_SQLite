@@ -9,7 +9,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
+import 'package:flutter/rendering.dart' hide Constraints;
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart'; // TapGestureRecognizer için (link tıklama)
 import 'package:flutter_localizations/flutter_localizations.dart';

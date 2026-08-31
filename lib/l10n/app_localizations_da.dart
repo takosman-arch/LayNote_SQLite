@@ -2399,4 +2399,16 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Sikkerhedskopi';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Tilføj række';
+
+  @override
+  String get tableMenuDeleteRow => 'Slet række';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Tilføj kolonne';
+
+  @override
+  String get tableMenuDeleteColumn => 'Slet kolonne';
 }

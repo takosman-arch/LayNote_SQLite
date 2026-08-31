@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "Varmuuskopiota ei ole vielä otettu.",
-  "backupFileNameLabel": "Varmuuskopio"
+  "backupFileNameLabel": "Varmuuskopio",
+  "tableMenuInsertRowAfter": "Lisää rivi",
+  "tableMenuDeleteRow": "Poista rivi",
+  "tableMenuInsertColumnAfter": "Lisää sarake",
+  "tableMenuDeleteColumn": "Poista sarake"
 }

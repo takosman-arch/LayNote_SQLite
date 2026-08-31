@@ -2410,4 +2410,16 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Резервна копія';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Додати рядок';
+
+  @override
+  String get tableMenuDeleteRow => 'Видалити рядок';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Додати стовпець';
+
+  @override
+  String get tableMenuDeleteColumn => 'Видалити стовпець';
 }

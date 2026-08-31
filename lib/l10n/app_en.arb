@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "No backup has been taken yet.",
-  "backupFileNameLabel": "Backup"
+  "backupFileNameLabel": "Backup",
+  "tableMenuInsertRowAfter": "Add Row",
+  "tableMenuDeleteRow": "Delete Row",
+  "tableMenuInsertColumnAfter": "Add Column",
+  "tableMenuDeleteColumn": "Delete Column"
 }

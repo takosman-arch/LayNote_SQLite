@@ -2343,4 +2343,16 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => '백업';
+
+  @override
+  String get tableMenuInsertRowAfter => '행 추가';
+
+  @override
+  String get tableMenuDeleteRow => '행 삭제';
+
+  @override
+  String get tableMenuInsertColumnAfter => '열 추가';
+
+  @override
+  String get tableMenuDeleteColumn => '열 삭제';
 }

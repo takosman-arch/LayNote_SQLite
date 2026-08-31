@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "Er is nog geen back-up gemaakt.",
-  "backupFileNameLabel": "Back-up"
+  "backupFileNameLabel": "Back-up",
+  "tableMenuInsertRowAfter": "Rij toevoegen",
+  "tableMenuDeleteRow": "Rij verwijderen",
+  "tableMenuInsertColumnAfter": "Kolom toevoegen",
+  "tableMenuDeleteColumn": "Kolom verwijderen"
 }

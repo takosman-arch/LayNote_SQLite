@@ -2422,4 +2422,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Copia de seguridad';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Añadir fila';
+
+  @override
+  String get tableMenuDeleteRow => 'Eliminar fila';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Añadir columna';
+
+  @override
+  String get tableMenuDeleteColumn => 'Eliminar columna';
 }

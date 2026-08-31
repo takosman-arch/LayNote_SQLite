@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "Todavía no se ha realizado ninguna copia de seguridad.",
-  "backupFileNameLabel": "Copia de seguridad"
+  "backupFileNameLabel": "Copia de seguridad",
+  "tableMenuInsertRowAfter": "Añadir fila",
+  "tableMenuDeleteRow": "Eliminar fila",
+  "tableMenuInsertColumnAfter": "Añadir columna",
+  "tableMenuDeleteColumn": "Eliminar columna"
 }

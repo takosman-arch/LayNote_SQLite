@@ -2312,4 +2312,16 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => '备份';
+
+  @override
+  String get tableMenuInsertRowAfter => '添加行';
+
+  @override
+  String get tableMenuDeleteRow => '删除行';
+
+  @override
+  String get tableMenuInsertColumnAfter => '添加列';
+
+  @override
+  String get tableMenuDeleteColumn => '删除列';
 }

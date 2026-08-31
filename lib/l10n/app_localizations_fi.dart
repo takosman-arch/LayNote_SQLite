@@ -2400,4 +2400,16 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Varmuuskopio';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Lisää rivi';
+
+  @override
+  String get tableMenuDeleteRow => 'Poista rivi';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Lisää sarake';
+
+  @override
+  String get tableMenuDeleteColumn => 'Poista sarake';
 }

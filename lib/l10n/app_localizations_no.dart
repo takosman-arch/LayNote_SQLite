@@ -2394,4 +2394,16 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Sikkerhetskopi';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Legg til rad';
+
+  @override
+  String get tableMenuDeleteRow => 'Slett rad';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Legg til kolonne';
+
+  @override
+  String get tableMenuDeleteColumn => 'Slett kolonne';
 }

@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "尚未进行过备份。",
-  "backupFileNameLabel": "备份"
+  "backupFileNameLabel": "备份",
+  "tableMenuInsertRowAfter": "添加行",
+  "tableMenuDeleteRow": "删除行",
+  "tableMenuInsertColumnAfter": "添加列",
+  "tableMenuDeleteColumn": "删除列"
 }

@@ -2413,4 +2413,16 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get backupFileNameLabel => 'Kopia zapasowa';
+
+  @override
+  String get tableMenuInsertRowAfter => 'Dodaj wiersz';
+
+  @override
+  String get tableMenuDeleteRow => 'Usuń wiersz';
+
+  @override
+  String get tableMenuInsertColumnAfter => 'Dodaj kolumnę';
+
+  @override
+  String get tableMenuDeleteColumn => 'Usuń kolumnę';
 }

@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "ยังไม่เคยมีการสำรองข้อมูล",
-  "backupFileNameLabel": "สำรองข้อมูล"
+  "backupFileNameLabel": "สำรองข้อมูล",
+  "tableMenuInsertRowAfter": "เพิ่มแถว",
+  "tableMenuDeleteRow": "ลบแถว",
+  "tableMenuInsertColumnAfter": "เพิ่มคอลัมน์",
+  "tableMenuDeleteColumn": "ลบคอลัมน์"
 }

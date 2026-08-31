@@ -1158,5 +1158,9 @@
     }
   },
   "lastBackupInfoNoBackupMessage": "아직 백업이 없습니다.",
-  "backupFileNameLabel": "백업"
+  "backupFileNameLabel": "백업",
+  "tableMenuInsertRowAfter": "행 추가",
+  "tableMenuDeleteRow": "행 삭제",
+  "tableMenuInsertColumnAfter": "열 추가",
+  "tableMenuDeleteColumn": "열 삭제"
 }
