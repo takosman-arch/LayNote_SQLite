@@ -482,12 +482,21 @@ class _NoteScreenshotContent extends StatelessWidget {
           final hasContent = rawRows.any((r) => (r as List)
               .any((c) => ContentBlocks._tableCellText(c).trim().isNotEmpty));
           if (hasContent) {
+            // DÜZELTME (PDF export'taki AYNI sorun): boş hücrenin
+            // Text.rich'i görünür glyph içermediği için o satırın
+            // yüksekliği, metin dolu satırlardan daha kısa çıkıyordu.
+            // pdf_export_service.dart'taki table bloğuyla BİREBİR aynı
+            // formülle (fontSize * 1.4 + 6) metne bağlı olmayan, açıkça
+            // zorlanan bir minimum yükseklik veriyoruz.
+            final rowMinHeight = fontSize * 1.4 + 6;
             final tableRows = rawRows.map((r) {
               final cells = (r as List).map((c) {
                 final cellText = ContentBlocks._tableCellText(c);
                 final cellSpans = ContentBlocks._tableCellSpans(c);
-                return Padding(
+                return Container(
+                  constraints: BoxConstraints(minHeight: rowMinHeight),
                   padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
+                  alignment: Alignment.centerLeft,
                   child: Text.rich(
                     RichTextSpans.buildStaticSpan(
                       text: cellText,

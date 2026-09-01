@@ -842,6 +842,20 @@ class PdfExportService {
           final hasContent = rawRows.any((r) => (r as List)
               .any((c) => ContentBlocks._tableCellText(c).trim().isNotEmpty));
           if (hasContent) {
+            // DÜZELTME: columnWidths verilmediğinde pw.Table varsayılan
+            // olarak IntrinsicColumnWidth kullanıyor, yani her sütun kendi
+            // İÇERİĞİNİN genişliğine göre boyutlanıyor (ör. "Jjeje" 5 harf
+            // olduğu için sütunu, "Je" 2 harf olan sütundan çok daha geniş
+            // çıkıyordu). Düzenleyicideki not_table_block.dart ise sütunları
+            // EŞİT genişlikte çiziyor; PDF'in editörle aynı görünmesi için
+            // burada da sütun sayısı kadar eşit FlexColumnWidth(1) veriyoruz.
+            final columnCount = rawRows.fold<int>(
+              0,
+              (max, r) => (r as List).length > max ? (r as List).length : max,
+            );
+            final tableColumnWidths = <int, pw.TableColumnWidth>{
+              for (var i = 0; i < columnCount; i++) i: const pw.FlexColumnWidth(1),
+            };
             final tableRows = rawRows.map((r) {
               final cells = (r as List).map((c) {
                 final cellText = ContentBlocks._tableCellText(c);
@@ -880,6 +894,7 @@ class PdfExportService {
                     color: PdfColors.grey700,
                     width: 0.75,
                   ),
+                  columnWidths: tableColumnWidths,
                   children: tableRows,
                 ),
               ),
