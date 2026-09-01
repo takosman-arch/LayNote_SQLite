@@ -259,24 +259,29 @@ class _NoteScreenshotContent extends StatelessWidget {
         blocks.length == 1 &&
         blocks.first['type'] == 'drawing';
 
+    final trimmedTitle = title.trim();
+    final hasTitle = trimmedTitle.isNotEmpty;
+
     final children = <Widget>[
       if (!isDrawingOnlyNote) ...[
-        Text.rich(
-          RichTextSpans.buildStaticSpan(
-            text: title.trim().isEmpty
-                ? AppLocalizations.of(context)!.pdfExportUntitledNoteLabel
-                : title.trim(),
-            rawSpans: titleSpans,
-            style: TextStyle(
-              fontSize: 20,
-              fontFamily: fontFamily,
-              fontWeight: FontWeight.w600,
-              color: textColor,
+        // Başlık boşsa "Başlıksız Not" yazmak yerine başlık satırı hiç
+        // basılmıyor; tarih, divider ve boşluk eskisi gibi kalır.
+        if (hasTitle) ...[
+          Text.rich(
+            RichTextSpans.buildStaticSpan(
+              text: trimmedTitle,
+              rawSpans: titleSpans,
+              style: TextStyle(
+                fontSize: 20,
+                fontFamily: fontFamily,
+                fontWeight: FontWeight.w600,
+                color: textColor,
+              ),
+              isDark: Theme.of(context).brightness == Brightness.dark,
             ),
-            isDark: Theme.of(context).brightness == Brightness.dark,
           ),
-        ),
-        const SizedBox(height: 4),
+          const SizedBox(height: 4),
+        ],
         Text(
           _formatDateTimeTr(DateTime.now()),
           style: const TextStyle(fontSize: 11, color: Colors.grey),
@@ -297,7 +302,22 @@ class _NoteScreenshotContent extends StatelessWidget {
         final type = block['type'];
         if (type == 'text') {
           final text = (block['text'] ?? '').toString();
-          if (text.trim().isEmpty) continue;
+          // DÜZELTME: eskiden burada `text.trim().isEmpty` kontrol
+          // ediliyordu — ama trim() '\n' karakterlerini de siler. Bu
+          // yüzden birkaç kez Enter'a basılarak oluşturulmuş bir blok
+          // (ör. metni '\n\n\n' olan) da "boş" sayılıyor ve KAÇ KEZ
+          // Enter'a basılmış olursa olsun TEK sabit yükseklikte bir
+          // boşluk ekleniyordu — basılan Enter sayısı kayboluyordu.
+          // Artık yalnızca GERÇEKTEN sıfır karakterli (`text.isEmpty`,
+          // hiç Enter içermeyen tek boş blok) bloklarda bu sabit
+          // yükseklikli boşluk kullanılıyor; içinde bir veya daha fazla
+          // '\n' olan (yani en az bir kez Enter'a basılmış) bloklar ise
+          // normal metin gibi Text.rich ile çiziliyor — böylece her '\n'
+          // kendi satır yüksekliğini koruyarak ekrandaki gibi görünüyor.
+          if (text.isEmpty) {
+            children.add(SizedBox(height: fontSize * 1.4));
+            continue;
+          }
           // DÜZELTME: JPG dışa aktarma eskiden düzenleyicideki spans
           // (kalın/italik/altı çizili/üzeri çizili/vurgu/özel renk-boyut-
           // yazı tipi/link) verisini hiç okumadan metni düz bir Text
@@ -350,7 +370,12 @@ class _NoteScreenshotContent extends StatelessWidget {
           for (final row in rows) {
             final label = (row['label'] ?? '').toString();
             final valueText = (row['value'] ?? '').toString();
-            if (label.trim().isEmpty && valueText.trim().isEmpty) continue;
+            // DÜZELTME: eskiden hem 'Kalem' hem 'Tutar' alanı boş olan
+            // satırlar (`continue`) tamamen atlanıyordu; bu yüzden
+            // editörde görünen boş satırlar JPG'de kayboluyordu. Artık
+            // hiçbir satır atlanmıyor — ekrandaki (NoteCalcTableBlock)
+            // davranışıyla birebir aynı şekilde her satır, boş da olsa
+            // tabloya ekleniyor.
             total += ContentBlocks.parseCalcValue(row['value']);
             tableRows.add(
               TableRow(

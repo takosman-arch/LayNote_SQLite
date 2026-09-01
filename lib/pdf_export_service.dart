@@ -560,17 +560,24 @@ class PdfExportService {
         blocks.length == 1 &&
         blocks.first['type'] == 'drawing';
 
+    final trimmedTitle = title.trim();
+    final hasTitle = trimmedTitle.isNotEmpty;
+
     final content = <pw.Widget>[
       if (!isDrawingOnlyNote) ...[
-        _buildRichTextWidget(
-          title.trim().isEmpty ? untitledNoteLabel : title.trim(),
-          RichTextSpans.parse(titleSpans),
-          regular,
-          bold,
-          titleFontSize,
-          baseFont: bold,
-        ),
-        pw.SizedBox(height: 4),
+        // Başlık boşsa "Başlıksız Not" yazmak yerine başlık satırı hiç
+        // basılmıyor; tarih ve altındaki boşluk/içerik eskisi gibi kalır.
+        if (hasTitle) ...[
+          _buildRichTextWidget(
+            trimmedTitle,
+            RichTextSpans.parse(titleSpans),
+            regular,
+            bold,
+            titleFontSize,
+            baseFont: bold,
+          ),
+          pw.SizedBox(height: 4),
+        ],
         pw.Text(
           _formatDateTimeTr(DateTime.now()),
           style: pw.TextStyle(font: regular, fontSize: dateFontSize, color: PdfColors.grey600),
@@ -590,7 +597,14 @@ class PdfExportService {
         final type = block['type'];
         if (type == 'text') {
           final text = (block['text'] ?? '').toString();
-          if (text.trim().isEmpty) continue;
+          // DÜZELTME: eskiden bloğun tamamı boşsa (`text.trim().isEmpty`)
+          // burada erken `continue` ile blok tümden atlanıyordu; bu yüzden
+          // editörde sadece Enter'a basılıp bırakılan boş satırlar PDF'te
+          // hiç görünmüyordu. Artık erken atlama YOK — aşağıdaki paragraf
+          // döngüsü zaten boş paragrafları (`para.trim().isEmpty`) bir
+          // SizedBox boşluğu olarak işliyor; tamamen boş metin de
+          // split('\n') sonrası tek boş paragraf olarak aynı yoldan geçip
+          // ekrandaki gibi bir boş satır bırakıyor.
           // DÜZELTME: eskiden burada sadece düz metin (block['text'])
           // basılıyor, blok'un 'spans' alanı (kalın/italik/altı çizili/
           // üstü çizili/vurgu/özel renk-boyut/link — bkz.
@@ -611,7 +625,14 @@ class PdfExportService {
             paraOffset = paraEnd + 1;
 
             if (para.trim().isEmpty) {
-              content.add(pw.SizedBox(height: effectiveFontSize * 0.6));
+              // DÜZELTME: eskiden bu boşluk `effectiveFontSize * 0.6`
+              // yüksekliğindeydi — bu, dolu bir satırın gerçek satır
+              // yüksekliğinin (yaklaşık 1.2-1.4 katı) yarısı kadardı, bu
+              // yüzden boş satırlar PDF'te fark edilmeyecek kadar küçük
+              // görünüyordu. Artık dolu bir metin satırının kapladığı
+              // alanla aynı yükseklikte (`* 1.2`) tutuluyor ki boş satır
+              // ekrandaki gibi normal bir satır boşluğu bıraksın.
+              content.add(pw.SizedBox(height: effectiveFontSize * 1.2));
               continue;
             }
 
@@ -644,7 +665,21 @@ class PdfExportService {
               );
             }
           }
-          content.add(pw.SizedBox(height: 8));
+          // DÜZELTME: eskiden bu sabit 8pt boşluk, bloğun içeriği ne
+          // olursa olsun (boş ya da dolu) HER metin bloğundan sonra
+          // ekleniyordu. Bu yüzden kendi başına ayrı, tamamen boş bir
+          // metin bloğu (ör. iki blok arasına bırakılan boş satır),
+          // zaten aldığı `effectiveFontSize * 1.2` boşluğunun ÜSTÜNE bir
+          // de bu sabit 8pt'yi alıyor, oysa AYNI boş satır bir bloğun
+          // İÇİNDE (başka metnin ortasında) olsaydı sadece
+          // `effectiveFontSize * 1.2` alıyordu — iki durum arasında
+          // tutarsız yükseklik oluşuyordu. Artık bu fazladan boşluk
+          // yalnızca blok GERÇEK (boş olmayan) metin içeriyorsa
+          // ekleniyor; tamamen boş bir blok, blok içindeki bir boş
+          // satırla birebir aynı yüksekliği alıyor.
+          if (text.trim().isNotEmpty) {
+            content.add(pw.SizedBox(height: 8));
+          }
         } else if (type == 'checklist') {
           final items = List<Map>.from(block['items'] ?? const []);
           final validItems = items.where(
@@ -676,26 +711,45 @@ class PdfExportService {
           for (final row in rows) {
             final label = (row['label'] ?? '').toString();
             final valueText = (row['value'] ?? '').toString();
-            if (label.trim().isEmpty && valueText.trim().isEmpty) continue;
+            // DÜZELTME: eskiden hem 'Kalem' hem 'Tutar' alanı boş olan
+            // satırlar (`continue`) tamamen atlanıyordu; bu yüzden
+            // editörde görünen boş satırlar PDF'te kayboluyordu. Artık
+            // hiçbir satır atlanmıyor — ekrandaki (NoteCalcTableBlock)
+            // davranışıyla birebir aynı şekilde her satır, boş da olsa
+            // tabloya ekleniyor.
             total += ContentBlocks.parseCalcValue(row['value']);
+            // DÜZELTME: Bir önceki deneme (boş hücreye ' ' karakteri
+            // vermek) yetmedi — bu PDF kütüphanesi satır yüksekliğini
+            // görünür bir karaktere (glyph) göre hesaplıyor gibi
+            // görünüyor, boşluk karakteri de "iz" bırakmadığı için satır
+            // yine neredeyse sıfıra çöküyordu. Bu sefer metne bağlı
+            // olmayan, AÇIKÇA zorlanan bir minimum yükseklik kullanıyoruz
+            // (pw.Container + constraints.minHeight) — böylece hücre
+            // boş da olsa dolu da olsa satır kesinlikle aynı yüksekliği
+            // alıyor.
+            final rowMinHeight = effectiveFontSize * 1.4 + 6; // + dikey padding (3+3)
             tableRows.add(
               pw.TableRow(
                 children: [
-                  pw.Padding(
+                  pw.Container(
+                    constraints: pw.BoxConstraints(minHeight: rowMinHeight),
                     padding: const pw.EdgeInsets.symmetric(
                       vertical: 3,
                       horizontal: 4,
                     ),
+                    alignment: pw.Alignment.centerLeft,
                     child: pw.Text(
                       label,
                       style: pw.TextStyle(font: regular, fontSize: effectiveFontSize),
                     ),
                   ),
-                  pw.Padding(
+                  pw.Container(
+                    constraints: pw.BoxConstraints(minHeight: rowMinHeight),
                     padding: const pw.EdgeInsets.symmetric(
                       vertical: 3,
                       horizontal: 4,
                     ),
+                    alignment: pw.Alignment.centerRight,
                     child: pw.Text(
                       valueText,
                       style: pw.TextStyle(font: regular, fontSize: effectiveFontSize),
@@ -771,11 +825,20 @@ class PdfExportService {
                 final cellText = ContentBlocks._tableCellText(c);
                 final cellSpans =
                     RichTextSpans.parse(ContentBlocks._tableCellSpans(c));
-                return pw.Padding(
+                // DÜZELTME: boş hücreye ' ' karakteri vermek yetmedi —
+                // bu kütüphane satır yüksekliğini görünür glyph'e göre
+                // hesaplıyor gibi görünüyor. Artık calc_table'daki gibi
+                // metne bağlı olmayan, açıkça zorlanan bir minimum
+                // yükseklik (pw.Container + constraints.minHeight)
+                // kullanılıyor.
+                final rowMinHeight = effectiveFontSize * 1.4 + 6;
+                return pw.Container(
+                  constraints: pw.BoxConstraints(minHeight: rowMinHeight),
                   padding: const pw.EdgeInsets.symmetric(
                     vertical: 3,
                     horizontal: 4,
                   ),
+                  alignment: pw.Alignment.centerLeft,
                   child: _buildRichTextWidget(
                     cellText,
                     cellSpans,
