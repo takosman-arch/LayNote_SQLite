@@ -262,7 +262,10 @@ class _RowColMenuGridState extends State<_RowColMenuGrid> {
         child: Text(
           label,
           textAlign: TextAlign.center,
-          style: enabled ? null : TextStyle(color: disabledColor),
+          style: TextStyle(
+            fontSize: 16,
+            color: enabled ? null : disabledColor,
+          ),
         ),
       ),
     );

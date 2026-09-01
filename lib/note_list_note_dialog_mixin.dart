@@ -1409,6 +1409,21 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       final urlFieldController = TextEditingController(
         text: existingLink ?? '',
       );
+
+      // NOT: Burada önceden FocusManager.instance.primaryFocus?.unfocus()
+      // çağrılıyordu (seçim toolbar'ını erken kapatmak için). Ancak bu,
+      // Android'in Scribble/"Direct Writing" (kalemle yazı tanıma) desteğiyle
+      // çakışıp AYRI ve DAHA AĞIR bir framework hatasına yol açtığı görüldü:
+      // 'readOnly && !obscureText' assertion'ı (_ScribbleFocusable /
+      // RenderEditable.describeSemanticsConfiguration), ardından art arda
+      // 'child._parent == this' hataları. unfocus() çağrısı IME gizleme
+      // sürecini tetikliyor ve bu, TextField'ın odak/semantics geçişi tam
+      // ortasındayken RenderEditable'ı tutarsız bırakıyor. Bu yüzden
+      // kaldırıldı — asıl 'link ekleme' assertion'ına karşı aşağıdaki
+      // deferred rebuild (bkz. requestEditorRebuild çağrısındaki
+      // addPostFrameCallback) tek başına yeterli olmalı; showDialog zaten
+      // kendi TextField'ına autofocus vererek odağı doğal şekilde alıyor.
+
       // Sonuç sözleşmesi: null -> vazgeçildi (hiçbir şey yapma), '' (boş
       // string) -> "Linki Kaldır" seçildi ya da alan boşken "Ekle"ye
       // basıldı (her iki durumda da linki kaldırmak kullanıcı niyetiyle
@@ -1457,6 +1472,19 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         ),
       );
 
+      // NOT: Burada önceden urlFieldController.dispose() senkron olarak
+      // çağrılıyordu. Ancak showDialog'un await'i, Navigator.pop()
+      // çağrıldığı anda tamamlanıyor — dialog'un KAPANIŞ ANİMASYONU o anda
+      // henüz bitmemiş oluyor ve içindeki TextField bir-iki frame daha canlı
+      // kalıp odağını kaybederken (FocusNode bildirimi üzerinden)
+      // clearComposing() için kendi controller'ını kullanmaya çalışıyor.
+      // Controller bu noktada zaten dispose edilmiş olduğundan "A
+      // TextEditingController was used after being disposed" hatasına, bu
+      // da ardından element ağacının bozulup önceki '_dependents.isEmpty'
+      // ve 'attached' assertion'larının patlamasına yol açıyordu — yani
+      // asıl kök sebep muhtemelen buydu. Bu kısa ömürlü controller'ı elle
+      // dispose ETMİYORUZ; tek bir link-ekleme başına önemsiz, tek seferlik
+      // bir nesne sızıntısı, çökmekten çok daha zararsız.
       if (url == null) return; // Vazgeçildi.
 
       // Boş URL -> linki kaldır (null ata); doluysa şema yoksa ("ornek.com"
@@ -1473,7 +1501,17 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         end,
         normalizedUrl,
       );
-      requestEditorRebuild?.call(() {});
+      // DÜZELTME (devamı): showDialog'un await'i, Navigator.pop()
+      // çağrıldığı anda tamamlanır — ama dialog rotasının kapanış geçişi/
+      // Element temizliği o anda HENÜZ bitmemiş olabilir. Bu noktada
+      // requestEditorRebuild (== setModalState) SENKRON çağrılırsa, hâlâ
+      // kaldırılma sürecindeki dialog'un element ağacıyla çakışıp aynı
+      // assertion'ı tetikleyebiliyor. Bir sonraki frame'e ertelemek
+      // (dialog'un kapanışı tamamen bittikten SONRA rebuild tetiklemek)
+      // bu çakışmayı ortadan kaldırır.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) requestEditorRebuild?.call(() {});
+      });
     }
 
     // ── Araç çubuğu: "Yatay Çizgi Ekle" butonu ──────────────────────────────
