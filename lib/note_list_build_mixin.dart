@@ -3172,7 +3172,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       l10n.gundemWeekdaySaturday,
       l10n.gundemWeekdaySunday,
     ];
-    return '${monthNamesShort[day.month - 1]} ${day.day}, ${weekDayFull[day.weekday - 1]}';
+    return '${dNoteFormatShortDateParts(context, day: '${day.day}', month: monthNamesShort[day.month - 1])}, ${weekDayFull[day.weekday - 1]}';
   }
 
   String? _formattedReminderText(Map<String, dynamic> note) {

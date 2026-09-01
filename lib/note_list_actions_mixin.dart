@@ -460,6 +460,14 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       // kelime sığdığı için kelime bölünmeleri (word-wrap) editördekiyle
       // uyuşmuyordu.
       final phoneScreenWidth = MediaQuery.of(context).size.width;
+      // Aşama 3.4: tarih/saat damgası artık dile göre doğru sıra + ayraçla
+      // (theme.dart -> dNoteFormatNumericDateParts) burada, context mevcutken
+      // üretilip servise geçiriliyor — untitledNoteLabel/defaultAttachmentName
+      // ile birebir aynı yaklaşım (servis static, context alamıyor).
+      final now = DateTime.now();
+      String two(int n) => n.toString().padLeft(2, '0');
+      final formattedDateTime =
+          '${dNoteFormatNumericDateParts(context, day: two(now.day), month: two(now.month), year: now.year.toString())} ${two(now.hour)}:${two(now.minute)}';
       final file = await PdfExportService.exportNoteToPdf(
         title: title,
         titleSpans: titleSpans,
@@ -472,6 +480,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         phoneScreenWidth: phoneScreenWidth,
         untitledNoteLabel: AppLocalizations.of(context)!.pdfExportUntitledNoteLabel,
         defaultAttachmentName: AppLocalizations.of(context)!.pdfExportDefaultAttachmentName,
+        formattedDateTime: formattedDateTime,
       );
       debugPrint('[PDF] dosya oluştu: ${file.path}');
 

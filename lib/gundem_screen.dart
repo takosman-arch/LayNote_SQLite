@@ -90,7 +90,11 @@ String _gundemShortDateLabel(BuildContext context, DateTime d) {
     l10n.gundemMonthShortNov,
     l10n.gundemMonthShortDec,
   ];
-  return '${d.day} ${monthNamesShort[d.month - 1]}';
+  return dNoteFormatShortDateParts(
+    context,
+    day: '${d.day}',
+    month: monthNamesShort[d.month - 1],
+  );
 }
 
 // Bir notun hatırlatıcısının "gündemdeki günü"nü belirler:

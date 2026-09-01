@@ -68,6 +68,18 @@ class PdfExportService {
   // sayfalar arası kendi kendine bölünmesi güvenilir çalışmadığı için,
   // her parça tek başına bir sayfaya sığacak kadar kısa tutulup ayrı bir
   // widget olarak eklenir (bkz. exportNoteToPdf içindeki kullanım).
+  // Sadece geriye dönük uyumluluk içindir: formattedDateTime verilmeden
+  // çağrılan (güncellenmemiş) eski çağrı yerleri için, önceki sabit
+  // "gg.aa.yyyy sa:dk" davranışını (eski main.dart:_formatDateTimeTr)
+  // birebir korur. Bu servis context almadığından burada dile göre bir
+  // çözünürlük YAPILAMAZ — asıl düzeltme, çağıran tarafın
+  // dNoteFormatNumericDateParts ile üretip formattedDateTime'ı geçmesidir
+  // (bkz. note_list_actions_mixin.dart).
+  static String _legacyFixedDateTimeFallback(DateTime dt) {
+    String two(int n) => n.toString().padLeft(2, '0');
+    return '${two(dt.day)}.${two(dt.month)}.${dt.year} ${two(dt.hour)}:${two(dt.minute)}';
+  }
+
   static List<String> _chunkPlainText(String text, int maxChars) {
     if (text.length <= maxChars) return [text];
     final words = text.split(RegExp(r'(?<=\s)'));
@@ -451,10 +463,20 @@ class PdfExportService {
     // pdfExportDefaultAttachmentName).
     String untitledNoteLabel = 'Başlıksız Not',
     String defaultAttachmentName = 'Ek dosya',
+    // Dışa aktarılan PDF'in üstündeki tarih/saat damgası. Aynı yukarıdaki
+    // untitledNoteLabel/defaultAttachmentName paterni: çağıran taraf
+    // (BuildContext'e erişimi olan yer) theme.dart'taki merkezi
+    // dNoteFormatNumericDateParts ile dile göre doğru sıra + ayraçla
+    // üretip geçirir (bkz. Aşama 3.4). Bu servis static olduğu ve context
+    // almadığı için, değer verilmezse (ör. eski çağrılar) önceki sabit
+    // "gg.aa.yyyy sa:dk" davranışı (eski _formatDateTimeTr, main.dart)
+    // korunur — böylece geriye dönük uyumluluk bozulmaz.
+    String? formattedDateTime,
   }) async {
     final fonts = await _ensureFonts(fontFamily);
     final regular = fonts.regular;
     final bold = fonts.bold;
+    final resolvedDateTime = formattedDateTime ?? _legacyFixedDateTimeFallback(DateTime.now());
 
     // Not editöründeki içerik genişliği: ekran genişliği eksi 20+20 padding
     // (bkz. note_list_screen.dart SingleChildScrollView padding: EdgeInsets.all(20)).
@@ -579,7 +601,7 @@ class PdfExportService {
           pw.SizedBox(height: 4),
         ],
         pw.Text(
-          _formatDateTimeTr(DateTime.now()),
+          resolvedDateTime,
           style: pw.TextStyle(font: regular, fontSize: dateFontSize, color: PdfColors.grey600),
         ),
         pw.SizedBox(height: 16),

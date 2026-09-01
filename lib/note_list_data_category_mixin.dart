@@ -337,7 +337,8 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
     final month = _shortMonthNamesTr[dt.month - 1];
     final hour = dt.hour.toString().padLeft(2, '0');
     final minute = dt.minute.toString().padLeft(2, '0');
-    return '$month ${dt.day}, $hour:$minute';
+    final datePart = dNoteFormatShortDateParts(context, day: '${dt.day}', month: month);
+    return '$datePart, $hour:$minute';
   }
 
   String _getFormattedDate([DateTime? date]) {
@@ -373,7 +374,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
     if (diff < 7) return l10n.noteListDateGroupLast7Days;
     if (diff < 30) return l10n.noteListDateGroupLast30Days;
     if (date.year == now.year) return _fullMonthNamesTr[date.month - 1];
-    return '${_fullMonthNamesTr[date.month - 1]} ${date.year}';
+    return dNoteFormatMonthYearParts(context, month: _fullMonthNamesTr[date.month - 1], year: '${date.year}');
   }
 
   // Not listesini, ekranda gösterildiği sırayla, aralarına tarih grubu

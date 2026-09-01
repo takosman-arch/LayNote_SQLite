@@ -7251,7 +7251,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                                   Flexible(
                                                     child: Text(
                                                       noteAssignedDateSet
-                                                          ? '${_gundemMonthNamesShortTr(context)[noteAssignedDate.month - 1]} ${noteAssignedDate.day}, ${_gundemWeekDayFullTr(context)[noteAssignedDate.weekday - 1]}'
+                                                          ? '${dNoteFormatShortDateParts(context, day: '${noteAssignedDate.day}', month: _gundemMonthNamesShortTr(context)[noteAssignedDate.month - 1])}, ${_gundemWeekDayFullTr(context)[noteAssignedDate.weekday - 1]}'
                                                           : _getFormattedDate(
                                                               noteAssignedDate,
                                                             ),

@@ -136,3 +136,115 @@ Color dNoteResolveAccentColor(Color accentColor, bool isDark) {
   return accentColor;
 }
 
+// ════════════════════════════════════════════════════════════════════════
+// TARİH BİÇİMİ (Ayarlar > Dil ile senkron)
+// AŞAMA 1: Bu bölüm SADECE gün/ay/yıl bileşenlerinin gösterim SIRASINI ve
+// ayracını belirler — ay/gün isimlerinin kendisini (ör. "Ocak"/"January")
+// ÜRETMEZ. O isimler hâlâ her ekranın kendi ARB anahtarlarından (örn.
+// calendar_screen.dart -> calendarMonthJan, gundem_screen.dart ->
+// gundemMonthShortJan) geliyor ve öyle kalmaya devam ediyor; bu sayede bu
+// katman, farklı ekranlardaki farklı ay-ismi kaynaklarıyla (tam/kısa)
+// çakışmadan ortak kullanılabiliyor.
+//
+// Karar mantığı: dil, kaç tarih düzeninden birine eşlenir:
+//   dmy -> "9 Ağustos 2026"      (varsayılan; tr ve listedeki çoğu dil)
+//   mdy -> "August 9, 2026"      (en)
+//   ymd -> "2026年8月9日" tarzı    (ja, zh, ko — sıra için; ay/gün arasına
+//                                  ayraç eklenmez, tam biçim gerekirse
+//                                  Aşama 3'te bu diller için ayrıca
+//                                  gözden geçirilecek)
+// Yeni bir dil eklendiğinde buraya satır eklenmezse otomatik olarak "dmy"
+// (mevcut/eski davranış) kullanılır — bu yüzden varsayılan asla kırılmaz.
+// ════════════════════════════════════════════════════════════════════════
+enum DNoteDateOrder { dmy, mdy, ymd }
+
+DNoteDateOrder dNoteDateOrderForLanguageCode(String languageCode) {
+  switch (languageCode) {
+    case 'en':
+      return DNoteDateOrder.mdy;
+    case 'ja':
+    case 'zh':
+    case 'ko':
+      return DNoteDateOrder.ymd;
+    default:
+      return DNoteDateOrder.dmy;
+  }
+}
+
+// 'system' dil modunda gerçek dili context üzerinden (Localizations.localeOf)
+// okuyoruz — bu, AppLocalizations'ın zaten çözümlediği/fallback uyguladığı
+// locale ile birebir aynı kaynak; appLanguage.value'yu (ör. 'system' string'ini)
+// tekrar çözümlemeye çalışıp AppLocalizations'ın fallback mantığından
+// (desteklenmeyen cihaz dilinde tr'ye düşme) sapma riskini ortadan kaldırır.
+DNoteDateOrder dNoteDateOrderForContext(BuildContext context) {
+  return dNoteDateOrderForLanguageCode(Localizations.localeOf(context).languageCode);
+}
+
+// Tam tarih (gün + ay ismi + yıl), dile göre doğru sırada birleştirir.
+// `day`/`year` çağıran taraftan hazır string olarak gelir (örn. '9', '2026');
+// `month` de çağıran ekranın kendi ARB kaynağından ürettiği ay ismidir
+// (tam veya kısa fark etmez — bu fonksiyon sadece sırayı belirler).
+String dNoteFormatDateParts(
+  BuildContext context, {
+  required String day,
+  required String month,
+  required String year,
+}) {
+  switch (dNoteDateOrderForContext(context)) {
+    case DNoteDateOrder.mdy:
+      return '$month $day, $year';
+    case DNoteDateOrder.ymd:
+      return '$year $month $day';
+    case DNoteDateOrder.dmy:
+      return '$day $month $year';
+  }
+}
+
+// Kısa tarih (yıl olmadan gün + ay), gündem ekranındaki "9 Ağu" / "Aug 9"
+// tarzı etiketler için. ymd düzeninde de yıl zaten yok, bu yüzden mdy
+// dışındaki tüm düzenler için gün-ay sırası kullanılır.
+String dNoteFormatShortDateParts(
+  BuildContext context, {
+  required String day,
+  required String month,
+}) {
+  return dNoteDateOrderForContext(context) == DNoteDateOrder.mdy
+      ? '$month $day'
+      : '$day $month';
+}
+
+// Gün olmadan sadece ay + yıl (takvim başlığı, örn. "Ağustos 2026" /
+// "August 2026" / "2026年8月"). dmy ve mdy'de sıra aynıdır (ay sonra yıl);
+// yalnızca ymd'de yıl öne alınır.
+String dNoteFormatMonthYearParts(
+  BuildContext context, {
+  required String month,
+  required String year,
+}) {
+  return dNoteDateOrderForContext(context) == DNoteDateOrder.ymd
+      ? '$year $month'
+      : '$month $year';
+}
+
+// Sayısal tarih (ay İSMİ değil, ay NUMARASI) — ör. yedek listesi gibi
+// kompakt satırlarda "09.08.2026" / "08/09/2026" / "2026.08.09". Ay adı
+// üretmediği için ARB'ye bağlı değil; `day`/`month` çağıran taraftan
+// zaten iki haneli (padLeft) string olarak gelir.
+// Ayraç, dile göre değişen yaygın yazım kuralını izler: mdy (en) için
+// '/', diğer tüm sıralar (dmy, ymd) için '.'.
+String dNoteFormatNumericDateParts(
+  BuildContext context, {
+  required String day,
+  required String month,
+  required String year,
+}) {
+  switch (dNoteDateOrderForContext(context)) {
+    case DNoteDateOrder.mdy:
+      return '$month/$day/$year';
+    case DNoteDateOrder.ymd:
+      return '$year.$month.$day';
+    case DNoteDateOrder.dmy:
+      return '$day.$month.$year';
+  }
+}
+

@@ -431,7 +431,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       ),
                     ),
                     child: Text(
-                      '${_monthName(l10n, focusedMonth.month)} ${focusedMonth.year}',
+                      dNoteFormatMonthYearParts(
+                        context,
+                        month: _monthName(l10n, focusedMonth.month),
+                        year: '${focusedMonth.year}',
+                      ),
                       key: ValueKey('${focusedMonth.year}-${focusedMonth.month}'),
                       style: TextStyle(
                         fontSize: 20,
@@ -539,7 +543,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _buildSelectedDayNotesPanel(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final label =
-        '${_selectedDay.day} ${_monthName(l10n, _selectedDay.month)} ${_selectedDay.year}, '
+        '${dNoteFormatDateParts(
+          context,
+          day: '${_selectedDay.day}',
+          month: _monthName(l10n, _selectedDay.month),
+          year: '${_selectedDay.year}',
+        )}, '
         '${_weekdayFull(l10n, _selectedDay.weekday)}';
     final isToday = _isSameDay(_selectedDay, _today);
     final dayNotes = _notesForSelectedDay();

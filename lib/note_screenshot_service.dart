@@ -164,6 +164,25 @@ class _NoteScreenshotContent extends StatelessWidget {
     required this.attachmentsDirPath,
   });
 
+  // NOT: Daha önce burada dile bakmaksızın sabit _formatDateTimeTr
+  // (main.dart) kullanılıyordu — "gün.ay.yıl sa:dk" sırası İngilizce'de de
+  // değişmiyordu (ör. "09.08.2026 14:32"). Artık theme.dart'taki merkezi
+  // dNoteFormatNumericDateParts üzerinden dile göre doğru sıra + ayraç
+  // uygulanıyor (bkz. Aşama 3.4). Saat kısmı (HH:mm) dilden bağımsız
+  // evrensel bir gösterim olduğu için ayrı tutulup sona ekleniyor —
+  // backup_history_screen.dart:_formatDate (Aşama 3.2) ile birebir aynı
+  // yaklaşım.
+  String _formatDateTimeLocalized(BuildContext context, DateTime dt) {
+    String two(int n) => n.toString().padLeft(2, '0');
+    final datePart = dNoteFormatNumericDateParts(
+      context,
+      day: two(dt.day),
+      month: two(dt.month),
+      year: dt.year.toString(),
+    );
+    return '$datePart ${two(dt.hour)}:${two(dt.minute)}';
+  }
+
   Widget _checklistRow(String text, bool checked) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
@@ -283,7 +302,7 @@ class _NoteScreenshotContent extends StatelessWidget {
           const SizedBox(height: 4),
         ],
         Text(
-          _formatDateTimeTr(DateTime.now()),
+          _formatDateTimeLocalized(context, DateTime.now()),
           style: const TextStyle(fontSize: 11, color: Colors.grey),
         ),
         SizedBox(height: 16, child: Divider(color: borderColor, height: 1)),

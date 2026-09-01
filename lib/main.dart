@@ -230,14 +230,6 @@ Color dNoteCardColor(BuildContext context) =>
 // Bir tarihi "gg.aa.yyyy ss:dd" biçiminde döndürür. Hatırlatıcı tarihini hem
 // not düzenleyicide hem de önizleme kartlarında tutarlı biçimde göstermek
 // için kullanılır.
-String _formatDateTimeTr(DateTime dt) {
-  final day = dt.day.toString().padLeft(2, '0');
-  final month = dt.month.toString().padLeft(2, '0');
-  final hour = dt.hour.toString().padLeft(2, '0');
-  final minute = dt.minute.toString().padLeft(2, '0');
-  return '$day.$month.${dt.year} $hour:$minute';
-}
-
 // Hatırlatıcı tekrar seçeneğinin etiketi. Hem yeni hatırlatıcı dialogunda
 // hem de not kartlarındaki hatırlatıcı rozetinde ortak kullanılır.
 String _reminderRepeatLabelTr(BuildContext context, String? repeat) {

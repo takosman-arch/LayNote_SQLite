@@ -90,10 +90,21 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
     );
   }
 
-  String _formatDate(DateTime dt) {
+  // NOT: Daha önce burada dile bakmaksızın sabit "gün.ay.yıl" sırası
+  // kullanılıyordu (ör. İngilizce'de de "09.08.2026" çıkıyordu). Artık
+  // theme.dart'taki merkezi dNoteFormatNumericDateParts üzerinden dile
+  // göre doğru sıra + ayraç uygulanıyor (bkz. Aşama 3.2). Saat kısmı
+  // (HH:mm) dilden bağımsız evrensel bir gösterim olduğu için ayrı
+  // tutulup sona ekleniyor.
+  String _formatDate(BuildContext context, DateTime dt) {
     String two(int n) => n.toString().padLeft(2, '0');
-    return '${two(dt.day)}.${two(dt.month)}.${dt.year} '
-        '${two(dt.hour)}:${two(dt.minute)}';
+    final datePart = dNoteFormatNumericDateParts(
+      context,
+      day: two(dt.day),
+      month: two(dt.month),
+      year: dt.year.toString(),
+    );
+    return '$datePart ${two(dt.hour)}:${two(dt.minute)}';
   }
 
   String _formatDriveDate(BuildContext context, DateTime? dt) {
@@ -103,7 +114,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
     // dilimlerinde (örn. Türkiye UTC+3) tarih/saat yerel saatten geri
     // görünür. Cihaz tarafındaki yedekler zaten DateTime.now() (yerel)
     // ile kaydedildiği için bu sorun sadece Drive sekmesinde yaşanıyordu.
-    return _formatDate(dt.toLocal());
+    return _formatDate(context, dt.toLocal());
   }
 
   // ══════════════════════════════════════════════════════════════════
@@ -673,7 +684,7 @@ class _BackupHistoryScreenState extends State<BackupHistoryScreen>
       context,
       icon: Icons.folder_zip_outlined,
       title: p.basename(file.path),
-      subtitle: '${_formatDate(stat.modified)} · '
+      subtitle: '${_formatDate(context, stat.modified)} · '
           '${BackupHelper.instance.formatFileSize(stat.size)}',
       onSelected: (value) {
         switch (value) {
