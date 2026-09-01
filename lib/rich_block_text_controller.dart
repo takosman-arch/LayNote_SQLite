@@ -49,6 +49,37 @@ FontWeight _boldWeightFor(FontWeight? base) {
   return baseIndex >= FontWeight.w600.index ? FontWeight.w900 : FontWeight.bold;
 }
 
+// ── DÜZELTME (13. deneme sonrası bulunan asıl kök sebep) ──────────────────
+// '_dependents.isEmpty' / 'attached' / 'readOnly && !obscureText' assertion
+// zinciri, DÜZENLENEBİLİR (readOnly olmayan) bir TextField'ın controller'ının
+// buildTextSpan()'ından dönen TextSpan'lerde 'recognizer' kullanılmasından
+// kaynaklanan, henüz açık olan bir Flutter framework hatası:
+//   https://github.com/flutter/flutter/issues/187598
+// Flutter, recognizer taşıyan span'i semantics (erişilebilirlik) ağacına da
+// dahil etmeye çalışıyor; bu, düzenlenebilir bir RenderEditable için
+// desteklenmediğinden RenderEditable.describeSemanticsConfiguration içinde
+// assertion patlıyor ve bunu takip eden frame'lerde Element/RenderObject
+// ağacı tutarsız kaldığından FARKLI assertion'lar (aralarında bizim
+// gördüğümüz '_dependents.isEmpty') ardı ardına fırlıyor. Bizim senaryoda
+// bunun "notu kapatıp tekrar açınca" ortaya çıkmasının sebebi: semantics
+// ağacı, alan tekrar focus/remount olduğunda yeniden hesaplanıyor.
+//
+// Çözüm: linkli span'i semantics ağacından TAMAMEN hariç tut. Tıklama
+// (hit-test/pointer routing) semantics'ten bağımsız çalıştığından link yine
+// tıklanabilir kalır; sadece ekran okuyucuya ayrı bir öğe olarak duyurulmaz
+// (zaten linkin ekran okuyucuya "bağlantı" diye ayrıca duyurulması bu
+// uygulamada gerekli değil, çevresindeki düz metnin parçası olarak okunur).
+class _LinkTextSpan extends TextSpan {
+  const _LinkTextSpan({super.text, super.style, super.recognizer});
+
+  @override
+  void computeSemanticsInformation(
+    List<InlineSpanSemanticsInformation> collector, {
+    Locale? inheritedLocale,
+    bool inheritedSpellOut = false,
+  }) {}
+}
+
 // ════════════════════════════════════════════════════════════════════════
 // RichBlockTextController
 // Bir metin bloğunun 'spans' listesine (bkz. rich_text_spans.dart) bakarak
@@ -258,11 +289,20 @@ class RichBlockTextController extends TextEditingController {
         _linkRecognizers.add(rec);
         recognizer = rec;
       }
-      children.add(TextSpan(
-        text: text.substring(start, end),
-        style: partStyle,
-        recognizer: recognizer,
-      ));
+      // DÜZELTME: recognizer'lı (linkli) parça normal TextSpan yerine,
+      // semantics'e katkı vermeyen _LinkTextSpan ile oluşturuluyor —
+      // bkz. sınıf üstündeki '13. deneme sonrası' notu. Recognizer'sız
+      // (link olmayan) parçalar için davranış hiç değişmiyor.
+      children.add(recognizer != null
+          ? _LinkTextSpan(
+              text: text.substring(start, end),
+              style: partStyle,
+              recognizer: recognizer,
+            )
+          : TextSpan(
+              text: text.substring(start, end),
+              style: partStyle,
+            ));
     }
 
     return TextSpan(style: style, children: children);
