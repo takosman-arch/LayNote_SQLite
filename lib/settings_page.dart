@@ -146,16 +146,22 @@ class _SettingsPageState extends State<SettingsPage> {
   static String? _fontFamilyValue(String name) => dNoteFontFamilyValue(name);
 
   // ── Metin rengi seçici ────────────────────────────────────────────
+  // Renkler ton/renk çemberi sırasına göre gruplandı: önce nötrler
+  // (beyaz/gri), ardından sıcak tonlar (sarı→turuncu→pembe→mor), sonra
+  // soğuk tonlar (mavi→camgöbeği→turkuaz→yeşil) — böylece benzer renkler
+  // listede birbirine komşu duruyor.
   static const List<Color> _textPalette = [
     Colors.white,
     Color(0xFFE0E0E0),
     Color(0xFFBDBDBD),
     Colors.amber,
+    Colors.redAccent,
+    Colors.pink,
+    Colors.purpleAccent,
+    Colors.blue,
     Colors.cyanAccent,
-    Colors.greenAccent,
-    Colors.pinkAccent,
-    Colors.lightBlueAccent,
-    Colors.orangeAccent,
+    Colors.tealAccent,
+    Colors.green,
   ];
 
   // ── Widget: Metin Boyutu seçici ─────────────────────────────────────
@@ -421,17 +427,15 @@ class _SettingsPageState extends State<SettingsPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(
-                    bottom: 16,
-                    left: 120,
-                    right: 120,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[500],
-                    borderRadius: BorderRadius.circular(2),
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[500],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
                 Text(

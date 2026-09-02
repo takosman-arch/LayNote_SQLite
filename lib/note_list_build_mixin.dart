@@ -3,6 +3,87 @@ part of 'main.dart';
 // ignore_for_file: unused_element
 
 mixin NoteListBuildMixin on State<NoteListScreen> {
+  // Arama modundaki "Türler" şeridinde seçili olan tür filtresi (ör.
+  // 'checklist', 'drawing', 'table', 'image', 'audio', 'video', 'document',
+  // 'reminder'). null ise tür filtresi uygulanmaz. Etiket filtresinden
+  // (_searchQuery) tamamen bağımsızdır; ikisi aynı anda aktif olabilir
+  // (VE mantığıyla birleşirler). Sadece arama modunda anlamlıdır, bu
+  // yüzden arama kapatılınca (_isSearching -> false olan üç noktada)
+  // sıfırlanır.
+  String? _activeTypeFilter;
+
+  // Bir notun eklerini (attachments) tekil bir liste olarak döndürür.
+  // note['attachments'] üst seviyede tam ek nesnelerini (id, isImage,
+  // isVideo, isAudio, storedName, fileName vb.) doğrudan taşır — bkz.
+  // _firstImageAttachment/_previewImages'daki aynı alan kullanımı.
+  List<Map<String, dynamic>> _attachmentsOfNote(Map<String, dynamic> note) {
+    final atts = note['attachments'];
+    if (atts is List) {
+      return atts
+          .whereType<Map>()
+          .map((a) => Map<String, dynamic>.from(a))
+          .toList();
+    }
+    return [];
+  }
+
+  // Bir notun, verilen tür filtresi anahtarına (`filterKey`) uyup uymadığını
+  // döndürür. `content_blocks.dart`'taki blok tipleri (text, attachments,
+  // calc_table, drawing, divider, checklist, table) ve not eklerindeki
+  // isImage/isVideo/isAudio bayrakları temel alınır.
+  bool _noteMatchesTypeFilter(Map<String, dynamic> note, String filterKey) {
+    switch (filterKey) {
+      case 'checklist':
+        final blocks = ContentBlocks.parse(note['content'] as String?);
+        return blocks.any((b) => b['type'] == 'checklist');
+      case 'drawing':
+        final blocks = ContentBlocks.parse(note['content'] as String?);
+        return blocks.any((b) => b['type'] == 'drawing');
+      case 'table':
+        final blocks = ContentBlocks.parse(note['content'] as String?);
+        return blocks.any(
+          (b) => b['type'] == 'table' || b['type'] == 'calc_table',
+        );
+      case 'image':
+        return _attachmentsOfNote(note).any((a) => a['isImage'] == true);
+      case 'video':
+        return _attachmentsOfNote(note).any((a) => a['isVideo'] == true);
+      case 'audio':
+        return _attachmentsOfNote(note).any((a) => a['isAudio'] == true);
+      case 'document':
+        // Resim/video/ses olmayan diğer tüm ekler (pdf, xlsx, vb.).
+        return _attachmentsOfNote(note).any(
+          (a) =>
+              a['isImage'] != true &&
+              a['isVideo'] != true &&
+              a['isAudio'] != true,
+        );
+      case 'reminder':
+        return _hasActiveReminder(note);
+      default:
+        return true;
+    }
+  }
+
+  // Arama modundaki "Türler" şeridinde her zaman gösterilen sabit ikon
+  // sırası: checklist, hatırlatıcı, foto, belge, tablo, çizim, ses, kamera.
+  static const List<String> _kAllTypeFilterKeys = [
+    'checklist',
+    'reminder',
+    'image',
+    'document',
+    'table',
+    'drawing',
+    'audio',
+    'video',
+  ];
+
+  List<String> _availableTypeFilters(List<Map<String, dynamic>> notes) {
+    return _kAllTypeFilterKeys
+        .where((key) => notes.any((n) => _noteMatchesTypeFilter(n, key)))
+        .toList();
+  }
+
   // Arama modundaki etiket şeridinin hangi notlardan beslenceğini belirler.
   // Ana `build` içindeki kategori filtreleme dallarıyla (bkz. aşağıdaki
   // `filteredNotes` hesaplaması) aynı mantığı, arama sorgusu olmadan
@@ -137,9 +218,12 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     // sadece içeriği boş bir widget döndürmek yeterli değil, çünkü
     // PreferredSize'ın yüksekliği (44) her durumda ayrılan alanı belirler;
     // bu da etiket olmasa bile boş bir şeridin açılmasına yol açardı.
-    final tagStripTags = collectAllKnownTags(
-      _notesForActiveTagScope(isTrash),
-    );
+    final tagStripScopeNotes = _notesForActiveTagScope(isTrash);
+    final tagStripTags = collectAllKnownTags(tagStripScopeNotes);
+    // Etiket şeridinden bağımsız "Türler" şeridi: içerik olsun ya da olmasın
+    // (kullanıcı isteği üzerine) her zaman sabit 7 ikon gösterilir — etiket
+    // şeridinin aksine, o an hangi türden not olduğuna bakılmaz.
+    final typeStripTypes = _kAllTypeFilterKeys;
 
     if (isTrash) {
       filteredNotes = _deletedNotes.where((note) {
@@ -156,7 +240,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         final tagsRaw = note['tags'];
         final matchesTags = tagsRaw is List &&
             tagsRaw.any((t) => t.toString().toLowerCase().contains(query));
-        return title.contains(query) || content.contains(query) || matchesTags;
+        final matchesSearch =
+            title.contains(query) || content.contains(query) || matchesTags;
+        final matchesType = _activeTypeFilter == null ||
+            _noteMatchesTypeFilter(note, _activeTypeFilter!);
+        return matchesSearch && matchesType;
       }).toList();
     } else {
       filteredNotes = _notes.where((note) {
@@ -172,25 +260,33 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             tagsRaw.any((t) => t.toString().toLowerCase().contains(query));
         final matchesSearch =
             title.contains(query) || content.contains(query) || matchesTags;
+        final matchesType = _activeTypeFilter == null ||
+            _noteMatchesTypeFilter(note, _activeTypeFilter!);
         final isArchived = note['isArchived'] == true;
         final isFavorite = note['isFavorite'] == true;
         final isLocked = note['isLocked'] == true;
 
         if (_activeCategory == 'Tümü' || _activeCategory == 'Notlar') {
-          return matchesSearch && !isArchived && !isLocked;
+          return matchesSearch && matchesType && !isArchived && !isLocked;
         } else if (_activeCategory == '__favorites__') {
-          return matchesSearch && isFavorite && !isArchived && !isLocked;
+          return matchesSearch &&
+              matchesType &&
+              isFavorite &&
+              !isArchived &&
+              !isLocked;
         } else if (_activeCategory == '__locked__') {
-          return matchesSearch && isLocked && !isArchived;
+          return matchesSearch && matchesType && isLocked && !isArchived;
         } else if (_activeCategory == '__archive__') {
-          return matchesSearch && isArchived && !isLocked;
+          return matchesSearch && matchesType && isArchived && !isLocked;
         } else if (_activeCategory == '__reminders__') {
           return matchesSearch &&
+              matchesType &&
               _hasActiveReminder(note) &&
               !isArchived &&
               !isLocked;
         } else {
           return matchesSearch &&
+              matchesType &&
               !isArchived &&
               !isLocked &&
               note['category'] == _activeCategory;
@@ -287,6 +383,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             _isSearching = false;
             _searchQuery = "";
             _searchController.clear();
+            _activeTypeFilter = null;
           });
           FocusScope.of(context).unfocus();
           return;
@@ -399,6 +496,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                   if (!_isSearching) {
                     _searchQuery = "";
                     _searchController.clear();
+                    _activeTypeFilter = null;
                   }
                 });
               },
@@ -1209,6 +1307,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                 _isSearching = false;
                 _searchQuery = "";
                 _searchController.clear();
+                _activeTypeFilter = null;
               });
               FocusScope.of(context).unfocus();
             } else {
@@ -1241,6 +1340,30 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                 // seçildi — böylece şeridin üstündeki ve altındaki boşluk
                 // eşit oluyor (altta ayrıca kendi payı eklenmiyor, listenin
                 // mevcut üst boşluğuna güveniliyor).
+                // Etiketlerden bağımsız "Türler" şeridi: not türüne (çizim,
+                // checklist, resim, belge, hatırlatıcı, ses, video) göre
+                // tek seçimli filtreleme. Etiket şeridiyle aynı mantıkla
+                // (AnimatedSize) açılıp kapanır, ayrı bir şerit olarak.
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOutCubic,
+                  alignment: Alignment.topCenter,
+                  child: _isSearching
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: _TypeFilterStrip(
+                            allTypes: typeStripTypes,
+                            selectedType: _activeTypeFilter,
+                            textColor: _textColor,
+                            onTypeSelected: (typeKey, selected) {
+                              setState(() {
+                                _activeTypeFilter = selected ? typeKey : null;
+                              });
+                            },
+                          ),
+                        )
+                      : const SizedBox(width: double.infinity, height: 0),
+                ),
                 AnimatedSize(
                   duration: const Duration(milliseconds: 220),
                   curve: Curves.easeOutCubic,
@@ -3371,6 +3494,161 @@ class _TagFilterStripState extends State<_TagFilterStrip>
                   ),
                 ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// Arama modunda üst şeritte beliren, etiketlerden tamamen bağımsız "Türler"
+// filtre şeridi (bkz. NoteListBuildMixin._noteMatchesTypeFilter). Etiket
+// şeridi gibi tek seçimlidir: bir ikona basmak o türü seçer, tekrar basmak
+// seçimi kaldırır. Görsel olarak ikon+etiket çiftleri, etiket şeridindeki
+// ChoiceChip'lerle tutarlı bir stille (aynı vurgu/arka plan renkleri)
+// gösterilir ama karışmasınlar diye ayrı bir widget/satır olarak tutulur.
+// ════════════════════════════════════════════════════════════════════════
+class _TypeFilterStrip extends StatefulWidget {
+  const _TypeFilterStrip({
+    required this.allTypes,
+    required this.selectedType,
+    required this.textColor,
+    required this.onTypeSelected,
+  });
+
+  final List<String> allTypes;
+  final String? selectedType;
+  final Color? textColor;
+  final void Function(String typeKey, bool selected) onTypeSelected;
+
+  @override
+  State<_TypeFilterStrip> createState() => _TypeFilterStripState();
+}
+
+class _TypeFilterStripState extends State<_TypeFilterStrip>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<Offset> _slide;
+  late final Animation<double> _fade;
+
+  // Tür anahtarından ikona eşleme. Artık etiket metni gösterilmiyor
+  // (kullanıcı isteğiyle salt ikon), bu yüzden _labels haritası kaldırıldı.
+  static const Map<String, IconData> _icons = {
+    'drawing': Icons.edit_outlined,
+    'checklist': Icons.checklist_outlined,
+    'image': Icons.image_outlined,
+    'table': Icons.border_all_rounded,
+    'document': Icons.insert_drive_file_outlined,
+    'reminder': Icons.alarm_outlined,
+    'audio': Icons.mic_none_outlined,
+    'video': Icons.videocam_outlined,
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 220),
+    );
+    final curved = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    );
+    _slide = Tween<Offset>(
+      begin: const Offset(0, -0.25),
+      end: Offset.zero,
+    ).animate(curved);
+    _fade = curved;
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Salt ikon, satır etiketsiz: her ikon `Expanded` ile eşit paya bölünmüş
+    // bir dilim alıyor (kaç ikon olursa olsun satır tam ekran genişliğine
+    // sığar, yatay kaydırma yok) ama önceki sürümün aksine buton artık
+    // `Center` ile küçük bir kutuya sıkıştırılmıyor — dilimin neredeyse
+    // tamamını dolduruyor (yalnızca 4px yatay boşluk bırakılıyor). Böylece
+    // ikonlar arası boşluk, etiket şeridindeki 8px'lik sabit boşlukla aynı
+    // görünüme yaklaşıyor; önceki geniş boşluk sorunu buradan kaynaklanıyordu.
+    return SlideTransition(
+      position: _slide,
+      child: FadeTransition(
+        opacity: _fade,
+        child: Row(
+          children: [
+            for (final typeKey in widget.allTypes)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: _TypeIconButton(
+                    icon: _icons[typeKey] ?? Icons.circle_outlined,
+                    selected: widget.selectedType == typeKey,
+                    textColor: widget.textColor,
+                    onTap: () => widget.onTypeSelected(
+                      typeKey,
+                      widget.selectedType != typeKey,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Tek bir tür ikonu: seçiliyken vurgu (accent) rengiyle dolu, seçili
+// değilken hafif gri bir kare (yuvarlatılmış köşeli) alan içinde gösterilir
+// — ekran görüntüsündeki referans uygulamanın "Türler" satırıyla aynı
+// köşeli (dairesel değil) görünüm. Renk mantığı etiket şeridiyle tutarlı
+// (aynı `appAccentColor`/gri opaklık değerleri).
+class _TypeIconButton extends StatelessWidget {
+  const _TypeIconButton({
+    required this.icon,
+    required this.selected,
+    required this.textColor,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final bool selected;
+  final Color? textColor;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    );
+    return SizedBox(
+      width: double.infinity,
+      child: Material(
+        color: selected
+            ? appAccentColor.value.withOpacity(0.3)
+            : Colors.grey.withOpacity(0.15),
+        shape: shape,
+        child: InkWell(
+          customBorder: shape,
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Center(
+              child: Icon(
+                icon,
+                size: 20,
+                color: dNoteEffectiveTextColor(context, textColor),
+              ),
+            ),
           ),
         ),
       ),
