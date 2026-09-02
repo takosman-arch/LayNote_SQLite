@@ -230,7 +230,9 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
             // 3. Yedekleme Sıklığı (Frekans)
             ListTile(
               title: Text(AppLocalizations.of(context)!.autoBackupSettingsFrequencyTitle),
-              subtitle: Text(AppLocalizations.of(context)!.autoBackupSettingsFrequencySubtitle(_frequencyHours)),
+              subtitle: Text(
+                AppLocalizations.of(context)!.autoBackupSettingsFrequencySubtitle(_frequencyHours),
+              ),
               trailing: DropdownButton<int>(
                 value: _frequencyHours,
                 items: [

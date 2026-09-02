@@ -10,6 +10,7 @@ class NoteListScreen extends StatefulWidget {
 
 class _NoteListScreenState extends State<NoteListScreen>
     with
+        WidgetsBindingObserver,
         NoteListSelectionMixin,
         NoteListLifecycleMixin,
         NoteListDataCategoryMixin,

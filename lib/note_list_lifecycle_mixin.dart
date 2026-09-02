@@ -2,7 +2,7 @@ part of 'main.dart';
 
 // ignore_for_file: unused_element
 
-mixin NoteListLifecycleMixin on State<NoteListScreen> {
+mixin NoteListLifecycleMixin on State<NoteListScreen>, WidgetsBindingObserver {
   // ---- Diğer mixin'lerde tanımlı, burada kullanılan üyeler ----
   Map<String, String> get _categoryColors;
   set _categoryColors(Map<String, String> value);
@@ -154,6 +154,10 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
   @override
   void initState() {
     super.initState();
+    // Uygulama arka plan/ön plan geçişlerini yakalamak için (bkz. aşağıdaki
+    // didChangeAppLifecycleState). _NoteListScreenState artık
+    // WidgetsBindingObserver ile mixin edildi (note_list_screen.dart).
+    WidgetsBinding.instance.addObserver(this);
     _loadData();
     DBHelper.instance.attachmentsDir().then((d) {
       if (mounted) setState(() => _attachmentsDirPath = d.path);
@@ -271,10 +275,29 @@ mixin NoteListLifecycleMixin on State<NoteListScreen> {
     _snackOverlay?.remove();
     _shareIntentSub?.cancel();
     _widgetClickSub?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     BackupHelper.instance.onRestoreCompleted = null;
     _titleController.dispose();
     _searchController.dispose();
     super.dispose();
+  }
+
+  // ── Arka plan/ön plan geçişlerini yakalama ─────────────────────────────
+  // Soğuk açılışta main.dart -> _initBackgroundServices() zaten
+  // AutoBackupService.checkAndRunIfDue()'yu çağırıyor. Ancak kullanıcı
+  // uygulamayı hiç tam kapatmadan (cold start olmadan) günlerce arka
+  // planda tutabilir — bu durumda main() bir daha çalışmaz, ve eğer
+  // WorkManager görevi bu sırada bir OEM tarafından sessizce
+  // öldürülmüşse otomatik yedekleme fiilen hiç tetiklenmez. Bu yüzden
+  // uygulama her ön plana (resumed) döndüğünde de aynı "yakalama"
+  // kontrolünü tekrarlıyoruz. checkAndRunIfDue() zaten ucuz bir kontrol
+  // (son yedek zamanına bakıp süre dolmadıysa hemen çıkıyor), o yüzden
+  // her resume'da çağrılması sorun teşkil etmez.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(AutoBackupService.instance.checkAndRunIfDue());
+    }
   }
 
   // ── Başka uygulamalardan paylaşılan link/metni yakalama ───────────────

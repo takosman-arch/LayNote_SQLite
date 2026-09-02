@@ -161,13 +161,30 @@ Future<void> _initBackgroundServices() async {
   await ReminderService.instance.init();
 
   // Otomatik yedekleme: WorkManager'ı başlat ve kayıtlı ayarlara göre
-  // periyodik görevi yeniden zamanla (bkz. auto_backup_service.dart
-  // başındaki açıklama — bazı OEM'lerde görev kaydı silinebildiğinden
-  // her açılışta tekrar çağrılması güvenli ve gereklidir). Bu, notun
-  // açılmasıyla hiçbir ilgisi olmadığından ilk frame'den sonraya
-  // bırakıldı.
+  // periyodik görevi (gerekiyorsa) yeniden zamanla. Bu, notun açılmasıyla
+  // hiçbir ilgisi olmadığından ilk frame'den sonraya bırakıldı.
+  //
+  // resetIfExists: false — AŞAMA 8.1 DÜZELTMESİ: Bu çağrı HER uygulama
+  // açılışında yapıldığı için, önceden kullanılan varsayılan (replace)
+  // davranış periyodik görevin geri sayımını her açılışta sıfırlıyor ve
+  // otomatik yedeklemenin fiilen hiç tetiklenmemesine yol açıyordu.
+  // 'keep' politikası, görev zaten kayıtlıysa dokunmaz (geri sayım
+  // korunur); sadece bir OEM tarafından sessizce silinmişse yeniden
+  // oluşturur (bkz. auto_backup_service.dart -> rescheduleFromSavedSettings
+  // açıklaması). Kullanıcı Ayarlar ekranından bir ayarı GERÇEKTEN
+  // değiştirdiğinde ise o ekran varsayılan (resetIfExists: true) ile
+  // çağırmaya devam eder — yeni ayarların hemen uygulanması gerekir.
   await AutoBackupService.instance.initializeWorkmanager();
-  await AutoBackupService.instance.rescheduleFromSavedSettings();
+  await AutoBackupService.instance
+      .rescheduleFromSavedSettings(resetIfExists: false);
+
+  // AŞAMA 9: Arka plan görevi (WorkManager) OEM pil optimizasyonu
+  // yüzünden çalışmamış olabilir; süresi dolmuşsa yedeklemeyi burada,
+  // ön planda "yakalayarak" tamamlar. _initBackgroundServices() zaten
+  // runApp()'tan sonra unawaited() ile çağrıldığı için (bkz. main()
+  // içindeki not) bu, ilk frame'i bloklamaz — uygulama anında açılır,
+  // yedekleme varsa arka planda sessizce devam eder.
+  await AutoBackupService.instance.checkAndRunIfDue();
 }
 
 final ThemeData _dNoteDarkTheme = ThemeData(

@@ -225,12 +225,24 @@ class GoogleDriveHelper {
   // kullanır. Bu, aynı akışta upload + retention gibi birden fazla Drive
   // çağrısı yapılacaksa her seferinde sıfırdan kimlik doğrulama (ve bunun
   // getirdiği ekstra network round-trip) yapılmasını önler.
+  //
+  // [l10n]: AŞAMA 8.2 DÜZELTMESİ — dışarıdan (örn. AutoBackupService gibi
+  // BuildContext'i olmayan bir arka plan isolate'inden) context'siz üretilmiş
+  // bir AppLocalizations örneği verilebilir. Verilmezse önceki davranış
+  // korunur: context tabanlı _l10n (navigatorKey.currentContext) kullanılır
+  // — bu, UI'dan (context'in geçerli olduğu) yapılan çağrılarda sorunsuz
+  // çalışır. Arka plan görevinde bu parametre verilmezse, navigatorKey.
+  // currentContext her zaman null olacağından hata mesajı üretilirken
+  // ("Null check operator used on a null value") ASIL hatayı gizleyen
+  // ikinci bir çökme yaşanır ve görev _saveLastRun()'a hiç ulaşamaz.
   Future<GoogleDriveBackupFile> uploadBackup(
     File localZipFile, {
     void Function(double progress, String step)? onProgress,
     DriveSession? session,
+    AppLocalizations? l10n,
   }) async {
-    onProgress?.call(0.05, _l10n.backupDriveAuthenticatingLabel);
+    final loc = l10n ?? _l10n;
+    onProgress?.call(0.05, loc.backupDriveAuthenticatingLabel);
     final swUploadTotal = Stopwatch()..start();
     final ownsSession = session == null;
     final swGetSession = Stopwatch()..start();
@@ -238,7 +250,7 @@ class GoogleDriveHelper {
     debugPrint('[DRIVE TIMING] session hazırlama (uploadBackup): ${swGetSession.elapsedMilliseconds}ms — dışarıdan mı geldi: ${!ownsSession}');
     if (activeSession == null) {
       throw GoogleDriveException(
-        _l10n.backupDriveNotSignedInMessage,
+        loc.backupDriveNotSignedInMessage,
         type: GoogleDriveErrorType.notSignedIn,
         retryable: false,
       );
@@ -246,7 +258,7 @@ class GoogleDriveHelper {
     final driveApi = activeSession.api;
 
     try {
-      onProgress?.call(0.2, _l10n.backupDriveUploadingLabel);
+      onProgress?.call(0.2, loc.backupDriveUploadingLabel);
 
       // NOT: Dosya artık STREAM olarak (localZipFile.openRead()) değil,
       // tamamı belleğe okunup (readAsBytes()) SABİT UZUNLUKLU bir byte
@@ -349,7 +361,7 @@ class GoogleDriveHelper {
             onTimeout: () {
               debugPrint('[DRIVE DEBUG] files.create() ${uploadTimeoutSeconds} saniyede CEVAP VERMEDİ (timeout)');
               throw GoogleDriveException(
-                _l10n.backupDriveUploadTimeoutMessage,
+                loc.backupDriveUploadTimeoutMessage,
                 type: GoogleDriveErrorType.network,
                 retryable: true,
               );
@@ -359,12 +371,12 @@ class GoogleDriveHelper {
 
       debugPrint('[DRIVE DEBUG] files.create() BAŞARILI: id=${created.id}, name=${created.name}');
       debugPrint('[DRIVE TIMING] uploadBackup() TOPLAM: ${swUploadTotal.elapsedMilliseconds}ms');
-      onProgress?.call(1.0, _l10n.backupDriveOperationCompletedLabel);
-      return GoogleDriveBackupFile.fromDriveFile(created);
+      onProgress?.call(1.0, loc.backupDriveOperationCompletedLabel);
+      return GoogleDriveBackupFile.fromDriveFile(created, l10n: loc);
     } catch (e, stack) {
       debugPrint('[DRIVE DEBUG] uploadBackup HATASI: $e');
       debugPrint('[DRIVE DEBUG] Stack: $stack');
-      throw GoogleDriveException.fromError(e);
+      throw GoogleDriveException.fromError(e, l10n: loc);
     } finally {
       if (ownsSession) activeSession.client.close();
     }
@@ -387,13 +399,17 @@ class GoogleDriveHelper {
   // dosya birikeceği için (özellikle Aşama 6.5'teki otomatik temizlik
   // devreye girdiğinde) tek sayfa yeterli olur, ama doğruluk için
   // aşağıda tüm sayfalar dolaşılır.
-  Future<List<GoogleDriveBackupFile>> listBackups({DriveSession? session}) async {
+  Future<List<GoogleDriveBackupFile>> listBackups({
+    DriveSession? session,
+    AppLocalizations? l10n,
+  }) async {
+    final loc = l10n ?? _l10n;
     final swTotal = Stopwatch()..start();
     final ownsSession = session == null;
     final activeSession = session ?? await getDriveApi();
     if (activeSession == null) {
       throw GoogleDriveException(
-        _l10n.backupDriveNotSignedInMessage,
+        loc.backupDriveNotSignedInMessage,
         type: GoogleDriveErrorType.notSignedIn,
         retryable: false,
       );
@@ -413,12 +429,14 @@ class GoogleDriveHelper {
           pageToken: pageToken,
         );
         final files = response.files ?? const <drive.File>[];
-        results.addAll(files.map(GoogleDriveBackupFile.fromDriveFile));
+        results.addAll(
+          files.map((f) => GoogleDriveBackupFile.fromDriveFile(f, l10n: loc)),
+        );
         pageToken = response.nextPageToken;
       } while (pageToken != null);
       return results;
     } catch (e) {
-      throw GoogleDriveException.fromError(e);
+      throw GoogleDriveException.fromError(e, l10n: loc);
     } finally {
       debugPrint('[DRIVE TIMING] listBackups() TOPLAM: ${swTotal.elapsedMilliseconds}ms');
       if (ownsSession) activeSession.client.close();
@@ -459,12 +477,14 @@ class GoogleDriveHelper {
   Future<File> downloadBackup(
     GoogleDriveBackupFile driveFile, {
     void Function(double progress, String step)? onProgress,
+    AppLocalizations? l10n,
   }) async {
-    onProgress?.call(0.05, _l10n.backupDriveAuthenticatingLabel);
+    final loc = l10n ?? _l10n;
+    onProgress?.call(0.05, loc.backupDriveAuthenticatingLabel);
     final session = await getDriveApi();
     if (session == null) {
       throw GoogleDriveException(
-        _l10n.backupDriveNotSignedInMessage,
+        loc.backupDriveNotSignedInMessage,
         type: GoogleDriveErrorType.notSignedIn,
         retryable: false,
       );
@@ -472,7 +492,7 @@ class GoogleDriveHelper {
     final driveApi = session.api;
 
     try {
-      onProgress?.call(0.1, _l10n.backupDriveDownloadingLabel);
+      onProgress?.call(0.1, loc.backupDriveDownloadingLabel);
       final media = await driveApi.files.get(
         driveFile.id,
         downloadOptions: drive.DownloadOptions.fullMedia,
@@ -491,7 +511,7 @@ class GoogleDriveHelper {
           // %10 doğrulama, sonundaki %10 diske yazma için bırakılır.
           onProgress?.call(
             0.1 + 0.8 * (downloaded / totalBytes).clamp(0.0, 1.0),
-            _l10n.backupDriveDownloadingWithSizeLabel(
+            loc.backupDriveDownloadingWithSizeLabel(
               BackupHelper.instance.formatFileSize(downloaded),
               BackupHelper.instance.formatFileSize(totalBytes),
             ),
@@ -499,15 +519,15 @@ class GoogleDriveHelper {
         }
       }
 
-      onProgress?.call(0.95, _l10n.backupDriveSavingToDeviceLabel);
+      onProgress?.call(0.95, loc.backupDriveSavingToDeviceLabel);
       final localDir = await BackupHelper.instance.backupsDir();
       final localFile = File(p.join(localDir.path, driveFile.name));
       await localFile.writeAsBytes(buffer, flush: true);
 
-      onProgress?.call(1.0, _l10n.backupDriveOperationCompletedLabel);
+      onProgress?.call(1.0, loc.backupDriveOperationCompletedLabel);
       return localFile;
     } catch (e) {
-      throw GoogleDriveException.fromError(e);
+      throw GoogleDriveException.fromError(e, l10n: loc);
     } finally {
       session.client.close();
     }
@@ -524,12 +544,17 @@ class GoogleDriveHelper {
   // normal Drive çöp kutusunda da görünmez). Bu yüzden cihaz tarafındaki
   // silme onay diyaloğuyla (Aşama 5.1) aynı ciddiyette ele alınmalıdır —
   // arayüz katmanı (Aşama 6.7) burada da bir onay diyaloğu göstermelidir.
-  Future<void> deleteBackup(String fileId, {DriveSession? session}) async {
+  Future<void> deleteBackup(
+    String fileId, {
+    DriveSession? session,
+    AppLocalizations? l10n,
+  }) async {
+    final loc = l10n ?? _l10n;
     final ownsSession = session == null;
     final activeSession = session ?? await getDriveApi();
     if (activeSession == null) {
       throw GoogleDriveException(
-        _l10n.backupDriveNotSignedInMessage,
+        loc.backupDriveNotSignedInMessage,
         type: GoogleDriveErrorType.notSignedIn,
         retryable: false,
       );
@@ -537,7 +562,7 @@ class GoogleDriveHelper {
     try {
       await activeSession.api.files.delete(fileId);
     } catch (e) {
-      throw GoogleDriveException.fromError(e);
+      throw GoogleDriveException.fromError(e, l10n: loc);
     } finally {
       if (ownsSession) activeSession.client.close();
     }
@@ -567,8 +592,9 @@ class GoogleDriveHelper {
   Future<RetentionResult> enforceRetention({
     int maxBackupsToKeep = defaultMaxDriveBackupsToKeep,
     DriveSession? session,
+    AppLocalizations? l10n,
   }) async {
-    final all = await listBackups(session: session); // zaten en yeni en üstte sıralı
+    final all = await listBackups(session: session, l10n: l10n); // zaten en yeni en üstte sıralı
     if (all.length <= maxBackupsToKeep) {
       return RetentionResult(deletedCount: 0, failedCount: 0);
     }
@@ -578,7 +604,7 @@ class GoogleDriveHelper {
     var failed = 0;
     for (final backup in toDelete) {
       try {
-        await deleteBackup(backup.id, session: session);
+        await deleteBackup(backup.id, session: session, l10n: l10n);
         deleted++;
       } catch (_) {
         // Tek bir dosyanın silinememesi tüm temizliği durdurmaz; bir
@@ -622,10 +648,10 @@ class GoogleDriveBackupFile {
     required this.modifiedTime,
   });
 
-  factory GoogleDriveBackupFile.fromDriveFile(drive.File f) {
+  factory GoogleDriveBackupFile.fromDriveFile(drive.File f, {AppLocalizations? l10n}) {
     return GoogleDriveBackupFile(
       id: f.id ?? '',
-      name: f.name ?? _driveL10n.backupDriveUnknownBackupFileName,
+      name: f.name ?? (l10n ?? _driveL10n).backupDriveUnknownBackupFileName,
       sizeBytes: int.tryParse(f.size ?? '') ?? 0,
       modifiedTime: f.modifiedTime,
     );
@@ -659,12 +685,20 @@ class GoogleDriveException implements Exception {
   @override
   String toString() => message;
 
-  factory GoogleDriveException.fromError(Object error) {
+  // [l10n]: AŞAMA 8.2 DÜZELTMESİ — verilmezse önceki gibi context tabanlı
+  // _driveL10n'e (navigatorKey.currentContext) düşer. Arka plan isolate'inde
+  // (otomatik yedekleme) bu context her zaman null olduğundan, bu fabrika
+  // ÇAĞRILAN HER HATA İÇİN (network, quota, timeout, vs.) mutlaka açıkça
+  // bir l10n almalıdır — aksi halde asıl hatayı gizleyen bir "Null check
+  // operator used on a null value" çökmesi yaşanır ve _saveLastRun() hiç
+  // çağrılmadan görev sessizce yarıda kesilir.
+  factory GoogleDriveException.fromError(Object error, {AppLocalizations? l10n}) {
     if (error is GoogleDriveException) return error;
+    final loc = l10n ?? _driveL10n;
     final text = error.toString().toLowerCase();
     if (text.contains('storagequotaexceeded') || text.contains('quota')) {
       return GoogleDriveException(
-        _driveL10n.backupDriveStorageFullMessage,
+        loc.backupDriveStorageFullMessage,
         type: GoogleDriveErrorType.quotaExceeded,
         retryable: false,
       );
@@ -673,20 +707,20 @@ class GoogleDriveException implements Exception {
         text.contains('failed host lookup') ||
         text.contains('network')) {
       return GoogleDriveException(
-        _driveL10n.backupDriveNetworkErrorMessage,
+        loc.backupDriveNetworkErrorMessage,
         type: GoogleDriveErrorType.network,
         retryable: true,
       );
     }
     if (text.contains('404') || text.contains('not found')) {
       return GoogleDriveException(
-        _driveL10n.backupDriveBackupNotFoundMessage,
+        loc.backupDriveBackupNotFoundMessage,
         type: GoogleDriveErrorType.notFound,
         retryable: false,
       );
     }
     return GoogleDriveException(
-      _driveL10n.backupDriveUnknownErrorMessage(error.toString()),
+      loc.backupDriveUnknownErrorMessage(error.toString()),
       type: GoogleDriveErrorType.unknown,
       retryable: true,
     );

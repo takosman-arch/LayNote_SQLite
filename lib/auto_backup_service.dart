@@ -214,27 +214,55 @@ class AutoBackupService {
 
   // ── WorkManager Planlama ─────────────────────────────────────────────
   //
-  // Mevcut kaydı iptal edip (varsa) ayarlara göre yeniden kaydeder.
-  // isEnabled() false ise sadece iptal eder ve çıkar. Ayarlar ekranındaki
-  // HER değişiklikten sonra (switch, hedef, sıklık, wifi-only) çağrılır —
-  // bu yüzden idempotent olacak şekilde her seferinde önce cancel edilir.
-  Future<void> rescheduleFromSavedSettings() async {
-    await Workmanager().cancelByUniqueName(_autoBackupTaskUniqueName);
-
+  // Ayarlara göre periyodik görevi (yeniden) kaydeder. isEnabled() false
+  // ise sadece iptal eder ve çıkar.
+  //
+  // [resetIfExists] — AŞAMA 8.1 DÜZELTMESİ:
+  // Önceden bu metot HER çağrıldığında önce cancelByUniqueName() ile
+  // mevcut görevi iptal edip ExistingWorkPolicy.replace ile sıfırdan
+  // kaydediyordu. main.dart -> _initBackgroundServices() bu metodu HER
+  // UYGULAMA AÇILIŞINDA (OEM'lerin görevi sessizce silebilmesine karşı
+  // bir güvenlik önlemi olarak) çağırdığı için, kullanıcı uygulamayı
+  // günde bir kez bile açsa periyodik görevin dahili geri sayımı her
+  // seferinde sıfırlanıyor ve süre hiçbir zaman dolmadığı için otomatik
+  // yedekleme fiilen HİÇ TETİKLENMİYORDU.
+  //
+  // Bu yüzden artık iki farklı kullanım var:
+  //   • resetIfExists: true  (varsayılan, ayarlar ekranından kullanıcı
+  //     bir ayarı GERÇEKTEN değiştirdiğinde çağrılır) → cancel + replace
+  //     ile görev sıfırdan kurulur; yeni sıklık/hedef/wifi ayarı hemen
+  //     uygulanır. Kullanıcı bilinçli bir değişiklik yaptığı için geri
+  //     sayımın sıfırlanması burada beklenen ve doğru davranıştır.
+  //   • resetIfExists: false (main.dart -> _initBackgroundServices()'ten
+  //     her açılışta çağrılır) → ExistingWorkPolicy.keep kullanılır: görev
+  //     zaten kayıtlıysa dokunulmaz (geri sayım korunur), sadece bir OEM
+  //     tarafından silinmişse yeniden oluşturulur. Böylece hem "OEM görevi
+  //     sildi" senaryosuna karşı korunmuş oluruz hem de normal açılışlarda
+  //     sayaç sıfırlanmaz.
+  Future<void> rescheduleFromSavedSettings({bool resetIfExists = true}) async {
     final enabled = await isEnabled();
-    if (!enabled) return;
+    if (!enabled) {
+      await Workmanager().cancelByUniqueName(_autoBackupTaskUniqueName);
+      return;
+    }
+
+    if (resetIfExists) {
+      await Workmanager().cancelByUniqueName(_autoBackupTaskUniqueName);
+    }
 
     final frequencyHours = await getFrequencyHours();
     final wifiOnly = await getWifiOnly();
     final target = await getTarget();
 
-    // WorkManager'ın minimum periyodik aralığı Android kısıtlaması
-    // gereği 15 dakikadır; ayarlar ekranındaki en düşük seçenek zaten
-    // 6 saat olduğu için burada ek bir clamp'e gerek yok.
+    // WorkManager'ın minimum periyodik aralığı Android kısıtlaması gereği
+    // 15 dakikadır. Ayarlar ekranındaki seçenekler zaten 6 saat ve üzerinde
+    // olduğu için bir clamp'e gerek yoktur.
+    final frequency = Duration(hours: frequencyHours);
+
     await Workmanager().registerPeriodicTask(
       _autoBackupTaskUniqueName,
       _autoBackupTaskName,
-      frequency: Duration(hours: frequencyHours),
+      frequency: frequency,
       constraints: Constraints(
         // Hedef sadece 'local' ise ağ şartı aranmaz; drive/both ise
         // wifiOnly ayarına göre ağ kısıtlaması uygulanır.
@@ -242,13 +270,58 @@ class AutoBackupService {
             ? NetworkType.not_required
             : (wifiOnly ? NetworkType.unmetered : NetworkType.connected),
       ),
-      existingWorkPolicy: ExistingWorkPolicy.replace,
+      // resetIfExists=false iken 'keep' kullanılır ki her açılışta görev
+      // sıfırlanıp geri sayım baştan başlamasın (bkz. yukarıdaki not).
+      existingWorkPolicy:
+          resetIfExists ? ExistingWorkPolicy.replace : ExistingWorkPolicy.keep,
       backoffPolicy: BackoffPolicy.linear,
       backoffPolicyDelay: const Duration(minutes: 15),
     );
   }
 
-  // ── Görev Mantığı (arka plan isolate'inde çalışır) ───────────────────
+  // ── AŞAMA 9: Ön Planda "Yakalama" (Catch-up) Mantığı ─────────────────
+  //
+  // NEDEN GEREKLİ: Bazı OEM'lerin (Samsung, Xiaomi, Huawei) agresif pil
+  // yönetimi, WorkManager görevini ekran kapalıyken başlatıp yarıda
+  // dondurabiliyor veya hiç çalıştırmayabiliyor. Kullanıcı bu ayarları
+  // kendi başına asla bulup açmayacağı için, arka plan görevine %100
+  // güvenemeyiz. Bu metot bir GÜVENCE KATMANIDIR — arka planın YERİNE
+  // geçmez, sadece arka plan çalışmadığında devreye girer.
+  //
+  // main.dart -> _initBackgroundServices() içinde, rescheduleFromSavedSettings()
+  // çağrısından SONRA, uygulama her açıldığında çağrılmalıdır:
+  //
+  //   await AutoBackupService.instance.checkAndRunIfDue();
+  //
+  // Mantık: otomatik yedekleme açık mı, ve son yedekten bu yana ayarlanan
+  // sıklık (frequencyHours) kadar süre geçmiş mi diye bakar. Geçmişse,
+  // yedeklemeyi ÖN PLANDA (uygulama açıkken, herhangi bir arka plan/Doze
+  // kısıtlaması olmadan) hemen çalıştırır. Geçmemişse hiçbir şey yapmaz —
+  // yani arka plan zaten görevini yapmışsa bu metot devreye bile girmez.
+  Future<void> checkAndRunIfDue() async {
+    if (!await isEnabled()) return;
+
+    final lastRun = await getLastRunAt();
+    final frequencyHours = await getFrequencyHours();
+    final dueInterval = Duration(hours: frequencyHours);
+
+    final isOverdue =
+        lastRun == null || DateTime.now().difference(lastRun) >= dueInterval;
+    if (!isOverdue) return;
+
+    try {
+      await _runBackupTask();
+    } catch (_) {
+      // _runBackupTask zaten _saveLastRun() içinde hata durumunu da
+      // kaydediyor (bkz. aşağısı); burada sessizce yutuyoruz ki
+      // uygulama açılışı bir yedekleme hatası yüzünden kesintiye
+      // uğramasın. Kullanıcı zaten Ayarlar ekranındaki durum kartından
+      // hatayı görebilir.
+    }
+  }
+
+  // ── Görev Mantığı (arka plan isolate'inde çalışır VEYA ön planda
+  // checkAndRunIfDue() üzerinden manuel tetiklenir) ────────────────────
   //
   // callbackDispatcher() tarafından çağrılır. Uygulama açıkken manuel
   // test etmek isterseniz de doğrudan çağrılabilir (ayarlar ekranına
@@ -344,8 +417,8 @@ class AutoBackupService {
                 zipFile = await BackupHelper.instance.createBackup(l10n: l10n);
               }
               try {
-                await GoogleDriveHelper.instance.uploadBackup(zipFile, session: session);
-                await GoogleDriveHelper.instance.enforceRetention(session: session);
+                await GoogleDriveHelper.instance.uploadBackup(zipFile, session: session, l10n: l10n);
+                await GoogleDriveHelper.instance.enforceRetention(session: session, l10n: l10n);
                 messages.add(l10n.autoBackupDriveSuccessMessage);
                 anySuccess = true;
               } catch (e) {
@@ -368,7 +441,12 @@ class AutoBackupService {
           }
         }
       } catch (e) {
-        final ex = GoogleDriveException.fromError(e);
+        // AŞAMA 8.2 DÜZELTMESİ: l10n burada AÇIKÇA geçilmezse
+        // GoogleDriveException.fromError() context tabanlı _driveL10n'e
+        // düşer (navigatorKey.currentContext), bu isolate'te her zaman
+        // null'dır ve ASIL hatayı gizleyen bir çökmeye yol açar — böylece
+        // _saveLastRun() hiç çağrılamaz (bkz. google_drive_helper.dart).
+        final ex = GoogleDriveException.fromError(e, l10n: l10n);
         messages.add(l10n.autoBackupDriveFailedMessage(ex.message));
       }
       debugPrint('[DRIVE TIMING] Drive bloğu (adım 3) TOPLAM: ${swDriveBlock.elapsedMilliseconds}ms');
