@@ -19,6 +19,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
   set _deletedNotes(List<Map<String, dynamic>> value);
   void _enterSelectionMode(Map<String, dynamic> note);
   Color _getCategoryColor(String? category);
+  int _getCountForCategory(String category);
   String _getFormattedDate([DateTime? date]);
   double get _globalFontSize;
   set _globalFontSize(double value);
@@ -1401,6 +1402,19 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     Navigator.pop(context); // drawer'ı önce kapat
 
     if (!_notePasswordEnabled) {
+      // DÜZELTME: uygulama parolası ayarlardan kaldırıldığında, içinde
+      // zaten kilitli not bulunan "Kilitli" klasörüne girmek bile
+      // koşulsuz "Yeni Parola Oluştur" ekranını açıyordu — kullanıcı
+      // sadece mevcut kilitli notlarına bakmak isterken yeniden parola
+      // belirlemeye zorlanıyordu. Artık: klasörde en az bir (kilitli)
+      // not varsa (parola zaten devre dışıyken kilit fiilen anlamsız
+      // olduğundan) doğrudan klasör açılır; klasör BOŞSA hâlâ yeni
+      // parola oluşturma akışı (ilk kurulum niteliğinde) sürer.
+      if (_getCountForCategory('__locked__') > 0) {
+        setState(() => _activeCategory = '__locked__');
+        _saveData();
+        return;
+      }
       // Parola belirlenmemişse artık alttan kırmızı uyarı göstermek yerine
       // doğrudan "Yeni Parola Oluştur" ekranı açılır. Parola az önce
       // oluşturulduğu için ayrıca tekrar doğrulama istemeye gerek yok;

@@ -525,6 +525,19 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
             await Future.delayed(const Duration(milliseconds: 350));
             if (!mounted) return;
             if (!_notePasswordEnabled) {
+              // DÜZELTME: uygulama parolası ayarlardan kaldırıldığında,
+              // içinde zaten not bulunan kilitli bir klasöre tıklamak bile
+              // koşulsuz "Yeni Parola Oluştur" ekranını açıyordu — kullanıcı
+              // sadece mevcut notlarına bakmak isterken yeniden parola
+              // belirlemeye zorlanıyordu. Artık: klasörde en az bir not
+              // varsa (parola zaten devre dışıyken kilit fiilen anlamsız
+              // olduğundan) doğrudan klasör açılır; klasör BOŞSA hâlâ yeni
+              // parola oluşturma akışı (ilk kurulum niteliğinde) sürer.
+              if (_getCountForCategory(cat) > 0) {
+                setState(() => _activeCategory = cat);
+                _saveData();
+                return;
+              }
               // Parola belirlenmemişse artık "Parola Gerekiyor" uyarı
               // dialogu yerine doğrudan "Yeni Parola Oluştur" ekranı
               // açılır; parola belirlenince kullanıcı doğrudan kategoriye

@@ -5370,33 +5370,188 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   onConvertItemToText: (j) {
                                     pushUndoCheckpoint();
                                     int focusBlockIndex = i;
+                                    int caretOffset = 0;
                                     setModalState(() {
                                       if (j < 0 || j >= items.length) return;
                                       items.removeAt(j);
                                       if (items.isEmpty) {
-                                        // Tek maddeydi: checklist bloğunun
-                                        // tamamı yerinde boş bir metin
-                                        // satırına dönüşür.
-                                        blocks[i] = {'type': 'text', 'text': ''};
-                                        focusBlockIndex = i;
+                                        // Tek maddeydi: checklist bloğu
+                                        // tamamen kaldırılır. removeTableBlockAt/
+                                        // removeDrawingBlockAt/removeDividerBlockAt
+                                        // ile AYNI desen: komşu iki taraf da
+                                        // metin bloğuysa birleştirilir (imleç
+                                        // birleşim noktasında kalır), sadece
+                                        // tek taraf metinse ona eklenir,
+                                        // hiçbiri metin değilse (ya da bu not
+                                        // içindeki tek blok buysa) checklist'in
+                                        // yerine boş bir metin bloğu konur.
+                                        //
+                                        // DÜZELTME: eskiden burada koşulsuz
+                                        // `blocks[i] = {'type':'text','text':''}`
+                                        // yapılıyordu — checklist iki metin
+                                        // bloğu arasındaysa bile komşularla
+                                        // hiç birleştirilmiyor, üç ayrı blok
+                                        // (metin/boş metin/metin) olarak
+                                        // kalıyordu.
+                                        final prevIsText = i > 0 &&
+                                            blocks[i - 1]['type'] == 'text';
+                                        final nextIsText =
+                                            i < blocks.length - 1 &&
+                                                blocks[i + 1]['type'] ==
+                                                    'text';
+                                        if (prevIsText && nextIsText) {
+                                          final prevText =
+                                              (blocks[i - 1]['text'] ?? '')
+                                                  .toString();
+                                          final nextText =
+                                              (blocks[i + 1]['text'] ?? '')
+                                                  .toString();
+                                          caretOffset = prevText.length;
+                                          // DÜZELTME: iki metin doğrudan
+                                          // yan yana (araya '\n' konmadan)
+                                          // birleştiriliyordu — bu da alttaki
+                                          // metnin görsel olarak üstteki
+                                          // satırın SONUNA eklenmesine sebep
+                                          // oluyordu, oysa iki ayrı satır
+                                          // olarak kalması bekleniyor. İkisi
+                                          // de doluysa aralarına '\n' konur;
+                                          // biri boşsa gereksiz boş satır
+                                          // eklenmemesi için sadece diğeri
+                                          // kullanılır.
+                                          final String mergedText;
+                                          final int nextSpanOffset;
+                                          if (prevText.isEmpty) {
+                                            mergedText = nextText;
+                                            nextSpanOffset = 0;
+                                          } else if (nextText.isEmpty) {
+                                            mergedText = prevText;
+                                            nextSpanOffset = 0;
+                                          } else {
+                                            mergedText =
+                                                '$prevText\n$nextText';
+                                            nextSpanOffset =
+                                                prevText.length + 1;
+                                          }
+                                          // DÜZELTME (biçimlendirme kaybı):
+                                          // metinler birleştirilirken 'spans'
+                                          // (kalın/italik/altı çizili)
+                                          // verisi hiç taşınmıyordu — alttaki
+                                          // metnin biçimlendirmesi
+                                          // kayboluyordu. 'text' bloğundaki
+                                          // aynı desenle (bkz. plainText()
+                                          // içindeki span kaydırma) tutarlı:
+                                          // üstteki span'lar aynen korunur,
+                                          // alttakiler yeni konumlarına göre
+                                          // kaydırılıp eklenir.
+                                          final mergedSpans =
+                                              <Map<String, dynamic>>[];
+                                          if (prevText.isNotEmpty) {
+                                            mergedSpans.addAll(
+                                              RichTextSpans.parse(
+                                                blocks[i - 1]['spans'],
+                                              ),
+                                            );
+                                          }
+                                          if (nextText.isNotEmpty) {
+                                            for (final s
+                                                in RichTextSpans.parse(
+                                              blocks[i + 1]['spans'],
+                                            )) {
+                                              final shifted =
+                                                  Map<String, dynamic>.from(
+                                                      s);
+                                              shifted['start'] =
+                                                  (s['start'] as int) +
+                                                      nextSpanOffset;
+                                              shifted['end'] =
+                                                  (s['end'] as int) +
+                                                      nextSpanOffset;
+                                              mergedSpans.add(shifted);
+                                            }
+                                          }
+                                          blocks[i - 1]['text'] = mergedText;
+                                          blocks[i - 1]['spans'] =
+                                              mergedSpans;
+                                          blocks.removeAt(i + 1);
+                                          blocks.removeAt(i);
+                                          focusBlockIndex = i - 1;
+                                        } else if (prevIsText) {
+                                          blocks.removeAt(i);
+                                          focusBlockIndex = i - 1;
+                                          caretOffset =
+                                              (blocks[i - 1]['text'] ?? '')
+                                                  .toString()
+                                                  .length;
+                                        } else if (nextIsText) {
+                                          blocks.removeAt(i);
+                                          focusBlockIndex = i;
+                                          caretOffset = 0;
+                                        } else {
+                                          blocks[i] = {
+                                            'type': 'text',
+                                            'text': ''
+                                          };
+                                          focusBlockIndex = i;
+                                          caretOffset = 0;
+                                        }
                                       } else if (j == 0) {
-                                        // İlk madde çıkarıldı: checklist'in
-                                        // önüne boş bir metin satırı eklenir.
+                                        // İlk madde çıkarıldı.
+                                        //
+                                        // DÜZELTME: eskiden burada koşulsuz
+                                        // yeni bir boş metin bloğu ekleniyordu
+                                        // — checklist'in HEMEN ÖNÜNDE zaten
+                                        // bir metin bloğu olsa bile. Çok
+                                        // maddeli bir checklist'te maddeler
+                                        // teker teker (baştan) silinince, her
+                                        // silmede bu "hayalet" boş bloklardan
+                                        // bir tane daha birikiyor ve checklist
+                                        // tamamen bitince bile bu bloklar
+                                        // önceki metinle hiç birleşmiyordu.
+                                        // Artık: önceki blok zaten metinse
+                                        // yeni blok eklenmiyor, imleç direkt
+                                        // o metnin sonuna gidiyor; önceki blok
+                                        // metin değilse (ya da checklist notun
+                                        // en başındaysa) eskisi gibi yeni boş
+                                        // bir metin bloğu ekleniyor.
                                         block['items'] = items;
-                                        blocks.insert(
-                                          i,
-                                          {'type': 'text', 'text': ''},
-                                        );
-                                        focusBlockIndex = i;
+                                        final prevIsText = i > 0 &&
+                                            blocks[i - 1]['type'] == 'text';
+                                        if (prevIsText) {
+                                          focusBlockIndex = i - 1;
+                                          caretOffset =
+                                              (blocks[i - 1]['text'] ?? '')
+                                                  .toString()
+                                                  .length;
+                                        } else {
+                                          blocks.insert(
+                                            i,
+                                            {'type': 'text', 'text': ''},
+                                          );
+                                          focusBlockIndex = i;
+                                        }
                                       } else if (j >= items.length) {
-                                        // Son madde çıkarıldı: checklist'in
-                                        // ardına boş bir metin satırı eklenir.
+                                        // Son madde çıkarıldı.
+                                        //
+                                        // DÜZELTME: aynı sorun tersi yönde —
+                                        // checklist'in HEMEN ARDINDA zaten
+                                        // bir metin bloğu varsa yeni bir tane
+                                        // eklemek yerine imleç o metnin
+                                        // başına gidiyor.
                                         block['items'] = items;
-                                        blocks.insert(
-                                          i + 1,
-                                          {'type': 'text', 'text': ''},
-                                        );
-                                        focusBlockIndex = i + 1;
+                                        final nextIsText =
+                                            i < blocks.length - 1 &&
+                                                blocks[i + 1]['type'] ==
+                                                    'text';
+                                        if (nextIsText) {
+                                          focusBlockIndex = i + 1;
+                                          caretOffset = 0;
+                                        } else {
+                                          blocks.insert(
+                                            i + 1,
+                                            {'type': 'text', 'text': ''},
+                                          );
+                                          focusBlockIndex = i + 1;
+                                        }
                                       } else {
                                         // Ortadan çıkarıldı: bloğu ikiye
                                         // böl, arasına boş metin satırı koy.
@@ -5458,9 +5613,22 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                         fn.requestFocus();
                                         final ctrl = blockControllers[idx];
                                         if (ctrl != null) {
+                                          // DÜZELTME: sabit offset:0 yerine
+                                          // caretOffset kullanılıyor — iki
+                                          // metin bloğu checklist'in
+                                          // kaldırılmasıyla birleştiğinde
+                                          // imleç birleşim noktasında
+                                          // (önceki metnin sonunda) kalmalı,
+                                          // satır başına atlamamalı. Diğer
+                                          // dallarda (j==0, j>=items.length,
+                                          // orta bölme) caretOffset hâlâ 0
+                                          // olduğundan davranış değişmiyor.
                                           ctrl.selection =
                                               TextSelection.collapsed(
-                                            offset: 0,
+                                            offset: caretOffset.clamp(
+                                              0,
+                                              ctrl.text.length,
+                                            ),
                                           );
                                         }
                                       }
