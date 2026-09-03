@@ -309,14 +309,50 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         int compareResult = 0;
         switch (_sortCriteria) {
           case "Başlık":
-            compareResult = (a['title'] ?? '').toString().compareTo(
-              (b['title'] ?? '').toString(),
-            );
+            // DÜZELTME 1: compareTo büyük/küçük harf duyarlıydı (kod
+            // noktası karşılaştırması), bu yüzden büyük harfle başlayan
+            // başlıklar her zaman küçük harfle başlayanlardan önce
+            // geliyordu (ör. "Zebra" < "elma"), gerçek alfabetik sırayla
+            // uyuşmuyordu. toLowerCase() ile büyük/küçük harf farkı
+            // ortadan kaldırılır.
+            //
+            // DÜZELTME 2: Başlığı olmayan (boş string) notlar, boş
+            // string'in alfabetik olarak en küçük değer sayılması
+            // yüzünden her zaman "Artan" sıralamada en başa yığılıyordu.
+            // Artık başlıksız notlar, sıralama yönünden (Artan/Azalan)
+            // bağımsız olarak HER ZAMAN listenin sonunda kalıyor — bu
+            // switch'in sonucu aşağıda `_isAscending ? compareResult :
+            // -compareResult` ile ters çevrildiğinden, o ters çevirmeyi
+            // burada önceden telafi ediyoruz.
+            final aTitle = (a['title'] ?? '').toString();
+            final bTitle = (b['title'] ?? '').toString();
+            final aTitleEmpty = aTitle.isEmpty;
+            final bTitleEmpty = bTitle.isEmpty;
+            if (aTitleEmpty != bTitleEmpty) {
+              compareResult =
+                  (aTitleEmpty ? 1 : -1) * (_isAscending ? 1 : -1);
+            } else {
+              compareResult = aTitle.toLowerCase().compareTo(
+                bTitle.toLowerCase(),
+              );
+            }
             break;
           case "Kategori":
-            compareResult = (a['category'] ?? '').toString().compareTo(
-              (b['category'] ?? '').toString(),
-            );
+            // Başlık sıralamasıyla aynı mantık: büyük/küçük harf
+            // duyarsız karşılaştırma ve klasörsüz (kategori boş) notlar
+            // sıralama yönünden bağımsız olarak her zaman en sonda.
+            final aCategory = (a['category'] ?? '').toString();
+            final bCategory = (b['category'] ?? '').toString();
+            final aCategoryEmpty = aCategory.isEmpty;
+            final bCategoryEmpty = bCategory.isEmpty;
+            if (aCategoryEmpty != bCategoryEmpty) {
+              compareResult =
+                  (aCategoryEmpty ? 1 : -1) * (_isAscending ? 1 : -1);
+            } else {
+              compareResult = aCategory.toLowerCase().compareTo(
+                bCategory.toLowerCase(),
+              );
+            }
             break;
           case "Renk":
             compareResult = (a['color'] ?? '').toString().compareTo(
@@ -3486,6 +3522,7 @@ class _TagFilterStripState extends State<_TagFilterStrip>
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     visualDensity: VisualDensity.compact,
                     labelStyle: TextStyle(
+                      fontSize: 16,
                       color: dNoteEffectiveTextColor(
                         context,
                         widget.textColor,

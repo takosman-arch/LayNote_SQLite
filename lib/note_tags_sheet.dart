@@ -395,6 +395,7 @@ void showNoteTagsSheet(
                                 backgroundColor: appAccentColor.value
                                     .withOpacity(0.15),
                                 labelStyle: TextStyle(
+                                  fontSize: 16,
                                   color: dNoteTextColor(sheetCtx),
                                 ),
                                 deleteIcon: const Icon(Icons.close, size: 16),
@@ -457,7 +458,10 @@ void showNoteTagsSheet(
                           children: suggestions
                               .map(
                                 (s) => ActionChip(
-                                  label: Text(s),
+                                  label: Text(
+                                    s,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
                                   onPressed: () => addTag(s),
                                 ),
                               )

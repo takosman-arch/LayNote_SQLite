@@ -91,7 +91,19 @@ class ContentBlocks {
   }
 
   // Checklist bloğunun items listesini normalize eder.
-  // Her eleman {"text": "...", "checked": false} şeklinde döner.
+  // Her eleman {"text": "...", "checked": false, "spans": [...]} şeklinde
+  // döner.
+  //
+  // DÜZELTME (checklist maddelerinde zengin metin -kalın/italik/vb.-
+  // notu kapatıp tekrar açınca kayboluyordu): bu fonksiyon 'spans'
+  // alanını hiç okumadan, sadece 'text' ve 'checked' içeren YENİ bir Map
+  // döndürüyordu. Düzenleme sırasında (rich_block_text_controller.dart /
+  // _shiftSpansForTextChange) her checklist maddesi 'spans' alanını doğru
+  // şekilde tutuyor ve serialize() de bunu diske doğru yazıyordu — kayıp,
+  // diskten geri OKUNURKEN burada oluyordu: JSON'da spans dururken bu
+  // fonksiyon onu sessizce atıyor, kullanıcı notu tekrar açtığında madde
+  // düz metinmiş gibi görünüyordu. 'text' bloğundaki aynı desenle
+  // (RichTextSpans.parse ile normalize) tutarlı hale getirildi.
   static List<Map<String, dynamic>> _parseChecklistItems(dynamic raw) {
     final list = raw as List? ?? const [];
     return list.map((it) {
@@ -99,6 +111,7 @@ class ContentBlocks {
       return {
         'text': (m['text'] ?? '').toString(),
         'checked': m['checked'] == true,
+        'spans': RichTextSpans.parse(m['spans']),
       };
     }).toList();
   }
@@ -256,6 +269,21 @@ class ContentBlocks {
         }).toList();
         return m;
       }
+      if (b['type'] == 'checklist') {
+        // DÜZELTME: text/table bloklarında olduğu gibi, checklist
+        // maddelerinin span'ları da kaydetmeden önce burada temizlenir
+        // (geçersiz/bozuk span'lar elenir). Asıl kaybolma sorunu okuma
+        // tarafındaydı (_parseChecklistItems), ama yazma tarafında da aynı
+        // deseni uygulamak, madde metni boşken kalan çöp span verisinin
+        // diske yazılmasını engeller.
+        final m = Map<String, dynamic>.from(b);
+        m['items'] = (b['items'] as List? ?? const []).map((it) {
+          final item = Map<String, dynamic>.from(it as Map);
+          item['spans'] = RichTextSpans.clean(item['spans'] as List?);
+          return item;
+        }).toList();
+        return m;
+      }
       return b;
     }).toList();
     if (cleaned.isEmpty) {
@@ -350,10 +378,13 @@ class ContentBlocks {
   // sadece plainText()'in izlediği AYNI adımlar (aynı blok filtresi, aynı
   // '\n' ile join, aynı .trim()) tekrarlanıyor; tek fark, 'text' tipi
   // bloklardan gelen span'ların start/end'inin, o bloğun birleşik metindeki
-  // başlangıç konumuna göre kaydırılarak toplanması. calc_table ve
-  // checklist blokları zaten span taşımıyor (bkz. RichTextSpans/
-  // _parseChecklistItems), dolayısıyla onlar için sadece metin uzunluğu
-  // kadar offset ilerletmek yeterli.
+  // başlangıç konumuna göre kaydırılarak toplanması. calc_table blokları
+  // span taşımıyor. checklist maddeleri artık kendi 'spans' alanını
+  // taşıyor olsa da (bkz. _parseChecklistItems), bu önizleme fonksiyonu
+  // henüz onları toplamıyor — checklist ve calc_table için şimdilik
+  // sadece metin uzunluğu kadar offset ilerletiliyor (kart önizlemesinde
+  // checklist biçimlendirmesinin görünmesi istenirse burası ayrıca
+  // güncellenmeli).
   static (String, List<Map<String, dynamic>>) previewTextWithSpans(
     String? raw, {
     String Function(String amount)? totalLabelBuilder,
@@ -623,6 +654,18 @@ class ContentBlocks {
         for (int j = 0; j < ai.length; j++) {
           if ((ai[j]['text'] ?? '') != (bi[j]['text'] ?? '') ||
               ai[j]['checked'] != bi[j]['checked']) {
+            return false;
+          }
+          // DÜZELTME: sadece text/checked karşılaştırılıyordu, 'spans'
+          // (kalın/italik/vb.) hiç bakılmıyordu. Kullanıcı bir maddede
+          // sadece biçim değiştirip metni değiştirmediğinde bu fonksiyon
+          // "içerik aynı" sanıyor, kayıt tetiklenmeyebiliyordu — 'text'
+          // ve 'table' bloklarındaki aynı isimli düzeltmeyle tutarlı
+          // hale getirildi.
+          if (!RichTextSpans.listEquals(
+            ai[j]['spans'] as List?,
+            bi[j]['spans'] as List?,
+          )) {
             return false;
           }
         }
