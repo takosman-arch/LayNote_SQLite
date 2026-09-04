@@ -20,6 +20,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as p;
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart'; // Ek fotoğrafları kırpma/döndürme için
+import 'package:gal/gal.dart'; // Fotoğrafı cihaz galerisine kaydetme için
 import 'package:open_file/open_file.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -77,6 +79,7 @@ part 'auto_backup_settings_screen.dart';
 part 'undo_redo_stack.dart';
 part 'pdf_export_service.dart';
 part 'note_screenshot_service.dart';
+part 'image_crop_helper.dart';
 part 'note_drawing_block.dart';
 part 'note_calc_table_block.dart';
 part 'note_table_block.dart';

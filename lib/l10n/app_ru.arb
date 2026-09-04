@@ -721,5 +721,13 @@
   "tableMenuInsertRowAfter": "Добавить строку",
   "tableMenuDeleteRow": "Удалить строку",
   "tableMenuInsertColumnAfter": "Добавить столбец",
-  "tableMenuDeleteColumn": "Удалить столбец"
+  "tableMenuDeleteColumn": "Удалить столбец",
+  "imageCropToolbarTitle": "Обрезка",
+  "imageViewerDeleteButtonLabel": "Удалить",
+  "imageViewerSaveToGalleryButtonLabel": "Сохранить",
+  "imageViewerShareButtonLabel": "Поделиться",
+  "imageViewerGalleryPermissionDeniedMessage": "Доступ к галерее не предоставлен",
+  "imageViewerSavedToGalleryMessage": "Сохранено в альбом",
+  "imageViewerSaveFailedMessage": "Не удалось сохранить: {error}",
+  "imageViewerSavingInProgressMessage": "Сохранение…"
 }

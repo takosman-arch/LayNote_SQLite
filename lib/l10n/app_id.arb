@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Tambah Baris",
   "tableMenuDeleteRow": "Hapus Baris",
   "tableMenuInsertColumnAfter": "Tambah Kolom",
-  "tableMenuDeleteColumn": "Hapus Kolom"
+  "tableMenuDeleteColumn": "Hapus Kolom",
+  "imageCropToolbarTitle": "Pangkas",
+  "imageViewerDeleteButtonLabel": "Hapus",
+  "imageViewerSaveToGalleryButtonLabel": "Simpan",
+  "imageViewerShareButtonLabel": "Bagikan",
+  "imageViewerGalleryPermissionDeniedMessage": "Izin galeri tidak diberikan",
+  "imageViewerSavedToGalleryMessage": "Disimpan ke album",
+  "imageViewerSaveFailedMessage": "Gagal menyimpan: {error}",
+  "imageViewerSavingInProgressMessage": "Menyimpan…"
 }

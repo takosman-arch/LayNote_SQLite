@@ -721,5 +721,13 @@
   "tableMenuInsertRowAfter": "Adicionar linha",
   "tableMenuDeleteRow": "Excluir linha",
   "tableMenuInsertColumnAfter": "Adicionar coluna",
-  "tableMenuDeleteColumn": "Excluir coluna"
+  "tableMenuDeleteColumn": "Excluir coluna",
+  "imageCropToolbarTitle": "Recortar",
+  "imageViewerDeleteButtonLabel": "Excluir",
+  "imageViewerSaveToGalleryButtonLabel": "Salvar",
+  "imageViewerShareButtonLabel": "Compartilhar",
+  "imageViewerGalleryPermissionDeniedMessage": "Permissão da galeria não concedida",
+  "imageViewerSavedToGalleryMessage": "Salvo no álbum",
+  "imageViewerSaveFailedMessage": "Não foi possível salvar: {error}",
+  "imageViewerSavingInProgressMessage": "Salvando…"
 }

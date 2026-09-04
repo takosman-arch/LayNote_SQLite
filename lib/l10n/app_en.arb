@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Add Row",
   "tableMenuDeleteRow": "Delete Row",
   "tableMenuInsertColumnAfter": "Add Column",
-  "tableMenuDeleteColumn": "Delete Column"
+  "tableMenuDeleteColumn": "Delete Column",
+  "imageCropToolbarTitle": "Crop",
+  "imageViewerDeleteButtonLabel": "Delete",
+  "imageViewerSaveToGalleryButtonLabel": "Save",
+  "imageViewerShareButtonLabel": "Share",
+  "imageViewerGalleryPermissionDeniedMessage": "Gallery permission not granted",
+  "imageViewerSavedToGalleryMessage": "Saved to album",
+  "imageViewerSaveFailedMessage": "Could not save: {error}",
+  "imageViewerSavingInProgressMessage": "Saving…"
 }

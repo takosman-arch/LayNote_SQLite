@@ -2425,4 +2425,31 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Kolom verwijderen';
+
+  @override
+  String get imageCropToolbarTitle => 'Bijsnijden';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Verwijderen';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Opslaan';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Delen';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Geen toegang tot galerij verleend';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Opgeslagen in album';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Opslaan mislukt: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Opslaan…';
 }

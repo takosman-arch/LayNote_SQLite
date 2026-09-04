@@ -42,6 +42,10 @@ dependencies:
   path: ^1.9.1
   file_picker: ^10.3.10
   image_picker: ^1.2.0
+  # ── Not'a eklenen fotoğrafları kırpma/döndürme özelliği için ──
+  image_cropper: ^11.0.0
+  # ── Fotoğrafı cihazın galeri/albüm uygulamasına kaydetme özelliği için ──
+  gal: ^2.3.2
   open_file: ^3.5.10
   pdfx: ^2.9.2
   # ── Not içeriğini PDF olarak dışa aktarma özelliği için ──

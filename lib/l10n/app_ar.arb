@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "إضافة صف",
   "tableMenuDeleteRow": "حذف صف",
   "tableMenuInsertColumnAfter": "إضافة عمود",
-  "tableMenuDeleteColumn": "حذف عمود"
+  "tableMenuDeleteColumn": "حذف عمود",
+  "imageCropToolbarTitle": "قص",
+  "imageViewerDeleteButtonLabel": "حذف",
+  "imageViewerSaveToGalleryButtonLabel": "حفظ",
+  "imageViewerShareButtonLabel": "مشاركة",
+  "imageViewerGalleryPermissionDeniedMessage": "لم يتم منح إذن المعرض",
+  "imageViewerSavedToGalleryMessage": "تم الحفظ في الألبوم",
+  "imageViewerSaveFailedMessage": "تعذر الحفظ: {error}",
+  "imageViewerSavingInProgressMessage": "جارٍ الحفظ…"
 }

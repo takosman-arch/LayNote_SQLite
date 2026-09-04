@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "행 추가",
   "tableMenuDeleteRow": "행 삭제",
   "tableMenuInsertColumnAfter": "열 추가",
-  "tableMenuDeleteColumn": "열 삭제"
+  "tableMenuDeleteColumn": "열 삭제",
+  "imageCropToolbarTitle": "자르기",
+  "imageViewerDeleteButtonLabel": "삭제",
+  "imageViewerSaveToGalleryButtonLabel": "저장",
+  "imageViewerShareButtonLabel": "공유",
+  "imageViewerGalleryPermissionDeniedMessage": "갤러리 권한이 허용되지 않았습니다",
+  "imageViewerSavedToGalleryMessage": "앨범에 저장되었습니다",
+  "imageViewerSaveFailedMessage": "저장하지 못했습니다: {error}",
+  "imageViewerSavingInProgressMessage": "저장 중…"
 }

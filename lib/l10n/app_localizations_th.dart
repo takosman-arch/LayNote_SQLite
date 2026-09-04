@@ -2396,4 +2396,31 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'ลบคอลัมน์';
+
+  @override
+  String get imageCropToolbarTitle => 'ครอบตัด';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'ลบ';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'บันทึก';
+
+  @override
+  String get imageViewerShareButtonLabel => 'แชร์';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'ไม่ได้รับอนุญาตให้เข้าถึงแกลเลอรี';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'บันทึกลงอัลบั้มแล้ว';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'บันทึกไม่สำเร็จ: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'กำลังบันทึก…';
 }

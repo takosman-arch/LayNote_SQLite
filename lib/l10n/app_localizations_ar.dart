@@ -2397,4 +2397,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'حذف عمود';
+
+  @override
+  String get imageCropToolbarTitle => 'قص';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'حذف';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'حفظ';
+
+  @override
+  String get imageViewerShareButtonLabel => 'مشاركة';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'لم يتم منح إذن المعرض';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'تم الحفظ في الألبوم';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'تعذر الحفظ: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'جارٍ الحفظ…';
 }

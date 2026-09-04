@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "添加行",
   "tableMenuDeleteRow": "删除行",
   "tableMenuInsertColumnAfter": "添加列",
-  "tableMenuDeleteColumn": "删除列"
+  "tableMenuDeleteColumn": "删除列",
+  "imageCropToolbarTitle": "裁剪",
+  "imageViewerDeleteButtonLabel": "删除",
+  "imageViewerSaveToGalleryButtonLabel": "保存",
+  "imageViewerShareButtonLabel": "分享",
+  "imageViewerGalleryPermissionDeniedMessage": "未授予相册访问权限",
+  "imageViewerSavedToGalleryMessage": "已保存到相册",
+  "imageViewerSaveFailedMessage": "保存失败：{error}",
+  "imageViewerSavingInProgressMessage": "正在保存…"
 }

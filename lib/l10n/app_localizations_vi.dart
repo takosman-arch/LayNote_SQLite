@@ -2409,4 +2409,31 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Xóa cột';
+
+  @override
+  String get imageCropToolbarTitle => 'Cắt ảnh';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Xóa';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Lưu';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Chia sẻ';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Không được cấp quyền truy cập thư viện ảnh';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Đã lưu vào album';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Không thể lưu: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Đang lưu…';
 }

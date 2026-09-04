@@ -3178,6 +3178,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 final picker = ImagePicker();
                 final images = await picker.pickMultiImage();
                 if (images.isEmpty) return;
+                if (!context.mounted) return;
+                // NOT: Kırpma ekranı artık burada AÇILMIYOR — ilk yükleme
+                // sırasında kırpma menüsü çıkması istenmediği için
+                // kaldırıldı. Kırpma/düzenleme yalnızca zaten eklenmiş bir
+                // fotoğraf için, görüntüleyicideki kırp butonuyla
+                // (bkz. cropExisting, ImageCropHelper.cropSingle) yapılabilir.
                 final files = images
                     .map((x) => {'path': x.path, 'name': x.name})
                     .toList();
@@ -3191,6 +3197,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   source: ImageSource.camera,
                 );
                 if (photo == null) return;
+                if (!context.mounted) return;
+                // NOT: Kırpma ekranı artık burada AÇILMIYOR — ilk yükleme
+                // sırasında kırpma menüsü çıkması istenmediği için
+                // kaldırıldı. Kırpma/düzenleme yalnızca zaten eklenmiş bir
+                // fotoğraf için, görüntüleyicideki kırp butonuyla
+                // (bkz. cropExisting, ImageCropHelper.cropSingle) yapılabilir.
                 await addFilesAsAttachments([
                   {'path': photo.path, 'name': photo.name},
                 ]);
@@ -3757,29 +3769,263 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 final path = p.join(dir.path, att['storedName'].toString());
                 if (att['isImage'] == true) {
                   if (!context.mounted) return;
+                  // Zaten eklenmiş bir fotoğrafı sonradan kırpmak için:
+                  // ImageCropHelper aynı dosya yolunun bir KOPYASINI
+                  // döndürür (image_cropper geçici bir dosya oluşturur).
+                  // Kaydı/ID'yi değiştirmemek adına kırpılan içeriği
+                  // ORİJİNAL dosyanın üzerine yazıyoruz; galeri/ızgaradaki
+                  // önizleme de aynı yolu okuduğu için otomatik güncellenir.
+                  Future<void> cropExisting(BuildContext dialogCtx) async {
+                    final croppedPath = await ImageCropHelper.cropSingle(
+                      context: dialogCtx,
+                      sourcePath: path,
+                    );
+                    if (croppedPath == path) return; // kullanıcı iptal etti
+                    final croppedBytes = await File(croppedPath).readAsBytes();
+                    await File(path).writeAsBytes(croppedBytes);
+                    // ÖNEMLİ: Image.file, aynı dosya yolunu Flutter'ın
+                    // resim önbelleğinde tutar — sadece üzerine yazmak
+                    // yetmez, önbellekteki eski kareyi de temizlememiz
+                    // gerekir; yoksa kırpma sonrası eski görüntü görünmeye
+                    // devam eder.
+                    await FileImage(File(path)).evict();
+                    try {
+                      await File(croppedPath).delete();
+                    } catch (_) {
+                      // Geçici dosya silinemese de sorun değil.
+                    }
+                    if (dialogCtx.mounted) Navigator.pop(dialogCtx);
+                    setModalState(() {});
+                  }
+
+                  // Var olan eki siler ve görüntüleyiciyi kapatır.
+                  // removeAttachmentById zaten mevcut (bkz. yukarıda) —
+                  // ızgaradaki uzun-basmalı silme ile aynı yolu kullanıyor,
+                  // bu yüzden ek bir onay diyaloğu eklemedik (tutarlılık).
+                  void deleteExisting(BuildContext dialogCtx) {
+                    Navigator.pop(dialogCtx);
+                    removeAttachmentById(att['id'].toString());
+                  }
+
+                  // Fotoğrafı cihazın galeri/albüm uygulamasına kaydeder
+                  // (gal paketi). İzin gerekiyorsa otomatik ister.
+                  //
+                  // NOT: Burada bilerek ScaffoldMessenger/SnackBar
+                  // KULLANILMIYOR. Bu diyalog neredeyse opak bir
+                  // barrierColor ile açıldığı için, SnackBar arkadaki ana
+                  // sayfanın Scaffold'una bağlanıyor ve barrier'ın altında
+                  // (görünmez şekilde) render ediliyordu — kayıt aslında
+                  // başarıyla tamamlanıyor ama kullanıcı hiçbir bildirim
+                  // görmüyordu. _showInfoBar (bkz. note_list_actions_mixin)
+                  // kendi OverlayEntry'sini Overlay'in en üstüne eklediği
+                  // için diyalogun (ve barrier'ının) üzerinde her zaman
+                  // görünür — uygulamanın diğer yerlerindeki pill'lerle
+                  // aynı bileşen.
+                  Future<void> saveToGallery(BuildContext dialogCtx) async {
+                    _showInfoBar(
+                      AppLocalizations.of(context)!
+                          .imageViewerSavingInProgressMessage,
+                      icon: Icons.cloud_upload_outlined,
+                    );
+                    try {
+                      final hasAccess = await Gal.hasAccess(toAlbum: true);
+                      if (!hasAccess) {
+                        final granted = await Gal.requestAccess(
+                          toAlbum: true,
+                        );
+                        if (!granted) {
+                          if (mounted) {
+                            _showInfoBar(
+                              AppLocalizations.of(context)!
+                                  .imageViewerGalleryPermissionDeniedMessage,
+                              icon: Icons.error_outline,
+                            );
+                          }
+                          return;
+                        }
+                      }
+                      await Gal.putImage(path, album: 'Layout');
+                      if (mounted) {
+                        _showInfoBar(
+                          AppLocalizations.of(context)!
+                              .imageViewerSavedToGalleryMessage,
+                          icon: Icons.check_circle_outline,
+                        );
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        _showInfoBar(
+                          AppLocalizations.of(context)!
+                              .imageViewerSaveFailedMessage(e.toString()),
+                          icon: Icons.error_outline,
+                        );
+                      }
+                    }
+                  }
+
+                  // Fotoğrafı sistemin paylaşım sayfasıyla (WhatsApp, e-posta
+                  // vb.) paylaşır — diğer paylaşım akışlarıyla aynı
+                  // SharePlus.instance API'si kullanılıyor.
+                  Future<void> shareExisting() async {
+                    await SharePlus.instance.share(
+                      ShareParams(files: [XFile(path)]),
+                    );
+                  }
+
+                  // Alt bardaki 4 butonun ortak görünümü (ikon + etiket),
+                  // ekran görüntüsündeki galeri düzenleyicisinin alt
+                  // çubuğuyla aynı desende.
+                  Widget viewerActionButton({
+                    required IconData icon,
+                    required String label,
+                    required VoidCallback onTap,
+                  }) {
+                    return InkWell(
+                      onTap: onTap,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(icon, color: Colors.white, size: 24),
+                            const SizedBox(height: 4),
+                            Text(
+                              label,
+                              // Uzun çeviriler (ör. Almanca/Fransızca) iki
+                              // satıra kayıp Column'u uzatarak ikonu yukarı
+                              // itmesin diye tek satırla sınırlandı; sığmazsa
+                              // sonu "…" ile kesiliyor.
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
                   showDialog(
                     context: context,
                     barrierColor: Colors.black.withValues(alpha: 0.9),
                     builder: (dialogCtx) => Dialog(
                       backgroundColor: Colors.transparent,
-                      insetPadding: const EdgeInsets.all(8),
-                      child: Stack(
-                        children: [
-                          InteractiveViewer(
-                            child: Image.file(File(path), fit: BoxFit.contain),
-                          ),
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.close,
-                                color: Colors.white,
+                      // NOT: insetPadding artık sıfır. Önceki EdgeInsets.all(8)
+                      // ile Dialog, içeriği (fotoğrafın boyutu) kadar
+                      // küçülüyordu — bu yüzden alttaki buton çubuğu
+                      // (Positioned(bottom: 0)) ekranın değil, fotoğrafın
+                      // hemen altına yapışıyordu. SizedBox.expand ile
+                      // birlikte Dialog artık tüm ekranı kaplıyor, böylece
+                      // buton çubuğu her zaman ekranın (ve sistem alt
+                      // çubuğunun hemen üstünün) en altında kalıyor — tıpkı
+                      // kırpma ekranındaki gibi.
+                      insetPadding: EdgeInsets.zero,
+                      child: SizedBox.expand(
+                        child: Stack(
+                          children: [
+                            InteractiveViewer(
+                              child: Image.file(
+                                File(path),
+                                fit: BoxFit.contain,
                               ),
-                              onPressed: () => Navigator.pop(dialogCtx),
                             ),
-                          ),
-                        ],
+                            Positioned(
+                              // Durum çubuğunun (saat) arkasında kalmaması
+                              // için üstteki güvenli alan kadar aşağı
+                              // itiliyor.
+                              top: MediaQuery.of(dialogCtx).padding.top + 8,
+                              right: 8,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () => Navigator.pop(dialogCtx),
+                              ),
+                            ),
+                            Positioned(
+                              left: 0,
+                              right: 0,
+                              // Sistem gezinme çubuğunun (alt bar) hemen
+                              // üzerinde durması için alttaki güvenli alan
+                              // kadar yukarı kaydırılıyor.
+                              bottom: MediaQuery.of(dialogCtx).padding.bottom,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                ),
+                                color: Colors.black.withValues(alpha: 0.55),
+                                child: Row(
+                                  // NOT: mainAxisAlignment.spaceEvenly yerine
+                                  // her buton eşit genişlikte bir Expanded
+                                  // içine alındı. spaceEvenly, butonlar
+                                  // arasındaki BOŞLUĞU eşitliyordu; ama
+                                  // etiketler farklı uzunlukta olduğu için
+                                  // (ör. "Kırp" vs "Galeriye Kaydet")
+                                  // butonların kendileri farklı genişlikte
+                                  // kalıyor, bu da ikonların/merkezlerin
+                                  // birbirine eşit uzaklıkta görünmemesine
+                                  // yol açıyordu. Expanded ile her buton tam
+                                  // olarak ekranın 1/4'ünü kaplıyor ve
+                                  // ortasında duruyor — bu sayede dördü de
+                                  // gerçekten eşit aralıklı oluyor.
+                                  children: [
+                                    Expanded(
+                                      child: Center(
+                                        child: viewerActionButton(
+                                          icon: Icons.crop,
+                                          label: AppLocalizations.of(context)!
+                                              .imageCropToolbarTitle,
+                                          onTap: () => cropExisting(dialogCtx),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Center(
+                                        child: viewerActionButton(
+                                          icon: Icons.delete_outline,
+                                          label: AppLocalizations.of(context)!
+                                              .imageViewerDeleteButtonLabel,
+                                          onTap: () =>
+                                              deleteExisting(dialogCtx),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Center(
+                                        child: viewerActionButton(
+                                          icon: Icons.download_outlined,
+                                          label: AppLocalizations.of(context)!
+                                              .imageViewerSaveToGalleryButtonLabel,
+                                          onTap: () =>
+                                              saveToGallery(dialogCtx),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Center(
+                                        child: viewerActionButton(
+                                          icon: Icons.share_outlined,
+                                          label: AppLocalizations.of(context)!
+                                              .imageViewerShareButtonLabel,
+                                          onTap: shareExisting,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );

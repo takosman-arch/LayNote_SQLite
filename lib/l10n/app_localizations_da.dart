@@ -2411,4 +2411,31 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Slet kolonne';
+
+  @override
+  String get imageCropToolbarTitle => 'Beskær';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Slet';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Gem';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Del';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Adgang til galleri blev ikke givet';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Gemt i album';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Kunne ikke gemme: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Gemmer…';
 }

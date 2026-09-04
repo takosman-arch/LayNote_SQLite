@@ -2378,4 +2378,31 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'מחק עמודה';
+
+  @override
+  String get imageCropToolbarTitle => 'חיתוך';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'מחק';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'שמור';
+
+  @override
+  String get imageViewerShareButtonLabel => 'שתף';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'לא ניתנה הרשאה לגלריה';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'נשמר באלבום';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'השמירה נכשלה: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'שומר…';
 }

@@ -2391,4 +2391,31 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Sütun Sil';
+
+  @override
+  String get imageCropToolbarTitle => 'Kırp';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Sil';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Kaydet';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Paylaş';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Galeri izni verilmedi';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Albüme kaydedildi';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Kaydedilemedi: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Kaydediliyor…';
 }

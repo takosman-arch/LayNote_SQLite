@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Aggiungi riga",
   "tableMenuDeleteRow": "Elimina riga",
   "tableMenuInsertColumnAfter": "Aggiungi colonna",
-  "tableMenuDeleteColumn": "Elimina colonna"
+  "tableMenuDeleteColumn": "Elimina colonna",
+  "imageCropToolbarTitle": "Ritaglia",
+  "imageViewerDeleteButtonLabel": "Elimina",
+  "imageViewerSaveToGalleryButtonLabel": "Salva",
+  "imageViewerShareButtonLabel": "Condividi",
+  "imageViewerGalleryPermissionDeniedMessage": "Permesso galleria non concesso",
+  "imageViewerSavedToGalleryMessage": "Salvato nell'album",
+  "imageViewerSaveFailedMessage": "Salvataggio non riuscito: {error}",
+  "imageViewerSavingInProgressMessage": "Salvataggio…"
 }

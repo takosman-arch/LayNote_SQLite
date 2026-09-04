@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Legg til rad",
   "tableMenuDeleteRow": "Slett rad",
   "tableMenuInsertColumnAfter": "Legg til kolonne",
-  "tableMenuDeleteColumn": "Slett kolonne"
+  "tableMenuDeleteColumn": "Slett kolonne",
+  "imageCropToolbarTitle": "Beskjær",
+  "imageViewerDeleteButtonLabel": "Slett",
+  "imageViewerSaveToGalleryButtonLabel": "Lagre",
+  "imageViewerShareButtonLabel": "Del",
+  "imageViewerGalleryPermissionDeniedMessage": "Galleritilgang ble ikke gitt",
+  "imageViewerSavedToGalleryMessage": "Lagret i album",
+  "imageViewerSaveFailedMessage": "Kunne ikke lagre: {error}",
+  "imageViewerSavingInProgressMessage": "Lagrer…"
 }

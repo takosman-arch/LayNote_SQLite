@@ -2406,4 +2406,31 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Slett kolonne';
+
+  @override
+  String get imageCropToolbarTitle => 'Beskjær';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Slett';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Lagre';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Del';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Galleritilgang ble ikke gitt';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Lagret i album';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Kunne ikke lagre: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Lagrer…';
 }

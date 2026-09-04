@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Dodaj wiersz",
   "tableMenuDeleteRow": "Usuń wiersz",
   "tableMenuInsertColumnAfter": "Dodaj kolumnę",
-  "tableMenuDeleteColumn": "Usuń kolumnę"
+  "tableMenuDeleteColumn": "Usuń kolumnę",
+  "imageCropToolbarTitle": "Przytnij",
+  "imageViewerDeleteButtonLabel": "Usuń",
+  "imageViewerSaveToGalleryButtonLabel": "Zapisz",
+  "imageViewerShareButtonLabel": "Udostępnij",
+  "imageViewerGalleryPermissionDeniedMessage": "Nie przyznano dostępu do galerii",
+  "imageViewerSavedToGalleryMessage": "Zapisano w albumie",
+  "imageViewerSaveFailedMessage": "Nie udało się zapisać: {error}",
+  "imageViewerSavingInProgressMessage": "Zapisywanie…"
 }

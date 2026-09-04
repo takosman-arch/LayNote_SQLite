@@ -2424,4 +2424,31 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Elimina colonna';
+
+  @override
+  String get imageCropToolbarTitle => 'Ritaglia';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Elimina';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Salva';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Condividi';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Permesso galleria non concesso';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Salvato nell\'album';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Salvataggio non riuscito: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Salvataggio…';
 }

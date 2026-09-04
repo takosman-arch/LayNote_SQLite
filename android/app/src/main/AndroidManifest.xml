@@ -9,6 +9,10 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <!-- Not içine video çekip ekleyebilmek için kamera izni -->
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- "Albüme Kaydet" özelliği (gal paketi) için — yalnızca Android 10
+         (API 29) ve altında gerekli; Android 11+ galeriye kayıt için özel
+         bir izin gerektirmiyor. -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29"/>
     <!-- Kamerası olmayan cihazlarda da (nadiren) uygulamanın Play Store'da
          görünmeye devam etmesi için "zorunlu değil" olarak işaretlendi. -->
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
@@ -17,7 +21,8 @@
         android:label="Layout"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:enableOnBackInvokedCallback="true">
+        android:enableOnBackInvokedCallback="true"
+        android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -53,6 +58,18 @@
                 <data android:mimeType="text/*"/>
             </intent-filter>
         </activity>
+
+        <!-- image_cropper paketinin (fotoğraf kırpma ekranı) Android'de
+             kullandığı uCrop kütüphanesinin kırpma Activity'si. Bu
+             tanımlanmazsa "Unable to find explicit activity class
+             ...UCropActivity" hatasıyla kırpma ekranı hiç açılmadan
+             uygulama çöküyor. exported gerekmiyor: yalnızca uygulamanın
+             kendisi bu Activity'yi startActivityForResult ile açıyor. -->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

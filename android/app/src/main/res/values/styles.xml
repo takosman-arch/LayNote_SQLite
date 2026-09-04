@@ -15,4 +15,13 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+
+    <!-- image_cropper (uCrop) fotoğraf kırpma ekranının teması. Ayrı bir
+         stil olarak tanımlanmasının nedeni: values-v35/styles.xml içinde
+         Android 15+ (API 35+) için aynı isimle üzerine yazılıp
+         edge-to-edge opt-out bayrağının eklenmesi — bkz. o dosyadaki not.
+         Bu dosyadaki (varsayılan) sürüm API 35'in altındaki cihazlar için
+         kullanılır ve eski davranıştan (Theme.AppCompat.Light.NoActionBar)
+         farksızdır. -->
+    <style name="Ucrop.CropTheme" parent="Theme.AppCompat.Light.NoActionBar" />
 </resources>

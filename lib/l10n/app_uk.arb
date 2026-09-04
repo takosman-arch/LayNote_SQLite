@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Додати рядок",
   "tableMenuDeleteRow": "Видалити рядок",
   "tableMenuInsertColumnAfter": "Додати стовпець",
-  "tableMenuDeleteColumn": "Видалити стовпець"
+  "tableMenuDeleteColumn": "Видалити стовпець",
+  "imageCropToolbarTitle": "Обрізати",
+  "imageViewerDeleteButtonLabel": "Видалити",
+  "imageViewerSaveToGalleryButtonLabel": "Зберегти",
+  "imageViewerShareButtonLabel": "Поділитися",
+  "imageViewerGalleryPermissionDeniedMessage": "Доступ до галереї не надано",
+  "imageViewerSavedToGalleryMessage": "Збережено в альбом",
+  "imageViewerSaveFailedMessage": "Не вдалося зберегти: {error}",
+  "imageViewerSavingInProgressMessage": "Збереження…"
 }

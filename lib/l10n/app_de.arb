@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Zeile hinzufügen",
   "tableMenuDeleteRow": "Zeile löschen",
   "tableMenuInsertColumnAfter": "Spalte hinzufügen",
-  "tableMenuDeleteColumn": "Spalte löschen"
+  "tableMenuDeleteColumn": "Spalte löschen",
+  "imageCropToolbarTitle": "Zuschneiden",
+  "imageViewerDeleteButtonLabel": "Löschen",
+  "imageViewerSaveToGalleryButtonLabel": "Speichern",
+  "imageViewerShareButtonLabel": "Teilen",
+  "imageViewerGalleryPermissionDeniedMessage": "Kein Zugriff auf die Galerie erteilt",
+  "imageViewerSavedToGalleryMessage": "Im Album gespeichert",
+  "imageViewerSaveFailedMessage": "Speichern fehlgeschlagen: {error}",
+  "imageViewerSavingInProgressMessage": "Wird gespeichert…"
 }

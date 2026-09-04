@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Rij toevoegen",
   "tableMenuDeleteRow": "Rij verwijderen",
   "tableMenuInsertColumnAfter": "Kolom toevoegen",
-  "tableMenuDeleteColumn": "Kolom verwijderen"
+  "tableMenuDeleteColumn": "Kolom verwijderen",
+  "imageCropToolbarTitle": "Bijsnijden",
+  "imageViewerDeleteButtonLabel": "Verwijderen",
+  "imageViewerSaveToGalleryButtonLabel": "Opslaan",
+  "imageViewerShareButtonLabel": "Delen",
+  "imageViewerGalleryPermissionDeniedMessage": "Geen toegang tot galerij verleend",
+  "imageViewerSavedToGalleryMessage": "Opgeslagen in album",
+  "imageViewerSaveFailedMessage": "Opslaan mislukt: {error}",
+  "imageViewerSavingInProgressMessage": "Opslaan…"
 }

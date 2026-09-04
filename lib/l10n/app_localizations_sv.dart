@@ -2410,4 +2410,31 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Ta bort kolumn';
+
+  @override
+  String get imageCropToolbarTitle => 'Beskär';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Ta bort';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Spara';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Dela';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Åtkomst till galleriet nekades';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Sparad i albumet';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Det gick inte att spara: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Sparar…';
 }

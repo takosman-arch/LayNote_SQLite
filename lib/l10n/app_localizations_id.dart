@@ -2406,4 +2406,31 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Hapus Kolom';
+
+  @override
+  String get imageCropToolbarTitle => 'Pangkas';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Hapus';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Simpan';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Bagikan';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Izin galeri tidak diberikan';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Disimpan ke album';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Gagal menyimpan: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Menyimpan…';
 }

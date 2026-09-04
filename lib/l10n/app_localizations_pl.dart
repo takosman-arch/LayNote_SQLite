@@ -2425,4 +2425,31 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Usuń kolumnę';
+
+  @override
+  String get imageCropToolbarTitle => 'Przytnij';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Usuń';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Zapisz';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Udostępnij';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Nie przyznano dostępu do galerii';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Zapisano w albumie';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Nie udało się zapisać: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Zapisywanie…';
 }

@@ -3174,5 +3174,42 @@
   "tableMenuInsertRowAfter": "Satır Ekle",
   "tableMenuDeleteRow": "Satır Sil",
   "tableMenuInsertColumnAfter": "Sütun Ekle",
-  "tableMenuDeleteColumn": "Sütun Sil"
+  "tableMenuDeleteColumn": "Sütun Sil",
+  "imageCropToolbarTitle": "Kırp",
+  "@imageCropToolbarTitle": {
+    "description": "Fotoğraf ekleme sırasında açılan kırpma ekranının başlık çubuğu metni (ImageCropHelper)"
+  },
+  "imageViewerDeleteButtonLabel": "Sil",
+  "@imageViewerDeleteButtonLabel": {
+    "description": "Tam ekran fotoğraf görüntüleyicisinin alt çubuğundaki 'Sil' butonu etiketi (openAttachment)"
+  },
+  "imageViewerSaveToGalleryButtonLabel": "Kaydet",
+  "@imageViewerSaveToGalleryButtonLabel": {
+    "description": "Tam ekran fotoğraf görüntüleyicisinin alt çubuğundaki 'Kaydet' butonu etiketi (gal paketiyle cihaz galerisine kaydeder)"
+  },
+  "imageViewerShareButtonLabel": "Paylaş",
+  "@imageViewerShareButtonLabel": {
+    "description": "Tam ekran fotoğraf görüntüleyicisinin alt çubuğundaki 'Paylaş' butonu etiketi (share_plus ile sistem paylaşım sayfası)"
+  },
+  "imageViewerGalleryPermissionDeniedMessage": "Galeri izni verilmedi",
+  "@imageViewerGalleryPermissionDeniedMessage": {
+      "description": "Kullanıcı 'Albüme Kaydet' için galeri iznini reddettiğinde gösterilen snackbar mesajı"
+  },
+  "imageViewerSavedToGalleryMessage": "Albüme kaydedildi",
+  "@imageViewerSavedToGalleryMessage": {
+      "description": "Fotoğraf galeriye (gal paketiyle) başarıyla kaydedildiğinde gösterilen snackbar mesajı"
+  },
+  "imageViewerSaveFailedMessage": "Kaydedilemedi: {error}",
+  "@imageViewerSaveFailedMessage": {
+      "description": "Fotoğraf galeriye kaydedilirken bir hata oluştuğunda gösterilen snackbar mesajı",
+      "placeholders": {
+          "error": {
+              "type": "String"
+          }
+      }
+  },
+  "imageViewerSavingInProgressMessage": "Kaydediliyor…",
+  "@imageViewerSavingInProgressMessage": {
+    "description": "Albüme Kaydet butonuna basılır basılmaz gösterilen geçici 'Kaydediliyor…' snackbar mesajı (işlem birkaç saniye sürebildiği için anlık geri bildirim)"
+  }
 }

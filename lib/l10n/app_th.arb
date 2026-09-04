@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "เพิ่มแถว",
   "tableMenuDeleteRow": "ลบแถว",
   "tableMenuInsertColumnAfter": "เพิ่มคอลัมน์",
-  "tableMenuDeleteColumn": "ลบคอลัมน์"
+  "tableMenuDeleteColumn": "ลบคอลัมน์",
+  "imageCropToolbarTitle": "ครอบตัด",
+  "imageViewerDeleteButtonLabel": "ลบ",
+  "imageViewerSaveToGalleryButtonLabel": "บันทึก",
+  "imageViewerShareButtonLabel": "แชร์",
+  "imageViewerGalleryPermissionDeniedMessage": "ไม่ได้รับอนุญาตให้เข้าถึงแกลเลอรี",
+  "imageViewerSavedToGalleryMessage": "บันทึกลงอัลบั้มแล้ว",
+  "imageViewerSaveFailedMessage": "บันทึกไม่สำเร็จ: {error}",
+  "imageViewerSavingInProgressMessage": "กำลังบันทึก…"
 }

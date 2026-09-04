@@ -4487,6 +4487,54 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Sütun Sil'**
   String get tableMenuDeleteColumn;
+
+  /// Fotoğraf ekleme sırasında açılan kırpma ekranının başlık çubuğu metni (ImageCropHelper)
+  ///
+  /// In tr, this message translates to:
+  /// **'Kırp'**
+  String get imageCropToolbarTitle;
+
+  /// Tam ekran fotoğraf görüntüleyicisinin alt çubuğundaki 'Sil' butonu etiketi (openAttachment)
+  ///
+  /// In tr, this message translates to:
+  /// **'Sil'**
+  String get imageViewerDeleteButtonLabel;
+
+  /// Tam ekran fotoğraf görüntüleyicisinin alt çubuğundaki 'Kaydet' butonu etiketi (gal paketiyle cihaz galerisine kaydeder)
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydet'**
+  String get imageViewerSaveToGalleryButtonLabel;
+
+  /// Tam ekran fotoğraf görüntüleyicisinin alt çubuğundaki 'Paylaş' butonu etiketi (share_plus ile sistem paylaşım sayfası)
+  ///
+  /// In tr, this message translates to:
+  /// **'Paylaş'**
+  String get imageViewerShareButtonLabel;
+
+  /// Kullanıcı 'Albüme Kaydet' için galeri iznini reddettiğinde gösterilen snackbar mesajı
+  ///
+  /// In tr, this message translates to:
+  /// **'Galeri izni verilmedi'**
+  String get imageViewerGalleryPermissionDeniedMessage;
+
+  /// Fotoğraf galeriye (gal paketiyle) başarıyla kaydedildiğinde gösterilen snackbar mesajı
+  ///
+  /// In tr, this message translates to:
+  /// **'Albüme kaydedildi'**
+  String get imageViewerSavedToGalleryMessage;
+
+  /// Fotoğraf galeriye kaydedilirken bir hata oluştuğunda gösterilen snackbar mesajı
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydedilemedi: {error}'**
+  String imageViewerSaveFailedMessage(String error);
+
+  /// Albüme Kaydet butonuna basılır basılmaz gösterilen geçici 'Kaydediliyor…' snackbar mesajı (işlem birkaç saniye sürebildiği için anlık geri bildirim)
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydediliyor…'**
+  String get imageViewerSavingInProgressMessage;
 }
 
 class _AppLocalizationsDelegate

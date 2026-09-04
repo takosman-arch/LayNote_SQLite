@@ -2412,4 +2412,31 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Poista sarake';
+
+  @override
+  String get imageCropToolbarTitle => 'Rajaa';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Poista';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Tallenna';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Jaa';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Galleriaoikeutta ei myönnetty';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Tallennettu albumiin';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Tallennus epäonnistui: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Tallennetaan…';
 }

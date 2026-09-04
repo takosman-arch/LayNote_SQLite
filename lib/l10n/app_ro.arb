@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Adaugă rând",
   "tableMenuDeleteRow": "Șterge rând",
   "tableMenuInsertColumnAfter": "Adaugă coloană",
-  "tableMenuDeleteColumn": "Șterge coloană"
+  "tableMenuDeleteColumn": "Șterge coloană",
+  "imageCropToolbarTitle": "Decupare",
+  "imageViewerDeleteButtonLabel": "Șterge",
+  "imageViewerSaveToGalleryButtonLabel": "Salvează",
+  "imageViewerShareButtonLabel": "Distribuie",
+  "imageViewerGalleryPermissionDeniedMessage": "Permisiunea pentru galerie nu a fost acordată",
+  "imageViewerSavedToGalleryMessage": "Salvat în album",
+  "imageViewerSaveFailedMessage": "Salvarea a eșuat: {error}",
+  "imageViewerSavingInProgressMessage": "Se salvează…"
 }

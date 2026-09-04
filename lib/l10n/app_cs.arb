@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Přidat řádek",
   "tableMenuDeleteRow": "Odstranit řádek",
   "tableMenuInsertColumnAfter": "Přidat sloupec",
-  "tableMenuDeleteColumn": "Odstranit sloupec"
+  "tableMenuDeleteColumn": "Odstranit sloupec",
+  "imageCropToolbarTitle": "Oříznout",
+  "imageViewerDeleteButtonLabel": "Smazat",
+  "imageViewerSaveToGalleryButtonLabel": "Uložit",
+  "imageViewerShareButtonLabel": "Sdílet",
+  "imageViewerGalleryPermissionDeniedMessage": "Přístup ke galerii nebyl udělen",
+  "imageViewerSavedToGalleryMessage": "Uloženo do alba",
+  "imageViewerSaveFailedMessage": "Uložení se nezdařilo: {error}",
+  "imageViewerSavingInProgressMessage": "Ukládání…"
 }

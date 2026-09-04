@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Lägg till rad",
   "tableMenuDeleteRow": "Ta bort rad",
   "tableMenuInsertColumnAfter": "Lägg till kolumn",
-  "tableMenuDeleteColumn": "Ta bort kolumn"
+  "tableMenuDeleteColumn": "Ta bort kolumn",
+  "imageCropToolbarTitle": "Beskär",
+  "imageViewerDeleteButtonLabel": "Ta bort",
+  "imageViewerSaveToGalleryButtonLabel": "Spara",
+  "imageViewerShareButtonLabel": "Dela",
+  "imageViewerGalleryPermissionDeniedMessage": "Åtkomst till galleriet nekades",
+  "imageViewerSavedToGalleryMessage": "Sparad i albumet",
+  "imageViewerSaveFailedMessage": "Det gick inte att spara: {error}",
+  "imageViewerSavingInProgressMessage": "Sparar…"
 }

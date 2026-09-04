@@ -2324,4 +2324,30 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => '删除列';
+
+  @override
+  String get imageCropToolbarTitle => '裁剪';
+
+  @override
+  String get imageViewerDeleteButtonLabel => '删除';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => '保存';
+
+  @override
+  String get imageViewerShareButtonLabel => '分享';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage => '未授予相册访问权限';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => '已保存到相册';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return '保存失败：$error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => '正在保存…';
 }

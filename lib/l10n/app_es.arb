@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Añadir fila",
   "tableMenuDeleteRow": "Eliminar fila",
   "tableMenuInsertColumnAfter": "Añadir columna",
-  "tableMenuDeleteColumn": "Eliminar columna"
+  "tableMenuDeleteColumn": "Eliminar columna",
+  "imageCropToolbarTitle": "Recortar",
+  "imageViewerDeleteButtonLabel": "Eliminar",
+  "imageViewerSaveToGalleryButtonLabel": "Guardar",
+  "imageViewerShareButtonLabel": "Compartir",
+  "imageViewerGalleryPermissionDeniedMessage": "No se concedió permiso de galería",
+  "imageViewerSavedToGalleryMessage": "Guardado en el álbum",
+  "imageViewerSaveFailedMessage": "No se pudo guardar: {error}",
+  "imageViewerSavingInProgressMessage": "Guardando…"
 }

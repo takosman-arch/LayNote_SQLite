@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Lisää rivi",
   "tableMenuDeleteRow": "Poista rivi",
   "tableMenuInsertColumnAfter": "Lisää sarake",
-  "tableMenuDeleteColumn": "Poista sarake"
+  "tableMenuDeleteColumn": "Poista sarake",
+  "imageCropToolbarTitle": "Rajaa",
+  "imageViewerDeleteButtonLabel": "Poista",
+  "imageViewerSaveToGalleryButtonLabel": "Tallenna",
+  "imageViewerShareButtonLabel": "Jaa",
+  "imageViewerGalleryPermissionDeniedMessage": "Galleriaoikeutta ei myönnetty",
+  "imageViewerSavedToGalleryMessage": "Tallennettu albumiin",
+  "imageViewerSaveFailedMessage": "Tallennus epäonnistui: {error}",
+  "imageViewerSavingInProgressMessage": "Tallennetaan…"
 }

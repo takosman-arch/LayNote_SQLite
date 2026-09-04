@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "行を追加",
   "tableMenuDeleteRow": "行を削除",
   "tableMenuInsertColumnAfter": "列を追加",
-  "tableMenuDeleteColumn": "列を削除"
+  "tableMenuDeleteColumn": "列を削除",
+  "imageCropToolbarTitle": "トリミング",
+  "imageViewerDeleteButtonLabel": "削除",
+  "imageViewerSaveToGalleryButtonLabel": "保存",
+  "imageViewerShareButtonLabel": "共有",
+  "imageViewerGalleryPermissionDeniedMessage": "ギャラリーへのアクセスが許可されていません",
+  "imageViewerSavedToGalleryMessage": "アルバムに保存しました",
+  "imageViewerSaveFailedMessage": "保存できませんでした: {error}",
+  "imageViewerSavingInProgressMessage": "保存中…"
 }

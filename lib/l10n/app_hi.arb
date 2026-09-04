@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "पंक्ति जोड़ें",
   "tableMenuDeleteRow": "पंक्ति हटाएं",
   "tableMenuInsertColumnAfter": "कॉलम जोड़ें",
-  "tableMenuDeleteColumn": "कॉलम हटाएं"
+  "tableMenuDeleteColumn": "कॉलम हटाएं",
+  "imageCropToolbarTitle": "क्रॉप करें",
+  "imageViewerDeleteButtonLabel": "हटाएं",
+  "imageViewerSaveToGalleryButtonLabel": "सहेजें",
+  "imageViewerShareButtonLabel": "साझा करें",
+  "imageViewerGalleryPermissionDeniedMessage": "गैलरी अनुमति नहीं दी गई",
+  "imageViewerSavedToGalleryMessage": "एल्बम में सहेजा गया",
+  "imageViewerSaveFailedMessage": "सहेजा नहीं जा सका: {error}",
+  "imageViewerSavingInProgressMessage": "सहेजा जा रहा है…"
 }

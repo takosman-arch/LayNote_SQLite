@@ -2355,4 +2355,30 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => '열 삭제';
+
+  @override
+  String get imageCropToolbarTitle => '자르기';
+
+  @override
+  String get imageViewerDeleteButtonLabel => '삭제';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => '저장';
+
+  @override
+  String get imageViewerShareButtonLabel => '공유';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage => '갤러리 권한이 허용되지 않았습니다';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => '앨범에 저장되었습니다';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return '저장하지 못했습니다: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => '저장 중…';
 }

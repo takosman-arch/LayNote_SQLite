@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "Thêm hàng",
   "tableMenuDeleteRow": "Xóa hàng",
   "tableMenuInsertColumnAfter": "Thêm cột",
-  "tableMenuDeleteColumn": "Xóa cột"
+  "tableMenuDeleteColumn": "Xóa cột",
+  "imageCropToolbarTitle": "Cắt ảnh",
+  "imageViewerDeleteButtonLabel": "Xóa",
+  "imageViewerSaveToGalleryButtonLabel": "Lưu",
+  "imageViewerShareButtonLabel": "Chia sẻ",
+  "imageViewerGalleryPermissionDeniedMessage": "Không được cấp quyền truy cập thư viện ảnh",
+  "imageViewerSavedToGalleryMessage": "Đã lưu vào album",
+  "imageViewerSaveFailedMessage": "Không thể lưu: {error}",
+  "imageViewerSavingInProgressMessage": "Đang lưu…"
 }

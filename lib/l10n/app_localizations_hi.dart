@@ -2408,4 +2408,31 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'कॉलम हटाएं';
+
+  @override
+  String get imageCropToolbarTitle => 'क्रॉप करें';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'हटाएं';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'सहेजें';
+
+  @override
+  String get imageViewerShareButtonLabel => 'साझा करें';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'गैलरी अनुमति नहीं दी गई';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'एल्बम में सहेजा गया';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'सहेजा नहीं जा सका: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'सहेजा जा रहा है…';
 }

@@ -2408,4 +2408,31 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Odstranit sloupec';
+
+  @override
+  String get imageCropToolbarTitle => 'Oříznout';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Smazat';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Uložit';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Sdílet';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Přístup ke galerii nebyl udělen';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Uloženo do alba';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Uložení se nezdařilo: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Ukládání…';
 }

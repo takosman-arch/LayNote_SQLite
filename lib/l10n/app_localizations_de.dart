@@ -2423,4 +2423,31 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Spalte löschen';
+
+  @override
+  String get imageCropToolbarTitle => 'Zuschneiden';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Löschen';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Speichern';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Teilen';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Kein Zugriff auf die Galerie erteilt';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Im Album gespeichert';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Speichern fehlgeschlagen: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Wird gespeichert…';
 }

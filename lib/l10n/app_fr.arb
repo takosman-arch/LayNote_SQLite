@@ -721,5 +721,13 @@
   "tableMenuInsertRowAfter": "Ajouter une ligne",
   "tableMenuDeleteRow": "Supprimer la ligne",
   "tableMenuInsertColumnAfter": "Ajouter une colonne",
-  "tableMenuDeleteColumn": "Supprimer la colonne"
+  "tableMenuDeleteColumn": "Supprimer la colonne",
+  "imageCropToolbarTitle": "Recadrer",
+  "imageViewerDeleteButtonLabel": "Supprimer",
+  "imageViewerSaveToGalleryButtonLabel": "Enregistrer",
+  "imageViewerShareButtonLabel": "Partager",
+  "imageViewerGalleryPermissionDeniedMessage": "Autorisation de galerie refusée",
+  "imageViewerSavedToGalleryMessage": "Enregistré dans l'album",
+  "imageViewerSaveFailedMessage": "Échec de l'enregistrement : {error}",
+  "imageViewerSavingInProgressMessage": "Enregistrement…"
 }

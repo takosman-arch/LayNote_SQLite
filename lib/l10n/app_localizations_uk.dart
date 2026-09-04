@@ -2422,4 +2422,31 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Видалити стовпець';
+
+  @override
+  String get imageCropToolbarTitle => 'Обрізати';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Видалити';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Зберегти';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Поділитися';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Доступ до галереї не надано';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Збережено в альбом';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Не вдалося зберегти: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Збереження…';
 }

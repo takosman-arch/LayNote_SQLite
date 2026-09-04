@@ -1162,5 +1162,13 @@
   "tableMenuInsertRowAfter": "הוסף שורה",
   "tableMenuDeleteRow": "מחק שורה",
   "tableMenuInsertColumnAfter": "הוסף עמודה",
-  "tableMenuDeleteColumn": "מחק עמודה"
+  "tableMenuDeleteColumn": "מחק עמודה",
+  "imageCropToolbarTitle": "חיתוך",
+  "imageViewerDeleteButtonLabel": "מחק",
+  "imageViewerSaveToGalleryButtonLabel": "שמור",
+  "imageViewerShareButtonLabel": "שתף",
+  "imageViewerGalleryPermissionDeniedMessage": "לא ניתנה הרשאה לגלריה",
+  "imageViewerSavedToGalleryMessage": "נשמר באלבום",
+  "imageViewerSaveFailedMessage": "השמירה נכשלה: {error}",
+  "imageViewerSavingInProgressMessage": "שומר…"
 }

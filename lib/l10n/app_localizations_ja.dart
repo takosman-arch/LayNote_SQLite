@@ -2352,4 +2352,31 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => '列を削除';
+
+  @override
+  String get imageCropToolbarTitle => 'トリミング';
+
+  @override
+  String get imageViewerDeleteButtonLabel => '削除';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => '保存';
+
+  @override
+  String get imageViewerShareButtonLabel => '共有';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'ギャラリーへのアクセスが許可されていません';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'アルバムに保存しました';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return '保存できませんでした: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => '保存中…';
 }

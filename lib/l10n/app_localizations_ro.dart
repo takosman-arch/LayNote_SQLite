@@ -2416,4 +2416,31 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get tableMenuDeleteColumn => 'Șterge coloană';
+
+  @override
+  String get imageCropToolbarTitle => 'Decupare';
+
+  @override
+  String get imageViewerDeleteButtonLabel => 'Șterge';
+
+  @override
+  String get imageViewerSaveToGalleryButtonLabel => 'Salvează';
+
+  @override
+  String get imageViewerShareButtonLabel => 'Distribuie';
+
+  @override
+  String get imageViewerGalleryPermissionDeniedMessage =>
+      'Permisiunea pentru galerie nu a fost acordată';
+
+  @override
+  String get imageViewerSavedToGalleryMessage => 'Salvat în album';
+
+  @override
+  String imageViewerSaveFailedMessage(String error) {
+    return 'Salvarea a eșuat: $error';
+  }
+
+  @override
+  String get imageViewerSavingInProgressMessage => 'Se salvează…';
 }
