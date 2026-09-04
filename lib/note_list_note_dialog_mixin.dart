@@ -122,6 +122,33 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // yapsın ya da iptal etsin), bir SONRAKİ geri basışta artık tekrar
     // sorulmadan normal kaydet+çık akışına devam edilir.
     bool reminderPromptShown = false;
+    // Checklist maddesi "x" ile silinirken oynatılan soluklaşma+daralma
+    // animasyonu süresince, o maddenin gerçekten hangi map nesnesi
+    // olduğunu (indeks değil, kimlik/identity ile) işaretlemek için.
+    // Animasyon bitince (NoteChecklistBlock.onRemoveAnimationComplete)
+    // gerçek kaldırma burada tutulan referans üzerinden yapılır — bu
+    // sayede animasyon sürerken başka maddeler eklenip/çıkarılsa bile
+    // indeks kayması yaşanmaz.
+    final Set<Map<String, dynamic>> checklistItemsPendingRemoval =
+        <Map<String, dynamic>>{};
+    // DÜZELTME (sürükle-taşı sonrası bazı maddelerde zengin metin
+    // kayboluyordu): rebuildBlockControllers() checklist controller'larını
+    // eskiden BLOK+POZİSYONA göre yeniden kullanıyordu (oldCtrls[j]).
+    // Sürükleme bir maddeyi başka bir pozisyona taşıdığında, o pozisyonda
+    // duran eski controller — kimliği (hangi maddeye ait olduğu) hiç
+    // kontrol edilmeden — YANLIŞ (yeni gelen) maddeye atanıyordu; controller
+    // içindeki metin de yanlış maddeninkiyle değiştiriliyordu, span'lar ise
+    // (o an başka bir düzeltmeyle) doğru maddeden okunduğu için birbiriyle
+    // tutarsız hale geliyor, biçimlendirme kayboluyormuş gibi görünüyordu.
+    // Bu haritalar controller/FocusNode'u POZİSYONA değil, doğrudan
+    // maddenin kendi Map REFERANSINA (kimliğine) bağlar; madde nereye
+    // taşınırsa taşınsın aynı controller/node ile eşleşir. Artık
+    // kullanılmayan girdiler her rebuildBlockControllers() çağrısı
+    // sonunda budanır (bkz. fonksiyonun sonu).
+    final Map<Map<String, dynamic>, TextEditingController>
+        checklistItemCtrlByRef = <Map<String, dynamic>, TextEditingController>{};
+    final Map<Map<String, dynamic>, FocusNode> checklistItemFnByRef =
+        <Map<String, dynamic>, FocusNode>{};
     String noteDate = "";
     String noteType = type;
     // Not: TextField'ın onChanged'i tetiklendiğinde Flutter, controller'ın
@@ -157,6 +184,14 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // yazılır); başlık için böyle bir "bir sonraki" mekanizma olmadığından
     // burada kaybı da elle işlemek gerekiyor.
     final titleFocusNode = FocusNode();
+    // Başlık + gövde bloklarını saran Column'a atanır (bkz. aşağıda body ->
+    // SingleChildScrollView -> Column). Amaç: kullanıcı, en alttaki blokla
+    // ekranın alt sınırı arasındaki BOŞ alana dokunduğunda bunu ayırt
+    // edebilmek — bu boşluk hiçbir blok tarafından hit-test edilmediğinden,
+    // dış GestureDetector'ın onTapUp'ında dokunma noktasının bu Column'ın
+    // gerçekte boyadığı alanın (ekran/GLOBAL koordinatlarda) ALTINDA kalıp
+    // kalmadığını ölçmek için kullanılıyor.
+    final GlobalKey _editorContentColumnKey = GlobalKey();
     List<Map<String, dynamic>> checkItems = [];
     List<TextEditingController> checkControllers = [];
     List<FocusNode> checkFocusNodes = [];
@@ -399,6 +434,43 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       );
     }
 
+    // DÜZELTME (bazı checklist maddelerine tıklayınca zengin metin barı
+    // kayboluyordu): checklist madde FocusNode'larının listener'ları
+    // focusedBlockIndex/focusedItemIndex'i, node İLK KURULDUĞU ANDA
+    // "capturedBlockIndex"/"capturedItemIndex" olarak SABİTLENMİŞ bir
+    // pozisyona yazıyordu. Controller/node bir maddeye kalıcı olarak
+    // bağlandığından (checklistItemCtrlByRef/FnByRef ile, madde silinene
+    // kadar hep aynı FocusNode korunuyor) ama madde daha sonra sürükleyerek
+    // taşınınca, üstüne başka madde eklenince/silinince ya da checklist'ten
+    // ÖNCEKİ bir blok eklenip/kaldırılınca o maddenin GERÇEK konumu
+    // değişiyordu — listener'daki sabit değer ise hiç güncellenmiyordu.
+    // Sonuç: focusedItemIndex yanlış bir maddeyi işaret ediyor,
+    // hasFocusedChecklistItem kontrolü ("focusedItemFocusNodes[
+    // focusedItemIndex].hasFocus") YANLIŞ konumdaki (odakta olmayan)
+    // node'a bakıp false dönüyor, bar da kayboluyordu — ama yalnızca
+    // konumu ilk oluşturulduğu andan beri değişmiş olan maddelerde
+    // ("bazı" maddelerde) görülüyordu.
+    //
+    // Çözüm: sabit indeks yerine, odak geldiği ANDA maddenin GÜNCEL
+    // konumunu (blok + madde indeksi), madde referansının (Map kimliği)
+    // o an blocks içinde nerede olduğuna bakarak taze hesaplıyoruz. Bu
+    // sayede madde/blok kaç kez taşınırsa taşınsın doğru konum bulunur.
+    ({int blockIndex, int itemIndex})? _locateChecklistItem(
+      Map<String, dynamic> item,
+    ) {
+      for (int bi = 0; bi < blocks.length; bi++) {
+        if (blocks[bi]['type'] != 'checklist') continue;
+        final its = blocks[bi]['items'] as List?;
+        if (its == null) continue;
+        for (int ii = 0; ii < its.length; ii++) {
+          if (identical(its[ii], item)) {
+            return (blockIndex: bi, itemIndex: ii);
+          }
+        }
+      }
+      return null;
+    }
+
     // Blok listesi değiştiğinde (ekleme/silme/birleştirme) controller ve
     // focus node'ları tamamen yeniden kurar. Metin bloğu olmayan (ek)
     // konumlar için null tutulur.
@@ -612,81 +684,58 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           );
           final capturedBlockIndex = i;
 
-          List<TextEditingController> itemCtrls;
-          List<FocusNode> itemFns;
+          // DÜZELTME (sürükle-taşı sonrası zengin metin kayboluyordu):
+          // eskiden burada "aynı konum" (prevType == 'checklist' && aynı
+          // blok indeksi) ile "yeni blok" diye İKİ AYRI dal vardı ve
+          // "aynı konum" dalı controller'ları POZİSYONA göre
+          // (oldCtrls[j]) yeniden kullanıyordu. Sürükleme bir maddeyi
+          // başka bir pozisyona taşıyınca, o pozisyondaki eski
+          // controller — kimliği kontrol edilmeden — YANLIŞ maddeye
+          // atanıyordu. Artık tek bir yol var: her madde, kendi Map
+          // referansı üzerinden (checklistItemCtrlByRef/FnByRef,
+          // pozisyondan bağımsız) daha önce bir controller/node aldıysa
+          // o korunuyor; almadıysa taze biri kuruluyor. Madde nereye
+          // taşınırsa taşınsın (hatta bloğun kendi indeksi i değişse
+          // bile) doğru controller'ı buluyor.
+          List<TextEditingController> itemCtrls = [];
+          List<FocusNode> itemFns = [];
 
-          if (prevType == 'checklist' &&
-              i < prevItemControllers.length &&
-              prevItemControllers[i] != null) {
-            // Aynı konumdaki checklist: mevcut controller/node'ları koru.
-            final oldCtrls = prevItemControllers[i]!;
-            final oldFns   = prevItemFocusNodes[i]!;
-
-            itemCtrls = [];
-            itemFns   = [];
-
-            for (int j = 0; j < items.length; j++) {
-              final capturedItemIndex = j;
-              if (j < oldCtrls.length) {
-                final ctrl = oldCtrls[j];
-                final fn   = oldFns[j];
-                final newText = (items[j]['text'] ?? '').toString();
-                if (ctrl.text != newText) ctrl.text = newText;
-                itemCtrls.add(ctrl);
-                itemFns.add(fn);
-                usedControllers.add(ctrl);
-                usedFocusNodes.add(fn);
-              } else {
-                // Yeni eklenen madde.
-                final capturedItem = items[j];
-                final ctrl = RichBlockTextController(
-                  text: (capturedItem['text'] ?? '').toString(),
-                  getSpans: () {
-                    if (capturedBlockIndex >= blocks.length) return [];
-                    final blk = blocks[capturedBlockIndex];
-                    if (blk['type'] != 'checklist') return [];
-                    final its = blk['items'] as List?;
-                    if (its == null || capturedItemIndex >= its.length) return [];
-                    return RichTextSpans.parse((its[capturedItemIndex] as Map)['spans']);
-                  },
-                );
-                final fn = FocusNode();
-                fn.addListener(() {
-                  if (fn.hasFocus) {
-                    focusedBlockIndex = capturedBlockIndex;
-                    focusedItemIndex  = capturedItemIndex;
-                    pendingBlockFocus = false;
-                    _titleFocused = false;
-                    requestEditorRebuild?.call(() {});
-                  }
-                });
-                itemCtrls.add(ctrl);
-                itemFns.add(fn);
+          for (int j = 0; j < items.length; j++) {
+            final capturedItemIndex = j;
+            final capturedItem = items[j];
+            final existingCtrl = checklistItemCtrlByRef[capturedItem];
+            final existingFn = checklistItemFnByRef[capturedItem];
+            if (existingCtrl != null && existingFn != null) {
+              // Bu madde daha önce de vardı: controller/node'u koru,
+              // sadece metni (dışarıdan değiştiyse) güncelle.
+              final newText = (capturedItem['text'] ?? '').toString();
+              if (existingCtrl.text != newText) {
+                existingCtrl.text = newText;
               }
-            }
-          } else {
-            // Yeni checklist bloğu — her şeyi sıfırdan kur.
-            itemCtrls = [];
-            itemFns   = [];
-            for (int j = 0; j < items.length; j++) {
-              final capturedItemIndex = j;
-              final capturedItem = items[j];
+              itemCtrls.add(existingCtrl);
+              itemFns.add(existingFn);
+              usedControllers.add(existingCtrl);
+              usedFocusNodes.add(existingFn);
+            } else {
+              // Yeni madde: taze controller/node kur.
               final ctrl = RichBlockTextController(
                 text: (capturedItem['text'] ?? '').toString(),
-                getSpans: () {
-                  if (capturedBlockIndex >= blocks.length) return [];
-                  final blk = blocks[capturedBlockIndex];
-                  if (blk['type'] != 'checklist') return [];
-                  final its = blk['items'] as List?;
-                  if (its == null || capturedItemIndex >= its.length) return [];
-                  return RichTextSpans.parse((its[capturedItemIndex] as Map)['spans']);
-                },
+                // DÜZELTME: yukarıdaki AYNI sebep — pozisyon yerine
+                // doğrudan madde referansından okunuyor.
+                getSpans: () => RichTextSpans.parse(capturedItem['spans']),
               );
               final fn = FocusNode();
               fn.addListener(() {
                 if (fn.hasFocus) {
-                  focusedBlockIndex = capturedBlockIndex;
-                  focusedItemIndex  = capturedItemIndex;
+                  // DÜZELTME: capturedBlockIndex/capturedItemIndex artık
+                  // KULLANILMIYOR — bu node madde silinene kadar kalıcı
+                  // olarak korunduğundan (bkz. checklistItemFnByRef), madde
+                  // sonradan taşınırsa bu sabit değerler bayatlar. Güncel
+                  // konum, madde referansı üzerinden taze bulunuyor (bkz.
+                  // _locateChecklistItem tanımındaki açıklama).
+                  final loc = _locateChecklistItem(capturedItem);
+                  focusedBlockIndex = loc?.blockIndex ?? capturedBlockIndex;
+                  focusedItemIndex  = loc?.itemIndex ?? capturedItemIndex;
                   pendingBlockFocus = false;
                   _titleFocused = false;
                   requestEditorRebuild?.call(() {});
@@ -694,6 +743,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
               });
               itemCtrls.add(ctrl);
               itemFns.add(fn);
+              checklistItemCtrlByRef[capturedItem] = ctrl;
+              checklistItemFnByRef[capturedItem] = fn;
+              usedControllers.add(ctrl);
+              usedFocusNodes.add(fn);
             }
           }
 
@@ -717,6 +770,20 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           blockTableValueFocusNodes.add(null);
         }
       }
+
+      // DÜZELTME: checklistItemCtrlByRef/FnByRef haritaları, madde
+      // kimliğine göre controller/node eşleştirmesi için kalıcı olarak
+      // tutulur. Bir madde silinince (checklist'ten tamamen çıkarılınca)
+      // artık `usedControllers`/`usedFocusNodes` içinde olmayacağından,
+      // haritadaki karşılık gelen girdiyi de burada temizliyoruz —
+      // aksi halde referans süresiz büyür ve dispose edilmiş
+      // controller'lara işaret eden ölü girdiler birikir.
+      checklistItemCtrlByRef.removeWhere(
+        (_, ctrl) => !usedControllers.contains(ctrl),
+      );
+      checklistItemFnByRef.removeWhere(
+        (_, fn) => !usedFocusNodes.contains(fn),
+      );
 
       // Artık kullanılmayan eski controller/node'ları dispose et.
       // Bunlar focus'ta olmayan node'lar olduğundan klavye etkilenmez.
@@ -1520,6 +1587,69 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // bölünür, arasına sayfayı boydan boya kaplayan bir 'divider' bloğu
     // eklenir (bkz. aşağıda block['type'] == 'divider' render'ı ve
     // removeDividerBlockAt).
+    // ── "Boşluğa dokun -> son satırı aktif et" ─────────────────────────────
+    // Kullanıcı, en alttaki bloğun ALTINDA kalan boş alana (dış
+    // GestureDetector'a — bkz. body -> Expanded -> GestureDetector) dokunursa
+    // çağrılır. Amaç: mobil not uygulamalarının çoğunda olduğu gibi, içerik
+    // bittikten sonraki boş kısma dokunulduğunda da imlecin/klavyenin en alt
+    // metin bloğunun SONUNA gelmesi.
+    void focusLastTextBlockAtEnd() {
+      // Başlık odaktaysa ya da not tipi 'text' değilse (checklist notu vb.)
+      // bu davranış anlamsız — dokunulmadan bırakılıyor.
+      if (_titleFocused) return;
+      if (noteType != 'text') return;
+      final int idx = blocks.lastIndexWhere((b) => b['type'] == 'text');
+      if (idx == -1) return;
+      final controller = blockControllers[idx];
+      final focusNode = blockFocusNodes[idx];
+      if (controller == null || focusNode == null) return;
+      // Diğer onTap'lerle AYNI desen (bkz. gövde bloklarının onTap'i):
+      // odak başka bir bloktan/başlıktan buraya geçiyorsa bekleyen
+      // kalın/italik/vb. durumu sıfırlanır.
+      if (focusedBlockIndex != idx || _titleFocused) {
+        pendingBold = false;
+        pendingItalic = false;
+        pendingUnderline = false;
+        pendingStrikethrough = false;
+        pendingHighlight = false;
+        pendingFontSize = null;
+        pendingColor = null;
+        pendingFontFamily = null;
+        showListSubToolbar = false;
+        showStyleSubToolbar = false;
+        showColorSubToolbar = false;
+        showFontSizeSubToolbar = false;
+      }
+      focusedBlockIndex = idx;
+      focusedItemIndex = -1;
+      final text = controller.text.replaceAll(emptyTextSentinel, '');
+      // DÜZELTME (iki kez dokunma gerekiyordu — debug log ile doğrulandı):
+      // burada ÖNCEDEN, diğer odak-taşıma noktalarındaki ÇİFT
+      // addPostFrameCallback deseni kullanılıyordu (2 frame gecikme). Ama bu
+      // blok/controller/focusNode zaten MEVCUT (yeni oluşturulmuyor, sadece
+      // odak taşınıyor) — o gecikme burada gereksiz VE zararlı: önceki
+      // odaktaki bloktan "dışarı dokununca" Flutter'ın kendi iç mekanizması
+      // o bloğun odağını HEMEN bırakıp klavyeyi kapatıyor (hide(ime())); 2
+      // frame geciken requestFocus() çağrımız bu "kapatma" ile yarışıp
+      // kaybediyordu — odak görünüşte hiç değişmemiş gibi kalıyordu (klavye
+      // kapanıyordu). Çözüm: odağı burada HEMEN, senkron istemek — böylece
+      // biz önce davranıp yarışı kazanıyoruz.
+      focusNode.requestFocus();
+      controller.selection = TextSelection.collapsed(offset: text.length);
+      requestEditorRebuild?.call(() {});
+      // Yine de bir sonraki frame'de selection'ı teyit ediyoruz: bazı
+      // cihazlarda TextField bu frame'de henüz layout almamışsa seçim
+      // görsel olarak metnin başına düşebiliyor (bkz. dosyadaki diğer
+      // "tek callback bazen imleci en başa düşürüyordu" notları). Odak
+      // zaten yukarıda senkron alındığı için bu yalnızca imleç KONUMUNU
+      // düzeltiyor, klavye açılıp açılmamasını etkilemiyor.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (focusNode.hasFocus) {
+          controller.selection = TextSelection.collapsed(offset: text.length);
+        }
+      });
+    }
+
     void insertDividerBlock() {
       // DÜZELTME: bu fonksiyon focusedBlockIndex/blocks üzerinde çalışıyor
       // — başlıkta "blok" kavramı yok (başlık span'lı ama tek satırlık düz
@@ -5577,7 +5707,36 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   body: Column(
                     children: [
                       Expanded(
-                        child: GestureDetector(
+                        child: Listener(
+                      // DÜZELTME (iki kez dokunma gerekiyordu): bir önceki
+                      // metin bloğu odaktayken boş alana dokununca, Flutter'ın
+                      // kendi "dışarı dokununca odağı bırak / seçim araç
+                      // çubuğunu kapat" iç mekanizması (TextField'ın
+                      // TapRegion'ı) GestureDetector.onTapUp ile AYNI "gesture
+                      // arena"da yarışıyor ve genelde İLK dokunuşu yutuyordu —
+                      // odak sadece bırakılıyor, focusLastTextBlockAtEnd()
+                      // çağrılmıyordu; ikinci dokunuşta iç mekanizma devre dışı
+                      // kaldığından çalışıyordu. Listener.onPointerUp HAM
+                      // pointer olayıdır, gesture arena'ya hiç girmez ve
+                      // hiçbir şeyle yarışmadan HER ZAMAN (ilk dokunuşta da)
+                      // tetiklenir — bu yüzden pozisyon kontrolü buraya taşındı.
+                      behavior: HitTestBehavior.translucent,
+                      onPointerUp: (event) {
+                        final contentBox = _editorContentColumnKey
+                            .currentContext
+                            ?.findRenderObject() as RenderBox?;
+                        if (contentBox != null && contentBox.hasSize) {
+                          final contentBottom = contentBox
+                              .localToGlobal(
+                                Offset(0, contentBox.size.height),
+                              )
+                              .dy;
+                          if (event.position.dy > contentBottom) {
+                            focusLastTextBlockAtEnd();
+                          }
+                        }
+                      },
+                      child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onTap: () {
                         if (deletingAttachmentId != null) {
@@ -5587,6 +5746,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                       child: SingleChildScrollView(
                       padding: const EdgeInsets.all(20),
                       child: Column(
+                        key: _editorContentColumnKey,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TextField(
@@ -6005,6 +6165,300 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       block['items'] = items;
                                     });
                                   },
+                                  // "x" ikonuyla bir maddeyi TAMAMEN
+                                  // kaldırır. onConvertItemToText'in
+                                  // aksine dönüştürme yapmaz, checklist'i
+                                  // bölmez, araya boş metin satırı
+                                  // eklemez — checklist tek bir liste
+                                  // olarak kalır, alttaki maddeler yukarı
+                                  // kayar (kullanıcı raporu: ortadan
+                                  // silince boşluk kalıyor / alttaki
+                                  // kaymıyordu — sebebi onConvertItemToText'in
+                                  // "dönüştür" davranışıydı, bkz. altta).
+                                  onRemoveItem: (j) {
+                                    if (j < 0 || j >= items.length) return;
+                                    // Gerçek silme burada YAPILMAZ — sadece
+                                    // maddeyi "siliniyor" olarak işaretleyip
+                                    // yeniden çizdiriyoruz; bu, widget
+                                    // tarafında soluklaşma+daralma
+                                    // animasyonunu başlatır. Gerçek kaldırma
+                                    // (pushUndoCheckpoint dahil) animasyon
+                                    // bitince onRemoveAnimationComplete'te
+                                    // yapılır.
+                                    //
+                                    // DÜZELTME (klavye kapanıp titriyordu):
+                                    // "x" ikonuna dokunmak zaten o an
+                                    // TextField'ın odağını anında
+                                    // kaybettiriyor (klavye hemen kapanıyor);
+                                    // odak hedefini animasyon bitene kadar
+                                    // (200ms, eskiden onRemoveAnimationComplete
+                                    // içindeydi) ertelemek klavyenin bir
+                                    // kapanıp tekrar açılmasına, bu da satırın
+                                    // küçülme animasyonuyla çakışıp titreme
+                                    // gibi görünmesine sebep oluyordu. Artık
+                                    // odak hedefi DOKUNMA ANINDA (aynı frame,
+                                    // senkron) belirlenip taşınıyor — klavye
+                                    // hiç kapanmıyor, sadece silinen satır
+                                    // kendi başına küçülüp kayboluyor.
+                                    if (j < itemFns.length &&
+                                        itemFns[j].hasFocus &&
+                                        items.length > 1) {
+                                      final nextFocusIndex =
+                                          j + 1 < items.length ? j + 1 : j - 1;
+                                      if (nextFocusIndex >= 0 &&
+                                          nextFocusIndex < itemFns.length) {
+                                        itemFns[nextFocusIndex].requestFocus();
+                                      }
+                                    }
+                                    setModalState(() {
+                                      checklistItemsPendingRemoval
+                                          .add(items[j]);
+                                    });
+                                  },
+                                  isItemRemoving: (item) =>
+                                      checklistItemsPendingRemoval
+                                          .contains(item),
+                                  onRemoveAnimationComplete: (item) {
+                                    checklistItemsPendingRemoval.remove(item);
+                                    // Animasyon süresince başka bir madde
+                                    // eklenmiş/silinmiş olabileceğinden,
+                                    // indeksi ŞİMDİ (güncel items listesi
+                                    // üzerinden) referansla buluyoruz —
+                                    // gelen 'j' burada yok, kasıtlı: madde
+                                    // kimliği (Map referansı) her zaman
+                                    // indeksten daha güvenilir.
+                                    final j = items.indexOf(item);
+                                    if (j == -1) return;
+                                    // DÜZELTME (klavye kapanıp açılıyordu):
+                                    // eskiden burada removedFocusNode
+                                    // odaklıysa hemen (senkron) unfocus()
+                                    // ediliyor, yeni hedefe odak ise AYRI
+                                    // bir addPostFrameCallback ile bir
+                                    // sonraki frame'de veriliyordu. Aradaki
+                                    // frame boyunca hiçbir alan odakta
+                                    // olmadığından klavye bir an kapanıp
+                                    // tekrar açılıyordu (onAddItem/
+                                    // onConvertItemToText'teki "tek
+                                    // callback'e indirildi" düzeltmesiyle
+                                    // AYNI kök sebep). Artık unfocus()
+                                    // hiç çağrılmıyor — yeni hedef alana
+                                    // requestFocus() verilmesi, eski
+                                    // node'u zaten otomatik odaktan
+                                    // çıkarıyor; dispose de bunun hemen
+                                    // ardından, AYNI (tek) frame içinde
+                                    // yapılıyor.
+                                    pushUndoCheckpoint();
+                                    // NOT: odak taşıma, checklist'te BİRDEN
+                                    // FAZLA madde kalıyorsa dokunma anında
+                                    // (bkz. onRemoveItem) zaten komşu
+                                    // maddeye taşınmış olur. AMA silinen
+                                    // madde checklist'teki TEK maddeyse
+                                    // (items.length == 1), onRemoveItem
+                                    // bu durumda hiçbir komşuya taşımaz
+                                    // (taşınacak "komşu madde" yok) — o
+                                    // zaman odak, burada aşağıda blok
+                                    // kaldırılırken (bkz. blockRemoved)
+                                    // AYRICA doğru hedefe taşınmalı.
+                                    //
+                                    // DÜZELTME (checklist'in son maddesi
+                                    // silinince bazen küçük bir "zıplama"
+                                    // oluyordu): bu durumda odak hiçbir
+                                    // yere taşınmıyordu; eski (silinen
+                                    // maddeye ait) FocusNode odaklı kalmaya
+                                    // devam ediyor, ancak bir sonraki frame'de
+                                    // rebuildBlockControllers() onu artık
+                                    // "kullanılmıyor" bulup unfocus()+dispose()
+                                    // ediyordu (bkz. o fonksiyonun sonu).
+                                    // Aradaki frame boyunca hiçbir alan
+                                    // gerçekten odakta olmadığından klavye
+                                    // bir an kapanıp yükseklik değişimi
+                                    // görsel bir zıplama gibi görünüyordu.
+                                    // Aşağıda blockRemoved==true olduğunda
+                                    // (checklist bloğunun tamamen kalktığı,
+                                    // komşu metinle birleştiği durum),
+                                    // onConvertItemToText'teki İLE AYNI
+                                    // desenle doğru metin bloğuna senkron
+                                    // odak hedefi belirlenip pendingBlockFocus
+                                    // köprüsüyle requestFocus() çağrılıyor.
+                                    int focusBlockIndex = i;
+                                    int caretOffset = 0;
+                                    final FocusNode? removedFocusNode =
+                                        j < itemFns.length
+                                            ? itemFns[j]
+                                            : null;
+                                    bool blockRemoved = false;
+                                    setModalState(() {
+                                      items.removeAt(j);
+                                      if (j < itemCtrls.length) {
+                                        itemCtrls.removeAt(j).dispose();
+                                      }
+                                      if (j < itemFns.length) {
+                                        itemFns.removeAt(j);
+                                      }
+                                      if (items.isEmpty) {
+                                        // Son madde de kaldırıldı: checklist
+                                        // bloğunun tamamı gereksiz —
+                                        // onConvertItemToText'teki AYNI
+                                        // 4 dallı desen: komşu iki taraf da
+                                        // metinse birleştir (imleç birleşim
+                                        // noktasında kalır), sadece tek
+                                        // taraf metinse ona eklenir (imleç
+                                        // o metnin sonunda kalır), hiçbiri
+                                        // metin değilse checklist'in yerine
+                                        // boş bir metin bloğu konur.
+                                        blockRemoved = true;
+                                        final prevIsText = i > 0 &&
+                                            blocks[i - 1]['type'] == 'text';
+                                        final nextIsText =
+                                            i < blocks.length - 1 &&
+                                                blocks[i + 1]['type'] ==
+                                                    'text';
+                                        if (prevIsText && nextIsText) {
+                                          final prevText =
+                                              (blocks[i - 1]['text'] ?? '')
+                                                  .toString();
+                                          final nextText =
+                                              (blocks[i + 1]['text'] ?? '')
+                                                  .toString();
+                                          caretOffset = prevText.length;
+                                          // onConvertItemToText'teki AYNI
+                                          // desen: iki metin doğrudan yan
+                                          // yana değil, ikisi de doluysa
+                                          // aralarına '\n' konarak
+                                          // birleştirilir; biri boşsa
+                                          // gereksiz boş satır eklenmeden
+                                          // sadece diğeri kullanılır.
+                                          final String mergedText;
+                                          final int nextSpanOffset;
+                                          if (prevText.isEmpty) {
+                                            mergedText = nextText;
+                                            nextSpanOffset = 0;
+                                          } else if (nextText.isEmpty) {
+                                            mergedText = prevText;
+                                            nextSpanOffset = 0;
+                                          } else {
+                                            mergedText =
+                                                '$prevText\n$nextText';
+                                            nextSpanOffset =
+                                                prevText.length + 1;
+                                          }
+                                          // Biçimlendirme (kalın/italik/vb.)
+                                          // kaybolmasın diye 'spans' de
+                                          // aynı şekilde taşınır: üstteki
+                                          // span'lar aynen korunur,
+                                          // alttakiler yeni konumlarına
+                                          // göre kaydırılıp eklenir.
+                                          final mergedSpans =
+                                              <Map<String, dynamic>>[];
+                                          if (prevText.isNotEmpty) {
+                                            mergedSpans.addAll(
+                                              RichTextSpans.parse(
+                                                blocks[i - 1]['spans'],
+                                              ),
+                                            );
+                                          }
+                                          if (nextText.isNotEmpty) {
+                                            for (final s
+                                                in RichTextSpans.parse(
+                                              blocks[i + 1]['spans'],
+                                            )) {
+                                              final shifted =
+                                                  Map<String, dynamic>.from(
+                                                      s);
+                                              shifted['start'] =
+                                                  (s['start'] as int) +
+                                                      nextSpanOffset;
+                                              shifted['end'] =
+                                                  (s['end'] as int) +
+                                                      nextSpanOffset;
+                                              mergedSpans.add(shifted);
+                                            }
+                                          }
+                                          blocks[i - 1]['text'] = mergedText;
+                                          blocks[i - 1]['spans'] =
+                                              mergedSpans;
+                                          blocks.removeAt(i + 1);
+                                          blocks.removeAt(i);
+                                          focusBlockIndex = i - 1;
+                                        } else if (prevIsText) {
+                                          blocks.removeAt(i);
+                                          focusBlockIndex = i - 1;
+                                          caretOffset =
+                                              (blocks[i - 1]['text'] ?? '')
+                                                  .toString()
+                                                  .length;
+                                        } else if (nextIsText) {
+                                          blocks.removeAt(i);
+                                          focusBlockIndex = i;
+                                          caretOffset = 0;
+                                        } else {
+                                          blocks[i] = {
+                                            'type': 'text',
+                                            'text': '',
+                                          };
+                                          focusBlockIndex = i;
+                                          caretOffset = 0;
+                                        }
+                                        if (blocks.isEmpty) {
+                                          blocks.add({
+                                            'type': 'text',
+                                            'text': '',
+                                          });
+                                          focusBlockIndex = 0;
+                                          caretOffset = 0;
+                                        }
+                                        rebuildBlockControllers();
+                                      } else {
+                                        block['items'] = items;
+                                      }
+                                    });
+                                    if (!blockRemoved) {
+                                      // Odak zaten (onRemoveItem'da, dokunma
+                                      // anında) komşu maddeye taşınmış
+                                      // olmalı — burada yalnızca artık
+                                      // kullanılmayan eski node'u güvenle
+                                      // (bir sonraki frame'de) dispose
+                                      // ediyoruz.
+                                      if (removedFocusNode != null) {
+                                        WidgetsBinding.instance
+                                            .addPostFrameCallback((_) {
+                                          removedFocusNode.dispose();
+                                        });
+                                      }
+                                    } else {
+                                      // Checklist bloğu tamamen kalktı:
+                                      // yukarıda belirlenen metin bloğuna
+                                      // senkron odak hedefi ata — bkz.
+                                      // onConvertItemToText'teki aynı
+                                      // pendingBlockFocus köprüsü (araya
+                                      // giren frame'de bar'ın ham hasFocus'a
+                                      // bakıp bir an kaybolmaması için).
+                                      focusedBlockIndex = focusBlockIndex;
+                                      focusedItemIndex = -1;
+                                      pendingBlockFocus = true;
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) {
+                                        final idx = focusBlockIndex.clamp(
+                                          0,
+                                          blockFocusNodes.length - 1,
+                                        );
+                                        final fn = blockFocusNodes[idx];
+                                        if (fn != null) {
+                                          fn.requestFocus();
+                                          final ctrl = blockControllers[idx];
+                                          if (ctrl != null) {
+                                            ctrl.selection =
+                                                TextSelection.collapsed(
+                                              offset: caretOffset.clamp(
+                                                0,
+                                                ctrl.text.length,
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      });
+                                    }
+                                  },
                                   onAddItem: (j) {
                                     pushUndoCheckpoint();
                                     final newIndex = j + 1;
@@ -6016,24 +6470,37 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       block['items'] = items;
                                       final capturedBlockIndex = i;
                                       final capturedItemIndex = newIndex;
+                                      final capturedItem = items[newIndex];
                                       final newCtrl = RichBlockTextController(
                                         text: '',
-                                        getSpans: () {
-                                          if (capturedBlockIndex >= blocks.length) return [];
-                                          final blk = blocks[capturedBlockIndex];
-                                          if (blk['type'] != 'checklist') return [];
-                                          final its = blk['items'] as List?;
-                                          if (its == null || capturedItemIndex >= its.length) return [];
-                                          return RichTextSpans.parse(
-                                            (its[capturedItemIndex] as Map)['spans'],
-                                          );
-                                        },
+                                        // DÜZELTME: yukarıdaki checklist
+                                        // controller'larıyla AYNI sebep —
+                                        // pozisyon yerine doğrudan madde
+                                        // referansından okunuyor.
+                                        getSpans: () => RichTextSpans.parse(
+                                          capturedItem['spans'],
+                                        ),
                                       );
                                       final newFn = FocusNode();
                                       newFn.addListener(() {
                                         if (newFn.hasFocus) {
-                                          focusedBlockIndex = capturedBlockIndex;
-                                          focusedItemIndex = capturedItemIndex;
+                                          // DÜZELTME: bkz. rebuildBlockControllers
+                                          // içindeki _locateChecklistItem
+                                          // açıklaması — bu node da madde
+                                          // silinene kadar kalıcı olarak
+                                          // korunuyor, dolayısıyla madde
+                                          // sonradan taşınırsa capturedBlockIndex/
+                                          // capturedItemIndex bayatlar. Güncel
+                                          // konum taze bulunuyor.
+                                          final loc = _locateChecklistItem(
+                                            capturedItem,
+                                          );
+                                          focusedBlockIndex =
+                                              loc?.blockIndex ??
+                                                  capturedBlockIndex;
+                                          focusedItemIndex =
+                                              loc?.itemIndex ??
+                                                  capturedItemIndex;
                                           pendingBlockFocus = false;
                                           _titleFocused = false;
                                           requestEditorRebuild?.call(() {});
@@ -6041,6 +6508,19 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       });
                                       itemCtrls.insert(newIndex, newCtrl);
                                       itemFns.insert(newIndex, newFn);
+                                      // DÜZELTME: bu controller/node
+                                      // rebuildBlockControllers() DIŞINDA
+                                      // kuruluyor; bir sonraki tam
+                                      // rebuild'in bunu "tanıyıp" koruması
+                                      // (yeniden kurup odağı/imleci
+                                      // kaybetmemesi) için kalıcı kimlik
+                                      // haritasına da kaydediyoruz (bkz.
+                                      // checklistItemCtrlByRef/FnByRef
+                                      // tanımının yanındaki açıklama).
+                                      checklistItemCtrlByRef[capturedItem] =
+                                          newCtrl;
+                                      checklistItemFnByRef[capturedItem] =
+                                          newFn;
                                       // DÜZELTME (zengin metin barı bir an
                                       // kaybolup geri geliyordu): odak
                                       // hedefi burada (senkron) belirleniyor
@@ -7448,6 +7928,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                       ),
                     ),
                     ),
+                      ), // Listener kapanışı (boşluğa dokununca son satıra odaklanma)
                       ),
                       Builder(
                         builder: (context) {

@@ -7,10 +7,16 @@ part of 'main.dart';
 /// callback'lerini tetikler. State mantığı çağıran tarafa (NoteListNoteDialogMixin)
 /// bırakılmıştır.
 ///
-/// Ek davranış: herhangi bir madde boşken Backspace'e basılırsa ya da
-/// çarpı ikonuna basılırsa [onConvertItemToText] tetiklenir; o madde
-/// checklist'ten çıkıp imleç aynı satırda kalacak şekilde boş bir düz
-/// metin satırına dönüşür (kutucuk kalkar, varsa metin silinir).
+/// Ek davranış:
+/// - Herhangi bir madde boşken Backspace'e basılırsa [onConvertItemToText]
+///   tetiklenir; o madde checklist'ten çıkıp imleç aynı satırda kalacak
+///   şekilde boş bir düz metin satırına dönüşür (kutucuk kalkar).
+/// - Çarpı ikonuna basılırsa artık [onRemoveItem] tetiklenir; bu, maddeyi
+///   HEMEN listeden çıkarmaz — [isItemRemoving] bu maddeyi "siliniyor"
+///   işaretlemesi için çağıranın state'ini günceller, widget da kısa bir
+///   soluklaşma+daralma animasyonu oynatır; animasyon bitince
+///   [onRemoveAnimationComplete] tetiklenir ve gerçek kaldırma orada
+///   yapılır (bkz. onRemoveItem/onRemoveAnimationComplete dokümanı).
 class NoteChecklistBlock extends StatelessWidget {
   const NoteChecklistBlock({
     super.key,
@@ -25,6 +31,9 @@ class NoteChecklistBlock extends StatelessWidget {
     required this.onTextChanged,
     required this.onAddItem,
     required this.onConvertItemToText,
+    required this.onRemoveItem,
+    required this.isItemRemoving,
+    required this.onRemoveAnimationComplete,
     required this.onReorder,
   });
 
@@ -53,10 +62,27 @@ class NoteChecklistBlock extends StatelessWidget {
   /// gerektiğinde) çağrılır.
   final void Function(int itemIndex) onAddItem;
 
-  /// Bir madde boşken Backspace'e basıldığında ya da çarpı ikonuyla
-  /// dönüştürme istendiğinde çağrılır: madde checklist'ten çıkar, imleç
-  /// aynı satırda kalacak şekilde boş bir düz metin satırına dönüşür.
+  /// Bir madde boşken Backspace'e basıldığında çağrılır: madde
+  /// checklist'ten çıkar, imleç aynı satırda kalacak şekilde boş bir düz
+  /// metin satırına dönüşür.
   final void Function(int itemIndex) onConvertItemToText;
+
+  /// Çarpı ikonuna basıldığında çağrılır: maddeyi HEMEN kaldırmaz, sadece
+  /// çağıranın "siliniyor" state'ini işaretlemesini tetikler (bkz.
+  /// isItemRemoving) — gerçek kaldırma, animasyon bitince
+  /// onRemoveAnimationComplete ile yapılır.
+  final void Function(int itemIndex) onRemoveItem;
+
+  /// Bu maddenin şu an silinme animasyonunda olup olmadığını döndürür.
+  /// true olduğunda satır soluklaşıp daralarak kaybolur.
+  final bool Function(Map<String, dynamic> item) isItemRemoving;
+
+  /// Silinme animasyonu (soluklaşma+daralma) tamamlanınca çağrılır —
+  /// maddenin gerçek `items`/controller/focus listelerinden çıkarılması
+  /// burada yapılmalıdır. İndeks yerine madde referansı (Map) verilir;
+  /// çünkü animasyon süresince başka maddeler de eklenip çıkarılmış
+  /// olabileceğinden çağıran taraf güncel indeksi kendisi bulmalıdır.
+  final void Function(Map<String, dynamic> item) onRemoveAnimationComplete;
 
   /// Sürükleme tutamacıyla bir madde başka bir konuma taşındığında
   /// çağrılır. [oldIndex] ve [newIndex], ReorderableListView'ın standart
@@ -87,8 +113,54 @@ class NoteChecklistBlock extends StatelessWidget {
             onReorder: onReorder,
             children: [
               for (int j = 0; j < items.length; j++)
-                Row(
-                  key: ValueKey('checklist_${blockIndex}_item_$j'),
+                _buildAnimatedItemRow(context, effectiveColor, j),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Silme animasyonu: madde "siliniyor" işaretliyken satır soluklaşarak
+  // (AnimatedOpacity) ve daralarak (AnimatedSize + Align/heightFactor)
+  // kaybolur. Alttaki maddeler ayrıca bir "taşınma" animasyonuna ihtiyaç
+  // duymaz — bu satırın yüksekliği küçüldükçe, doğal düzen (layout)
+  // akışı gereği kendiliğinden yukarı kayarlar.
+  Widget _buildAnimatedItemRow(
+    BuildContext context,
+    Color? effectiveColor,
+    int j,
+  ) {
+    final removing = isItemRemoving(items[j]);
+    return AnimatedSize(
+      // DÜZELTME (asıl kök sebep — klavye kapanıp titriyordu): bu key
+      // eskiden POZİSYONA göreydi (ValueKey('..._item_$j')). Bir madde
+      // silinince ondan sonraki maddeler bir pozisyon kayar, dolayısıyla
+      // key'leri de değişirdi (ör. item_5 → item_4). Flutter eşleştirmeyi
+      // key'e göre yaptığından bu durumu "aynı satır, yeni pozisyon"
+      // olarak tanımıyor, o satırın TextField'ını (ve altındaki
+      // EditableText / platform metin-giriş bağlantısını) komple yok
+      // edip yeniden kuruyordu — klavyenin bir kapanıp açılması ve
+      // titreme muhtemelen asıl buradan kaynaklanıyordu, herhangi bir
+      // odak/focus koduyla ilgisiz. ObjectKey(items[j]) maddenin kendi
+      // kimliğine (Map referansı) bağlı olduğundan, madde pozisyon
+      // değiştirse bile Flutter aynı satırı/aynı TextField state'ini
+      // tanıyor ve hiçbir şeyi yeniden kurmuyor.
+      key: ObjectKey(items[j]),
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+      child: ClipRect(
+        child: Align(
+          alignment: Alignment.topCenter,
+          heightFactor: removing ? 0.0 : 1.0,
+          child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            opacity: removing ? 0.0 : 1.0,
+            onEnd: () {
+              if (removing) onRemoveAnimationComplete(items[j]);
+            },
+            child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Sürükleme tutamacı — satırı yeniden sıralamak için.
@@ -175,15 +247,37 @@ class NoteChecklistBlock extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Maddeyi düz metne dönüştür (kutucuk kalkar, varsa
-                    // metin silinir, imleç aynı satırda kalır).
+                    // Maddeyi tamamen kaldır (dönüştürmez; animasyon
+                    // bitince gerçek kaldırma yapılır — bkz. onRemoveItem
+                    // dokümanı).
+                    //
+                    // DÜZELTME (klavye kapanıp titriyordu): asıl sebep
+                    // onRemoveItem'daki odak taşıma mantığı değildi —
+                    // IconButton, Material'ın standart davranışı gereği
+                    // onPressed çağrılmadan HEMEN ÖNCE kendi üzerine
+                    // (Focus.of(context).requestFocus(...) ile) odak
+                    // alıyor. Bu, o an odaklı olan TextField'ı anında
+                    // odaktan çıkarıp klavyeyi kapatıyordu; onRemoveItem
+                    // içindeki requestFocus() ise bunun ARDINDAN, ayrı bir
+                    // adımda geldiğinden native tarafta klavye bir kapanıp
+                    // tekrar açılıyor (titreme + "kapanma" hissi) —
+                    // ikisi Dart tarafında aynı frame'de olsa bile.
+                    // canRequestFocus: false verilen bir FocusNode ile
+                    // IconButton'ın kendi kendine odak almasını en baştan
+                    // engelliyoruz; böylece TextField hiç odaktan çıkmıyor,
+                    // onRemoveItem'daki requestFocus() de doğrudan (araya
+                    // hiçbir şey girmeden) bir alandan diğerine geçiyor.
                     IconButton(
+                      focusNode: FocusNode(
+                        canRequestFocus: false,
+                        skipTraversal: true,
+                      ),
                       icon: const Icon(
                         Icons.close,
                         color: Colors.grey,
                         size: 18,
                       ),
-                      onPressed: () => onConvertItemToText(j),
+                      onPressed: () => onRemoveItem(j),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(
                         minWidth: 32,
@@ -191,10 +285,9 @@ class NoteChecklistBlock extends StatelessWidget {
                       ),
                     ),
                   ],
-                ),
-            ],
+            ),
           ),
-        ],
+        ),
       ),
     );
   }
