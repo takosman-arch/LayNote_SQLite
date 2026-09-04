@@ -2452,4 +2452,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'Opslaan…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'Dit bestand bestaat niet meer';
 }

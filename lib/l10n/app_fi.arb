@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Galleriaoikeutta ei myönnetty",
   "imageViewerSavedToGalleryMessage": "Tallennettu albumiin",
   "imageViewerSaveFailedMessage": "Tallennus epäonnistui: {error}",
-  "imageViewerSavingInProgressMessage": "Tallennetaan…"
+  "imageViewerSavingInProgressMessage": "Tallennetaan…",
+  "imageViewerFileNotFoundMessage": "Tätä tiedostoa ei enää ole"
 }

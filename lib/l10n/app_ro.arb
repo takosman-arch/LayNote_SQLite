@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Permisiunea pentru galerie nu a fost acordată",
   "imageViewerSavedToGalleryMessage": "Salvat în album",
   "imageViewerSaveFailedMessage": "Salvarea a eșuat: {error}",
-  "imageViewerSavingInProgressMessage": "Se salvează…"
+  "imageViewerSavingInProgressMessage": "Se salvează…",
+  "imageViewerFileNotFoundMessage": "Acest fișier nu mai există"
 }

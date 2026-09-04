@@ -2435,4 +2435,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'सहेजा जा रहा है…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'यह फ़ाइल अब मौजूद नहीं है';
 }

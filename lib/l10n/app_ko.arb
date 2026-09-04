@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "갤러리 권한이 허용되지 않았습니다",
   "imageViewerSavedToGalleryMessage": "앨범에 저장되었습니다",
   "imageViewerSaveFailedMessage": "저장하지 못했습니다: {error}",
-  "imageViewerSavingInProgressMessage": "저장 중…"
+  "imageViewerSavingInProgressMessage": "저장 중…",
+  "imageViewerFileNotFoundMessage": "이 파일이 더 이상 존재하지 않습니다"
 }

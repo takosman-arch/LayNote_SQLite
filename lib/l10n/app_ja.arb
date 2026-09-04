@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "ギャラリーへのアクセスが許可されていません",
   "imageViewerSavedToGalleryMessage": "アルバムに保存しました",
   "imageViewerSaveFailedMessage": "保存できませんでした: {error}",
-  "imageViewerSavingInProgressMessage": "保存中…"
+  "imageViewerSavingInProgressMessage": "保存中…",
+  "imageViewerFileNotFoundMessage": "このファイルは存在しません"
 }

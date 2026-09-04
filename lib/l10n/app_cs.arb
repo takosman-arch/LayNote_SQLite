@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Přístup ke galerii nebyl udělen",
   "imageViewerSavedToGalleryMessage": "Uloženo do alba",
   "imageViewerSaveFailedMessage": "Uložení se nezdařilo: {error}",
-  "imageViewerSavingInProgressMessage": "Ukládání…"
+  "imageViewerSavingInProgressMessage": "Ukládání…",
+  "imageViewerFileNotFoundMessage": "Tento soubor již neexistuje"
 }

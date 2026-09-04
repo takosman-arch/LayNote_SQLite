@@ -2405,4 +2405,7 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'שומר…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'הקובץ הזה כבר לא קיים';
 }

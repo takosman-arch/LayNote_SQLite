@@ -2436,4 +2436,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'Đang lưu…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'Tệp này không còn tồn tại';
 }

@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Izin galeri tidak diberikan",
   "imageViewerSavedToGalleryMessage": "Disimpan ke album",
   "imageViewerSaveFailedMessage": "Gagal menyimpan: {error}",
-  "imageViewerSavingInProgressMessage": "Menyimpan…"
+  "imageViewerSavingInProgressMessage": "Menyimpan…",
+  "imageViewerFileNotFoundMessage": "File ini sudah tidak ada"
 }

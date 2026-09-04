@@ -4535,6 +4535,12 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Kaydediliyor…'**
   String get imageViewerSavingInProgressMessage;
+
+  /// Kırp/Kaydet/Paylaş butonlarına basıldığında hedef dosya diskten silinmiş veya taşınmışsa, işlem başlatılmadan önceki varlık kontrolünde gösterilen snackbar mesajı
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu dosya artık mevcut değil'**
+  String get imageViewerFileNotFoundMessage;
 }
 
 class _AppLocalizationsDelegate

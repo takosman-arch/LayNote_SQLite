@@ -20,10 +20,7 @@ class ImageCropHelper {
       compressQuality: 92,
       uiSettings: [
         AndroidUiSettings(
-          // NOT: Projende bu metin için bir AppLocalizations anahtarı
-          // varsa (ör. imageCropToolbarTitle), sabit metin yerine onu
-          // kullanabilirsin.
-          toolbarTitle: 'Kırp',
+          toolbarTitle: AppLocalizations.of(context)!.imageCropToolbarTitle,
           toolbarColor: Theme.of(context).scaffoldBackgroundColor,
           toolbarWidgetColor: dNoteTextColor(context),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -39,7 +36,7 @@ class ImageCropHelper {
           ],
         ),
         IOSUiSettings(
-          title: 'Kırp',
+          title: AppLocalizations.of(context)!.imageCropToolbarTitle,
           aspectRatioPresets: const [
             CropAspectRatioPreset.original,
             CropAspectRatioPreset.square,

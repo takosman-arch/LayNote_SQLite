@@ -2449,4 +2449,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'Збереження…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'Цей файл більше не існує';
 }

@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Åtkomst till galleriet nekades",
   "imageViewerSavedToGalleryMessage": "Sparad i albumet",
   "imageViewerSaveFailedMessage": "Det gick inte att spara: {error}",
-  "imageViewerSavingInProgressMessage": "Sparar…"
+  "imageViewerSavingInProgressMessage": "Sparar…",
+  "imageViewerFileNotFoundMessage": "Den här filen finns inte längre"
 }

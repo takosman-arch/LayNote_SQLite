@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Kein Zugriff auf die Galerie erteilt",
   "imageViewerSavedToGalleryMessage": "Im Album gespeichert",
   "imageViewerSaveFailedMessage": "Speichern fehlgeschlagen: {error}",
-  "imageViewerSavingInProgressMessage": "Wird gespeichert…"
+  "imageViewerSavingInProgressMessage": "Wird gespeichert…",
+  "imageViewerFileNotFoundMessage": "Diese Datei ist nicht mehr vorhanden"
 }

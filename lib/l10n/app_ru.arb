@@ -729,5 +729,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Доступ к галерее не предоставлен",
   "imageViewerSavedToGalleryMessage": "Сохранено в альбом",
   "imageViewerSaveFailedMessage": "Не удалось сохранить: {error}",
-  "imageViewerSavingInProgressMessage": "Сохранение…"
+  "imageViewerSavingInProgressMessage": "Сохранение…",
+  "imageViewerFileNotFoundMessage": "Этот файл больше не существует"
 }

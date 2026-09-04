@@ -2433,4 +2433,7 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'Lagrer…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'Denne filen finnes ikke lenger';
 }

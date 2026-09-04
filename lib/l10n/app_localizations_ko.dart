@@ -2381,4 +2381,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => '저장 중…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => '이 파일이 더 이상 존재하지 않습니다';
 }

@@ -729,5 +729,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Autorisation de galerie refusée",
   "imageViewerSavedToGalleryMessage": "Enregistré dans l'album",
   "imageViewerSaveFailedMessage": "Échec de l'enregistrement : {error}",
-  "imageViewerSavingInProgressMessage": "Enregistrement…"
+  "imageViewerSavingInProgressMessage": "Enregistrement…",
+  "imageViewerFileNotFoundMessage": "Ce fichier n'existe plus"
 }

@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "未授予相册访问权限",
   "imageViewerSavedToGalleryMessage": "已保存到相册",
   "imageViewerSaveFailedMessage": "保存失败：{error}",
-  "imageViewerSavingInProgressMessage": "正在保存…"
+  "imageViewerSavingInProgressMessage": "正在保存…",
+  "imageViewerFileNotFoundMessage": "该文件已不存在"
 }

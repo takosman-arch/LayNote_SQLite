@@ -3211,5 +3211,9 @@
   "imageViewerSavingInProgressMessage": "Kaydediliyor…",
   "@imageViewerSavingInProgressMessage": {
     "description": "Albüme Kaydet butonuna basılır basılmaz gösterilen geçici 'Kaydediliyor…' snackbar mesajı (işlem birkaç saniye sürebildiği için anlık geri bildirim)"
+  },
+  "imageViewerFileNotFoundMessage": "Bu dosya artık mevcut değil",
+  "@imageViewerFileNotFoundMessage": {
+    "description": "Kırp/Kaydet/Paylaş butonlarına basıldığında hedef dosya diskten silinmiş veya taşınmışsa, işlem başlatılmadan önceki varlık kontrolünde gösterilen snackbar mesajı"
   }
 }

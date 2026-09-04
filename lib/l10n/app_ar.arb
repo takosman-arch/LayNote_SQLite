@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "لم يتم منح إذن المعرض",
   "imageViewerSavedToGalleryMessage": "تم الحفظ في الألبوم",
   "imageViewerSaveFailedMessage": "تعذر الحفظ: {error}",
-  "imageViewerSavingInProgressMessage": "جارٍ الحفظ…"
+  "imageViewerSavingInProgressMessage": "جارٍ الحفظ…",
+  "imageViewerFileNotFoundMessage": "لم يعد هذا الملف موجودًا"
 }

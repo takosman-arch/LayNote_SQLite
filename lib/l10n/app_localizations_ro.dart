@@ -2443,4 +2443,7 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'Se salvează…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'Acest fișier nu mai există';
 }

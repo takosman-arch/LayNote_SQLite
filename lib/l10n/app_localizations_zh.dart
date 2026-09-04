@@ -2350,4 +2350,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => '正在保存…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => '该文件已不存在';
 }

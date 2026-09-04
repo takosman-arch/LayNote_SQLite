@@ -2433,4 +2433,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'Menyimpan…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'File ini sudah tidak ada';
 }

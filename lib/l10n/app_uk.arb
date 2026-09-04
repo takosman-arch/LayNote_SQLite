@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Доступ до галереї не надано",
   "imageViewerSavedToGalleryMessage": "Збережено в альбом",
   "imageViewerSaveFailedMessage": "Не вдалося зберегти: {error}",
-  "imageViewerSavingInProgressMessage": "Збереження…"
+  "imageViewerSavingInProgressMessage": "Збереження…",
+  "imageViewerFileNotFoundMessage": "Цей файл більше не існує"
 }

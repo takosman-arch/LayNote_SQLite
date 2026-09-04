@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "לא ניתנה הרשאה לגלריה",
   "imageViewerSavedToGalleryMessage": "נשמר באלבום",
   "imageViewerSaveFailedMessage": "השמירה נכשלה: {error}",
-  "imageViewerSavingInProgressMessage": "שומר…"
+  "imageViewerSavingInProgressMessage": "שומר…",
+  "imageViewerFileNotFoundMessage": "הקובץ הזה כבר לא קיים"
 }

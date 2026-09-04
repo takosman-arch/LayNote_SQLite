@@ -2435,4 +2435,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'Ukládání…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'Tento soubor již neexistuje';
 }

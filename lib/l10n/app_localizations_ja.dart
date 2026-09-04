@@ -2379,4 +2379,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => '保存中…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'このファイルは存在しません';
 }

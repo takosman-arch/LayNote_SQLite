@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "ไม่ได้รับอนุญาตให้เข้าถึงแกลเลอรี",
   "imageViewerSavedToGalleryMessage": "บันทึกลงอัลบั้มแล้ว",
   "imageViewerSaveFailedMessage": "บันทึกไม่สำเร็จ: {error}",
-  "imageViewerSavingInProgressMessage": "กำลังบันทึก…"
+  "imageViewerSavingInProgressMessage": "กำลังบันทึก…",
+  "imageViewerFileNotFoundMessage": "ไม่พบไฟล์นี้แล้ว"
 }

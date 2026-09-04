@@ -2418,4 +2418,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'Kaydediliyor…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'Bu dosya artık mevcut değil';
 }

@@ -94,6 +94,10 @@ dependencies:
   cunning_document_scanner: ^1.2.5
   google_mlkit_text_recognition: ^0.15.0
 
+  # ── Not içindeki görsellerde galeri tarzı kaydırma (zoom + sağa-sola
+  # geçiş) için ──
+  photo_view: ^0.15.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

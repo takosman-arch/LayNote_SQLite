@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Adgang til galleri blev ikke givet",
   "imageViewerSavedToGalleryMessage": "Gemt i album",
   "imageViewerSaveFailedMessage": "Kunne ikke gemme: {error}",
-  "imageViewerSavingInProgressMessage": "Gemmer…"
+  "imageViewerSavingInProgressMessage": "Gemmer…",
+  "imageViewerFileNotFoundMessage": "Denne fil findes ikke længere"
 }

@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Không được cấp quyền truy cập thư viện ảnh",
   "imageViewerSavedToGalleryMessage": "Đã lưu vào album",
   "imageViewerSaveFailedMessage": "Không thể lưu: {error}",
-  "imageViewerSavingInProgressMessage": "Đang lưu…"
+  "imageViewerSavingInProgressMessage": "Đang lưu…",
+  "imageViewerFileNotFoundMessage": "Tệp này không còn tồn tại"
 }

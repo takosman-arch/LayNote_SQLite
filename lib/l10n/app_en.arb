@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Gallery permission not granted",
   "imageViewerSavedToGalleryMessage": "Saved to album",
   "imageViewerSaveFailedMessage": "Could not save: {error}",
-  "imageViewerSavingInProgressMessage": "Saving…"
+  "imageViewerSavingInProgressMessage": "Saving…",
+  "imageViewerFileNotFoundMessage": "This file no longer exists"
 }

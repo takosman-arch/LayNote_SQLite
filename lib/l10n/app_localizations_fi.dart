@@ -2439,4 +2439,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'Tallennetaan…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'Tätä tiedostoa ei enää ole';
 }

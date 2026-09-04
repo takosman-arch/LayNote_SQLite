@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Geen toegang tot galerij verleend",
   "imageViewerSavedToGalleryMessage": "Opgeslagen in album",
   "imageViewerSaveFailedMessage": "Opslaan mislukt: {error}",
-  "imageViewerSavingInProgressMessage": "Opslaan…"
+  "imageViewerSavingInProgressMessage": "Opslaan…",
+  "imageViewerFileNotFoundMessage": "Dit bestand bestaat niet meer"
 }

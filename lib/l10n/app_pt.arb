@@ -729,5 +729,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Permissão da galeria não concedida",
   "imageViewerSavedToGalleryMessage": "Salvo no álbum",
   "imageViewerSaveFailedMessage": "Não foi possível salvar: {error}",
-  "imageViewerSavingInProgressMessage": "Salvando…"
+  "imageViewerSavingInProgressMessage": "Salvando…",
+  "imageViewerFileNotFoundMessage": "Este arquivo não existe mais"
 }

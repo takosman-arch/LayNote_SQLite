@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Nie przyznano dostępu do galerii",
   "imageViewerSavedToGalleryMessage": "Zapisano w albumie",
   "imageViewerSaveFailedMessage": "Nie udało się zapisać: {error}",
-  "imageViewerSavingInProgressMessage": "Zapisywanie…"
+  "imageViewerSavingInProgressMessage": "Zapisywanie…",
+  "imageViewerFileNotFoundMessage": "Ten plik już nie istnieje"
 }

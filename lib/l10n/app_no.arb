@@ -1170,5 +1170,6 @@
   "imageViewerGalleryPermissionDeniedMessage": "Galleritilgang ble ikke gitt",
   "imageViewerSavedToGalleryMessage": "Lagret i album",
   "imageViewerSaveFailedMessage": "Kunne ikke lagre: {error}",
-  "imageViewerSavingInProgressMessage": "Lagrer…"
+  "imageViewerSavingInProgressMessage": "Lagrer…",
+  "imageViewerFileNotFoundMessage": "Denne filen finnes ikke lenger"
 }

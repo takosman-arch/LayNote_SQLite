@@ -2466,4 +2466,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'Salvando…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'Este arquivo não existe mais';
 }

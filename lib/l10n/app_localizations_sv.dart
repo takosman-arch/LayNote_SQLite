@@ -2437,4 +2437,8 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'Sparar…';
+
+  @override
+  String get imageViewerFileNotFoundMessage =>
+      'Den här filen finns inte längre';
 }

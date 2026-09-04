@@ -3764,11 +3764,118 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 });
               }
 
-              Future<void> openAttachment(Map<String, dynamic> att) async {
+              Future<void> openAttachment(
+                Map<String, dynamic> att, {
+                List<Map<String, dynamic>>? galleryImages,
+              }) async {
                 final dir = await DBHelper.instance.attachmentsDir();
                 final path = p.join(dir.path, att['storedName'].toString());
                 if (att['isImage'] == true) {
                   if (!context.mounted) return;
+
+                  // GALERİ DESTEĞİ: Bu görselle birlikte sağa-sola geçilebilecek
+                  // "kardeş" görseller. Çağıran taraf (blok bazlı ızgara) hangi
+                  // görsellerin aynı blokta olduğunu galleryImages ile bildirir;
+                  // belirtilmezse (ör. eski/blok-dışı ekler bölümü) nottaki TÜM
+                  // görseller kullanılır.
+                  final List<Map<String, dynamic>> images =
+                      (galleryImages != null && galleryImages.isNotEmpty)
+                          ? galleryImages.where((a) => a['isImage'] == true).toList()
+                          : attachments.where((a) => a['isImage'] == true).toList();
+                  final int initialIndex = images.indexWhere(
+                    (a) => a['id'].toString() == att['id'].toString(),
+                  );
+
+                  // AŞAMA 4: Alt bar artık tıklanan ilk görsele (att/path)
+                  // değil, galeride O AN görünen sayfaya bağlı çalışmalı.
+                  // currentIndex'i (Aşama 3'te showDialog'un içinde
+                  // tanımlıydı) buraya, fonksiyonlardan ÖNCEYE taşıdık ki
+                  // cropExisting/deleteExisting/saveToGallery/shareExisting
+                  // onu kapsayabilsin. currentAtt()/currentPath() her
+                  // çağrıldığında currentIndex'in GÜNCEL değerini okur (sabit
+                  // bir kopya değil) — StatefulBuilder'ın onPageChanged'ı
+                  // currentIndex'i güncelledikçe bu iki fonksiyon da otomatik
+                  // olarak doğru sayfayı işaret eder.
+                  int currentIndex = initialIndex < 0 ? 0 : initialIndex;
+                  // Fotoğrafa tek tıklanınca üstteki (geri al/ileri al/kapat)
+                  // ve alttaki (kırp/sil/kaydet/paylaş) çubukları gizleyip
+                  // fotoğrafın tam görünmesini sağlamak için. Tekrar
+                  // tıklanınca geri gelir. PhotoViewGalleryPageOptions'ın
+                  // onTapUp callback'i kullanılıyor — bu, photo_view
+                  // paketinin çift tıklamadan (zoom) BAĞIMSIZ olarak
+                  // sunduğu tek-tıklama callback'i olduğundan çift tık
+                  // zoom fonksiyonuna dokunmuyor.
+                  bool controlsVisible = true;
+                  Map<String, dynamic> currentAtt() => images[currentIndex];
+                  // AŞAMA 5: deleteExisting bu değişkeni currentIndex'i
+                  // güncellemek (ve galeriyi yeniden çizdirmek) için
+                  // kullanıyor. StatefulBuilder'ın builder'ı aşağıda
+                  // henüz çalışmadığı için StateSetter'ı buraya, dıştaki
+                  // ortak scope'a alıyoruz; builder ilk çalıştığında bu
+                  // değişkene atanacak (bkz. aşağıdaki showDialog).
+                  late StateSetter setDialogState;
+                  String currentPath() => p.join(
+                        dir.path,
+                        currentAtt()['storedName'].toString(),
+                      );
+
+                  // KIRPMA GEÇMİŞİ (Geri Al / İleri Al): görüntüleyici
+                  // açıkken, her ekin kendi kırpma geçmişi ayrı tutulur
+                  // (attachment id -> stack). Editördeki editHistory ile
+                  // AYNI UndoRedoStack sınıfı kullanılıyor, ama burada
+                  // snapshot olarak notun tamamı değil, sadece o an
+                  // dosyada duran görselin bytes'ı saklanıyor. Bu geçmiş
+                  // yalnızca bellekte tutulur; dialog kapanınca (bu
+                  // openAttachment çağrısı sona erince) otomatik olarak
+                  // kaybolur — diske ayrıca yazılmaz.
+                  final Map<String, UndoRedoStack<Uint8List>>
+                      cropHistoryByAttId = {};
+                  UndoRedoStack<Uint8List> cropHistoryFor(String attId) =>
+                      cropHistoryByAttId.putIfAbsent(
+                        attId,
+                        () => UndoRedoStack<Uint8List>(),
+                      );
+
+                  // DÜZELTME (kırpma sonrası görsel değişmiyordu): Geri Al
+                  // eklenirken görüntüleyici artık kırpma sonrası
+                  // KAPATILMIYOR (bkz. aşağıdaki "DEĞİŞİKLİK" notu). Ama
+                  // PhotoViewGallery'deki Image widget'ı aynı dosya yolunu
+                  // (aynı FileImage) kullanmaya devam ettiği için, dosya
+                  // diskte değişse ve evict() çağrılsa bile, widget hâlâ
+                  // ayakta olduğundan Flutter onu "aynı görsel" sayıp
+                  // zaten belleğe aldığı eski kareyi göstermeye devam
+                  // ediyordu (dialog kapanıp yeniden açıldığında widget'lar
+                  // sıfırdan kurulduğu için bu sorun eskiden fark edilmiyordu).
+                  // Çözüm: her ekin kendi "sürüm" sayacını tutup, kırpma/geri
+                  // al/ileri al her çalıştığında artırıyoruz; bu sayaç
+                  // aşağıda PhotoViewGalleryPageOptions'ın key'inde
+                  // kullanılarak Flutter'ın o sayfayı gerçekten sıfırdan
+                  // (yeni bir Image widget'ı ile) yeniden kurmasını sağlıyor.
+                  final Map<String, int> imageVersionByAttId = {};
+                  int imageVersionFor(String attId) =>
+                      imageVersionByAttId[attId] ?? 0;
+                  void bumpImageVersion(String attId) {
+                    imageVersionByAttId[attId] = imageVersionFor(attId) + 1;
+                  }
+
+                  // DÜZELTME (kırpma/geri al/ileri al ekranda görünmüyordu,
+                  // sadece nottan çıkıp geri girince görünüyordu): Yukarıdaki
+                  // versiyon-key + evict() yaklaşımı FileImage üzerinde tek
+                  // başına yeterli olmuyor — Flutter'ın Image widget'ı, yeni
+                  // oluşturulan FileImage örneği eskisiyle (aynı dosya yolu +
+                  // scale) "==" olarak eşit sayıldığından bunu "değişmemiş"
+                  // kabul edip yeniden resolve etmeyebiliyor; ImageCache'i
+                  // evict etmek de zaten çözülmüş/aktif bir ImageStream'i geri
+                  // çağırmıyor. Kalıcı çözüm: kırpma/geri al/ileri al sonrası
+                  // dosyanın GÜNCEL byte'larını burada hafızada da tutup,
+                  // görüntüleyicide FileImage yerine MemoryImage ile
+                  // göstermek — bu sayede diskten/ImageCache'ten okuma
+                  // belirsizliği tamamen devre dışı kalıyor. Harita boşken
+                  // (henüz bu oturumda kırpma yapılmamışken) normal şekilde
+                  // FileImage kullanılmaya devam ediyor (bkz. aşağıdaki
+                  // PhotoViewGalleryPageOptions).
+                  final Map<String, Uint8List> currentBytesByAttId = {};
+
                   // Zaten eklenmiş bir fotoğrafı sonradan kırpmak için:
                   // ImageCropHelper aynı dosya yolunun bir KOPYASINI
                   // döndürür (image_cropper geçici bir dosya oluşturur).
@@ -3776,35 +3883,148 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   // ORİJİNAL dosyanın üzerine yazıyoruz; galeri/ızgaradaki
                   // önizleme de aynı yolu okuduğu için otomatik güncellenir.
                   Future<void> cropExisting(BuildContext dialogCtx) async {
+                    final targetPath = currentPath();
+                    final attId = currentAtt()['id'].toString();
+                    // UÇ DURUM: Dosya diskten silinmiş/taşınmışsa
+                    // ImageCropHelper.cropSingle içeride File.readAsBytes
+                    // (veya benzeri) ile ayrı bir exception fırlatabilir.
+                    // Cropper'ı hiç açmadan önce sessizce (bilgi çubuğuyla)
+                    // iptal ediyoruz.
+                    if (!File(targetPath).existsSync()) {
+                      if (mounted) {
+                        _showInfoBar(
+                          AppLocalizations.of(context)!
+                              .imageViewerFileNotFoundMessage,
+                          icon: Icons.error_outline,
+                        );
+                      }
+                      return;
+                    }
+                    // GERİ AL için: dosyanın kırpmadan HEMEN ÖNCEKİ hâlini
+                    // (henüz üzerine yazılmamışken) geçmişe kaydediyoruz —
+                    // editördeki pushUndoCheckpoint() ile aynı desen
+                    // (değişiklikten önceki durumu sakla).
+                    final preCropBytes = await File(targetPath).readAsBytes();
                     final croppedPath = await ImageCropHelper.cropSingle(
                       context: dialogCtx,
-                      sourcePath: path,
+                      sourcePath: targetPath,
                     );
-                    if (croppedPath == path) return; // kullanıcı iptal etti
+                    if (croppedPath == targetPath) {
+                      return; // kullanıcı iptal etti
+                    }
                     final croppedBytes = await File(croppedPath).readAsBytes();
-                    await File(path).writeAsBytes(croppedBytes);
+                    cropHistoryFor(attId).push(preCropBytes);
+                    await File(targetPath).writeAsBytes(croppedBytes);
                     // ÖNEMLİ: Image.file, aynı dosya yolunu Flutter'ın
                     // resim önbelleğinde tutar — sadece üzerine yazmak
                     // yetmez, önbellekteki eski kareyi de temizlememiz
                     // gerekir; yoksa kırpma sonrası eski görüntü görünmeye
                     // devam eder.
-                    await FileImage(File(path)).evict();
+                    await FileImage(File(targetPath)).evict();
+                    // DÜZELTME: evict() tek başına güvenilir değil (bkz.
+                    // currentBytesByAttId tanımı yukarıda) — güncel byte'ları
+                    // hafızaya da yazıyoruz ki görüntüleyici MemoryImage ile
+                    // gösterebilsin.
+                    currentBytesByAttId[attId] = croppedBytes;
+                    // Görüntüleyici artık kapanmadığı için, PhotoView'daki
+                    // Image widget'ının GERÇEKTEN yeniden kurulması (ve
+                    // dolayısıyla dosyayı yeniden okuması) için sürümü
+                    // artırıyoruz — bkz. imageVersionByAttId tanımı yukarıda.
+                    bumpImageVersion(attId);
                     try {
                       await File(croppedPath).delete();
                     } catch (_) {
                       // Geçici dosya silinemese de sorun değil.
                     }
-                    if (dialogCtx.mounted) Navigator.pop(dialogCtx);
+                    // DEĞİŞİKLİK: Kırpma sonrası artık görüntüleyici
+                    // KAPATILMIYOR — üst bardaki Geri Al/İleri Al butonları
+                    // aynı oturumda kullanılabilsin diye açık kalıyor
+                    // (editördeki undo/redo davranışıyla tutarlı). Grid/ızgara
+                    // önizlemesi yine setModalState ile arka planda
+                    // güncelleniyor.
                     setModalState(() {});
+                    if (dialogCtx.mounted) setDialogState(() {});
+                  }
+
+                  // Kırpma geçmişinde bir adım GERİYE gider. Editördeki
+                  // "Geri Al" butonuyla aynı desen: mevcut (o an dosyadaki)
+                  // bytes önce redo yığınına itilir, sonra bir önceki hâl
+                  // dosyanın üzerine yazılır.
+                  Future<void> undoCrop(BuildContext dialogCtx) async {
+                    final targetPath = currentPath();
+                    final attId = currentAtt()['id'].toString();
+                    final history = cropHistoryFor(attId);
+                    if (!history.canUndo) return;
+                    final currentBytes = await File(targetPath).readAsBytes();
+                    final restored = history.undo(currentBytes);
+                    if (restored == null) return;
+                    await File(targetPath).writeAsBytes(restored);
+                    await FileImage(File(targetPath)).evict();
+                    // DÜZELTME: bkz. cropExisting içindeki aynı isimli not.
+                    currentBytesByAttId[attId] = restored;
+                    bumpImageVersion(attId);
+                    setModalState(() {});
+                    if (dialogCtx.mounted) setDialogState(() {});
+                  }
+
+                  // Kırpma geçmişinde bir adım İLERİYE gider (undoCrop'un
+                  // tersi).
+                  Future<void> redoCrop(BuildContext dialogCtx) async {
+                    final targetPath = currentPath();
+                    final attId = currentAtt()['id'].toString();
+                    final history = cropHistoryFor(attId);
+                    if (!history.canRedo) return;
+                    final currentBytes = await File(targetPath).readAsBytes();
+                    final restored = history.redo(currentBytes);
+                    if (restored == null) return;
+                    await File(targetPath).writeAsBytes(restored);
+                    await FileImage(File(targetPath)).evict();
+                    // DÜZELTME: bkz. cropExisting içindeki aynı isimli not.
+                    currentBytesByAttId[attId] = restored;
+                    bumpImageVersion(attId);
+                    setModalState(() {});
+                    if (dialogCtx.mounted) setDialogState(() {});
                   }
 
                   // Var olan eki siler ve görüntüleyiciyi kapatır.
                   // removeAttachmentById zaten mevcut (bkz. yukarıda) —
                   // ızgaradaki uzun-basmalı silme ile aynı yolu kullanıyor,
                   // bu yüzden ek bir onay diyaloğu eklemedik (tutarlılık).
+                  // AŞAMA 5: Silme sonrası index senkronizasyonu.
+                  // Ürün kararı: kalan görsel varsa dialog AÇIK kalır ve
+                  // galeri güncellenir; sadece silinen görsel listenin
+                  // SON (tek kalan) öğesiyse dialog kapanır. Dialog açık
+                  // kalan senaryoda "bir sonraki görsel" gösterilir (liste
+                  // kaydığı için currentIndex zaten otomatik olarak
+                  // sıradaki görseli işaret eder).
                   void deleteExisting(BuildContext dialogCtx) {
-                    Navigator.pop(dialogCtx);
-                    removeAttachmentById(att['id'].toString());
+                    final deletedIndex = currentIndex;
+                    final targetId = currentAtt()['id'].toString();
+
+                    // removeAttachmentById dışarıdaki attachments/blocks
+                    // state'ini (setModalState ile) günceller — ama bu
+                    // closure'daki `images` yerel bir kopya olduğu için
+                    // galerinin kendi listesini ayrıca güncellememiz
+                    // gerekiyor, yoksa PhotoViewGallery hâlâ silinen
+                    // görseli gösterir.
+                    removeAttachmentById(targetId);
+                    images.removeAt(deletedIndex);
+
+                    if (images.isEmpty) {
+                      if (dialogCtx.mounted) Navigator.pop(dialogCtx);
+                      return;
+                    }
+
+                    setDialogState(() {
+                      // "Bir sonraki görsel" seçildi: liste kaydığı için
+                      // aynı index zaten silinenin sıradaki komşusunu
+                      // işaret ediyor; silinen son sıradaysa (deletedIndex
+                      // artık images.length'e eşit/büyük) yeni son
+                      // elemana sabitleniyor.
+                      currentIndex = deletedIndex >= images.length
+                          ? images.length - 1
+                          : deletedIndex;
+                    });
                   }
 
                   // Fotoğrafı cihazın galeri/albüm uygulamasına kaydeder
@@ -3822,6 +4042,19 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   // görünür — uygulamanın diğer yerlerindeki pill'lerle
                   // aynı bileşen.
                   Future<void> saveToGallery(BuildContext dialogCtx) async {
+                    // UÇ DURUM: "Kaydediliyor" mesajını gösterip sonra hataya
+                    // dönmek kafa karıştırıcı olur — bu yüzden kontrol
+                    // _showInfoBar(SavingInProgress...) çağrısından ÖNCE.
+                    if (!File(currentPath()).existsSync()) {
+                      if (mounted) {
+                        _showInfoBar(
+                          AppLocalizations.of(context)!
+                              .imageViewerFileNotFoundMessage,
+                          icon: Icons.error_outline,
+                        );
+                      }
+                      return;
+                    }
                     _showInfoBar(
                       AppLocalizations.of(context)!
                           .imageViewerSavingInProgressMessage,
@@ -3844,7 +4077,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           return;
                         }
                       }
-                      await Gal.putImage(path, album: 'Layout');
+                      await Gal.putImage(currentPath(), album: 'Layout');
                       if (mounted) {
                         _showInfoBar(
                           AppLocalizations.of(context)!
@@ -3867,8 +4100,20 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                   // vb.) paylaşır — diğer paylaşım akışlarıyla aynı
                   // SharePlus.instance API'si kullanılıyor.
                   Future<void> shareExisting() async {
+                    // UÇ DURUM: Dosya yoksa SharePlus'a hiç gitmeden
+                    // sessizce (bilgi çubuğuyla) iptal ediyoruz.
+                    if (!File(currentPath()).existsSync()) {
+                      if (mounted) {
+                        _showInfoBar(
+                          AppLocalizations.of(context)!
+                              .imageViewerFileNotFoundMessage,
+                          icon: Icons.error_outline,
+                        );
+                      }
+                      return;
+                    }
                     await SharePlus.instance.share(
-                      ShareParams(files: [XFile(path)]),
+                      ShareParams(files: [XFile(currentPath())]),
                     );
                   }
 
@@ -3913,120 +4158,322 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     );
                   }
 
+                  // Aşama 3: showDialog kendisi stateless bir builder
+                  // döndürdüğü için (StatelessWidget gibi), galeri
+                  // sayfası değiştikçe alt bar'ın (Aşama 4'te uygulandı)
+                  // hangi görseli göstereceğini bilmesi için currentIndex'i
+                  // StatefulBuilder ile tutuyoruz. currentIndex kendisi artık
+                  // yukarıda (currentAtt/currentPath ile birlikte)
+                  // tanımlanıyor — burada sadece StatefulBuilder'ın onu
+                  // güncellemeye devam ettiğini hatırlatıyoruz.
+
                   showDialog(
                     context: context,
                     barrierColor: Colors.black.withValues(alpha: 0.9),
-                    builder: (dialogCtx) => Dialog(
-                      backgroundColor: Colors.transparent,
-                      // NOT: insetPadding artık sıfır. Önceki EdgeInsets.all(8)
-                      // ile Dialog, içeriği (fotoğrafın boyutu) kadar
-                      // küçülüyordu — bu yüzden alttaki buton çubuğu
-                      // (Positioned(bottom: 0)) ekranın değil, fotoğrafın
-                      // hemen altına yapışıyordu. SizedBox.expand ile
-                      // birlikte Dialog artık tüm ekranı kaplıyor, böylece
-                      // buton çubuğu her zaman ekranın (ve sistem alt
-                      // çubuğunun hemen üstünün) en altında kalıyor — tıpkı
-                      // kırpma ekranındaki gibi.
-                      insetPadding: EdgeInsets.zero,
-                      child: SizedBox.expand(
-                        child: Stack(
-                          children: [
-                            InteractiveViewer(
-                              child: Image.file(
-                                File(path),
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            Positioned(
-                              // Durum çubuğunun (saat) arkasında kalmaması
-                              // için üstteki güvenli alan kadar aşağı
-                              // itiliyor.
-                              top: MediaQuery.of(dialogCtx).padding.top + 8,
-                              right: 8,
-                              child: IconButton(
-                                icon: const Icon(
-                                  Icons.close,
-                                  color: Colors.white,
+                    builder: (dialogCtx) => StatefulBuilder(
+                      builder: (sbCtx, setState) {
+                        // AŞAMA 5: dıştaki (openAttachment scope'undaki)
+                        // setDialogState değişkenini bu builder her
+                        // çalıştığında güncel StateSetter ile senkron
+                        // tutuyoruz — deleteExisting gibi builder DIŞINDA
+                        // tanımlı fonksiyonlar da böylece setDialogState'e
+                        // erişebiliyor.
+                        setDialogState = setState;
+                        return Dialog(
+                        backgroundColor: Colors.transparent,
+                        // NOT: insetPadding artık sıfır. Önceki EdgeInsets.all(8)
+                        // ile Dialog, içeriği (fotoğrafın boyutu) kadar
+                        // küçülüyordu — bu yüzden alttaki buton çubuğu
+                        // (Positioned(bottom: 0)) ekranın değil, fotoğrafın
+                        // hemen altına yapışıyordu. SizedBox.expand ile
+                        // birlikte Dialog artık tüm ekranı kaplıyor, böylece
+                        // buton çubuğu her zaman ekranın (ve sistem alt
+                        // çubuğunun hemen üstünün) en altında kalıyor — tıpkı
+                        // kırpma ekranındaki gibi.
+                        insetPadding: EdgeInsets.zero,
+                        child: SizedBox.expand(
+                          child: Stack(
+                            children: [
+                              // Aşama 3: Tek görsellik InteractiveViewer yerine
+                              // PhotoViewGallery.builder — pinch-zoom/pan'i
+                              // kendi içinde yönetiyor ve zoom durumuna göre
+                              // sağa-sola kaydırma (sayfa değiştirme) ile
+                              // çakışmıyor.
+                              PhotoViewGallery.builder(
+                                itemCount: images.length,
+                                pageController: PageController(
+                                  initialPage: currentIndex,
                                 ),
-                                onPressed: () => Navigator.pop(dialogCtx),
-                              ),
-                            ),
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              // Sistem gezinme çubuğunun (alt bar) hemen
-                              // üzerinde durması için alttaki güvenli alan
-                              // kadar yukarı kaydırılıyor.
-                              bottom: MediaQuery.of(dialogCtx).padding.bottom,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
+                                onPageChanged: (i) => setDialogState(
+                                  () => currentIndex = i,
                                 ),
-                                color: Colors.black.withValues(alpha: 0.55),
-                                child: Row(
-                                  // NOT: mainAxisAlignment.spaceEvenly yerine
-                                  // her buton eşit genişlikte bir Expanded
-                                  // içine alındı. spaceEvenly, butonlar
-                                  // arasındaki BOŞLUĞU eşitliyordu; ama
-                                  // etiketler farklı uzunlukta olduğu için
-                                  // (ör. "Kırp" vs "Galeriye Kaydet")
-                                  // butonların kendileri farklı genişlikte
-                                  // kalıyor, bu da ikonların/merkezlerin
-                                  // birbirine eşit uzaklıkta görünmemesine
-                                  // yol açıyordu. Expanded ile her buton tam
-                                  // olarak ekranın 1/4'ünü kaplıyor ve
-                                  // ortasında duruyor — bu sayede dördü de
-                                  // gerçekten eşit aralıklı oluyor.
+                                builder: (galleryCtx, i) {
+                                  final galleryAtt = images[i];
+                                  final galleryPath = p.join(
+                                    dir.path,
+                                    galleryAtt['storedName'].toString(),
+                                  );
+                                  final galleryAttId =
+                                      galleryAtt['id'].toString();
+                                  return PhotoViewGalleryPageOptions(
+                                    // DÜZELTME: key'e sürüm sayacı eklendi —
+                                    // aksi halde kırpma/geri al/ileri al
+                                    // sonrası dosya değişse bile bu sayfa
+                                    // aynı widget olarak kaldığından eski
+                                    // görsel ekranda kalmaya devam ediyordu.
+                                    key: ValueKey(
+                                      '$galleryAttId-${imageVersionFor(galleryAttId)}',
+                                    ),
+                                    // DÜZELTME (asıl neden): FileImage,
+                                    // dosya yolu + scale eşitse "aynı"
+                                    // sayıldığından, yeni bir FileImage
+                                    // örneği oluştursak da Flutter'ın Image
+                                    // widget'ı bunu "değişmemiş" kabul edip
+                                    // yeniden resolve etmeyebiliyordu —
+                                    // evict() ve versiyonlu key bile tek
+                                    // başına bunu her zaman aşamıyordu (bkz.
+                                    // currentBytesByAttId tanımı yukarıda).
+                                    // Bu yüzden bu ekin bu oturumda en az bir
+                                    // kez kırpılmış/undo-redo'lu bir hâli
+                                    // varsa, dosyadan değil doğrudan
+                                    // hafızadaki güncel byte'lardan gösteriyoruz.
+                                    imageProvider:
+                                        currentBytesByAttId[galleryAttId] !=
+                                            null
+                                        ? MemoryImage(
+                                                currentBytesByAttId[galleryAttId]!,
+                                              )
+                                              as ImageProvider
+                                        : FileImage(File(galleryPath)),
+                                    minScale: PhotoViewComputedScale.contained,
+                                    maxScale:
+                                        PhotoViewComputedScale.covered * 3,
+                                    // ÇİFT TIK DÜZELTMESİ 2: PhotoViewGallery
+                                    // içteki PageView ile aynı jest arenasını
+                                    // paylaşıyor; ekranın TAM ORTASINA yakın
+                                    // dokunuşlarda bu ikisi çakışıp çift tık
+                                    // PhotoView'a hiç iletilmeyebiliyor (bkz.
+                                    // photo_view paketi issue #216/#252/#540).
+                                    // opaque davranışı, bu bölgedeki dokunma
+                                    // olaylarının PhotoView'ın kendi
+                                    // GestureDetector'ı tarafından öncelikli
+                                    // yakalanmasını sağlayıp çakışmayı azaltır.
+                                    gestureDetectorBehavior:
+                                        HitTestBehavior.opaque,
+                                    // ÇİFT TIK DÜZELTMESİ: photo_view'in
+                                    // varsayılan scaleStateCycle'ı 3 durumlu
+                                    // (initial -> covered -> originalSize ->
+                                    // initial), bu yüzden 2. çift tık eski
+                                    // haline değil "originalSize" adında BAŞKA
+                                    // bir zoom seviyesine gidiyordu. Burada
+                                    // sadece 2 durum arasında (normal <->
+                                    // zoom'lu) basit bir toggle tanımlıyoruz.
+                                    scaleStateCycle: (actual) =>
+                                        actual == PhotoViewScaleState.initial
+                                        ? PhotoViewScaleState.covering
+                                        : PhotoViewScaleState.initial,
+                                    // Tek tıklamada üst/alt çubukları
+                                    // gizle/göster. onTapUp, photo_view'ın
+                                    // çift tıklamayı (zoom) kendi içinde
+                                    // ayırt ettikten SONRA, sadece gerçek
+                                    // tek tıklamalarda tetiklediği callback
+                                    // olduğundan çift tık zoom'u bozmaz.
+                                    onTapUp: (tapCtx, details, controllerValue) {
+                                      setDialogState(
+                                        () => controlsVisible =
+                                            !controlsVisible,
+                                      );
+                                    },
+                                    // AÇIK UÇ DURUM ÇÖZÜMÜ: dosya diskte yoksa
+                                    // (silinmiş/taşınmış) ya da bozuksa FileImage
+                                    // resolve aşamasında hata fırlatıyor.
+                                    // PhotoViewGalleryPageOptions bu hatayı
+                                    // PhotoView.errorBuilder'a yansıtan kendi
+                                    // errorBuilder'ını zaten destekliyor (paket
+                                    // 0.10.2'den beri) — bu yüzden crop/kaydet/
+                                    // paylaş akışlarına dokunmadan, sadece
+                                    // görüntüleme katmanında placeholder
+                                    // gösterip swipe/zoom'u bozmadan devam
+                                    // edebiliyoruz.
+                                    errorBuilder: (errCtx, error, stackTrace) {
+                                      // Metin yok, sadece ikon: dosyadaki
+                                      // mevcut emsalle tutarlı (bkz. attachment
+                                      // grid önizlemesi, Image.file errorBuilder,
+                                      // ~satır 6878) — bu sayede yeni bir ARB
+                                      // key'i eklemeye gerek kalmıyor.
+                                      return const Center(
+                                        child: Icon(
+                                          Icons.broken_image_outlined,
+                                          color: Colors.white54,
+                                          size: 64,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                              // Kırpma Geri Al / İleri Al: artık sağ üstte,
+                              // kapatma X'i ile AYNI Row içinde, onun hemen
+                              // solunda gösteriliyor (eskiden sol üstteydi).
+                              // Görsel desen aynı kalıyor (Icons.undo/Icons.redo,
+                              // devre dışıyken %30 opaklık); yalnızca o an
+                              // görüntülenen görselin kendi kırpma geçmişi
+                              // varsa aktif olur.
+                              Positioned(
+                                // Durum çubuğunun (saat) arkasında kalmaması
+                                // için üstteki güvenli alan kadar aşağı
+                                // itiliyor.
+                                top: MediaQuery.of(dialogCtx).padding.top + 8,
+                                right: 8,
+                                child: IgnorePointer(
+                                  // Çubuk gizliyken altındaki fotoğrafın
+                                  // dokunma olaylarını (tek/çift tık, zoom)
+                                  // engellememesi için.
+                                  ignoring: !controlsVisible,
+                                  child: AnimatedOpacity(
+                                    opacity: controlsVisible ? 1.0 : 0.0,
+                                    duration: const Duration(
+                                      milliseconds: 200,
+                                    ),
+                                    child: Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Expanded(
-                                      child: Center(
-                                        child: viewerActionButton(
-                                          icon: Icons.crop,
-                                          label: AppLocalizations.of(context)!
-                                              .imageCropToolbarTitle,
-                                          onTap: () => cropExisting(dialogCtx),
-                                        ),
+                                    IconButton(
+                                      tooltip: AppLocalizations.of(context)!
+                                          .editorUndoTooltip,
+                                      icon: Icon(
+                                        Icons.undo,
+                                        color: cropHistoryFor(
+                                              currentAtt()['id'].toString(),
+                                            ).canUndo
+                                            ? Colors.white
+                                            : Colors.white
+                                                .withValues(alpha: 0.3),
                                       ),
+                                      onPressed: cropHistoryFor(
+                                            currentAtt()['id'].toString(),
+                                          ).canUndo
+                                          ? () => undoCrop(dialogCtx)
+                                          : null,
                                     ),
-                                    Expanded(
-                                      child: Center(
-                                        child: viewerActionButton(
-                                          icon: Icons.delete_outline,
-                                          label: AppLocalizations.of(context)!
-                                              .imageViewerDeleteButtonLabel,
-                                          onTap: () =>
-                                              deleteExisting(dialogCtx),
-                                        ),
+                                    IconButton(
+                                      tooltip: AppLocalizations.of(context)!
+                                          .editorRedoTooltip,
+                                      icon: Icon(
+                                        Icons.redo,
+                                        color: cropHistoryFor(
+                                              currentAtt()['id'].toString(),
+                                            ).canRedo
+                                            ? Colors.white
+                                            : Colors.white
+                                                .withValues(alpha: 0.3),
                                       ),
+                                      onPressed: cropHistoryFor(
+                                            currentAtt()['id'].toString(),
+                                          ).canRedo
+                                          ? () => redoCrop(dialogCtx)
+                                          : null,
                                     ),
-                                    Expanded(
-                                      child: Center(
-                                        child: viewerActionButton(
-                                          icon: Icons.download_outlined,
-                                          label: AppLocalizations.of(context)!
-                                              .imageViewerSaveToGalleryButtonLabel,
-                                          onTap: () =>
-                                              saveToGallery(dialogCtx),
-                                        ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.close,
+                                        color: Colors.white,
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: Center(
-                                        child: viewerActionButton(
-                                          icon: Icons.share_outlined,
-                                          label: AppLocalizations.of(context)!
-                                              .imageViewerShareButtonLabel,
-                                          onTap: shareExisting,
-                                        ),
-                                      ),
+                                      onPressed: () =>
+                                          Navigator.pop(dialogCtx),
                                     ),
                                   ],
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                              Positioned(
+                                left: 0,
+                                right: 0,
+                                // Sistem gezinme çubuğunun (alt bar) hemen
+                                // üzerinde durması için alttaki güvenli alan
+                                // kadar yukarı kaydırılıyor.
+                                bottom: MediaQuery.of(dialogCtx).padding.bottom,
+                                child: IgnorePointer(
+                                  ignoring: !controlsVisible,
+                                  child: AnimatedOpacity(
+                                    opacity: controlsVisible ? 1.0 : 0.0,
+                                    duration: const Duration(
+                                      milliseconds: 200,
+                                    ),
+                                    child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                  ),
+                                  color: Colors.black.withValues(alpha: 0.55),
+                                  child: Row(
+                                    // NOT: mainAxisAlignment.spaceEvenly yerine
+                                    // her buton eşit genişlikte bir Expanded
+                                    // içine alındı. spaceEvenly, butonlar
+                                    // arasındaki BOŞLUĞU eşitliyordu; ama
+                                    // etiketler farklı uzunlukta olduğu için
+                                    // (ör. "Kırp" vs "Galeriye Kaydet")
+                                    // butonların kendileri farklı genişlikte
+                                    // kalıyor, bu da ikonların/merkezlerin
+                                    // birbirine eşit uzaklıkta görünmemesine
+                                    // yol açıyordu. Expanded ile her buton tam
+                                    // olarak ekranın 1/4'ünü kaplıyor ve
+                                    // ortasında duruyor — bu sayede dördü de
+                                    // gerçekten eşit aralıklı oluyor.
+                                    children: [
+                                      Expanded(
+                                        child: Center(
+                                          child: viewerActionButton(
+                                            icon: Icons.crop,
+                                            label: AppLocalizations.of(context)!
+                                                .imageCropToolbarTitle,
+                                            onTap: () => cropExisting(dialogCtx),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Center(
+                                          child: viewerActionButton(
+                                            icon: Icons.delete_outline,
+                                            label: AppLocalizations.of(context)!
+                                                .imageViewerDeleteButtonLabel,
+                                            onTap: () =>
+                                                deleteExisting(dialogCtx),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Center(
+                                          child: viewerActionButton(
+                                            icon: Icons.download_outlined,
+                                            label: AppLocalizations.of(context)!
+                                                .imageViewerSaveToGalleryButtonLabel,
+                                            onTap: () =>
+                                                saveToGallery(dialogCtx),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Center(
+                                          child: viewerActionButton(
+                                            icon: Icons.share_outlined,
+                                            label: AppLocalizations.of(context)!
+                                                .imageViewerShareButtonLabel,
+                                            onTap: shareExisting,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                        );
+                      },
                     ),
                   );
                 } else if (att['isVideo'] == true) {
@@ -5308,7 +5755,35 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     ids: ids,
                                     attachmentsList: attachments,
                                     onRemove: removeAttachmentById,
-                                    onOpen: openAttachment,
+                                    // NOT GENELİ GALERİ (kaydırma.txt / aşamalar.txt onayı):
+                                    // Artık sadece bu bloğun ids'i değil, notun TÜM
+                                    // 'attachments' bloklarındaki görseller blok sırasına
+                                    // göre birleştirilip veriliyor. Böylece iki görsel
+                                    // bloğu arasında metin/checklist/tablo bloğu olsa bile
+                                    // kaydırma kesintisiz devam ediyor (aralarındaki
+                                    // metin bloğu atlanmış olur, çünkü sadece
+                                    // type == 'attachments' olan bloklar taranıyor).
+                                    onOpen: (tappedAtt) {
+                                      final Map<String, Map<String, dynamic>>
+                                      attById = {
+                                        for (final a in attachments)
+                                          a['id'].toString(): a,
+                                      };
+                                      final List<Map<String, dynamic>>
+                                      orderedGalleryImages = [
+                                        for (final b in blocks)
+                                          if (b['type'] == 'attachments')
+                                            for (final bid in List<String>.from(
+                                              b['ids'] ?? const [],
+                                            ))
+                                              if (attById[bid] != null)
+                                                attById[bid]!,
+                                      ];
+                                      openAttachment(
+                                        tappedAtt,
+                                        galleryImages: orderedGalleryImages,
+                                      );
+                                    },
                                     deletingId: deletingAttachmentId,
                                     onDeletingIdChanged: (id) => setModalState(
                                       () => deletingAttachmentId = id,

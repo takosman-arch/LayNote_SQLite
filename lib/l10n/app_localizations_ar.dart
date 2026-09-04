@@ -2424,4 +2424,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'جارٍ الحفظ…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'لم يعد هذا الملف موجودًا';
 }

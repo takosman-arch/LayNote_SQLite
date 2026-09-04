@@ -2447,4 +2447,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'Сохранение…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'Этот файл больше не существует';
 }

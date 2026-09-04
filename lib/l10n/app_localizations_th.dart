@@ -2423,4 +2423,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get imageViewerSavingInProgressMessage => 'กำลังบันทึก…';
+
+  @override
+  String get imageViewerFileNotFoundMessage => 'ไม่พบไฟล์นี้แล้ว';
 }
