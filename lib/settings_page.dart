@@ -613,118 +613,17 @@ class _SettingsPageState extends State<SettingsPage> {
   // ─────────────────────────────────────────────────────────────────
   // GÜVENLİK: Not Şifresi + Güvenlik Sorusu
   // ─────────────────────────────────────────────────────────────────
-  void _showHintQuestionDialog() {
-    String? selectedQuestion = s._passwordHintQuestion.isNotEmpty
-        ? s._passwordHintQuestion
-        : null;
-    final answerCtrl = TextEditingController(text: s._passwordHintAnswer);
-
-    showDialog(
-      context: context,
-      builder: (_) => StatefulBuilder(
-        builder: (ctx, setDlg) => AlertDialog(
-          backgroundColor: dNoteCardColor(ctx),
-          title: Text(
-            AppLocalizations.of(context)!.settingsSecurityQuestionDialogTitle,
-            style: TextStyle(color: Theme.of(context).primaryColor),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.settingsSecurityQuestionDialogDesc,
-                style: const TextStyle(color: Colors.grey, fontSize: 12),
-              ),
-              const SizedBox(height: 14),
-              DropdownButtonFormField<String>(
-                initialValue: selectedQuestion,
-                isExpanded: true,
-                dropdownColor: dNoteSurfaceVariant(ctx),
-                style: TextStyle(color: dNoteTextColor(ctx), fontSize: 14),
-                decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.settingsSecurityQuestionDropdownHint,
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: dNoteBorderColor(ctx)),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                  ),
-                ),
-                items: _hintQuestions(context)
-                    .map(
-                      (q) => DropdownMenuItem(
-                        value: q,
-                        child: Text(q, overflow: TextOverflow.ellipsis),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (val) => setDlg(() => selectedQuestion = val),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                selectionWidthStyle: ui.BoxWidthStyle.tight,
-                contextMenuBuilder: buildCustomContextMenu,
-                selectionHeightStyle: ui.BoxHeightStyle.max,
-                controller: answerCtrl,
-                style: TextStyle(color: dNoteTextColor(ctx)),
-                decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.settingsSecurityQuestionAnswerHint,
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: dNoteBorderColor(ctx)),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(
-                AppLocalizations.of(context)!.settingsSecurityQuestionCancelButton,
-                style: const TextStyle(color: Colors.grey),
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).primaryColor),
-              onPressed: () {
-                if (selectedQuestion == null ||
-                    answerCtrl.text.trim().isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(AppLocalizations.of(context)!.settingsSecurityQuestionEmptyWarning),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                  return;
-                }
-                s.setState(() {
-                  s._passwordHintQuestion = selectedQuestion!;
-                  s._passwordHintAnswer = answerCtrl.text.trim();
-                });
-                s._saveData();
-                Navigator.pop(ctx);
-                setState(() {});
-              },
-              child: Text(
-                AppLocalizations.of(context)!.settingsSecurityQuestionSaveButton,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
+  // NOT (GÜVENLİK DÜZELTMESİ): Önceden burada, mevcut güvenlik
+  // sorusunu/cevabını herhangi bir ek doğrulama olmadan tek dokunuşla
+  // açıp DÜZENLEYEN ayrı bir _showHintQuestionDialog() diyaloğu vardı.
+  // Bu diyalog, kayıtlı cevabı düz metin olarak bir TextField'a
+  // dolduruyordu; cihaza erişen herkes (uygulama zaten açıkken) not
+  // şifresine hiç ihtiyaç duymadan kurtarma cevabını okuyabiliyordu.
+  // Artık güvenlik sorusu SADECE şifre ilk kurulurken
+  // (_showPasswordDialog(isNew: true)) belirlenebiliyor. Soruyu/cevabı
+  // değiştirmek isteyen kullanıcı önce mevcut şifreyi (bilerek) kaldırıp
+  // ardından yeniden kurmalı — bu akışta cevap alanı hep boş başlar,
+  // eski cevap hiçbir zaman ekrana geri basılmaz.
   void _showPasswordDialog({required bool isNew}) {
     final ctrl1 = TextEditingController();
     final ctrl2 = TextEditingController();
@@ -1355,23 +1254,11 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                     ),
                   ),
-                  if (s._notePasswordEnabled) ...[
-                    Divider(
-                      color: Theme.of(context).dividerColor,
-                      height: 1,
-                      indent: 56,
-                    ),
-                    _settingTile(
-                      icon: Icons.help_outline,
-                      iconColor: Theme.of(context).primaryColor,
-                      title: AppLocalizations.of(context)!.settingsSecurityQuestionTileTitle,
-                      subtitle: s._passwordHintQuestion.isNotEmpty
-                          ? AppLocalizations.of(context)!.settingsSecurityQuestionSetSubtitle
-                          : AppLocalizations.of(context)!.settingsSecurityQuestionNotSetSubtitle,
-                      trailing: null,
-                      onTap: () => _showHintQuestionDialog(),
-                    ),
-                  ],
+                  // NOT (GÜVENLİK DÜZELTMESİ): Buradaki ayrı "Güvenlik Sorusu"
+                  // satırı ve açtığı düzenleme diyaloğu kaldırıldı — bkz.
+                  // yukarıdaki not (Not Şifresi bölümü başı). Soru/cevap
+                  // artık sadece şifre ilk kurulurken belirleniyor;
+                  // değiştirmek için şifre kaldırılıp yeniden kurulmalı.
                 ],
               ),
             ),
