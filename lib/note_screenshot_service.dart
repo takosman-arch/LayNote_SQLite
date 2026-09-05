@@ -36,6 +36,11 @@ class NoteScreenshotService {
     required Color textColor,
     required Color borderColor,
     required Color backgroundColor,
+    // Ayarlar > Kişiselleştirme > Satır Aralığı (_noteLineHeight). PdfExportService
+    // ile aynı anlam; burada gerçek Flutter TextStyle.height kullanıldığından
+    // editördeki değerle birebir aynı şekilde (hem büyütüp hem küçültebilerek)
+    // uygulanır. Verilmezse (ör. eski çağrılar) eski sabit davranış (1.4) korunur.
+    double noteLineHeight = 1.4,
   }) async {
     final overlay = Overlay.of(context, rootOverlay: true);
     // Düzenleyicideki modalın kendisi de ekranın tam genişliğini,
@@ -75,6 +80,7 @@ class NoteScreenshotService {
                 borderColor: borderColor,
                 contentWidth: contentWidth,
                 attachmentsDirPath: attachmentsDir.path,
+                noteLineHeight: noteLineHeight,
               ),
             ),
           ),
@@ -148,6 +154,8 @@ class _NoteScreenshotContent extends StatelessWidget {
   final Color borderColor;
   final double contentWidth;
   final String attachmentsDirPath;
+  // Ayarlar > Kişiselleştirme > Satır Aralığı.
+  final double noteLineHeight;
 
   const _NoteScreenshotContent({
     required this.title,
@@ -162,6 +170,7 @@ class _NoteScreenshotContent extends StatelessWidget {
     required this.borderColor,
     required this.contentWidth,
     required this.attachmentsDirPath,
+    this.noteLineHeight = 1.4,
   });
 
   // NOT: Daha önce burada dile bakmaksızın sabit _formatDateTimeTr
@@ -334,7 +343,7 @@ class _NoteScreenshotContent extends StatelessWidget {
           // normal metin gibi Text.rich ile çiziliyor — böylece her '\n'
           // kendi satır yüksekliğini koruyarak ekrandaki gibi görünüyor.
           if (text.isEmpty) {
-            children.add(SizedBox(height: fontSize * 1.4));
+            children.add(SizedBox(height: fontSize * noteLineHeight));
             continue;
           }
           // DÜZELTME: JPG dışa aktarma eskiden düzenleyicideki spans
@@ -356,7 +365,7 @@ class _NoteScreenshotContent extends StatelessWidget {
                     fontSize: fontSize,
                     fontFamily: fontFamily,
                     color: textColor,
-                    height: 1.4,
+                    height: noteLineHeight,
                   ),
                   isDark: isDark,
                 ),

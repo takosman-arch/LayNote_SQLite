@@ -29,6 +29,11 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
   set _notePassword(String value);
   bool get _notePasswordEnabled;
   set _notePasswordEnabled(bool value);
+  // Ayarlar > Kişiselleştirme > Satır Aralığı (bkz.
+  // note_list_note_dialog_mixin.dart'taki aynı isimli abstract getter/setter).
+  // PDF/JPG dışa aktarmada editördekiyle aynı satır aralığını
+  // uygulayabilmek için burada da okunabilir olması gerekiyor.
+  double get _noteLineHeight;
   List<Map<String, dynamic>> get _notes;
   set _notes(List<Map<String, dynamic>> value);
   String get _passwordHintAnswer;
@@ -482,6 +487,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         untitledNoteLabel: AppLocalizations.of(context)!.pdfExportUntitledNoteLabel,
         defaultAttachmentName: AppLocalizations.of(context)!.pdfExportDefaultAttachmentName,
         formattedDateTime: formattedDateTime,
+        noteLineHeight: _noteLineHeight,
       );
       debugPrint('[PDF] dosya oluştu: ${file.path}');
 
@@ -731,6 +737,7 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         textColor: dNoteEffectiveTextColor(context, _textColor),
         borderColor: dNoteBorderColor(context),
         backgroundColor: Theme.of(context).cardColor,
+        noteLineHeight: _noteLineHeight,
       );
 
       final bytes = await jpgFile.readAsBytes();

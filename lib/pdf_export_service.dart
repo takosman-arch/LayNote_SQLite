@@ -170,12 +170,23 @@ class PdfExportService {
     pw.Font bold,
     double fontSize, {
     pw.Font? baseFont,
+    // Ayarlar > Kişiselleştirme > Satır Aralığı'ndan türetilen EKSTRA
+    // boşluk (nokta cinsinden, exportNoteToPdf'teki lineHeightExtra ile
+    // aynı değer) — çarpan DEĞİL, çünkü pdf paketindeki
+    // TextStyle.lineSpacing doğal satır yüksekliğinin üzerine eklenen
+    // mutlak bir değerdir. Varsayılan 0 (eskisiyle birebir aynı,
+    // eklenti öncesi davranış).
+    double lineHeight = 0.0,
   }) {
     final defaultFont = baseFont ?? regular;
     if (spans.isEmpty || text.isEmpty) {
       return pw.Text(
         text,
-        style: pw.TextStyle(font: defaultFont, fontSize: fontSize),
+        style: pw.TextStyle(
+          font: defaultFont,
+          fontSize: fontSize,
+          lineSpacing: lineHeight,
+        ),
       );
     }
 
@@ -264,7 +275,12 @@ class PdfExportService {
       );
     }
 
-    return pw.RichText(text: pw.TextSpan(children: children));
+    return pw.RichText(
+      text: pw.TextSpan(
+        children: children,
+        style: pw.TextStyle(lineSpacing: lineHeight),
+      ),
+    );
   }
 
   // ── AŞAMA 2: Çoklu font desteği ────────────────────────────────────────
@@ -472,6 +488,12 @@ class PdfExportService {
     // "gg.aa.yyyy sa:dk" davranışı (eski _formatDateTimeTr, main.dart)
     // korunur — böylece geriye dönük uyumluluk bozulmaz.
     String? formattedDateTime,
+    // Ayarlar > Kişiselleştirme > Satır Aralığı (_noteLineHeight, editördeki
+    // TextField.style.height ile aynı değer). JPG dışa aktarmadaki aynı
+    // parametreyle (NoteScreenshotService) birebir aynı anlam ve akışa
+    // sahiptir. Verilmezse (ör. eski çağrılar) 1.0 (aralıksız) davranış
+    // korunur.
+    double noteLineHeight = 1.0,
   }) async {
     final fonts = await _ensureFonts(fontFamily);
     final regular = fonts.regular;
@@ -493,6 +515,16 @@ class PdfExportService {
     final titleFontSize = 20.0 * scale;
     final dateFontSize = 9.0 * scale;
     final placeholderFontSize = 9.0 * scale;
+    // Satır aralığı, uygulamanın varsayılan değeri olan 1.6'nın ÜZERİNE
+    // çıktıkça, editördeki gibi satırlar (ve boş satırlar) arasına orantılı
+    // bir ekstra boşluk eklenir. Taban 1.0 değil 1.6 olarak alınıyor ki
+    // varsayılan ayarda PDF, bu özellik eklenmeden ÖNCEKİ (daha dar) haliyle
+    // birebir aynı kalsın — pdf paketindeki satır aralığı yalnızca EKLEME
+    // yapabildiğinden (doğal satır yüksekliğinin altına inemez), 1.6'nın
+    // altındaki değerler için ekstra sıfırda kalır (bkz. kullanıcıya verilen
+    // önceki açıklama).
+    final lineHeightExtra =
+        math.max(0.0, (noteLineHeight - 1.6) * effectiveFontSize);
 
     // Bir sayfaya (üst/alt margin düşülünce) sığabilecek en büyük yükseklik.
     // Çizim (drawing) ve uzun metin bölme mantığı bunu paylaşır.
@@ -654,7 +686,7 @@ class PdfExportService {
               // görünüyordu. Artık dolu bir metin satırının kapladığı
               // alanla aynı yükseklikte (`* 1.2`) tutuluyor ki boş satır
               // ekrandaki gibi normal bir satır boşluğu bıraksın.
-              content.add(pw.SizedBox(height: effectiveFontSize * 1.2));
+              content.add(pw.SizedBox(height: effectiveFontSize * 1.2 + lineHeightExtra));
               continue;
             }
 
@@ -677,12 +709,16 @@ class PdfExportService {
             for (final chunk
                 in _chunkRichText(para, paraSpans, maxCharsPerTextChunk)) {
               content.add(
-                _buildRichTextWidget(
-                  chunk.text,
-                  chunk.spans,
-                  regular,
-                  bold,
-                  effectiveFontSize,
+                pw.Padding(
+                  padding: pw.EdgeInsets.only(bottom: lineHeightExtra),
+                  child: _buildRichTextWidget(
+                    chunk.text,
+                    chunk.spans,
+                    regular,
+                    bold,
+                    effectiveFontSize,
+                    lineHeight: lineHeightExtra,
+                  ),
                 ),
               );
             }
