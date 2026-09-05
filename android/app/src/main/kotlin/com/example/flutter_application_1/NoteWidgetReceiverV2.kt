@@ -276,119 +276,61 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             val hasStructuredLines = linesArray != null && linesArray.length() > 0
             Log.e(TAG, "ADIM 4.1 OK -> hasStructuredLines=$hasStructuredLines noteId=$noteId")
 
-            views.removeAllViews(R.id.widget_lines_container)
             views.setViewVisibility(
                 R.id.widget_lines_container,
                 if (hasStructuredLines) View.VISIBLE else View.GONE
             )
 
+            // DÜZELTME: Satırlar artık burada tek tek addView ile
+            // eklenmiyor — widget_lines_container bir ListView oldu
+            // (kaydırma desteği için, bkz. NoteWidgetRemoteViewsService).
+            // Gerçek satır üretimi (checkbox/tablo/metin) o servise
+            // taşındı; burada sadece o servise bağlanacak Intent'i
+            // kuruyoruz. Intent'in "data" alanı her widget örneği/not
+            // kombinasyonu için BENZERSİZ olmalı — aksi halde sistem
+            // aynı adapter'ı tüm widget örnekleri için önbelleğe alıp
+            // yanlış notun satırlarını gösterebilir.
             if (hasStructuredLines) {
                 try {
                     val checkedColor = 0xFFFFC107.toInt() // amber - in-app'teki işaretli checkbox rengiyle aynı
                     val dividerColor = ColorUtils.setAlphaComponent(subTextColor, 90)
-                    val lineFontSize = (fontSize - 2f).coerceAtLeast(8f)
-                    // Widget alanı sınırlı; taşmayı/ANR'ı önlemek için üst sınır.
-                    val maxRenderLines = 8
-                    val renderCount = minOf(linesArray!!.length(), maxRenderLines)
 
-                    for (i in 0 until renderCount) {
-                        // DÜZELTME (2026-08-08): Tek bir satırın işlenmesi
-                        // sırasında beklenmedik bir değer (ör. hesap tablosu
-                        // satırlarında value/label alanının umulmadık bir
-                        // biçimde gelmesi) exception fırlatırsa, bu döngü
-                        // hiçbir try/catch ile korunmadığı için onUpdate()'i
-                        // baştan sona çökertiyordu -> appWidgetManager
-                        // .updateAppWidget() (ADIM 9) HİÇ çağrılamıyor ve
-                        // sistem widget'ı "eklenemedi/yüklenemedi" durumunda
-                        // bırakıyordu. Artık her satır kendi try/catch'iyle
-                        // korunuyor: o satır atlanır, diğer satırlar ve
-                        // widget'ın geri kalanı (ADIM 5-9) normal şekilde
-                        // tamamlanır.
-                        try {
-                            val line = linesArray.optJSONObject(i) ?: continue
-                            when (line.optString("type")) {
-                                "checkbox" -> {
-                                    val child = RemoteViews(context.packageName, R.layout.widget_line_checkbox)
-                                    val checked = line.optBoolean("checked", false)
-                                    child.setTextViewText(
-                                        R.id.line_checkbox_icon,
-                                        if (checked) "\u2611" else "\u2610"
-                                    )
-                                    child.setTextViewText(R.id.line_checkbox_text, line.optString("text", ""))
-                                    child.setTextColor(
-                                        R.id.line_checkbox_icon,
-                                        if (checked) checkedColor else subTextColor
-                                    )
-                                    child.setTextColor(
-                                        R.id.line_checkbox_text,
-                                        if (checked) subTextColor else titleColor
-                                    )
-                                    child.setTextViewTextSize(
-                                        R.id.line_checkbox_icon, TypedValue.COMPLEX_UNIT_SP, lineFontSize
-                                    )
-                                    child.setTextViewTextSize(
-                                        R.id.line_checkbox_text, TypedValue.COMPLEX_UNIT_SP, lineFontSize
-                                    )
-                                    // İşaretli maddede üstü çizili görünüm (in-app'teki
-                                    // TextDecoration.lineThrough ile aynı).
-                                    val flags = if (checked) {
-                                        android.graphics.Paint.STRIKE_THRU_TEXT_FLAG or
-                                            android.graphics.Paint.ANTI_ALIAS_FLAG
-                                    } else {
-                                        android.graphics.Paint.ANTI_ALIAS_FLAG
-                                    }
-                                    child.setInt(R.id.line_checkbox_text, "setPaintFlags", flags)
-                                    views.addView(R.id.widget_lines_container, child)
-                                }
-                                "table_row" -> {
-                                    val child = RemoteViews(context.packageName, R.layout.widget_line_table_row)
-                                    child.setTextViewText(R.id.line_table_label, line.optString("label", ""))
-                                    child.setTextViewText(R.id.line_table_value, line.optString("value", ""))
-                                    child.setTextColor(R.id.line_table_label, titleColor)
-                                    child.setTextColor(R.id.line_table_value, titleColor)
-                                    child.setTextViewTextSize(
-                                        R.id.line_table_label, TypedValue.COMPLEX_UNIT_SP, lineFontSize
-                                    )
-                                    child.setTextViewTextSize(
-                                        R.id.line_table_value, TypedValue.COMPLEX_UNIT_SP, lineFontSize
-                                    )
-                                    views.addView(R.id.widget_lines_container, child)
-                                }
-                                "table_total" -> {
-                                    val child = RemoteViews(context.packageName, R.layout.widget_line_table_total)
-                                    child.setTextViewText(R.id.line_total_value, line.optString("value", ""))
-                                    child.setTextColor(R.id.line_total_label, titleColor)
-                                    child.setTextColor(R.id.line_total_value, titleColor)
-                                    child.setInt(R.id.line_total_divider, "setBackgroundColor", dividerColor)
-                                    child.setTextViewTextSize(
-                                        R.id.line_total_label, TypedValue.COMPLEX_UNIT_SP, lineFontSize
-                                    )
-                                    child.setTextViewTextSize(
-                                        R.id.line_total_value, TypedValue.COMPLEX_UNIT_SP, lineFontSize
-                                    )
-                                    views.addView(R.id.widget_lines_container, child)
-                                }
-                                "drawing", "text" -> {
-                                    val child = RemoteViews(context.packageName, R.layout.widget_line_text)
-                                    val text = when (line.optString("type")) {
-                                        "drawing" -> "\u270F\uFE0F Çizim"
-                                        else -> line.optString("text", "")
-                                    }
-                                    child.setTextViewText(R.id.line_text, text)
-                                    child.setTextColor(R.id.line_text, subTextColor)
-                                    child.setTextViewTextSize(
-                                        R.id.line_text, TypedValue.COMPLEX_UNIT_SP, lineFontSize
-                                    )
-                                    views.addView(R.id.widget_lines_container, child)
-                                }
-                            }
-                        } catch (e: Throwable) {
-                            Log.e(TAG, "ADIM 4.2 HATA -> satir $i islenirken cokme: ${e.javaClass.simpleName}: ${e.message}", e)
-                        }
+                    val serviceIntent = Intent(context, NoteWidgetRemoteViewsService::class.java).apply {
+                        putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                        putExtra(NoteWidgetRemoteViewsService.EXTRA_NOTE_ID, noteId ?: "")
+                        putExtra(NoteWidgetRemoteViewsService.EXTRA_FONT_SIZE, fontSize)
+                        putExtra(NoteWidgetRemoteViewsService.EXTRA_TITLE_COLOR, titleColor)
+                        putExtra(NoteWidgetRemoteViewsService.EXTRA_SUBTEXT_COLOR, subTextColor)
+                        putExtra(NoteWidgetRemoteViewsService.EXTRA_CHECKED_COLOR, checkedColor)
+                        putExtra(NoteWidgetRemoteViewsService.EXTRA_DIVIDER_COLOR, dividerColor)
+                        // DÜZELTME: Önceden burada `data =
+                        // Uri.parse(toUri(Intent.URI_INTENT_SCHEME))` vardı.
+                        // Bu, Intent'in kendi extra'larından türetilen bir
+                        // URI üretiyordu — AYNI not/widget/tema için HER
+                        // ZAMAN birebir aynı URI çıkıyordu, çünkü hiçbir
+                        // extra değişmiyordu (sadece SharedPreferences'taki
+                        // JSON içeriği değişiyordu). Android bazı
+                        // cihaz/launcher'larda "data" alanı aynı kalan bir
+                        // Intent için RemoteViewsService bağlantısını/
+                        // adaptörünü güvenilir şekilde yenilemiyor —
+                        // notifyAppWidgetViewDataChanged() çağrılsa bile not
+                        // kaydedildiğinde widget güncellenmiyor, ancak
+                        // widget kaldırılıp yeniden eklendiğinde (GERÇEKTEN
+                        // yeni bir bağlantı kurulduğunda) güncel veri
+                        // görünüyordu — bildirilen sorunun ta kendisi.
+                        // Şimdi URI'ye her çağrıda değişen bir zaman damgası
+                        // ekleniyor; böylece sistem HER updateWidget
+                        // çağrısında (yani her not kaydında) tazelenmiş,
+                        // gerçekten yeni bir adaptör bağlantısı kurmak
+                        // ZORUNDA kalıyor.
+                        data = Uri.parse(
+                            "dnote-widget://lines/$appWidgetId/${System.currentTimeMillis()}"
+                        )
                     }
-                    Log.e(TAG, "ADIM 4.3 OK -> satir dongusu tamamlandi ($renderCount satir)")
+                    views.setRemoteAdapter(R.id.widget_lines_container, serviceIntent)
+                    Log.e(TAG, "ADIM 4.2 OK -> setRemoteAdapter cagrildi")
                 } catch (e: Throwable) {
-                    Log.e(TAG, "ADIM 4.2 HATA -> satir dongusu genel cokme: ${e.javaClass.simpleName}: ${e.message}", e)
+                    Log.e(TAG, "ADIM 4.2 HATA -> setRemoteAdapter: ${e.javaClass.simpleName}: ${e.message}", e)
                 }
             }
 
@@ -438,6 +380,21 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
                 )
                 views.setOnClickPendingIntent(R.id.widget_root, pendingIntent)
                 Log.e(TAG, "ADIM 8 OK -> PendingIntent tamamlandi (noteId=$noteId)")
+
+                // DÜZELTME: ListView kendi alanındaki dokunuşları kaydırma
+                // için yutuyor; widget_root'a bağlı PendingIntent artık
+                // liste üzerindeyken hiç tetiklenmiyor. Liste satırlarının
+                // da tıklanınca notu açabilmesi için ListView'e ayrıca bir
+                // PendingIntentTemplate veriyoruz — her satır bu şablonu
+                // kullanacak (bkz. NoteWidgetRemoteViewsService.setOnClickFillInIntent).
+                if (hasStructuredLines) {
+                    try {
+                        views.setPendingIntentTemplate(R.id.widget_lines_container, pendingIntent)
+                        Log.e(TAG, "ADIM 8.1 OK -> PendingIntentTemplate (liste) tamamlandi")
+                    } catch (e: Throwable) {
+                        Log.e(TAG, "ADIM 8.1 HATA -> PendingIntentTemplate: ${e.javaClass.simpleName}: ${e.message}", e)
+                    }
+                }
             } catch (e: Throwable) {
                 Log.e(TAG, "ADIM 8 HATA -> PendingIntent: ${e.javaClass.simpleName}: ${e.message}", e)
             }
@@ -445,6 +402,12 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             try {
                 appWidgetManager.updateAppWidget(appWidgetId, views)
                 Log.e(TAG, "ADIM 9 OK -> updateAppWidget basariyla cagrildi, BITTI")
+                // ListView adapter'ının veriyi TAZE çekmesi için şart —
+                // sadece updateAppWidget çağırmak liste içeriğini tazelemez.
+                if (hasStructuredLines) {
+                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_lines_container)
+                    Log.e(TAG, "ADIM 10 OK -> notifyAppWidgetViewDataChanged cagrildi")
+                }
             } catch (e: Throwable) {
                 Log.e(TAG, "ADIM 9 HATA -> updateAppWidget: ${e.javaClass.simpleName}: ${e.message}", e)
             }

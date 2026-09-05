@@ -124,6 +124,16 @@
                 android:resource="@xml/note_widget_info" />
         </receiver>
 
+        <!-- Widget'ın kaydırılabilir satır listesi (ListView) için veri
+             sağlayıcı servis (RemoteViewsFactory). android:permission
+             ZORUNLU — sistemin bu servise bağlanabilmesi için;
+             android:exported="false" — sadece sistem/kendi uygulamamız
+             bağlanabilsin diye. -->
+        <service
+            android:name=".NoteWidgetRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
+
         <!-- Widget ana ekrana eklenirken kullanıcının hangi notu göstermek
              istediğini seçmesini sağlayan yapılandırma ekranı (bkz.
              note_widget_info.xml'deki android:configure özniteliği).

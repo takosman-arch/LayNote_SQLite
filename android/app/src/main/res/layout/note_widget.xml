@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Widget'ın gerçek görünümü - artık Compose/Glance değil, klasik
-  RemoteViews layout'u kullanılıyor. NoteWidgetReceiver.kt bu layout'u
-  doldurup çiziyor.
+  Widget'ın gerçek görünümü - klasik RemoteViews layout'u.
+  widget_lines_container artık bir ListView: RemoteViews'te kaydırma
+  desteği YALNIZCA ListView/GridView/StackView üzerinden mümkün
+  (ScrollView hiçbir API seviyesinde desteklenmez). Satırları artık
+  NoteWidgetRemoteViewsService (RemoteViewsFactory) üretiyor.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
@@ -13,7 +15,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
@@ -38,20 +40,19 @@
             android:ellipsize="end" />
 
         <!--
-          Checklist/hesap tablosu bloklarının satır satır (checkbox ikonlu,
-          tablo hizalamalı) çizildiği container. NoteWidgetReceiverV2.kt bu
-          alana all_notes_lines_json'daki satırlara göre dinamik olarak
-          widget_line_*.xml şablonlarından view ekler (removeAllViews +
-          addView). Yapılandırılmış satır yoksa (eski/senkronize edilmemiş
-          veri) GONE yapılıp yukarıdaki widget_content (düz metin) yedek
-          olarak gösterilir — ikisi asla aynı anda görünür değildir.
+          layout_height=0dp + layout_weight=1 ŞART: ListView'e ölçülebilir
+          bir yükseklik verir, aksi halde wrap_content ile tüm satırları
+          birden göstermeye çalışır ve kaydırma hiç işlemez.
         -->
-        <LinearLayout
+        <ListView
             android:id="@+id/widget_lines_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginTop="4dp"
-            android:orientation="vertical" />
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:scrollbars="none" />
 
         <TextView
             android:id="@+id/widget_count"

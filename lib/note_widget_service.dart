@@ -135,6 +135,20 @@ class NoteWidgetService {
         allNotesLinesMap[id] = _buildStructuredLines(n);
       }
 
+      // GEÇİCİ TEŞHİS: widget'ın GERÇEKTEN okuduğu veri bu — NoteWidget.kt
+      // (Glance) değil, NoteWidgetRemoteViewsService + ListView kullanıyor
+      // ve o servis 'all_notes_lines_json' içinden bu notun satırlarını
+      // okuyor. Önceki 'preview' logu bu yüzden yanıltıcıydı; asıl bakmamız
+      // gereken buradaki JSON — her satırın "text" alanında boş string
+      // ("") var mı yok mu, ona bakılacak.
+      if (latest != null) {
+        final latestId = latest['id']?.toString();
+        // ignore: avoid_print
+        print(
+          'WIDGET LINES DEBUG ($latestId): '
+          '${jsonEncode(allNotesLinesMap[latestId])}',
+        );
+      }
       await Future.wait([
         HomeWidget.saveWidgetData<String>(
           keyNoteId,
@@ -192,19 +206,27 @@ class NoteWidgetService {
   /// görülebilir kılmak için ✓ (işaretli) / ☐ (işaretsiz) sembolüyle
   /// başlar.
   String _buildPreview(Map<String, dynamic> note, AppLocalizations l10n) {
-    final lines = <String>[];
+    // DÜZELTME: Bloklar artık tek bir düz listeye değil, her biri kendi
+    // "parça"sına (chunk) yazılıyor; parçalar arasına -bir yazı bloğu ile
+    // hemen ardından gelen bir hesap tablosu gibi farklı blok tiplerinin
+    // arasında da boşluk görünmesi için- boş bir satır ekleniyor. Aksi
+    // halde boşluk sadece TEK bir metin bloğunun kendi içindeki satırlar
+    // arasında görünüyordu, bloklar birbirine yapışık kalıyordu.
 
-    void addChecklistItems(List items) {
+    List<String> checklistChunk(List items) {
+      final chunk = <String>[];
       for (final it in items) {
         final m = it as Map;
         final t = (m['text'] ?? '').toString().trim();
         if (t.isEmpty) continue;
         final checked = m['checked'] == true;
-        lines.add('${checked ? '✓' : '☐'} $t');
+        chunk.add('${checked ? '✓' : '☐'} $t');
       }
+      return chunk;
     }
 
-    void addCalcTableRows(List rows) {
+    List<String> calcTableChunk(List rows) {
+      final chunk = <String>[];
       double total = 0;
       var any = false;
       for (final r in rows) {
@@ -214,77 +236,95 @@ class NoteWidgetService {
         total += ContentBlocks.parseCalcValue(row['value']);
         if (label.trim().isNotEmpty || valueText.trim().isNotEmpty) {
           any = true;
-          lines.add('$label: $valueText');
+          chunk.add('$label: $valueText');
         }
       }
       if (any) {
-        lines.add(
+        chunk.add(
           l10n.noteWidgetPreviewTotalLabel(
             ContentBlocks.formatCalcNumber(total),
           ),
         );
       }
+      return chunk;
     }
 
     // "table" (Notion tarzı basit satır/sütun tablosu) bloğunun her
     // satırını, hücreleri " | " ile ayrılmış tek bir düz metin satırına
     // çevirir — content_blocks.dart -> ContentBlocks.toPlainTextLines'taki
-    // AYNI birleştirme deseni. Native widget tarafında bu tablo tipi için
-    // ayrı bir composable YOK; bu yüzden 'table_row'/'table_total' gibi
-    // yeni bir tip icat etmek yerine, native tarafın zaten bildiği düz
-    // 'text' satırı olarak ekleniyor (bkz. _buildStructuredLines'taki
-    // eşleniği).
-    void addTableRows(List rows) {
+    // AYNI birleştirme deseni.
+    List<String> tableChunk(List rows) {
+      final chunk = <String>[];
       for (final r in rows) {
         final cells = (r as List).map((c) => ContentBlocks._tableCellText(c));
         final line = cells.join(' | ');
         if (line.trim().replaceAll('|', '').isEmpty) continue;
-        lines.add(line);
+        chunk.add(line);
       }
+      return chunk;
     }
 
+    List<String> textChunk(String raw) {
+      final rawLines = raw.split('\n');
+      // Bloğun sadece en baş/sonundaki boş satırlar kırpılır; arada kalan
+      // boş satırlar (kullanıcının bıraktığı paragraf boşlukları) korunur.
+      var start = 0;
+      var end = rawLines.length;
+      while (start < end && rawLines[start].trim().isEmpty) {
+        start++;
+      }
+      while (end > start && rawLines[end - 1].trim().isEmpty) {
+        end--;
+      }
+      return [for (var i = start; i < end; i++) rawLines[i].trim()];
+    }
+
+    final chunks = <List<String>>[];
+
     if (note['type']?.toString() == 'checklist') {
-      addChecklistItems(note['checkItems'] as List? ?? const []);
+      chunks.add(checklistChunk(note['checkItems'] as List? ?? const []));
     } else {
       final blocks = ContentBlocks.parse(note['content']?.toString());
       for (final b in blocks) {
         switch (b['type']) {
           case 'text':
-            final t = (b['text'] ?? '').toString();
-            for (final line in t.split('\n')) {
-              if (line.trim().isNotEmpty) lines.add(line.trim());
-            }
+            chunks.add(textChunk((b['text'] ?? '').toString()));
             break;
           case 'checklist':
-            addChecklistItems(b['items'] as List? ?? const []);
+            chunks.add(checklistChunk(b['items'] as List? ?? const []));
             break;
           case 'calc_table':
-            addCalcTableRows(b['rows'] as List? ?? const []);
+            chunks.add(calcTableChunk(b['rows'] as List? ?? const []));
             break;
           case 'table':
-            addTableRows(b['rows'] as List? ?? const []);
+            chunks.add(tableChunk(b['rows'] as List? ?? const []));
             break;
           case 'attachments':
             // İstek üzerine widget'ta fotoğraf gösterilmiyor VE fotoğraf
             // olduğuna dair bir metin ipucu da bırakılmıyor; bu blok
-            // sessizce atlanır.
+            // sessizce atlanır (chunk hiç eklenmez).
             break;
           case 'drawing':
             final strokes = (b['strokes'] as List? ?? const []);
-            if (strokes.isNotEmpty) {
-              lines.add(l10n.noteWidgetPreviewDrawingLabel);
-            }
+            chunks.add(
+              strokes.isNotEmpty
+                  ? [l10n.noteWidgetPreviewDrawingLabel]
+                  : const [],
+            );
             break;
         }
       }
     }
 
-    // Satırları tek boşlukla birleştirmek "Elma: 5 Armut: 3 Toplam: 8" gibi
-    // okunması zor bir bloğa dönüşüyordu. Satırları " • " ile ayırarak
-    // widget'ın tek satırlık alanında bile hangi kısmın nereye ait olduğu
-    // görülebiliyor.
-    var text = lines.where((l) => l.trim().isNotEmpty).join(' • ');
-    const maxLen = 80;
+    final nonEmptyChunks = chunks.where((c) => c.isNotEmpty).toList();
+    final assembled = <String>[];
+    for (var i = 0; i < nonEmptyChunks.length; i++) {
+      if (i > 0) assembled.add('');
+      assembled.addAll(nonEmptyChunks[i]);
+    }
+
+    var text = assembled.join('\n');
+    const maxLen = 200;
     if (text.length > maxLen) {
       text = '${text.substring(0, maxLen)}…';
     }
@@ -303,31 +343,35 @@ class NoteWidgetService {
     Map<String, dynamic> note, {
     int maxLines = 12,
   }) {
-    final lines = <Map<String, dynamic>>[];
-    var truncated = false;
+    // DÜZELTME: Önceki sürüm tüm blokların satırlarını TEK bir listeye
+    // ekliyordu; bu yüzden boşluk sadece bir metin bloğunun KENDİ İÇİNDEKİ
+    // boş satırlarında görünüyordu — farklı bloklar (örn. bir yazı
+    // paragrafının hemen ardından gelen bir hesap tablosu) arasına hiç
+    // ayraç eklenmiyordu, bloklar birbirine yapışık görünüyordu. Şimdi her
+    // blok kendi "parça"sını (chunk) üretiyor; boş parçalar (örn. hiç
+    // satırı olmayan attachments/drawing'siz drawing bloğu) elenip, geri
+    // kalan parçalar arasına -in-app görünümdeki blok boşluğunu yansıtacak
+    // şekilde- boş bir satır ekleniyor. `maxLines` sınırı, ayraçlar dahil
+    // TÜM parçalar birleştirildikten SONRA uygulanıyor; aksi halde
+    // ayraçlar bütçeyi haksız yere tüketebilirdi.
 
-    void addLine(Map<String, dynamic> line) {
-      if (lines.length >= maxLines) {
-        truncated = true;
-        return;
-      }
-      lines.add(line);
-    }
-
-    void addChecklistItems(List items) {
+    List<Map<String, dynamic>> checklistChunk(List items) {
+      final chunk = <Map<String, dynamic>>[];
       for (final it in items) {
         final m = it as Map;
         final t = (m['text'] ?? '').toString().trim();
         if (t.isEmpty) continue;
-        addLine({
+        chunk.add({
           'type': 'checkbox',
           'text': t,
           'checked': m['checked'] == true,
         });
       }
+      return chunk;
     }
 
-    void addCalcTableRows(List rows) {
+    List<Map<String, dynamic>> calcTableChunk(List rows) {
+      final chunk = <Map<String, dynamic>>[];
       double total = 0;
       var any = false;
       for (final r in rows) {
@@ -337,7 +381,7 @@ class NoteWidgetService {
         total += ContentBlocks.parseCalcValue(row['value']);
         if (label.trim().isNotEmpty || valueText.trim().isNotEmpty) {
           any = true;
-          addLine({
+          chunk.add({
             'type': 'table_row',
             'label': label,
             'value': valueText,
@@ -345,64 +389,97 @@ class NoteWidgetService {
         }
       }
       if (any) {
-        addLine({
+        chunk.add({
           'type': 'table_total',
           'value': ContentBlocks.formatCalcNumber(total),
         });
       }
+      return chunk;
     }
 
     // "table" bloğu için native tarafta özel bir composable yok (bkz.
     // _buildPreview'daki addTableRows üzerindeki açıklama) — bu yüzden
     // her satır, native widget'ın zaten bildiği düz 'text' satırı olarak
     // eklenir; hücreler " | " ile ayrılır.
-    void addTableRows(List rows) {
+    List<Map<String, dynamic>> tableChunk(List rows) {
+      final chunk = <Map<String, dynamic>>[];
       for (final r in rows) {
         final cells = (r as List).map((c) => ContentBlocks._tableCellText(c));
         final line = cells.join(' | ');
         if (line.trim().replaceAll('|', '').isEmpty) continue;
-        addLine({'type': 'text', 'text': line});
+        chunk.add({'type': 'text', 'text': line});
       }
+      return chunk;
     }
 
+    List<Map<String, dynamic>> textChunk(String raw) {
+      final rawLines = raw.split('\n');
+      // Bloğun sadece en baş/sonundaki boş satırlar kırpılır; arada kalan
+      // boş satırlar (kullanıcının bıraktığı paragraf boşlukları) korunur.
+      var start = 0;
+      var end = rawLines.length;
+      while (start < end && rawLines[start].trim().isEmpty) {
+        start++;
+      }
+      while (end > start && rawLines[end - 1].trim().isEmpty) {
+        end--;
+      }
+      return [
+        for (var i = start; i < end; i++)
+          {'type': 'text', 'text': rawLines[i].trim()},
+      ];
+    }
+
+    final chunks = <List<Map<String, dynamic>>>[];
+
     if (note['type']?.toString() == 'checklist') {
-      addChecklistItems(note['checkItems'] as List? ?? const []);
+      chunks.add(checklistChunk(note['checkItems'] as List? ?? const []));
     } else {
       final blocks = ContentBlocks.parse(note['content']?.toString());
       for (final b in blocks) {
         switch (b['type']) {
           case 'text':
-            final t = (b['text'] ?? '').toString();
-            for (final line in t.split('\n')) {
-              if (line.trim().isNotEmpty) {
-                addLine({'type': 'text', 'text': line.trim()});
-              }
-            }
+            chunks.add(textChunk((b['text'] ?? '').toString()));
             break;
           case 'checklist':
-            addChecklistItems(b['items'] as List? ?? const []);
+            chunks.add(checklistChunk(b['items'] as List? ?? const []));
             break;
           case 'calc_table':
-            addCalcTableRows(b['rows'] as List? ?? const []);
+            chunks.add(calcTableChunk(b['rows'] as List? ?? const []));
             break;
           case 'table':
-            addTableRows(b['rows'] as List? ?? const []);
+            chunks.add(tableChunk(b['rows'] as List? ?? const []));
             break;
           case 'attachments':
             // İstek üzerine widget'ta fotoğraf gösterilmiyor VE fotoğraf
             // olduğuna dair bir metin ipucu da bırakılmıyor; bu blok
-            // sessizce atlanır.
+            // sessizce atlanır (chunk hiç eklenmez).
             break;
           case 'drawing':
             final strokes = (b['strokes'] as List? ?? const []);
-            if (strokes.isNotEmpty) {
-              addLine({'type': 'drawing'});
-            }
+            chunks.add(
+              strokes.isNotEmpty
+                  ? [
+                      {'type': 'drawing'}
+                    ]
+                  : const [],
+            );
             break;
         }
       }
     }
 
+    // Boş parçaları at (ör. çizim bloğu ama hiç çizgi yoksa), kalanları
+    // aralarına boş bir 'text' satırı koyarak birleştir.
+    final nonEmptyChunks = chunks.where((c) => c.isNotEmpty).toList();
+    final assembled = <Map<String, dynamic>>[];
+    for (var i = 0; i < nonEmptyChunks.length; i++) {
+      if (i > 0) assembled.add({'type': 'text', 'text': ''});
+      assembled.addAll(nonEmptyChunks[i]);
+    }
+
+    final truncated = assembled.length > maxLines;
+    final lines = assembled.take(maxLines).toList();
     if (truncated && lines.isNotEmpty) {
       lines.add({'type': 'text', 'text': '…'});
     }
