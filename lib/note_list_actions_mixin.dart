@@ -1905,29 +1905,33 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
           ],
         ),
         content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _detailRow(
-                AppLocalizations.of(context)!.noteDetailsCreatedLabel,
-                createdStr,
-              ),
-              const SizedBox(height: 14),
-              _detailRow(
-                AppLocalizations.of(context)!.noteDetailsModifiedLabel,
-                modifiedStr,
-              ),
-              const SizedBox(height: 14),
-              _detailRow(
-                AppLocalizations.of(context)!.noteDetailsCharCountLabel,
-                AppLocalizations.of(context)!.noteDetailsCharCountValue(charCount),
-              ),
-              const SizedBox(height: 14),
-              _detailRow(
-                AppLocalizations.of(context)!.noteDetailsWordCountLabel,
-                AppLocalizations.of(context)!.noteDetailsWordCountValue(wordCount),
-              ),
-            ],
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _detailRow(
+                  AppLocalizations.of(context)!.noteDetailsCreatedLabel,
+                  createdStr,
+                ),
+                const SizedBox(height: 14),
+                _detailRow(
+                  AppLocalizations.of(context)!.noteDetailsModifiedLabel,
+                  modifiedStr,
+                ),
+                const SizedBox(height: 14),
+                _detailRow(
+                  AppLocalizations.of(context)!.noteDetailsCharCountLabel,
+                  AppLocalizations.of(context)!.noteDetailsCharCountValue(charCount),
+                ),
+                const SizedBox(height: 14),
+                _detailRow(
+                  AppLocalizations.of(context)!.noteDetailsWordCountLabel,
+                  AppLocalizations.of(context)!.noteDetailsWordCountValue(wordCount),
+                ),
+              ],
+            ),
           ),
         ),
         actions: [
