@@ -99,6 +99,11 @@ mixin NoteListLifecycleMixin on State<NoteListScreen>, WidgetsBindingObserver {
   // alan o rengi tutar ve tema değişse bile sabit kalır.
   Color? _textColor;
   int _previewLines = 3;
+  // Not düzenleme/görüntüleme ekranındaki metin bloklarının satır aralığı
+  // çarpanı (TextStyle.height). Önceden bu değer sabit 1.6 olarak
+  // kodlanmıştı (bkz. note_list_note_dialog_mixin.dart, buildTextBlockField);
+  // varsayılan olarak aynı görünümü korumak için başlangıç değeri de 1.6.
+  double _noteLineHeight = 1.6;
 
   // Widget
   double _widgetFontSize = 22.0;

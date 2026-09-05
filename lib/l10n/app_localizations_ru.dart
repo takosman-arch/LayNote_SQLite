@@ -342,6 +342,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get noNotesFoundMessage => 'Заметки не найдены.';
 
   @override
+  String get trashEmptyTitle => 'Корзина пуста.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Заметки, перемещённые сюда, будут безвозвратно удалены через 30 дней.';
+
+  @override
   String get trashRestoreButtonLabel => 'Восстановить';
 
   @override
@@ -1130,6 +1137,29 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Применить';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Межстрочный интервал';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — применяется к тексту заметки.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Текущее: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Это пример строки.\nЭто вторая строка.\nЗдесь виден интервал.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Отмена';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Применить';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Строки предпросмотра заметки';

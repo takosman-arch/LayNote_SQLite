@@ -345,6 +345,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noNotesFoundMessage => 'Keine Notizen gefunden.';
 
   @override
+  String get trashEmptyTitle => 'Papierkorb ist leer.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Hierher verschobene Notizen werden nach 30 Tagen dauerhaft gelöscht.';
+
+  @override
   String get trashRestoreButtonLabel => 'Wiederherstellen';
 
   @override
@@ -1135,6 +1142,29 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Anwenden';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Zeilenabstand';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — für den Notiztext angewendet.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Aktuell: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Dies ist eine Beispielzeile.\nHier ist eine zweite Zeile.\nSo siehst du den Abstand.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Abbrechen';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Anwenden';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Notizvorschauzeilen';

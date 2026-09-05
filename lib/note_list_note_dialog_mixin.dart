@@ -21,6 +21,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   double get _globalFontSize;
   set _globalFontSize(double value);
   String get _fontFamily;
+  double get _noteLineHeight;
+  set _noteLineHeight(double value);
   Future<void> _handleReminderRowTap({ required BuildContext context, required DateTime? currentReminder, required String? currentRepeat, required void Function(DateTime? reminder, String? repeat) onChanged, });
   List<Map<String, dynamic>> get _notes;
   set _notes(List<Map<String, dynamic>> value);
@@ -7193,6 +7195,24 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       TextCapitalization.sentences,
                                   maxLines: null,
                                   keyboardType: TextInputType.multiline,
+                                  // İmlecin (caret) boyu, style.height (satır
+                                  // aralığı) çarpanına göre otomatik
+                                  // büyümesin diye burada sabitleniyor.
+                                  // Flutter, cursorHeight açıkça
+                                  // verilmezse imleci efektif satır
+                                  // yüksekliğinden (fontSize * height)
+                                  // hesaplıyor; bu yüzden Ayarlar >
+                                  // Satır Aralığı arttırıldıkça imleç de
+                                  // büyüyordu. Burada sadece fontSize'a
+                                  // bağlı, satır aralığından bağımsız bir
+                                  // değer veriyoruz.
+                                  cursorHeight:
+                                      (index != null
+                                          ? ((_notes[index!]['fontSize'] as num?)
+                                                    ?.toDouble() ??
+                                                _globalFontSize)
+                                          : _globalFontSize) *
+                                      1.2,
                                   decoration: InputDecoration(
                                     hintText: showHint
                                         ? AppLocalizations.of(context)!.textBlockHint
@@ -7212,7 +7232,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                                   ?.toDouble() ??
                                               _globalFontSize)
                                         : _globalFontSize,
-                                    height: 1.6,
+                                    // Ayarlar > Kişiselleştirme > Satır Aralığı.
+                                    height: _noteLineHeight,
                                     // Ayarlar > Kişiselleştirme > Yazı Tipi.
                                     // RichBlockTextController.buildTextSpan bu
                                     // stili taban alıp span'lar kendi

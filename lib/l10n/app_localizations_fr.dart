@@ -343,6 +343,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noNotesFoundMessage => 'Aucune note trouvée.';
 
   @override
+  String get trashEmptyTitle => 'La corbeille est vide.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Les notes déplacées ici seront définitivement supprimées après 30 jours.';
+
+  @override
   String get trashRestoreButtonLabel => 'Restaurer';
 
   @override
@@ -1144,6 +1151,29 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Appliquer';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Interligne';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — appliqué au texte de la note.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Actuel : ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Ceci est une ligne d\'exemple.\nVoici une deuxième ligne.\nVous voyez l\'espacement ici.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Annuler';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Appliquer';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Lignes d\'aperçu des notes';

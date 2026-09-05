@@ -341,6 +341,13 @@ class AppLocalizationsSv extends AppLocalizations {
   String get noNotesFoundMessage => 'Inga anteckningar hittades.';
 
   @override
+  String get trashEmptyTitle => 'Papperskorgen är tom.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Anteckningar som flyttas hit tas bort permanent efter 30 dagar.';
+
+  @override
   String get trashRestoreButtonLabel => 'Återställ';
 
   @override
@@ -1124,6 +1131,29 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Verkställ';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Radavstånd';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — tillämpas på anteckningstext.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Nuvarande: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Detta är en exempelrad.\nHär är en andra rad.\nHär ser du radavståndet.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Avbryt';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Tillämpa';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Förhandsvisningsrader';

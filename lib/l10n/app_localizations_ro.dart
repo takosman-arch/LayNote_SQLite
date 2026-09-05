@@ -341,6 +341,13 @@ class AppLocalizationsRo extends AppLocalizations {
   String get noNotesFoundMessage => 'Nu s-au găsit notițe.';
 
   @override
+  String get trashEmptyTitle => 'Coșul de gunoi este gol.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Notele mutate aici vor fi șterse definitiv după 30 de zile.';
+
+  @override
   String get trashRestoreButtonLabel => 'Restaurare';
 
   @override
@@ -1136,6 +1143,29 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Aplicare';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Spațiere rânduri';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — aplicat textului notiței.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Curent: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Aceasta este o linie exemplu.\nIată o a doua linie.\nAici poți vedea spațierea.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Anulează';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Aplică';
 
   @override
   String get settingsPreviewLinesTileTitle =>

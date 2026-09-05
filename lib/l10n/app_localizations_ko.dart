@@ -336,6 +336,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get noNotesFoundMessage => '노트를 찾을 수 없습니다.';
 
   @override
+  String get trashEmptyTitle => '휴지통이 비어 있습니다.';
+
+  @override
+  String get trashEmptySubtitle => '여기로 이동된 메모는 30일 후 영구적으로 삭제됩니다.';
+
+  @override
   String get trashRestoreButtonLabel => '복원';
 
   @override
@@ -1104,6 +1110,29 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => '적용';
+
+  @override
+  String get settingsLineHeightTileTitle => '줄 간격';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — 메모 텍스트에 적용됩니다.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return '현재: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      '예시 줄입니다.\n두 번째 줄입니다.\n여기서 줄 간격을 확인하세요.';
+
+  @override
+  String get settingsLineHeightCancelButton => '취소';
+
+  @override
+  String get settingsLineHeightApplyButton => '적용';
 
   @override
   String get settingsPreviewLinesTileTitle => '노트 미리보기 줄 수';

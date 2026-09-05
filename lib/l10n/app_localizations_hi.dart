@@ -344,6 +344,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get noNotesFoundMessage => 'कोई नोट नहीं मिला।';
 
   @override
+  String get trashEmptyTitle => 'ट्रैश खाली है।';
+
+  @override
+  String get trashEmptySubtitle =>
+      'यहाँ ले जाए गए नोट्स 30 दिनों के बाद स्थायी रूप से हटा दिए जाएंगे।';
+
+  @override
   String get trashRestoreButtonLabel => 'पुनर्स्थापित करें';
 
   @override
@@ -1126,6 +1133,29 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'लागू करें';
+
+  @override
+  String get settingsLineHeightTileTitle => 'पंक्ति दूरी';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — नोट के टेक्स्ट पर लागू।';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'वर्तमान: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'यह एक नमूना पंक्ति है।\nयह दूसरी पंक्ति है।\nयहां दूरी देख सकते हैं।';
+
+  @override
+  String get settingsLineHeightCancelButton => 'रद्द करें';
+
+  @override
+  String get settingsLineHeightApplyButton => 'लागू करें';
 
   @override
   String get settingsPreviewLinesTileTitle => 'नोट पूर्वावलोकन पंक्तियाँ';

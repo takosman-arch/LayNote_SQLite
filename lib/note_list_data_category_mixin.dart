@@ -35,6 +35,8 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
   set _isListView(bool value);
   Set<String> get _lockedCategories;
   set _lockedCategories(Set<String> value);
+  double get _noteLineHeight;
+  set _noteLineHeight(double value);
   String get _notePassword;
   set _notePassword(String value);
   bool get _notePasswordEnabled;
@@ -189,6 +191,11 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       _fontFamily = settings['font_family'] ?? 'Varsayılan';
       _globalFontSize =
           double.tryParse(settings['global_font_size'] ?? '') ?? 19.0;
+      // Varsayılan 1.6: bu ayar eklenmeden önce satır aralığı sabit 1.6 idi
+      // (bkz. note_list_note_dialog_mixin.dart) — ayarı hiç değiştirmemiş
+      // kullanıcılarda görünüm birebir aynı kalır.
+      _noteLineHeight =
+          double.tryParse(settings['note_line_height'] ?? '') ?? 1.6;
       final textColorVal = int.tryParse(settings['text_color'] ?? '');
       _textColor = textColorVal != null ? Color(textColorVal) : null;
       _previewLines = int.tryParse(settings['preview_lines'] ?? '') ?? 6;
@@ -296,6 +303,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       await db.setSetting('colorful_notes', _colorfulNotes.toString());
       await db.setSetting('font_family', _fontFamily);
       await db.setSetting('global_font_size', _globalFontSize.toString());
+      await db.setSetting('note_line_height', _noteLineHeight.toString());
       await db.setSetting('text_color', _textColor?.toARGB32().toString());
       await db.setSetting('preview_lines', _previewLines.toString());
       await db.setSetting('widget_font_size', _widgetFontSize.toString());

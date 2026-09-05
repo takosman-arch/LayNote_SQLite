@@ -334,6 +334,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noNotesFoundMessage => '未找到笔记。';
 
   @override
+  String get trashEmptyTitle => '回收站为空。';
+
+  @override
+  String get trashEmptySubtitle => '移动到此处的笔记将在30天后永久删除。';
+
+  @override
   String get trashRestoreButtonLabel => '恢复';
 
   @override
@@ -1098,6 +1104,28 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => '应用';
+
+  @override
+  String get settingsLineHeightTileTitle => '行间距';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — 应用于笔记文本。';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return '当前：${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph => '这是示例行。\n这是第二行。\n你可以在此看到行间距。';
+
+  @override
+  String get settingsLineHeightCancelButton => '取消';
+
+  @override
+  String get settingsLineHeightApplyButton => '应用';
 
   @override
   String get settingsPreviewLinesTileTitle => '笔记预览行数';

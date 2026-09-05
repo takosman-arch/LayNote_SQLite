@@ -342,6 +342,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get noNotesFoundMessage => 'Nebyly nalezeny žádné poznámky.';
 
   @override
+  String get trashEmptyTitle => 'Koš je prázdný.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Poznámky přesunuté sem budou po 30 dnech trvale odstraněny.';
+
+  @override
   String get trashRestoreButtonLabel => 'Obnovit';
 
   @override
@@ -1133,6 +1140,29 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Použít';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Řádkování';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — použito na text poznámky.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Aktuálně: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Toto je ukázkový řádek.\nToto je druhý řádek.\nZde vidíte řádkování.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Zrušit';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Použít';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Řádky náhledu poznámky';

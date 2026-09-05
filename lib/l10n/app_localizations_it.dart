@@ -343,6 +343,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get noNotesFoundMessage => 'Nessuna nota trovata.';
 
   @override
+  String get trashEmptyTitle => 'Il cestino è vuoto.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Le note spostate qui verranno eliminate definitivamente dopo 30 giorni.';
+
+  @override
   String get trashRestoreButtonLabel => 'Ripristina';
 
   @override
@@ -1139,6 +1146,29 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Applica';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Interlinea';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — applicato al testo della nota.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Attuale: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Questa è una riga di esempio.\nEcco una seconda riga.\nQui puoi vedere la spaziatura.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Annulla';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Applica';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Righe di anteprima nota';

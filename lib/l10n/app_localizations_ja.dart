@@ -334,6 +334,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noNotesFoundMessage => 'メモが見つかりません。';
 
   @override
+  String get trashEmptyTitle => 'ゴミ箱は空です。';
+
+  @override
+  String get trashEmptySubtitle => 'ここに移動したメモは30日後に完全に削除されます。';
+
+  @override
   String get trashRestoreButtonLabel => '復元';
 
   @override
@@ -1101,6 +1107,29 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => '適用';
+
+  @override
+  String get settingsLineHeightTileTitle => '行間';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — メモの文字に適用されます。';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return '現在: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'これはサンプルの行です。\nこれは2行目です。\nここで行間を確認できます。';
+
+  @override
+  String get settingsLineHeightCancelButton => 'キャンセル';
+
+  @override
+  String get settingsLineHeightApplyButton => '適用';
 
   @override
   String get settingsPreviewLinesTileTitle => 'メモのプレビュー行数';

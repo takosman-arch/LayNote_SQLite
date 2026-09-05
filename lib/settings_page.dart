@@ -54,6 +54,85 @@ String? dNoteFontFamilyValue(String? name) {
   }
 }
 
+// Satır Aralığı slider'ında varsayılan (1.6) konumunu göstermek için
+// kullanılan özel track şekli. LayoutBuilder + manuel piksel hesabı yerine
+// bunu tercih ediyoruz: Flutter'ın kendi RoundedRectSliderTrackShape'i
+// getPreferredRect() ile trackRect'i hesaplıyor ve thumb'ı da AYNI bu
+// dikdörtgene göre konumlandırıyor — biz de işareti aynı trackRect
+// üzerinden çizince, thumb yarıçapı/tema/track yüksekliği farklı olsa
+// bile işaret HER ZAMAN gerçek thumb konumuyla piksel bazında hizalı
+// kalır (manuel offset tahminine gerek kalmaz).
+class _DefaultMarkSliderTrackShape extends RoundedRectSliderTrackShape {
+  final double markValue;
+  final double min;
+  final double max;
+  const _DefaultMarkSliderTrackShape({
+    required this.markValue,
+    required this.min,
+    required this.max,
+  });
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset offset, {
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required Animation<double> enableAnimation,
+    required Offset thumbCenter,
+    Offset? secondaryOffset,
+    bool isDiscrete = false,
+    bool isEnabled = false,
+    required TextDirection textDirection,
+    double additionalActiveTrackHeight = 2,
+  }) {
+    super.paint(
+      context,
+      offset,
+      parentBox: parentBox,
+      sliderTheme: sliderTheme,
+      enableAnimation: enableAnimation,
+      thumbCenter: thumbCenter,
+      secondaryOffset: secondaryOffset,
+      isDiscrete: isDiscrete,
+      isEnabled: isEnabled,
+      textDirection: textDirection,
+      additionalActiveTrackHeight: additionalActiveTrackHeight,
+    );
+
+    final Rect trackRect = getPreferredRect(
+      parentBox: parentBox,
+      offset: offset,
+      sliderTheme: sliderTheme,
+      isEnabled: isEnabled,
+      isDiscrete: isDiscrete,
+    );
+
+    final double ratio = (markValue - min) / (max - min);
+    final double effectiveRatio =
+        textDirection == TextDirection.rtl ? 1 - ratio : ratio;
+    final double markX = trackRect.left + effectiveRatio * trackRect.width;
+    final double markY = trackRect.center.dy;
+
+    const double markWidth = 3.5;
+    const double markHeight = 14;
+
+    final RRect markRRect = RRect.fromRectAndRadius(
+      Rect.fromCenter(
+        center: Offset(markX, markY),
+        width: markWidth,
+        height: markHeight,
+      ),
+      const Radius.circular(2),
+    );
+
+    context.canvas.drawRRect(
+      markRRect,
+      Paint()..color = Colors.grey.shade500,
+    );
+  }
+}
+
 class _SettingsPageState extends State<SettingsPage> {
   _NoteListScreenState get s => widget.state;
 
@@ -1612,6 +1691,193 @@ class _SettingsPageState extends State<SettingsPage> {
                                           },
                                           child: Text(
                                             AppLocalizations.of(context)!.settingsGlobalFontSizeApplyButton,
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  Divider(
+                    color: Theme.of(context).dividerColor,
+                    height: 1,
+                    indent: 56,
+                  ),
+                  // Satır aralığı
+                  _settingTile(
+                    icon: Icons.format_line_spacing,
+                    iconColor: Theme.of(context).primaryColor,
+                    title: AppLocalizations.of(context)!.settingsLineHeightTileTitle,
+                    subtitle: AppLocalizations.of(context)!.settingsLineHeightTileSubtitle(
+                      s._noteLineHeight.toStringAsFixed(1),
+                    ),
+                    trailing: null,
+                    onTap: () {
+                      double tempHeight = s._noteLineHeight;
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: dNoteCardColor(context),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                        isScrollControlled: true,
+                        builder: (_) => StatefulBuilder(
+                          builder: (ctx, setSheet) => SafeArea(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                24,
+                                16,
+                                24,
+                                24,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 4,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[500],
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    AppLocalizations.of(context)!.settingsLineHeightTileTitle,
+                                    style: TextStyle(
+                                      color: dNoteTextColor(ctx),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    AppLocalizations.of(context)!.settingsLineHeightCurrentLabel(
+                                      tempHeight.toStringAsFixed(1),
+                                    ),
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.format_line_spacing,
+                                        color: Colors.grey,
+                                        size: 16,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: SliderTheme(
+                                          data: SliderTheme.of(context)
+                                              .copyWith(
+                                                trackShape: const _DefaultMarkSliderTrackShape(
+                                                  markValue: 1.6,
+                                                  min: 1.0,
+                                                  max: 3.0,
+                                                ),
+                                                activeTrackColor: Theme.of(context).primaryColor,
+                                                inactiveTrackColor:
+                                                    dNoteSurfaceVariant(ctx),
+                                                thumbColor: Theme.of(context).primaryColor,
+                                                overlayColor: Theme.of(context).primaryColor
+                                                    .withValues(alpha: 0.2),
+                                                valueIndicatorColor:
+                                                    Theme.of(context).primaryColor,
+                                                valueIndicatorTextStyle:
+                                                    const TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                              ),
+                                          child: Slider(
+                                            value: tempHeight,
+                                            min: 1.0,
+                                            max: 3.0,
+                                            divisions: 20,
+                                            label: tempHeight.toStringAsFixed(1),
+                                            onChanged: (v) =>
+                                                setSheet(() => tempHeight = v),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      const Icon(
+                                        Icons.format_line_spacing,
+                                        color: Colors.grey,
+                                        size: 26,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: dNoteSurfaceVariant(ctx),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(
+                                      List.filled(
+                                        3,
+                                        AppLocalizations.of(context)!
+                                            .settingsLineHeightSampleParagraph
+                                            .split('\n')
+                                            .first,
+                                      ).join('\n'),
+                                      style: TextStyle(
+                                        color: dNoteTextColor(ctx).withValues(alpha: 0.85),
+                                        fontSize: 14,
+                                        height: tempHeight,
+                                        fontFamily: dNoteFontFamilyValue(s._fontFamily),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextButton(
+                                          onPressed: () => Navigator.pop(ctx),
+                                          child: Text(
+                                            AppLocalizations.of(context)!.settingsLineHeightCancelButton,
+                                            style: const TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Theme.of(context).primaryColor,
+                                          ),
+                                          onPressed: () {
+                                            s.setState(() {
+                                              s._noteLineHeight = tempHeight;
+                                            });
+                                            setState(() {});
+                                            s._saveData();
+                                            Navigator.pop(ctx);
+                                          },
+                                          child: Text(
+                                            AppLocalizations.of(context)!.settingsLineHeightApplyButton,
                                             style: const TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,

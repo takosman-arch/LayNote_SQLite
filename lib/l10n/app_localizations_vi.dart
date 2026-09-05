@@ -341,6 +341,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get noNotesFoundMessage => 'Không tìm thấy ghi chú nào.';
 
   @override
+  String get trashEmptyTitle => 'Thùng rác trống.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Các ghi chú được chuyển vào đây sẽ bị xóa vĩnh viễn sau 30 ngày.';
+
+  @override
   String get trashRestoreButtonLabel => 'Khôi phục';
 
   @override
@@ -1130,6 +1137,29 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Áp dụng';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Giãn dòng';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — áp dụng cho văn bản ghi chú.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Hiện tại: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Đây là dòng ví dụ.\nĐây là dòng thứ hai.\nBạn có thể thấy khoảng cách ở đây.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Hủy';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Áp dụng';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Số dòng xem trước ghi chú';

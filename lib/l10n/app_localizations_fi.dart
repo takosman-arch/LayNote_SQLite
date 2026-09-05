@@ -342,6 +342,13 @@ class AppLocalizationsFi extends AppLocalizations {
   String get noNotesFoundMessage => 'Muistiinpanoja ei löytynyt.';
 
   @override
+  String get trashEmptyTitle => 'Roskakori on tyhjä.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Tänne siirretyt muistiinpanot poistetaan pysyvästi 30 päivän kuluttua.';
+
+  @override
   String get trashRestoreButtonLabel => 'Palauta';
 
   @override
@@ -1126,6 +1133,29 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Käytä';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Riviväli';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — käytetään muistiinpanon tekstiin.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Nykyinen: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Tämä on esimerkkirivi.\nTässä on toinen rivi.\nNäet välistyksen tässä.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Peruuta';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Käytä';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Muistiinpanon esikatselurivit';

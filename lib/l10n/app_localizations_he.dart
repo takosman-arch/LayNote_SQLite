@@ -339,6 +339,13 @@ class AppLocalizationsHe extends AppLocalizations {
   String get noNotesFoundMessage => 'לא נמצאו פתקיות.';
 
   @override
+  String get trashEmptyTitle => 'האשפה ריקה.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'פתקים שהועברו לכאן יימחקו לצמיתות לאחר 30 יום.';
+
+  @override
   String get trashRestoreButtonLabel => 'שחזר';
 
   @override
@@ -1112,6 +1119,29 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'החל';
+
+  @override
+  String get settingsLineHeightTileTitle => 'מרווח בין שורות';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — חל על טקסט הפתקה.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'נוכחי: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'זו שורת דוגמה.\nזו שורה שנייה.\nכאן אפשר לראות את הריווח.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'ביטול';
+
+  @override
+  String get settingsLineHeightApplyButton => 'החל';
 
   @override
   String get settingsPreviewLinesTileTitle => 'שורות תצוגה מקדימה לפתקית';

@@ -444,6 +444,14 @@
     "description": "Çekmece menüsünde uygulama hakkında bilgi ekranını açan satırın etiketi"
   },
   "noNotesFoundMessage": "Not bulunamadı.",
+  "trashEmptyTitle": "Çöp kutusu boş.",
+  "@trashEmptyTitle": {
+    "description": "Çöp kutusu boşken not listesinin ortasında gösterilen büyük başlık metni"
+  },
+  "trashEmptySubtitle": "Buraya taşınan notlar 30 gün sonra kalıcı olarak silinir.",
+  "@trashEmptySubtitle": {
+    "description": "Çöp kutusu boşken başlığın altında gösterilen küçük açıklama metni (30 günlük otomatik silme kuralını hatırlatır)"
+  },
   "@noNotesFoundMessage": {
     "description": "Not listesi (arama sonucu dahil) boş olduğunda listenin ortasında gösterilen mesaj"
   },
@@ -1490,6 +1498,40 @@
   "settingsGlobalFontSizeApplyButton": "Uygula",
   "@settingsGlobalFontSizeApplyButton": {
     "description": "Yazı boyutu seçim sheet'inde uygula düğmesi"
+  },
+  "settingsLineHeightTileTitle": "Satır Aralığı",
+  "@settingsLineHeightTileTitle": {
+    "description": "Kişiselleştirme bölümündeki satır aralığı satırının başlığı ve satır aralığı seçim sheet'inin başlığı"
+  },
+  "settingsLineHeightTileSubtitle": "{value}x — not metnine uygulanır.",
+  "@settingsLineHeightTileSubtitle": {
+    "description": "Satır aralığı satırının alt metni; geçerli çarpanı gösterir",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsLineHeightCurrentLabel": "Şu an: {value}x",
+  "@settingsLineHeightCurrentLabel": {
+    "description": "Satır aralığı seçim sheet'inde slider üstünde geçerli çarpanı gösteren etiket",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsLineHeightSampleParagraph": "Bu bir örnek satırdır.\nBu ikinci satırdır.\nAralığı buradan görebilirsiniz.",
+  "@settingsLineHeightSampleParagraph": {
+    "description": "Satır aralığı seçim sheet'inde aralığı göstermek için kullanılan çok satırlı örnek metin"
+  },
+  "settingsLineHeightCancelButton": "İptal",
+  "@settingsLineHeightCancelButton": {
+    "description": "Satır aralığı seçim sheet'inde iptal düğmesi"
+  },
+  "settingsLineHeightApplyButton": "Uygula",
+  "@settingsLineHeightApplyButton": {
+    "description": "Satır aralığı seçim sheet'inde uygula düğmesi"
   },
   "settingsPreviewLinesTileTitle": "Not Önizleme Satırı",
   "@settingsPreviewLinesTileTitle": {
@@ -3193,20 +3235,20 @@
   },
   "imageViewerGalleryPermissionDeniedMessage": "Galeri izni verilmedi",
   "@imageViewerGalleryPermissionDeniedMessage": {
-      "description": "Kullanıcı 'Albüme Kaydet' için galeri iznini reddettiğinde gösterilen snackbar mesajı"
+    "description": "Kullanıcı 'Albüme Kaydet' için galeri iznini reddettiğinde gösterilen snackbar mesajı"
   },
   "imageViewerSavedToGalleryMessage": "Albüme kaydedildi",
   "@imageViewerSavedToGalleryMessage": {
-      "description": "Fotoğraf galeriye (gal paketiyle) başarıyla kaydedildiğinde gösterilen snackbar mesajı"
+    "description": "Fotoğraf galeriye (gal paketiyle) başarıyla kaydedildiğinde gösterilen snackbar mesajı"
   },
   "imageViewerSaveFailedMessage": "Kaydedilemedi: {error}",
   "@imageViewerSaveFailedMessage": {
-      "description": "Fotoğraf galeriye kaydedilirken bir hata oluştuğunda gösterilen snackbar mesajı",
-      "placeholders": {
-          "error": {
-              "type": "String"
-          }
+    "description": "Fotoğraf galeriye kaydedilirken bir hata oluştuğunda gösterilen snackbar mesajı",
+    "placeholders": {
+      "error": {
+        "type": "String"
       }
+    }
   },
   "imageViewerSavingInProgressMessage": "Kaydediliyor…",
   "@imageViewerSavingInProgressMessage": {

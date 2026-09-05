@@ -341,6 +341,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noNotesFoundMessage => 'No notes found.';
 
   @override
+  String get trashEmptyTitle => 'Trash is empty.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Notes moved here will be permanently deleted after 30 days.';
+
+  @override
   String get trashRestoreButtonLabel => 'Restore';
 
   @override
@@ -1125,6 +1132,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Apply';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Line Spacing';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — applied to note text.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Current: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'This is a sample line.\nHere is a second line.\nYou can see the spacing here.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Cancel';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Apply';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Note Preview Lines';

@@ -340,6 +340,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get noNotesFoundMessage => 'Not bulunamadı.';
 
   @override
+  String get trashEmptyTitle => 'Çöp kutusu boş.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Buraya taşınan notlar 30 gün sonra kalıcı olarak silinir.';
+
+  @override
   String get trashRestoreButtonLabel => 'Geri Yükle';
 
   @override
@@ -1122,6 +1129,29 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Uygula';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Satır Aralığı';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — not metnine uygulanır.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Şu an: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Bu bir örnek satırdır.\nBu ikinci satırdır.\nAralığı buradan görebilirsiniz.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'İptal';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Uygula';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Not Önizleme Satırı';

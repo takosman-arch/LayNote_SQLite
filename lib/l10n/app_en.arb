@@ -152,6 +152,8 @@
   "drawerRateAppLabel": "Rate the App",
   "drawerAboutLabel": "About",
   "noNotesFoundMessage": "No notes found.",
+  "trashEmptyTitle": "Trash is empty.",
+  "trashEmptySubtitle": "Notes moved here will be permanently deleted after 30 days.",
   "trashRestoreButtonLabel": "Restore",
   "trashPermanentDeleteButtonLabel": "Delete Permanently",
   "tagRenamedInfoMessage": "Tag renamed",
@@ -467,6 +469,34 @@
   },
   "settingsGlobalFontSizeCancelButton": "Cancel",
   "settingsGlobalFontSizeApplyButton": "Apply",
+  "settingsLineHeightTileTitle": "Line Spacing",
+  "@settingsLineHeightTileTitle": {
+  },
+  "settingsLineHeightTileSubtitle": "{value}x — applied to note text.",
+  "@settingsLineHeightTileSubtitle": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsLineHeightCurrentLabel": "Current: {value}x",
+  "@settingsLineHeightCurrentLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsLineHeightSampleParagraph": "This is a sample line.\nHere is a second line.\nYou can see the spacing here.",
+  "@settingsLineHeightSampleParagraph": {
+  },
+  "settingsLineHeightCancelButton": "Cancel",
+  "@settingsLineHeightCancelButton": {
+  },
+  "settingsLineHeightApplyButton": "Apply",
+  "@settingsLineHeightApplyButton": {
+  },
   "settingsPreviewLinesTileTitle": "Note Preview Lines",
   "settingsPreviewLinesTileSubtitle": "Show up to {lines} lines. If the note is shorter, the actual number of lines is shown.",
   "@settingsPreviewLinesTileSubtitle": {

@@ -764,6 +764,18 @@ abstract class AppLocalizations {
   /// **'Not bulunamadı.'**
   String get noNotesFoundMessage;
 
+  /// Çöp kutusu boşken not listesinin ortasında gösterilen büyük başlık metni
+  ///
+  /// In tr, this message translates to:
+  /// **'Çöp kutusu boş.'**
+  String get trashEmptyTitle;
+
+  /// Çöp kutusu boşken başlığın altında gösterilen küçük açıklama metni (30 günlük otomatik silme kuralını hatırlatır)
+  ///
+  /// In tr, this message translates to:
+  /// **'Buraya taşınan notlar 30 gün sonra kalıcı olarak silinir.'**
+  String get trashEmptySubtitle;
+
   /// Çöp ekranında bir nota basılı tutulunca açılan alt menüde notu geri yükleme düğmesinin etiketi (liste ve ızgara görünümünde ortak)
   ///
   /// In tr, this message translates to:
@@ -2257,6 +2269,42 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Uygula'**
   String get settingsGlobalFontSizeApplyButton;
+
+  /// Kişiselleştirme bölümündeki satır aralığı satırının başlığı ve satır aralığı seçim sheet'inin başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Satır Aralığı'**
+  String get settingsLineHeightTileTitle;
+
+  /// Satır aralığı satırının alt metni; geçerli çarpanı gösterir
+  ///
+  /// In tr, this message translates to:
+  /// **'{value}x — not metnine uygulanır.'**
+  String settingsLineHeightTileSubtitle(String value);
+
+  /// Satır aralığı seçim sheet'inde slider üstünde geçerli çarpanı gösteren etiket
+  ///
+  /// In tr, this message translates to:
+  /// **'Şu an: {value}x'**
+  String settingsLineHeightCurrentLabel(String value);
+
+  /// Satır aralığı seçim sheet'inde aralığı göstermek için kullanılan çok satırlı örnek metin
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu bir örnek satırdır.\nBu ikinci satırdır.\nAralığı buradan görebilirsiniz.'**
+  String get settingsLineHeightSampleParagraph;
+
+  /// Satır aralığı seçim sheet'inde iptal düğmesi
+  ///
+  /// In tr, this message translates to:
+  /// **'İptal'**
+  String get settingsLineHeightCancelButton;
+
+  /// Satır aralığı seçim sheet'inde uygula düğmesi
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygula'**
+  String get settingsLineHeightApplyButton;
 
   /// Kişiselleştirme bölümündeki not önizleme satırı ayarının başlığı ve seçim sheet'inin başlığı
   ///

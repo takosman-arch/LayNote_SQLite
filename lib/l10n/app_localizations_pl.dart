@@ -342,6 +342,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get noNotesFoundMessage => 'Nie znaleziono notatek.';
 
   @override
+  String get trashEmptyTitle => 'Kosz jest pusty.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Notatki przeniesione tutaj zostaną trwale usunięte po 30 dniach.';
+
+  @override
   String get trashRestoreButtonLabel => 'Przywróć';
 
   @override
@@ -1135,6 +1142,29 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Zastosuj';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Odstęp między wierszami';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — zastosowano do tekstu notatki.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Obecnie: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'To jest przykładowy wiersz.\nOto drugi wiersz.\nTutaj widać odstęp.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Anuluj';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Zastosuj';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Liczba linii podglądu notatki';

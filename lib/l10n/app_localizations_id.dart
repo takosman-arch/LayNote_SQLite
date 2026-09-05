@@ -344,6 +344,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get noNotesFoundMessage => 'Tidak ada catatan ditemukan.';
 
   @override
+  String get trashEmptyTitle => 'Tempat sampah kosong.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Catatan yang dipindahkan ke sini akan dihapus secara permanen setelah 30 hari.';
+
+  @override
   String get trashRestoreButtonLabel => 'Pulihkan';
 
   @override
@@ -1130,6 +1137,29 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Terapkan';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Jarak Baris';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — diterapkan pada teks catatan.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Saat ini: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Ini baris contoh.\nIni baris kedua.\nAnda bisa melihat jaraknya di sini.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Batal';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Terapkan';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Baris Pratinjau Catatan';

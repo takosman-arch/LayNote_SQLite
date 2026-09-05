@@ -340,6 +340,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noNotesFoundMessage => 'لم يتم العثور على ملاحظات.';
 
   @override
+  String get trashEmptyTitle => 'سلة المهملات فارغة.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'سيتم حذف الملاحظات المنقولة إلى هنا نهائيًا بعد 30 يومًا.';
+
+  @override
   String get trashRestoreButtonLabel => 'استعادة';
 
   @override
@@ -1116,6 +1123,29 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'تطبيق';
+
+  @override
+  String get settingsLineHeightTileTitle => 'تباعد الأسطر';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — يُطبّق على نص الملاحظة.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'الحالي: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'هذا سطر مثال.\nهذا سطر ثانٍ.\nيمكنك رؤية التباعد هنا.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'إلغاء';
+
+  @override
+  String get settingsLineHeightApplyButton => 'تطبيق';
 
   @override
   String get settingsPreviewLinesTileTitle => 'أسطر معاينة الملاحظة';

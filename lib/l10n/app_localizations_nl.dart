@@ -345,6 +345,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noNotesFoundMessage => 'Geen notities gevonden.';
 
   @override
+  String get trashEmptyTitle => 'Prullenbak is leeg.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Notities die hierheen zijn verplaatst, worden na 30 dagen permanent verwijderd.';
+
+  @override
   String get trashRestoreButtonLabel => 'Herstellen';
 
   @override
@@ -1137,6 +1144,29 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Toepassen';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Regelafstand';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — toegepast op notitietekst.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Huidig: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Dit is een voorbeeldregel.\nHier is een tweede regel.\nZo zie je de regelafstand.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Annuleren';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Toepassen';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Voorbeeldregels notitie';

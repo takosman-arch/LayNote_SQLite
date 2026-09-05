@@ -674,7 +674,7 @@ class _GundemScreenState extends State<GundemScreen> {
               AppLocalizations.of(context)!.gundemEmptySubtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 13,
                 color: dNoteTextColor(context).withValues(alpha: 0.45),
               ),
             ),

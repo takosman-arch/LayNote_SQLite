@@ -342,6 +342,13 @@ class AppLocalizationsUk extends AppLocalizations {
   String get noNotesFoundMessage => 'Нотаток не знайдено.';
 
   @override
+  String get trashEmptyTitle => 'Кошик порожній.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Нотатки, переміщені сюди, будуть остаточно видалені через 30 днів.';
+
+  @override
   String get trashRestoreButtonLabel => 'Відновити';
 
   @override
@@ -1131,6 +1138,29 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Застосувати';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Міжрядковий інтервал';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — застосовується до тексту нотатки.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Поточне: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Це приклад рядка.\nЦе другий рядок.\nТут видно міжрядковий інтервал.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Скасувати';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Застосувати';
 
   @override
   String get settingsPreviewLinesTileTitle =>

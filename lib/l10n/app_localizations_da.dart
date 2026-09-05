@@ -342,6 +342,13 @@ class AppLocalizationsDa extends AppLocalizations {
   String get noNotesFoundMessage => 'Ingen noter fundet.';
 
   @override
+  String get trashEmptyTitle => 'Papirkurven er tom.';
+
+  @override
+  String get trashEmptySubtitle =>
+      'Noter flyttet hertil slettes permanent efter 30 dage.';
+
+  @override
   String get trashRestoreButtonLabel => 'Gendan';
 
   @override
@@ -1126,6 +1133,29 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'Anvend';
+
+  @override
+  String get settingsLineHeightTileTitle => 'Linjeafstand';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — anvendes på notetekst.';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'Nuværende: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'Dette er en eksempellinje.\nHer er en anden linje.\nDu kan se afstanden her.';
+
+  @override
+  String get settingsLineHeightCancelButton => 'Annuller';
+
+  @override
+  String get settingsLineHeightApplyButton => 'Anvend';
 
   @override
   String get settingsPreviewLinesTileTitle => 'Antal forhåndsvisningslinjer';

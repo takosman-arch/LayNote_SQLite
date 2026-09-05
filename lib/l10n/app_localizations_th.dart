@@ -340,6 +340,13 @@ class AppLocalizationsTh extends AppLocalizations {
   String get noNotesFoundMessage => 'ไม่พบโน้ต';
 
   @override
+  String get trashEmptyTitle => 'ถังขยะว่างเปล่า';
+
+  @override
+  String get trashEmptySubtitle =>
+      'บันทึกที่ย้ายมาที่นี่จะถูกลบอย่างถาวรหลังจาก 30 วัน';
+
+  @override
   String get trashRestoreButtonLabel => 'กู้คืน';
 
   @override
@@ -1120,6 +1127,29 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get settingsGlobalFontSizeApplyButton => 'ใช้';
+
+  @override
+  String get settingsLineHeightTileTitle => 'ระยะห่างบรรทัด';
+
+  @override
+  String settingsLineHeightTileSubtitle(String value) {
+    return '${value}x — ใช้กับข้อความในโน้ต';
+  }
+
+  @override
+  String settingsLineHeightCurrentLabel(String value) {
+    return 'ปัจจุบัน: ${value}x';
+  }
+
+  @override
+  String get settingsLineHeightSampleParagraph =>
+      'นี่คือบรรทัดตัวอย่าง\nนี่คือบรรทัดที่สอง\nคุณจะเห็นระยะห่างที่นี่';
+
+  @override
+  String get settingsLineHeightCancelButton => 'ยกเลิก';
+
+  @override
+  String get settingsLineHeightApplyButton => 'นำไปใช้';
 
   @override
   String get settingsPreviewLinesTileTitle => 'จำนวนบรรทัดตัวอย่างโน้ต';

@@ -1426,10 +1426,36 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                 Expanded(
                   child: filteredNotes.isEmpty
                 ? Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.noNotesFoundMessage,
-                      style: TextStyle(color: Colors.grey, fontSize: 16),
-                    ),
+                    child: isTrash
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 32),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.trashEmptyTitle,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  AppLocalizations.of(context)!.trashEmptySubtitle,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Text(
+                            AppLocalizations.of(context)!.noNotesFoundMessage,
+                            style: const TextStyle(color: Colors.grey, fontSize: 16),
+                          ),
                   )
                 : _isListView
                 ? AnimatedPadding(

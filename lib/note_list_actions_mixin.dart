@@ -1902,29 +1902,21 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _detailRow(
-                Icons.calendar_today_outlined,
-                appAccentColor.value,
                 AppLocalizations.of(context)!.noteDetailsCreatedLabel,
                 createdStr,
               ),
               const SizedBox(height: 14),
               _detailRow(
-                Icons.edit_calendar_outlined,
-                Colors.greenAccent,
                 AppLocalizations.of(context)!.noteDetailsModifiedLabel,
                 modifiedStr,
               ),
               const SizedBox(height: 14),
               _detailRow(
-                Icons.abc_outlined,
-                Colors.purpleAccent,
                 AppLocalizations.of(context)!.noteDetailsCharCountLabel,
                 AppLocalizations.of(context)!.noteDetailsCharCountValue(charCount),
               ),
               const SizedBox(height: 14),
               _detailRow(
-                Icons.text_fields_outlined,
-                Colors.cyanAccent,
                 AppLocalizations.of(context)!.noteDetailsWordCountLabel,
                 AppLocalizations.of(context)!.noteDetailsWordCountValue(wordCount),
               ),
@@ -1949,42 +1941,23 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
   }
 
   Widget _detailRow(
-    IconData icon,
-    Color iconColor,
     String label,
     String value,
   ) {
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: 42,
-          height: 42,
-          decoration: BoxDecoration(
-            color: iconColor.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Icon(icon, color: iconColor, size: 22),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.grey, fontSize: 15),
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: const TextStyle(color: Colors.grey, fontSize: 15),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                value,
-                style: TextStyle(
-                  color: dNoteTextColor(context),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
+        const SizedBox(height: 3),
+        Text(
+          value,
+          style: TextStyle(
+            color: dNoteTextColor(context),
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
