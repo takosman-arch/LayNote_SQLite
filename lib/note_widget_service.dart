@@ -56,11 +56,19 @@ class NoteWidgetService {
   // satırlarını burada bulabilsin).
   //
   // Her satır şu tiplerden biridir:
-  //   {"type": "text", "text": "..."}
-  //   {"type": "checkbox", "text": "...", "checked": bool}
+  //   {"type": "text", "text": "...", "spans": [...]?}
+  //   {"type": "checkbox", "text": "...", "checked": bool, "spans": [...]?}
   //   {"type": "table_row", "label": "...", "value": "..."}
   //   {"type": "table_total", "value": "..."}
   //   {"type": "drawing"}
+  // "spans" alanı YALNIZCA o satırda gerçekten en az bir zengin metin
+  // aralığı varsa eklenir (yoksa hiç yazılmaz). Biçimi rich_text_spans.dart
+  // -> RichTextSpans.parse ile aynıdır (start/end/bold/italic/underline/
+  // strikethrough/highlight/fontSize/color/fontFamily/link), TEK fark:
+  // start/end burada SATIRA göre (satırın kırpılmış/trim'lenmiş haline
+  // göre) indexlenmiştir, bloğun tüm metnine göre DEĞİL — native taraf
+  // (NoteWidgetRemoteViewsService.kt -> buildRichLineText) her satırı ayrı
+  // ayrı çizdiğinden bu şekilde daha basittir.
   // NOT: "attachments" (fotoğraf) blokları widget'ta hiç gösterilmez —
   // ne görsel ne de metin ipucu olarak; bilinçli bir tercihtir.
   static const String keyAllNotesLinesJson = 'all_notes_lines_json';
@@ -256,10 +264,16 @@ class NoteWidgetService {
     List<String> tableChunk(List rows) {
       final chunk = <String>[];
       for (final r in rows) {
-        final cells = (r as List).map((c) => ContentBlocks._tableCellText(c));
-        final line = cells.join(' | ');
-        if (line.trim().replaceAll('|', '').isEmpty) continue;
-        chunk.add(line);
+        // DÜZELTME: boş hücreler satıra hiç dahil edilmiyor (ne metin ne
+        // ayraç) — aksi halde bir satırda bazı sütunlar hep boşsa, boş
+        // hücreler yine de kendi " | " ayracıyla satıra giriyor ve widget'ta
+        // dolu hücrenin yanında art arda boşluklu "|" karakterleri kalıyordu.
+        final cells = (r as List)
+            .map((c) => ContentBlocks._tableCellText(c))
+            .where((t) => t.trim().isNotEmpty)
+            .toList();
+        if (cells.isEmpty) continue;
+        chunk.add(cells.join(' | '));
       }
       return chunk;
     }
@@ -337,11 +351,18 @@ class NoteWidgetService {
   /// satır tipini kendi Composable'ıyla (checkbox ikonu, iki kolonlu
   /// tablo satırı vb.) çizerek in-app görünümle aynı düzeni elde edebilir.
   ///
-  /// Widget alanı sınırlı olduğundan satır sayısı [maxLines] ile
-  /// kısıtlanır; kesilen içerik için son satıra "…" eklenir.
+  /// Widget artık gerçek bir kaydırılabilir liste (ListView) olduğundan
+  /// [maxLines], "ekrana kaç satır sığar" için DEĞİL, sadece SharedPreferences'a
+  /// yazılan JSON'un makul boyutta kalması için bir üst sınır. Native tarafın
+  /// gerçekten kaç satır ÇİZECEĞİ NoteWidgetRemoteViewsService.kt ->
+  /// maxRenderLines ile ayrıca sınırlanıyor — buradaki değer o sabitin
+  /// ALTINDA kalırsa kullanıcı kaydırırken içeriğin geri kalanını hiç
+  /// görmeden "…" ile karşılaşır (bkz. DÜZELTME: bu, "kaydırırken yarıda
+  /// kesiliyor" şikayetinin sebebiydi). Bu yüzden bu değer o sabitle (40)
+  /// eşit tutulmalı; biri değişirse diğeri de güncellenmeli.
   List<Map<String, dynamic>> _buildStructuredLines(
     Map<String, dynamic> note, {
-    int maxLines = 12,
+    int maxLines = 40,
   }) {
     // DÜZELTME: Önceki sürüm tüm blokların satırlarını TEK bir listeye
     // ekliyordu; bu yüzden boşluk sadece bir metin bloğunun KENDİ İÇİNDEKİ
@@ -355,16 +376,54 @@ class NoteWidgetService {
     // TÜM parçalar birleştirildikten SONRA uygulanıyor; aksi halde
     // ayraçlar bütçeyi haksız yere tüketebilirdi.
 
+    // Blok/madde metnine göre (rawStart/rawEnd karakter aralığına göre)
+    // saklanmış span listesinden, sadece [rawStart, rawEnd) ile kesişen
+    // parçaları alıp bunları [rawStart, rawEnd) aralığının 0-index'ine
+    // göre yeniden konumlandırarak döner. Kesişim yoksa boş liste döner.
+    // Hem textChunk (satır bazlı) hem checklistChunk (trim bazlı) aynı
+    // kaydırma mantığına ihtiyaç duyduğu için ortak tutuldu.
+    List<Map<String, dynamic>> spansForLine(
+      List<Map<String, dynamic>> spans,
+      int rawStart,
+      int rawEnd,
+    ) {
+      final result = <Map<String, dynamic>>[];
+      for (final s in spans) {
+        final sStart = (s['start'] as int).clamp(rawStart, rawEnd);
+        final sEnd = (s['end'] as int).clamp(rawStart, rawEnd);
+        if (sEnd <= sStart) continue; // bu aralıkla kesişmiyor
+        result.add({
+          ...s,
+          'start': sStart - rawStart,
+          'end': sEnd - rawStart,
+        });
+      }
+      return result;
+    }
+
     List<Map<String, dynamic>> checklistChunk(List items) {
       final chunk = <Map<String, dynamic>>[];
       for (final it in items) {
         final m = it as Map;
-        final t = (m['text'] ?? '').toString().trim();
+        final rawText = (m['text'] ?? '').toString();
+        final t = rawText.trim();
         if (t.isEmpty) continue;
+        // DÜZELTME: madde metni trim edilirken (baştaki/sondaki boşluk
+        // atılırken) span'ların start/end'i de aynı miktarda kaydırılmalı
+        // — aksi halde trim sonrası metinle span aralıkları kayar ve
+        // native taraf yanlış karakterleri kalın/italik gösterir (ya da
+        // hiç göstermez, çünkü aralık artık metin uzunluğunu aşar).
+        final leading = rawText.length - rawText.trimLeft().length;
+        final lineSpans = spansForLine(
+          RichTextSpans.parse(m['spans']),
+          leading,
+          leading + t.length,
+        );
         chunk.add({
           'type': 'checkbox',
           'text': t,
           'checked': m['checked'] == true,
+          if (lineSpans.isNotEmpty) 'spans': lineSpans,
         });
       }
       return chunk;
@@ -401,18 +460,69 @@ class NoteWidgetService {
     // _buildPreview'daki addTableRows üzerindeki açıklama) — bu yüzden
     // her satır, native widget'ın zaten bildiği düz 'text' satırı olarak
     // eklenir; hücreler " | " ile ayrılır.
+    //
+    // DÜZELTME (tablo hücrelerindeki zengin metin widget'ta görünmüyordu):
+    // her hücrenin kendi 'spans'ı (bkz. content_blocks.dart ->
+    // _tableCellSpans) hücrenin KENDİ metnine göre indexlenmiş durumda.
+    // Hücreler " | " ile TEK bir satıra birleştirildiğinde, her hücrenin
+    // span'ları o hücrenin birleşik satırdaki başlangıç offset'i kadar
+    // kaydırılmadan doğrudan eklenirse yanlış karakterleri işaretler
+    // (ya da hiç eşleşmez). Bu yüzden her hücre için offset takip edilip
+    // span'lar buna göre kaydırılıyor.
     List<Map<String, dynamic>> tableChunk(List rows) {
       final chunk = <Map<String, dynamic>>[];
+      const separator = ' | ';
       for (final r in rows) {
-        final cells = (r as List).map((c) => ContentBlocks._tableCellText(c));
-        final line = cells.join(' | ');
-        if (line.trim().replaceAll('|', '').isEmpty) continue;
-        chunk.add({'type': 'text', 'text': line});
+        final cells = r as List;
+        final cellTexts =
+            cells.map((c) => ContentBlocks._tableCellText(c)).toList();
+
+        // DÜZELTME (boş hücre "düz çizgi" gibi görünüyordu): boş hücreler
+        // satıra hiç dahil edilmiyor (ne metin ne ayraç). Önceden TÜM
+        // hücreler (boş olsa dahi) " | " ile birleştiriliyor, satır sadece
+        // TÜMÜ boşsa atlanıyordu; bu yüzden bir sütun hep boş bırakılmışsa
+        // her satırda dolu hücrenin yanında art arda boşluklu "|"
+        // karakterleri kalıyor, widget'ta alt alta sıralanınca sadece
+        // çizgilermiş gibi görünüyordu. Span offset hesabı da artık
+        // sadece DAHİL EDİLEN hücrelere göre yapılıyor.
+        final nonEmptyIndices = <int>[
+          for (var i = 0; i < cellTexts.length; i++)
+            if (cellTexts[i].trim().isNotEmpty) i,
+        ];
+        if (nonEmptyIndices.isEmpty) continue;
+
+        final line = nonEmptyIndices.map((i) => cellTexts[i]).join(separator);
+
+        final lineSpans = <Map<String, dynamic>>[];
+        var cellOffset = 0;
+        for (var idx = 0; idx < nonEmptyIndices.length; idx++) {
+          final i = nonEmptyIndices[idx];
+          final cellText = cellTexts[i];
+          final cellSpans = RichTextSpans.parse(
+            ContentBlocks._tableCellSpans(cells[i]),
+          );
+          lineSpans.addAll(
+            spansForLine(cellSpans, 0, cellText.length).map((s) => {
+                  ...s,
+                  'start': (s['start'] as int) + cellOffset,
+                  'end': (s['end'] as int) + cellOffset,
+                }),
+          );
+          cellOffset += cellText.length;
+          if (idx < nonEmptyIndices.length - 1) cellOffset += separator.length;
+        }
+
+        chunk.add({
+          'type': 'text',
+          'text': line,
+          if (lineSpans.isNotEmpty) 'spans': lineSpans,
+        });
       }
       return chunk;
     }
 
-    List<Map<String, dynamic>> textChunk(String raw) {
+    List<Map<String, dynamic>> textChunk(String raw, List? rawSpans) {
+      final spans = RichTextSpans.parse(rawSpans);
       final rawLines = raw.split('\n');
       // Bloğun sadece en baş/sonundaki boş satırlar kırpılır; arada kalan
       // boş satırlar (kullanıcının bıraktığı paragraf boşlukları) korunur.
@@ -424,10 +534,37 @@ class NoteWidgetService {
       while (end > start && rawLines[end - 1].trim().isEmpty) {
         end--;
       }
-      return [
-        for (var i = start; i < end; i++)
-          {'type': 'text', 'text': rawLines[i].trim()},
-      ];
+
+      // DÜZELTME (zengin metin widget'ta görünmüyordu): span'lar TÜM blok
+      // metnine göre (karakter index'i olarak) saklanır, ama burada metin
+      // '\n' ile satırlara bölünüp her satır ayrıca trim ediliyor. Bu
+      // yüzden her satırın blok içindeki [trimStart, trimEnd) aralığını
+      // hesaplayıp, o aralığa denk düşen span parçalarını satır-yerel
+      // (satırın kendi 0-index'ine göre) koordinatlara kaydırmamız
+      // gerekiyor — aksi halde native taraf hangi satırın hangi
+      // biçimlendirmeyi taşıdığını hiç bilemez.
+      final lineOffsets = <int>[];
+      var offset = 0;
+      for (final l in rawLines) {
+        lineOffsets.add(offset);
+        offset += l.length + 1; // +1 => aradaki '\n'
+      }
+
+      final result = <Map<String, dynamic>>[];
+      for (var i = start; i < end; i++) {
+        final line = rawLines[i];
+        final trimmed = line.trim();
+        final leading = line.length - line.trimLeft().length;
+        final trimStart = lineOffsets[i] + leading;
+        final trimEnd = trimStart + trimmed.length;
+        final lineSpans = spansForLine(spans, trimStart, trimEnd);
+        result.add({
+          'type': 'text',
+          'text': trimmed,
+          if (lineSpans.isNotEmpty) 'spans': lineSpans,
+        });
+      }
+      return result;
     }
 
     final chunks = <List<Map<String, dynamic>>>[];
@@ -439,7 +576,9 @@ class NoteWidgetService {
       for (final b in blocks) {
         switch (b['type']) {
           case 'text':
-            chunks.add(textChunk((b['text'] ?? '').toString()));
+            chunks.add(
+              textChunk((b['text'] ?? '').toString(), b['spans'] as List?),
+            );
             break;
           case 'checklist':
             chunks.add(checklistChunk(b['items'] as List? ?? const []));

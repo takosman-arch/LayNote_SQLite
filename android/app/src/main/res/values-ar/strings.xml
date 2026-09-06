@@ -7,4 +7,6 @@
     <string name="widget_config_heading">اختر الملاحظة التي ستظهر في الودجت</string>
     <string name="widget_config_empty_state">لم يتم العثور على ملاحظات متزامنة بعد.\n\nافتح أولاً تطبيق Layout وأنشئ ملاحظة واحدة على الأقل (أو عدّل ملاحظة موجودة واحفظها)، ثم حاول إضافة الودجت مرة أخرى.\n\nأو يمكنك إضافة الودجت الآن بدون ملاحظة — سيتم تحديثه تلقائيًا بمجرد إنشاء أول ملاحظة.</string>
     <string name="widget_config_continue_without_note">المتابعة بدون ملاحظة</string>
+    <string name="widget_config_search_hint">بحث في الملاحظات...</string>
+    <string name="widget_config_no_results">لا توجد ملاحظات مطابقة لبحثك</string>
 </resources>

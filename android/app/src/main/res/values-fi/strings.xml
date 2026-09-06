@@ -7,4 +7,6 @@
     <string name="widget_config_heading">Valitse widgetissä näytettävä muistiinpano</string>
     <string name="widget_config_empty_state">Synkronoituja muistiinpanoja ei löytynyt vielä.\n\nAvaa ensin Layout-sovellus ja luo vähintään yksi muistiinpano (tai muokkaa ja tallenna olemassa oleva), ja yritä sitten lisätä widget uudelleen.\n\nTai voit lisätä widgetin ilman muistiinpanoa toistaiseksi — se päivittyy automaattisesti, kun ensimmäinen muistiinpano luodaan.</string>
     <string name="widget_config_continue_without_note">Jatka ilman muistiinpanoa</string>
+    <string name="widget_config_search_hint">Hae muistiinpanoja...</string>
+    <string name="widget_config_no_results">Hakuasi vastaavia muistiinpanoja ei löytynyt</string>
 </resources>

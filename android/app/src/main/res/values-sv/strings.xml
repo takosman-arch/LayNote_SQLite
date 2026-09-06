@@ -7,4 +7,6 @@
     <string name="widget_config_heading">Välj anteckningen som ska visas i widgeten</string>
     <string name="widget_config_empty_state">Inga synkroniserade anteckningar hittades ännu.\n\nÖppna först Layout-appen och skapa minst en anteckning (eller redigera och spara en befintlig), och försök sedan lägga till widgeten igen.\n\nEller lägg till widgeten utan anteckning för tillfället — den uppdateras automatiskt så snart den första anteckningen skapas.</string>
     <string name="widget_config_continue_without_note">Fortsätt utan anteckning</string>
+    <string name="widget_config_search_hint">Sök anteckningar...</string>
+    <string name="widget_config_no_results">Inga anteckningar matchar din sökning</string>
 </resources>

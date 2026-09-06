@@ -7,4 +7,6 @@
     <string name="widget_config_heading">Selecciona la nota que se mostrará en el widget</string>
     <string name="widget_config_empty_state">Aún no se encontraron notas sincronizadas.\n\nPrimero abre la aplicación Layout y crea al menos una nota (o edita y guarda una existente), luego intenta añadir el widget de nuevo.\n\nO puedes añadir el widget sin ninguna nota por ahora; se actualizará automáticamente en cuanto se cree la primera nota.</string>
     <string name="widget_config_continue_without_note">Continuar sin nota</string>
+    <string name="widget_config_search_hint">Buscar notas...</string>
+    <string name="widget_config_no_results">Ninguna nota coincide con tu búsqueda</string>
 </resources>

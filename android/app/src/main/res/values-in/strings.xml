@@ -7,4 +7,6 @@
     <string name="widget_config_heading">Pilih catatan yang akan ditampilkan di widget</string>
     <string name="widget_config_empty_state">Belum ada catatan tersinkronisasi yang ditemukan.\n\nBuka dulu aplikasi Layout dan buat setidaknya satu catatan (atau edit dan simpan catatan yang sudah ada), lalu coba tambahkan widget lagi.\n\nAtau Anda bisa menambahkan widget tanpa catatan untuk saat ini — widget akan diperbarui otomatis begitu catatan pertama dibuat.</string>
     <string name="widget_config_continue_without_note">Lanjutkan tanpa catatan</string>
+    <string name="widget_config_search_hint">Cari catatan...</string>
+    <string name="widget_config_no_results">Tidak ada catatan yang cocok dengan pencarian Anda</string>
 </resources>

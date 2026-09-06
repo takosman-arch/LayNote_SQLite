@@ -7,21 +7,22 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Bundle
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
-import android.widget.AdapterView
-import android.widget.BaseAdapter
+import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.ListView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import org.json.JSONObject
+import java.util.Locale
 
 // ════════════════════════════════════════════════════════════════════════
 // WIDGET YAPILANDIRMA (NOT SEÇİCİ) EKRANI
@@ -48,6 +49,13 @@ import org.json.JSONObject
 // #2D2D2D, 12dp köşe yuvarlama, kalın beyaz başlık + altında gri
 // önizleme, amber dokunma efekti) programatik bir kart listesi çiziyor
 // (bkz. NoteCardAdapter, aşağıda).
+//
+// DÜZELTME (Pinterest tarzı ızgara): Kullanıcı, uygulamanın kendi not
+// ızgarasındaki gibi 2 sütunlu, kart yükseklikleri içeriğe göre değişen
+// (staggered/masonry) bir görünüm istedi. Tek sütunlu dikey liste
+// (ListView + BaseAdapter) yerine RecyclerView + StaggeredGridLayoutManager
+// kullanılıyor; kart tasarımının kendisi (renk/köşe/tipografi/ripple)
+// HİÇ DEĞİŞMEDİ — sadece dizilim (layout manager) değişti.
 // ════════════════════════════════════════════════════════════════════════
 class NoteWidgetConfigActivity : Activity() {
 
@@ -177,21 +185,104 @@ class NoteWidgetConfigActivity : Activity() {
             }
             root.addView(continueBtn)
         } else {
-            val listView = ListView(this).apply {
-                divider = null
-                dividerHeight = 0
+            val recyclerView = RecyclerView(this).apply {
                 clipToPadding = false
-                setPadding(dp(12), dp(4), dp(12), dp(16))
+                setPadding(dp(8), dp(4), dp(8), dp(16))
                 setBackgroundColor(Color.parseColor(colorBg()))
-                selector = ColorDrawable(Color.TRANSPARENT)
-            }
-            listView.adapter = NoteCardAdapter(this, notes, isDarkTheme)
-            listView.onItemClickListener =
-                AdapterView.OnItemClickListener { _, _: View, position: Int, _ ->
-                    onNoteSelected(prefs, notes[position].id)
+                // Pinterest tarzı 2 sütunlu, kart yüksekliği içeriğe göre
+                // değişen (staggered/masonry) ızgara. Dikey akış içinde
+                // sütunlar arasında dengesizlik oluşmaması için
+                // GAP_HANDLING_MOVE_ITEM_BETWEEN_SPANS kullanılıyor (bir
+                // kart kaldırıldığında/eklendiğinde diğer sütundaki
+                // kartlar gerekirse yer değiştirip boşluk bırakmıyor).
+                layoutManager = StaggeredGridLayoutManager(
+                    2,
+                    StaggeredGridLayoutManager.VERTICAL
+                ).apply {
+                    gapStrategy =
+                        StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
                 }
+            }
+            val adapter = NoteCardAdapter(this, notes, isDarkTheme) { noteId ->
+                onNoteSelected(prefs, noteId)
+            }
+            recyclerView.adapter = adapter
+
+            // DÜZELTME (arama çubuğu): Arama sonucunda hiç not eşleşmezse
+            // RecyclerView boş kalıp kullanıcıya hiçbir geri bildirim
+            // vermiyordu. Bu yüzden RecyclerView'ın yerini alan ayrı bir
+            // "sonuç bulunamadı" mesajı eklendi — arama kutusu boşken
+            // (ilk açılış) hep gizli, filtre sonucu boş olduğunda görünür.
+            val noResults = TextView(this).apply {
+                text = getString(R.string.widget_config_no_results)
+                setTextColor(Color.parseColor(colorMutedText()))
+                textSize = 14f
+                setPadding(dp(20), dp(24), dp(20), dp(12))
+                visibility = View.GONE
+            }
+
+            // Arama, hem not başlığında hem de içerik önizlemesinde
+            // (all_notes_json -> "preview") büyük/küçük harf duyarsız
+            // olarak yapılır. Locale("tr") kullanılıyor ki Türkçe'ye özgü
+            // İ/ı büyük-küçük harf dönüşümü doğru çalışsın (varsayılan
+            // locale ile "İ".lowercase() bazı cihazlarda "i" değil "i̇"
+            // gibi beklenmedik sonuçlar verebiliyor).
+            val turkishLocale = Locale("tr")
+            fun filterNotes(query: String): List<NoteEntry> {
+                if (query.isBlank()) return notes
+                val q = query.lowercase(turkishLocale)
+                return notes.filter {
+                    it.title.lowercase(turkishLocale).contains(q) ||
+                        it.preview.lowercase(turkishLocale).contains(q)
+                }
+            }
+
+            val searchBox = EditText(this).apply {
+                hint = getString(R.string.widget_config_search_hint)
+                setHintTextColor(Color.parseColor(colorMutedText()))
+                setTextColor(Color.parseColor(colorTitle()))
+                textSize = 15f
+                isSingleLine = true
+                setPadding(dp(14), dp(10), dp(14), dp(10))
+                background = GradientDrawable().apply {
+                    cornerRadius = dp(10).toFloat()
+                    setColor(Color.parseColor(colorCard()))
+                    if (!isDarkTheme) {
+                        setStroke(dp(1), Color.parseColor(COLOR_CARD_BORDER_LIGHT))
+                    }
+                }
+                addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(
+                        s: CharSequence?, start: Int, count: Int, after: Int
+                    ) {}
+
+                    override fun onTextChanged(
+                        s: CharSequence?, start: Int, before: Int, count: Int
+                    ) {}
+
+                    override fun afterTextChanged(s: Editable?) {
+                        val filtered = filterNotes(s?.toString().orEmpty())
+                        adapter.updateItems(filtered)
+                        val hasResults = filtered.isNotEmpty()
+                        recyclerView.visibility = if (hasResults) View.VISIBLE else View.GONE
+                        noResults.visibility = if (hasResults) View.GONE else View.VISIBLE
+                    }
+                })
+            }
             root.addView(
-                listView,
+                searchBox,
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    leftMargin = dp(20)
+                    rightMargin = dp(20)
+                    bottomMargin = dp(8)
+                }
+            )
+            root.addView(noResults)
+            root.addView(
+                recyclerView,
                 LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     0,
@@ -270,11 +361,19 @@ class NoteWidgetConfigActivity : Activity() {
     // ("'Class' is prohibited here" derleme hatası — bkz. ViewHolder ve
     // InflatedRow altta). Bu yüzden sınıf artık `inner` değil ve dp()
     // hesaplamasını kendi Context'inden bağımsız olarak yapıyor.
+    //
+    // DÜZELTME (Pinterest tarzı ızgara): BaseAdapter/ListView yerine
+    // RecyclerView.Adapter'a çevrildi (2 sütunlu StaggeredGridLayoutManager
+    // ile kullanılabilmesi için). Kart tasarımının (createCardRow) kendisi
+    // BİREBİR aynı kaldı; sadece view-recycling mekanizması (getView ->
+    // onCreateViewHolder/onBindViewHolder) ve tıklama (OnItemClickListener
+    // -> constructor'a verilen onClick lambda'sı) değişti.
     private class NoteCardAdapter(
         private val ctx: Context,
-        private val items: List<NoteEntry>,
+        private var items: List<NoteEntry>,
         private val isDarkTheme: Boolean,
-    ) : BaseAdapter() {
+        private val onClick: (String) -> Unit,
+    ) : RecyclerView.Adapter<NoteCardAdapter.ViewHolder>() {
 
         private fun dp(value: Int): Int =
             (value * ctx.resources.displayMetrics.density).toInt()
@@ -284,23 +383,23 @@ class NoteWidgetConfigActivity : Activity() {
         private fun colorCardPreviewText() =
             if (isDarkTheme) COLOR_CARD_PREVIEW_TEXT_DARK else COLOR_CARD_PREVIEW_TEXT_LIGHT
 
-        override fun getCount(): Int = items.size
-        override fun getItem(position: Int): NoteEntry = items[position]
-        override fun getItemId(position: Int): Long = position.toLong()
+        // Arama kutusundaki metin değiştikçe çağrılır: gösterilen listeyi
+        // filtrelenmiş sonuçla değiştirip RecyclerView'ı yeniden çizer.
+        // Liste küçük olduğundan (tek kullanıcının notları) DiffUtil yerine
+        // basit notifyDataSetChanged() yeterli ve daha az karmaşık.
+        fun updateItems(newItems: List<NoteEntry>) {
+            items = newItems
+            notifyDataSetChanged()
+        }
 
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val holder: ViewHolder
-            val rowView: View
-            if (convertView == null) {
-                val inflated = createCardRow()
-                rowView = inflated.root
-                holder = inflated.holder
-                rowView.tag = holder
-            } else {
-                rowView = convertView
-                holder = rowView.tag as ViewHolder
-            }
+        override fun getItemCount(): Int = items.size
 
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val inflated = createCardRow()
+            return ViewHolder(inflated.root, inflated.title, inflated.preview)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val entry = items[position]
             // DÜZELTME: Başlık boşsa (bkz. NoteWidgetService.syncFromNotes —
             // boş başlık artık "Başlıksız not" ile doldurulmuyor, olduğu
@@ -320,24 +419,26 @@ class NoteWidgetConfigActivity : Activity() {
             } else {
                 holder.preview.visibility = View.GONE
             }
-            return rowView
+            holder.itemView.setOnClickListener { onClick(entry.id) }
         }
 
-        private class ViewHolder(val title: TextView, val preview: TextView)
+        private class ViewHolder(
+            root: View,
+            val title: TextView,
+            val preview: TextView,
+        ) : RecyclerView.ViewHolder(root)
 
-        private class InflatedRow(val root: View, val holder: ViewHolder)
+        private class InflatedRow(val root: View, val title: TextView, val preview: TextView)
 
         private fun createCardRow(): InflatedRow {
-            // Dış kapsayıcı: kartlar arasında boşluk bırakmak için (ListView
-            // satırlarında margin doğrudan desteklenmediğinden alt padding
-            // ile boşluk sağlanır).
+            // Dış kapsayıcı: kartlar arasında (hem sütunlar arasında hem
+            // alt alta) boşluk bırakmak için padding kullanılıyor —
+            // StaggeredGridLayoutManager öğeleri kendi genişliğine göre
+            // eşit sütunlara böldüğünden, gutter'ı margin yerine padding
+            // ile vermek RecyclerView içinde de aynı görsel sonucu verir.
             val outer = LinearLayout(ctx).apply {
                 orientation = LinearLayout.VERTICAL
-                setPadding(0, 0, 0, dp(10))
-                layoutParams = AbsListView.LayoutParams(
-                    AbsListView.LayoutParams.MATCH_PARENT,
-                    AbsListView.LayoutParams.WRAP_CONTENT,
-                )
+                setPadding(dp(6), dp(6), dp(6), dp(6))
             }
 
             val cardBackground = GradientDrawable().apply {
@@ -370,7 +471,13 @@ class NoteWidgetConfigActivity : Activity() {
                 setTextColor(Color.parseColor(colorTitle()))
                 textSize = 18f
                 setTypeface(typeface, android.graphics.Typeface.BOLD)
-                maxLines = 1
+                // DÜZELTME: Tek sütunlu listede başlık tek satıra
+                // kısıtlanıp kesiliyordu (ellipsize); artık kart dar bir
+                // sütuna (ekran genişliğinin yarısına) sığdığından ve
+                // yükseklik içeriğe göre serbestçe uzayabildiğinden
+                // (staggered grid) başlığın 2 satıra kadar tam görünmesine
+                // izin veriliyor.
+                maxLines = 2
                 ellipsize = TextUtils.TruncateAt.END
             }
             card.addView(title)
@@ -378,14 +485,14 @@ class NoteWidgetConfigActivity : Activity() {
             val preview = TextView(ctx).apply {
                 setTextColor(Color.parseColor(colorCardPreviewText()))
                 textSize = 16f
-                maxLines = 2
+                maxLines = 4
                 ellipsize = TextUtils.TruncateAt.END
                 setPadding(0, dp(6), 0, 0)
             }
             card.addView(preview)
 
             outer.addView(card)
-            return InflatedRow(outer, ViewHolder(title, preview))
+            return InflatedRow(outer, title, preview)
         }
     }
 }

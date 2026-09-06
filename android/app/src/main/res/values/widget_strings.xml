@@ -25,4 +25,6 @@
     <string name="widget_config_heading">Widget\'ta gösterilecek notu seç</string>
     <string name="widget_config_empty_state">Henüz senkronize edilmiş not bulunamadı.\n\nÖnce Layout uygulamasını açıp en az bir not oluşturun (veya mevcut bir notu düzenleyip kaydedin), ardından widget\'ı tekrar eklemeyi deneyin.\n\nYa da widget\'ı şimdilik notsuz ekleyebilirsiniz; ilk not oluşturulduğunda otomatik güncellenecektir.</string>
     <string name="widget_config_continue_without_note">Notsuz Devam Et</string>
+    <string name="widget_config_search_hint">Notlarda ara...</string>
+    <string name="widget_config_no_results">Aramanla eşleşen not bulunamadı</string>
 </resources>

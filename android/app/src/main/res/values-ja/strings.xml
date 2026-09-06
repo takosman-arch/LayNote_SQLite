@@ -7,4 +7,6 @@
     <string name="widget_config_heading">ウィジェットに表示するメモを選択</string>
     <string name="widget_config_empty_state">同期済みのメモがまだ見つかりません。\n\nまずLayoutアプリを開いてメモを1件以上作成するか（または既存のメモを編集して保存し）、その後もう一度ウィジェットの追加をお試しください。\n\nまたは、メモなしで一旦ウィジェットを追加することもできます。最初のメモが作成されると自動的に更新されます。</string>
     <string name="widget_config_continue_without_note">メモなしで続ける</string>
+    <string name="widget_config_search_hint">メモを検索...</string>
+    <string name="widget_config_no_results">検索に一致するメモが見つかりません</string>
 </resources>

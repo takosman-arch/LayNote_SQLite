@@ -294,6 +294,16 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
                 try {
                     val checkedColor = 0xFFFFC107.toInt() // amber - in-app'teki işaretli checkbox rengiyle aynı
                     val dividerColor = ColorUtils.setAlphaComponent(subTextColor, 90)
+                    // DÜZELTME (zengin metin widget'ta görünmüyordu): satır
+                    // içi span'ları (bold/italic/vb.) SpannableString'e
+                    // çeviren NoteWidgetRemoteViewsService.buildRichLineText,
+                    // highlight (vurgu kalemi) ve link rengini bu extra'lardan
+                    // okuyor. Değerler rich_block_text_controller.dart'taki
+                    // _highlightColorLight/_highlightColorDark ve _linkColor
+                    // ile BİREBİR aynı — biri değişirse diğeri de güncellenmeli.
+                    val highlightColor =
+                        if (dark) 0xFF7A5B00.toInt() else 0xFFFFF59D.toInt()
+                    val linkColor = 0xFF1A73E8.toInt()
 
                     val serviceIntent = Intent(context, NoteWidgetRemoteViewsService::class.java).apply {
                         putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
@@ -303,6 +313,8 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
                         putExtra(NoteWidgetRemoteViewsService.EXTRA_SUBTEXT_COLOR, subTextColor)
                         putExtra(NoteWidgetRemoteViewsService.EXTRA_CHECKED_COLOR, checkedColor)
                         putExtra(NoteWidgetRemoteViewsService.EXTRA_DIVIDER_COLOR, dividerColor)
+                        putExtra(NoteWidgetRemoteViewsService.EXTRA_HIGHLIGHT_COLOR, highlightColor)
+                        putExtra(NoteWidgetRemoteViewsService.EXTRA_LINK_COLOR, linkColor)
                         // DÜZELTME: Önceden burada `data =
                         // Uri.parse(toUri(Intent.URI_INTENT_SCHEME))` vardı.
                         // Bu, Intent'in kendi extra'larından türetilen bir

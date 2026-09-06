@@ -7,4 +7,6 @@
     <string name="widget_config_heading">Selecteer de notitie die in de widget wordt weergegeven</string>
     <string name="widget_config_empty_state">Nog geen gesynchroniseerde notities gevonden.\n\nOpen eerst de Layout-app en maak minstens één notitie aan (of bewerk en sla een bestaande op), en probeer de widget daarna opnieuw toe te voegen.\n\nOf voeg de widget voorlopig toe zonder notitie — deze wordt automatisch bijgewerkt zodra de eerste notitie is aangemaakt.</string>
     <string name="widget_config_continue_without_note">Doorgaan zonder notitie</string>
+    <string name="widget_config_search_hint">Notities zoeken...</string>
+    <string name="widget_config_no_results">Geen notities komen overeen met je zoekopdracht</string>
 </resources>

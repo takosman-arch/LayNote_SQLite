@@ -90,4 +90,8 @@ dependencies {
     // ── Ana ekran widget'ı (Jetpack Glance) için ──
     implementation("androidx.glance:glance-appwidget:1.1.1")
     implementation("androidx.glance:glance-material3:1.1.1")
+
+    // ── Widget yapılandırma (not seçici) ekranındaki Pinterest tarzı
+    // 2 sütunlu ızgara (StaggeredGridLayoutManager) için ──
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 }

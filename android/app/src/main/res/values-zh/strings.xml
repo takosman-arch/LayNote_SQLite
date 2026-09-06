@@ -7,4 +7,6 @@
     <string name="widget_config_heading">选择要在小组件中显示的笔记</string>
     <string name="widget_config_empty_state">尚未找到已同步的笔记。\n\n请先打开 Layout 应用并创建至少一条笔记（或编辑并保存一条现有笔记），然后再次尝试添加小组件。\n\n或者您也可以暂时不选笔记直接添加小组件，创建第一条笔记后它会自动更新。</string>
     <string name="widget_config_continue_without_note">不选笔记继续</string>
+    <string name="widget_config_search_hint">搜索笔记...</string>
+    <string name="widget_config_no_results">没有符合搜索条件的笔记</string>
 </resources>

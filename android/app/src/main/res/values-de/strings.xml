@@ -7,4 +7,6 @@
     <string name="widget_config_heading">Wähle die Notiz aus, die im Widget angezeigt werden soll</string>
     <string name="widget_config_empty_state">Es wurden noch keine synchronisierten Notizen gefunden.\n\nÖffne zuerst die Layout-App und erstelle mindestens eine Notiz (oder bearbeite und speichere eine vorhandene), und versuche dann erneut, das Widget hinzuzufügen.\n\nOder du fügst das Widget vorerst ohne Notiz hinzu — es wird automatisch aktualisiert, sobald die erste Notiz erstellt wurde.</string>
     <string name="widget_config_continue_without_note">Ohne Notiz fortfahren</string>
+    <string name="widget_config_search_hint">Notizen durchsuchen...</string>
+    <string name="widget_config_no_results">Keine Notizen entsprechen deiner Suche</string>
 </resources>

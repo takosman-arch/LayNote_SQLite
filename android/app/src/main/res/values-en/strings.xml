@@ -7,4 +7,6 @@
     <string name="widget_config_heading">Select the note to show in the widget</string>
     <string name="widget_config_empty_state">No synced notes found yet.\n\nFirst open the Layout app and create at least one note (or edit and save an existing one), then try adding the widget again.\n\nOr you can add the widget without a note for now — it will update automatically once the first note is created.</string>
     <string name="widget_config_continue_without_note">Continue Without a Note</string>
+    <string name="widget_config_search_hint">Search notes...</string>
+    <string name="widget_config_no_results">No notes match your search</string>
 </resources>
