@@ -329,6 +329,15 @@
   "settingsWidgetFontSizeApplyButton": "Применить",
   "settingsWidgetOpacityLabel": "Прозрачность фона",
   "settingsWidgetOpacityValue": "Прозрачность {percent}%",
+  "settingsWidgetOpacityPercent": "{percent}%",
+  "@settingsWidgetOpacityPercent": {
+    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "settingsWidgetOpacityCancelButton": "Отмена",
   "settingsWidgetOpacityApplyButton": "Применить",
   "settingsWidgetDarkModeTitle": "Тёмный виджет",

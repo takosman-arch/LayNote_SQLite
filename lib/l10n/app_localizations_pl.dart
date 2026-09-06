@@ -1065,6 +1065,11 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String settingsWidgetOpacityPercent(int percent) {
+    return '$percent%';
+  }
+
+  @override
   String get settingsWidgetOpacityCancelButton => 'Anuluj';
 
   @override

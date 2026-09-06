@@ -2120,6 +2120,12 @@ abstract class AppLocalizations {
   /// **'%{percent} saydamlık'**
   String settingsWidgetOpacityValue(int percent);
 
+  /// Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin
+  ///
+  /// In tr, this message translates to:
+  /// **'%{percent}'**
+  String settingsWidgetOpacityPercent(int percent);
+
   /// Widget saydamlık panelinde iptal düğmesi
   ///
   /// In tr, this message translates to:

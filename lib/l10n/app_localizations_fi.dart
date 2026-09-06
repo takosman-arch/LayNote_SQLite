@@ -1056,6 +1056,11 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
+  String settingsWidgetOpacityPercent(int percent) {
+    return '$percent%';
+  }
+
+  @override
   String get settingsWidgetOpacityCancelButton => 'Peruuta';
 
   @override

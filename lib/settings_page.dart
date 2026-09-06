@@ -211,8 +211,16 @@ class _SettingsPageState extends State<SettingsPage> {
   );
 
   // ── Yazı tipi seçici ──────────────────────────────────────────────
-  List<String> _fonts(BuildContext context) => [
-    AppLocalizations.of(context)!.settingsFontFamilyDefaultLabel,
+  // DÜZELTME: Bu liste eskiden ilk öğe olarak AppLocalizations'tan o anki
+  // dilde çözümlenmiş metni ("Varsayılan"/"Default" vb.) döndürüyordu ve
+  // s._fontFamily'ye doğrudan o metin kaydediliyordu. Uygulama dili
+  // değiştirildiğinde kayıtlı değer eski dilde donup kalıyordu (subtitle
+  // çevrilmiyordu) ve s._fontFamily == f karşılaştırması yeni dildeki
+  // metinle eşleşmediği için seçili öğe işareti de kayboluyordu.
+  // Artık liste dilden bağımsız sabit anahtarlar döndürüyor; ekranda
+  // gösterilecek metin ayrıca _fontDisplayLabel ile o anki dile çevriliyor.
+  static const List<String> _fontKeys = [
+    'Default',
     'Sans',
     'Serif',
     'Cursive',
@@ -222,7 +230,22 @@ class _SettingsPageState extends State<SettingsPage> {
     'Monospace',
   ];
 
-  static String? _fontFamilyValue(String name) => dNoteFontFamilyValue(name);
+  List<String> _fonts(BuildContext context) => _fontKeys;
+
+  // Önceki sürümlerde kaydedilmiş, o anki dilde çözümlenmiş metni (ör.
+  // "Varsayılan") geriye dönük uyumlu şekilde 'Default' anahtarına çevirir.
+  // Bilinen anahtarlardan biriyse olduğu gibi döner.
+  static String _fontFamilyKey(String? stored) =>
+      _fontKeys.contains(stored) ? stored! : 'Default';
+
+  // Anahtarı, o anki uygulama diline göre ekranda gösterilecek metne çevirir.
+  static String _fontDisplayLabel(BuildContext context, String key) => key ==
+          'Default'
+      ? AppLocalizations.of(context)!.settingsFontFamilyDefaultLabel
+      : key;
+
+  static String? _fontFamilyValue(String name) =>
+      dNoteFontFamilyValue(_fontFamilyKey(name));
 
   // ── Metin rengi seçici ────────────────────────────────────────────
   // Renkler ton/renk çemberi sırasına göre gruplandı: önce nötrler
@@ -426,7 +449,16 @@ class _SettingsPageState extends State<SettingsPage> {
                           min: 0.0,
                           max: 1.0,
                           divisions: 16,
-                          label: '%${(tempOpacity * 100).round()}',
+                          // DÜZELTME: '%$değer' hep Türkçe sıralamayı
+                          // (% önce, sayı sonra) zorluyordu. Artık '%'
+                          // işaretinin sayının önünde mi sonunda mı
+                          // duracağı arb dosyasındaki yeni
+                          // settingsWidgetOpacityPercent anahtarına göre
+                          // (ör. TR: "%20", EN: "20%") dile göre belirleniyor.
+                          label: AppLocalizations.of(context)!
+                              .settingsWidgetOpacityPercent(
+                                (tempOpacity * 100).round(),
+                              ),
                           onChanged: (v) => setSheet(() => tempOpacity = v),
                         ),
                       ),
@@ -1353,7 +1385,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     icon: Icons.font_download_outlined,
                     iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsFontFamilyTileTitle,
-                    subtitle: s._fontFamily,
+                    subtitle: _fontDisplayLabel(
+                      context,
+                      _fontFamilyKey(s._fontFamily),
+                    ),
                     trailing: null,
                     onTap: () {
                       showModalBottomSheet(
@@ -1399,21 +1434,26 @@ class _SettingsPageState extends State<SettingsPage> {
                                             (f) => ListTile(
                                               contentPadding: EdgeInsets.zero,
                                               title: Text(
-                                                f,
+                                                _fontDisplayLabel(context, f),
                                                 style: TextStyle(
-                                                  color: s._fontFamily == f
+                                                  color:
+                                                      _fontFamilyKey(s._fontFamily) == f
                                                       ? Theme.of(context).primaryColor
                                                       : dNoteTextColor(context),
                                                   fontFamily: _fontFamilyValue(f),
                                                 ),
                                               ),
-                                              trailing: s._fontFamily == f
+                                              trailing:
+                                                  _fontFamilyKey(s._fontFamily) == f
                                                   ? Icon(
                                                       Icons.check_circle,
                                                       color: Theme.of(context).primaryColor,
                                                     )
                                                   : null,
                                               onTap: () {
+                                                // f artık dilden bağımsız sabit bir
+                                                // anahtar ('Default','Sans',...),
+                                                // o anki dilde çözümlenmiş metin değil.
                                                 s.setState(() => s._fontFamily = f);
                                                 setState(() {});
                                                 s._saveData();
@@ -1544,7 +1584,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       ).withValues(alpha: 0.7),
                                       fontSize: tempSize,
                                       fontFamily: dNoteFontFamilyValue(
-                                        s._fontFamily,
+                                        _fontFamilyKey(s._fontFamily),
                                       ),
                                     ),
                                   ),
@@ -1731,7 +1771,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                         color: dNoteTextColor(ctx).withValues(alpha: 0.85),
                                         fontSize: 14,
                                         height: tempHeight,
-                                        fontFamily: dNoteFontFamilyValue(s._fontFamily),
+                                        fontFamily: dNoteFontFamilyValue(
+                                          _fontFamilyKey(s._fontFamily),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -1995,7 +2037,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     icon: Icons.opacity,
                     iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsWidgetOpacityLabel,
-                    subtitle: '%${(s._widgetBgOpacity * 100).round()}',
+                    // DÜZELTME: aynı sebeple burada da yerelleştirilmiş
+                    // yüzde biçimi kullanılıyor (bkz. yukarıdaki not).
+                    subtitle: AppLocalizations.of(context)!
+                        .settingsWidgetOpacityPercent(
+                          (s._widgetBgOpacity * 100).round(),
+                        ),
                     trailing: null,
                     onTap: _showWidgetOpacitySheet,
                   ),

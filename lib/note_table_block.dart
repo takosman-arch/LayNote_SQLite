@@ -407,6 +407,34 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
   /// burada bir bayrakla taşıyoruz.
   bool _suppressNextAutoScroll = false;
 
+  /// DÜZELTME (imleç tabloda iken sayfa elle aşağı kaydırılınca önce küçük
+  /// bir "klavyenin üstünde kalma" hareketi yapıp sonra serbest kalması):
+  /// [_scrollFocusedCellIntoView] bir hücre odak kazandığında, klavye
+  /// açılma animasyonu (viewInsets.bottom stabilize olana kadar, ~birkaç
+  /// yüz ms) boyunca arka planda kare kare kendini tekrar çağırıyor ve
+  /// EN SONUNDA tek seferlik bir `animateTo` ile hücreyi konumlandırıyor.
+  /// Kullanıcı tam bu bekleme penceresi içinde PARMAĞIYLA sayfayı elle
+  /// kaydırırsa, bu bekleyen otomatik düzeltme onun kaydırmasının ÜSTÜNE
+  /// binip beklenmedik bir "geri çekme" hareketi gibi hissediliyordu —
+  /// ikinci kaydırmada zincir zaten tamamlanmış olduğundan serbest
+  /// kalıyordu. Çözüm: her yeni odak-kaynaklı kaydırma isteği bir "istek
+  /// numarası" (token) alır; kullanıcının PARMAĞIYLA aktif olarak
+  /// kaydırdığı ([ScrollPosition.userScrollDirection] ile tespit edilir —
+  /// bu değer yalnızca gerçek dokunuşla sürüklerken idle dışına çıkar,
+  /// bizim kendi `animateTo` çağrımız veya bırakma sonrası "fling" ivmesi
+  /// bunu tetiklemez) her an bu sayaç artırılır; zincirin herhangi bir
+  /// adımı, taşıdığı token artık güncel değilse (yani araya kullanıcının
+  /// elle kaydırması girmişse) sessizce durur ve kesinlikle `animateTo`
+  /// çağırmaz.
+  int _autoScrollToken = 0;
+
+  /// [_autoScrollToken]'ı artırmak için dinlediğimiz mevcut Scrollable
+  /// pozisyonu. Odaklı hücrenin bağlı olduğu Scrollable değişebileceğinden
+  /// (ör. farklı bir hücreye odaklanınca aynı Scrollable olsa da context
+  /// değişir) [didChangeDependencies] içinde güncelleniyor; aynı pozisyona
+  /// zaten bağlıysak tekrar dinleyici eklemiyoruz.
+  ScrollPosition? _observedScrollPosition;
+
   /// Tabloya uzun basılınca true olur, sağ üstte silme ikonu belirir;
   /// ikonun dışına dokununca tekrar false olur.
   bool _showDeleteButton = false;
@@ -428,6 +456,39 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
 
   Timer? _holdTimer;
   Offset? _holdStartPosition;
+
+  /// Odaklı hücrenin bağlı olduğu Scrollable'ı dinlemeye başlar/günceller.
+  /// [ScrollPosition.userScrollDirection], SADECE kullanıcı parmağıyla
+  /// aktif olarak sürüklerken idle dışına çıkar — bizim kendi
+  /// `position.animateTo(...)` çağrımız (bkz. [_scrollFocusedCellIntoView])
+  /// ya da bırakma sonrası "fling" ivmesi bunu DEĞİŞTİRMEZ; bu yüzden
+  /// "gerçek elle kaydırma" ile "bizim programatik düzeltmemiz" arasındaki
+  /// ayrımı güvenilir şekilde yapmak için kullanılıyor.
+  void _syncScrollPositionObserver() {
+    final scrollable = Scrollable.maybeOf(context);
+    final position = scrollable?.position;
+    if (identical(position, _observedScrollPosition)) return;
+    _observedScrollPosition?.removeListener(_onAmbientScrollPositionChanged);
+    _observedScrollPosition = position;
+    position?.addListener(_onAmbientScrollPositionChanged);
+  }
+
+  void _onAmbientScrollPositionChanged() {
+    final position = _observedScrollPosition;
+    if (position != null &&
+        position.userScrollDirection != ScrollDirection.idle) {
+      // Kullanıcı şu anda parmağıyla elle kaydırıyor: bekleyen (henüz
+      // tamamlanmamış) herhangi bir otomatik odak-kaydırma zincirini
+      // geçersiz kılıyoruz ki kullanıcının hareketinin üstüne binmesin.
+      _autoScrollToken++;
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncScrollPositionObserver();
+  }
 
   @override
   void initState() {
@@ -493,11 +554,43 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
     FocusNode node, {
     double? lastBottomInset,
     int attemptsLeft = 30,
+    int? requestToken,
   }) {
+    // DÜZELTME (imleç tabloda iken elle kaydırınca önce küçük bir "geri
+    // çekme" hareketi): zincirin İLK çağrısında (requestToken verilmediğinde)
+    // yeni bir istek numarası üretilip [_autoScrollToken]'a yazılıyor —
+    // böylece bu istek, ondan sonra başlayacak (ör. bir sonraki hücreye
+    // odaklanmadan doğan) YENİ bir zincirle veya kullanıcının elle
+    // kaydırmasıyla geçersiz kılınabilir hale geliyor (bkz.
+    // [_onAmbientScrollPositionChanged]). Zincirin kendi içindeki
+    // ardışık (recursive) çağrılar ise AYNI token'ı taşımaya devam eder.
+    final token = requestToken ?? (++_autoScrollToken);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || !node.hasFocus) return;
+      if (token != _autoScrollToken) {
+        // Bu istek, kullanıcının araya giren elle kaydırması (veya başka
+        // bir odak-kaydırma isteği) tarafından geçersiz kılındı — sessizce
+        // vazgeç, kesinlikle animateTo çağırma.
+        return;
+      }
       final currentBottomInset = MediaQuery.of(context).viewInsets.bottom;
+      // DÜZELTME (tıklayınca önce aşağı zıplayıp sonra klavyeyle birlikte
+      // yukarı çıkma): eskiden `lastBottomInset != null && fark < 0.5`
+      // yeterli sayılıyordu. Ancak odak kazanıldığı anda klavye henüz
+      // AÇILMAYA BİLE BAŞLAMAMIŞKEN (currentBottomInset hâlâ 0) art arda
+      // iki kare de 0 geldiğinde bu fark < 0.5 şartı sağlanıyor ve fonksiyon
+      // klavye yokmuş gibi ERKEN bir hedefe kaydırma yapıyordu. Bu sırada
+      // Flutter'ın kendi varsayılan otomatik odak-kaydırması da (EditableText
+      // içindeki bringIntoView) devreye girip ayrı bir hareket üretiyor —
+      // sonuç, önce (yanlış/erken) bir kayma, ardından klavye gerçekten
+      // açılıp bu fonksiyon nihai doğru offsete ikinci kez kaydırınca oluşan
+      // görünür "aşağı inip sonra klavyeyle yukarı çıkma" zıplamasıydı.
+      // Artık `currentBottomInset > 0` şartı da aranıyor: klavye gerçekten
+      // yükselmeye başlamadan (inset sıfırdan büyük olmadan) "stabilize
+      // oldu" sayılmıyor, böylece nihai kaydırma yalnızca klavye açılırken/
+      // açıldıktan sonra TEK seferde uygulanıyor.
       final stabilized = lastBottomInset != null &&
+          currentBottomInset > 0 &&
           (currentBottomInset - lastBottomInset).abs() < 0.5;
       if (stabilized || attemptsLeft <= 0) {
         final cellContext = node.context;
@@ -539,6 +632,7 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
         node,
         lastBottomInset: currentBottomInset,
         attemptsLeft: attemptsLeft - 1,
+        requestToken: token,
       );
     });
   }
@@ -841,6 +935,7 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
   @override
   void dispose() {
     _holdTimer?.cancel();
+    _observedScrollPosition?.removeListener(_onAmbientScrollPositionChanged);
     // Bu blok kaldırılırken/dispose edilirken, hâlâ bu tablonun bir
     // hücresini "aktif" olarak gösteren dış duruma sahipsek temizle —
     // aksi halde çağıran taraf artık var olmayan bir controller'a

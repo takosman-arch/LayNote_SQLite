@@ -1027,6 +1027,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String settingsWidgetOpacityPercent(int percent) {
+    return '$percent%';
+  }
+
+  @override
   String get settingsWidgetOpacityCancelButton => '取消';
 
   @override

@@ -329,6 +329,15 @@
   "settingsWidgetFontSizeApplyButton": "Aplicar",
   "settingsWidgetOpacityLabel": "Transparência do Fundo",
   "settingsWidgetOpacityValue": "{percent}% de transparência",
+  "settingsWidgetOpacityPercent": "{percent}%",
+  "@settingsWidgetOpacityPercent": {
+    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "settingsWidgetOpacityCancelButton": "Cancelar",
   "settingsWidgetOpacityApplyButton": "Aplicar",
   "settingsWidgetDarkModeTitle": "Widget Escuro",

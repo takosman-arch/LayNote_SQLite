@@ -1033,6 +1033,11 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String settingsWidgetOpacityPercent(int percent) {
+    return '$percent%';
+  }
+
+  @override
   String get settingsWidgetOpacityCancelButton => '취소';
 
   @override

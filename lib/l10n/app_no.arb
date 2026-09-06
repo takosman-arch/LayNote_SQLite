@@ -430,6 +430,15 @@
       }
     }
   },
+  "settingsWidgetOpacityPercent": "{percent}%",
+  "@settingsWidgetOpacityPercent": {
+    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
   "settingsWidgetOpacityCancelButton": "Avbryt",
   "settingsWidgetOpacityApplyButton": "Bruk",
   "settingsWidgetDarkModeTitle": "Mørk widget",
