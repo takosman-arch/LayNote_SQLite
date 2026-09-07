@@ -9,4 +9,16 @@
     <string name="widget_config_continue_without_note">Fortsett uten notat</string>
     <string name="widget_config_search_hint">Søk i notater...</string>
     <string name="widget_config_no_results">Ingen notater samsvarer med søket ditt</string>
+    <string name="widget_config_add_widget">Legg til widget</string>
+    <string name="widget_config_font_size_label">Skriftstørrelse: %1$dsp</string>
+    <string name="widget_config_opacity_label">Ugjennomsiktighet: %1$d%%</string>
+    <string name="widget_config_preview_label">Forhåndsvisning</string>
+
+    <!-- Görünüm ayarları ekranındaki (NoteWidgetConfigActivity) yeni
+         adım başlığı, koyu/açık switch etiketi ve widget üzerindeki
+         ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
+    <string name="widget_config_appearance_heading">Juster utseende</string>
+    <string name="widget_config_dark_switch_label">Mørk widget</string>
+    <string name="widget_settings_button_desc">Widgetinnstillinger</string>
+    <string name="widget_add_button_desc">Opprett nytt notat</string>
 </resources>

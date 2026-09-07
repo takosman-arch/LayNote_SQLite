@@ -277,7 +277,18 @@ private class NoteLinesFactory(
         }
     }
 
-    override fun getLoadingView(): RemoteViews? = null
+    // DÜZELTME: `null` döndürmek "sistemin varsayılan yükleniyor görünümünü
+    // kullan" anlamına geliyor — bu da cihazın diline göre "Yükleniyor..."
+    // gibi bir metin gösteriyordu. Asıl kaynak (gereksiz yeniden bağlanma)
+    // NoteWidgetReceiverV2.kt'deki dataSignature düzeltmesiyle giderildi;
+    // burada da GERÇEK bir yeniden bağlanma olduğunda (ilk ekleme veya not
+    // içeriği/renk/font GERÇEKTEN değiştiğinde) kullanıcının metin yerine
+    // sadece kısa bir boşluk görmesi için widget_line_text düzenini boş
+    // metinle döndürüyoruz.
+    override fun getLoadingView(): RemoteViews =
+        RemoteViews(context.packageName, R.layout.widget_line_text).apply {
+            setTextViewText(R.id.line_text, "")
+        }
     override fun getViewTypeCount(): Int = 4
     override fun getItemId(position: Int): Long = position.toLong()
     override fun hasStableIds(): Boolean = true

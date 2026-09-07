@@ -9,4 +9,16 @@
     <string name="widget_config_continue_without_note">Continue Without a Note</string>
     <string name="widget_config_search_hint">Search notes...</string>
     <string name="widget_config_no_results">No notes match your search</string>
+    <string name="widget_config_add_widget">Add Widget</string>
+    <string name="widget_config_font_size_label">Font size: %1$dsp</string>
+    <string name="widget_config_opacity_label">Opacity: %1$d%%</string>
+    <string name="widget_config_preview_label">Preview</string>
+
+    <!-- Görünüm ayarları ekranındaki (NoteWidgetConfigActivity) yeni
+         adım başlığı, koyu/açık switch etiketi ve widget üzerindeki
+         ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
+    <string name="widget_config_appearance_heading">Adjust appearance</string>
+    <string name="widget_config_dark_switch_label">Dark widget</string>
+    <string name="widget_settings_button_desc">Widget settings</string>
+    <string name="widget_add_button_desc">Create new note</string>
 </resources>

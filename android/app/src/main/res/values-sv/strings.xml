@@ -9,4 +9,16 @@
     <string name="widget_config_continue_without_note">Fortsätt utan anteckning</string>
     <string name="widget_config_search_hint">Sök anteckningar...</string>
     <string name="widget_config_no_results">Inga anteckningar matchar din sökning</string>
+    <string name="widget_config_add_widget">Lägg till widget</string>
+    <string name="widget_config_font_size_label">Textstorlek: %1$dsp</string>
+    <string name="widget_config_opacity_label">Opacitet: %1$d%%</string>
+    <string name="widget_config_preview_label">Förhandsgranskning</string>
+
+    <!-- Görünüm ayarları ekranındaki (NoteWidgetConfigActivity) yeni
+         adım başlığı, koyu/açık switch etiketi ve widget üzerindeki
+         ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
+    <string name="widget_config_appearance_heading">Justera utseende</string>
+    <string name="widget_config_dark_switch_label">Mörk widget</string>
+    <string name="widget_settings_button_desc">Widgetinställningar</string>
+    <string name="widget_add_button_desc">Skapa ny anteckning</string>
 </resources>

@@ -9,4 +9,16 @@
     <string name="widget_config_continue_without_note">ดำเนินการต่อโดยไม่มีโน้ต</string>
     <string name="widget_config_search_hint">ค้นหาโน้ต...</string>
     <string name="widget_config_no_results">ไม่พบโน้ตที่ตรงกับการค้นหาของคุณ</string>
+    <string name="widget_config_add_widget">เพิ่มวิดเจ็ต</string>
+    <string name="widget_config_font_size_label">ขนาดตัวอักษร: %1$dsp</string>
+    <string name="widget_config_opacity_label">ความทึบ: %1$d%%</string>
+    <string name="widget_config_preview_label">ตัวอย่าง</string>
+
+    <!-- Görünüm ayarları ekranındaki (NoteWidgetConfigActivity) yeni
+         adım başlığı, koyu/açık switch etiketi ve widget üzerindeki
+         ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
+    <string name="widget_config_appearance_heading">ปรับรูปลักษณ์</string>
+    <string name="widget_config_dark_switch_label">วิดเจ็ตโหมดมืด</string>
+    <string name="widget_settings_button_desc">การตั้งค่าวิดเจ็ต</string>
+    <string name="widget_add_button_desc">สร้างโน้ตใหม่</string>
 </resources>

@@ -52,6 +52,16 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
         val editor = prefs.edit()
         for (id in appWidgetIds) {
             editor.remove(pinnedNoteKey(id))
+            // AŞAMA 1: font boyutu/saydamlık artık bu widget örneğine özel
+            // olabildiği için (bkz. fontSizeKey/bgOpacityKey), pinnedNoteKey
+            // ile aynı yaşam döngüsünde temizlenmesi gerekiyor — aksi halde
+            // widget kaldırılıp appWidgetId ileride başka bir widget'a
+            // yeniden atandığında eski değer sızabilirdi.
+            editor.remove(fontSizeKey(id))
+            editor.remove(bgOpacityKey(id))
+            // Koyu/açık artık bu widget örneğine özel olabildiği için
+            // (bkz. darkKey), aynı yaşam döngüsünde temizlenmesi gerekiyor.
+            editor.remove(darkKey(id))
         }
         editor.apply()
         super.onDeleted(context, appWidgetIds)
@@ -81,6 +91,28 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
         // ÖNEK NoteWidgetConfigActivity.kt içinde de kullanılıyor — anahtar
         // biçimi orada değişirse burada da değişmeli.
         fun pinnedNoteKey(appWidgetId: Int): String = "note_id_widget_$appWidgetId"
+
+        // AŞAMA 1 (widget'a özel ön ayarlar): widget_font_size ve
+        // widget_bg_opacity artık TÜM widget'lar için ortak/global tek bir
+        // değer değil — her appWidgetId kendi değerini saklayabilir.
+        // pinnedNoteKey ile BİREBİR aynı desen: anahtar appWidgetId'ye göre
+        // üretilir, bu widget örneği silinince onDeleted içinde temizlenir.
+        //
+        // Bu anahtarlara HENÜZ hiçbir yerden yazılmıyor (config ekranındaki
+        // kaydırıcı UI'ı sonraki aşamada eklenecek) — updateWidgetInner
+        // içindeki okuma bu yüzden bulunamazsa eski global anahtara
+        // (KEY_FONT_SIZE / KEY_BG_OPACITY) düşecek şekilde yazıldı. Böylece
+        // bu aşama, kaydırıcılar eklenene kadar mevcut davranışı hiç
+        // değiştirmez.
+        fun fontSizeKey(appWidgetId: Int): String = "widget_font_size_widget_$appWidgetId"
+
+        fun bgOpacityKey(appWidgetId: Int): String = "widget_bg_opacity_widget_$appWidgetId"
+
+        // Koyu/açık artık font boyutu/saydamlık gibi widget'a özel olabiliyor
+        // (kullanıcı kararı: her widget kendi temasını seçebilsin). AYNI
+        // desen: bulunamazsa eski global anahtara (KEY_DARK) düşülür —
+        // bkz. updateWidgetInner'daki okuma ve NoteWidget.kt'deki AYNI mantık.
+        fun darkKey(appWidgetId: Int): String = "widget_dark_widget_$appWidgetId"
 
         // "all_notes_json" içinden verilen id'ye ait notun (title, preview)
         // çiftini döndürür. Not bulunamazsa (silinmiş/kilitlenmiş/JSON
@@ -193,9 +225,24 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             val content0 = prefs.getString(KEY_CONTENT, "") ?: ""
             val count = prefs.getInt(KEY_COUNT, 0)
             val latestNoteId = prefs.getString(KEY_NOTE_ID, null)
-            val fontSize = prefs.getFloatCompat(KEY_FONT_SIZE, 14f)
-            val bgOpacity = prefs.getFloatCompat(KEY_BG_OPACITY, 1f).coerceIn(0f, 1f)
-            val dark = prefs.getBoolean(KEY_DARK, true)
+            // AŞAMA 1: önce bu widget örneğine özel değer aranır
+            // (fontSizeKey/bgOpacityKey); henüz hiç ayarlanmamışsa (kaydırıcı
+            // UI'ı sonraki aşamada geliyor) eski global anahtara (KEY_FONT_SIZE/
+            // KEY_BG_OPACITY) düşülür — böylece mevcut widget'ların görünümü
+            // bu değişiklikle değişmez.
+            val globalFontSize = prefs.getFloatCompat(KEY_FONT_SIZE, 14f)
+            val globalBgOpacity = prefs.getFloatCompat(KEY_BG_OPACITY, 1f)
+            val fontSize = prefs.getFloatCompat(fontSizeKey(appWidgetId), globalFontSize)
+            val bgOpacity = prefs.getFloatCompat(bgOpacityKey(appWidgetId), globalBgOpacity)
+                .coerceIn(0f, 1f)
+            // Koyu/açık: önce bu widget örneğine özel değer aranır
+            // (NoteWidgetConfigActivity'deki switch ile kaydedilir); yoksa
+            // (widget hiç yapılandırılmamışsa, ya da Ayarlar sayfasındaki
+            // GENEL değere hâlâ bağlıysa) eski global anahtara (KEY_DARK)
+            // düşülür. Boolean için getBoolean'ın kendi default parametresi
+            // yeterli — Float'taki gibi tip uyuşmazlığı riski yok.
+            val globalDark = prefs.getBoolean(KEY_DARK, true)
+            val dark = prefs.getBoolean(darkKey(appWidgetId), globalDark)
 
             // Bu widget örneği için kullanıcı yapılandırma ekranından
             // (NoteWidgetConfigActivity) özel bir not seçmiş olabilir. Öyle
@@ -315,7 +362,7 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
                         putExtra(NoteWidgetRemoteViewsService.EXTRA_DIVIDER_COLOR, dividerColor)
                         putExtra(NoteWidgetRemoteViewsService.EXTRA_HIGHLIGHT_COLOR, highlightColor)
                         putExtra(NoteWidgetRemoteViewsService.EXTRA_LINK_COLOR, linkColor)
-                        // DÜZELTME: Önceden burada `data =
+                        // DÜZELTME (2026-08-08, revize): Önceden burada `data =
                         // Uri.parse(toUri(Intent.URI_INTENT_SCHEME))` vardı.
                         // Bu, Intent'in kendi extra'larından türetilen bir
                         // URI üretiyordu — AYNI not/widget/tema için HER
@@ -329,14 +376,49 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
                         // kaydedildiğinde widget güncellenmiyor, ancak
                         // widget kaldırılıp yeniden eklendiğinde (GERÇEKTEN
                         // yeni bir bağlantı kurulduğunda) güncel veri
-                        // görünüyordu — bildirilen sorunun ta kendisi.
-                        // Şimdi URI'ye her çağrıda değişen bir zaman damgası
-                        // ekleniyor; böylece sistem HER updateWidget
-                        // çağrısında (yani her not kaydında) tazelenmiş,
-                        // gerçekten yeni bir adaptör bağlantısı kurmak
-                        // ZORUNDA kalıyor.
+                        // görünüyordu.
+                        //
+                        // Bunun düzeltmesi olarak URI'ye her çağrıda değişen
+                        // bir System.currentTimeMillis() zaman damgası
+                        // eklenmişti. Ancak bu, updateWidget'ı SADECE boyut
+                        // değişikliği yüzünden çağıran onAppWidgetOptionsChanged
+                        // (widget büyütülüp küçültülürken) için de HER SEFERİNDE
+                        // yeni bir URI üretiyordu — not içeriği/renk/font hiç
+                        // değişmemiş olsa bile. Android, "data" alanı önceki
+                        // çağrıdan farklı olan bir Intent için adaptör
+                        // bağlantısını koparıp sıfırdan kuruyor; bu kısa
+                        // aradaki NoteLinesFactory.getLoadingView() ile
+                        // gösterilen sistem varsayılanı, kullanıcının
+                        // widget'ı yeniden boyutlandırırken gördüğü "Yükleniyor"
+                        // yanıp sönmesinin sebebiydi.
+                        //
+                        // YENİ DÜZELTME: zaman damgası yerine, adaptörün
+                        // gerçekten göstereceği verilerden (not id, satır
+                        // JSON'u, font boyutu, renkler) türeyen DETERMİNİSTİK
+                        // bir imza (hash) kullanılıyor. Böylece:
+                        //  - Sırf boyut değiştiğinde (içerik/renk/font AYNI)
+                        //    imza da aynı kalıyor -> URI değişmiyor -> sistem
+                        //    mevcut adaptör bağlantısını koruyor -> "Yükleniyor"
+                        //    hiç görünmüyor.
+                        //  - Not gerçekten değiştiğinde (metin, satırlar,
+                        //    tema/renk, font boyutu) imza da değişiyor -> URI
+                        //    değişiyor -> adaptör eskisi gibi doğru şekilde
+                        //    tazeleniyor (yukarıdaki orijinal sorunun çözümü
+                        //    korunuyor).
+                        val dataSignature = buildString {
+                            append(noteId ?: "")
+                            append('|'); append(linesArray?.toString() ?: "")
+                            append('|'); append(fontSize)
+                            append('|'); append(titleColor)
+                            append('|'); append(subTextColor)
+                            append('|'); append(checkedColor)
+                            append('|'); append(dividerColor)
+                            append('|'); append(highlightColor)
+                            append('|'); append(linkColor)
+                        }.hashCode()
+
                         data = Uri.parse(
-                            "dnote-widget://lines/$appWidgetId/${System.currentTimeMillis()}"
+                            "dnote-widget://lines/$appWidgetId/$dataSignature"
                         )
                     }
                     views.setRemoteAdapter(R.id.widget_lines_container, serviceIntent)
@@ -371,6 +453,16 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             views.setTextColor(R.id.widget_content, subTextColor)
             views.setTextColor(R.id.widget_count, subTextColor)
             Log.e(TAG, "ADIM 6 OK -> setTextColor (3 view) tamamlandi")
+
+            // DÜZELTME (2 yeni ikon): ⚙️/➕ ikonlarının çizim rengi de
+            // koyu/açık temaya göre (titleColor ile AYNI ton) ayarlanıyor
+            // — beyaz sabit ikon açık temada görünmez kalırdı.
+            try {
+                views.setInt(R.id.widget_settings_button, "setColorFilter", titleColor)
+                views.setInt(R.id.widget_add_button, "setColorFilter", titleColor)
+            } catch (e: Throwable) {
+                Log.e(TAG, "ADIM 6.1 HATA -> ikon setColorFilter: ${e.javaClass.simpleName}: ${e.message}", e)
+            }
 
             try {
                 views.setInt(R.id.widget_root, "setBackgroundColor", bgWithOpacity)
@@ -409,6 +501,47 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
                 }
             } catch (e: Throwable) {
                 Log.e(TAG, "ADIM 8 HATA -> PendingIntent: ${e.javaClass.simpleName}: ${e.message}", e)
+            }
+
+            // DÜZELTME (2 yeni ikon): Bu iki view'a AYRI PendingIntent
+            // atanıyor — RemoteViews'te bir çocuk view'ın kendi
+            // PendingIntent'i, üstündeki widget_root'unkinin ÖNÜNE geçer
+            // (yani ikonlara dokunmak notu AÇMAZ, kendi eylemini yapar).
+            try {
+                // ⚙️ Ayarlar: NoteWidgetConfigActivity'yi bu appWidgetId ile
+                // DOĞRUDAN açar — sistemin normal APPWIDGET_CONFIGURE akışı
+                // (ör. uzun-bas menüsü) ile AYNI ekran, aynı appWidgetId
+                // extra'sıyla; o Activity zaten bunu okuyup mevcut notu/
+                // ayarları (reconfigure) gösterecek şekilde yazılmıştı.
+                val configIntent = Intent(context, NoteWidgetConfigActivity::class.java).apply {
+                    putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
+                // requestCode olarak appWidgetId kullanılıyor ki farklı
+                // widget örneklerinin PendingIntent'leri birbirinin
+                // üzerine yazılmasın (aksi halde sistem, aynı requestCode'a
+                // sahip PendingIntent'leri "aynı" sayıp ilkini günceller).
+                val settingsPendingIntent = PendingIntent.getActivity(
+                    context,
+                    appWidgetId,
+                    configIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                views.setOnClickPendingIntent(R.id.widget_settings_button, settingsPendingIntent)
+                Log.e(TAG, "ADIM 8.2 OK -> ayarlar ikonu PendingIntent tamamlandi")
+
+                // ➕ Yeni not: "Yeni Not Ekle" ikon widget'ıyla (bkz.
+                // NewNoteWidgetReceiver.kt) AYNI mekanizma — MainActivity'yi
+                // "dnote://newnote" URI'siyle açar.
+                val newNotePendingIntent = HomeWidgetLaunchIntent.getActivity(
+                    context,
+                    MainActivity::class.java,
+                    Uri.parse("dnote://newnote")
+                )
+                views.setOnClickPendingIntent(R.id.widget_add_button, newNotePendingIntent)
+                Log.e(TAG, "ADIM 8.3 OK -> yeni not ikonu PendingIntent tamamlandi")
+            } catch (e: Throwable) {
+                Log.e(TAG, "ADIM 8.4 HATA -> ikon PendingIntent'leri: ${e.javaClass.simpleName}: ${e.message}", e)
             }
 
             try {

@@ -40,6 +40,7 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
@@ -133,22 +134,40 @@ class NoteWidget : GlanceAppWidget() {
             // android.content.SharedPreferences döndürüyor (DataStore
             // Preferences DEĞİL) — bkz. yukarıdaki DÜZELTME notu.
             val prefs = currentState<HomeWidgetGlanceState>().preferences
-            NoteWidgetContent(context, prefs)
+            // AŞAMA 1 (widget'a özel ön ayarlar): font boyutu/saydamlığın
+            // artık bu widget örneğine özel olabilmesi için sayısal
+            // appWidgetId'ye ihtiyaç var — GlanceId bunu doğrudan taşımıyor,
+            // GlanceAppWidgetManager üzerinden çözülüyor. NoteWidgetReceiverV2
+            // (RemoteViews tabanlı asıl widget) ile AYNI anahtar biçimini
+            // kullanmak için oradaki fontSizeKey/bgOpacityKey fonksiyonları
+            // burada da çağrılıyor — anahtar formatı iki yerde de tekrar
+            // yazılmıyor.
+            val appWidgetId = GlanceAppWidgetManager(context).getAppWidgetId(id)
+            NoteWidgetContent(context, prefs, appWidgetId)
         }
     }
 }
 
 @Composable
-private fun NoteWidgetContent(context: Context, prefs: SharedPreferences) {
+private fun NoteWidgetContent(context: Context, prefs: SharedPreferences, appWidgetId: Int) {
     // Hiç senkronizasyon yapılmamışsa (uygulama hiç açılmamış / Aşama 3
     // entegrasyonu henüz devreye girmemiş) makul varsayılanlar kullanılır.
     val title = prefs.getString(KEY_TITLE, null) ?: "Henüz not yok"
     val content = prefs.getString(KEY_CONTENT, null) ?: ""
     val count = prefs.getIntCompat(KEY_COUNT, 0)
     val noteId = prefs.getString(KEY_NOTE_ID, null)
-    val fontSize = prefs.getFloatCompat(KEY_FONT_SIZE, 14f)
-    val bgOpacity = prefs.getFloatCompat(KEY_BG_OPACITY, 1f).coerceIn(0f, 1f)
-    val dark = prefs.getBoolean(KEY_DARK, true)
+    // AŞAMA 1: önce widget'a özel değer aranır, yoksa (kaydırıcı UI'ı henüz
+    // eklenmediği için normalde hep bu durum) eski global anahtara düşülür —
+    // bkz. NoteWidgetReceiverV2.updateWidgetInner'daki AYNI mantık.
+    val globalFontSize = prefs.getFloatCompat(KEY_FONT_SIZE, 14f)
+    val globalBgOpacity = prefs.getFloatCompat(KEY_BG_OPACITY, 1f)
+    val fontSize = prefs.getFloatCompat(NoteWidgetReceiverV2.fontSizeKey(appWidgetId), globalFontSize)
+    val bgOpacity = prefs.getFloatCompat(NoteWidgetReceiverV2.bgOpacityKey(appWidgetId), globalBgOpacity)
+        .coerceIn(0f, 1f)
+    // AŞAMA: koyu/açık artık widget'a özel olabiliyor — NoteWidgetReceiverV2
+    // içindeki AYNI mantık (bkz. darkKey/KEY_DARK fallback açıklaması orada).
+    val globalDark = prefs.getBoolean(KEY_DARK, true)
+    val dark = prefs.getBoolean(NoteWidgetReceiverV2.darkKey(appWidgetId), globalDark)
 
     val bgColor = if (dark) Color(0xFF1E1E1E) else Color(0xFFFFFFFF)
     val titleColor = if (dark) Color(0xFFFFFFFF) else Color(0xFF1A1A1A)

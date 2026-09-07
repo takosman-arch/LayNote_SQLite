@@ -9,4 +9,16 @@
     <string name="widget_config_continue_without_note">Doorgaan zonder notitie</string>
     <string name="widget_config_search_hint">Notities zoeken...</string>
     <string name="widget_config_no_results">Geen notities komen overeen met je zoekopdracht</string>
+    <string name="widget_config_add_widget">Widget toevoegen</string>
+    <string name="widget_config_font_size_label">Lettergrootte: %1$dsp</string>
+    <string name="widget_config_opacity_label">Doorzichtigheid: %1$d%%</string>
+    <string name="widget_config_preview_label">Voorbeeld</string>
+
+    <!-- Görünüm ayarları ekranındaki (NoteWidgetConfigActivity) yeni
+         adım başlığı, koyu/açık switch etiketi ve widget üzerindeki
+         ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
+    <string name="widget_config_appearance_heading">Uiterlijk aanpassen</string>
+    <string name="widget_config_dark_switch_label">Donker widget</string>
+    <string name="widget_settings_button_desc">Widgetinstellingen</string>
+    <string name="widget_add_button_desc">Nieuwe notitie maken</string>
 </resources>

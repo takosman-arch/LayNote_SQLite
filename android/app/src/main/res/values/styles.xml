@@ -24,4 +24,43 @@
          kullanılır ve eski davranıştan (Theme.AppCompat.Light.NoActionBar)
          farksızdır. -->
     <style name="Ucrop.CropTheme" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <!-- NoteWidgetConfigActivity (widget ekleme/görünüm ayarları ekranı)
+         için: pencereyi gerçekten saydam yapıp, 2. adımdaki (görünüm
+         ayarları) önizleme kutusunun arkasında sistemin GERÇEK duvar
+         kağıdının görünmesine izin veren tema.
+         ÖNEMLİ: Sadece NoteWidgetConfigActivity.kt içindeki runtime
+         çağrıları (window.addFlags(FLAG_SHOW_WALLPAPER) /
+         setBackgroundDrawable(null) / setFormat(PixelFormat.TRANSLUCENT))
+         YETERLİ DEĞİL — pencerenin saydam mı opak mı bir surface olarak
+         kurulacağına sistem çoğunlukla Activity'nin onCreate() KODU
+         ÇALIŞMADAN ÖNCE, bu temaya bakarak karar veriyor. Bu yüzden asıl
+         garanti kaynağı burasıdır; Kotlin tarafındaki çağrılar bunu
+         tamamlayıcı/pekiştirici olarak kalıyor, kaldırılmalarına gerek yok. -->
+    <style name="Theme.NoteWidgetConfig" parent="android:Theme.DeviceDefault.NoActionBar">
+        <!-- Pencerenin kendisini opak değil, saydam (translucent) bir
+             surface olarak oluşturmasını sağlar — asıl kritik satır bu. -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- Sistem duvar kağıdının bu pencerenin arkasında çizilmesine
+             izin verir (FLAG_SHOW_WALLPAPER'ın tema karşılığı). -->
+        <item name="android:windowShowWallpaper">true</item>
+        <!-- Pencerenin varsayılan (genelde opak) arka planını kaldırır;
+             asıl gerçek renkler zaten Kotlin tarafında (headerRow,
+             bottomHalf, addWidgetBtn, previewCard) tek tek veriliyor. -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- Sistemin "arka plan önbelleği" optimizasyonu, saydam
+             pencerelerde yanlışlıkla opak bir renk varsayabiliyor; null
+             vererek bunu devre dışı bırakıyoruz. -->
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <!-- Saydam pencerelerde varsayılan içerik gölgesi/overlay'i
+             istemiyoruz. -->
+        <item name="android:windowContentOverlay">@null</item>
+        <!-- 1. ekrandaki (not seçimi) tam ekran liste de bu temayı
+             kullanacağından (aynı Activity), o ekranda görsel bir fark
+             olmasın diye giriş/çıkış animasyonu sistem varsayılanında
+             bırakılıyor; windowIsTranslucent=true bazı OEM'lerde
+             varsayılan geçiş animasyonunu "dialog" tarzına çevirebiliyor,
+             bunu engellemek için normal pencere animasyonu zorlanıyor. -->
+        <item name="android:windowAnimationStyle">@android:style/Animation.Activity</item>
+    </style>
 </resources>

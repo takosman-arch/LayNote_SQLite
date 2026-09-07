@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Widget seçim ekranındaki (launcher "Widget ekle" listesi, Android 12+)
+  CANLI önizleme için kullanılır (bkz. note_widget_info.xml ->
+  android:previewLayout). note_widget.xml'in BİREBİR aynı renk/boşluk/
+  yazı tipi dilini kullanır, ama sabit placeholder verilerle doldurulmuştur.
+
+  ÖNEMLİ FARKLAR (bilerek, gerçek widget'a göre):
+  - widget_lines_container (ListView) burada YOK: sistem bu layout'u canlı
+    bir RemoteViewsFactory/adapter BAĞLAMADAN, salt statik bir önizleme
+    olarak çiziyor — bir ListView burada boş görünürdü. Onun yerine,
+    NoteWidgetRemoteViewsService.getViewAt'ın "checkbox" tipi için ürettiği
+    görünümü SABİT View'lerle taklit ediyoruz (aynı ikon/renk/boşluk
+    mantığı: işaretli -> amber ikon, işaretsiz -> beyaz ikon).
+  - widget_content (içerik önizleme satırı) ve widget_count ("X not")
+    burada YOK: NoteWidgetReceiverV2.updateWidgetInner içinde yapılandırılmış
+    satırlar (checklist/tablo) varken bu ikisi zaten gizleniyor
+    (widget_count her durumda hep gizli) — önizleme bu GÜNCEL davranışı
+    yansıtıyor, eski/yanıltıcı bir görünüm göstermiyor.
+  - id'ler bilinçli olarak note_widget.xml'dekilerden farklı
+    (widget_preview_*) tutuldu: bu salt statik bir önizleme, hiçbir Kotlin
+    kodu bu layout'u inflate etmiyor/bu id'lere referans vermiyor — farklı
+    isimler, ileride birinin bu id'leri gerçek widget koduyla karıştırıp
+    yanlışlıkla bu dosyaya bağlanmasını önlemek için.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1E1E1E"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- widget_title ile birebir aynı stil: beyaz, kalın, 14sp -->
+        <TextView
+            android:id="@+id/widget_preview_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="Shopping List" />
+
+        <!-- Checklist satırları: gerçek widget'taki checkbox satırlarının
+             (widget_line_checkbox) sade bir taklidi. Font boyutu 12sp,
+             NoteWidgetRemoteViewsService'teki lineFontSize = fontSize - 2
+             (varsayılan 14sp - 2 = 12sp) ile aynı. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFC107"
+                android:textSize="12sp"
+                android:text="\u2611" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="Milk" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:text="\u2610" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="Bread" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:text="\u2610" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="Eggs" />
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

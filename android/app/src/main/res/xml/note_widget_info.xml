@@ -8,6 +8,19 @@
   formülüyle hücreye çevirir. Eski 80dp değeri hâlâ 2 hücre (2 satır) olarak
   yuvarlanıyordu; widget'ın tek satıra kadar küçültülebilmesi için ~40dp
   (1 hücre) gerekiyor.
+
+  DÜZELTME (widget seçim listesindeki önizleme): Önceden previewImage
+  doğrudan uygulamanın launcher ikonuna (@mipmap/ic_launcher) işaret
+  ediyordu — kullanıcı "Widget ekle" listesinde gerçek widget'ın neye
+  benzediğini hiç göremiyordu. Şimdi iki katmanlı bir önizleme var:
+   - previewLayout (Android 12 / API 31+): note_widget.xml ile AYNI
+     renk/boşluk/yazı dilini kullanan, sabit placeholder verili
+     note_widget_preview.xml. Sistem bunu CANLI render ediyor (cihazın
+     o anki temasına uyum sağlıyor).
+   - previewImage: API 31 altı cihazlar için ZORUNLU statik fallback —
+     previewLayout'un aynı görünümünü taklit eden bir PNG mockup
+     (drawable-nodpi/note_widget_preview.png). API 31+ cihazlarda bu
+     görsel kullanılmaz, previewLayout önceliklidir.
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="180dp"
@@ -18,8 +31,10 @@
     android:targetCellHeight="2"
     android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/note_widget"
+    android:previewLayout="@layout/note_widget_preview"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
-    android:previewImage="@mipmap/ic_launcher"
+    android:previewImage="@drawable/note_widget_preview"
     android:description="@string/note_widget_description"
-    android:configure="com.example.flutter_application_1.NoteWidgetConfigActivity" />
+    android:configure="com.example.flutter_application_1.NoteWidgetConfigActivity"
+    android:widgetFeatures="reconfigurable" />

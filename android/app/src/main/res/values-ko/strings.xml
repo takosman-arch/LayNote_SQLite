@@ -9,4 +9,16 @@
     <string name="widget_config_continue_without_note">메모 없이 계속하기</string>
     <string name="widget_config_search_hint">메모 검색...</string>
     <string name="widget_config_no_results">검색과 일치하는 메모가 없습니다</string>
+    <string name="widget_config_add_widget">위젯 추가</string>
+    <string name="widget_config_font_size_label">글자 크기: %1$dsp</string>
+    <string name="widget_config_opacity_label">불투명도: %1$d%%</string>
+    <string name="widget_config_preview_label">미리보기</string>
+
+    <!-- Görünüm ayarları ekranındaki (NoteWidgetConfigActivity) yeni
+         adım başlığı, koyu/açık switch etiketi ve widget üzerindeki
+         ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
+    <string name="widget_config_appearance_heading">모양 조정</string>
+    <string name="widget_config_dark_switch_label">다크 위젯</string>
+    <string name="widget_settings_button_desc">위젯 설정</string>
+    <string name="widget_add_button_desc">새 메모 만들기</string>
 </resources>

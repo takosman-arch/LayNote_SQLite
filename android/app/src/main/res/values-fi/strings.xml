@@ -9,4 +9,16 @@
     <string name="widget_config_continue_without_note">Jatka ilman muistiinpanoa</string>
     <string name="widget_config_search_hint">Hae muistiinpanoja...</string>
     <string name="widget_config_no_results">Hakuasi vastaavia muistiinpanoja ei löytynyt</string>
+    <string name="widget_config_add_widget">Lisää widget</string>
+    <string name="widget_config_font_size_label">Fonttikoko: %1$dsp</string>
+    <string name="widget_config_opacity_label">Läpinäkyvyys: %1$d%%</string>
+    <string name="widget_config_preview_label">Esikatselu</string>
+
+    <!-- Görünüm ayarları ekranındaki (NoteWidgetConfigActivity) yeni
+         adım başlığı, koyu/açık switch etiketi ve widget üzerindeki
+         ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
+    <string name="widget_config_appearance_heading">Muokkaa ulkoasua</string>
+    <string name="widget_config_dark_switch_label">Tumma widget</string>
+    <string name="widget_settings_button_desc">Widgetin asetukset</string>
+    <string name="widget_add_button_desc">Luo uusi muistiinpano</string>
 </resources>
