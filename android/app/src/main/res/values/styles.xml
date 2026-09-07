@@ -38,6 +38,22 @@
          garanti kaynağı burasıdır; Kotlin tarafındaki çağrılar bunu
          tamamlayıcı/pekiştirici olarak kalıyor, kaldırılmalarına gerek yok. -->
     <style name="Theme.NoteWidgetConfig" parent="android:Theme.DeviceDefault.NoActionBar">
+        <!-- DÜZELTME (starting window flaşı): overrideActivityTransition(...,0,0)
+             sadece Activity GEÇİŞ animasyonunu (cross-fade) kapatıyor;
+             onCreate() çalışmadan ÖNCE sistemin çizdiği ayrı "starting
+             window" karesini etkilemiyor. Translucent+showWallpaper
+             temalarda sistem bu starting window'u genelde altındaki
+             ekranın (ana ekran + widget) bir anlık görüntüsüyle
+             dolduruyor — flaş olarak görülen budur. windowDisablePreview,
+             starting window için bu önizlemeyi tamamen devre dışı
+             bırakır: pencere boş/saydam başlar, kod çizene kadar widget
+             dahil hiçbir şey görünmez. Zaten yapılandırılmış bir
+             widget'tan doğrudan 2. adıma (görünüm ayarları — RecyclerView,
+             kare önizleme, duvar kağıdı çizimi) girildiğinde ilk gerçek
+             karenin çizilmesi daha uzun sürdüğü için starting window'un
+             görünür kaldığı süre de uzuyor; bu yüzden flaş özellikle
+             burada fark ediliyor. -->
+        <item name="android:windowDisablePreview">true</item>
         <!-- Pencerenin kendisini opak değil, saydam (translucent) bir
              surface olarak oluşturmasını sağlar — asıl kritik satır bu. -->
         <item name="android:windowIsTranslucent">true</item>

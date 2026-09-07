@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "אבטחה",
   "settingsSectionTheme": "ערכת נושא",
   "settingsSectionPersonalization": "התאמה אישית",
-  "settingsSectionWidget": "ווידג'ט",
   "settingsSectionAbout": "אודות",
   "settingsHintQuestionPet": "מה שם חיית המחמד הראשונה שלך?",
   "settingsHintQuestionTeacher": "מה שם המורה האהוב עליך?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "אישור",
   "settingsTextColorTileTitle": "צבע טקסט",
   "settingsTextColorTileSubtitle": "צבע לטקסט תוכן הפתקית.",
-  "settingsWidgetFontSizeLabel": "גודל גופן הווידג'ט",
-  "settingsWidgetFontSizeSample": "כותרת לדוגמה - {size} נק'",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "ביטול",
-  "settingsWidgetFontSizeApplyButton": "החל",
-  "settingsWidgetOpacityLabel": "שקיפות רקע",
-  "settingsWidgetOpacityValue": "{percent}% שקיפות",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "ביטול",
-  "settingsWidgetOpacityApplyButton": "החל",
-  "settingsWidgetDarkModeTitle": "ווידג'ט כהה",
-  "settingsWidgetDarkModeDesc": "ערכת צבעים כהה עבור הווידג'ט.",
   "settingsAboutVersionTitle": "גרסת האפליקציה",
   "settingsAboutVersionLoading": "טוען גרסה…",
   "aboutSectionDeveloper": "משוב",

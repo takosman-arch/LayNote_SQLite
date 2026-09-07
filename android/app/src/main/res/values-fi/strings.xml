@@ -19,6 +19,8 @@
          ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
     <string name="widget_config_appearance_heading">Muokkaa ulkoasua</string>
     <string name="widget_config_dark_switch_label">Tumma widget</string>
+    <string name="widget_config_show_settings_icon_label">Näytä asetuskuvake</string>
+    <string name="widget_config_show_add_icon_label">Näytä uuden muistiinpanon kuvake</string>
     <string name="widget_settings_button_desc">Widgetin asetukset</string>
     <string name="widget_add_button_desc">Luo uusi muistiinpano</string>
 </resources>

@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "Securitate",
   "settingsSectionTheme": "Temă",
   "settingsSectionPersonalization": "Personalizare",
-  "settingsSectionWidget": "Widget",
   "settingsSectionAbout": "Despre",
   "settingsHintQuestionPet": "Care este numele primului dvs. animal de companie?",
   "settingsHintQuestionTeacher": "Care este numele profesorului dvs. preferat?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "OK",
   "settingsTextColorTileTitle": "Culoare text",
   "settingsTextColorTileSubtitle": "Culoare pentru textul conținutului notiței.",
-  "settingsWidgetFontSizeLabel": "Dimensiune font widget",
-  "settingsWidgetFontSizeSample": "Titlu exemplu - {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "Anulare",
-  "settingsWidgetFontSizeApplyButton": "Aplicare",
-  "settingsWidgetOpacityLabel": "Transparență fundal",
-  "settingsWidgetOpacityValue": "Transparență {percent}%",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "Anulare",
-  "settingsWidgetOpacityApplyButton": "Aplicare",
-  "settingsWidgetDarkModeTitle": "Widget întunecat",
-  "settingsWidgetDarkModeDesc": "Schemă de culori întunecată pentru widget.",
   "settingsAboutVersionTitle": "Versiune aplicație",
   "settingsAboutVersionLoading": "Se încarcă versiunea…",
   "aboutSectionDeveloper": "Feedback",

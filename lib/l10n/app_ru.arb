@@ -268,7 +268,6 @@
   "settingsSectionSecurity": "Безопасность",
   "settingsSectionTheme": "Тема",
   "settingsSectionPersonalization": "Персонализация",
-  "settingsSectionWidget": "Виджет",
   "settingsSectionAbout": "О приложении",
   "settingsHintQuestionPet": "Как звали вашего первого питомца?",
   "settingsHintQuestionTeacher": "Как зовут вашего любимого учителя?",
@@ -323,25 +322,6 @@
   "settingsTextColorOkButton": "ОК",
   "settingsTextColorTileTitle": "Цвет текста",
   "settingsTextColorTileSubtitle": "Цвет текста содержимого заметки.",
-  "settingsWidgetFontSizeLabel": "Размер шрифта виджета",
-  "settingsWidgetFontSizeSample": "Пример заголовка — {size} пт",
-  "settingsWidgetFontSizeCancelButton": "Отмена",
-  "settingsWidgetFontSizeApplyButton": "Применить",
-  "settingsWidgetOpacityLabel": "Прозрачность фона",
-  "settingsWidgetOpacityValue": "Прозрачность {percent}%",
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "Отмена",
-  "settingsWidgetOpacityApplyButton": "Применить",
-  "settingsWidgetDarkModeTitle": "Тёмный виджет",
-  "settingsWidgetDarkModeDesc": "Тёмная цветовая схема для виджета.",
   "settingsAboutVersionTitle": "Версия приложения",
   "settingsAboutVersionLoading": "Загрузка версии…",
   "aboutSectionDeveloper": "Обратная связь",

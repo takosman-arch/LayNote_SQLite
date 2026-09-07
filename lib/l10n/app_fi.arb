@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "Turvallisuus",
   "settingsSectionTheme": "Teema",
   "settingsSectionPersonalization": "Mukauttaminen",
-  "settingsSectionWidget": "Widget",
   "settingsSectionAbout": "Tietoja",
   "settingsHintQuestionPet": "Mikä on ensimmäisen lemmikkisi nimi?",
   "settingsHintQuestionTeacher": "Mikä on suosikkiopettajasi nimi?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "OK",
   "settingsTextColorTileTitle": "Tekstin väri",
   "settingsTextColorTileSubtitle": "Muistiinpanon sisältötekstin väri.",
-  "settingsWidgetFontSizeLabel": "Widgetin fonttikoko",
-  "settingsWidgetFontSizeSample": "Esimerkkiotsikko - {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "Peruuta",
-  "settingsWidgetFontSizeApplyButton": "Käytä",
-  "settingsWidgetOpacityLabel": "Taustan läpinäkyvyys",
-  "settingsWidgetOpacityValue": "{percent}% läpinäkyvyys",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "Peruuta",
-  "settingsWidgetOpacityApplyButton": "Käytä",
-  "settingsWidgetDarkModeTitle": "Tumma widget",
-  "settingsWidgetDarkModeDesc": "Tumma väriteema widgetille.",
   "settingsAboutVersionTitle": "Sovelluksen versio",
   "settingsAboutVersionLoading": "Ladataan versiota…",
   "aboutSectionDeveloper": "Palaute",

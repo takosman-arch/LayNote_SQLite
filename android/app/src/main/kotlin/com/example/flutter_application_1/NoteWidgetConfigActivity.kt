@@ -150,6 +150,16 @@ class NoteWidgetConfigActivity : Activity() {
     companion object {
         private const val TAG = "NOTEWIDGET_DEBUG"
         private const val PREFS_NAME = "HomeWidgetPreferences"
+
+        // DÜZELTME (⚙️ ikonundan doğrudan Görünümü Ayarla ekranı): widget
+        // üzerindeki ayarlar ikonuna basılınca (bkz. NoteWidgetReceiverV2.kt
+        // -> settingsPendingIntent) bu Activity artık 1. adımı (not seçimi)
+        // atlayıp doğrudan 2. adıma (showAppearanceScreen) geçebiliyor.
+        // Bu davranış SADECE bu extra true olarak gönderildiğinde devreye
+        // girer; widget EKLEME akışında (AndroidManifest'teki
+        // ACTION_APPWIDGET_CONFIGURE ile açılışta) bu extra hiç
+        // gönderilmediği için eski davranış (önce not seçimi) korunuyor.
+        const val EXTRA_OPEN_APPEARANCE_STEP = "open_appearance_step"
         private const val KEY_ALL_NOTES_JSON = "all_notes_json"
         // theme.dart -> dNoteSyncThemeToWidgetStorage tarafından yazılır
         // (main() içinde açılışta bir kez, ve appThemeMode her
@@ -299,6 +309,15 @@ class NoteWidgetConfigActivity : Activity() {
     // ikisi gibi başlangıçta o anki GLOBAL değerden başlar (bkz. onCreate).
     private var currentDark = true
 
+    // Kullanıcı isteği (2. iki switch): sağ üstteki ⚙️/➕ ikonlarının
+    // widget üzerinde gösterilip gösterilmeyeceği, koyu/açık ile AYNI
+    // desende, widget'a özel. Varsayılan true — eski (bu switch'lerden
+    // önce eklenmiş) widget örnekleri, kaydedilmiş bir tercih
+    // bulunamadığında ikonları göstermeye devam eder (bkz.
+    // NoteWidgetReceiverV2.DEFAULT_SHOW_SETTINGS_ICON/DEFAULT_SHOW_ADD_ICON).
+    private var currentShowSettingsIcon = true
+    private var currentShowAddIcon = true
+
     // DÜZELTME (2 EKRANLI AKIŞ): şu an 2. ekranda (görünüm ayarları)
     // olup olmadığımızı tutar — sistem geri tuşuna (onBackPressed) basılınca
     // 2. ekrandaysak Activity'yi KAPATMAK yerine 1. ekrana (not seçimi)
@@ -309,6 +328,29 @@ class NoteWidgetConfigActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // DÜZELTME (hata.txt: "ayarlar ikonuna tıklayınca pencere açılırken
+        // widget'ın kendisi görünmeye devam ediyor ve çakışıyor"): Bu
+        // Activity FLAG_SHOW_WALLPAPER + TRANSLUCENT ile saydam olduğu için,
+        // sistemin varsayılan giriş geçiş animasyonu sırasında (~300-450ms)
+        // eski ekran (ana ekran + widget) ile bu ekran BİRLİKTE çiziliyor —
+        // saydamlık yüzünden arkadaki widget bu geçiş penceresinde doğrudan
+        // görünür kalıp yeni ekranla çakışıyormuş gibi hissettiriyor. Giriş
+        // animasyonunu tamamen kapatarak Activity'nin anında (animasyonsuz)
+        // belirmesini sağlıyoruz; bu, ana ekranın widget'la birlikte görünme
+        // penceresini ortadan kaldırır. En başta (super.onCreate'ten hemen
+        // sonra, başka hiçbir şey çalışmadan önce) çağrılmalı ki geçiş daha
+        // başlamadan iptal edilsin.
+        //
+        // Android 14 (UPSIDE_DOWN_CAKE) itibarıyla overridePendingTransition
+        // deprecated olduğu için yeni overrideActivityTransition API'si
+        // kullanılıyor; altındaki sürümlerde eski API'ye düşülüyor.
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, 0, 0)
+        } else {
+            @Suppress("DEPRECATION")
+            overridePendingTransition(0, 0)
+        }
 
         // DÜZELTME (gerçek duvar kağıdı arka planı — 2. adımdaki önizleme
         // kutusunun ARKASINA): İlk denemede WallpaperManager.getDrawable()
@@ -397,6 +439,53 @@ class NoteWidgetConfigActivity : Activity() {
         currentFontSize = globalFontSize.coerceAtLeast(FONT_SIZE_MIN_SP.toFloat())
         currentBgOpacity = globalBgOpacity
         currentDark = prefs.getBoolean(KEY_DARK, true)
+
+        // DÜZELTME (widget'a uzun basıp sistemin "düzenle/ayarlar"
+        // seçeneğine dokununca da doğrudan Görünümü Ayarla ekranı açılsın):
+        // Bu Activity iki farklı yoldan, iki farklı amaçla açılabiliyor:
+        //   1) Widget'ı ana ekrana YENİ eklerken — sistem bunu
+        //      ACTION_APPWIDGET_CONFIGURE ile (AndroidManifest'teki
+        //      intent-filter üzerinden) EXTRA_OPEN_APPEARANCE_STEP OLMADAN
+        //      açar. Bu appWidgetId için henüz hiçbir şey kaydedilmemiştir.
+        //   2) Ana ekranda widget'a uzun basıp sistemin kendi "düzenle"
+        //      seçeneğine (ya da ⚙️ ikonuna) dokunulunca — İKİSİ de AYNI
+        //      ACTION_APPWIDGET_CONFIGURE mekanizmasını kullanır; tek fark
+        //      ⚙️ ikonu (NoteWidgetReceiverV2 -> settingsPendingIntent)
+        //      EXTRA_OPEN_APPEARANCE_STEP=true extra'sını EKLERKEN,
+        //      sistemin kendi "düzenle" seçeneği bu extra'yı GÖNDERMİYOR —
+        //      bu yüzden önceden sadece extra kontrol edilince bu ikinci
+        //      yol yanlışlıkla 1. adıma (not seçimi) düşüyordu.
+        // İkisini ayırt etmenin güvenilir yolu extra değil, appWidgetId'ye
+        // özel pinnedNoteKey'in DAHA ÖNCE kaydedilip kaydedilmediği:
+        // onNoteSelected() bu anahtarı her zaman yazıyor (bkz. aşağıda),
+        // yani widget zaten bir kez eklenip yapılandırıldıysa bu anahtar
+        // prefs'te bulunur. Böylece "bu appWidgetId zaten mevcut mu"
+        // sorusu extra'dan bağımsız, doğrudan kontrol edilebiliyor.
+        val alreadyConfigured = prefs.contains(NoteWidgetReceiverV2.pinnedNoteKey(appWidgetId))
+        val openAppearanceStep =
+            intent?.extras?.getBoolean(EXTRA_OPEN_APPEARANCE_STEP, false) == true || alreadyConfigured
+        if (openAppearanceStep) {
+            val pinnedNoteId = prefs.getString(NoteWidgetReceiverV2.pinnedNoteKey(appWidgetId), "") ?: ""
+            currentFontSize = prefs.getFloatCompat(
+                NoteWidgetReceiverV2.fontSizeKey(appWidgetId),
+                currentFontSize
+            ).coerceAtLeast(FONT_SIZE_MIN_SP.toFloat())
+            currentBgOpacity = prefs.getFloatCompat(
+                NoteWidgetReceiverV2.bgOpacityKey(appWidgetId),
+                currentBgOpacity
+            ).coerceIn(0f, 1f)
+            currentDark = prefs.getBoolean(NoteWidgetReceiverV2.darkKey(appWidgetId), currentDark)
+            currentShowSettingsIcon = prefs.getBoolean(
+                NoteWidgetReceiverV2.showSettingsIconKey(appWidgetId),
+                currentShowSettingsIcon
+            )
+            currentShowAddIcon = prefs.getBoolean(
+                NoteWidgetReceiverV2.showAddIconKey(appWidgetId),
+                currentShowAddIcon
+            )
+            showAppearanceScreen(pinnedNoteId)
+            return
+        }
 
         showNoteSelectionScreen()
     }
@@ -698,6 +787,16 @@ class NoteWidgetConfigActivity : Activity() {
                 text = entry.title
                 visibility = View.VISIBLE
             } else if (entry != null) {
+                // DÜZELTME (başlık+ikonlar hepsi boşken üstte boş satır
+                // kalıyordu — gerçek widget'taki AYNI düzeltme burada da
+                // uygulandı, bkz. NoteWidgetReceiverV2.kt): en az bir ikon
+                // gösteriliyorsa previewIconRow'un yüksekliği zaten o
+                // ikonlardan geliyor, previewTitle'ın burada GONE/INVISIBLE
+                // olması satırın boyunu etkilemiyor. Ama HİÇBİR ikon da
+                // gösterilmiyorsa previewTitle bu satırdaki TEK view,
+                // dolayısıyla GONE (zaten burada kullanılıyordu) satırı
+                // tamamen çökertiyor — bu artık koşulsuz doğru, çünkü
+                // korunacak bir "ikonları sağda tutma" ihtiyacı yok.
                 visibility = View.GONE
             } else {
                 // NoteWidget.kt'deki NoteWidgetContent ile AYNI sabit
@@ -714,13 +813,16 @@ class NoteWidgetConfigActivity : Activity() {
             setTextColor(previewTitleColor)
             textSize = (currentFontSize - 2f).coerceAtLeast(8f)
             setPadding(0, dp(4), 0, 0)
-            // DÜZELTME: not önizlemesi (preview) uzun olabiliyor;
-            // sınırsız bırakılırsa kutu (ve onunla birlikte alttaki
-            // kaydırıcılar + "Widget'ı Ekle" butonu) ekranın dışına
-            // taşıyordu (kullanıcı raporu: "Önizleme metni sınırsız
-            // uzayıp ekranı taşırıyor"). Gerçek widget'ta da içerik
-            // kutunun boyutuna göre kırpılıyor; burada da aynı satır
-            // sınırı uygulanıyor.
+            // DÜZELTME (sığdığı kadar satır): Önceden burada sabit
+            // "maxLines = 3" vardı. Artık önizleme kutusu KARE boyutuna
+            // (aşağıdaki squareSize hesaplaması, DEĞİŞMEDİ) göre sabit
+            // kalıyor ve bu TextView'ın gösterdiği satır sayısı, o sabit
+            // karenin içine gerçekten kaç satır sığıyorsa ona göre
+            // updatePreviewContentMaxLines() tarafından RUNTIME'da
+            // hesaplanıp atanıyor (bkz. aşağıda, kare boyutu belirlendikten
+            // hemen sonra ve yazı boyutu kaydırıcısı her değiştiğinde
+            // çağrılıyor). Buradaki 3 sadece o hesaplama çalışana kadarki
+            // ilk (çok kısa süreli) çizim için bir başlangıç değeri.
             maxLines = 3
             ellipsize = TextUtils.TruncateAt.END
             if (entry != null && entry.preview.isNotEmpty()) {
@@ -745,12 +847,95 @@ class NoteWidgetConfigActivity : Activity() {
                 )
             )
         }
+        // DÜZELTME (önizleme <-> gerçek widget birebir eşleşsin): gerçek
+        // widget'ta (note_widget.xml) başlık tek başına değil, sağında
+        // ⚙️/➕ ikonlarıyla aynı yatay satırda (bkz. NoteWidgetReceiverV2.kt
+        // ADIM 6.1/8.2/8.3). Önizleme kartı bu satırı taşımadığı için
+        // kullanıcı, ayarları değiştirirken gerçekte nasıl görüneceğini tam
+        // göremiyordu. Aşağıdaki previewIconRow, previewTitle'ı weight=1
+        // ile sararak aynı iki ikonu (dokunulamaz, sadece görsel — bu
+        // ekranın kendisi zaten ayarlar/yeni-not akışının içinde)
+        // previewTitleColor ile boyayıp ekliyor.
+        // DÜZELTME (ikon sırası değiştirildi): kullanıcı isteğiyle ➕ artık
+        // başlığa daha yakın (soldaki), ⚙️ ayar ikonu en sağda duruyor.
+        // marginStart değerleri de sıraya göre swap edildi: ilk ikonun
+        // (previewAddIcon) başlıkla arasındaki boşluk eskiden previewSettingsIcon'ın
+        // sahip olduğu dp(4); ikinci ikonun (previewSettingsIcon) kendinden
+        // önceki ikonla arasındaki boşluk ise eskiden previewAddIcon'ın
+        // sahip olduğu dp(2) — böylece görsel aralıklar aynı kalıyor, sadece
+        // hangi ikonun nerede olduğu değişiyor.
+        val previewAddIcon = ImageView(this).apply {
+            setImageResource(R.drawable.ic_widget_add)
+            setColorFilter(previewTitleColor)
+            // DÜZELTME: previewSettingsIcon ile AYNI sorun/AYNI çözüm —
+            // currentShowAddIcon'a göre başlangıç görünürlüğü.
+            visibility = if (currentShowAddIcon) View.VISIBLE else View.GONE
+            layoutParams = LinearLayout.LayoutParams(dp(18), dp(18)).apply {
+                marginStart = dp(4)
+            }
+        }
+        val previewSettingsIcon = ImageView(this).apply {
+            setImageResource(R.drawable.ic_widget_settings)
+            setColorFilter(previewTitleColor)
+            // DÜZELTME (önizleme ikonu, gerçek switch durumunu yansıtmıyordu):
+            // Başlangıç görünürlüğü currentShowSettingsIcon'a göre ayarlanmalı;
+            // aksi halde switch kapalı okunsa bile ikon hep VISIBLE başlıyor ve
+            // yalnızca kullanıcı switch'e dokunup onCheckedChangeListener'ı
+            // (satır ~1070) tetikleyene kadar güncellenmiyordu.
+            visibility = if (currentShowSettingsIcon) View.VISIBLE else View.GONE
+            layoutParams = LinearLayout.LayoutParams(dp(18), dp(18)).apply {
+                marginStart = dp(2)
+            }
+        }
+        val previewIconRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            // DÜZELTME (başlık boşken ikonlar sola yapışıyordu): previewTitle
+            // GONE olduğunda satırdaki weight=1 view kalmadığından, sadece
+            // CENTER_VERTICAL gravity ile satırın kullanılmayan genişliği
+            // varsayılan olarak SOLA (start) yığılıyor, ikonlar görünürde
+            // sola kaymış gibi duruyordu. Gerçek widget'ta ikonlar her zaman
+            // sağda durduğundan, buraya da END gravity eklendi: previewTitle
+            // görünürken zaten weight=1 ile tüm alanı kapladığından bu END
+            // gravity'nin bir etkisi olmuyor; previewTitle GONE olduğunda ise
+            // ikon çifti satırın sağına yaslanıyor.
+            gravity = android.view.Gravity.CENTER_VERTICAL or android.view.Gravity.END
+            addView(
+                previewTitle,
+                LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            )
+            addView(previewAddIcon)
+            addView(previewSettingsIcon)
+        }
         val previewCard = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(12), dp(12), dp(12), dp(12))
             background = previewCardBg
-            addView(previewTitle)
+            addView(previewIconRow)
             addView(previewContent)
+        }
+
+        // DÜZELTME (sığdığı kadar satır): previewCard'ın KARE yüksekliği
+        // sabitlendikten sonra (bkz. aşağıdaki squareSize hesaplaması,
+        // mantığı DEĞİŞMEDİ), o sabit kare yüksekliğin içine previewContent
+        // için gerçekte kaç satırlık yer kaldığını hesaplayıp previewContent
+        // .maxLines'a atar. previewCardHeightPx, kare hesaplanınca (bir kez)
+        // doldurulur; previewTitle'ın kendi yüksekliği (maxLines=2 ile
+        // sınırlı, ama içerik 1 satırsa daha kısa olabilir) her seferinde
+        // canlı ölçülüp düşülür ki başlık kısa/uzun/gizliyken de doğru
+        // sonuç versin.
+        var previewCardHeightPx = 0
+        fun updatePreviewContentMaxLines() {
+            if (previewCardHeightPx <= 0) return
+            val cardVerticalPadding = dp(12) * 2
+            val contentTopPadding = dp(4)
+            val availableForContent = previewCardHeightPx -
+                cardVerticalPadding -
+                previewTitle.height -
+                contentTopPadding
+            val lineHeight = previewContent.lineHeight
+            val fittingLines =
+                if (lineHeight > 0) availableForContent / lineHeight else 0
+            previewContent.maxLines = fittingLines.coerceAtLeast(1)
         }
 
         // Kaydırıcıyı önizleme kartına bağlayan küçük yardımcı — o anki
@@ -781,6 +966,8 @@ class NoteWidgetConfigActivity : Activity() {
                 if (dark) Color.parseColor("#1E1E1E") else Color.parseColor("#FFFFFF")
             previewTitle.setTextColor(previewTitleColor)
             previewContent.setTextColor(previewTitleColor)
+            previewSettingsIcon.setColorFilter(previewTitleColor)
+            previewAddIcon.setColorFilter(previewTitleColor)
             applyPreviewOpacity(currentBgOpacity)
         }
 
@@ -816,6 +1003,13 @@ class NoteWidgetConfigActivity : Activity() {
                     // updateWidgetInner).
                     previewTitle.textSize = currentFontSize
                     previewContent.textSize = (currentFontSize - 2f).coerceAtLeast(8f)
+                    // DÜZELTME (sığdığı kadar satır): yazı boyutu
+                    // değişince satır yüksekliği de değiştiğinden, kaç
+                    // satırın sığdığı yeniden hesaplanmalı. textSize
+                    // değişikliği henüz layout'a yansımadığı için
+                    // (requestLayout asenkron), bir sonraki layout turunu
+                    // bekleyip öyle hesaplıyoruz.
+                    previewTitle.post { updatePreviewContentMaxLines() }
                 }
 
                 override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {}
@@ -859,7 +1053,12 @@ class NoteWidgetConfigActivity : Activity() {
         val darkRow = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = android.view.Gravity.CENTER_VERTICAL
-            setPadding(dp(20), dp(16), dp(20), dp(4))
+            // DÜZELTME (satırlar birbirine çok yakındı): alt padding
+            // 4dp -> 10dp yükseltildi; buildIconToggleRow'daki üst
+            // padding ile AYNI değere getirildi ki darkRow ile
+            // showSettingsRow arası, diğer switch satırları arasıyla
+            // TUTARLI bir boşlukta olsun.
+            setPadding(dp(20), dp(16), dp(20), dp(10))
         }
         val darkLabel = TextView(this).apply {
             text = getString(R.string.widget_config_dark_switch_label)
@@ -899,11 +1098,89 @@ class NoteWidgetConfigActivity : Activity() {
         darkRow.addView(darkLabel)
         darkRow.addView(darkSwitch)
 
+        // Kullanıcı isteği: koyu/açık switch'inin hemen altına, sağ
+        // üstteki ⚙️/➕ ikonlarını birer birer açıp kapatan iki switch.
+        // darkRow ile BİREBİR aynı desen (satır yapısı, renkler); tek
+        // fark her birinin kendi currentShowSettingsIcon/currentShowAddIcon
+        // değişkenini güncellemesi ve önizlemedeki ilgili ikonun
+        // görünürlüğünü (renk değil, VISIBLE/GONE) anında yansıtması.
+        fun buildIconToggleRow(
+            labelText: String,
+            initiallyChecked: Boolean,
+            previewIcon: ImageView,
+            onChanged: (Boolean) -> Unit,
+        ): LinearLayout {
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = android.view.Gravity.CENTER_VERTICAL
+                // DÜZELTME (satırlar birbirine çok yakındı): dikey
+                // padding 4dp -> 10dp yükseltildi (darkRow'un alt
+                // padding'iyle AYNI), üç switch satırı arasında daha
+                // ferah, tutarlı bir boşluk bırakmak için.
+                setPadding(dp(20), dp(10), dp(20), dp(10))
+            }
+            val label = TextView(this).apply {
+                text = labelText
+                setTextColor(Color.parseColor(colorTitle()))
+                textSize = 13f
+                layoutParams = LinearLayout.LayoutParams(
+                    0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1f
+                )
+            }
+            val switchView = android.widget.Switch(this).apply {
+                isChecked = initiallyChecked
+                thumbTintList = ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf(-android.R.attr.state_checked),
+                    ),
+                    intArrayOf(Color.parseColor(COLOR_AMBER), Color.parseColor(colorMutedText()))
+                )
+                trackTintList = ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf(-android.R.attr.state_checked),
+                    ),
+                    intArrayOf(
+                        ColorUtils.setAlphaComponent(Color.parseColor(COLOR_AMBER), 130),
+                        ColorUtils.setAlphaComponent(Color.parseColor(colorMutedText()), 90),
+                    )
+                )
+                setOnCheckedChangeListener { _, isChecked ->
+                    onChanged(isChecked)
+                    previewIcon.visibility = if (isChecked) View.VISIBLE else View.GONE
+                }
+            }
+            row.addView(label)
+            row.addView(switchView)
+            return row
+        }
+
+        // DÜZELTME: widget_strings.xml (26 dile çevrilmiş) artık
+        // widget_config_show_settings_icon_label / widget_config_show_add_icon_label
+        // anahtarlarını da içeriyor; diğer etiketlerle (ör.
+        // widget_config_dark_switch_label) AYNI desende getString() ile okunuyor.
+        val showSettingsRow = buildIconToggleRow(
+            labelText = getString(R.string.widget_config_show_settings_icon_label),
+            initiallyChecked = currentShowSettingsIcon,
+            previewIcon = previewSettingsIcon,
+        ) { isChecked -> currentShowSettingsIcon = isChecked }
+
+        val showAddRow = buildIconToggleRow(
+            labelText = getString(R.string.widget_config_show_add_icon_label),
+            initiallyChecked = currentShowAddIcon,
+            previewIcon = previewAddIcon,
+        ) { isChecked -> currentShowAddIcon = isChecked }
+
         presetContainer.addView(fontSizeLabel)
         presetContainer.addView(fontSizeSeekBar)
         presetContainer.addView(opacityLabel)
         presetContainer.addView(opacitySeekBar)
         presetContainer.addView(darkRow)
+        presetContainer.addView(showSettingsRow)
+        presetContainer.addView(showAddRow)
 
         // DÜZELTME (2 EKRANLI AKIŞ): bu ekrana zaten bir not/boş-durum
         // seçilmiş olarak gelindiği için buton artık başlangıçtan itibaren
@@ -923,7 +1200,15 @@ class NoteWidgetConfigActivity : Activity() {
             // (colorBg()) bir şerit üstünde durması tercih edildi.
             setBackgroundColor(Color.parseColor(colorBg()))
             setOnClickListener {
-                onNoteSelected(prefs, noteId, currentFontSize, currentBgOpacity, currentDark)
+                onNoteSelected(
+                    prefs,
+                    noteId,
+                    currentFontSize,
+                    currentBgOpacity,
+                    currentDark,
+                    currentShowSettingsIcon,
+                    currentShowAddIcon,
+                )
             }
         }
 
@@ -973,6 +1258,14 @@ class NoteWidgetConfigActivity : Activity() {
                         lp.width = squareSize
                         lp.height = squareSize
                         previewCard.layoutParams = lp
+                        previewCardHeightPx = squareSize
+                        // DÜZELTME (sığdığı kadar satır): kare yükseklik
+                        // artık BELLİ — previewContent'in kaç satır
+                        // gösterebileceğini buna göre hesapla. previewTitle
+                        // henüz yeni kare genişliğine göre yeniden
+                        // ölçülmediği için (requestLayout asenkron), bir
+                        // sonraki layout turunu bekleyip öyle hesaplıyoruz.
+                        previewCard.post { updatePreviewContentMaxLines() }
                     }
                 }
             }
@@ -1127,6 +1420,8 @@ class NoteWidgetConfigActivity : Activity() {
         fontSize: Float? = null,
         bgOpacity: Float? = null,
         dark: Boolean? = null,
+        showSettingsIcon: Boolean? = null,
+        showAddIcon: Boolean? = null,
     ) {
         val editor = prefs.edit()
             .putString(NoteWidgetReceiverV2.pinnedNoteKey(appWidgetId), noteId)
@@ -1138,6 +1433,17 @@ class NoteWidgetConfigActivity : Activity() {
         }
         if (dark != null) {
             editor.putBoolean(NoteWidgetReceiverV2.darkKey(appWidgetId), dark)
+        }
+        // Kullanıcı isteği (2 yeni switch): ⚙️/➕ ikonlarının widget'ta
+        // gösterilip gösterilmeyeceği, darkKey ile AYNI desende.
+        if (showSettingsIcon != null) {
+            editor.putBoolean(
+                NoteWidgetReceiverV2.showSettingsIconKey(appWidgetId),
+                showSettingsIcon
+            )
+        }
+        if (showAddIcon != null) {
+            editor.putBoolean(NoteWidgetReceiverV2.showAddIconKey(appWidgetId), showAddIcon)
         }
         editor.apply()
 
@@ -1297,7 +1603,17 @@ class NoteWidgetConfigActivity : Activity() {
                 orientation = LinearLayout.VERTICAL
                 background = ripple
                 setPadding(dp(16), dp(16), dp(16), dp(16))
-                minimumHeight = dp(120)
+                // DÜZELTME: Önceden 120dp idi — bu, başlık+preview
+                // toplamı bundan kısa olan (örn. tek satır başlık, 2
+                // satır preview'lu) notların kartını da 120dp'ye
+                // şişiriyor, metnin altında boş alan kalıyordu. Artık
+                // sadece boş/çok kısa içerikli notlarda kartın çok ince
+                // bir çizgiye düşmesini (ve dokunma hedefinin
+                // küçülmesini) önleyecek küçük bir taban bırakılıyor;
+                // kartın gerçek yüksekliği (StaggeredGridLayoutManager
+                // ile) yine içeriğe (title maxLines=2 + preview
+                // maxLines=6) göre serbestçe değişiyor.
+                minimumHeight = dp(48)
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -1306,7 +1622,7 @@ class NoteWidgetConfigActivity : Activity() {
 
             val title = TextView(ctx).apply {
                 setTextColor(Color.parseColor(colorTitle()))
-                textSize = 17f
+                textSize = 18f
                 setTypeface(typeface, android.graphics.Typeface.BOLD)
                 // DÜZELTME: Tek sütunlu listede başlık tek satıra
                 // kısıtlanıp kesiliyordu (ellipsize); artık kart dar bir
@@ -1321,7 +1637,7 @@ class NoteWidgetConfigActivity : Activity() {
 
             val preview = TextView(ctx).apply {
                 setTextColor(Color.parseColor(colorCardPreviewText()))
-                textSize = 15f
+                textSize = 17f
                 maxLines = 6
                 ellipsize = TextUtils.TruncateAt.END
                 setPadding(0, dp(8), 0, 0)

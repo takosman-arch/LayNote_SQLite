@@ -865,9 +865,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsSectionPersonalization => 'Personalisatie';
 
   @override
-  String get settingsSectionWidget => 'Widget';
-
-  @override
   String get settingsSectionAbout => 'Over';
 
   @override
@@ -1042,46 +1039,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get settingsTextColorTileSubtitle => 'Kleur voor de notitietekst.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Lettergrootte widget';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Voorbeeldkop - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Annuleren';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Toepassen';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Achtergrondtransparantie';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return '$percent% transparantie';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Annuleren';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Toepassen';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Donkere widget';
-
-  @override
-  String get settingsWidgetDarkModeDesc =>
-      'Donker kleurenschema voor de widget.';
 
   @override
   String get settingsAboutVersionTitle => 'App-versie';

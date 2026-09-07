@@ -624,33 +624,4 @@ class NoteWidgetService {
     }
     return lines;
   }
-
-  /// Ayarlar sayfasındaki Widget bölümünden (Aşama 4) veya uygulama
-  /// açılışında kayıtlı ayarlar yüklendiğinde çağrılır. Widget'ın görünüm
-  /// tercihlerini (yazı boyutu, arka plan saydamlığı, koyu/açık tema)
-  /// native tarafa yazar ve widget'ı yeniden çizer. Bu üç anahtar,
-  /// NoteWidget.kt içinde tanımlı KEY_FONT_SIZE / KEY_BG_OPACITY / KEY_DARK
-  /// ile birebir eşleşir.
-  Future<void> syncAppearanceSettings({
-    required double fontSize,
-    required double bgOpacity,
-    required bool dark,
-  }) async {
-    try {
-      await Future.wait([
-        HomeWidget.saveWidgetData<double>('widget_font_size', fontSize),
-        HomeWidget.saveWidgetData<double>('widget_bg_opacity', bgOpacity),
-        HomeWidget.saveWidgetData<bool>('widget_dark', dark),
-      ]);
-      await HomeWidget.updateWidget(
-        qualifiedAndroidName: _androidQualifiedReceiver,
-      );
-    } catch (e, st) {
-      // GEÇİCİ TEŞHİS: hatayı artık yutmuyoruz, ekrana basıyoruz.
-      // ignore: avoid_print
-      print('WIDGET HATASI (syncAppearanceSettings): $e');
-      // ignore: avoid_print
-      print(st);
-    }
-  }
 }

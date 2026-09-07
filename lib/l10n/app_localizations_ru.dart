@@ -860,9 +860,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsSectionPersonalization => 'Персонализация';
 
   @override
-  String get settingsSectionWidget => 'Виджет';
-
-  @override
   String get settingsSectionAbout => 'О приложении';
 
   @override
@@ -1036,45 +1033,6 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get settingsTextColorTileSubtitle =>
       'Цвет текста содержимого заметки.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Размер шрифта виджета';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Пример заголовка — $size пт';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Отмена';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Применить';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Прозрачность фона';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return 'Прозрачность $percent%';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Отмена';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Применить';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Тёмный виджет';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'Тёмная цветовая схема для виджета.';
 
   @override
   String get settingsAboutVersionTitle => 'Версия приложения';

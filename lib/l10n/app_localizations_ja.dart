@@ -840,9 +840,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsSectionPersonalization => 'パーソナライズ';
 
   @override
-  String get settingsSectionWidget => 'ウィジェット';
-
-  @override
   String get settingsSectionAbout => 'アプリについて';
 
   @override
@@ -1006,45 +1003,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settingsTextColorTileSubtitle => 'メモ本文の文字色。';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'ウィジェットの文字サイズ';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return '見出しサンプル - ${size}pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'キャンセル';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => '適用';
-
-  @override
-  String get settingsWidgetOpacityLabel => '背景の透明度';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return '透明度$percent%';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'キャンセル';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => '適用';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'ダークウィジェット';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'ウィジェット用のダークカラースキーム。';
 
   @override
   String get settingsAboutVersionTitle => 'アプリバージョン';

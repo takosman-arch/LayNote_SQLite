@@ -862,9 +862,6 @@ class AppLocalizationsRo extends AppLocalizations {
   String get settingsSectionPersonalization => 'Personalizare';
 
   @override
-  String get settingsSectionWidget => 'Widget';
-
-  @override
   String get settingsSectionAbout => 'Despre';
 
   @override
@@ -1041,46 +1038,6 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get settingsTextColorTileSubtitle =>
       'Culoare pentru textul conținutului notiței.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Dimensiune font widget';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Titlu exemplu - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Anulare';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Aplicare';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Transparență fundal';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return 'Transparență $percent%';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Anulare';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Aplicare';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Widget întunecat';
-
-  @override
-  String get settingsWidgetDarkModeDesc =>
-      'Schemă de culori întunecată pentru widget.';
 
   @override
   String get settingsAboutVersionTitle => 'Versiune aplicație';

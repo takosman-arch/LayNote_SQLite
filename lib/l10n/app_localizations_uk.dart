@@ -860,9 +860,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get settingsSectionPersonalization => 'Персоналізація';
 
   @override
-  String get settingsSectionWidget => 'Віджет';
-
-  @override
   String get settingsSectionAbout => 'Про додаток';
 
   @override
@@ -1037,45 +1034,6 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get settingsTextColorTileSubtitle =>
       'Колір для тексту вмісту нотатки.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Розмір шрифту віджета';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Приклад заголовка - $size пт';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Скасувати';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Застосувати';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Прозорість фону';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return 'Прозорість $percent%';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Скасувати';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Застосувати';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Темний віджет';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'Темна колірна схема для віджета.';
 
   @override
   String get settingsAboutVersionTitle => 'Версія додатку';

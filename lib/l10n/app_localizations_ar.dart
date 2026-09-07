@@ -851,9 +851,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsSectionPersonalization => 'التخصيص';
 
   @override
-  String get settingsSectionWidget => 'الودجت';
-
-  @override
   String get settingsSectionAbout => 'حول التطبيق';
 
   @override
@@ -1022,45 +1019,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsTextColorTileSubtitle => 'لون نص محتوى الملاحظة.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'حجم خط الودجت';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'عنوان تجريبي - $size نقطة';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'إلغاء';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'تطبيق';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'شفافية الخلفية';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return 'شفافية $percent٪';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent٪';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'إلغاء';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'تطبيق';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'ودجت داكن';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'نظام ألوان داكن للودجت.';
 
   @override
   String get settingsAboutVersionTitle => 'إصدار التطبيق';

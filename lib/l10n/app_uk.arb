@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "Безпека",
   "settingsSectionTheme": "Тема",
   "settingsSectionPersonalization": "Персоналізація",
-  "settingsSectionWidget": "Віджет",
   "settingsSectionAbout": "Про додаток",
   "settingsHintQuestionPet": "Як звали вашого першого домашнього улюбленця?",
   "settingsHintQuestionTeacher": "Як звали вашого улюбленого вчителя?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "ОК",
   "settingsTextColorTileTitle": "Колір тексту",
   "settingsTextColorTileSubtitle": "Колір для тексту вмісту нотатки.",
-  "settingsWidgetFontSizeLabel": "Розмір шрифту віджета",
-  "settingsWidgetFontSizeSample": "Приклад заголовка - {size} пт",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "Скасувати",
-  "settingsWidgetFontSizeApplyButton": "Застосувати",
-  "settingsWidgetOpacityLabel": "Прозорість фону",
-  "settingsWidgetOpacityValue": "Прозорість {percent}%",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "Скасувати",
-  "settingsWidgetOpacityApplyButton": "Застосувати",
-  "settingsWidgetDarkModeTitle": "Темний віджет",
-  "settingsWidgetDarkModeDesc": "Темна колірна схема для віджета.",
   "settingsAboutVersionTitle": "Версія додатку",
   "settingsAboutVersionLoading": "Завантаження версії…",
   "aboutSectionDeveloper": "Зворотний зв’язок",

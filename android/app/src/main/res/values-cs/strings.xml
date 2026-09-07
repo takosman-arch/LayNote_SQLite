@@ -19,6 +19,8 @@
          ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
     <string name="widget_config_appearance_heading">Upravit vzhled</string>
     <string name="widget_config_dark_switch_label">Tmavý widget</string>
+    <string name="widget_config_show_settings_icon_label">Zobrazit ikonu nastavení</string>
+    <string name="widget_config_show_add_icon_label">Zobrazit ikonu nové poznámky</string>
     <string name="widget_settings_button_desc">Nastavení widgetu</string>
     <string name="widget_add_button_desc">Vytvořit novou poznámku</string>
 </resources>

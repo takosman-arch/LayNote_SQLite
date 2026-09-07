@@ -861,9 +861,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get settingsSectionPersonalization => 'Přizpůsobení';
 
   @override
-  String get settingsSectionWidget => 'Widget';
-
-  @override
   String get settingsSectionAbout => 'O aplikaci';
 
   @override
@@ -1039,45 +1036,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get settingsTextColorTileSubtitle => 'Barva textu obsahu poznámky.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Velikost písma widgetu';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Ukázkový nadpis – $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Zrušit';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Použít';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Průhlednost pozadí';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return 'Průhlednost $percent %';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent %';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Zrušit';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Použít';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Tmavý widget';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'Tmavé barevné schéma pro widget.';
 
   @override
   String get settingsAboutVersionTitle => 'Verze aplikace';

@@ -19,6 +19,8 @@
          ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
     <string name="widget_config_appearance_heading">ปรับรูปลักษณ์</string>
     <string name="widget_config_dark_switch_label">วิดเจ็ตโหมดมืด</string>
+    <string name="widget_config_show_settings_icon_label">แสดงไอคอนการตั้งค่า</string>
+    <string name="widget_config_show_add_icon_label">แสดงไอคอนโน้ตใหม่</string>
     <string name="widget_settings_button_desc">การตั้งค่าวิดเจ็ต</string>
     <string name="widget_add_button_desc">สร้างโน้ตใหม่</string>
 </resources>

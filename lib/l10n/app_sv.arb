@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "Säkerhet",
   "settingsSectionTheme": "Tema",
   "settingsSectionPersonalization": "Anpassning",
-  "settingsSectionWidget": "Widget",
   "settingsSectionAbout": "Om",
   "settingsHintQuestionPet": "Vad heter ditt första husdjur?",
   "settingsHintQuestionTeacher": "Vad heter din favoritlärare?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "OK",
   "settingsTextColorTileTitle": "Textfärg",
   "settingsTextColorTileSubtitle": "Färg för anteckningens textinnehåll.",
-  "settingsWidgetFontSizeLabel": "Widgetens textstorlek",
-  "settingsWidgetFontSizeSample": "Exempelrubrik - {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "Avbryt",
-  "settingsWidgetFontSizeApplyButton": "Verkställ",
-  "settingsWidgetOpacityLabel": "Bakgrundens genomskinlighet",
-  "settingsWidgetOpacityValue": "{percent}% genomskinlighet",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "Avbryt",
-  "settingsWidgetOpacityApplyButton": "Verkställ",
-  "settingsWidgetDarkModeTitle": "Mörk widget",
-  "settingsWidgetDarkModeDesc": "Mörkt färgschema för widgeten.",
   "settingsAboutVersionTitle": "Appversion",
   "settingsAboutVersionLoading": "Läser in version…",
   "aboutSectionDeveloper": "Feedback",

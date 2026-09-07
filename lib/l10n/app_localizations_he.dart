@@ -848,9 +848,6 @@ class AppLocalizationsHe extends AppLocalizations {
   String get settingsSectionPersonalization => 'התאמה אישית';
 
   @override
-  String get settingsSectionWidget => 'ווידג\'ט';
-
-  @override
   String get settingsSectionAbout => 'אודות';
 
   @override
@@ -1018,45 +1015,6 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get settingsTextColorTileSubtitle => 'צבע לטקסט תוכן הפתקית.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'גודל גופן הווידג\'ט';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'כותרת לדוגמה - $size נק\'';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'ביטול';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'החל';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'שקיפות רקע';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return '$percent% שקיפות';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'ביטול';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'החל';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'ווידג\'ט כהה';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'ערכת צבעים כהה עבור הווידג\'ט.';
 
   @override
   String get settingsAboutVersionTitle => 'גרסת האפליקציה';

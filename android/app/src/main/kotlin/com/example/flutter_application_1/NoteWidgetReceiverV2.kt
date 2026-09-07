@@ -2,6 +2,7 @@ package com.example.flutter_application_1
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.app.ActivityOptions
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -62,6 +63,10 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             // Koyu/açık artık bu widget örneğine özel olabildiği için
             // (bkz. darkKey), aynı yaşam döngüsünde temizlenmesi gerekiyor.
             editor.remove(darkKey(id))
+            // Kullanıcı isteği (2 yeni switch): ⚙️/➕ ikon görünürlük
+            // tercihleri de darkKey ile AYNI yaşam döngüsünde temizlenir.
+            editor.remove(showSettingsIconKey(id))
+            editor.remove(showAddIconKey(id))
         }
         editor.apply()
         super.onDeleted(context, appWidgetIds)
@@ -82,9 +87,28 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
         // NoteWidgetService._buildStructuredLines ile ürettiği yapılandırılmış
         // satır listesi. Format: {"noteId": [ {satır...}, ... ], ...}
         private const val KEY_ALL_NOTES_LINES_JSON = "all_notes_lines_json"
-        private const val KEY_FONT_SIZE = "widget_font_size"
-        private const val KEY_BG_OPACITY = "widget_bg_opacity"
-        private const val KEY_DARK = "widget_dark"
+        // DÜZELTME: Ayarlar sayfasındaki genel (tüm widget'lar için ortak)
+        // Yazı Boyutu/Saydamlık/Koyu Mod bölümü kaldırıldı — bu değerleri
+        // yazan tek yer oydu. Aşağıdaki DEFAULT_* sabitleri artık hiçbir
+        // yerden yazılmayacakları için doğrudan sabit olarak tutuluyor.
+        // Her widget örneği zaten NoteWidgetConfigActivity'nin "Widget'ı
+        // Ekle" adımında kendi fontSizeKey/bgOpacityKey/darkKey değerini
+        // koşulsuz kaydediyor (bkz. NoteWidgetConfigActivity.onNoteSelected),
+        // bu yüzden bu sabitler pratikte sadece o kayıt hiç oluşmamışsa
+        // (çok eski/olağandışı bir widget örneği) devreye girer. Tutarlılık
+        // için NoteWidgetConfigActivity.kt'deki globalFontSize/
+        // globalBgOpacity varsayılanlarıyla (23f/0.5f) AYNI tutuluyor;
+        // NoteWidget.kt'deki AYNI sabitlerle senkron kalmalı.
+        private const val DEFAULT_FONT_SIZE = 23f
+        private const val DEFAULT_BG_OPACITY = 0.5f
+        private const val DEFAULT_DARK = true
+
+        // Kullanıcı isteği (2 yeni switch): sağ üstteki ⚙️/➕ ikonlarının
+        // varsayılan olarak gösterilmesi — bu switch'lerden ÖNCE eklenmiş
+        // widget örnekleri için de (kaydedilmiş tercih yoksa) davranış
+        // DEĞİŞMEMİŞ olur, ikonlar önceki gibi görünmeye devam eder.
+        private const val DEFAULT_SHOW_SETTINGS_ICON = true
+        private const val DEFAULT_SHOW_ADD_ICON = true
 
         // Bir widget örneğinin (appWidgetId) kullanıcı tarafından SEÇİLMİŞ
         // notunun id'sinin SharedPreferences'ta saklandığı anahtar. AYNI
@@ -98,21 +122,28 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
         // pinnedNoteKey ile BİREBİR aynı desen: anahtar appWidgetId'ye göre
         // üretilir, bu widget örneği silinince onDeleted içinde temizlenir.
         //
-        // Bu anahtarlara HENÜZ hiçbir yerden yazılmıyor (config ekranındaki
-        // kaydırıcı UI'ı sonraki aşamada eklenecek) — updateWidgetInner
-        // içindeki okuma bu yüzden bulunamazsa eski global anahtara
-        // (KEY_FONT_SIZE / KEY_BG_OPACITY) düşecek şekilde yazıldı. Böylece
-        // bu aşama, kaydırıcılar eklenene kadar mevcut davranışı hiç
-        // değiştirmez.
+        // NoteWidgetConfigActivity.onNoteSelected, widget her eklendiğinde
+        // bu anahtarlara koşulsuz yazıyor — updateWidgetInner içindeki
+        // okuma bu yüzden bulunamazsa artık DEFAULT_FONT_SIZE/DEFAULT_BG_OPACITY
+        // sabitlerine düşüyor (eski global widget_font_size/widget_bg_opacity
+        // anahtarları kaldırıldı, bkz. yukarıdaki not).
         fun fontSizeKey(appWidgetId: Int): String = "widget_font_size_widget_$appWidgetId"
 
         fun bgOpacityKey(appWidgetId: Int): String = "widget_bg_opacity_widget_$appWidgetId"
 
-        // Koyu/açık artık font boyutu/saydamlık gibi widget'a özel olabiliyor
-        // (kullanıcı kararı: her widget kendi temasını seçebilsin). AYNI
-        // desen: bulunamazsa eski global anahtara (KEY_DARK) düşülür —
-        // bkz. updateWidgetInner'daki okuma ve NoteWidget.kt'deki AYNI mantık.
+        // Koyu/açık, font boyutu/saydamlık ile AYNI desen: bulunamazsa
+        // DEFAULT_DARK sabitine düşülür (bkz. updateWidgetInner'daki okuma
+        // ve NoteWidget.kt'deki AYNI mantık).
         fun darkKey(appWidgetId: Int): String = "widget_dark_widget_$appWidgetId"
+
+        // Kullanıcı isteği (2 yeni switch): darkKey ile BİREBİR aynı desen
+        // — bu widget örneğine özel, bulunamazsa DEFAULT_SHOW_*_ICON
+        // sabitine düşülür (bkz. updateWidgetInner'daki okuma).
+        fun showSettingsIconKey(appWidgetId: Int): String =
+            "widget_show_settings_icon_widget_$appWidgetId"
+
+        fun showAddIconKey(appWidgetId: Int): String =
+            "widget_show_add_icon_widget_$appWidgetId"
 
         // "all_notes_json" içinden verilen id'ye ait notun (title, preview)
         // çiftini döndürür. Not bulunamazsa (silinmiş/kilitlenmiş/JSON
@@ -225,24 +256,17 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             val content0 = prefs.getString(KEY_CONTENT, "") ?: ""
             val count = prefs.getInt(KEY_COUNT, 0)
             val latestNoteId = prefs.getString(KEY_NOTE_ID, null)
-            // AŞAMA 1: önce bu widget örneğine özel değer aranır
-            // (fontSizeKey/bgOpacityKey); henüz hiç ayarlanmamışsa (kaydırıcı
-            // UI'ı sonraki aşamada geliyor) eski global anahtara (KEY_FONT_SIZE/
-            // KEY_BG_OPACITY) düşülür — böylece mevcut widget'ların görünümü
-            // bu değişiklikle değişmez.
-            val globalFontSize = prefs.getFloatCompat(KEY_FONT_SIZE, 14f)
-            val globalBgOpacity = prefs.getFloatCompat(KEY_BG_OPACITY, 1f)
-            val fontSize = prefs.getFloatCompat(fontSizeKey(appWidgetId), globalFontSize)
-            val bgOpacity = prefs.getFloatCompat(bgOpacityKey(appWidgetId), globalBgOpacity)
+            // Bu widget örneğine özel değer aranır (fontSizeKey/bgOpacityKey);
+            // bulunamazsa (NoteWidgetConfigActivity akışı dışında oluşmuş,
+            // olağandışı bir widget örneğiyse) sabit DEFAULT_* değerlerine
+            // düşülür — bkz. yukarıdaki DEFAULT_FONT_SIZE/DEFAULT_BG_OPACITY notu.
+            val fontSize = prefs.getFloatCompat(fontSizeKey(appWidgetId), DEFAULT_FONT_SIZE)
+            val bgOpacity = prefs.getFloatCompat(bgOpacityKey(appWidgetId), DEFAULT_BG_OPACITY)
                 .coerceIn(0f, 1f)
             // Koyu/açık: önce bu widget örneğine özel değer aranır
             // (NoteWidgetConfigActivity'deki switch ile kaydedilir); yoksa
-            // (widget hiç yapılandırılmamışsa, ya da Ayarlar sayfasındaki
-            // GENEL değere hâlâ bağlıysa) eski global anahtara (KEY_DARK)
-            // düşülür. Boolean için getBoolean'ın kendi default parametresi
-            // yeterli — Float'taki gibi tip uyuşmazlığı riski yok.
-            val globalDark = prefs.getBoolean(KEY_DARK, true)
-            val dark = prefs.getBoolean(darkKey(appWidgetId), globalDark)
+            // sabit DEFAULT_DARK değerine düşülür.
+            val dark = prefs.getBoolean(darkKey(appWidgetId), DEFAULT_DARK)
 
             // Bu widget örneği için kullanıcı yapılandırma ekranından
             // (NoteWidgetConfigActivity) özel bir not seçmiş olabilir. Öyle
@@ -305,14 +329,48 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             views.setTextViewText(R.id.widget_count, "$count not")
             Log.e(TAG, "ADIM 4 OK -> setTextViewText (3 view) tamamlandi")
 
+            // DÜZELTME (başlık+ikonlar hepsi boşken üstte boş satır
+            // kalıyordu): widget_title'ın INVISIBLE/GONE kararı, ikonların
+            // gösterilip gösterilmediğine bağlı hale getirildi — bu yüzden
+            // showSettingsIcon/showAddIcon değerleri (aşağıda ADIM 6.1'de
+            // ikon view'larına uygulanan AYNI prefs okumaları) buraya
+            // taşındı; tek kaynak burada, aşağıda tekrar okunmuyor.
+            val showSettingsIcon = prefs.getBoolean(
+                showSettingsIconKey(appWidgetId),
+                DEFAULT_SHOW_SETTINGS_ICON
+            )
+            val showAddIcon = prefs.getBoolean(showAddIconKey(appWidgetId), DEFAULT_SHOW_ADD_ICON)
+            val anyIconVisible = showSettingsIcon || showAddIcon
+
             // Notun başlığı yoksa (title boş string) "Başlıksız not" gibi
-            // bir yer tutucu YAZILMAZ; başlık satırı tamamen gizlenir ki
-            // içerik (checklist/tablo/metin) doğrudan en üstten görünsün.
+            // bir yer tutucu YAZILMAZ; başlık metni görünmez olur ki
+            // içerik (checklist/tablo/metin) görsel olarak öne çıksın.
             // "Henüz not yok" durumu (hiç not yokken) title boş DEĞİL,
             // dolu bir metin olduğu için bu durumdan etkilenmez.
+            //
+            // DÜZELTME (ikonlar sola kayıyordu): önceden burada koşulsuz
+            // GONE kullanılıyordu. Ama widget_title, note_widget.xml'de
+            // layout_width="0dp" + layout_weight="1" ile ⚙️/➕ ikonlarını
+            // sağda tutan "boşluk dolgusu" görevi de görüyor. GONE, view'ı
+            // satırdan TAMAMEN çıkarıp bu boşluğu da yok ediyor; geriye
+            // weight'siz sadece iki ikon kalınca satırın varsayılan
+            // (sol) hizalamasına düşüp sol üstte görünüyorlardı. INVISIBLE
+            // ise metni gizler ama weight ile ayrılan alanı/layout'u
+            // KORUR, böylece ikonlar her durumda sağda kalır.
+            //
+            // DÜZELTME (2): fakat ikonların İKİSİ de kapatılmışsa (switch'ler
+            // kapalıysa) artık korunacak bir "sağda tutma" ihtiyacı da yok —
+            // bu durumda INVISIBLE, sadece görünmeyen ama yine de satır
+            // yüksekliği kadar yer kaplayan boş bir satıra sebep oluyordu.
+            // Böyle bir durumda (başlık boş VE hiçbir ikon görünmüyor)
+            // widget_title GONE yapılıyor, satır tamamen çöküyor.
             views.setViewVisibility(
                 R.id.widget_title,
-                if (title.isEmpty()) View.GONE else View.VISIBLE
+                if (title.isEmpty()) {
+                    if (anyIconVisible) View.INVISIBLE else View.GONE
+                } else {
+                    View.VISIBLE
+                }
             )
 
             // Yapılandırılmış satırlar (checkbox/tablo satırları) varsa
@@ -457,6 +515,22 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             // DÜZELTME (2 yeni ikon): ⚙️/➕ ikonlarının çizim rengi de
             // koyu/açık temaya göre (titleColor ile AYNI ton) ayarlanıyor
             // — beyaz sabit ikon açık temada görünmez kalırdı.
+            // Kullanıcı isteği (2 yeni switch): ⚙️/➕ ikonları artık widget'a
+            // özel olarak tek tek gizlenebiliyor. darkKey/fontSizeKey ile
+            // AYNI desen: bulunamazsa DEFAULT_SHOW_*_ICON'a (true) düşülür,
+            // yani bu switch'lerden ÖNCE eklenmiş widget'lar eskisi gibi
+            // ikonları göstermeye devam eder.
+            // (showSettingsIcon/showAddIcon artık yukarıda, widget_title
+            // görünürlük kararı için de kullanılabilmesi için hesaplanıyor.)
+            views.setViewVisibility(
+                R.id.widget_settings_button,
+                if (showSettingsIcon) View.VISIBLE else View.GONE
+            )
+            views.setViewVisibility(
+                R.id.widget_add_button,
+                if (showAddIcon) View.VISIBLE else View.GONE
+            )
+
             try {
                 views.setInt(R.id.widget_settings_button, "setColorFilter", titleColor)
                 views.setInt(R.id.widget_add_button, "setColorFilter", titleColor)
@@ -509,23 +583,50 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             // (yani ikonlara dokunmak notu AÇMAZ, kendi eylemini yapar).
             try {
                 // ⚙️ Ayarlar: NoteWidgetConfigActivity'yi bu appWidgetId ile
-                // DOĞRUDAN açar — sistemin normal APPWIDGET_CONFIGURE akışı
-                // (ör. uzun-bas menüsü) ile AYNI ekran, aynı appWidgetId
-                // extra'sıyla; o Activity zaten bunu okuyup mevcut notu/
-                // ayarları (reconfigure) gösterecek şekilde yazılmıştı.
+                // DOĞRUDAN açar. DÜZELTME (kullanıcı isteği): sistemin normal
+                // APPWIDGET_CONFIGURE akışındaki (ör. uzun-bas menüsü) 1. adım
+                // olan "not seçimi" ekranı BURADA atlanıyor — EXTRA_OPEN_APPEARANCE_STEP
+                // extra'sı sayesinde Activity doğrudan "Görünümü ayarla" (2.
+                // adım) ekranını, bu widget'ın zaten kayıtlı notu/ayarlarıyla
+                // açıyor (bkz. NoteWidgetConfigActivity.onCreate).
                 val configIntent = Intent(context, NoteWidgetConfigActivity::class.java).apply {
                     putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                    putExtra(NoteWidgetConfigActivity.EXTRA_OPEN_APPEARANCE_STEP, true)
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                 }
                 // requestCode olarak appWidgetId kullanılıyor ki farklı
                 // widget örneklerinin PendingIntent'leri birbirinin
                 // üzerine yazılmasın (aksi halde sistem, aynı requestCode'a
                 // sahip PendingIntent'leri "aynı" sayıp ilkini günceller).
+                //
+                // DÜZELTME (⚙️ ikonuna basınca widget'ın yeni pencerenin
+                // ÜZERİNE binip sonra kaybolması): NoteWidgetConfigActivity
+                // içinde zaten overrideActivityTransition(OPEN, 0, 0) /
+                // overridePendingTransition(0, 0) çağrısı var, ama bu SADECE
+                // Activity'nin KENDİ temasına bağlı (Animation.Activity
+                // kaynaklı) çapraz geçişi kapatıyor. Widget'a dokunulunca
+                // PendingIntent'i asıl TETİKLEYEN taraf biz değil, launcher
+                // (ana ekran) sürecidir; launcher, AppWidgetHostView'in
+                // dokunulan görünümden (view bounds) "yakınlaştırarak açılma"
+                // (clip-reveal/scale-up) ActivityOptions'ı ile gönderiyor —
+                // bu da tam olarak "widget büyüyerek yeni ekranın üzerine
+                // biniyor, sonra kayboluyor" görüntüsünü veren şey. Bu
+                // launcher-kaynaklı animasyon, hedef Activity'nin
+                // overrideActivityTransition çağrısıyla HER ZAMAN
+                // bastırılamıyor. Bunu güvenilir biçimde önlemenin yolu,
+                // PendingIntent'i OLUŞTURURKEN (burada, gönderilmeden ÖNCE)
+                // animasyonsuz bir ActivityOptions'ı doğrudan PendingIntent'e
+                // GÖMMEK — güvenlik sertleştirmeleri nedeniyle sistem, PendingIntent
+                // oluşturucusunun gömdüğü animasyon seçeneklerini gönderenin
+                // (launcher'ın) kendi seçeneklerinin ÖNÜNE koyar, bu yüzden
+                // launcher'ın clip-reveal denemesi devre dışı kalır.
+                val noAnimationOptions = ActivityOptions.makeCustomAnimation(context, 0, 0).toBundle()
                 val settingsPendingIntent = PendingIntent.getActivity(
                     context,
                     appWidgetId,
                     configIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                    noAnimationOptions
                 )
                 views.setOnClickPendingIntent(R.id.widget_settings_button, settingsPendingIntent)
                 Log.e(TAG, "ADIM 8.2 OK -> ayarlar ikonu PendingIntent tamamlandi")

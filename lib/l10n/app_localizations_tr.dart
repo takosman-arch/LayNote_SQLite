@@ -854,9 +854,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsSectionPersonalization => 'Kişiselleştirme';
 
   @override
-  String get settingsSectionWidget => 'Widget';
-
-  @override
   String get settingsSectionAbout => 'Hakkında';
 
   @override
@@ -1028,45 +1025,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsTextColorTileSubtitle => 'Not içerik metni için renk.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Widget Yazı Boyutu';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Örnek başlık - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'İptal';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Uygula';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Arka Plan Saydamlığı';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return '%$percent saydamlık';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '%$percent';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'İptal';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Uygula';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Koyu Widget';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'Widget için koyu renk şeması.';
 
   @override
   String get settingsAboutVersionTitle => 'Uygulama Sürümü';

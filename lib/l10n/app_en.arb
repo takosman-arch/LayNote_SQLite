@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "Security",
   "settingsSectionTheme": "Theme",
   "settingsSectionPersonalization": "Personalization",
-  "settingsSectionWidget": "Widget",
   "settingsSectionAbout": "About",
   "settingsHintQuestionPet": "What is the name of your first pet?",
   "settingsHintQuestionTeacher": "What is the name of your favorite teacher?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "OK",
   "settingsTextColorTileTitle": "Text Color",
   "settingsTextColorTileSubtitle": "Color for note content text.",
-  "settingsWidgetFontSizeLabel": "Widget Font Size",
-  "settingsWidgetFontSizeSample": "Sample heading - {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "Cancel",
-  "settingsWidgetFontSizeApplyButton": "Apply",
-  "settingsWidgetOpacityLabel": "Background Transparency",
-  "settingsWidgetOpacityValue": "{percent}% transparency",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "Cancel",
-  "settingsWidgetOpacityApplyButton": "Apply",
-  "settingsWidgetDarkModeTitle": "Dark Widget",
-  "settingsWidgetDarkModeDesc": "Dark color scheme for the widget.",
   "settingsAboutVersionTitle": "App Version",
   "settingsAboutVersionLoading": "Loading version…",
   "aboutSectionDeveloper": "Feedback",
@@ -479,8 +445,7 @@
   "settingsGlobalFontSizeCancelButton": "Cancel",
   "settingsGlobalFontSizeApplyButton": "Apply",
   "settingsLineHeightTileTitle": "Line Spacing",
-  "@settingsLineHeightTileTitle": {
-  },
+  "@settingsLineHeightTileTitle": {},
   "settingsLineHeightTileSubtitle": "{value}x — applied to note text.",
   "@settingsLineHeightTileSubtitle": {
     "placeholders": {
@@ -498,14 +463,11 @@
     }
   },
   "settingsLineHeightSampleParagraph": "This is a sample line.\nHere is a second line.\nYou can see the spacing here.",
-  "@settingsLineHeightSampleParagraph": {
-  },
+  "@settingsLineHeightSampleParagraph": {},
   "settingsLineHeightCancelButton": "Cancel",
-  "@settingsLineHeightCancelButton": {
-  },
+  "@settingsLineHeightCancelButton": {},
   "settingsLineHeightApplyButton": "Apply",
-  "@settingsLineHeightApplyButton": {
-  },
+  "@settingsLineHeightApplyButton": {},
   "settingsPreviewLinesTileTitle": "Note Preview Lines",
   "settingsPreviewLinesTileSubtitle": "Show up to {lines} lines. If the note is shorter, the actual number of lines is shown.",
   "@settingsPreviewLinesTileSubtitle": {

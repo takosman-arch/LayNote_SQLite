@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "安全",
   "settingsSectionTheme": "主题",
   "settingsSectionPersonalization": "个性化",
-  "settingsSectionWidget": "小组件",
   "settingsSectionAbout": "关于",
   "settingsHintQuestionPet": "你第一只宠物的名字是什么？",
   "settingsHintQuestionTeacher": "你最喜欢的老师叫什么名字？",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "确定",
   "settingsTextColorTileTitle": "文字颜色",
   "settingsTextColorTileSubtitle": "笔记内容文字的颜色。",
-  "settingsWidgetFontSizeLabel": "小组件字号",
-  "settingsWidgetFontSizeSample": "示例标题 - {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "取消",
-  "settingsWidgetFontSizeApplyButton": "应用",
-  "settingsWidgetOpacityLabel": "背景透明度",
-  "settingsWidgetOpacityValue": "透明度 {percent}%",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "取消",
-  "settingsWidgetOpacityApplyButton": "应用",
-  "settingsWidgetDarkModeTitle": "深色小组件",
-  "settingsWidgetDarkModeDesc": "小组件使用深色配色方案。",
   "settingsAboutVersionTitle": "应用版本",
   "settingsAboutVersionLoading": "正在加载版本…",
   "aboutSectionDeveloper": "反馈",

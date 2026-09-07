@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "Sicurezza",
   "settingsSectionTheme": "Tema",
   "settingsSectionPersonalization": "Personalizzazione",
-  "settingsSectionWidget": "Widget",
   "settingsSectionAbout": "Informazioni",
   "settingsHintQuestionPet": "Qual è il nome del tuo primo animale domestico?",
   "settingsHintQuestionTeacher": "Qual è il nome del tuo insegnante preferito?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "OK",
   "settingsTextColorTileTitle": "Colore testo",
   "settingsTextColorTileSubtitle": "Colore per il testo del contenuto della nota.",
-  "settingsWidgetFontSizeLabel": "Dimensione carattere widget",
-  "settingsWidgetFontSizeSample": "Titolo di esempio - {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "Annulla",
-  "settingsWidgetFontSizeApplyButton": "Applica",
-  "settingsWidgetOpacityLabel": "Trasparenza sfondo",
-  "settingsWidgetOpacityValue": "{percent}% di trasparenza",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "Annulla",
-  "settingsWidgetOpacityApplyButton": "Applica",
-  "settingsWidgetDarkModeTitle": "Widget scuro",
-  "settingsWidgetDarkModeDesc": "Schema di colori scuro per il widget.",
   "settingsAboutVersionTitle": "Versione app",
   "settingsAboutVersionLoading": "Caricamento versione…",
   "aboutSectionDeveloper": "Feedback",

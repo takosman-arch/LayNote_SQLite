@@ -47,23 +47,34 @@
                 android:ellipsize="end"
                 android:text="Henüz not yok" />
 
-            <ImageView
-                android:id="@+id/widget_settings_button"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginStart="4dp"
-                android:padding="4dp"
-                android:src="@drawable/ic_widget_settings"
-                android:contentDescription="@string/widget_settings_button_desc" />
-
+            <!-- DÜZELTME (ikon sırası değiştirildi): ➕ artık başlığa daha
+                 yakın (soldaki), ⚙️ ayar ikonu en sağda. marginStart
+                 değerleri de sıraya göre swap edildi: ilk ikonun
+                 (widget_add_button) başlıkla arasındaki boşluk eskiden
+                 widget_settings_button'ın sahip olduğu 4dp; ikinci ikonun
+                 (widget_settings_button) kendinden önceki ikonla arasındaki
+                 boşluk ise eskiden widget_add_button'ın sahip olduğu 2dp —
+                 böylece görsel aralıklar aynı kalıyor, sadece hangi ikonun
+                 nerede olduğu değişiyor. NoteWidgetConfigActivity.kt'deki
+                 previewAddIcon/previewSettingsIcon sırası da AYNI şekilde
+                 güncellendi (önizleme <-> gerçek widget birebir eşleşsin). -->
             <ImageView
                 android:id="@+id/widget_add_button"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_marginStart="2dp"
+                android:layout_marginStart="4dp"
                 android:padding="4dp"
                 android:src="@drawable/ic_widget_add"
                 android:contentDescription="@string/widget_add_button_desc" />
+
+            <ImageView
+                android:id="@+id/widget_settings_button"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="2dp"
+                android:padding="4dp"
+                android:src="@drawable/ic_widget_settings"
+                android:contentDescription="@string/widget_settings_button_desc" />
         </LinearLayout>
 
         <TextView

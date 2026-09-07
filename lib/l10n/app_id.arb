@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "Keamanan",
   "settingsSectionTheme": "Tema",
   "settingsSectionPersonalization": "Personalisasi",
-  "settingsSectionWidget": "Widget",
   "settingsSectionAbout": "Tentang",
   "settingsHintQuestionPet": "Siapa nama hewan peliharaan pertama Anda?",
   "settingsHintQuestionTeacher": "Siapa nama guru favorit Anda?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "OK",
   "settingsTextColorTileTitle": "Warna Teks",
   "settingsTextColorTileSubtitle": "Warna untuk teks konten catatan.",
-  "settingsWidgetFontSizeLabel": "Ukuran Font Widget",
-  "settingsWidgetFontSizeSample": "Contoh judul - {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "Batal",
-  "settingsWidgetFontSizeApplyButton": "Terapkan",
-  "settingsWidgetOpacityLabel": "Transparansi Latar Belakang",
-  "settingsWidgetOpacityValue": "Transparansi {percent}%",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "Batal",
-  "settingsWidgetOpacityApplyButton": "Terapkan",
-  "settingsWidgetDarkModeTitle": "Widget Gelap",
-  "settingsWidgetDarkModeDesc": "Skema warna gelap untuk widget.",
   "settingsAboutVersionTitle": "Versi Aplikasi",
   "settingsAboutVersionLoading": "Memuat versi…",
   "aboutSectionDeveloper": "Masukan",

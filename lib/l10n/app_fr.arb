@@ -268,7 +268,6 @@
   "settingsSectionSecurity": "Sécurité",
   "settingsSectionTheme": "Thème",
   "settingsSectionPersonalization": "Personnalisation",
-  "settingsSectionWidget": "Widget",
   "settingsSectionAbout": "À propos",
   "settingsHintQuestionPet": "Quel est le nom de votre premier animal de compagnie ?",
   "settingsHintQuestionTeacher": "Quel est le nom de votre professeur préféré ?",
@@ -323,25 +322,6 @@
   "settingsTextColorOkButton": "OK",
   "settingsTextColorTileTitle": "Couleur du texte",
   "settingsTextColorTileSubtitle": "Couleur du texte du contenu de la note.",
-  "settingsWidgetFontSizeLabel": "Taille du texte du widget",
-  "settingsWidgetFontSizeSample": "Exemple de titre - {size} pt",
-  "settingsWidgetFontSizeCancelButton": "Annuler",
-  "settingsWidgetFontSizeApplyButton": "Appliquer",
-  "settingsWidgetOpacityLabel": "Transparence de l'arrière-plan",
-  "settingsWidgetOpacityValue": "{percent} % de transparence",
-  "settingsWidgetOpacityPercent": "{percent} %",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "Annuler",
-  "settingsWidgetOpacityApplyButton": "Appliquer",
-  "settingsWidgetDarkModeTitle": "Widget sombre",
-  "settingsWidgetDarkModeDesc": "Palette de couleurs sombre pour le widget.",
   "settingsAboutVersionTitle": "Version de l'application",
   "settingsAboutVersionLoading": "Chargement de la version…",
   "aboutSectionDeveloper": "Commentaires",

@@ -1754,12 +1754,6 @@ abstract class AppLocalizations {
   /// **'Kişiselleştirme'**
   String get settingsSectionPersonalization;
 
-  /// Ayarlar sayfasında Widget bölümünün başlığı
-  ///
-  /// In tr, this message translates to:
-  /// **'Widget'**
-  String get settingsSectionWidget;
-
   /// Ayarlar sayfasında Hakkında bölümünün başlığı
   ///
   /// In tr, this message translates to:
@@ -2083,72 +2077,6 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Not içerik metni için renk.'**
   String get settingsTextColorTileSubtitle;
-
-  /// Widget yazı boyutu seçim panelinin başlığı ve Widget bölümündeki ilgili satırın başlığı
-  ///
-  /// In tr, this message translates to:
-  /// **'Widget Yazı Boyutu'**
-  String get settingsWidgetFontSizeLabel;
-
-  /// Widget yazı boyutu seçim panelinde seçilen boyutu gösteren örnek metin
-  ///
-  /// In tr, this message translates to:
-  /// **'Örnek başlık - {size} pt'**
-  String settingsWidgetFontSizeSample(int size);
-
-  /// Widget yazı boyutu panelinde iptal düğmesi
-  ///
-  /// In tr, this message translates to:
-  /// **'İptal'**
-  String get settingsWidgetFontSizeCancelButton;
-
-  /// Widget yazı boyutu panelinde uygula düğmesi
-  ///
-  /// In tr, this message translates to:
-  /// **'Uygula'**
-  String get settingsWidgetFontSizeApplyButton;
-
-  /// Widget arka plan saydamlığı seçim panelinin başlığı ve Widget bölümündeki ilgili satırın başlığı
-  ///
-  /// In tr, this message translates to:
-  /// **'Arka Plan Saydamlığı'**
-  String get settingsWidgetOpacityLabel;
-
-  /// Widget saydamlık panelinde seçilen yüzdeyi gösteren metin
-  ///
-  /// In tr, this message translates to:
-  /// **'%{percent} saydamlık'**
-  String settingsWidgetOpacityValue(int percent);
-
-  /// Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin
-  ///
-  /// In tr, this message translates to:
-  /// **'%{percent}'**
-  String settingsWidgetOpacityPercent(int percent);
-
-  /// Widget saydamlık panelinde iptal düğmesi
-  ///
-  /// In tr, this message translates to:
-  /// **'İptal'**
-  String get settingsWidgetOpacityCancelButton;
-
-  /// Widget saydamlık panelinde uygula düğmesi
-  ///
-  /// In tr, this message translates to:
-  /// **'Uygula'**
-  String get settingsWidgetOpacityApplyButton;
-
-  /// Widget bölümünde koyu widget anahtarının başlığı
-  ///
-  /// In tr, this message translates to:
-  /// **'Koyu Widget'**
-  String get settingsWidgetDarkModeTitle;
-
-  /// Koyu widget anahtarının alt metni
-  ///
-  /// In tr, this message translates to:
-  /// **'Widget için koyu renk şeması.'**
-  String get settingsWidgetDarkModeDesc;
 
   /// Hakkında bölümünde uygulama sürümü satırının başlığı
   ///

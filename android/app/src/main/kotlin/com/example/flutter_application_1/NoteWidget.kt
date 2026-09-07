@@ -56,17 +56,27 @@ import es.antonborri.home_widget.HomeWidgetGlanceState
 import es.antonborri.home_widget.HomeWidgetGlanceStateDefinition
 
 // Bu anahtarlar note_widget_service.dart içindeki keyNoteTitle,
-// keyNoteContent, keyNoteCount sabitleri ve syncAppearanceSettings'in
-// yazdığı widget_font_size / widget_bg_opacity / widget_dark ile BİREBİR
-// aynı isim ve tipte olmak zorunda (String/int/double/bool). Dart tarafında
-// bu isimlerden biri değişirse burası da güncellenmeli.
+// keyNoteContent, keyNoteCount sabitleriyle BİREBİR aynı isim ve tipte
+// olmak zorunda (String/int/double/bool). Dart tarafında bu isimlerden
+// biri değişirse burası da güncellenmeli.
 private const val KEY_TITLE = "note_title"
 private const val KEY_CONTENT = "note_content"
 private const val KEY_COUNT = "note_count"
 private const val KEY_NOTE_ID = "note_id"
-private const val KEY_FONT_SIZE = "widget_font_size"
-private const val KEY_BG_OPACITY = "widget_bg_opacity"
-private const val KEY_DARK = "widget_dark"
+
+// DÜZELTME: Ayarlar sayfasındaki genel (tüm widget'lar için ortak) Yazı
+// Boyutu/Saydamlık/Koyu Mod bölümü kaldırıldı — widget_font_size/
+// widget_bg_opacity/widget_dark anahtarlarını yazan tek yer oydu. Bu
+// DEFAULT_* sabitleri pratikte neredeyse hiç devreye girmez çünkü
+// NoteWidgetConfigActivity.onNoteSelected, "Widget'ı Ekle" ile HER widget
+// için fontSizeKey/bgOpacityKey/darkKey'i koşulsuz yazıyor — burası sadece
+// o akış dışında oluşmuş (olağandışı) bir widget örneği için son çare.
+// Yine de tutarlılık için NoteWidgetConfigActivity.kt'deki
+// globalFontSize/globalBgOpacity varsayılanlarıyla (23f/0.5f) AYNI
+// tutuluyor; NoteWidgetReceiverV2.kt'deki AYNI sabitlerle senkron kalmalı.
+private const val DEFAULT_FONT_SIZE = 23f
+private const val DEFAULT_BG_OPACITY = 0.5f
+private const val DEFAULT_DARK = true
 
 // ────────────────────────────────────────────────────────────────────────
 // DÜZELTME (2026-08-07): home_widget paketi Dart tarafından int olarak
@@ -156,18 +166,15 @@ private fun NoteWidgetContent(context: Context, prefs: SharedPreferences, appWid
     val content = prefs.getString(KEY_CONTENT, null) ?: ""
     val count = prefs.getIntCompat(KEY_COUNT, 0)
     val noteId = prefs.getString(KEY_NOTE_ID, null)
-    // AŞAMA 1: önce widget'a özel değer aranır, yoksa (kaydırıcı UI'ı henüz
-    // eklenmediği için normalde hep bu durum) eski global anahtara düşülür —
-    // bkz. NoteWidgetReceiverV2.updateWidgetInner'daki AYNI mantık.
-    val globalFontSize = prefs.getFloatCompat(KEY_FONT_SIZE, 14f)
-    val globalBgOpacity = prefs.getFloatCompat(KEY_BG_OPACITY, 1f)
-    val fontSize = prefs.getFloatCompat(NoteWidgetReceiverV2.fontSizeKey(appWidgetId), globalFontSize)
-    val bgOpacity = prefs.getFloatCompat(NoteWidgetReceiverV2.bgOpacityKey(appWidgetId), globalBgOpacity)
+    // Önce widget'a özel değer aranır; bulunamazsa (NoteWidgetConfigActivity
+    // akışı dışında oluşmuş, olağandışı bir widget örneğiyse) sabit
+    // DEFAULT_* değerlerine düşülür — bkz. NoteWidgetReceiverV2.updateWidgetInner'daki
+    // AYNI mantık.
+    val fontSize = prefs.getFloatCompat(NoteWidgetReceiverV2.fontSizeKey(appWidgetId), DEFAULT_FONT_SIZE)
+    val bgOpacity = prefs.getFloatCompat(NoteWidgetReceiverV2.bgOpacityKey(appWidgetId), DEFAULT_BG_OPACITY)
         .coerceIn(0f, 1f)
-    // AŞAMA: koyu/açık artık widget'a özel olabiliyor — NoteWidgetReceiverV2
-    // içindeki AYNI mantık (bkz. darkKey/KEY_DARK fallback açıklaması orada).
-    val globalDark = prefs.getBoolean(KEY_DARK, true)
-    val dark = prefs.getBoolean(NoteWidgetReceiverV2.darkKey(appWidgetId), globalDark)
+    // Koyu/açık, font boyutu/saydamlık ile AYNI desen.
+    val dark = prefs.getBoolean(NoteWidgetReceiverV2.darkKey(appWidgetId), DEFAULT_DARK)
 
     val bgColor = if (dark) Color(0xFF1E1E1E) else Color(0xFFFFFFFF)
     val titleColor = if (dark) Color(0xFFFFFFFF) else Color(0xFF1A1A1A)

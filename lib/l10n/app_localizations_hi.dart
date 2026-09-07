@@ -858,9 +858,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settingsSectionPersonalization => 'वैयक्तिकरण';
 
   @override
-  String get settingsSectionWidget => 'विजेट';
-
-  @override
   String get settingsSectionAbout => 'के बारे में';
 
   @override
@@ -1032,45 +1029,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsTextColorTileSubtitle => 'नोट सामग्री टेक्स्ट के लिए रंग।';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'विजेट फ़ॉन्ट आकार';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'नमूना शीर्षक - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'रद्द करें';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'लागू करें';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'पृष्ठभूमि पारदर्शिता';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return '$percent% पारदर्शिता';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'रद्द करें';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'लागू करें';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'डार्क विजेट';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'विजेट के लिए डार्क रंग योजना।';
 
   @override
   String get settingsAboutVersionTitle => 'ऐप संस्करण';

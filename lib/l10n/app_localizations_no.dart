@@ -853,9 +853,6 @@ class AppLocalizationsNo extends AppLocalizations {
   String get settingsSectionPersonalization => 'Personalisering';
 
   @override
-  String get settingsSectionWidget => 'Widget';
-
-  @override
   String get settingsSectionAbout => 'Om';
 
   @override
@@ -1028,45 +1025,6 @@ class AppLocalizationsNo extends AppLocalizations {
   @override
   String get settingsTextColorTileSubtitle =>
       'Farge for notatinnholdets tekst.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Skriftstørrelse for widget';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Eksempeloverskrift - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Avbryt';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Bruk';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Bakgrunnsgjennomsiktighet';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return '$percent% gjennomsiktighet';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Avbryt';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Bruk';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Mørk widget';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'Mørkt fargeskjema for widgeten.';
 
   @override
   String get settingsAboutVersionTitle => 'Appversjon';

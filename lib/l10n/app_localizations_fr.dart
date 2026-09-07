@@ -868,9 +868,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsSectionPersonalization => 'Personnalisation';
 
   @override
-  String get settingsSectionWidget => 'Widget';
-
-  @override
   String get settingsSectionAbout => 'À propos';
 
   @override
@@ -1049,46 +1046,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get settingsTextColorTileSubtitle =>
       'Couleur du texte du contenu de la note.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Taille du texte du widget';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Exemple de titre - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Annuler';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Appliquer';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Transparence de l\'arrière-plan';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return '$percent % de transparence';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent %';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Annuler';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Appliquer';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Widget sombre';
-
-  @override
-  String get settingsWidgetDarkModeDesc =>
-      'Palette de couleurs sombre pour le widget.';
 
   @override
   String get settingsAboutVersionTitle => 'Version de l\'application';

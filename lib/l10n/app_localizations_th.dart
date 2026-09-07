@@ -853,9 +853,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get settingsSectionPersonalization => 'การปรับแต่ง';
 
   @override
-  String get settingsSectionWidget => 'วิดเจ็ต';
-
-  @override
   String get settingsSectionAbout => 'เกี่ยวกับ';
 
   @override
@@ -1026,45 +1023,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get settingsTextColorTileSubtitle => 'สีสำหรับข้อความเนื้อหาโน้ต';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'ขนาดตัวอักษรวิดเจ็ต';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'หัวข้อตัวอย่าง - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'ยกเลิก';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'ใช้';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'ความโปร่งใสพื้นหลัง';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return 'ความโปร่งใส $percent%';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'ยกเลิก';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'ใช้';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'วิดเจ็ตมืด';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'โทนสีมืดสำหรับวิดเจ็ต';
 
   @override
   String get settingsAboutVersionTitle => 'เวอร์ชันแอป';

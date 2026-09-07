@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "Bezpieczeństwo",
   "settingsSectionTheme": "Motyw",
   "settingsSectionPersonalization": "Personalizacja",
-  "settingsSectionWidget": "Widżet",
   "settingsSectionAbout": "O aplikacji",
   "settingsHintQuestionPet": "Jak nazywa się Twój pierwszy zwierzak?",
   "settingsHintQuestionTeacher": "Jak nazywa się Twój ulubiony nauczyciel?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "OK",
   "settingsTextColorTileTitle": "Kolor tekstu",
   "settingsTextColorTileSubtitle": "Kolor treści notatki.",
-  "settingsWidgetFontSizeLabel": "Rozmiar czcionki widżetu",
-  "settingsWidgetFontSizeSample": "Przykładowy nagłówek - {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "Anuluj",
-  "settingsWidgetFontSizeApplyButton": "Zastosuj",
-  "settingsWidgetOpacityLabel": "Przezroczystość tła",
-  "settingsWidgetOpacityValue": "Przezroczystość: {percent}%",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "Anuluj",
-  "settingsWidgetOpacityApplyButton": "Zastosuj",
-  "settingsWidgetDarkModeTitle": "Ciemny widżet",
-  "settingsWidgetDarkModeDesc": "Ciemny schemat kolorów widżetu.",
   "settingsAboutVersionTitle": "Wersja aplikacji",
   "settingsAboutVersionLoading": "Wczytywanie wersji…",
   "aboutSectionDeveloper": "Opinie",

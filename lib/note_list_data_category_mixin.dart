@@ -61,12 +61,6 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
   set _themeMode(ThemeMode value);
   String get _appLanguage;
   set _appLanguage(String value);
-  double get _widgetBgOpacity;
-  set _widgetBgOpacity(double value);
-  bool get _widgetDark;
-  set _widgetDark(bool value);
-  double get _widgetFontSize;
-  set _widgetFontSize(double value);
 
 
   Future<void> _loadData() async {
@@ -199,11 +193,6 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       final textColorVal = int.tryParse(settings['text_color'] ?? '');
       _textColor = textColorVal != null ? Color(textColorVal) : null;
       _previewLines = int.tryParse(settings['preview_lines'] ?? '') ?? 6;
-      _widgetFontSize =
-          double.tryParse(settings['widget_font_size'] ?? '') ?? 22.0;
-      _widgetBgOpacity =
-          double.tryParse(settings['widget_bg_opacity'] ?? '') ?? 1.0;
-      _widgetDark = (settings['widget_dark'] ?? 'true') == 'true';
     });
 
     // Uygulama tamamen kapalıyken bir DNote bildirimine (hatırlatıcı veya
@@ -215,16 +204,6 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
     if (launchNoteId != null) {
       _openNoteByIdFromNotification(launchNoteId);
     }
-
-    // Kayıtlı widget görünüm ayarlarını (yazı boyutu, saydamlık, koyu/açık
-    // tema) native tarafa da yansıt; böylece ör. bir yedekten geri
-    // yükledikten sonra widget, uygulamayı hiç açmadan eski (varsayılan)
-    // görünümde kalmaz.
-    unawaited(NoteWidgetService.instance.syncAppearanceSettings(
-      fontSize: _widgetFontSize,
-      bgOpacity: _widgetBgOpacity,
-      dark: _widgetDark,
-    ));
 
     // DÜZELTME (2026-08-08): syncFromNotes eskiden SADECE _saveData()
     // içinde (yani bir not düzenlenip kaydedildiğinde) tetikleniyordu.
@@ -306,9 +285,6 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       await db.setSetting('note_line_height', _noteLineHeight.toString());
       await db.setSetting('text_color', _textColor?.toARGB32().toString());
       await db.setSetting('preview_lines', _previewLines.toString());
-      await db.setSetting('widget_font_size', _widgetFontSize.toString());
-      await db.setSetting('widget_bg_opacity', _widgetBgOpacity.toString());
-      await db.setSetting('widget_dark', _widgetDark.toString());
 
       // Ana ekran widget'ını her kayıtta güncel not listesiyle senkronize et.
       // Native taraf (Aşama 2) henüz kurulmadıysa NoteWidgetService bu

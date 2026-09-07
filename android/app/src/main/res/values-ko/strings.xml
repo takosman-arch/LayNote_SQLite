@@ -19,6 +19,8 @@
          ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
     <string name="widget_config_appearance_heading">모양 조정</string>
     <string name="widget_config_dark_switch_label">다크 위젯</string>
+    <string name="widget_config_show_settings_icon_label">설정 아이콘 표시</string>
+    <string name="widget_config_show_add_icon_label">새 메모 아이콘 표시</string>
     <string name="widget_settings_button_desc">위젯 설정</string>
     <string name="widget_add_button_desc">새 메모 만들기</string>
 </resources>

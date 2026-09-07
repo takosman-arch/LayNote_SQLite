@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "セキュリティ",
   "settingsSectionTheme": "テーマ",
   "settingsSectionPersonalization": "パーソナライズ",
-  "settingsSectionWidget": "ウィジェット",
   "settingsSectionAbout": "アプリについて",
   "settingsHintQuestionPet": "初めて飼ったペットの名前は？",
   "settingsHintQuestionTeacher": "好きな先生の名前は？",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "OK",
   "settingsTextColorTileTitle": "文字色",
   "settingsTextColorTileSubtitle": "メモ本文の文字色。",
-  "settingsWidgetFontSizeLabel": "ウィジェットの文字サイズ",
-  "settingsWidgetFontSizeSample": "見出しサンプル - {size}pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "キャンセル",
-  "settingsWidgetFontSizeApplyButton": "適用",
-  "settingsWidgetOpacityLabel": "背景の透明度",
-  "settingsWidgetOpacityValue": "透明度{percent}%",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "キャンセル",
-  "settingsWidgetOpacityApplyButton": "適用",
-  "settingsWidgetDarkModeTitle": "ダークウィジェット",
-  "settingsWidgetDarkModeDesc": "ウィジェット用のダークカラースキーム。",
   "settingsAboutVersionTitle": "アプリバージョン",
   "settingsAboutVersionLoading": "バージョンを読み込み中…",
   "aboutSectionDeveloper": "フィードバック",

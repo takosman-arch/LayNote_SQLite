@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "Beveiliging",
   "settingsSectionTheme": "Thema",
   "settingsSectionPersonalization": "Personalisatie",
-  "settingsSectionWidget": "Widget",
   "settingsSectionAbout": "Over",
   "settingsHintQuestionPet": "Wat is de naam van uw eerste huisdier?",
   "settingsHintQuestionTeacher": "Wat is de naam van uw favoriete leraar/lerares?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "OK",
   "settingsTextColorTileTitle": "Tekstkleur",
   "settingsTextColorTileSubtitle": "Kleur voor de notitietekst.",
-  "settingsWidgetFontSizeLabel": "Lettergrootte widget",
-  "settingsWidgetFontSizeSample": "Voorbeeldkop - {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "Annuleren",
-  "settingsWidgetFontSizeApplyButton": "Toepassen",
-  "settingsWidgetOpacityLabel": "Achtergrondtransparantie",
-  "settingsWidgetOpacityValue": "{percent}% transparantie",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "Annuleren",
-  "settingsWidgetOpacityApplyButton": "Toepassen",
-  "settingsWidgetDarkModeTitle": "Donkere widget",
-  "settingsWidgetDarkModeDesc": "Donker kleurenschema voor de widget.",
   "settingsAboutVersionTitle": "App-versie",
   "settingsAboutVersionLoading": "Versie laden…",
   "aboutSectionDeveloper": "Feedback",

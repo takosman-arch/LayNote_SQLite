@@ -860,9 +860,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get settingsSectionPersonalization => 'Personalisasi';
 
   @override
-  String get settingsSectionWidget => 'Widget';
-
-  @override
   String get settingsSectionAbout => 'Tentang';
 
   @override
@@ -1036,45 +1033,6 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get settingsTextColorTileSubtitle =>
       'Warna untuk teks konten catatan.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Ukuran Font Widget';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Contoh judul - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Batal';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Terapkan';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Transparansi Latar Belakang';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return 'Transparansi $percent%';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Batal';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Terapkan';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Widget Gelap';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'Skema warna gelap untuk widget.';
 
   @override
   String get settingsAboutVersionTitle => 'Versi Aplikasi';

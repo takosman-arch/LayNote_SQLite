@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "الأمان",
   "settingsSectionTheme": "المظهر",
   "settingsSectionPersonalization": "التخصيص",
-  "settingsSectionWidget": "الودجت",
   "settingsSectionAbout": "حول التطبيق",
   "settingsHintQuestionPet": "ما اسم حيوانك الأليف الأول؟",
   "settingsHintQuestionTeacher": "ما اسم معلمك المفضل؟",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "موافق",
   "settingsTextColorTileTitle": "لون النص",
   "settingsTextColorTileSubtitle": "لون نص محتوى الملاحظة.",
-  "settingsWidgetFontSizeLabel": "حجم خط الودجت",
-  "settingsWidgetFontSizeSample": "عنوان تجريبي - {size} نقطة",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "إلغاء",
-  "settingsWidgetFontSizeApplyButton": "تطبيق",
-  "settingsWidgetOpacityLabel": "شفافية الخلفية",
-  "settingsWidgetOpacityValue": "شفافية {percent}٪",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}٪",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "إلغاء",
-  "settingsWidgetOpacityApplyButton": "تطبيق",
-  "settingsWidgetDarkModeTitle": "ودجت داكن",
-  "settingsWidgetDarkModeDesc": "نظام ألوان داكن للودجت.",
   "settingsAboutVersionTitle": "إصدار التطبيق",
   "settingsAboutVersionLoading": "جارٍ تحميل الإصدار…",
   "aboutSectionDeveloper": "ملاحظات",

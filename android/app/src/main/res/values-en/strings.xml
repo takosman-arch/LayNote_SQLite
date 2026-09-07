@@ -19,6 +19,8 @@
          ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
     <string name="widget_config_appearance_heading">Adjust appearance</string>
     <string name="widget_config_dark_switch_label">Dark widget</string>
+    <string name="widget_config_show_settings_icon_label">Show settings icon</string>
+    <string name="widget_config_show_add_icon_label">Show new note icon</string>
     <string name="widget_settings_button_desc">Widget settings</string>
     <string name="widget_add_button_desc">Create new note</string>
 </resources>

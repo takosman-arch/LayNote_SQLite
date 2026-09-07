@@ -19,6 +19,8 @@
          ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
     <string name="widget_config_appearance_heading">התאמת המראה</string>
     <string name="widget_config_dark_switch_label">ווידג\'ט כהה</string>
+    <string name="widget_config_show_settings_icon_label">הצג סמל הגדרות</string>
+    <string name="widget_config_show_add_icon_label">הצג סמל פתק חדש</string>
     <string name="widget_settings_button_desc">הגדרות הווידג\'ט</string>
     <string name="widget_add_button_desc">יצירת פתק חדש</string>
 </resources>

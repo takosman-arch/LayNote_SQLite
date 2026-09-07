@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "Zabezpečení",
   "settingsSectionTheme": "Motiv",
   "settingsSectionPersonalization": "Přizpůsobení",
-  "settingsSectionWidget": "Widget",
   "settingsSectionAbout": "O aplikaci",
   "settingsHintQuestionPet": "Jak se jmenoval váš první domácí mazlíček?",
   "settingsHintQuestionTeacher": "Jak se jmenoval váš oblíbený učitel?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "OK",
   "settingsTextColorTileTitle": "Barva textu",
   "settingsTextColorTileSubtitle": "Barva textu obsahu poznámky.",
-  "settingsWidgetFontSizeLabel": "Velikost písma widgetu",
-  "settingsWidgetFontSizeSample": "Ukázkový nadpis – {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "Zrušit",
-  "settingsWidgetFontSizeApplyButton": "Použít",
-  "settingsWidgetOpacityLabel": "Průhlednost pozadí",
-  "settingsWidgetOpacityValue": "Průhlednost {percent} %",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent} %",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "Zrušit",
-  "settingsWidgetOpacityApplyButton": "Použít",
-  "settingsWidgetDarkModeTitle": "Tmavý widget",
-  "settingsWidgetDarkModeDesc": "Tmavé barevné schéma pro widget.",
   "settingsAboutVersionTitle": "Verze aplikace",
   "settingsAboutVersionLoading": "Načítání verze…",
   "aboutSectionDeveloper": "Zpětná vazba",

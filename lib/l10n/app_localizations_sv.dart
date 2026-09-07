@@ -856,9 +856,6 @@ class AppLocalizationsSv extends AppLocalizations {
   String get settingsSectionPersonalization => 'Anpassning';
 
   @override
-  String get settingsSectionWidget => 'Widget';
-
-  @override
   String get settingsSectionAbout => 'Om';
 
   @override
@@ -1030,45 +1027,6 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get settingsTextColorTileSubtitle =>
       'Färg för anteckningens textinnehåll.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Widgetens textstorlek';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Exempelrubrik - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Avbryt';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Verkställ';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Bakgrundens genomskinlighet';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return '$percent% genomskinlighet';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Avbryt';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Verkställ';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Mörk widget';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'Mörkt färgschema för widgeten.';
 
   @override
   String get settingsAboutVersionTitle => 'Appversion';

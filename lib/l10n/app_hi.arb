@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "सुरक्षा",
   "settingsSectionTheme": "थीम",
   "settingsSectionPersonalization": "वैयक्तिकरण",
-  "settingsSectionWidget": "विजेट",
   "settingsSectionAbout": "के बारे में",
   "settingsHintQuestionPet": "आपके पहले पालतू जानवर का नाम क्या है?",
   "settingsHintQuestionTeacher": "आपके पसंदीदा शिक्षक का नाम क्या है?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "ठीक है",
   "settingsTextColorTileTitle": "टेक्स्ट रंग",
   "settingsTextColorTileSubtitle": "नोट सामग्री टेक्स्ट के लिए रंग।",
-  "settingsWidgetFontSizeLabel": "विजेट फ़ॉन्ट आकार",
-  "settingsWidgetFontSizeSample": "नमूना शीर्षक - {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "रद्द करें",
-  "settingsWidgetFontSizeApplyButton": "लागू करें",
-  "settingsWidgetOpacityLabel": "पृष्ठभूमि पारदर्शिता",
-  "settingsWidgetOpacityValue": "{percent}% पारदर्शिता",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "रद्द करें",
-  "settingsWidgetOpacityApplyButton": "लागू करें",
-  "settingsWidgetDarkModeTitle": "डार्क विजेट",
-  "settingsWidgetDarkModeDesc": "विजेट के लिए डार्क रंग योजना।",
   "settingsAboutVersionTitle": "ऐप संस्करण",
   "settingsAboutVersionLoading": "संस्करण लोड हो रहा है…",
   "aboutSectionDeveloper": "फ़ीडबैक",

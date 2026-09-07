@@ -19,6 +19,8 @@
          ⚙️/➕ ikonlarının erişilebilirlik metinleri. -->
     <string name="widget_config_appearance_heading">调整外观</string>
     <string name="widget_config_dark_switch_label">深色小组件</string>
+    <string name="widget_config_show_settings_icon_label">显示设置图标</string>
+    <string name="widget_config_show_add_icon_label">显示新建笔记图标</string>
     <string name="widget_settings_button_desc">小组件设置</string>
     <string name="widget_add_button_desc">创建新笔记</string>
 </resources>

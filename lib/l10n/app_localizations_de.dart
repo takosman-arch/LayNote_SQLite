@@ -864,9 +864,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsSectionPersonalization => 'Personalisierung';
 
   @override
-  String get settingsSectionWidget => 'Widget';
-
-  @override
   String get settingsSectionAbout => 'Über';
 
   @override
@@ -1041,45 +1038,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settingsTextColorTileSubtitle => 'Farbe für den Notizinhaltstext.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Widget-Schriftgröße';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Beispielüberschrift - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Abbrechen';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Anwenden';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Hintergrundtransparenz';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return '$percent% Transparenz';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Abbrechen';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Anwenden';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Dunkles Widget';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'Dunkles Farbschema für das Widget.';
 
   @override
   String get settingsAboutVersionTitle => 'App-Version';

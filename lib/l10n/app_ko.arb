@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "보안",
   "settingsSectionTheme": "테마",
   "settingsSectionPersonalization": "개인화",
-  "settingsSectionWidget": "위젯",
   "settingsSectionAbout": "정보",
   "settingsHintQuestionPet": "첫 번째 반려동물의 이름은 무엇인가요?",
   "settingsHintQuestionTeacher": "가장 좋아하는 선생님의 이름은 무엇인가요?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "확인",
   "settingsTextColorTileTitle": "글자 색상",
   "settingsTextColorTileSubtitle": "노트 내용 텍스트의 색상입니다.",
-  "settingsWidgetFontSizeLabel": "위젯 글자 크기",
-  "settingsWidgetFontSizeSample": "샘플 제목 - {size}pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "취소",
-  "settingsWidgetFontSizeApplyButton": "적용",
-  "settingsWidgetOpacityLabel": "배경 투명도",
-  "settingsWidgetOpacityValue": "투명도 {percent}%",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "취소",
-  "settingsWidgetOpacityApplyButton": "적용",
-  "settingsWidgetDarkModeTitle": "어두운 위젯",
-  "settingsWidgetDarkModeDesc": "위젯에 어두운 색상 구성표를 적용합니다.",
   "settingsAboutVersionTitle": "앱 버전",
   "settingsAboutVersionLoading": "버전 불러오는 중…",
   "aboutSectionDeveloper": "피드백",

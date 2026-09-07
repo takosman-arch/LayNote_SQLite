@@ -857,9 +857,6 @@ class AppLocalizationsDa extends AppLocalizations {
   String get settingsSectionPersonalization => 'Personalisering';
 
   @override
-  String get settingsSectionWidget => 'Widget';
-
-  @override
   String get settingsSectionAbout => 'Om';
 
   @override
@@ -1032,45 +1029,6 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get settingsTextColorTileSubtitle => 'Farve til noteindholdets tekst.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Widgetskriftstørrelse';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Eksempeloverskrift - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Annuller';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Anvend';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Baggrundsgennemsigtighed';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return '$percent% gennemsigtighed';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Annuller';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Anvend';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Mørk widget';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'Mørkt farveskema til widgetten.';
 
   @override
   String get settingsAboutVersionTitle => 'App-version';

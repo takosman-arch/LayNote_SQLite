@@ -858,9 +858,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get settingsSectionPersonalization => 'Cá nhân hóa';
 
   @override
-  String get settingsSectionWidget => 'Widget';
-
-  @override
   String get settingsSectionAbout => 'Giới thiệu';
 
   @override
@@ -1036,45 +1033,6 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get settingsTextColorTileSubtitle =>
       'Màu cho nội dung văn bản ghi chú.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Cỡ chữ widget';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Tiêu đề mẫu - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Hủy';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Áp dụng';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Độ trong suốt nền';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return 'Độ trong suốt $percent%';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Hủy';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Áp dụng';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Widget tối';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'Bảng màu tối cho widget.';
 
   @override
   String get settingsAboutVersionTitle => 'Phiên bản ứng dụng';

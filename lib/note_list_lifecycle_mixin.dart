@@ -104,11 +104,6 @@ mixin NoteListLifecycleMixin on State<NoteListScreen>, WidgetsBindingObserver {
   // kodlanmıştı (bkz. note_list_note_dialog_mixin.dart, buildTextBlockField);
   // varsayılan olarak aynı görünümü korumak için başlangıç değeri de 1.6.
   double _noteLineHeight = 1.6;
-
-  // Widget
-  double _widgetFontSize = 22.0;
-  double _widgetBgOpacity = 1.0;
-  bool _widgetDark = true;
   // ─────────────────────────────────────────────────────────
 
   OverlayEntry? _snackOverlay;
@@ -124,6 +119,19 @@ mixin NoteListLifecycleMixin on State<NoteListScreen>, WidgetsBindingObserver {
   // _initWidgetClickListener). Soğuk başlangıç durumu ayrıca initState
   // içinde HomeWidget.initiallyLaunchedFromHomeWidget() ile ele alınır.
   StreamSubscription<Uri?>? _widgetClickSub;
+  // BUG DÜZELTMESİ (widget'tan "yeni not" eklerken not kaybolması):
+  // initState() içinde _loadData() (DB'den notları okuyup _notes'un
+  // TAMAMINI setState ile değiştiren asenkron fonksiyon) ile
+  // _initWidgetClickListener() (widget'tan gelen "dnote://newnote" /
+  // "dnote://note?id=..." URI'lerini işleyen dinleyici) neredeyse aynı
+  // anda başlatılıyordu. Uygulama soğuk başlangıçta widget'a tıklanarak
+  // açıldığında, kullanıcı henüz _loadData() bitmeden yeni notu kaydediyor
+  // (not DB'ye yazılıyor ve _notes'a ekleniyor); az sonra _loadData(),
+  // DAHA ÖNCE (yeni not eklenmeden ÖNCE) okuduğu eski listeyle _notes'un
+  // TAMAMINI ezip yeni notu ekrandan siliyordu (DB'de duruyor olsa da).
+  // Bu future, _handleWidgetLaunchUri içinde _loadData() bitene kadar
+  // beklenerek bu yarış durumunu engeller.
+  Future<void>? _initialLoadFuture;
 
   // Aşama 2: _titleController artık düz TextEditingController değil,
   // RichBlockTextController — gövde bloklarındaki controller'larla aynı
@@ -163,7 +171,7 @@ mixin NoteListLifecycleMixin on State<NoteListScreen>, WidgetsBindingObserver {
     // didChangeAppLifecycleState). _NoteListScreenState artık
     // WidgetsBindingObserver ile mixin edildi (note_list_screen.dart).
     WidgetsBinding.instance.addObserver(this);
-    _loadData();
+    _initialLoadFuture = _loadData();
     DBHelper.instance.attachmentsDir().then((d) {
       if (mounted) setState(() => _attachmentsDirPath = d.path);
     });
@@ -213,10 +221,23 @@ mixin NoteListLifecycleMixin on State<NoteListScreen>, WidgetsBindingObserver {
   //   - "dnote://note?id=..." (veya id'siz "dnote://note") -> mevcut
   //     davranış: id'ye göre _notes içinde arar, bulursa notu açar. Not
   //     bulunamazsa (ör. o arada silinmişse) sessizce hiçbir şey yapmaz.
-  void _handleWidgetLaunchUri(Uri? uri) {
+  Future<void> _handleWidgetLaunchUri(Uri? uri) async {
+    // TEŞHİS LOGU — sorunu bulunca bu satır kaldırılacak.
+    debugPrint('[DNOTE] _handleWidgetLaunchUri ÇAĞRILDI uri=$uri zaman=${DateTime.now()}');
     if (uri == null) return;
 
+    // BUG DÜZELTMESİ: _loadData() bitmeden devam edilirse, kullanıcı
+    // aşağıdaki dialogda notu kaydettikten hemen sonra _loadData()'nın
+    // setState'i _notes'un TAMAMINI (henüz yeni notu içermeyen) eski
+    // listeyle ezip yeni notu ekrandan siliyordu (bkz. yukarıdaki
+    // _initialLoadFuture yorumu). Burada ilk yüklemenin bitmesini
+    // bekleyerek bu yarış durumu engelleniyor.
+    await _initialLoadFuture;
+    if (!mounted) return;
+
     if (uri.host == 'newnote') {
+      // TEŞHİS LOGU — sorunu bulunca bu satır kaldırılacak.
+      debugPrint('[DNOTE] newnote dialogu AÇILIYOR zaman=${DateTime.now()}');
       // Widget ağacı henüz tam hazır olmayabilir (özellikle soğuk
       // başlangıçta); bir sonraki frame'e ertelenir.
       WidgetsBinding.instance.addPostFrameCallback((_) {

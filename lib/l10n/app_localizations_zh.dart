@@ -840,9 +840,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsSectionPersonalization => '个性化';
 
   @override
-  String get settingsSectionWidget => '小组件';
-
-  @override
   String get settingsSectionAbout => '关于';
 
   @override
@@ -1003,45 +1000,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsTextColorTileSubtitle => '笔记内容文字的颜色。';
-
-  @override
-  String get settingsWidgetFontSizeLabel => '小组件字号';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return '示例标题 - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => '取消';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => '应用';
-
-  @override
-  String get settingsWidgetOpacityLabel => '背景透明度';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return '透明度 $percent%';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => '取消';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => '应用';
-
-  @override
-  String get settingsWidgetDarkModeTitle => '深色小组件';
-
-  @override
-  String get settingsWidgetDarkModeDesc => '小组件使用深色配色方案。';
 
   @override
   String get settingsAboutVersionTitle => '应用版本';

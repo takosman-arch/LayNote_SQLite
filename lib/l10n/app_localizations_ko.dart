@@ -843,9 +843,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsSectionPersonalization => '개인화';
 
   @override
-  String get settingsSectionWidget => '위젯';
-
-  @override
   String get settingsSectionAbout => '정보';
 
   @override
@@ -1009,45 +1006,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsTextColorTileSubtitle => '노트 내용 텍스트의 색상입니다.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => '위젯 글자 크기';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return '샘플 제목 - ${size}pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => '취소';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => '적용';
-
-  @override
-  String get settingsWidgetOpacityLabel => '배경 투명도';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return '투명도 $percent%';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => '취소';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => '적용';
-
-  @override
-  String get settingsWidgetDarkModeTitle => '어두운 위젯';
-
-  @override
-  String get settingsWidgetDarkModeDesc => '위젯에 어두운 색상 구성표를 적용합니다.';
 
   @override
   String get settingsAboutVersionTitle => '앱 버전';

@@ -863,9 +863,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get settingsSectionPersonalization => 'Personalizacja';
 
   @override
-  String get settingsSectionWidget => 'Widżet';
-
-  @override
   String get settingsSectionAbout => 'O aplikacji';
 
   @override
@@ -1041,45 +1038,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get settingsTextColorTileSubtitle => 'Kolor treści notatki.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Rozmiar czcionki widżetu';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Przykładowy nagłówek - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Anuluj';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Zastosuj';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Przezroczystość tła';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return 'Przezroczystość: $percent%';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Anuluj';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Zastosuj';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Ciemny widżet';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'Ciemny schemat kolorów widżetu.';
 
   @override
   String get settingsAboutVersionTitle => 'Wersja aplikacji';

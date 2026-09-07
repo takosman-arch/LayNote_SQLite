@@ -859,9 +859,6 @@ class AppLocalizationsFi extends AppLocalizations {
   String get settingsSectionPersonalization => 'Mukauttaminen';
 
   @override
-  String get settingsSectionWidget => 'Widget';
-
-  @override
   String get settingsSectionAbout => 'Tietoja';
 
   @override
@@ -1032,45 +1029,6 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String get settingsTextColorTileSubtitle =>
       'Muistiinpanon sisältötekstin väri.';
-
-  @override
-  String get settingsWidgetFontSizeLabel => 'Widgetin fonttikoko';
-
-  @override
-  String settingsWidgetFontSizeSample(int size) {
-    return 'Esimerkkiotsikko - $size pt';
-  }
-
-  @override
-  String get settingsWidgetFontSizeCancelButton => 'Peruuta';
-
-  @override
-  String get settingsWidgetFontSizeApplyButton => 'Käytä';
-
-  @override
-  String get settingsWidgetOpacityLabel => 'Taustan läpinäkyvyys';
-
-  @override
-  String settingsWidgetOpacityValue(int percent) {
-    return '$percent% läpinäkyvyys';
-  }
-
-  @override
-  String settingsWidgetOpacityPercent(int percent) {
-    return '$percent%';
-  }
-
-  @override
-  String get settingsWidgetOpacityCancelButton => 'Peruuta';
-
-  @override
-  String get settingsWidgetOpacityApplyButton => 'Käytä';
-
-  @override
-  String get settingsWidgetDarkModeTitle => 'Tumma widget';
-
-  @override
-  String get settingsWidgetDarkModeDesc => 'Tumma väriteema widgetille.';
 
   @override
   String get settingsAboutVersionTitle => 'Sovelluksen versio';

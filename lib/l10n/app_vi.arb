@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "Bảo mật",
   "settingsSectionTheme": "Giao diện",
   "settingsSectionPersonalization": "Cá nhân hóa",
-  "settingsSectionWidget": "Widget",
   "settingsSectionAbout": "Giới thiệu",
   "settingsHintQuestionPet": "Tên con vật nuôi đầu tiên của bạn là gì?",
   "settingsHintQuestionTeacher": "Tên giáo viên yêu thích của bạn là gì?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "OK",
   "settingsTextColorTileTitle": "Màu chữ",
   "settingsTextColorTileSubtitle": "Màu cho nội dung văn bản ghi chú.",
-  "settingsWidgetFontSizeLabel": "Cỡ chữ widget",
-  "settingsWidgetFontSizeSample": "Tiêu đề mẫu - {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "Hủy",
-  "settingsWidgetFontSizeApplyButton": "Áp dụng",
-  "settingsWidgetOpacityLabel": "Độ trong suốt nền",
-  "settingsWidgetOpacityValue": "Độ trong suốt {percent}%",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "Hủy",
-  "settingsWidgetOpacityApplyButton": "Áp dụng",
-  "settingsWidgetDarkModeTitle": "Widget tối",
-  "settingsWidgetDarkModeDesc": "Bảng màu tối cho widget.",
   "settingsAboutVersionTitle": "Phiên bản ứng dụng",
   "settingsAboutVersionLoading": "Đang tải phiên bản…",
   "aboutSectionDeveloper": "Phản hồi",

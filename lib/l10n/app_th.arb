@@ -355,7 +355,6 @@
   "settingsSectionSecurity": "ความปลอดภัย",
   "settingsSectionTheme": "ธีม",
   "settingsSectionPersonalization": "การปรับแต่ง",
-  "settingsSectionWidget": "วิดเจ็ต",
   "settingsSectionAbout": "เกี่ยวกับ",
   "settingsHintQuestionPet": "สัตว์เลี้ยงตัวแรกของคุณชื่ออะไร?",
   "settingsHintQuestionTeacher": "ครูคนโปรดของคุณชื่ออะไร?",
@@ -410,39 +409,6 @@
   "settingsTextColorOkButton": "ตกลง",
   "settingsTextColorTileTitle": "สีตัวอักษร",
   "settingsTextColorTileSubtitle": "สีสำหรับข้อความเนื้อหาโน้ต",
-  "settingsWidgetFontSizeLabel": "ขนาดตัวอักษรวิดเจ็ต",
-  "settingsWidgetFontSizeSample": "หัวข้อตัวอย่าง - {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "ยกเลิก",
-  "settingsWidgetFontSizeApplyButton": "ใช้",
-  "settingsWidgetOpacityLabel": "ความโปร่งใสพื้นหลัง",
-  "settingsWidgetOpacityValue": "ความโปร่งใส {percent}%",
-  "@settingsWidgetOpacityValue": {
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "{percent}%",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "ยกเลิก",
-  "settingsWidgetOpacityApplyButton": "ใช้",
-  "settingsWidgetDarkModeTitle": "วิดเจ็ตมืด",
-  "settingsWidgetDarkModeDesc": "โทนสีมืดสำหรับวิดเจ็ต",
   "settingsAboutVersionTitle": "เวอร์ชันแอป",
   "settingsAboutVersionLoading": "กำลังโหลดเวอร์ชัน…",
   "aboutSectionDeveloper": "ข้อเสนอแนะ",

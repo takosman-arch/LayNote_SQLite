@@ -1135,7 +1135,6 @@
   "@settingsSectionPersonalization": {
     "description": "Ayarlar sayfasında Kişiselleştirme bölümünün başlığı"
   },
-  "settingsSectionWidget": "Widget",
   "@settingsSectionWidget": {
     "description": "Ayarlar sayfasında Widget bölümünün başlığı"
   },
@@ -1355,62 +1354,27 @@
   "@settingsTextColorTileSubtitle": {
     "description": "Yazı rengi satırının alt metni"
   },
-  "settingsWidgetFontSizeLabel": "Widget Yazı Boyutu",
   "@settingsWidgetFontSizeLabel": {
     "description": "Widget yazı boyutu seçim panelinin başlığı ve Widget bölümündeki ilgili satırın başlığı"
   },
-  "settingsWidgetFontSizeSample": "Örnek başlık - {size} pt",
-  "@settingsWidgetFontSizeSample": {
-    "description": "Widget yazı boyutu seçim panelinde seçilen boyutu gösteren örnek metin",
-    "placeholders": {
-      "size": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetFontSizeCancelButton": "İptal",
   "@settingsWidgetFontSizeCancelButton": {
     "description": "Widget yazı boyutu panelinde iptal düğmesi"
   },
-  "settingsWidgetFontSizeApplyButton": "Uygula",
   "@settingsWidgetFontSizeApplyButton": {
     "description": "Widget yazı boyutu panelinde uygula düğmesi"
   },
-  "settingsWidgetOpacityLabel": "Arka Plan Saydamlığı",
   "@settingsWidgetOpacityLabel": {
     "description": "Widget arka plan saydamlığı seçim panelinin başlığı ve Widget bölümündeki ilgili satırın başlığı"
   },
-  "settingsWidgetOpacityValue": "%{percent} saydamlık",
-  "@settingsWidgetOpacityValue": {
-    "description": "Widget saydamlık panelinde seçilen yüzdeyi gösteren metin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityPercent": "%{percent}",
-  "@settingsWidgetOpacityPercent": {
-    "description": "Yalnizca yuzde degeri (kelime olmadan) - slider tooltip ve ayar alt basligi icin",
-    "placeholders": {
-      "percent": {
-        "type": "int"
-      }
-    }
-  },
-  "settingsWidgetOpacityCancelButton": "İptal",
   "@settingsWidgetOpacityCancelButton": {
     "description": "Widget saydamlık panelinde iptal düğmesi"
   },
-  "settingsWidgetOpacityApplyButton": "Uygula",
   "@settingsWidgetOpacityApplyButton": {
     "description": "Widget saydamlık panelinde uygula düğmesi"
   },
-  "settingsWidgetDarkModeTitle": "Koyu Widget",
   "@settingsWidgetDarkModeTitle": {
     "description": "Widget bölümünde koyu widget anahtarının başlığı"
   },
-  "settingsWidgetDarkModeDesc": "Widget için koyu renk şeması.",
   "@settingsWidgetDarkModeDesc": {
     "description": "Koyu widget anahtarının alt metni"
   },
