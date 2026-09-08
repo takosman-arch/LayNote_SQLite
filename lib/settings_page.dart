@@ -617,6 +617,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       s._notePassword = '';
                       s._passwordHintQuestion = '';
                       s._passwordHintAnswer = '';
+                      // Not şifresi kapatıldığında kilitli klasörlerin de
+                      // kilidi kalksın (aksi halde şifre olmadan bir daha
+                      // açılamayan "hayalet" kilitli klasörler kalırdı).
+                      s._lockedCategories.clear();
                     });
                     s._saveData();
                     Navigator.pop(ctx);
@@ -1019,7 +1023,12 @@ class _SettingsPageState extends State<SettingsPage> {
                           _showPasswordDialog(isNew: true);
                         } else {
                           if (s._notePassword.isEmpty) {
-                            s.setState(() => s._notePasswordEnabled = false);
+                            s.setState(() {
+                              s._notePasswordEnabled = false;
+                              // Not şifresi kapatıldığında kilitli
+                              // klasörlerin de kilidi kalksın.
+                              s._lockedCategories.clear();
+                            });
                             s._saveData();
                             setState(() {});
                           } else {
