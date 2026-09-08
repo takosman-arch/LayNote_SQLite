@@ -2299,9 +2299,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         children: List.generate(crossAxisCount, (c) {
           return Expanded(
             child: Padding(
-              padding: EdgeInsets.only(
-                left: c == 0 ? 0 : spacing / 2,
-                right: c == crossAxisCount - 1 ? 0 : spacing / 2,
+              padding: EdgeInsetsDirectional.only(
+                start: c == 0 ? 0 : spacing / 2,
+                end: c == crossAxisCount - 1 ? 0 : spacing / 2,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -2916,7 +2916,6 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.start,
-                            textDirection: TextDirection.ltr,
                           ),
                         if (hasTitle) const SizedBox(height: 12),
                         showMixedPreview
@@ -2955,7 +2954,6 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.start,
-                                        textDirection: TextDirection.ltr,
                                       );
                                       return Padding(
                                         padding: const EdgeInsets.only(
@@ -2964,8 +2962,6 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                         child: !isItemChecklist
                                             ? textWidget
                                             : Row(
-                                                textDirection:
-                                                    TextDirection.ltr,
                                                 children: [
                                                   Icon(
                                                     isChecked
@@ -3007,7 +3003,6 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                 maxLines: _previewLines,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.start,
-                                textDirection: TextDirection.ltr,
                               ),
                         if (_formattedReminderText(note) != null) ...[
                           const SizedBox(height: 8),
@@ -3116,7 +3111,6 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.start,
-                                  textDirection: TextDirection.ltr,
                                 ),
                               ),
                             ],
