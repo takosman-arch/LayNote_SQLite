@@ -12,14 +12,6 @@
          özniteliği buraya işaret ediyor. -->
     <string name="note_widget_picker_label">Mevcut Not Ekle</string>
 
-    <!-- "Yeni Not Ekle" ikon widget'ı (NewNoteWidgetReceiver) için isim ve
-         açıklama. İsim, widget ekleme (seçim) ekranında widget'ın adı olarak
-         görünür (manifest'teki android:label buraya işaret eder);
-         açıklama ise adın altındaki küçük metindir
-         (new_note_widget_info.xml -> android:description). -->
-    <string name="new_note_widget_picker_label">Yeni Not Ekle</string>
-    <string name="new_note_widget_description">Dokununca doğrudan yeni bir not oluşturur</string>
-
     <!-- Widget'ta gösterilecek notu seçme (config) ekranındaki 3 metin.
          NoteWidgetConfigActivity.kt bunları getString() ile okuyor. -->
     <string name="widget_config_heading">Widget\'ta gösterilecek notu seç</string>
@@ -38,7 +30,5 @@
     <string name="widget_config_appearance_heading">Görünümü ayarla</string>
     <string name="widget_config_dark_switch_label">Koyu widget</string>
     <string name="widget_config_show_settings_icon_label">Ayarlar ikonunu göster</string>
-    <string name="widget_config_show_add_icon_label">Yeni not ikonunu göster</string>
     <string name="widget_settings_button_desc">Widget ayarları</string>
-    <string name="widget_add_button_desc">Yeni not oluştur</string>
 </resources>

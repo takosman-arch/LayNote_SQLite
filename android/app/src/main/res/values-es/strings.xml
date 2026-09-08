@@ -2,8 +2,6 @@
 <resources>
     <string name="note_widget_description">Muestra la nota seleccionada en la pantalla de inicio</string>
     <string name="note_widget_picker_label">Añadir nota existente</string>
-    <string name="new_note_widget_picker_label">Añadir nota nueva</string>
-    <string name="new_note_widget_description">Toca para crear una nota nueva al instante</string>
     <string name="widget_config_heading">Selecciona la nota que se mostrará en el widget</string>
     <string name="widget_config_empty_state">Aún no se encontraron notas sincronizadas.\n\nPrimero abre la aplicación Layout y crea al menos una nota (o edita y guarda una existente), luego intenta añadir el widget de nuevo.\n\nO puedes añadir el widget sin ninguna nota por ahora; se actualizará automáticamente en cuanto se cree la primera nota.</string>
     <string name="widget_config_continue_without_note">Continuar sin nota</string>
@@ -20,7 +18,5 @@
     <string name="widget_config_appearance_heading">Ajustar apariencia</string>
     <string name="widget_config_dark_switch_label">Widget oscuro</string>
     <string name="widget_config_show_settings_icon_label">Mostrar icono de ajustes</string>
-    <string name="widget_config_show_add_icon_label">Mostrar icono de nota nueva</string>
     <string name="widget_settings_button_desc">Ajustes del widget</string>
-    <string name="widget_add_button_desc">Crear nota nueva</string>
 </resources>

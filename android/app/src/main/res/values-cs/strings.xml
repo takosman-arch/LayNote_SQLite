@@ -2,8 +2,6 @@
 <resources>
     <string name="note_widget_description">Zobrazuje vybranou poznámku na domovské obrazovce</string>
     <string name="note_widget_picker_label">Přidat existující poznámku</string>
-    <string name="new_note_widget_picker_label">Přidat novou poznámku</string>
-    <string name="new_note_widget_description">Klepnutím okamžitě vytvoříte novou poznámku</string>
     <string name="widget_config_heading">Vyberte poznámku, která se má zobrazit ve widgetu</string>
     <string name="widget_config_empty_state">Zatím nebyly nalezeny žádné synchronizované poznámky.\n\nNejprve otevřete aplikaci Layout a vytvořte alespoň jednu poznámku (nebo upravte a uložte existující), poté zkuste widget přidat znovu.\n\nNebo widget prozatím přidejte bez poznámky – jakmile vznikne první poznámka, automaticky se aktualizuje.</string>
     <string name="widget_config_continue_without_note">Pokračovat bez poznámky</string>
@@ -20,7 +18,5 @@
     <string name="widget_config_appearance_heading">Upravit vzhled</string>
     <string name="widget_config_dark_switch_label">Tmavý widget</string>
     <string name="widget_config_show_settings_icon_label">Zobrazit ikonu nastavení</string>
-    <string name="widget_config_show_add_icon_label">Zobrazit ikonu nové poznámky</string>
     <string name="widget_settings_button_desc">Nastavení widgetu</string>
-    <string name="widget_add_button_desc">Vytvořit novou poznámku</string>
 </resources>

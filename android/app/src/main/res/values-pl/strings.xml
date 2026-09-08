@@ -2,8 +2,6 @@
 <resources>
     <string name="note_widget_description">Wyświetla wybraną przez Ciebie notatkę na ekranie głównym</string>
     <string name="note_widget_picker_label">Dodaj istniejącą notatkę</string>
-    <string name="new_note_widget_picker_label">Dodaj nową notatkę</string>
-    <string name="new_note_widget_description">Dotknij, aby od razu utworzyć nową notatkę</string>
     <string name="widget_config_heading">Wybierz notatkę, która ma być wyświetlana w widżecie</string>
     <string name="widget_config_empty_state">Nie znaleziono jeszcze żadnych zsynchronizowanych notatek.\n\nNajpierw otwórz aplikację Layout i utwórz co najmniej jedną notatkę (albo edytuj i zapisz istniejącą), a następnie spróbuj ponownie dodać widżet.\n\nMożesz też dodać widżet na razie bez notatki — zaktualizuje się automatycznie, gdy tylko powstanie pierwsza notatka.</string>
     <string name="widget_config_continue_without_note">Kontynuuj bez notatki</string>
@@ -20,7 +18,5 @@
     <string name="widget_config_appearance_heading">Dostosuj wygląd</string>
     <string name="widget_config_dark_switch_label">Ciemny widżet</string>
     <string name="widget_config_show_settings_icon_label">Pokaż ikonę ustawień</string>
-    <string name="widget_config_show_add_icon_label">Pokaż ikonę nowej notatki</string>
     <string name="widget_settings_button_desc">Ustawienia widżetu</string>
-    <string name="widget_add_button_desc">Utwórz nową notatkę</string>
 </resources>

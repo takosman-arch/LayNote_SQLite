@@ -63,10 +63,11 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             // Koyu/açık artık bu widget örneğine özel olabildiği için
             // (bkz. darkKey), aynı yaşam döngüsünde temizlenmesi gerekiyor.
             editor.remove(darkKey(id))
-            // Kullanıcı isteği (2 yeni switch): ⚙️/➕ ikon görünürlük
-            // tercihleri de darkKey ile AYNI yaşam döngüsünde temizlenir.
+            // Kullanıcı isteği (⚙️ ikon görünürlük tercihi) darkKey ile
+            // AYNI yaşam döngüsünde temizlenir. (➕ "yeni not" ikonu ve
+            // ayrı "Yeni Not Ekle" widget'ı kaldırıldı — showAddIconKey
+            // artık yok.)
             editor.remove(showSettingsIconKey(id))
-            editor.remove(showAddIconKey(id))
         }
         editor.apply()
         super.onDeleted(context, appWidgetIds)
@@ -103,12 +104,11 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
         private const val DEFAULT_BG_OPACITY = 0.5f
         private const val DEFAULT_DARK = true
 
-        // Kullanıcı isteği (2 yeni switch): sağ üstteki ⚙️/➕ ikonlarının
-        // varsayılan olarak gösterilmesi — bu switch'lerden ÖNCE eklenmiş
-        // widget örnekleri için de (kaydedilmiş tercih yoksa) davranış
-        // DEĞİŞMEMİŞ olur, ikonlar önceki gibi görünmeye devam eder.
+        // Kullanıcı isteği: sağ üstteki ⚙️ ikonunun varsayılan olarak
+        // gösterilmesi — bu switch'ten ÖNCE eklenmiş widget örnekleri için
+        // de (kaydedilmiş tercih yoksa) davranış DEĞİŞMEMİŞ olur, ikon
+        // önceki gibi görünmeye devam eder. (➕ "yeni not" ikonu kaldırıldı.)
         private const val DEFAULT_SHOW_SETTINGS_ICON = true
-        private const val DEFAULT_SHOW_ADD_ICON = true
 
         // Bir widget örneğinin (appWidgetId) kullanıcı tarafından SEÇİLMİŞ
         // notunun id'sinin SharedPreferences'ta saklandığı anahtar. AYNI
@@ -136,14 +136,11 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
         // ve NoteWidget.kt'deki AYNI mantık).
         fun darkKey(appWidgetId: Int): String = "widget_dark_widget_$appWidgetId"
 
-        // Kullanıcı isteği (2 yeni switch): darkKey ile BİREBİR aynı desen
-        // — bu widget örneğine özel, bulunamazsa DEFAULT_SHOW_*_ICON
-        // sabitine düşülür (bkz. updateWidgetInner'daki okuma).
+        // Kullanıcı isteği: darkKey ile BİREBİR aynı desen — bu widget
+        // örneğine özel, bulunamazsa DEFAULT_SHOW_SETTINGS_ICON sabitine
+        // düşülür (bkz. updateWidgetInner'daki okuma).
         fun showSettingsIconKey(appWidgetId: Int): String =
             "widget_show_settings_icon_widget_$appWidgetId"
-
-        fun showAddIconKey(appWidgetId: Int): String =
-            "widget_show_add_icon_widget_$appWidgetId"
 
         // "all_notes_json" içinden verilen id'ye ait notun (title, preview)
         // çiftini döndürür. Not bulunamazsa (silinmiş/kilitlenmiş/JSON
@@ -329,18 +326,19 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             views.setTextViewText(R.id.widget_count, "$count not")
             Log.e(TAG, "ADIM 4 OK -> setTextViewText (3 view) tamamlandi")
 
-            // DÜZELTME (başlık+ikonlar hepsi boşken üstte boş satır
-            // kalıyordu): widget_title'ın INVISIBLE/GONE kararı, ikonların
-            // gösterilip gösterilmediğine bağlı hale getirildi — bu yüzden
-            // showSettingsIcon/showAddIcon değerleri (aşağıda ADIM 6.1'de
-            // ikon view'larına uygulanan AYNI prefs okumaları) buraya
-            // taşındı; tek kaynak burada, aşağıda tekrar okunmuyor.
+            // DÜZELTME (başlık+ikon hepsi boşken üstte boş satır kalıyordu):
+            // widget_title'ın INVISIBLE/GONE kararı, ikonun gösterilip
+            // gösterilmediğine bağlı hale getirildi — bu yüzden
+            // showSettingsIcon değeri (aşağıda ADIM 6.1'de ikon view'ına
+            // uygulanan AYNI prefs okuması) buraya taşındı; tek kaynak
+            // burada, aşağıda tekrar okunmuyor. (➕ "yeni not" ikonu
+            // kaldırıldığı için anyIconVisible artık showSettingsIcon'la
+            // aynı.)
             val showSettingsIcon = prefs.getBoolean(
                 showSettingsIconKey(appWidgetId),
                 DEFAULT_SHOW_SETTINGS_ICON
             )
-            val showAddIcon = prefs.getBoolean(showAddIconKey(appWidgetId), DEFAULT_SHOW_ADD_ICON)
-            val anyIconVisible = showSettingsIcon || showAddIcon
+            val anyIconVisible = showSettingsIcon
 
             // Notun başlığı yoksa (title boş string) "Başlıksız not" gibi
             // bir yer tutucu YAZILMAZ; başlık metni görünmez olur ki
@@ -512,28 +510,25 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             views.setTextColor(R.id.widget_count, subTextColor)
             Log.e(TAG, "ADIM 6 OK -> setTextColor (3 view) tamamlandi")
 
-            // DÜZELTME (2 yeni ikon): ⚙️/➕ ikonlarının çizim rengi de
-            // koyu/açık temaya göre (titleColor ile AYNI ton) ayarlanıyor
-            // — beyaz sabit ikon açık temada görünmez kalırdı.
-            // Kullanıcı isteği (2 yeni switch): ⚙️/➕ ikonları artık widget'a
-            // özel olarak tek tek gizlenebiliyor. darkKey/fontSizeKey ile
-            // AYNI desen: bulunamazsa DEFAULT_SHOW_*_ICON'a (true) düşülür,
-            // yani bu switch'lerden ÖNCE eklenmiş widget'lar eskisi gibi
-            // ikonları göstermeye devam eder.
-            // (showSettingsIcon/showAddIcon artık yukarıda, widget_title
-            // görünürlük kararı için de kullanılabilmesi için hesaplanıyor.)
+            // DÜZELTME: ⚙️ ikonunun çizim rengi de koyu/açık temaya göre
+            // (titleColor ile AYNI ton) ayarlanıyor — beyaz sabit ikon
+            // açık temada görünmez kalırdı.
+            // Kullanıcı isteği: ⚙️ ikonu artık widget'a özel olarak
+            // gizlenebiliyor. darkKey/fontSizeKey ile AYNI desen:
+            // bulunamazsa DEFAULT_SHOW_SETTINGS_ICON'a (true) düşülür,
+            // yani bu switch'ten ÖNCE eklenmiş widget'lar eskisi gibi
+            // ikonu göstermeye devam eder.
+            // (showSettingsIcon artık yukarıda, widget_title görünürlük
+            // kararı için de kullanılabilmesi için hesaplanıyor.)
+            // (➕ "yeni not" ikonu ve buna ait widget_add_button kaldırıldı
+            // — bkz. note_widget.xml'de bu view'ın da kaldırılması gerekiyor.)
             views.setViewVisibility(
                 R.id.widget_settings_button,
                 if (showSettingsIcon) View.VISIBLE else View.GONE
             )
-            views.setViewVisibility(
-                R.id.widget_add_button,
-                if (showAddIcon) View.VISIBLE else View.GONE
-            )
 
             try {
                 views.setInt(R.id.widget_settings_button, "setColorFilter", titleColor)
-                views.setInt(R.id.widget_add_button, "setColorFilter", titleColor)
             } catch (e: Throwable) {
                 Log.e(TAG, "ADIM 6.1 HATA -> ikon setColorFilter: ${e.javaClass.simpleName}: ${e.message}", e)
             }
@@ -577,10 +572,10 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
                 Log.e(TAG, "ADIM 8 HATA -> PendingIntent: ${e.javaClass.simpleName}: ${e.message}", e)
             }
 
-            // DÜZELTME (2 yeni ikon): Bu iki view'a AYRI PendingIntent
+            // DÜZELTME: widget_settings_button'a AYRI bir PendingIntent
             // atanıyor — RemoteViews'te bir çocuk view'ın kendi
             // PendingIntent'i, üstündeki widget_root'unkinin ÖNÜNE geçer
-            // (yani ikonlara dokunmak notu AÇMAZ, kendi eylemini yapar).
+            // (yani ikona dokunmak notu AÇMAZ, kendi eylemini yapar).
             try {
                 // ⚙️ Ayarlar: NoteWidgetConfigActivity'yi bu appWidgetId ile
                 // DOĞRUDAN açar. DÜZELTME (kullanıcı isteği): sistemin normal
@@ -630,17 +625,9 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
                 )
                 views.setOnClickPendingIntent(R.id.widget_settings_button, settingsPendingIntent)
                 Log.e(TAG, "ADIM 8.2 OK -> ayarlar ikonu PendingIntent tamamlandi")
-
-                // ➕ Yeni not: "Yeni Not Ekle" ikon widget'ıyla (bkz.
-                // NewNoteWidgetReceiver.kt) AYNI mekanizma — MainActivity'yi
-                // "dnote://newnote" URI'siyle açar.
-                val newNotePendingIntent = HomeWidgetLaunchIntent.getActivity(
-                    context,
-                    MainActivity::class.java,
-                    Uri.parse("dnote://newnote")
-                )
-                views.setOnClickPendingIntent(R.id.widget_add_button, newNotePendingIntent)
-                Log.e(TAG, "ADIM 8.3 OK -> yeni not ikonu PendingIntent tamamlandi")
+                // (➕ "yeni not" ikonu ve buna ait PendingIntent kaldırıldı —
+                // özellik tamamen kaldırıldı, bkz. NewNoteWidgetReceiver.kt'nin
+                // silinmesi.)
             } catch (e: Throwable) {
                 Log.e(TAG, "ADIM 8.4 HATA -> ikon PendingIntent'leri: ${e.javaClass.simpleName}: ${e.message}", e)
             }

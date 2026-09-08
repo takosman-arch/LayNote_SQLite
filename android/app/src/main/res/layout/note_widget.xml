@@ -19,15 +19,16 @@
         android:orientation="vertical">
 
         <!--
-          DÜZELTME (2 yeni ikon): Başlık artık tek başına değil, sağ
-          üstteki ⚙️ (ayarlar -> NoteWidgetConfigActivity) ve ➕ (yeni not
-          -> dnote://newnote) ikonlarıyla AYNI yatay satırda. Başlık
-          layout_weight="1" ile kalan tüm genişliği alıyor (0dp + weight),
-          ikonlar sabit boyutta kalıyor — böylede uzun başlıklar ikonların
-          ÜSTÜNE binmek yerine kendi (ellipsize) ile kısalıyor.
-          Tıklama davranışı burada DEĞİL, NoteWidgetReceiverV2.kt'de
+          DÜZELTME: Başlık artık tek başına değil, sağ üstteki ⚙️
+          (ayarlar -> NoteWidgetConfigActivity) ikonuyla AYNI yatay
+          satırda. Başlık layout_weight="1" ile kalan tüm genişliği alıyor
+          (0dp + weight), ikon sabit boyutta kalıyor — böylece uzun
+          başlıklar ikonun ÜSTÜNE binmek yerine kendi (ellipsize) ile
+          kısalıyor. Tıklama davranışı burada DEĞİL, NoteWidgetReceiverV2.kt'de
           (setOnClickPendingIntent, widget_root'unkinden BAĞIMSIZ olarak
-          bu iki view'a özel) tanımlanıyor.
+          bu view'a özel) tanımlanıyor.
+          (➕ "yeni not" ikonu/widget_add_button kaldırıldı — özellik
+          tamamen kapatıldı.)
         -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,31 +48,11 @@
                 android:ellipsize="end"
                 android:text="Henüz not yok" />
 
-            <!-- DÜZELTME (ikon sırası değiştirildi): ➕ artık başlığa daha
-                 yakın (soldaki), ⚙️ ayar ikonu en sağda. marginStart
-                 değerleri de sıraya göre swap edildi: ilk ikonun
-                 (widget_add_button) başlıkla arasındaki boşluk eskiden
-                 widget_settings_button'ın sahip olduğu 4dp; ikinci ikonun
-                 (widget_settings_button) kendinden önceki ikonla arasındaki
-                 boşluk ise eskiden widget_add_button'ın sahip olduğu 2dp —
-                 böylece görsel aralıklar aynı kalıyor, sadece hangi ikonun
-                 nerede olduğu değişiyor. NoteWidgetConfigActivity.kt'deki
-                 previewAddIcon/previewSettingsIcon sırası da AYNI şekilde
-                 güncellendi (önizleme <-> gerçek widget birebir eşleşsin). -->
-            <ImageView
-                android:id="@+id/widget_add_button"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginStart="4dp"
-                android:padding="4dp"
-                android:src="@drawable/ic_widget_add"
-                android:contentDescription="@string/widget_add_button_desc" />
-
             <ImageView
                 android:id="@+id/widget_settings_button"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_marginStart="2dp"
+                android:layout_marginStart="4dp"
                 android:padding="4dp"
                 android:src="@drawable/ic_widget_settings"
                 android:contentDescription="@string/widget_settings_button_desc" />

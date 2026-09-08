@@ -2,8 +2,6 @@
 <resources>
     <string name="note_widget_description">Показывает выбранную вами заметку на главном экране</string>
     <string name="note_widget_picker_label">Добавить существующую заметку</string>
-    <string name="new_note_widget_picker_label">Добавить новую заметку</string>
-    <string name="new_note_widget_description">Нажмите, чтобы мгновенно создать новую заметку</string>
     <string name="widget_config_heading">Выберите заметку для отображения в виджете</string>
     <string name="widget_config_empty_state">Синхронизированные заметки пока не найдены.\n\nСначала откройте приложение Layout и создайте хотя бы одну заметку (или отредактируйте и сохраните существующую), затем попробуйте добавить виджет снова.\n\nИли добавьте виджет пока без заметки — он обновится автоматически, как только будет создана первая заметка.</string>
     <string name="widget_config_continue_without_note">Продолжить без заметки</string>
@@ -20,7 +18,5 @@
     <string name="widget_config_appearance_heading">Настроить внешний вид</string>
     <string name="widget_config_dark_switch_label">Тёмный виджет</string>
     <string name="widget_config_show_settings_icon_label">Показывать значок настроек</string>
-    <string name="widget_config_show_add_icon_label">Показывать значок новой заметки</string>
     <string name="widget_settings_button_desc">Настройки виджета</string>
-    <string name="widget_add_button_desc">Создать новую заметку</string>
 </resources>

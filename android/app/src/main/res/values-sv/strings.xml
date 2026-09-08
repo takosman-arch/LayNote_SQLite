@@ -2,8 +2,6 @@
 <resources>
     <string name="note_widget_description">Visar din valda anteckning på hemskärmen</string>
     <string name="note_widget_picker_label">Lägg till befintlig anteckning</string>
-    <string name="new_note_widget_picker_label">Lägg till ny anteckning</string>
-    <string name="new_note_widget_description">Tryck för att direkt skapa en ny anteckning</string>
     <string name="widget_config_heading">Välj anteckningen som ska visas i widgeten</string>
     <string name="widget_config_empty_state">Inga synkroniserade anteckningar hittades ännu.\n\nÖppna först Layout-appen och skapa minst en anteckning (eller redigera och spara en befintlig), och försök sedan lägga till widgeten igen.\n\nEller lägg till widgeten utan anteckning för tillfället — den uppdateras automatiskt så snart den första anteckningen skapas.</string>
     <string name="widget_config_continue_without_note">Fortsätt utan anteckning</string>
@@ -20,7 +18,5 @@
     <string name="widget_config_appearance_heading">Justera utseende</string>
     <string name="widget_config_dark_switch_label">Mörk widget</string>
     <string name="widget_config_show_settings_icon_label">Visa inställningsikon</string>
-    <string name="widget_config_show_add_icon_label">Visa ikon för ny anteckning</string>
     <string name="widget_settings_button_desc">Widgetinställningar</string>
-    <string name="widget_add_button_desc">Skapa ny anteckning</string>
 </resources>

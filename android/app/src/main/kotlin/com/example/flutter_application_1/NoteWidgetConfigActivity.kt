@@ -309,14 +309,13 @@ class NoteWidgetConfigActivity : Activity() {
     // ikisi gibi başlangıçta o anki GLOBAL değerden başlar (bkz. onCreate).
     private var currentDark = true
 
-    // Kullanıcı isteği (2. iki switch): sağ üstteki ⚙️/➕ ikonlarının
-    // widget üzerinde gösterilip gösterilmeyeceği, koyu/açık ile AYNI
-    // desende, widget'a özel. Varsayılan true — eski (bu switch'lerden
-    // önce eklenmiş) widget örnekleri, kaydedilmiş bir tercih
-    // bulunamadığında ikonları göstermeye devam eder (bkz.
-    // NoteWidgetReceiverV2.DEFAULT_SHOW_SETTINGS_ICON/DEFAULT_SHOW_ADD_ICON).
+    // Kullanıcı isteği: sağ üstteki ⚙️ ikonunun widget üzerinde gösterilip
+    // gösterilmeyeceği, koyu/açık ile AYNI desende, widget'a özel.
+    // Varsayılan true — eski (bu switch'ten önce eklenmiş) widget
+    // örnekleri, kaydedilmiş bir tercih bulunamadığında ikonu göstermeye
+    // devam eder (bkz. NoteWidgetReceiverV2.DEFAULT_SHOW_SETTINGS_ICON).
+    // (➕ "yeni not" ikonu/switch'i kaldırıldı.)
     private var currentShowSettingsIcon = true
-    private var currentShowAddIcon = true
 
     // DÜZELTME (2 EKRANLI AKIŞ): şu an 2. ekranda (görünüm ayarları)
     // olup olmadığımızı tutar — sistem geri tuşuna (onBackPressed) basılınca
@@ -478,10 +477,6 @@ class NoteWidgetConfigActivity : Activity() {
             currentShowSettingsIcon = prefs.getBoolean(
                 NoteWidgetReceiverV2.showSettingsIconKey(appWidgetId),
                 currentShowSettingsIcon
-            )
-            currentShowAddIcon = prefs.getBoolean(
-                NoteWidgetReceiverV2.showAddIconKey(appWidgetId),
-                currentShowAddIcon
             )
             showAppearanceScreen(pinnedNoteId)
             return
@@ -849,31 +844,13 @@ class NoteWidgetConfigActivity : Activity() {
         }
         // DÜZELTME (önizleme <-> gerçek widget birebir eşleşsin): gerçek
         // widget'ta (note_widget.xml) başlık tek başına değil, sağında
-        // ⚙️/➕ ikonlarıyla aynı yatay satırda (bkz. NoteWidgetReceiverV2.kt
-        // ADIM 6.1/8.2/8.3). Önizleme kartı bu satırı taşımadığı için
-        // kullanıcı, ayarları değiştirirken gerçekte nasıl görüneceğini tam
+        // ⚙️ ikonuyla aynı yatay satırda (bkz. NoteWidgetReceiverV2.kt
+        // ADIM 6.1/8.2). Önizleme kartı bu satırı taşımadığı için kullanıcı,
+        // ayarları değiştirirken gerçekte nasıl görüneceğini tam
         // göremiyordu. Aşağıdaki previewIconRow, previewTitle'ı weight=1
-        // ile sararak aynı iki ikonu (dokunulamaz, sadece görsel — bu
-        // ekranın kendisi zaten ayarlar/yeni-not akışının içinde)
-        // previewTitleColor ile boyayıp ekliyor.
-        // DÜZELTME (ikon sırası değiştirildi): kullanıcı isteğiyle ➕ artık
-        // başlığa daha yakın (soldaki), ⚙️ ayar ikonu en sağda duruyor.
-        // marginStart değerleri de sıraya göre swap edildi: ilk ikonun
-        // (previewAddIcon) başlıkla arasındaki boşluk eskiden previewSettingsIcon'ın
-        // sahip olduğu dp(4); ikinci ikonun (previewSettingsIcon) kendinden
-        // önceki ikonla arasındaki boşluk ise eskiden previewAddIcon'ın
-        // sahip olduğu dp(2) — böylece görsel aralıklar aynı kalıyor, sadece
-        // hangi ikonun nerede olduğu değişiyor.
-        val previewAddIcon = ImageView(this).apply {
-            setImageResource(R.drawable.ic_widget_add)
-            setColorFilter(previewTitleColor)
-            // DÜZELTME: previewSettingsIcon ile AYNI sorun/AYNI çözüm —
-            // currentShowAddIcon'a göre başlangıç görünürlüğü.
-            visibility = if (currentShowAddIcon) View.VISIBLE else View.GONE
-            layoutParams = LinearLayout.LayoutParams(dp(18), dp(18)).apply {
-                marginStart = dp(4)
-            }
-        }
+        // ile sararak AYNI ikonu (dokunulamaz, sadece görsel — bu ekranın
+        // kendisi zaten ayarlar akışının içinde) previewTitleColor ile
+        // boyayıp ekliyor. (➕ "yeni not" önizleme ikonu kaldırıldı.)
         val previewSettingsIcon = ImageView(this).apply {
             setImageResource(R.drawable.ic_widget_settings)
             setColorFilter(previewTitleColor)
@@ -884,7 +861,7 @@ class NoteWidgetConfigActivity : Activity() {
             // (satır ~1070) tetikleyene kadar güncellenmiyordu.
             visibility = if (currentShowSettingsIcon) View.VISIBLE else View.GONE
             layoutParams = LinearLayout.LayoutParams(dp(18), dp(18)).apply {
-                marginStart = dp(2)
+                marginStart = dp(4)
             }
         }
         val previewIconRow = LinearLayout(this).apply {
@@ -903,7 +880,6 @@ class NoteWidgetConfigActivity : Activity() {
                 previewTitle,
                 LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
             )
-            addView(previewAddIcon)
             addView(previewSettingsIcon)
         }
         val previewCard = LinearLayout(this).apply {
@@ -967,7 +943,6 @@ class NoteWidgetConfigActivity : Activity() {
             previewTitle.setTextColor(previewTitleColor)
             previewContent.setTextColor(previewTitleColor)
             previewSettingsIcon.setColorFilter(previewTitleColor)
-            previewAddIcon.setColorFilter(previewTitleColor)
             applyPreviewOpacity(currentBgOpacity)
         }
 
@@ -1099,11 +1074,11 @@ class NoteWidgetConfigActivity : Activity() {
         darkRow.addView(darkSwitch)
 
         // Kullanıcı isteği: koyu/açık switch'inin hemen altına, sağ
-        // üstteki ⚙️/➕ ikonlarını birer birer açıp kapatan iki switch.
-        // darkRow ile BİREBİR aynı desen (satır yapısı, renkler); tek
-        // fark her birinin kendi currentShowSettingsIcon/currentShowAddIcon
-        // değişkenini güncellemesi ve önizlemedeki ilgili ikonun
-        // görünürlüğünü (renk değil, VISIBLE/GONE) anında yansıtması.
+        // üstteki ⚙️ ikonunu açıp kapatan bir switch. darkRow ile BİREBİR
+        // aynı desen (satır yapısı, renkler); tek fark
+        // currentShowSettingsIcon değişkenini güncellemesi ve
+        // önizlemedeki ikonun görünürlüğünü (renk değil, VISIBLE/GONE)
+        // anında yansıtması. (➕ "yeni not" switch'i kaldırıldı.)
         fun buildIconToggleRow(
             labelText: String,
             initiallyChecked: Boolean,
@@ -1159,20 +1134,15 @@ class NoteWidgetConfigActivity : Activity() {
         }
 
         // DÜZELTME: widget_strings.xml (26 dile çevrilmiş) artık
-        // widget_config_show_settings_icon_label / widget_config_show_add_icon_label
-        // anahtarlarını da içeriyor; diğer etiketlerle (ör.
-        // widget_config_dark_switch_label) AYNI desende getString() ile okunuyor.
+        // widget_config_show_settings_icon_label anahtarını da içeriyor;
+        // diğer etiketlerle (ör. widget_config_dark_switch_label) AYNI
+        // desende getString() ile okunuyor. (widget_config_show_add_icon_label
+        // artık kullanılmıyor — kaldırılabilir.)
         val showSettingsRow = buildIconToggleRow(
             labelText = getString(R.string.widget_config_show_settings_icon_label),
             initiallyChecked = currentShowSettingsIcon,
             previewIcon = previewSettingsIcon,
         ) { isChecked -> currentShowSettingsIcon = isChecked }
-
-        val showAddRow = buildIconToggleRow(
-            labelText = getString(R.string.widget_config_show_add_icon_label),
-            initiallyChecked = currentShowAddIcon,
-            previewIcon = previewAddIcon,
-        ) { isChecked -> currentShowAddIcon = isChecked }
 
         presetContainer.addView(fontSizeLabel)
         presetContainer.addView(fontSizeSeekBar)
@@ -1180,7 +1150,6 @@ class NoteWidgetConfigActivity : Activity() {
         presetContainer.addView(opacitySeekBar)
         presetContainer.addView(darkRow)
         presetContainer.addView(showSettingsRow)
-        presetContainer.addView(showAddRow)
 
         // DÜZELTME (2 EKRANLI AKIŞ): bu ekrana zaten bir not/boş-durum
         // seçilmiş olarak gelindiği için buton artık başlangıçtan itibaren
@@ -1207,7 +1176,6 @@ class NoteWidgetConfigActivity : Activity() {
                     currentBgOpacity,
                     currentDark,
                     currentShowSettingsIcon,
-                    currentShowAddIcon,
                 )
             }
         }
@@ -1421,7 +1389,6 @@ class NoteWidgetConfigActivity : Activity() {
         bgOpacity: Float? = null,
         dark: Boolean? = null,
         showSettingsIcon: Boolean? = null,
-        showAddIcon: Boolean? = null,
     ) {
         val editor = prefs.edit()
             .putString(NoteWidgetReceiverV2.pinnedNoteKey(appWidgetId), noteId)
@@ -1434,16 +1401,13 @@ class NoteWidgetConfigActivity : Activity() {
         if (dark != null) {
             editor.putBoolean(NoteWidgetReceiverV2.darkKey(appWidgetId), dark)
         }
-        // Kullanıcı isteği (2 yeni switch): ⚙️/➕ ikonlarının widget'ta
-        // gösterilip gösterilmeyeceği, darkKey ile AYNI desende.
+        // Kullanıcı isteği: ⚙️ ikonunun widget'ta gösterilip
+        // gösterilmeyeceği, darkKey ile AYNI desende.
         if (showSettingsIcon != null) {
             editor.putBoolean(
                 NoteWidgetReceiverV2.showSettingsIconKey(appWidgetId),
                 showSettingsIcon
             )
-        }
-        if (showAddIcon != null) {
-            editor.putBoolean(NoteWidgetReceiverV2.showAddIconKey(appWidgetId), showAddIcon)
         }
         editor.apply()
 
