@@ -177,11 +177,18 @@ class PdfExportService {
     // mutlak bir değerdir. Varsayılan 0 (eskisiyle birebir aynı,
     // eklenti öncesi davranış).
     double lineHeight = 0.0,
+    // DÜZELTME: calc_table'ın Tutar (sayı) sütunu sağa hizalı gösterilir
+    // (bkz. aşağıdaki çağrı noktası); bu fonksiyon eskiden textAlign hiç
+    // desteklemediğinden Tutar zengin metne geçirilemiyordu (düz pw.Text
+    // kalmak zorundaydı). Varsayılan null = eskisiyle birebir aynı
+    // (hizasız/sol) davranış — diğer tüm çağrı noktaları etkilenmez.
+    pw.TextAlign? textAlign,
   }) {
     final defaultFont = baseFont ?? regular;
     if (spans.isEmpty || text.isEmpty) {
       return pw.Text(
         text,
+        textAlign: textAlign,
         style: pw.TextStyle(
           font: defaultFont,
           fontSize: fontSize,
@@ -276,6 +283,7 @@ class PdfExportService {
     }
 
     return pw.RichText(
+      textAlign: textAlign,
       text: pw.TextSpan(
         children: children,
         style: pw.TextStyle(lineSpacing: lineHeight),
@@ -796,9 +804,20 @@ class PdfExportService {
                       horizontal: 4,
                     ),
                     alignment: pw.Alignment.centerLeft,
-                    child: pw.Text(
+                    // Aşama 6: "Kalem" alanı artık zengin metin taşıyor
+                    // ({"label","spans","value"}, bkz. content_blocks.dart).
+                    // table bloğundaki hücrelerle BİREBİR aynı desen:
+                    // _buildRichTextWidget + RichTextSpans.parse(row['spans']).
+                    // Eski (spans'sız) notlarda row['spans'] null olur,
+                    // RichTextSpans.parse bunu boş listeye normalize eder ve
+                    // _buildRichTextWidget boş span listesinde düz pw.Text'e
+                    // düşer — geriye dönük uyumluluk korunur.
+                    child: _buildRichTextWidget(
                       label,
-                      style: pw.TextStyle(font: regular, fontSize: effectiveFontSize),
+                      RichTextSpans.parse(row['spans']),
+                      regular,
+                      bold,
+                      effectiveFontSize,
                     ),
                   ),
                   pw.Container(
@@ -808,9 +827,28 @@ class PdfExportService {
                       horizontal: 4,
                     ),
                     alignment: pw.Alignment.centerRight,
-                    child: pw.Text(
+                    // DÜZELTME: Tutar (sayı) alanı artık Kalem gibi zengin
+                    // metin taşıyor — ama KENDİ AYRI span deposunda
+                    // ('valueSpansHolder', bkz. note_list_note_dialog_
+                    // mixin.dart'taki açıklama), Kalem'in 'spans'
+                    // anahtarıyla KARIŞMAZ. Eskiden burada düz pw.Text
+                    // kullanılıyordu; Tutar'a uygulanan kalın/renk PDF'e
+                    // hiç yansımıyordu. Eski notlarda bu anahtar hiç
+                    // yoksa (ya da beklenmedik bir tipteyse) 'is Map'
+                    // kontrolü sayesinde hata fırlatmadan boş span
+                    // listesine düşülür ve _buildRichTextWidget düz
+                    // pw.Text'e geri döner — geriye dönük uyumluluk
+                    // korunur.
+                    child: _buildRichTextWidget(
                       valueText,
-                      style: pw.TextStyle(font: regular, fontSize: effectiveFontSize),
+                      RichTextSpans.parse(
+                        row['valueSpansHolder'] is Map
+                            ? (row['valueSpansHolder'] as Map)['spans']
+                            : null,
+                      ),
+                      regular,
+                      bold,
+                      effectiveFontSize,
                       textAlign: pw.TextAlign.right,
                     ),
                   ),

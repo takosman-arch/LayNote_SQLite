@@ -235,6 +235,19 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // italik/vb. araç çubuğu, hangi span listesini değiştireceğini bu ikisi
     // (focusedBlockIndex + focusedItemIndex) ile bulur.
     int focusedItemIndex = -1;
+    // Aşama X: calc_table satırında odak Kalem'de mi Tutar'da mı?
+    // Kalem VE Tutar aynı focusedBlockIndex/focusedItemIndex çiftini
+    // paylaşır (bkz. bindCalcTableLabelFocus/bindCalcTableValueFocus) —
+    // bu, ikisi arasında geçişte araç çubuğunun titremeden açık kalması
+    // İÇİN kasıtlı. Ama ikisinin kendi AYRI controller'ı ve span deposu
+    // var (Tutar artık Kalem gibi RichBlockTextController + kendi
+    // 'valueSpansHolder'ı ile kuruluyor — bkz. NoteCalcTableBlock'taki
+    // valueControllers ve _resolveFocusedFormatController/
+    // _resolveFocusedSpansHolder'daki 'calc_table' dalları). Bu bayrak,
+    // biçimlendirme (kalın/renk/vb.) butonlarının HANGİ alana
+    // uygulanacağını (Kalem mi Tutar mı) ayırt etmek için kullanılır;
+    // bind* fonksiyonları odak değiştikçe günceller.
+    bool focusedCalcTableIsValueField = false;
     // DÜZELTME (checklist eklerken zengin metin barı bir an kaybolup geri
     // geliyordu): bar görünürlüğü blockFocusNodes[...]?.hasFocus gibi HAM
     // FocusNode durumuna bakıyor. Checklist oluşturma/madde ekleme
@@ -473,6 +486,114 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       return null;
     }
 
+    // _locateChecklistItem ile BİREBİR AYNI gerekçe/desen: calc_table
+    // satırının FocusNode'u odak kazandığında, konumunu (blok + satır
+    // indeksi) SABİT bir değer olarak değil, satır referansının o an
+    // blocks içinde NEREDE olduğuna bakarak taze hesaplıyoruz. Bu, satır
+    // ekleme/silme onSubmitRow/onRemoveRow'daki "cerrahi" (tam yeniden
+    // kurulum yapmayan) müdahaleyle yapıldığından ve bu ekleme/silme
+    // sırasında SONRAKİ satırların FocusNode'ları YENİDEN KURULMADIĞINDAN
+    // (aynı node korunuyor) gereklidir — sabit bir indeks kullansaydık,
+    // araya satır eklenince/silinince mevcut node'ların "ilk kurulduğu
+    // andaki" indeksi bayatlar, araç çubuğu yanlış satırı hedef alırdı.
+    ({int blockIndex, int rowIndex})? _locateCalcTableRow(
+      Map<String, dynamic> row,
+    ) {
+      for (int bi = 0; bi < blocks.length; bi++) {
+        if (blocks[bi]['type'] != 'calc_table') continue;
+        final rs = blocks[bi]['rows'] as List?;
+        if (rs == null) continue;
+        for (int ri = 0; ri < rs.length; ri++) {
+          if (identical(rs[ri], row)) {
+            return (blockIndex: bi, rowIndex: ri);
+          }
+        }
+      }
+      return null;
+    }
+
+    // calc_table satırının "Kalem" FocusNode'u odak kazandığında, paylaşılan
+    // kalın/italik araç çubuğunun onu bulabilmesi için focusedBlockIndex/
+    // focusedItemIndex'i günceller — checklist maddesiyle BİREBİR AYNI
+    // desen (bkz. _resolveFocusedFormatController/_resolveFocusedSpansHolder
+    // içindeki yeni 'calc_table' dalı). SADECE bir FocusNode İLK
+    // KURULDUĞUNDA çağrılmalı — pozisyon bazlı yeniden kullanılan
+    // (reused) node'lara TEKRAR bağlanmamalı, aksi halde dinleyiciler
+    // rebuild başına birikir.
+    //
+    // DÜZELTME: bu fonksiyon eskiden rebuildBlockControllers() içine
+    // İÇ İÇE (nested) tanımlıydı — bu yüzden yalnızca o fonksiyonun
+    // kapsamında görünürdü. onSubmitRow/onRemoveRow gibi _showNoteDialog
+    // içindeki AYRI (kardeş) closure'lardan (StatefulBuilder/setModalState
+    // içindeki callback'ler) çağrıldığında "isn't defined" derleme hatası
+    // veriyordu. _locateCalcTableRow ile AYNI seviyeye (doğrudan
+    // _showNoteDialog kapsamına) taşındı ki her iki yerden de erişilebilsin.
+    // calc_table satırının Tutar (sayı) alanı için span listesini okur.
+    // Kalem'in aksine bu spans doğrudan satırda ('row[\'spans\']') değil,
+    // satırın KENDİ İÇİNDEKİ ayrı 'valueSpansHolder' alt Map'inin 'spans'
+    // anahtarında tutulur (bkz. _resolveFocusedSpansHolder'daki
+    // 'calc_table' dalı) — ikisi aynı anahtarı paylaşsaydı Tutar'a
+    // uygulanan biçimlendirme Kalem'inkini değiştirirdi. Henüz hiç
+    // biçimlendirilmemiş (veya eski kayıttan yüklenmiş) satırlarda bu
+    // alt Map yoktur; o durumda boş liste döner.
+    List<Map<String, dynamic>> _calcTableValueSpans(Map<String, dynamic> row) {
+      final holder = row['valueSpansHolder'];
+      if (holder is Map) {
+        return RichTextSpans.parse(holder['spans'] as List?);
+      }
+      return const [];
+    }
+
+    void bindCalcTableLabelFocus(FocusNode fn, Map<String, dynamic> row) {
+      fn.addListener(() {
+        if (fn.hasFocus) {
+          final loc = _locateCalcTableRow(row);
+          if (loc == null) return;
+          focusedBlockIndex = loc.blockIndex;
+          focusedItemIndex = loc.rowIndex;
+          // Kalem odaklandı — biçimlendirme resolver'larının (bkz.
+          // yukarıdaki bayrak tanımı) Kalem'in kendi controller/span
+          // deposuna yönelmesi için Tutar bayrağı kapatılıyor.
+          focusedCalcTableIsValueField = false;
+          pendingBlockFocus = false;
+          _titleFocused = false;
+          requestEditorRebuild?.call(() {});
+        }
+      });
+    }
+
+    // DÜZELTME: bir önceki deneme (yalnızca boş bir rebuild isteyen
+    // bindCalcTableValueFocus) barı Tutar'a geçince TAMAMEN gizliyordu —
+    // çünkü görünürlük yalnızca Kalem'in hasFocus'una bakıyordu, Tutar
+    // odaklanınca Kalem gerçekten odağı kaybettiğinden bar kayboluyordu.
+    // Oysa istenen davranış: bar, satırın Kalem'İ VEYA Tutar'ı odaklıyken
+    // sürekli açık kalmalı (satır içinde iki alan arasında geçiş yaparken
+    // titremeden/kaybolmadan). Bu yüzden bindCalcTableLabelFocus ile
+    // BİREBİR AYNI şekilde satır konumunu (_locateCalcTableRow ile) günceller
+    // — tek fark, aşağıdaki görünürlük kontrolüne ayrıca "hasFocusedCalcTableValue"
+    // olarak eklenir (bkz. Builder içindeki bar görünürlüğü).
+    void bindCalcTableValueFocus(FocusNode fn, Map<String, dynamic> row) {
+      fn.addListener(() {
+        if (fn.hasFocus) {
+          final loc = _locateCalcTableRow(row);
+          if (loc == null) return;
+          focusedBlockIndex = loc.blockIndex;
+          focusedItemIndex = loc.rowIndex;
+          // Tutar odaklandı — bu satırın Kalem'i DEĞİL, kendi ayrı
+          // controller/span deposuna sahip Tutar alanı odakta. Bayrak
+          // açılır ki _resolveFocusedFormatController/
+          // _resolveFocusedSpansHolder Kalem yerine Tutar'ın kendi
+          // controller'ına ve 'valueSpansHolder'ına yönelsin (bkz.
+          // yukarıdaki bayrak tanımı) — böylece kalın/renk/vb. artık
+          // gerçekten Tutar'ın YAZISINA uygulanır.
+          focusedCalcTableIsValueField = true;
+          pendingBlockFocus = false;
+          _titleFocused = false;
+          requestEditorRebuild?.call(() {});
+        }
+      });
+    }
+
     // Blok listesi değiştiğinde (ekleme/silme/birleştirme) controller ve
     // focus node'ları tamamen yeniden kurar. Metin bloğu olmayan (ek)
     // konumlar için null tutulur.
@@ -513,6 +634,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       // Kullanılan (korunan) eski node'ları takip et — bunlar dispose edilmez.
       final usedControllers  = <TextEditingController>{};
       final usedFocusNodes   = <FocusNode>{};
+
+      // bindCalcTableLabelFocus artık burada değil, _showNoteDialog
+      // kapsamında (_locateCalcTableRow'un hemen altında) tanımlı — bkz.
+      // oradaki açıklama. Aşağıdaki döngü onu dış kapsamdan kullanır.
 
       for (int i = 0; i < blocks.length; i++) {
         final type = blocks[i]['type'] as String?;
@@ -658,17 +783,63 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 usedControllers..add(lc)..add(vc);
                 usedFocusNodes..add(lf)..add(vf);
               } else {
-                labelCtrls.add(TextEditingController(text: (rows[j]['label'] ?? '').toString()));
-                valueCtrls.add(TextEditingController(text: (rows[j]['value'] ?? '').toString()));
-                labelFns.add(FocusNode());
-                valueFns.add(FocusNode());
+                // "Kalem" alanı artık zengin metin: RichBlockTextController
+                // ile kuruluyor (bkz. text/checklist ile aynı desen).
+                // getSpans, pozisyon (j) yerine SATIR REFERANSI üzerinden
+                // okur — checklist'teki capturedItem deseniyle aynı sebep:
+                // satırlar yeniden sıralanırsa/silinirse pozisyon bazlı bir
+                // kapanış (closure) yanlış satırın span'larını okuyabilir.
+                final capturedRow = rows[j];
+                labelCtrls.add(RichBlockTextController(
+                  text: (capturedRow['label'] ?? '').toString(),
+                  getSpans: () => RichTextSpans.parse(capturedRow['spans']),
+                ));
+                valueCtrls.add(RichBlockTextController(
+                  text: (capturedRow['value'] ?? '').toString(),
+                  getSpans: () => _calcTableValueSpans(capturedRow),
+                ));
+                final newLabelFn = FocusNode();
+                // DÜZELTME (çift dinleyici birikmesi riski — checklist'teki
+                // AYNI kural): dinleyici SADECE burada, node İLK
+                // KURULDUĞUNDA eklenir; yukarıdaki "j < oldLabelCtrls.length"
+                // dalında YENİDEN KULLANILAN (lf) node'a asla ikinci bir
+                // dinleyici eklenmez — aksi halde her rebuild'de eski
+                // dinleyiciler üst üste birikir (her tuş vuruşunda
+                // requestEditorRebuild N kez çağrılır hale gelir).
+                bindCalcTableLabelFocus(newLabelFn, capturedRow);
+                labelFns.add(newLabelFn);
+                final newValueFn = FocusNode();
+                bindCalcTableValueFocus(newValueFn, capturedRow);
+                valueFns.add(newValueFn);
               }
             }
           } else {
-            labelCtrls = rows.map((r) => TextEditingController(text: (r['label'] ?? '').toString())).toList();
-            valueCtrls = rows.map((r) => TextEditingController(text: (r['value'] ?? '').toString())).toList();
-            labelFns   = rows.map((_) => FocusNode()).toList();
-            valueFns   = rows.map((_) => FocusNode()).toList();
+            labelCtrls = [
+              for (final r in rows)
+                RichBlockTextController(
+                  text: (r['label'] ?? '').toString(),
+                  getSpans: () => RichTextSpans.parse(r['spans']),
+                ),
+            ];
+            valueCtrls = [
+              for (final r in rows)
+                RichBlockTextController(
+                  text: (r['value'] ?? '').toString(),
+                  getSpans: () => _calcTableValueSpans(r),
+                ),
+            ];
+            labelFns = [];
+            for (int j = 0; j < rows.length; j++) {
+              final newLabelFn = FocusNode();
+              bindCalcTableLabelFocus(newLabelFn, rows[j]);
+              labelFns.add(newLabelFn);
+            }
+            valueFns   = [];
+            for (int j = 0; j < rows.length; j++) {
+              final newValueFn = FocusNode();
+              bindCalcTableValueFocus(newValueFn, rows[j]);
+              valueFns.add(newValueFn);
+            }
           }
 
           blockTableLabelControllers.add(labelCtrls);
@@ -992,6 +1163,33 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         // hücrenin odaklı olduğu doğrudan bu değişkenden okunur.
         return focusedTableCellController;
       }
+      if (type == 'calc_table') {
+        // DÜZELTME: Tutar (sayı) alanı da artık Kalem gibi kendi ayrı
+        // zengin metin desteğine sahip — bkz. valueCtrls'in
+        // RichBlockTextController olarak kurulduğu yerler ve
+        // _resolveFocusedSpansHolder'daki 'valueSpansHolder' dalı. Odak
+        // satırın Tutar'ındaysa Kalem'in controller'ı YERİNE doğrudan
+        // Tutar'ın kendi controller'ı döner; aksi halde (Kalem odaktaysa)
+        // aşağıdaki eski davranış devam eder.
+        final itemIdx = focusedItemIndex;
+        if (focusedCalcTableIsValueField) {
+          final valueCtrls = blockTableValueControllers[idx];
+          if (valueCtrls == null || itemIdx < 0 || itemIdx >= valueCtrls.length) {
+            return null;
+          }
+          return valueCtrls[itemIdx];
+        }
+        // checklist ile BİREBİR AYNI desen: satır controller'ları (table
+        // hücrelerinin aksine) doğrudan blockTableLabelControllers[idx]
+        // içinde, dışarıda saklanıyor — bu yüzden ayrı bir
+        // focusedTableCellController benzeri değişkene gerek yok, satır
+        // indeksi focusedItemIndex'ten okunur (bkz. bindCalcTableLabelFocus).
+        final ctrls = blockTableLabelControllers[idx];
+        if (ctrls == null || itemIdx < 0 || itemIdx >= ctrls.length) {
+          return null;
+        }
+        return ctrls[itemIdx];
+      }
       return null;
     }
 
@@ -1023,6 +1221,36 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         // .dart'taki referans-koruma açıklaması) — üzerine yazılan
         // ['spans'] = newSpans doğrudan gerçek veriye işler.
         return focusedTableCellSpansHolder;
+      }
+      if (block['type'] == 'calc_table') {
+        final itemIdx = focusedItemIndex;
+        final rows = block['rows'] as List?;
+        if (rows == null || itemIdx < 0 || itemIdx >= rows.length) {
+          return null;
+        }
+        final row = rows[itemIdx] as Map<String, dynamic>;
+        // DÜZELTME: Tutar (sayı) alanı artık Kalem'den TAMAMEN AYRI kendi
+        // span deposunu kullanıyor — ikisi aynı 'spans' anahtarını
+        // paylaşırsa Tutar'a uygulanan kalın/renk, Kalem'in görünümünü
+        // bozardı (ya da tam tersi). 'valueSpansHolder', satırın kendi
+        // Map'i (row) İÇİNDE, referans olarak saklanan AYRI bir alt
+        // Map — üzerine yazılan ['spans'] = newSpans doğrudan
+        // row['valueSpansHolder']'a işler (kopya değil), tıpkı Kalem için
+        // 'row' Map'inin kendisinin kullanılması gibi. Eski notlarda bu
+        // anahtar henüz yoksa (kayıttan yeni yüklenmiş / hiç
+        // biçimlendirilmemiş satır) burada tembelce (lazy) oluşturulur.
+        if (focusedCalcTableIsValueField) {
+          final existing = row['valueSpansHolder'];
+          if (existing is Map<String, dynamic>) return existing;
+          final newHolder = <String, dynamic>{};
+          row['valueSpansHolder'] = newHolder;
+          return newHolder;
+        }
+        // Kalem odaktaysa eskisi gibi satırın kendi Map'i döner —
+        // checklist maddesiyle aynı desen. Üzerine yazılan
+        // ['spans'] = newSpans doğrudan blocks[idx]['rows'][itemIdx]'a
+        // işler (kopya değil).
+        return row;
       }
       return null;
     }
@@ -5224,7 +5452,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               blocks.insert(idx + 1, {
                                 'type': 'calc_table',
                                 'rows': [
-                                  {'label': '', 'value': ''},
+                                  {
+                                    'label': '',
+                                    'spans': <Map<String, dynamic>>[],
+                                    'value': '',
+                                  },
                                 ],
                               });
                               blocks.insert(idx + 2, {
@@ -5996,6 +6228,22 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       'calc_label_${i}_$j',
                                       labelCtrls[j],
                                     );
+                                    // Span kaydırma / "önce butona bas sonra
+                                    // yaz" mantığı title/checklist ile
+                                    // BİREBİR AYNI merkezi fonksiyondan
+                                    // gelir — oldText, rows[j]['label']
+                                    // henüz GÜNCELLENMEDEN ÖNCE okunmalı.
+                                    final oldText =
+                                        (rows[j]['label'] ?? '').toString();
+                                    final cursorPos =
+                                        labelCtrls[j].selection.baseOffset;
+                                    _shiftSpansForTextChange(
+                                      rows[j],
+                                      oldText,
+                                      val,
+                                      cursorPosition:
+                                          cursorPos >= 0 ? cursorPos : null,
+                                    );
                                     rows[j]['label'] = val;
                                     block['rows'] = rows;
                                   },
@@ -6003,6 +6251,36 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     noteTextEdited(
                                       'calc_value_${i}_$j',
                                       valueCtrls[j],
+                                    );
+                                    // Tutar'ın span kaydırması Kalem ile
+                                    // BİREBİR AYNI merkezi fonksiyondan
+                                    // gelir (bkz. onLabelChanged) — aksi
+                                    // halde sayının ortasına rakam
+                                    // ekleyip/silince önceden uygulanmış
+                                    // kalın/renk aralığı yanlış konuma
+                                    // kayardı. Tek fark: holder Kalem'in
+                                    // aksine rows[j] DEĞİL, satırın kendi
+                                    // 'valueSpansHolder' alt Map'i (bkz.
+                                    // _resolveFocusedSpansHolder'daki
+                                    // 'calc_table' dalı) — henüz yoksa
+                                    // burada oluşturulur.
+                                    final oldText =
+                                        (rows[j]['value'] ?? '').toString();
+                                    final cursorPos =
+                                        valueCtrls[j].selection.baseOffset;
+                                    final existingHolder =
+                                        rows[j]['valueSpansHolder'];
+                                    final valueHolder =
+                                        existingHolder is Map<String, dynamic>
+                                        ? existingHolder
+                                        : (rows[j]['valueSpansHolder'] =
+                                              <String, dynamic>{});
+                                    _shiftSpansForTextChange(
+                                      valueHolder,
+                                      oldText,
+                                      val,
+                                      cursorPosition:
+                                          cursorPos >= 0 ? cursorPos : null,
                                     );
                                     setModalState(() {
                                       rows[j]['value'] = val;
@@ -6013,21 +6291,50 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     pushUndoCheckpoint();
                                     setModalState(() {
                                       final newIndex = j + 1;
-                                      rows.insert(newIndex, {
+                                      // Yeni satırın "Kalem" alanı da baştan
+                                      // zengin metin desteğiyle kurulur.
+                                      final newRow = <String, dynamic>{
                                         'label': '',
+                                        'spans': <Map<String, dynamic>>[],
                                         'value': '',
-                                      });
+                                      };
+                                      rows.insert(newIndex, newRow);
                                       block['rows'] = rows;
+                                      final newLabelFn = FocusNode();
+                                      // DÜZELTME: kurulum döngüsündeki AYNI
+                                      // kural — dinleyici SADECE burada,
+                                      // node İLK KURULDUĞUNDA bağlanır.
+                                      bindCalcTableLabelFocus(
+                                        newLabelFn,
+                                        newRow,
+                                      );
                                       labelCtrls.insert(
                                         newIndex,
-                                        TextEditingController(),
+                                        RichBlockTextController(
+                                          text: '',
+                                          getSpans: () => RichTextSpans.parse(
+                                            newRow['spans'],
+                                          ),
+                                        ),
                                       );
                                       valueCtrls.insert(
                                         newIndex,
-                                        TextEditingController(),
+                                        RichBlockTextController(
+                                          text: '',
+                                          getSpans: () =>
+                                              _calcTableValueSpans(newRow),
+                                        ),
                                       );
-                                      labelFns.insert(newIndex, FocusNode());
-                                      valueFns.insert(newIndex, FocusNode());
+                                      labelFns.insert(newIndex, newLabelFn);
+                                      final newValueFn = FocusNode();
+                                      // bindCalcTableLabelFocus ile aynı
+                                      // kural: dinleyici sadece node İLK
+                                      // KURULDUĞUNDA (burada) bağlanır.
+                                      bindCalcTableValueFocus(
+                                        newValueFn,
+                                        newRow,
+                                      );
+                                      valueFns.insert(newIndex, newValueFn);
                                     });
                                     WidgetsBinding.instance
                                         .addPostFrameCallback((_) {
@@ -7995,6 +8302,51 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               focusedItemIndex < focusedItemFocusNodes.length &&
                               focusedItemFocusNodes[focusedItemIndex]
                                   .hasFocus;
+                          // DÜZELTME (hesap tablosunda zengin metin barı
+                          // çıkmıyordu): "Kalem" alanının FocusNode'ları da
+                          // (checklist maddesiyle AYNI desende)
+                          // blockFocusNodes/blockItemFocusNodes'ta DEĞİL,
+                          // ayrı blockTableLabelFocusNodes[blockIndex]
+                          // listesinde tutuluyor — bu yüzden yukarıdaki
+                          // hasFocusedTextBlock/hasFocusedChecklistItem
+                          // şartlarının hiçbiri true olmuyordu.
+                          // hasFocusedChecklistItem ile BİREBİR aynı
+                          // yapıda ayrı bir kontrol ekleniyor.
+                          final focusedCalcTableLabelFocusNodes =
+                              focusedBlockIndex >= 0 &&
+                                  focusedBlockIndex <
+                                      blockTableLabelFocusNodes.length
+                              ? blockTableLabelFocusNodes[focusedBlockIndex]
+                              : null;
+                          final hasFocusedCalcTableLabel =
+                              focusedCalcTableLabelFocusNodes != null &&
+                              focusedItemIndex >= 0 &&
+                              focusedItemIndex <
+                                  focusedCalcTableLabelFocusNodes.length &&
+                              focusedCalcTableLabelFocusNodes[focusedItemIndex]
+                                  .hasFocus;
+                          // DÜZELTME (Tutar'a geçince bar TAMAMEN
+                          // kayboluyordu): yukarıdaki hasFocusedCalcTableLabel
+                          // yalnızca Kalem'in hasFocus'una bakıyordu — Tutar
+                          // odaklanınca Kalem gerçekten odağı kaybettiğinden
+                          // bar gizleniyordu. İstenen davranış: satırın
+                          // Kalem'İ VEYA Tutar'ı odaklıyken bar sürekli açık
+                          // kalmalı (ikisi arasında geçişte titremeden). Bu
+                          // yüzden Tutar için de BİREBİR AYNI desende ayrı
+                          // bir kontrol ekleniyor, aşağıda ikisi OR'lanıyor.
+                          final focusedCalcTableValueFocusNodes =
+                              focusedBlockIndex >= 0 &&
+                                  focusedBlockIndex <
+                                      blockTableValueFocusNodes.length
+                              ? blockTableValueFocusNodes[focusedBlockIndex]
+                              : null;
+                          final hasFocusedCalcTableValue =
+                              focusedCalcTableValueFocusNodes != null &&
+                              focusedItemIndex >= 0 &&
+                              focusedItemIndex <
+                                  focusedCalcTableValueFocusNodes.length &&
+                              focusedCalcTableValueFocusNodes[focusedItemIndex]
+                                  .hasFocus;
                           // showBgColorSubToolbar: "Not Arka Planı" butonu
                           // artık üst barda olduğundan ve klavye kapalıyken
                           // de (herhangi bir metin/kontrol listesi öğesi
@@ -8011,6 +8363,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           // barı görünür tutar.
                           if (!hasFocusedTextBlock &&
                               !hasFocusedChecklistItem &&
+                              !hasFocusedCalcTableLabel &&
+                              !hasFocusedCalcTableValue &&
                               !pendingBlockFocus &&
                               !showBgColorSubToolbar) {
                             return const SizedBox.shrink();

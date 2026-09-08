@@ -238,8 +238,21 @@ private class NoteLinesFactory(
             }
             "table_row" -> {
                 val child = RemoteViews(context.packageName, R.layout.widget_line_table_row)
-                child.setTextViewText(R.id.line_table_label, line.optString("label", ""))
-                child.setTextViewText(R.id.line_table_value, line.optString("value", ""))
+                // DÜZELTME (hesap tablosunda zengin metin widget'ta
+                // görünmüyordu): bu dal daha önce label/value'yu düz
+                // metin olarak set ediyordu, "checkbox"/"text" dallarının
+                // aksine buildRichLineText'ten hiç geçirmiyordu. Kalem'in
+                // span'ları "spans" anahtarında, Tutar'ınki ise AYRI
+                // "valueSpans" anahtarında geliyor (bkz.
+                // note_widget_service.dart -> calcTableChunk).
+                child.setTextViewText(
+                    R.id.line_table_label,
+                    buildRichLineText(line.optString("label", ""), line.optJSONArray("spans")),
+                )
+                child.setTextViewText(
+                    R.id.line_table_value,
+                    buildRichLineText(line.optString("value", ""), line.optJSONArray("valueSpans")),
+                )
                 child.setTextColor(R.id.line_table_label, titleColor)
                 child.setTextColor(R.id.line_table_value, titleColor)
                 child.setTextViewTextSize(R.id.line_table_label, TypedValue.COMPLEX_UNIT_SP, lineFontSize)

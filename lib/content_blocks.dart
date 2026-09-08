@@ -5,7 +5,12 @@ part of 'main.dart';
 // Not içeriği artık düz metin yerine, sırayla dizilmiş "bloklar"dan oluşur:
 //   {"type": "text", "text": "..."}
 //   {"type": "attachments", "ids": ["att1", "att2", ...]}
-//   {"type": "calc_table", "rows": [{"label": "...", "value": "..."}, ...]}
+//   {"type": "calc_table", "rows": [
+//       {"label": "...", "spans": [...], "value": "..."}, ...
+//   ]}
+//   ("spans", 'text' bloğundaki 'spans' ile aynı şekilde "Kalem"
+//   alanındaki kalın/italik/vb. biçimlendirmeyi taşır — bkz.
+//   rich_text_spans.dart. "value" alanı sayısal olduğundan span taşımaz.)
 //   {"type": "table", "rows": [["hücre", "hücre", ...], ["hücre", ...], ...]}
 //   {"type": "drawing", "strokes": [
 //       {"color": <int argb>, "width": <double>, "points": [[x, y], ...]},
@@ -199,7 +204,16 @@ class ContentBlocks {
             }
             if (m['type'] == 'calc_table') {
               m['rows'] = (m['rows'] as List? ?? const [])
-                  .map((r) => Map<String, dynamic>.from(r as Map))
+                  .map((r) {
+                    final row = Map<String, dynamic>.from(r as Map);
+                    // "Kalem" (label) alanı artık zengin metin taşıyabilir
+                    // — 'text' bloğuyla aynı desende ayrı bir 'spans'
+                    // alanında (bkz. rich_text_spans.dart). Eski notlarda
+                    // bu alan hiç yoktur -> boş liste (düz metin gibi
+                    // davranmaya devam eder, geriye dönük uyumluluk).
+                    row['spans'] = RichTextSpans.parse(row['spans']);
+                    return row;
+                  })
                   .toList();
             }
             if (m['type'] == 'drawing') {
@@ -266,6 +280,29 @@ class ContentBlocks {
             cell['spans'] = RichTextSpans.clean(cell['spans'] as List?);
             return cell;
           }).toList();
+        }).toList();
+        return m;
+      }
+      if (b['type'] == 'calc_table') {
+        // DÜZELTME: text/table bloklarıyla aynı desen — kaydetmeden önce
+        // her satırın spans'ı temizlenir (geçersiz/bozuk span'lar
+        // elenir, alan hiç yoksa boş liste olur).
+        // DÜZELTME 2: "Tutar" (value) alanının kendi ayrı span deposu
+        // olan 'valueSpansHolder' daha önce hiç temizlenmiyordu — sadece
+        // Map.from ile ham haliyle kopyalanıyordu. Kalem'in 'spans'ıyla
+        // AYNI temizliği burada da uyguluyoruz, aksi halde geçersiz/bozuk
+        // value span'ları nota kalıcı olarak birikebilir.
+        final m = Map<String, dynamic>.from(b);
+        m['rows'] = (b['rows'] as List? ?? const []).map((r) {
+          final row = Map<String, dynamic>.from(r as Map);
+          row['spans'] = RichTextSpans.clean(row['spans'] as List?);
+          final holder = row['valueSpansHolder'] as Map?;
+          if (holder != null) {
+            row['valueSpansHolder'] = {
+              'spans': RichTextSpans.clean(holder['spans'] as List?),
+            };
+          }
+          return row;
         }).toList();
         return m;
       }
@@ -379,12 +416,12 @@ class ContentBlocks {
   // '\n' ile join, aynı .trim()) tekrarlanıyor; tek fark, 'text' tipi
   // bloklardan gelen span'ların start/end'inin, o bloğun birleşik metindeki
   // başlangıç konumuna göre kaydırılarak toplanması. calc_table blokları
-  // span taşımıyor. checklist maddeleri artık kendi 'spans' alanını
-  // taşıyor olsa da (bkz. _parseChecklistItems), bu önizleme fonksiyonu
-  // henüz onları toplamıyor — checklist ve calc_table için şimdilik
-  // sadece metin uzunluğu kadar offset ilerletiliyor (kart önizlemesinde
-  // checklist biçimlendirmesinin görünmesi istenirse burası ayrıca
-  // güncellenmeli).
+  // da artık "Kalem" span'larını taşıyor (bkz. Aşama 1) ve aynı desende
+  // toplanıyor. checklist maddeleri kendi 'spans' alanını taşıyor olsa da
+  // (bkz. _parseChecklistItems), bu önizleme fonksiyonu henüz onları
+  // toplamıyor — checklist için şimdilik sadece metin uzunluğu kadar
+  // offset ilerletiliyor (kart önizlemesinde checklist biçimlendirmesinin
+  // görünmesi istenirse burası ayrıca güncellenmeli).
   static (String, List<Map<String, dynamic>>) previewTextWithSpans(
     String? raw, {
     String Function(String amount)? totalLabelBuilder,
@@ -415,18 +452,42 @@ class ContentBlocks {
         final rows = (b['rows'] as List? ?? const []);
         double total = 0;
         final lines = <String>[];
+        // "Kalem" span'ları artık var (bkz. Aşama 1) — 'text' bloğuyla aynı
+        // desende, ama önce SATIR İÇİ (segment-local) konuma göre
+        // kaydırılıyor (her satır "$label: $valueText" biçiminde, label her
+        // zaman satırın BAŞINDA olduğundan span'ların start/end'i doğrudan
+        // satırın segmentText içindeki başlangıcı kadar kaydırılır); döngü
+        // sonunda genel 'offset' ile bir kez daha kaydırılıp allSpans'a
+        // eklenir (aşağıdaki toplu kaydırma bloğu).
+        final calcLabelSpans = <Map<String, dynamic>>[];
+        int lineOffset = 0;
         for (final r in rows) {
           final row = r as Map;
           final label = (row['label'] ?? '').toString();
           final valueText = (row['value'] ?? '').toString();
           total += parseCalcValue(row['value']);
           if (label.trim().isNotEmpty || valueText.trim().isNotEmpty) {
-            lines.add('$label: $valueText');
+            final line = '$label: $valueText';
+            for (final s in RichTextSpans.parse(row['spans'])) {
+              final shifted = Map<String, dynamic>.from(s);
+              shifted['start'] = (s['start'] as int) + lineOffset;
+              shifted['end'] = (s['end'] as int) + lineOffset;
+              calcLabelSpans.add(shifted);
+            }
+            lines.add(line);
+            // Sonraki satıra geçerken +1: lines.join('\n')'daki '\n'.
+            lineOffset += line.length + 1;
           }
         }
         segmentText = lines.isEmpty
             ? ''
             : (lines..add(buildTotalLabel(formatCalcNumber(total)))).join('\n');
+        for (final s in calcLabelSpans) {
+          final shifted = Map<String, dynamic>.from(s);
+          shifted['start'] = (s['start'] as int) + offset;
+          shifted['end'] = (s['end'] as int) + offset;
+          allSpans.add(shifted);
+        }
       } else if (b['type'] == 'table') {
         final rows = (b['rows'] as List? ?? const []);
         // DÜZELTME (önizlemede "text. spans" gibi bozuk metin görünmesi):
@@ -622,6 +683,14 @@ class ContentBlocks {
         for (int j = 0; j < ar.length; j++) {
           if ((ar[j]['label'] ?? '') != (br[j]['label'] ?? '') ||
               (ar[j]['value'] ?? '') != (br[j]['value'] ?? '')) {
+            return false;
+          }
+          // Sıra da anlamlıdır (bkz. RichTextSpans.listEquals dokümantasyonu)
+          // — text/table/checklist bloklarındaki aynı karşılaştırma deseni.
+          if (!RichTextSpans.listEquals(
+            ar[j]['spans'] as List?,
+            br[j]['spans'] as List?,
+          )) {
             return false;
           }
         }

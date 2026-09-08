@@ -31,6 +31,21 @@ class NoteCalcTableBlock extends StatelessWidget {
   final int blockIndex;
 
   final List<Map<String, dynamic>> rows;
+  // "Kalem" (label) alanı zengin metin (kalın/italik/vb.) destekliyor —
+  // "Tutar" (value) alanı da artık aynı şekilde destekliyor, ama KENDİ
+  // AYRI span deposuyla (satırın Kalem'inden bağımsız — bkz.
+  // note_list_note_dialog_mixin.dart'taki 'valueSpansHolder' açıklaması).
+  // Çağıran taraf (note_list_note_dialog_mixin.dart) her iki alan için de
+  // buraya normal TextEditingController YERİNE onun bir alt sınıfı olan
+  // RichBlockTextController örnekleri koyuyor (bkz. rich_block_text_
+  // controller.dart). Bu widget'ın BUNU BİLMESİNE gerek yok: TextField
+  // zaten hangi controller verilirse verilsin onun buildTextSpan()'ını
+  // çağırır, bu yüzden alan tipi kasıtlı olarak geniş (TextEditingController)
+  // bırakıldı — checklist maddesi ve tablo hücresi controller'larıyla AYNI
+  // desen. Tutar alanı yine de SADECE SAYISAL karakterler kabul eder
+  // (bkz. aşağıdaki CalcTableInputFormatter) — biçimlendirme (kalın/renk/
+  // vb.) yazının GÖRÜNÜMÜNE uygulanır, hangi karakterlerin yazılabileceğine
+  // değil.
   final List<TextEditingController> labelControllers;
   final List<TextEditingController> valueControllers;
   final List<FocusNode> labelFocusNodes;

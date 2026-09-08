@@ -392,6 +392,10 @@ class _NoteScreenshotContent extends StatelessWidget {
             );
           }
         } else if (type == 'calc_table') {
+          // 'text'/'table' bloklarındaki isDark bu branch'a KAPSAM dışı
+          // (o if bloklarına özel yerel değişkenler) — 'table' bloğuyla
+          // aynı şekilde burada kendi yerel kopyası tanımlanıyor.
+          final isDark = Theme.of(context).brightness == Brightness.dark;
           final rows = List<Map>.from(block['rows'] ?? const []);
           double total = 0;
           final tableRows = <TableRow>[];
@@ -410,25 +414,53 @@ class _NoteScreenshotContent extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
-                    child: Text(
-                      label,
-                      style: TextStyle(
-                        fontSize: fontSize,
-                        fontFamily: fontFamily,
-                        color: textColor,
+                    // Aşama 6: "Kalem" alanı artık zengin metin taşıyor
+                    // ({"label","spans","value"}) — pdf_export_service.dart'taki
+                    // ve 'table' bloğundaki BİREBİR aynı desen:
+                    // RichTextSpans.buildStaticSpan + Text.rich. Eski
+                    // (spans'sız) notlarda row['spans'] null olur,
+                    // buildStaticSpan bunu düz metin gibi işler.
+                    child: Text.rich(
+                      RichTextSpans.buildStaticSpan(
+                        text: label,
+                        rawSpans: row['spans'] as List?,
+                        style: TextStyle(
+                          fontSize: fontSize,
+                          fontFamily: fontFamily,
+                          color: textColor,
+                        ),
+                        isDark: isDark,
                       ),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 4),
-                    child: Text(
-                      valueText,
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        fontSize: fontSize,
-                        fontFamily: fontFamily,
-                        color: textColor,
+                    // DÜZELTME: Tutar (sayı) alanı artık Kalem gibi zengin
+                    // metin taşıyor — ama KENDİ AYRI span deposunda
+                    // ('valueSpansHolder', bkz. note_list_note_dialog_
+                    // mixin.dart'taki açıklama), Kalem'in 'spans'
+                    // anahtarıyla KARIŞMAZ. Eskiden burada düz Text
+                    // kullanılıyordu; Tutar'a uygulanan kalın/renk JPG'ye
+                    // hiç yansımıyordu. Eski notlarda bu anahtar hiç
+                    // yoksa (ya da beklenmedik bir tipteyse) 'is Map'
+                    // kontrolü sayesinde hata fırlatmadan boş span
+                    // listesine düşülür ve buildStaticSpan düz metin gibi
+                    // işler — geriye dönük uyumluluk korunur.
+                    child: Text.rich(
+                      RichTextSpans.buildStaticSpan(
+                        text: valueText,
+                        rawSpans: row['valueSpansHolder'] is Map
+                            ? (row['valueSpansHolder'] as Map)['spans']
+                                as List?
+                            : null,
+                        style: TextStyle(
+                          fontSize: fontSize,
+                          fontFamily: fontFamily,
+                          color: textColor,
+                        ),
+                        isDark: isDark,
                       ),
+                      textAlign: TextAlign.right,
                     ),
                   ),
                 ],

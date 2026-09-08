@@ -58,7 +58,11 @@ class NoteWidgetService {
   // Her satır şu tiplerden biridir:
   //   {"type": "text", "text": "...", "spans": [...]?}
   //   {"type": "checkbox", "text": "...", "checked": bool, "spans": [...]?}
-  //   {"type": "table_row", "label": "...", "value": "..."}
+  //   {"type": "table_row", "label": "...", "value": "...",
+  //       "spans": [...]?, "valueSpans": [...]?}
+  //   ("spans" Kalem'in, "valueSpans" Tutar'ın zengin metin
+  //   biçimlendirmesini taşır — sadece o alanda gerçekten en az bir
+  //   span varsa eklenir, bkz. calcTableChunk.)
   //   {"type": "table_total", "value": "..."}
   //   {"type": "drawing"}
   // "spans" alanı YALNIZCA o satırda gerçekten en az bir zengin metin
@@ -440,10 +444,32 @@ class NoteWidgetService {
         total += ContentBlocks.parseCalcValue(row['value']);
         if (label.trim().isNotEmpty || valueText.trim().isNotEmpty) {
           any = true;
+          // DÜZELTME (zengin metin widget'ta görünmüyordu): "Kalem"in
+          // span'ları doğrudan row['spans']'ta, "Tutar"ınki ise KENDİ
+          // AYRI 'valueSpansHolder' alt Map'inin 'spans' alanında
+          // tutuluyor (bkz. note_list_note_dialog_mixin.dart ->
+          // _resolveFocusedSpansHolder'daki 'valueSpansHolder' dalı ve
+          // content_blocks.dart şema yorumu). İkisi de burada widget
+          // JSON'una ayrı anahtarlarla ('spans' / 'valueSpans')
+          // aktarılmazsa NoteWidgetRemoteViewsService.kt tarafında
+          // render edilecek hiçbir span verisi olmuyordu.
+          final labelSpans = spansForLine(
+            RichTextSpans.parse(row['spans'] as List?),
+            0,
+            label.length,
+          );
+          final valueHolder = row['valueSpansHolder'] as Map?;
+          final valueSpans = spansForLine(
+            RichTextSpans.parse(valueHolder?['spans'] as List?),
+            0,
+            valueText.length,
+          );
           chunk.add({
             'type': 'table_row',
             'label': label,
             'value': valueText,
+            if (labelSpans.isNotEmpty) 'spans': labelSpans,
+            if (valueSpans.isNotEmpty) 'valueSpans': valueSpans,
           });
         }
       }
