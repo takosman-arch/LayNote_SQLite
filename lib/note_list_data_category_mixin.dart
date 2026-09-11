@@ -52,6 +52,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
   set _previewLines(int value);
   void _showAddCategoryDialog({ void Function(String)? onAdded, String? editingCategory, String? parentCategory, });
   Future<bool> _showCreatePasswordDialog();
+  void _showFolderSortSheet({String? scopeParent});
   void _showInfoBar( String message, { IconData icon = Icons.check_circle, String? actionLabel, VoidCallback? onAction, });
   String get _sortCriteria;
   set _sortCriteria(String value);
@@ -766,6 +767,30 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                       ),
                     );
                   }
+                },
+              ),
+              // Klasörleri (kategoriyi) sırala. Üst klasörde açılırsa
+              // (parentCat == null) TÜM üst klasörler + alt klasör
+              // grupları sıralanır (eski drawer ikonuyla aynı davranış).
+              // Bir alt klasörde açılırsa sıralama SADECE o alt klasörün
+              // kardeşleriyle (aynı üst klasörün diğer alt klasörleriyle)
+              // sınırlı kalır — bkz. NoteListBuildMixin._showFolderSortSheet
+              // scopeParent parametresi.
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(
+                  Icons.sort,
+                  color: Theme.of(sheetContext).primaryColor,
+                ),
+                title: Text(
+                  AppLocalizations.of(sheetContext)!.reorderFoldersSortIconTooltip,
+                  style: TextStyle(color: dNoteTextColor(sheetContext)),
+                ),
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  _showFolderSortSheet(
+                    scopeParent: parentCat == null ? null : parentCat,
+                  );
                 },
               ),
               // Alt klasör oluşturma seçeneği yalnızca üst seviye

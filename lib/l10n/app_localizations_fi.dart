@@ -160,6 +160,40 @@ class AppLocalizationsFi extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'Järjestä uudelleen';
 
   @override
+  String get reorderFoldersSheetTitle => 'Järjestä kansiot';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'Järjestä kansiot';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'Nimi';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'Muistiinpanojen määrä';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'Nouseva';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'Laskeva';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'Manuaalinen järjestys';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'Napauta kansiota valitaksesi sen ja siirrä sitä ylös-/alas-nuolilla.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'Siirrä ylös';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'Siirrä alas';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'Sulje';
+
+  @override
   String get txtImportPickerDialogTitle => 'Valitse tuotava TXT-tiedosto';
 
   @override

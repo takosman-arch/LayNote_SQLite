@@ -161,6 +161,40 @@ class AppLocalizationsId extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'Urutkan Ulang';
 
   @override
+  String get reorderFoldersSheetTitle => 'Urutkan Folder';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'Urutkan Folder';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'Nama';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'Jumlah Catatan';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'Menaik';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'Menurun';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'Urutan Manual';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'Ketuk sebuah folder untuk memilihnya, lalu gunakan panah atas/bawah untuk memindahkannya.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'Pindah ke Atas';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'Pindah ke Bawah';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'Tutup';
+
+  @override
   String get txtImportPickerDialogTitle => 'Pilih file TXT yang akan diimpor';
 
   @override

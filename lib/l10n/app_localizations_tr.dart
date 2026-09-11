@@ -159,6 +159,40 @@ class AppLocalizationsTr extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'Sırala';
 
   @override
+  String get reorderFoldersSheetTitle => 'Klasörleri Sırala';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'Klasörleri Sırala';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'İsim';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'Not Sayısı';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'Artan';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'Azalan';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'Manuel Sıralama';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'Taşımak istediğiniz klasöre dokunup seçin, sonra yukarı/aşağı ok ile taşıyın.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'Yukarı Taşı';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'Aşağı Taşı';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'Kapat';
+
+  @override
   String get txtImportPickerDialogTitle => 'İçe aktarılacak TXT dosyasını seç';
 
   @override

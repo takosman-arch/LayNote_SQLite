@@ -160,6 +160,40 @@ class AppLocalizationsVi extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'Sắp xếp lại';
 
   @override
+  String get reorderFoldersSheetTitle => 'Sắp xếp thư mục';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'Sắp xếp thư mục';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'Tên';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'Số lượng ghi chú';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'Tăng dần';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'Giảm dần';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'Sắp xếp thủ công';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'Chạm vào một thư mục để chọn, sau đó dùng mũi tên lên/xuống để di chuyển.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'Di chuyển lên';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'Di chuyển xuống';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'Đóng';
+
+  @override
   String get txtImportPickerDialogTitle => 'Chọn tệp TXT để nhập';
 
   @override

@@ -158,6 +158,40 @@ class AppLocalizationsHe extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'סדר מחדש';
 
   @override
+  String get reorderFoldersSheetTitle => 'מיון תיקיות';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'מיון תיקיות';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'שם';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'מספר פתקים';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'עולה';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'יורד';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'סדר ידני';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'הקש על תיקייה כדי לבחור בה, ולאחר מכן השתמש בחצים למעלה/למטה כדי להזיז אותה.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'הזז למעלה';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'הזז למטה';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'סגור';
+
+  @override
   String get txtImportPickerDialogTitle => 'בחר את קובץ ה-TXT לייבוא';
 
   @override

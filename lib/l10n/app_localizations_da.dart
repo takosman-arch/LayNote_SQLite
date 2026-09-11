@@ -160,6 +160,40 @@ class AppLocalizationsDa extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'Omorganiser';
 
   @override
+  String get reorderFoldersSheetTitle => 'Sorter mapper';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'Sorter mapper';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'Navn';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'Antal noter';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'Stigende';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'Faldende';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'Manuel rækkefølge';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'Tryk på en mappe for at vælge den, brug derefter op/ned-pilene til at flytte den.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'Flyt op';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'Flyt ned';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'Luk';
+
+  @override
   String get txtImportPickerDialogTitle =>
       'Vælg TXT-filen, der skal importeres';
 

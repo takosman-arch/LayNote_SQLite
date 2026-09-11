@@ -159,6 +159,40 @@ class AppLocalizationsTh extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'จัดเรียงใหม่';
 
   @override
+  String get reorderFoldersSheetTitle => 'จัดเรียงโฟลเดอร์';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'จัดเรียงโฟลเดอร์';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'ชื่อ';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'จำนวนโน้ต';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'น้อยไปมาก';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'มากไปน้อย';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'จัดเรียงด้วยตนเอง';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'แตะโฟลเดอร์เพื่อเลือก จากนั้นใช้ลูกศรขึ้น/ลงเพื่อย้าย';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'เลื่อนขึ้น';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'เลื่อนลง';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'ปิด';
+
+  @override
   String get txtImportPickerDialogTitle => 'เลือกไฟล์ TXT ที่ต้องการนำเข้า';
 
   @override

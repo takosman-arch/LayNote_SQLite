@@ -21,6 +21,15 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   // Arama kapatılınca (_isSearching -> false olan üç noktada) sıfırlanır.
   String? _activeFlagFilter;
 
+  // Klasör sıralama alt sayfasında (_showFolderSortSheet) o an seçili olan
+  // kriter ('name' veya 'count') ve yön (artan/azalan). Sayfa her
+  // açıldığında sıfırlanmaz, oturum boyunca son seçim hatırlanır — ama
+  // diskte kalıcı değildir (kalıcı olan tek şey, bu seçime göre yeniden
+  // dizilmiş _categories listesinin kendisidir, bkz. _saveData çağrıları).
+  String _folderSortCriterion = 'name';
+  bool _folderSortAscending = true;
+
+
   // Bir notun eklerini (attachments) tekil bir liste olarak döndürür.
   // note['attachments'] üst seviyede tam ek nesnelerini (id, isImage,
   // isVideo, isAudio, storedName, fileName vb.) doğrudan taşır — bkz.
@@ -143,6 +152,476 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     return NoteFlagMixin._flagPalette
         .where((hex) => usedColors.contains(hex))
         .toList();
+  }
+
+  // Klasörler (üst kategoriler) ve alt klasörlerini, drawer'daki
+  // hiyerarşiyi bozmadan verilen kritere göre yeniden sıralar:
+  // - Üst klasörler kendi aralarında `criterion`'a göre sıralanır.
+  // - Her üst klasörün alt klasörleri de kendi aralarında aynı kritere
+  //   göre sıralanıp, üst klasörün hemen ardına eklenir (üst+alt grubu
+  //   tek blok olarak yer değiştirir, birbirine karışmaz).
+  // `_categories` listesinin kendisini bu yeni sırayla değiştirir; bu
+  // yüzden değişiklik kalıcıdır ve `_categories`'in okunduğu her yerde
+  // (drawer, "Sınıflandır" alt sayfası vb.) geçerli olur.
+  //
+  // criterion: 'name' (isme göre, Türkçe küçük/büyük harf duyarsız) veya
+  // 'count' (o klasördeki not sayısına göre, bkz. _getCountForCategory).
+  //
+  // scopeParent verilirse (bir üst klasörün adı): sıralama SADECE o üst
+  // klasörün doğrudan alt klasörleriyle sınırlı kalır — üst klasörlerin
+  // kendi aralarındaki sırası ve alt klasörlerin _categories içindeki
+  // konumları (hangi indekste oldukları) değişmez, sadece o indekslere
+  // hangi alt klasörün yerleştirileceği yeniden hesaplanır. Bu, drawer'da
+  // bir alt klasöre basılı tutulduğunda açılan sınırlı kapsamlı sıralama
+  // için kullanılır (bkz. _showFolderSortSheet(scopeParent: ...)).
+  void _sortCategories(String criterion, {required bool ascending, String? scopeParent}) {
+    int compare(String a, String b) {
+      final result = criterion == 'count'
+          ? _getCountForCategory(a).compareTo(_getCountForCategory(b))
+          : a.toLowerCase().compareTo(b.toLowerCase());
+      return ascending ? result : -result;
+    }
+
+    if (scopeParent != null) {
+      final result = List<String>.from(_categories);
+      final indices = <int>[];
+      for (var i = 0; i < result.length; i++) {
+        if (_categoryParents[result[i]] == scopeParent) indices.add(i);
+      }
+      final sortedChildren = indices.map((i) => result[i]).toList()
+        ..sort(compare);
+      for (var k = 0; k < indices.length; k++) {
+        result[indices[k]] = sortedChildren[k];
+      }
+      _categories = result;
+      return;
+    }
+
+    final parents = _categories
+        .where((c) => _categoryParents[c] == null)
+        .toList()
+      ..sort(compare);
+
+    final ordered = <String>[];
+    for (final parent in parents) {
+      ordered.add(parent);
+      final children = _categories
+          .where((c) => _categoryParents[c] == parent)
+          .toList()
+        ..sort(compare);
+      ordered.addAll(children);
+    }
+
+    // Güvenlik payı: üst klasörü artık `_categories` içinde bulunmayan
+    // "yetim" alt klasörler (teorik olarak, üst klasör silinmiş ama
+    // referans kalmışsa) yukarıdaki döngüde dahil edilmemiş olabilir;
+    // bunlar listenin sonuna, kendi aralarında aynı kritere göre
+    // sıralanmış olarak eklenir — hiçbir kategori sessizce kaybolmaz.
+    final missing = _categories.where((c) => !ordered.contains(c)).toList()
+      ..sort(compare);
+    ordered.addAll(missing);
+
+    _categories = ordered;
+  }
+
+  // Klasörleri, drawer'daki hiyerarşiyi koruyan "taşınabilir bloklar"a
+  // ayırır: her üst klasör + kendi alt klasörleri tek bir grup olur, bu
+  // sayede manuel sıralama (_showFolderSortSheet'in alt bölümü) bir grubu
+  // bütün olarak komşusuyla yer değiştirebilir. Üst klasörü artık
+  // `_categories` içinde bulunmayan "yetim" alt klasörler (bkz.
+  // _sortCategories'teki aynı güvenlik payı) tek elemanlı kendi grupları
+  // olarak eklenir; hiçbir kategori sessizce kaybolmaz.
+  List<List<String>> _folderGroups() {
+    final groups = <List<String>>[];
+    final consumed = <String>{};
+    for (final cat in _categories) {
+      if (consumed.contains(cat) || _categoryParents[cat] != null) continue;
+      final children = _categories
+          .where((c) => _categoryParents[c] == cat)
+          .toList();
+      groups.add([cat, ...children]);
+      consumed.add(cat);
+      consumed.addAll(children);
+    }
+    for (final cat in _categories) {
+      if (!consumed.contains(cat)) {
+        groups.add([cat]);
+        consumed.add(cat);
+      }
+    }
+    return groups;
+  }
+
+  // Belirli bir üst klasörün doğrudan alt klasörlerini, _categories
+  // içindeki mevcut sırayla döndürür. Alt klasöre basılı tutulduğunda
+  // açılan sınırlı kapsamlı sıralama sayfası (_showFolderSortSheet'in
+  // scopeParent modu) bunu kullanır.
+  List<String> _childrenOf(String parent) {
+    return _categories.where((c) => _categoryParents[c] == parent).toList();
+  }
+
+  // İki KARDEŞ alt klasörün (aynı üst klasöre ait) yerini _categories
+  // içinde değiştirir. _swapFolderGroups'tan farkı: orada tüm grup
+  // (üst+alt) tek blok olarak taşınırken, burada tek tek iki alt klasör
+  // kendi aralarında yer değiştirir — üst klasörlerin veya diğer
+  // grupların sırası/konumu etkilenmez.
+  void _swapSiblings(String parent, int a, int b) {
+    final result = List<String>.from(_categories);
+    final indices = <int>[];
+    for (var i = 0; i < result.length; i++) {
+      if (_categoryParents[result[i]] == parent) indices.add(i);
+    }
+    final tmp = result[indices[a]];
+    result[indices[a]] = result[indices[b]];
+    result[indices[b]] = tmp;
+    _categories = result;
+  }
+
+  // İki grubun (üst+alt klasör bloğunun) yerini değiştirip `_categories`'i
+  // yeni düzleştirilmiş sırayla günceller.
+  void _swapFolderGroups(List<List<String>> groups, int a, int b) {
+    final tmp = groups[a];
+    groups[a] = groups[b];
+    groups[b] = tmp;
+    _categories = groups.expand((g) => g).toList();
+  }
+
+  // Klasörleri sıralamak için açılan alt sayfa (bottom sheet). Diğer
+  // sheet'lerle (bkz. yukarıdaki showModalBottomSheet çağrıları) aynı
+  // görsel desende: kart rengi arka plan, üstte yuvarlatılmış köşeler,
+  // SafeArea + 16px iç boşluk.
+  //
+  // NOT: Bu, sadece giriş noktasını (drawer'daki Icons.sort ikonu) açan
+  // iskelet sürümdür. Otomatik sıralama seçenekleri (kriter + artan/azalan)
+  // ve manuel taşıma listesi sonraki aşamalarda bu builder'ın içine
+  // eklenecek.
+  // NOT: `scopeParent` null ise (drawer'daki eski genel giriş noktasıyla
+  // aynı davranış) tüm üst klasörler + alt klasör grupları sıralanır.
+  // `scopeParent` bir üst klasör adı verilirse, sıralama SADECE o üst
+  // klasörün doğrudan alt klasörleriyle sınırlanır (hem otomatik
+  // kriter/yön sıralaması hem de manuel ▲▼ taşıma bu kapsamda kalır) —
+  // bkz. _showCategoryOptions'taki "Sırala" menü öğesi: üst klasöre
+  // basılı tutulunca scopeParent: null (tüm klasörler), bir alt klasöre
+  // basılı tutulunca scopeParent: <kendi üst klasörü> (yalnızca kardeşleri)
+  // ile çağrılır.
+  void _showFolderSortSheet({String? scopeParent}) {
+    // Manuel bölümde seçili grup (scopeParent == null: üst klasör + alt
+    // klasörleri; scopeParent != null: tek bir alt klasör) indeksi. Sheet
+    // kapanana kadar bu closure değişkeninde tutulur; her setSheetState
+    // çağrısında builder yeniden çalışsa da değer korunur.
+    int? selectedGroupIndex;
+    // Kullanıcı manuel ▲▼ ile bir grubu taşıdığında true olur; bu andan
+    // itibaren mevcut sıra artık "isme göre" veya "sayıya göre" kriterinin
+    // sonucuyla birebir uyuşmayabilir. Segmented kontrolde hâlâ bir kriter
+    // seçili görünmesi yanıltıcı olduğundan, manuel taşıma sonrası her iki
+    // segment de pasif (seçimsiz) gösterilir. Kriter veya yön chip'ine
+    // tekrar dokunulursa (applySort) otomatik sıralama devreye girer ve bu
+    // bayrak tekrar false'a döner.
+    bool manuallyReordered = false;
+
+    showModalBottomSheet(
+      context: context,
+      // Sheet içeriği (başlık + chip'ler + manuel liste) ekranın
+      // varsayılan yarım-yükseklik sınırını aşabildiği için, sheet'in
+      // gerektiğinde tam ekran yüksekliğine kadar büyüyebilmesi gerekiyor.
+      // Aksi halde küçük ekranlarda / klavye açıkken "bottom overflowed"
+      // hatası oluşuyordu.
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).cardColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => StatefulBuilder(
+        builder: (sheetContext, setSheetState) {
+          // Kriter veya yön değiştiğinde: 1. aşamadaki saf sıralama
+          // fonksiyonu çağrılıp _categories güncellenir, kalıcı hale
+          // getirilir (dış setState + _saveData) ve sheet'teki chip'lerin
+          // seçili görünümü tazelenir (iç setSheetState).
+          void applySort() {
+            setState(() {
+              _sortCategories(
+                _folderSortCriterion,
+                ascending: _folderSortAscending,
+                scopeParent: scopeParent,
+              );
+            });
+            _saveData();
+            setSheetState(() {
+              manuallyReordered = false;
+            });
+          }
+
+          // Manuel bölüm her rebuild'de güncel `_categories`'ten yeniden
+          // hesaplanır (otomatik sıralama chip'leri de _categories'i
+          // değiştirdiğinde bu liste senkron kalsın diye).
+          // scopeParent == null: eskisi gibi üst+alt grupları.
+          // scopeParent != null: sadece o üst klasörün alt klasörleri,
+          // her biri tek elemanlı bir "grup" olarak (aşağıdaki liste
+          // görünümü ve group.first/group.skip(1) mantığı aynen
+          // çalışabilsin diye) — ama taşıma (moveSelected) alt klasörleri
+          // grup olarak değil, tek tek kardeş olarak kaydırır.
+          final groups = scopeParent == null
+              ? _folderGroups()
+              : _childrenOf(scopeParent).map((c) => [c]).toList();
+          if (selectedGroupIndex != null &&
+              selectedGroupIndex! >= groups.length) {
+            selectedGroupIndex = null;
+          }
+
+          void moveSelected(int delta) {
+            final index = selectedGroupIndex;
+            if (index == null) return;
+            final target = index + delta;
+            if (target < 0 || target >= groups.length) return;
+            setState(() {
+              if (scopeParent == null) {
+                _swapFolderGroups(groups, index, target);
+              } else {
+                _swapSiblings(scopeParent, index, target);
+              }
+            });
+            _saveData();
+            setSheetState(() {
+              selectedGroupIndex = target;
+              manuallyReordered = true;
+            });
+          }
+
+          // Sheet'in alabileceği azami yükseklik: ekranın %85'i, klavye
+          // açıksa klavye kadar daha az. Böylece başlık/chip/divider gibi
+          // sabit yükseklikli bölümler + manuel liste toplamı bu sınırı
+          // aşarsa, taşma yerine liste kendi içinde scroll olur (aşağıdaki
+          // Flexible+ListView).
+          final mediaQuery = MediaQuery.of(sheetContext);
+          final maxSheetHeight =
+              mediaQuery.size.height * 0.85 - mediaQuery.viewInsets.bottom;
+
+          return SafeArea(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 16,
+                bottom: 16 + mediaQuery.viewInsets.bottom,
+              ),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: maxSheetHeight > 0 ? maxSheetHeight : 400,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        scopeParent == null
+                            ? AppLocalizations.of(context)!.reorderFoldersSheetTitle
+                            : '${AppLocalizations.of(context)!.reorderFoldersSheetTitle} · ${_getCategoryDisplayName(scopeParent)}',
+                        // "Blokları Sırala" sheet'indeki başlık stiliyle
+                        // aynı: 16px, kalın, vurgu (accent) renginde.
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: appAccentColor.value,
+                        ),
+                      ),
+                      IconButton(
+                        tooltip: AppLocalizations.of(context)!.reorderFoldersCloseTooltip,
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(sheetContext),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  // Kriter seçimi (isim / not sayısı) tek bir segmented
+                  // kontrol olarak; yön ise tek bir ikon butonuyla
+                  // (tıklandıkça artan/azalan arası geçiş yapar) yanına
+                  // eklenir. Eskiden 4 ayrı ChoiceChip vardı, kalabalık
+                  // görünüyordu — artık tek satırda, tek kapsül + tek ikon.
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SegmentedButton<String>(
+                          segments: [
+                            ButtonSegment(
+                              value: 'name',
+                              label: Text(
+                                AppLocalizations.of(context)!.reorderFoldersCriterionNameLabel,
+                              ),
+                            ),
+                            ButtonSegment(
+                              value: 'count',
+                              label: Text(
+                                AppLocalizations.of(context)!.reorderFoldersCriterionCountLabel,
+                              ),
+                            ),
+                          ],
+                          selected: manuallyReordered
+                              ? const <String>{}
+                              : {_folderSortCriterion},
+                          emptySelectionAllowed: true,
+                          onSelectionChanged: (selection) {
+                            _folderSortCriterion = selection.first;
+                            applySort();
+                          },
+                          style: SegmentedButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            selectedBackgroundColor:
+                                appAccentColor.value.withOpacity(0.3),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        tooltip: _folderSortAscending
+                            ? AppLocalizations.of(context)!.reorderFoldersAscendingLabel
+                            : AppLocalizations.of(context)!.reorderFoldersDescendingLabel,
+                        icon: Icon(
+                          _folderSortAscending
+                              ? Icons.arrow_upward
+                              : Icons.arrow_downward,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onPressed: () {
+                          _folderSortAscending = !_folderSortAscending;
+                          applySort();
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Divider(color: Theme.of(context).dividerColor, height: 1),
+                  const SizedBox(height: 8),
+                  // Manuel taşıma bölüm başlığı + ▲▼ kontrolleri. Kontroller
+                  // her zaman görünür ama bir grup seçili değilken veya
+                  // seçili grup zaten en uçtaysa (ilk/son) devre dışı kalır.
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.reorderFoldersManualSectionTitle,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            tooltip: AppLocalizations.of(context)!.reorderFoldersMoveUpTooltip,
+                            icon: const Icon(Icons.arrow_upward),
+                            onPressed:
+                                selectedGroupIndex != null &&
+                                    selectedGroupIndex! > 0
+                                ? () => moveSelected(-1)
+                                : null,
+                          ),
+                          IconButton(
+                            tooltip: AppLocalizations.of(context)!.reorderFoldersMoveDownTooltip,
+                            icon: const Icon(Icons.arrow_downward),
+                            onPressed:
+                                selectedGroupIndex != null &&
+                                    selectedGroupIndex! < groups.length - 1
+                                ? () => moveSelected(1)
+                                : null,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.reorderFoldersManualSectionDescription,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: dNoteIsDark(context)
+                          ? Colors.grey
+                          : Colors.grey[700],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Not: Eskiden burada sabit `maxHeight: 260` vardı; küçük
+                  // ekranlarda/klavye açıkken üstteki bölümlerle toplam
+                  // yükseklik sheet'e sığmayıp "bottom overflowed" hatası
+                  // veriyordu. `Flexible` ile liste, dıştaki
+                  // ConstrainedBox(maxHeight: maxSheetHeight) tarafından
+                  // belirlenen kalan alanı kullanır; sığmayan kısım listenin
+                  // kendi scroll'una düşer, Column asla taşmaz.
+                  Flexible(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      // "Blokları Sırala" listesiyle aynı dış boşluk.
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      itemCount: groups.length,
+                      itemBuilder: (context, i) {
+                        final group = groups[i];
+                        final isSelected = selectedGroupIndex == i;
+                        // Önceden burada elle çizilmiş bir Padding+Column
+                        // vardı; ListTile'ın varsayılan minimum yüksekliği
+                        // (~56dp) ve iç boşluğunu vermediği için "Blokları
+                        // Sırala"daki (gerçek ListTile kullanan) satırlara
+                        // kıyasla daha dar/sıkışık görünüyordu. Artık
+                        // gerçek bir ListTile kullanılıyor — satır
+                        // yüksekliği, iç boşluk ve başlık yazı stili
+                        // birebir aynı desende.
+                        return Material(
+                          color: isSelected
+                              ? appAccentColor.value.withOpacity(0.15)
+                              : Colors.transparent,
+                          child: ListTile(
+                            // Drawer'daki klasör satırlarıyla (bkz.
+                            // _buildCategoryDrawerTile) aynı renk mantığı:
+                            // her klasörün kendi rengi (_getCategoryColor)
+                            // kullanılır, sabit vurgu rengi değil.
+                            leading: Icon(
+                              Icons.folder_outlined,
+                              color: _getCategoryColor(group.first),
+                            ),
+                            title: Text(
+                              group.first,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // Normal klasör (drawer) görünümündeki
+                                // sayaçla birebir aynı stil — bkz.
+                                // _buildCategoryDrawerTile.
+                                Text(
+                                  _getCountForCategory(group.first).toString(),
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                if (isSelected) ...[
+                                  const SizedBox(width: 8),
+                                  Icon(
+                                    Icons.check_circle,
+                                    color: appAccentColor.value,
+                                  ),
+                                ],
+                              ],
+                            ),
+                            onTap: () => setSheetState(() {
+                              selectedGroupIndex = isSelected ? null : i;
+                            }),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 
   // ---- Diğer mixin'lerde tanımlı, burada kullanılan üyeler ----
@@ -268,18 +747,18 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         Positioned(
           top: 0,
           right: edge + slot,
-          child: _buildFlagBadge(flagColor: flagColor),
+          child: _buildFlagBadge(flagColor: flagColor, size: 16),
         ),
       if (isPinned)
         Positioned(
-          top: edge,
+          top: edge - 4,
           left: edge,
           // Sola yatık (döndürülmüş) görünüm: Google Keep'teki eğik iğne
           // ikonuyla benzer bir izlenim vermesi için saat yönünün TERSİNE
           // (negatif radyan) hafifçe döndürülür.
           child: Transform.rotate(
             angle: -0.5,
-            child: const Icon(Icons.push_pin, color: Colors.grey, size: 16),
+            child: const Icon(Icons.push_pin, color: Colors.grey, size: 18),
           ),
         ),
     ];
@@ -1219,42 +1698,61 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                 letterSpacing: 1.2,
                               ),
                             ),
-                            if (hasAnySubfolder)
-                              GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () {
-                                  setState(() {
-                                    if (allCollapsed) {
-                                      // Hepsini genişlet.
-                                      _collapsedCategories.removeAll(
-                                        parentsWithChildren,
-                                      );
-                                    } else {
-                                      // Hepsini daralt.
-                                      _collapsedCategories.addAll(
-                                        parentsWithChildren,
-                                      );
-                                    }
-                                  });
-                                  // DÜZELTME: Genişlet/daralt durumu
-                                  // kaydedilmediği için uygulamadan çıkıp
-                                  // girince unutuluyordu — diğer tüm
-                                  // durum değişikliklerinde olduğu gibi
-                                  // burada da kalıcı hale getiriliyor.
-                                  _saveData();
-                                },
-                                child: Text(
-                                  allCollapsed
-                                      ? AppLocalizations.of(context)!.drawerExpandLabel
-                                      : AppLocalizations.of(context)!.drawerCollapseLabel,
-                                  style: TextStyle(
-                                    color: appAccentColor.value,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 1.0,
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // NOT: Klasörleri sıralama girişi artık
+                                // burada değil — bir klasöre/alt klasöre
+                                // basılı tutulunca açılan menüdeki "Sırala"
+                                // seçeneğine taşındı (bkz.
+                                // note_list_data_category_mixin.dart ->
+                                // _showCategoryOptions). Böylece alt
+                                // klasöre basılı tutulduğunda sıralama
+                                // sadece o alt klasörün kardeşleriyle
+                                // sınırlı (scopeParent) açılabiliyor; tek
+                                // bir genel ikonla bu ayrım yapılamazdı.
+                                if (hasAnySubfolder)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 4),
+                                    child: GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () {
+                                        setState(() {
+                                          if (allCollapsed) {
+                                            // Hepsini genişlet.
+                                            _collapsedCategories.removeAll(
+                                              parentsWithChildren,
+                                            );
+                                          } else {
+                                            // Hepsini daralt.
+                                            _collapsedCategories.addAll(
+                                              parentsWithChildren,
+                                            );
+                                          }
+                                        });
+                                        // DÜZELTME: Genişlet/daralt durumu
+                                        // kaydedilmediği için uygulamadan
+                                        // çıkıp girince unutuluyordu — diğer
+                                        // tüm durum değişikliklerinde olduğu
+                                        // gibi burada da kalıcı hale
+                                        // getiriliyor.
+                                        _saveData();
+                                      },
+                                      child: Text(
+                                        allCollapsed
+                                            ? AppLocalizations.of(context)!.drawerExpandLabel
+                                            : AppLocalizations.of(context)!.drawerCollapseLabel,
+                                        style: TextStyle(
+                                          color: appAccentColor.value,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 1.0,
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
+                              ],
+                            ),
                           ],
                         ),
                       );

@@ -155,6 +155,40 @@ class AppLocalizationsZh extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => '重新排序';
 
   @override
+  String get reorderFoldersSheetTitle => '排序文件夹';
+
+  @override
+  String get reorderFoldersSortIconTooltip => '排序文件夹';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => '名称';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => '笔记数量';
+
+  @override
+  String get reorderFoldersAscendingLabel => '升序';
+
+  @override
+  String get reorderFoldersDescendingLabel => '降序';
+
+  @override
+  String get reorderFoldersManualSectionTitle => '手动排序';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      '点按一个文件夹以选中它，然后使用上下箭头移动它。';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => '上移';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => '下移';
+
+  @override
+  String get reorderFoldersCloseTooltip => '关闭';
+
+  @override
   String get txtImportPickerDialogTitle => '选择要导入的 TXT 文件';
 
   @override

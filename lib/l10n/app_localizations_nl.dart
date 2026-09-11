@@ -162,6 +162,40 @@ class AppLocalizationsNl extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'Opnieuw ordenen';
 
   @override
+  String get reorderFoldersSheetTitle => 'Mappen sorteren';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'Mappen sorteren';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'Naam';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'Aantal notities';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'Oplopend';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'Aflopend';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'Handmatige volgorde';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'Tik op een map om deze te selecteren en gebruik dan de pijlen omhoog/omlaag om deze te verplaatsen.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'Omhoog verplaatsen';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'Omlaag verplaatsen';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'Sluiten';
+
+  @override
   String get txtImportPickerDialogTitle =>
       'Selecteer het te importeren TXT-bestand';
 

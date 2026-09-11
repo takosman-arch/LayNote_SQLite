@@ -161,6 +161,40 @@ class AppLocalizationsCs extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'Přeuspořádat';
 
   @override
+  String get reorderFoldersSheetTitle => 'Seřadit složky';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'Seřadit složky';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'Název';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'Počet poznámek';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'Vzestupně';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'Sestupně';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'Ruční řazení';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'Klepnutím na složku ji vyberte a poté ji přesuňte pomocí šipek nahoru/dolů.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'Posunout nahoru';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'Posunout dolů';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'Zavřít';
+
+  @override
   String get txtImportPickerDialogTitle => 'Vyberte soubor TXT k importu';
 
   @override

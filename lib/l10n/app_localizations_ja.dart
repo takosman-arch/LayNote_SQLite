@@ -155,6 +155,40 @@ class AppLocalizationsJa extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => '並べ替え';
 
   @override
+  String get reorderFoldersSheetTitle => 'フォルダの並べ替え';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'フォルダの並べ替え';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => '名前';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'メモ数';
+
+  @override
+  String get reorderFoldersAscendingLabel => '昇順';
+
+  @override
+  String get reorderFoldersDescendingLabel => '降順';
+
+  @override
+  String get reorderFoldersManualSectionTitle => '手動並べ替え';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'フォルダをタップして選択し、上下の矢印で移動してください。';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => '上に移動';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => '下に移動';
+
+  @override
+  String get reorderFoldersCloseTooltip => '閉じる';
+
+  @override
   String get txtImportPickerDialogTitle => 'インポートするTXTファイルを選択';
 
   @override

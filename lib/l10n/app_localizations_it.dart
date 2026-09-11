@@ -162,6 +162,40 @@ class AppLocalizationsIt extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'Riordina';
 
   @override
+  String get reorderFoldersSheetTitle => 'Ordina cartelle';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'Ordina cartelle';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'Nome';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'Numero di note';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'Crescente';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'Decrescente';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'Ordine manuale';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'Tocca una cartella per selezionarla, poi usa le frecce su/giù per spostarla.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'Sposta su';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'Sposta giù';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'Chiudi';
+
+  @override
   String get txtImportPickerDialogTitle => 'Seleziona il file TXT da importare';
 
   @override

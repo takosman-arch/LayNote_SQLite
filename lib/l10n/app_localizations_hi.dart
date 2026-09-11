@@ -161,6 +161,40 @@ class AppLocalizationsHi extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'फिर से व्यवस्थित करें';
 
   @override
+  String get reorderFoldersSheetTitle => 'फ़ोल्डर क्रमबद्ध करें';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'फ़ोल्डर क्रमबद्ध करें';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'नाम';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'नोट्स की संख्या';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'आरोही';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'अवरोही';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'मैन्युअल क्रम';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'किसी फ़ोल्डर को चुनने के लिए टैप करें, फिर उसे स्थानांतरित करने के लिए ऊपर/नीचे तीरों का उपयोग करें।';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'ऊपर ले जाएं';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'नीचे ले जाएं';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'बंद करें';
+
+  @override
   String get txtImportPickerDialogTitle => 'आयात करने के लिए TXT फ़ाइल चुनें';
 
   @override

@@ -206,6 +206,50 @@
   "@reorderBlocksMenuItemLabel": {
     "description": "Not üzerindeki ek özellikler menüsünde Blokları Sırala alt menüsünü açan seçenek"
   },
+  "reorderFoldersSheetTitle": "Klasörleri Sırala",
+  "@reorderFoldersSheetTitle": {
+    "description": "Klasör sıralama alt menüsünün (bottom sheet) başlığı"
+  },
+  "reorderFoldersSortIconTooltip": "Klasörleri Sırala",
+  "@reorderFoldersSortIconTooltip": {
+    "description": "Drawer'daki 'Klasörler' başlığının yanındaki sıralama simgesinin ipucu metni"
+  },
+  "reorderFoldersCriterionNameLabel": "İsim",
+  "@reorderFoldersCriterionNameLabel": {
+    "description": "Klasör sıralama menüsünde isme göre sıralama kriterinin etiketi"
+  },
+  "reorderFoldersCriterionCountLabel": "Not Sayısı",
+  "@reorderFoldersCriterionCountLabel": {
+    "description": "Klasör sıralama menüsünde not sayısına göre sıralama kriterinin etiketi"
+  },
+  "reorderFoldersAscendingLabel": "Artan",
+  "@reorderFoldersAscendingLabel": {
+    "description": "Klasör sıralama menüsünde artan sıralama yönünün etiketi"
+  },
+  "reorderFoldersDescendingLabel": "Azalan",
+  "@reorderFoldersDescendingLabel": {
+    "description": "Klasör sıralama menüsünde azalan sıralama yönünün etiketi"
+  },
+  "reorderFoldersManualSectionTitle": "Manuel Sıralama",
+  "@reorderFoldersManualSectionTitle": {
+    "description": "Klasör sıralama menüsünde manuel (elle) taşıma bölümünün başlığı"
+  },
+  "reorderFoldersManualSectionDescription": "Taşımak istediğiniz klasöre dokunup seçin, sonra yukarı/aşağı ok ile taşıyın.",
+  "@reorderFoldersManualSectionDescription": {
+    "description": "Klasör sıralama menüsünün manuel bölümünde kullanıcıya nasıl kullanılacağını açıklayan yardım metni"
+  },
+  "reorderFoldersMoveUpTooltip": "Yukarı Taşı",
+  "@reorderFoldersMoveUpTooltip": {
+    "description": "Klasör sıralama menüsünde seçili klasörü bir yukarı taşıma düğmesinin ipucu metni"
+  },
+  "reorderFoldersMoveDownTooltip": "Aşağı Taşı",
+  "@reorderFoldersMoveDownTooltip": {
+    "description": "Klasör sıralama menüsünde seçili klasörü bir aşağı taşıma düğmesinin ipucu metni"
+  },
+  "reorderFoldersCloseTooltip": "Kapat",
+  "@reorderFoldersCloseTooltip": {
+    "description": "Klasör sıralama menüsünü kapatma düğmesinin ipucu metni"
+  },
   "txtImportPickerDialogTitle": "İçe aktarılacak TXT dosyasını seç",
   "@txtImportPickerDialogTitle": {
     "description": "TXT içe aktarma için dosya seçici penceresinin başlığı"

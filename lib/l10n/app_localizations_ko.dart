@@ -155,6 +155,40 @@ class AppLocalizationsKo extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => '순서 변경';
 
   @override
+  String get reorderFoldersSheetTitle => '폴더 정렬';
+
+  @override
+  String get reorderFoldersSortIconTooltip => '폴더 정렬';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => '이름';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => '메모 개수';
+
+  @override
+  String get reorderFoldersAscendingLabel => '오름차순';
+
+  @override
+  String get reorderFoldersDescendingLabel => '내림차순';
+
+  @override
+  String get reorderFoldersManualSectionTitle => '수동 순서';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      '폴더를 선택한 다음 위/아래 화살표로 순서를 옮기세요.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => '위로 이동';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => '아래로 이동';
+
+  @override
+  String get reorderFoldersCloseTooltip => '닫기';
+
+  @override
   String get txtImportPickerDialogTitle => '가져올 TXT 파일 선택';
 
   @override

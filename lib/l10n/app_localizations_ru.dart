@@ -160,6 +160,40 @@ class AppLocalizationsRu extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'Изменить порядок';
 
   @override
+  String get reorderFoldersSheetTitle => 'Сортировка папок';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'Сортировка папок';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'Имя';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'Количество заметок';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'По возрастанию';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'По убыванию';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'Ручной порядок';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'Нажмите на папку, чтобы выбрать её, затем используйте стрелки вверх/вниз для перемещения.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'Переместить вверх';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'Переместить вниз';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'Закрыть';
+
+  @override
   String get txtImportPickerDialogTitle => 'Выберите TXT-файл для импорта';
 
   @override

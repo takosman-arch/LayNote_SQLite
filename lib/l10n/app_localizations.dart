@@ -410,6 +410,72 @@ abstract class AppLocalizations {
   /// **'Sırala'**
   String get reorderBlocksMenuItemLabel;
 
+  /// Klasör sıralama alt menüsünün (bottom sheet) başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Klasörleri Sırala'**
+  String get reorderFoldersSheetTitle;
+
+  /// Drawer'daki 'Klasörler' başlığının yanındaki sıralama simgesinin ipucu metni
+  ///
+  /// In tr, this message translates to:
+  /// **'Klasörleri Sırala'**
+  String get reorderFoldersSortIconTooltip;
+
+  /// Klasör sıralama menüsünde isme göre sıralama kriterinin etiketi
+  ///
+  /// In tr, this message translates to:
+  /// **'İsim'**
+  String get reorderFoldersCriterionNameLabel;
+
+  /// Klasör sıralama menüsünde not sayısına göre sıralama kriterinin etiketi
+  ///
+  /// In tr, this message translates to:
+  /// **'Not Sayısı'**
+  String get reorderFoldersCriterionCountLabel;
+
+  /// Klasör sıralama menüsünde artan sıralama yönünün etiketi
+  ///
+  /// In tr, this message translates to:
+  /// **'Artan'**
+  String get reorderFoldersAscendingLabel;
+
+  /// Klasör sıralama menüsünde azalan sıralama yönünün etiketi
+  ///
+  /// In tr, this message translates to:
+  /// **'Azalan'**
+  String get reorderFoldersDescendingLabel;
+
+  /// Klasör sıralama menüsünde manuel (elle) taşıma bölümünün başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Manuel Sıralama'**
+  String get reorderFoldersManualSectionTitle;
+
+  /// Klasör sıralama menüsünün manuel bölümünde kullanıcıya nasıl kullanılacağını açıklayan yardım metni
+  ///
+  /// In tr, this message translates to:
+  /// **'Taşımak istediğiniz klasöre dokunup seçin, sonra yukarı/aşağı ok ile taşıyın.'**
+  String get reorderFoldersManualSectionDescription;
+
+  /// Klasör sıralama menüsünde seçili klasörü bir yukarı taşıma düğmesinin ipucu metni
+  ///
+  /// In tr, this message translates to:
+  /// **'Yukarı Taşı'**
+  String get reorderFoldersMoveUpTooltip;
+
+  /// Klasör sıralama menüsünde seçili klasörü bir aşağı taşıma düğmesinin ipucu metni
+  ///
+  /// In tr, this message translates to:
+  /// **'Aşağı Taşı'**
+  String get reorderFoldersMoveDownTooltip;
+
+  /// Klasör sıralama menüsünü kapatma düğmesinin ipucu metni
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapat'**
+  String get reorderFoldersCloseTooltip;
+
   /// TXT içe aktarma için dosya seçici penceresinin başlığı
   ///
   /// In tr, this message translates to:

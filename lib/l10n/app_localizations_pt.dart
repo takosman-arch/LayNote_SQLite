@@ -162,6 +162,40 @@ class AppLocalizationsPt extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'Reordenar';
 
   @override
+  String get reorderFoldersSheetTitle => 'Ordenar Pastas';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'Ordenar Pastas';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'Nome';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'Número de Notas';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'Crescente';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'Decrescente';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'Ordem Manual';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'Toque numa pasta para selecioná-la e use as setas para cima/baixo para movê-la.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'Mover para Cima';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'Mover para Baixo';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'Fechar';
+
+  @override
   String get txtImportPickerDialogTitle =>
       'Selecione o ficheiro TXT a importar';
 

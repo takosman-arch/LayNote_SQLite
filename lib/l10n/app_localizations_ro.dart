@@ -160,6 +160,40 @@ class AppLocalizationsRo extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'Reordonare';
 
   @override
+  String get reorderFoldersSheetTitle => 'Sortare foldere';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'Sortare foldere';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'Nume';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'Număr de notițe';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'Crescător';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'Descrescător';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'Ordine manuală';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'Atingeți un folder pentru a-l selecta, apoi folosiți săgețile sus/jos pentru a-l muta.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'Mutare în sus';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'Mutare în jos';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'Închidere';
+
+  @override
   String get txtImportPickerDialogTitle => 'Selectați fișierul TXT de importat';
 
   @override

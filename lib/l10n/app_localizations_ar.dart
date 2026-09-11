@@ -159,6 +159,40 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reorderBlocksMenuItemLabel => 'إعادة ترتيب';
 
   @override
+  String get reorderFoldersSheetTitle => 'ترتيب المجلدات';
+
+  @override
+  String get reorderFoldersSortIconTooltip => 'ترتيب المجلدات';
+
+  @override
+  String get reorderFoldersCriterionNameLabel => 'الاسم';
+
+  @override
+  String get reorderFoldersCriterionCountLabel => 'عدد الملاحظات';
+
+  @override
+  String get reorderFoldersAscendingLabel => 'تصاعدي';
+
+  @override
+  String get reorderFoldersDescendingLabel => 'تنازلي';
+
+  @override
+  String get reorderFoldersManualSectionTitle => 'الترتيب اليدوي';
+
+  @override
+  String get reorderFoldersManualSectionDescription =>
+      'اضغط على مجلد لتحديده، ثم استخدم سهمي الأعلى/الأسفل لتحريكه.';
+
+  @override
+  String get reorderFoldersMoveUpTooltip => 'تحريك لأعلى';
+
+  @override
+  String get reorderFoldersMoveDownTooltip => 'تحريك لأسفل';
+
+  @override
+  String get reorderFoldersCloseTooltip => 'إغلاق';
+
+  @override
   String get txtImportPickerDialogTitle => 'اختر ملف TXT لاستيراده';
 
   @override
