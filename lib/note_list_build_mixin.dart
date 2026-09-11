@@ -93,19 +93,20 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         .toList();
   }
 
-  // Arama modundaki etiket şeridinin hangi notlardan beslenceğini belirler.
-  // Ana `build` içindeki kategori filtreleme dallarıyla (bkz. aşağıdaki
-  // `filteredNotes` hesaplaması) aynı mantığı, arama sorgusu olmadan
-  // uygular — amaç sadece "bu bölümde hangi etiketler var" sorusunu
-  // yanıtlamak. "Tümü"/"Notlar" bölümünde kasıtlı olarak filtre uygulanmaz
-  // (arşiv/kilitli dahil tüm notlardaki etiketler önerilir); diğer
-  // bölümlerde (Favoriler, Kilitli, Arşiv, Hatırlatıcılar, klasörler) o
-  // bölümde fiilen görünen notlarla sınırlanır.
+  // Arama modundaki etiket VE bayrak filtre şeritlerinin hangi notlardan
+  // besleneceğini belirler. Ana `build` içindeki kategori filtreleme
+  // dallarıyla (bkz. aşağıdaki `filteredNotes` hesaplaması) aynı mantığı,
+  // arama sorgusu olmadan uygular — amaç sadece "bu bölümde hangi
+  // etiketler/bayrak renkleri var" sorusunu yanıtlamak. "Tümü"/"Notlar"
+  // bölümü dahil HER bölümde arşiv ve kilitli notlar kapsam dışı bırakılır
+  // — çünkü asıl not listesi (`filteredNotes`) bu bölümlerde zaten
+  // !isArchived && !isLocked koşuluyla filtreleniyor; aksi halde şeritte
+  // yalnızca arşiv/kilitli bir nota ait bir etiket/renk görünüp ona
+  // tıklandığında hiçbir sonuç gelmemesine yol açardı (önceden etiketler
+  // için kasıtlı olarak istisna vardı, bayrakla tutarsızlık yaratıp aynı
+  // sorunu üretiyordu — bu yüzden kaldırıldı).
   List<Map<String, dynamic>> _notesForActiveTagScope(bool isTrash) {
     if (isTrash) return _deletedNotes;
-    if (_activeCategory == 'Tümü' || _activeCategory == 'Notlar') {
-      return _notes;
-    }
     return _notes.where((note) {
       final isArchived = note['isArchived'] == true;
       final isFavorite = note['isFavorite'] == true;
@@ -118,6 +119,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         return isArchived && !isLocked;
       } else if (_activeCategory == '__reminders__') {
         return _hasActiveReminder(note) && !isArchived && !isLocked;
+      } else if (_activeCategory == 'Tümü' || _activeCategory == 'Notlar') {
+        return !isArchived && !isLocked;
       } else {
         return !isArchived && !isLocked && note['category'] == _activeCategory;
       }
@@ -126,8 +129,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
 
   // Arama modundaki bayrak filtre şeridinin hangi renklerden oluşacağını
   // belirler. `collectAllKnownTags` ile aynı amaca hizmet eder: verilen not
-  // kümesinde (bkz. _notesForActiveTagScope — etiket şeridiyle aynı kapsam)
-  // fiilen kullanılan 'flagColor' değerleri, NoteFlagMixin._flagPalette
+  // kümesinde (bkz. _notesForActiveTagScope — etiket şeridiyle artık aynı
+  // kapsam) fiilen kullanılan 'flagColor' değerleri, NoteFlagMixin._flagPalette
   // sırasına göre (rastgele/ekleniş sırasına göre değil) döndürülür — bayrak
   // seçim panelindeki (_showFlagColorPicker) sıralamayla tutarlı olsun diye.
   // Notlarda geçen ama palette'te olmayan bir renk (teorik olarak, eski
@@ -308,7 +311,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     final tagStripScopeNotes = _notesForActiveTagScope(isTrash);
     final tagStripTags = collectAllKnownTags(tagStripScopeNotes);
     // Etiket şeridinin başında gösterilecek bayrak renkleri — aynı kapsam
-    // (tagStripScopeNotes), aynı "sadece o bölümde kullanılanlar" mantığı.
+    // (tagStripScopeNotes), aynı "sadece o bölümde fiilen görünenler"
+    // mantığı (bkz. _notesForActiveTagScope yorumu).
     final tagStripFlagColors = _availableFlagColors(tagStripScopeNotes);
     // Etiket şeridinden bağımsız "Türler" şeridi: içerik olsun ya da olmasın
     // (kullanıcı isteği üzerine) her zaman sabit 7 ikon gösterilir — etiket
