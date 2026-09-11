@@ -600,6 +600,14 @@ Color dNoteTextColor(BuildContext context) =>
 Color dNoteEditorAppBarColor(BuildContext context) =>
     dNoteIsDark(context) ? const Color(0xFFE0E0E0) : const Color(0xFF3A3A3A);
 
+// Not listesi ekranının üst çubuğundaki (AppBar) ikon ve başlık rengi.
+// dNoteEditorAppBarColor ile aynı mantık (koyu temada beyaza yakın,
+// açık temada siyaha yakın nötr gri) ama biraz daha yumuşatılmış: koyu
+// temada biraz daha koyu, açık temada biraz daha açık — sadece bu ekranın
+// üst çubuğuna özgü, düzenleyici ekranını etkilemez.
+Color dNoteListAppBarColor(BuildContext context) =>
+    dNoteIsDark(context) ? const Color(0xFFCFCFCF) : const Color(0xFF4A4A4A);
+
 // Kullanıcı, uygulama henüz açık tema desteklemezken (veya "Beyaz" rengini
 // bilerek) Kişiselleştirme > Metin Rengi'nden saf beyazı seçmiş olabilir.
 // Açık temada bu seçim doğrudan uygulanırsa metin, beyaz kart zemininde

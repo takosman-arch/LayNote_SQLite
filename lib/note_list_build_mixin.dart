@@ -12,6 +12,15 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   // sıfırlanır.
   String? _activeTypeFilter;
 
+  // Arama modundaki bayrak (flama) filtresi. Seçili bir hex renk
+  // ('#RRGGBB') ya da null (filtre yok) tutar. _activeTypeFilter ile aynı
+  // tek-seçimli mantık: bir renk seçilince öncekinin seçimi otomatik
+  // kalkar (bkz. _FlagFilterChip onSelected). Etiket (_searchQuery) ve tür
+  // (_activeTypeFilter) filtrelerinden tamamen bağımsızdır; üçü de VE
+  // mantığıyla birleşir (bkz. build() içindeki filteredNotes hesaplaması).
+  // Arama kapatılınca (_isSearching -> false olan üç noktada) sıfırlanır.
+  String? _activeFlagFilter;
+
   // Bir notun eklerini (attachments) tekil bir liste olarak döndürür.
   // note['attachments'] üst seviyede tam ek nesnelerini (id, isImage,
   // isVideo, isAudio, storedName, fileName vb.) doğrudan taşır — bkz.
@@ -113,6 +122,24 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         return !isArchived && !isLocked && note['category'] == _activeCategory;
       }
     }).toList();
+  }
+
+  // Arama modundaki bayrak filtre şeridinin hangi renklerden oluşacağını
+  // belirler. `collectAllKnownTags` ile aynı amaca hizmet eder: verilen not
+  // kümesinde (bkz. _notesForActiveTagScope — etiket şeridiyle aynı kapsam)
+  // fiilen kullanılan 'flagColor' değerleri, NoteFlagMixin._flagPalette
+  // sırasına göre (rastgele/ekleniş sırasına göre değil) döndürülür — bayrak
+  // seçim panelindeki (_showFlagColorPicker) sıralamayla tutarlı olsun diye.
+  // Notlarda geçen ama palette'te olmayan bir renk (teorik olarak, eski
+  // veri) yok sayılır.
+  List<String> _availableFlagColors(List<Map<String, dynamic>> notes) {
+    final usedColors = notes
+        .map((n) => n['flagColor'])
+        .whereType<String>()
+        .toSet();
+    return NoteFlagMixin._flagPalette
+        .where((hex) => usedColors.contains(hex))
+        .toList();
   }
 
   // ---- Diğer mixin'lerde tanımlı, burada kullanılan üyeler ----
@@ -280,6 +307,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     // bu da etiket olmasa bile boş bir şeridin açılmasına yol açardı.
     final tagStripScopeNotes = _notesForActiveTagScope(isTrash);
     final tagStripTags = collectAllKnownTags(tagStripScopeNotes);
+    // Etiket şeridinin başında gösterilecek bayrak renkleri — aynı kapsam
+    // (tagStripScopeNotes), aynı "sadece o bölümde kullanılanlar" mantığı.
+    final tagStripFlagColors = _availableFlagColors(tagStripScopeNotes);
     // Etiket şeridinden bağımsız "Türler" şeridi: içerik olsun ya da olmasın
     // (kullanıcı isteği üzerine) her zaman sabit 7 ikon gösterilir — etiket
     // şeridinin aksine, o an hangi türden not olduğuna bakılmaz.
@@ -304,7 +334,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             title.contains(query) || content.contains(query) || matchesTags;
         final matchesType = _activeTypeFilter == null ||
             _noteMatchesTypeFilter(note, _activeTypeFilter!);
-        return matchesSearch && matchesType;
+        final matchesFlag = _activeFlagFilter == null ||
+            note['flagColor'] == _activeFlagFilter;
+        return matchesSearch && matchesType && matchesFlag;
       }).toList();
     } else {
       filteredNotes = _notes.where((note) {
@@ -322,31 +354,48 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             title.contains(query) || content.contains(query) || matchesTags;
         final matchesType = _activeTypeFilter == null ||
             _noteMatchesTypeFilter(note, _activeTypeFilter!);
+        final matchesFlag = _activeFlagFilter == null ||
+            note['flagColor'] == _activeFlagFilter;
         final isArchived = note['isArchived'] == true;
         final isFavorite = note['isFavorite'] == true;
         final isLocked = note['isLocked'] == true;
 
         if (_activeCategory == 'Tümü' || _activeCategory == 'Notlar') {
-          return matchesSearch && matchesType && !isArchived && !isLocked;
+          return matchesSearch &&
+              matchesType &&
+              matchesFlag &&
+              !isArchived &&
+              !isLocked;
         } else if (_activeCategory == '__favorites__') {
           return matchesSearch &&
               matchesType &&
+              matchesFlag &&
               isFavorite &&
               !isArchived &&
               !isLocked;
         } else if (_activeCategory == '__locked__') {
-          return matchesSearch && matchesType && isLocked && !isArchived;
+          return matchesSearch &&
+              matchesType &&
+              matchesFlag &&
+              isLocked &&
+              !isArchived;
         } else if (_activeCategory == '__archive__') {
-          return matchesSearch && matchesType && isArchived && !isLocked;
+          return matchesSearch &&
+              matchesType &&
+              matchesFlag &&
+              isArchived &&
+              !isLocked;
         } else if (_activeCategory == '__reminders__') {
           return matchesSearch &&
               matchesType &&
+              matchesFlag &&
               _hasActiveReminder(note) &&
               !isArchived &&
               !isLocked;
         } else {
           return matchesSearch &&
               matchesType &&
+              matchesFlag &&
               !isArchived &&
               !isLocked &&
               note['category'] == _activeCategory;
@@ -493,6 +542,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             _searchQuery = "";
             _searchController.clear();
             _activeTypeFilter = null;
+            _activeFlagFilter = null;
           });
           FocusScope.of(context).unfocus();
           return;
@@ -525,9 +575,13 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         // da tutarlı, koyu temadaki gibi "silikleşmeyen" bir görünüm sağlanır.
         drawerScrimColor: Colors.transparent,
         appBar: AppBar(
+          // Üst çubuktaki ikon ve başlık rengi: artık vurgu rengi (appAccentColor)
+          // yerine, not düzenleyicisindeki üst çubukla aynı yumuşak nötr ton
+          // kullanılıyor — koyu temada beyaza yakın gri, açık temada siyaha
+          // yakın gri (bkz. dNoteListAppBarColor, main.dart).
           leading: _isSelectionMode
               ? IconButton(
-                  icon: Icon(Icons.close, color: appAccentColor.value),
+                  icon: Icon(Icons.close, color: dNoteListAppBarColor(context)),
                   tooltip: AppLocalizations.of(context)!.selectionModeCancelTooltip,
                   onPressed: _exitSelectionMode,
                 )
@@ -539,7 +593,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                   ),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: appAccentColor.value,
+                    color: dNoteListAppBarColor(context),
                     fontSize: 18,
                   ),
                 )
@@ -566,14 +620,14 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                   _getCategoryDisplayName(_activeCategory),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: appAccentColor.value,
+                    color: dNoteListAppBarColor(context),
                     fontSize: 18,
                   ),
                 ),
           elevation: 0,
           centerTitle: false,
           titleSpacing: 0,
-          iconTheme: IconThemeData(color: appAccentColor.value),
+          iconTheme: IconThemeData(color: dNoteListAppBarColor(context)),
           actions: _isSelectionMode
               ? [
                   IconButton(
@@ -582,12 +636,12 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     onPressed: _deleteSelectedNotes,
                   ),
                   IconButton(
-                    icon: Icon(Icons.archive_outlined, color: appAccentColor.value),
+                    icon: Icon(Icons.archive_outlined, color: dNoteListAppBarColor(context)),
                     tooltip: AppLocalizations.of(context)!.selectionModeArchiveTooltip,
                     onPressed: _archiveSelectedNotes,
                   ),
                   IconButton(
-                    icon: Icon(Icons.folder_outlined, color: appAccentColor.value),
+                    icon: Icon(Icons.folder_outlined, color: dNoteListAppBarColor(context)),
                     tooltip: AppLocalizations.of(context)!.selectionModeFolderTooltip,
                     onPressed: _showClassifyDialogForSelection,
                   ),
@@ -597,7 +651,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 4),
               icon: Icon(
                 _isSearching ? Icons.close : Icons.search,
-                color: appAccentColor.value,
+                color: dNoteListAppBarColor(context),
               ),
               onPressed: () {
                 setState(() {
@@ -606,6 +660,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     _searchQuery = "";
                     _searchController.clear();
                     _activeTypeFilter = null;
+                    _activeFlagFilter = null;
                   }
                 });
               },
@@ -613,7 +668,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             if (isTrash)
               PopupMenuButton<String>(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
-                icon: Icon(Icons.more_vert, color: appAccentColor.value),
+                icon: Icon(Icons.more_vert, color: dNoteListAppBarColor(context)),
                 onSelected: (String choice) {
                   if (choice == 'empty') {
                     showDialog(
@@ -699,7 +754,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             else
               PopupMenuButton<String>(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
-                icon: Icon(Icons.sort, color: appAccentColor.value),
+                icon: Icon(Icons.sort, color: dNoteListAppBarColor(context)),
                 tooltip: AppLocalizations.of(context)!.sortMenuTooltip,
                 onSelected: (String choice) {
                   setState(() {
@@ -766,7 +821,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             IconButton(
               icon: Icon(
                 _isListView ? Icons.grid_view : Icons.view_list,
-                color: appAccentColor.value,
+                color: dNoteListAppBarColor(context),
               ),
               tooltip: _isListView
                   ? AppLocalizations.of(context)!.viewToggleGridTooltip
@@ -1417,6 +1472,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                 _searchQuery = "";
                 _searchController.clear();
                 _activeTypeFilter = null;
+                _activeFlagFilter = null;
               });
               FocusScope.of(context).unfocus();
             } else {
@@ -1477,7 +1533,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                   duration: const Duration(milliseconds: 220),
                   curve: Curves.easeOutCubic,
                   alignment: Alignment.topCenter,
-                  child: (_isSearching && tagStripTags.isNotEmpty)
+                  child: (_isSearching &&
+                          (tagStripTags.isNotEmpty ||
+                              tagStripFlagColors.isNotEmpty))
                       ? Padding(
                           padding: const EdgeInsets.only(top: 12, bottom: 12),
                           child: _TagFilterStrip(
@@ -1492,6 +1550,14 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             },
                             onTagLongPress: (tag) =>
                                 _handleTagLongPress(tag, isTrash),
+                            availableFlagColors: tagStripFlagColors,
+                            selectedFlagColor: _activeFlagFilter,
+                            onFlagSelected: (flagColor, selected) {
+                              setState(() {
+                                _activeFlagFilter =
+                                    selected ? flagColor : null;
+                              });
+                            },
                           ),
                         )
                       : const SizedBox(width: double.infinity, height: 0),
@@ -1544,7 +1610,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     duration: const Duration(milliseconds: 220),
                     curve: Curves.easeOutCubic,
                     padding: EdgeInsets.only(
-                      top: (_isSearching && tagStripTags.isNotEmpty)
+                      top: (_isSearching &&
+                          (tagStripTags.isNotEmpty ||
+                              tagStripFlagColors.isNotEmpty))
                           ? 0.0
                           : 12.0,
                     ),
@@ -2269,7 +2337,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     duration: const Duration(milliseconds: 220),
                     curve: Curves.easeOutCubic,
                     padding: EdgeInsets.only(
-                      top: (_isSearching && tagStripTags.isNotEmpty)
+                      top: (_isSearching &&
+                          (tagStripTags.isNotEmpty ||
+                              tagStripFlagColors.isNotEmpty))
                           ? 0.0
                           : 12.0,
                     ),
@@ -3522,6 +3592,15 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   }
 }
 
+// NoteFlagMixin._flagColorFromHex ile aynı mantık: bir '#RRGGBB' hex
+// dizesini Color'a çevirir. _TagFilterStrip bir instance metoduna
+// (mixin state'ine) erişemediği için burada top-level olarak tekrarlanır —
+// bkz. note_flag_mixin.dart'taki orijinali.
+Color _colorFromFlagHex(String hex) {
+  final cleaned = hex.replaceFirst('#', '');
+  return Color(int.parse('FF$cleaned', radix: 16));
+}
+
 // ════════════════════════════════════════════════════════════════════════
 // Arama modunda üst barın altında beliren etiket şeridi. `Builder` her
 // _isSearching değişiminde bu widget'ı sıfırdan (yeni bir instance olarak)
@@ -3537,6 +3616,9 @@ class _TagFilterStrip extends StatefulWidget {
     required this.textColor,
     required this.onTagSelected,
     required this.onTagLongPress,
+    required this.availableFlagColors,
+    required this.selectedFlagColor,
+    required this.onFlagSelected,
   });
 
   final List<String> allTags;
@@ -3546,6 +3628,15 @@ class _TagFilterStrip extends StatefulWidget {
   // Bir etikete basılı tutulunca (yeniden adlandır/sil seçenekleri için)
   // çağrılır — bkz. NoteListBuildMixin._handleTagLongPress.
   final void Function(String tag) onTagLongPress;
+  // Etiket şeridinin BAŞINDA gösterilen bayrak (flama) filtre seçenekleri —
+  // bkz. NoteListBuildMixin._availableFlagColors. Etiketlerden bağımsız
+  // ayrı bir şerit değil, aynı Wrap içinde en başta yer alır (kullanıcı
+  // isteği: "arama kısmında etiket bölümünün başında görünecek").
+  final List<String> availableFlagColors;
+  // Şu an seçili bayrak rengi (hex) — null ise filtre yok. Tür filtresiyle
+  // (_activeTypeFilter) aynı tek-seçimli mantık.
+  final String? selectedFlagColor;
+  final void Function(String flagColor, bool selected) onFlagSelected;
 
   @override
   State<_TagFilterStrip> createState() => _TagFilterStripState();
@@ -3594,6 +3685,33 @@ class _TagFilterStripState extends State<_TagFilterStrip>
             spacing: 8,
             runSpacing: 8,
             children: [
+              // Bayrak (flama) filtre seçenekleri — etiketlerden ÖNCE,
+              // şeridin en başında. Her chip _FlagShapePainter ile aynı
+              // bayrak şeklini (dikey, dolu) kullanır — bkz.
+              // note_flag_mixin.dart'taki kart rozeti/başlık ikonuyla
+              // tutarlı görünüm. Uzun basma davranışı yok (yeniden
+              // adlandırma/silme kavramı bayrak renkleri için geçerli
+              // değil), bu yüzden etiket chip'lerindeki GestureDetector
+              // sarmalayıcısı burada kullanılmaz.
+              for (final flagColor in widget.availableFlagColors)
+                ChoiceChip(
+                  label: CustomPaint(
+                    size: const Size(16, 16),
+                    painter: _FlagShapePainter(
+                      color: _colorFromFlagHex(flagColor),
+                      filled: true,
+                      vertical: true,
+                    ),
+                  ),
+                  selected: widget.selectedFlagColor == flagColor,
+                  onSelected: (selected) =>
+                      widget.onFlagSelected(flagColor, selected),
+                  selectedColor: appAccentColor.value.withOpacity(0.3),
+                  backgroundColor: Colors.grey.withOpacity(0.15),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity.compact,
+                  labelPadding: const EdgeInsets.symmetric(horizontal: 2),
+                ),
               for (final tag in widget.allTags)
                 // GestureDetector, ChoiceChip'in kendi onSelected'ını
                 // (tap) engellemeden üstüne basılı tutma (long press)
