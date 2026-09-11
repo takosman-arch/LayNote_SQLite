@@ -2180,6 +2180,27 @@ class AppLocalizationsNo extends AppLocalizations {
   String get tagsMenuItemLabel => 'Emneknagger';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Omslagsfarge';
+
+  @override
+  String get noteBgColorDialogTitle => 'Velg omslagsfarge';
+
+  @override
+  String get flagColorMenuItemLabel => 'Flaggfarge';
+
+  @override
+  String get flagColorPickerTitle => 'Velg flaggfarge';
+
+  @override
+  String get flagColorRemoveOption => 'Fjern flagg';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Fest notat';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Løsne notat';
+
+  @override
   String get linkDialogUrlHint => 'https://eksempel.com';
 
   @override

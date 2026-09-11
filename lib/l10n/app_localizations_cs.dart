@@ -2185,6 +2185,27 @@ class AppLocalizationsCs extends AppLocalizations {
   String get tagsMenuItemLabel => 'Štítky';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Barva obálky';
+
+  @override
+  String get noteBgColorDialogTitle => 'Vybrat barvu obálky';
+
+  @override
+  String get flagColorMenuItemLabel => 'Barva vlajky';
+
+  @override
+  String get flagColorPickerTitle => 'Vyberte barvu vlajky';
+
+  @override
+  String get flagColorRemoveOption => 'Odebrat vlajku';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Připnout poznámku';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Odepnout poznámku';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

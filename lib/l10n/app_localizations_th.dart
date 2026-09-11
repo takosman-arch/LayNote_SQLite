@@ -2174,6 +2174,27 @@ class AppLocalizationsTh extends AppLocalizations {
   String get tagsMenuItemLabel => 'แท็ก';
 
   @override
+  String get noteBgColorMenuItemLabel => 'สีปก';
+
+  @override
+  String get noteBgColorDialogTitle => 'เลือกสีปก';
+
+  @override
+  String get flagColorMenuItemLabel => 'สีธง';
+
+  @override
+  String get flagColorPickerTitle => 'เลือกสีธง';
+
+  @override
+  String get flagColorRemoveOption => 'ลบธง';
+
+  @override
+  String get pinNoteMenuItemLabel => 'ปักหมุดโน้ต';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'เลิกปักหมุด';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

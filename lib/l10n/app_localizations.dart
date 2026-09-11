@@ -4106,6 +4106,48 @@ abstract class AppLocalizations {
   /// **'Etiketler'**
   String get tagsMenuItemLabel;
 
+  /// No description provided for @noteBgColorMenuItemLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapak Rengi'**
+  String get noteBgColorMenuItemLabel;
+
+  /// No description provided for @noteBgColorDialogTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapak Rengi Seç'**
+  String get noteBgColorDialogTitle;
+
+  /// No description provided for @flagColorMenuItemLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bayrak Rengi'**
+  String get flagColorMenuItemLabel;
+
+  /// No description provided for @flagColorPickerTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bayrak rengi seç'**
+  String get flagColorPickerTitle;
+
+  /// No description provided for @flagColorRemoveOption.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bayrağı kaldır'**
+  String get flagColorRemoveOption;
+
+  /// No description provided for @pinNoteMenuItemLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sabitle'**
+  String get pinNoteMenuItemLabel;
+
+  /// No description provided for @unpinNoteMenuItemLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sabitlemeyi Kaldır'**
+  String get unpinNoteMenuItemLabel;
+
   /// No description provided for @linkDialogUrlHint.
   ///
   /// In tr, this message translates to:

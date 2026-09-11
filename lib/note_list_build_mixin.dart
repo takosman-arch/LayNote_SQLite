@@ -124,6 +124,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   set _attachmentsDirPath(String? value);
   Widget _buildCategoryDrawerTile(String cat, {bool isSubfolder = false});
   List<dynamic> _buildDateGroupedItems(List<Map<String, dynamic>> notes);
+  // note_flag_mixin.dart -> bayrak rozetini (dolu, sabit, tıklanamaz)
+  // kart önizlemesinde çizen widget.
+  Widget _buildFlagBadge({required String flagColor, double size = 14});
   String _capitalizeFirstLetterTr(String text);
   List<String> get _categories;
   set _categories(List<String> value);
@@ -194,6 +197,63 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   set _textColor(Color? value);
   void _toggleNoteSelection(Map<String, dynamic> note);
 
+  // ════════════════════════════════════════════════════════════════════
+  // Kart köşesindeki rozetler: yıldız (favori), kilit, bayrak.
+  // Hem ızgara hem liste kartında AYNI mantıkla, ortak bir Stack
+  // (kartın tüm alanını kaplayan) içine Positioned olarak eklenir:
+  //   - Yıldız varsa HER ZAMAN sağ üstte durur (top: 8, right: 8).
+  //   - Kilit varsa: yıldız da varsa yıldızın SOLUNA değil ALTINA gelir
+  //     (top: 8+22, right: 8 — aynı sütun, bir alt satır); yıldız yoksa
+  //     yıldızın yerine geçer (top: 8, right: 8).
+  //   - Bayrak, yıldız/kilit'ten TAMAMEN BAĞIMSIZ, tek bir sabit noktada
+  //     durur (top: 0, right: 8+22) — kilit dikeyde alta indiği için
+  //     yatayda ekstra yer kaplamaz, bu yüzden bayrağın konumu yıldız/
+  //     kilit'in var/yok olmasından hiç etkilenmez.
+  //   - Sabitlenmiş (pin) rozeti, sağdaki hiçbir rozetle çakışmasın diye
+  //     kartın SOL üst köşesinde (top: 8, left: 8), sabit gri renkte
+  //     gösterilir. Bkz. db_helper.dart'ta eklenmesi gereken 'isPinned'
+  //     sütunu ve not_list_actions_mixin.dart > _saveNoteIfValid.
+  List<Widget> _buildNoteCornerBadges({
+    required bool isFavorite,
+    required bool isLocked,
+    required String? flagColor,
+    required bool isPinned,
+  }) {
+    const double slot = 22; // bir rozetin kapladığı dikey/yatay pay (18 ikon + 4 boşluk)
+    const double edge = 8; // kartın kenarından iç boşluk
+    return [
+      if (isFavorite)
+        Positioned(
+          top: edge,
+          right: edge,
+          child: Icon(Icons.star, color: appAccentColor.value, size: 18),
+        ),
+      if (isLocked)
+        Positioned(
+          top: edge + (isFavorite ? slot : 0),
+          right: edge,
+          child: const Icon(Icons.lock, color: Colors.grey, size: 16),
+        ),
+      if (flagColor != null)
+        Positioned(
+          top: 0,
+          right: edge + slot,
+          child: _buildFlagBadge(flagColor: flagColor),
+        ),
+      if (isPinned)
+        Positioned(
+          top: edge,
+          left: edge,
+          // Sola yatık (döndürülmüş) görünüm: Google Keep'teki eğik iğne
+          // ikonuyla benzer bir izlenim vermesi için saat yönünün TERSİNE
+          // (negatif radyan) hafifçe döndürülür.
+          child: Transform.rotate(
+            angle: -0.5,
+            child: const Icon(Icons.push_pin, color: Colors.grey, size: 16),
+          ),
+        ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -306,6 +366,19 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       });
     } else {
       filteredNotes.sort((a, b) {
+        // Sabitlenmiş (pin) notlar, seçili sıralama kriterinden bağımsız
+        // olarak HER ZAMAN en başta gösterilir. İki not da sabitli ya da
+        // ikisi de değilse aradaki fark 0 kalır ve aşağıdaki normal
+        // kritere göre sıralanmaya devam edilir; NOT: bu, "Son Düzenleme"
+        // ya da "Oluşturulma" kriterinde tarih başlıklarıyla gruplanan
+        // görünümde (_buildDateGroupedItems), sabitlenmiş bir notun
+        // kendi tarihinden kopup üste taşınması yüzünden aynı tarih
+        // etiketinin listede iki kez belirmesine yol açabilir — bu bilinen
+        // ve kabul edilen bir görsel istisnadır.
+        final aPinned = a['isPinned'] == true;
+        final bPinned = b['isPinned'] == true;
+        if (aPinned != bPinned) return aPinned ? -1 : 1;
+
         int compareResult = 0;
         switch (_sortCriteria) {
           case "Başlık":
@@ -1561,19 +1634,24 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       final isSelected =
                           _isSelectionMode &&
                           _selectedNoteKeys.contains(_noteKey(note));
-                      // Not arka planı (palet) özelliği kaldırıldı: kart
-                      // rengi artık her zaman colorfulNotes/kategori rengi
-                      // mantığıyla belirlenir, kaydedilmiş eski bgColor
-                      // değeri olsa bile dikkate alınmaz.
-                      final baseNoteCardColor = _colorfulNotes
-                          ? _categoryPalette[(originalIndex < 0
-                                        ? 0
-                                        : originalIndex) %
-                                    _categoryPalette.length]
-                                .withValues(alpha: 0.75)
-                          : (dNoteIsDark(context)
-                                ? const Color(0xFF2D2D2D)
-                                : Theme.of(context).cardColor);
+                      // Not Kapağı: kullanıcı üç nokta menüsünden ("Kapak
+                      // Rengi", bkz. NoteListNoteDialogMixin >
+                      // showBgColorSheet) bu not için sabit bir renk
+                      // seçmişse, kart HER ZAMAN o renkle gösterilir;
+                      // aksi halde (eskisi gibi) colorfulNotes/kategori
+                      // rengi mantığı geçerli olur.
+                      final noteOwnBgColor = note['bgColor'] as int?;
+                      final baseNoteCardColor = noteOwnBgColor != null
+                          ? Color(noteOwnBgColor).withValues(alpha: 0.75)
+                          : (_colorfulNotes
+                                ? _categoryPalette[(originalIndex < 0
+                                              ? 0
+                                              : originalIndex) %
+                                          _categoryPalette.length]
+                                      .withValues(alpha: 0.75)
+                                : (dNoteIsDark(context)
+                                      ? const Color(0xFF2D2D2D)
+                                      : Theme.of(context).cardColor));
                       // Seçili notlar, dokununca beliren parlaklık efektiyle
                       // aynı tonda (amber) sürekli vurgulanır.
                       final noteCardColor = isSelected
@@ -1737,8 +1815,17 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                     )
                                   : BorderSide.none,
                             ),
-                            child: InkWell(
-                              onTap: isTrash
+                            // Bayrak rozeti artık burada (Card'ın en dış
+                            // Stack'i içinde) sabit bir Positioned olarak
+                            // çizilir — böylece hem kartın en üst kenarına
+                            // değer (top: 0) hem de isFavorite'e bakılmaksızın
+                            // (yıldız olsun/olmasın) hep aynı sağ üst köşede
+                            // sabit kalır; ızgara kartındaki (_buildGridNoteCard)
+                            // aynı mantıkla tutarlı.
+                            child: Stack(
+                              children: [
+                                InkWell(
+                                  onTap: isTrash
                                   ? () {
                                       showModalBottomSheet(
                                         context: context,
@@ -1918,26 +2005,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                               ),
                                             ),
                                           ),
-                                          if (isFavorite)
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 6,
-                                              ),
-                                              child: Icon(
-                                                Icons.star,
-                                                color: appAccentColor.value,
-                                                size: 18,
-                                              ),
-                                            ),
-                                          if (note['isLocked'] == true)
-                                            const Padding(
-                                              padding: EdgeInsets.only(left: 6),
-                                              child: Icon(
-                                                Icons.lock,
-                                                color: Colors.grey,
-                                                size: 14,
-                                              ),
-                                            ),
+                                          // Yıldız, kilit ve bayrak artık
+                                          // başlığın yanında değil, kartın
+                                          // köşesindeki sabit rozetlerde
+                                          // gösteriliyor (bkz. Card'ı saran
+                                          // Stack + _buildNoteCornerBadges).
                                         ],
                                       ),
                                       const SizedBox(height: 8),
@@ -2041,17 +2113,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          if (isFavorite && !hasTitle)
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 6,
-                                              ),
-                                              child: Icon(
-                                                Icons.star,
-                                                color: appAccentColor.value,
-                                                size: 18,
-                                              ),
-                                            ),
+                                          // Yıldız ve bayrak artık kartın
+                                          // köşesindeki sabit rozetlerde
+                                          // gösteriliyor (bkz. Card'ı saran
+                                          // Stack + _buildNoteCornerBadges).
                                         ],
                                       ),
                                     if (_formattedReminderText(note) !=
@@ -2181,6 +2246,14 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                   ),
                                 ],
                               ),
+                            ),
+                                ..._buildNoteCornerBadges(
+                                  isFavorite: isFavorite,
+                                  isLocked: note['isLocked'] == true,
+                                  flagColor: note['flagColor'] as String?,
+                                  isPinned: note['isPinned'] == true,
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -2599,15 +2672,19 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     final isFavorite = note['isFavorite'] == true;
     final isSelected =
         _isSelectionMode && _selectedNoteKeys.contains(_noteKey(note));
-    // Not arka planı (palet) özelliği kaldırıldı: bkz. liste görünümündeki
-    // aynı isimli açıklama.
-    final baseGridCardColor = _colorfulNotes
-        ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) %
-                  _categoryPalette.length]
-              .withValues(alpha: 0.75)
-        : (dNoteIsDark(context)
-              ? const Color(0xFF2D2D2D)
-              : Theme.of(context).cardColor);
+    // Not Kapağı: bkz. liste görünümündeki aynı isimli açıklama — not
+    // düzeyinde kayıtlı bir bgColor varsa grid kartı da HER ZAMAN onu
+    // kullanır, aksi halde colorfulNotes/kategori mantığı geçerli olur.
+    final noteOwnBgColor = note['bgColor'] as int?;
+    final baseGridCardColor = noteOwnBgColor != null
+        ? Color(noteOwnBgColor).withValues(alpha: 0.75)
+        : (_colorfulNotes
+              ? _categoryPalette[(originalIndex < 0 ? 0 : originalIndex) %
+                        _categoryPalette.length]
+                    .withValues(alpha: 0.75)
+              : (dNoteIsDark(context)
+                    ? const Color(0xFF2D2D2D)
+                    : Theme.of(context).cardColor));
     // Seçili notlar, dokununca beliren parlaklık efektiyle aynı tonda
     // (amber) sürekli vurgulanır.
     final gridCardColor = isSelected
@@ -3122,18 +3199,12 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                   ),
                 ],
               ),
-              if (isFavorite)
-                Positioned(
-                  top: 8,
-                  right: note['isLocked'] == true ? 36 : 8,
-                  child: Icon(Icons.star, color: appAccentColor.value, size: 18),
-                ),
-              if (note['isLocked'] == true)
-                const Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Icon(Icons.lock, color: Colors.grey, size: 16),
-                ),
+              ..._buildNoteCornerBadges(
+                isFavorite: isFavorite,
+                isLocked: note['isLocked'] == true,
+                flagColor: note['flagColor'] as String?,
+                isPinned: note['isPinned'] == true,
+              ),
             ],
           ),
         ),

@@ -2730,6 +2730,18 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     // NoteListNoteDialogMixin > showTagsSheet). attachments/bgColor ile
     // aynı desen: burada state'e yazılıp _saveData() ile diske kaydedilir.
     List<String> tags = const [],
+    // Bayrak (flama) rengi: başlıktaki flama ikonundan seçilir (bkz.
+    // NoteFlagMixin). null = bayrak yok. tags/bgColor ile aynı desen:
+    // burada state'e yazılıp _saveData() ile diske kaydedilir.
+    String? flagColor,
+    // Sabitleme (pin) durumu: not düzenleyicisindeki üst bardaki üç nokta
+    // menüsünden değiştirilir (bkz. 'pin_note' öğesi). true ise not,
+    // listede seçili sıralama kriterinden bağımsız olarak en başa
+    // taşınır (bkz. note_list_build_mixin.dart sıralama mantığı) ve kart
+    // önizlemesinin sol üst köşesinde gri bir iğne ikonuyla gösterilir.
+    // flagColor/bgColor ile aynı desen: görsel/organizasyonel bir tercih
+    // olduğundan içerik değişikliği sayılmaz.
+    bool isPinned = false,
   ]) {
     final isValid =
         (noteType == 'text'
@@ -2817,6 +2829,20 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         final oldBgColor = _notes[index]['bgColor'] as int?;
         final bgColorChanged = oldBgColor != bgColor;
 
+        // Bayrak rengi de bgColor gibi görsel bir tercih — içerik
+        // değişikliği sayılmaz (aşağıda contentLikeChanges'e dahil
+        // edilmez), ama hasChanges'e dahil edildiği için not yine de
+        // kaydedilir.
+        final oldFlagColor = _notes[index]['flagColor'] as String?;
+        final flagColorChanged = oldFlagColor != flagColor;
+
+        // Sabitleme durumu da bgColor/flagColor gibi görsel/organizasyonel
+        // bir tercih — içerik değişikliği sayılmaz (contentLikeChanges'e
+        // dahil edilmez), ama hasChanges'e dahil edildiği için not yine de
+        // kaydedilir.
+        final oldPinned = _notes[index]['isPinned'] == true;
+        final pinnedChanged = oldPinned != isPinned;
+
         final oldTagsRaw = _notes[index]['tags'];
         final oldTags = oldTagsRaw is List
             ? List<String>.from(oldTagsRaw.map((e) => e.toString()))
@@ -2828,7 +2854,16 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
               (i) => i < oldTags.length && oldTags[i] == tags[i],
             ).any((same) => !same);
 
-        final hasChanges =
+        // Kapak Rengi (bgColor) SADECE bu notun liste/grid önizleme
+        // kartının rengini etkileyen görsel bir tercih — içerik
+        // değişikliği sayılmaz. contentLikeChanges'e dahil edilmezse
+        // (aşağıda), sadece kapak rengi değiştirilip not kapatıldığında
+        // modifiedDate GÜNCELLENMEZ ve not "son düzenlenenler"
+        // sıralamasında haksız yere başa taşınmaz — tıpkı yukarıdaki
+        // "değişiklik yoksa modifiedDate güncellenmemeli" mantığının bir
+        // uzantısı. Not yine de kaydedilir (hasChanges bgColorChanged'ı
+        // da kapsar), yalnızca sıralama zaman damgası etkilenmez.
+        final contentLikeChanges =
             newTitle != oldTitle ||
             titleSpansChanged ||
             contentChanged ||
@@ -2837,13 +2872,18 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             attachmentsChanged ||
             reminderChanged ||
             assignedDateChanged ||
-            bgColorChanged ||
             tagsChanged;
+
+        final hasChanges =
+            contentLikeChanges || bgColorChanged || flagColorChanged || pinnedChanged;
 
         if (!hasChanges) return false;
 
         final currentRawTime = DateTime.now().toString();
         final noteId = (_notes[index]['id'] ?? currentRawTime).toString();
+        final newModifiedDate = contentLikeChanges
+            ? currentRawTime
+            : (_notes[index]['modifiedDate'] ?? currentRawTime).toString();
         setState(() {
           _notes[index] = {
             ..._notes[index],
@@ -2852,13 +2892,15 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             'content': newContent,
             'checkItems': newCheckItems,
             'attachments': attachments,
-            'modifiedDate': currentRawTime,
+            'modifiedDate': newModifiedDate,
             'type': noteType,
             'reminderDate': newReminderRaw,
             'reminderRepeat': newRepeatRaw,
             'assignedDate': newAssignedRaw,
             'bgColor': bgColor,
             'tags': tags,
+            'flagColor': flagColor,
+            'isPinned': isPinned,
           };
         });
         _saveData();
@@ -2920,6 +2962,8 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             'reminderRepeat': savedRepeat,
             'bgColor': bgColor,
             'tags': tags,
+            'flagColor': flagColor,
+            'isPinned': isPinned,
           });
         });
         _saveData();

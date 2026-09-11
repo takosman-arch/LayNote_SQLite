@@ -2174,6 +2174,27 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tagsMenuItemLabel => 'الوسوم';
 
   @override
+  String get noteBgColorMenuItemLabel => 'لون الغلاف';
+
+  @override
+  String get noteBgColorDialogTitle => 'اختر لون الغلاف';
+
+  @override
+  String get flagColorMenuItemLabel => 'لون العلم';
+
+  @override
+  String get flagColorPickerTitle => 'اختر لون العلم';
+
+  @override
+  String get flagColorRemoveOption => 'إزالة العلم';
+
+  @override
+  String get pinNoteMenuItemLabel => 'تثبيت الملاحظة';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'إلغاء تثبيت الملاحظة';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

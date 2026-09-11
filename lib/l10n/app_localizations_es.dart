@@ -2204,6 +2204,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tagsMenuItemLabel => 'Etiquetas';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Color de Portada';
+
+  @override
+  String get noteBgColorDialogTitle => 'Elegir Color de Portada';
+
+  @override
+  String get flagColorMenuItemLabel => 'Color de la bandera';
+
+  @override
+  String get flagColorPickerTitle => 'Elegir color de la bandera';
+
+  @override
+  String get flagColorRemoveOption => 'Quitar bandera';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Fijar nota';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Dejar de fijar';
+
+  @override
   String get linkDialogUrlHint => 'https://ejemplo.com';
 
   @override

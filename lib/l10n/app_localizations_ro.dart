@@ -2192,6 +2192,27 @@ class AppLocalizationsRo extends AppLocalizations {
   String get tagsMenuItemLabel => 'Etichete';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Culoare copertă';
+
+  @override
+  String get noteBgColorDialogTitle => 'Alege culoarea copertei';
+
+  @override
+  String get flagColorMenuItemLabel => 'Culoare steag';
+
+  @override
+  String get flagColorPickerTitle => 'Alege culoarea steagului';
+
+  @override
+  String get flagColorRemoveOption => 'Elimină steagul';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Fixează nota';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Anulează fixarea';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

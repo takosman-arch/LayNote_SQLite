@@ -2183,6 +2183,27 @@ class AppLocalizationsSv extends AppLocalizations {
   String get tagsMenuItemLabel => 'Taggar';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Omslagsfärg';
+
+  @override
+  String get noteBgColorDialogTitle => 'Välj omslagsfärg';
+
+  @override
+  String get flagColorMenuItemLabel => 'Flaggfärg';
+
+  @override
+  String get flagColorPickerTitle => 'Välj flaggfärg';
+
+  @override
+  String get flagColorRemoveOption => 'Ta bort flagga';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Fäst anteckning';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Ta bort fästning';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

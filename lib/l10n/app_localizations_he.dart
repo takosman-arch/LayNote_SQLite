@@ -2157,6 +2157,27 @@ class AppLocalizationsHe extends AppLocalizations {
   String get tagsMenuItemLabel => 'תגים';
 
   @override
+  String get noteBgColorMenuItemLabel => 'צבע כריכה';
+
+  @override
+  String get noteBgColorDialogTitle => 'בחר צבע כריכה';
+
+  @override
+  String get flagColorMenuItemLabel => 'צבע דגל';
+
+  @override
+  String get flagColorPickerTitle => 'בחר צבע דגל';
+
+  @override
+  String get flagColorRemoveOption => 'הסר דגל';
+
+  @override
+  String get pinNoteMenuItemLabel => 'הצמד פתק';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'בטל הצמדה';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

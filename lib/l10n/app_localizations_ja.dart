@@ -2134,6 +2134,27 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tagsMenuItemLabel => 'タグ';
 
   @override
+  String get noteBgColorMenuItemLabel => 'カバーカラー';
+
+  @override
+  String get noteBgColorDialogTitle => 'カバーカラーを選択';
+
+  @override
+  String get flagColorMenuItemLabel => 'フラグの色';
+
+  @override
+  String get flagColorPickerTitle => 'フラグの色を選択';
+
+  @override
+  String get flagColorRemoveOption => 'フラグを削除';
+
+  @override
+  String get pinNoteMenuItemLabel => 'ノートを固定';
+
+  @override
+  String get unpinNoteMenuItemLabel => '固定を解除';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

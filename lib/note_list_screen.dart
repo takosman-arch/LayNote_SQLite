@@ -17,6 +17,7 @@ class _NoteListScreenState extends State<NoteListScreen>
         NoteListActionsMixin,
         NoteListAttachmentMixin,
         NoteListNoteDialogMixin,
+        NoteFlagMixin,
         NoteListBuildMixin {}
 
 // ── Ek Dosya Kutucuğu ────────────────────────────────────────────────

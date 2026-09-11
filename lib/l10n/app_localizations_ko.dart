@@ -2137,6 +2137,27 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tagsMenuItemLabel => '태그';
 
   @override
+  String get noteBgColorMenuItemLabel => '커버 색상';
+
+  @override
+  String get noteBgColorDialogTitle => '커버 색상 선택';
+
+  @override
+  String get flagColorMenuItemLabel => '플래그 색상';
+
+  @override
+  String get flagColorPickerTitle => '플래그 색상 선택';
+
+  @override
+  String get flagColorRemoveOption => '플래그 제거';
+
+  @override
+  String get pinNoteMenuItemLabel => '메모 고정';
+
+  @override
+  String get unpinNoteMenuItemLabel => '고정 해제';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

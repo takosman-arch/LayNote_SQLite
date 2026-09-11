@@ -2107,6 +2107,27 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tagsMenuItemLabel => '标签';
 
   @override
+  String get noteBgColorMenuItemLabel => '封面颜色';
+
+  @override
+  String get noteBgColorDialogTitle => '选择封面颜色';
+
+  @override
+  String get flagColorMenuItemLabel => '旗标颜色';
+
+  @override
+  String get flagColorPickerTitle => '选择旗标颜色';
+
+  @override
+  String get flagColorRemoveOption => '移除旗标';
+
+  @override
+  String get pinNoteMenuItemLabel => '置顶';
+
+  @override
+  String get unpinNoteMenuItemLabel => '取消置顶';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

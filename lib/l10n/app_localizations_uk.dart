@@ -2195,6 +2195,27 @@ class AppLocalizationsUk extends AppLocalizations {
   String get tagsMenuItemLabel => 'Теги';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Колір обкладинки';
+
+  @override
+  String get noteBgColorDialogTitle => 'Вибрати колір обкладинки';
+
+  @override
+  String get flagColorMenuItemLabel => 'Колір прапорця';
+
+  @override
+  String get flagColorPickerTitle => 'Виберіть колір прапорця';
+
+  @override
+  String get flagColorRemoveOption => 'Прибрати прапорець';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Закріпити нотатку';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Відкріпити нотатку';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

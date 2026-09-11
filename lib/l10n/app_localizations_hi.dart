@@ -2184,6 +2184,27 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tagsMenuItemLabel => 'टैग';
 
   @override
+  String get noteBgColorMenuItemLabel => 'कवर रंग';
+
+  @override
+  String get noteBgColorDialogTitle => 'कवर रंग चुनें';
+
+  @override
+  String get flagColorMenuItemLabel => 'फ़्लैग रंग';
+
+  @override
+  String get flagColorPickerTitle => 'फ़्लैग रंग चुनें';
+
+  @override
+  String get flagColorRemoveOption => 'फ़्लैग हटाएं';
+
+  @override
+  String get pinNoteMenuItemLabel => 'नोट पिन करें';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'पिन हटाएं';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

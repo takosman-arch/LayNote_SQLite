@@ -2184,6 +2184,27 @@ class AppLocalizationsDa extends AppLocalizations {
   String get tagsMenuItemLabel => 'Tags';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Omslagsfarve';
+
+  @override
+  String get noteBgColorDialogTitle => 'Vælg omslagsfarve';
+
+  @override
+  String get flagColorMenuItemLabel => 'Flagfarve';
+
+  @override
+  String get flagColorPickerTitle => 'Vælg flagfarve';
+
+  @override
+  String get flagColorRemoveOption => 'Fjern flag';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Fastgør note';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Frigør note';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

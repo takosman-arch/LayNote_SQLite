@@ -32,7 +32,7 @@ class DBHelper {
       // tetiklenmesi sağlanıyor. Ayrıca aşağıdaki onOpen bloğu, versiyon
       // numarasından tamamen bağımsız olarak kritik sütunların varlığını
       // her açılışta garanti eden bir güvenlik ağıdır.
-      version: 12,
+      version: 14,
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           await _addColumnIfMissing(db, 'notes', 'attachments', 'TEXT');
@@ -106,6 +106,38 @@ class DBHelper {
           await _addColumnIfMissing(db, 'notes', 'tags', 'TEXT');
           await _addColumnIfMissing(db, 'deleted_notes', 'tags', 'TEXT');
         }
+        if (oldVersion < 13) {
+          // Bayrak (flama) özelliği: notun başlığına iliştirilen, seçilen
+          // renkle dolu küçük bir işaret. null = bayrak yok (boş/dış hatlı
+          // görünür). Değer, sabit paletteki rengin hex string'i olarak
+          // saklanır (ör. '#FF5252'). bgColor'dan farklı olarak burada int
+          // yerine TEXT tercih edildi çünkü palet dışı özel bir renk
+          // ihtiyacı doğarsa (ör. kullanıcı tanımlı renk) formatı
+          // değiştirmeden aynı sütun kullanılabilir.
+          await _addColumnIfMissing(db, 'notes', 'flagColor', 'TEXT');
+          await _addColumnIfMissing(db, 'deleted_notes', 'flagColor', 'TEXT');
+        }
+        if (oldVersion < 14) {
+          // Sabitleme (pin) özelliği: not düzenleyicisindeki üst bardaki üç
+          // nokta menüsünden açılıp kapatılır (bkz. NoteListNoteDialogMixin
+          // > 'pin_note'). true ise not, listede seçili sıralama
+          // kriterinden bağımsız olarak en başa taşınır ve kart
+          // önizlemesinin sol üst köşesinde gri bir iğne ikonuyla gösterilir
+          // (bkz. NoteListBuildMixin._buildNoteCornerBadges). isFavorite/
+          // isLocked/isArchived ile aynı desen: 0/1 INTEGER, varsayılan 0.
+          await _addColumnIfMissing(
+            db,
+            'notes',
+            'isPinned',
+            'INTEGER NOT NULL DEFAULT 0',
+          );
+          await _addColumnIfMissing(
+            db,
+            'deleted_notes',
+            'isPinned',
+            'INTEGER NOT NULL DEFAULT 0',
+          );
+        }
       },
       // GÜVENLİK AĞI: onUpgrade yalnızca sqflite'ın PRAGMA user_version'da
       // sakladığı sayı arttığında tetiklenir. Eğer bir cihazda bu sayı
@@ -119,6 +151,18 @@ class DBHelper {
       onOpen: (db) async {
         await _addColumnIfMissing(db, 'notes', 'tags', 'TEXT');
         await _addColumnIfMissing(db, 'deleted_notes', 'tags', 'TEXT');
+        await _addColumnIfMissing(
+          db,
+          'notes',
+          'isPinned',
+          'INTEGER NOT NULL DEFAULT 0',
+        );
+        await _addColumnIfMissing(
+          db,
+          'deleted_notes',
+          'isPinned',
+          'INTEGER NOT NULL DEFAULT 0',
+        );
       },
       onCreate: (db, version) async {
         await db.execute('''
@@ -145,7 +189,9 @@ class DBHelper {
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0,
-            isPinnedToNotification INTEGER NOT NULL DEFAULT 0
+            isPinnedToNotification INTEGER NOT NULL DEFAULT 0,
+            flagColor TEXT,
+            isPinned INTEGER NOT NULL DEFAULT 0
           )
         ''');
         await db.execute('''
@@ -172,7 +218,9 @@ class DBHelper {
             isLocked INTEGER NOT NULL DEFAULT 0,
             isArchived INTEGER NOT NULL DEFAULT 0,
             isFavorite INTEGER NOT NULL DEFAULT 0,
-            isPinnedToNotification INTEGER NOT NULL DEFAULT 0
+            isPinnedToNotification INTEGER NOT NULL DEFAULT 0,
+            flagColor TEXT,
+            isPinned INTEGER NOT NULL DEFAULT 0
           )
         ''');
         await db.execute('''
@@ -248,6 +296,12 @@ class DBHelper {
       'isArchived': (note['isArchived'] == true) ? 1 : 0,
       'isFavorite': (note['isFavorite'] == true) ? 1 : 0,
       'isPinnedToNotification': (note['isPinnedToNotification'] == true) ? 1 : 0,
+      // Sabitleme (pin) durumu: isFavorite/isLocked/isArchived ile aynı
+      // desen — 0/1 INTEGER, varsayılan 0.
+      'isPinned': (note['isPinned'] == true) ? 1 : 0,
+      // Bayrak rengi: seçili değilse null (attachments/titleSpans/tags ile
+      // aynı desen — boş string değil, doğrudan null yazılır).
+      'flagColor': note['flagColor']?.toString(),
     };
   }
 
@@ -278,6 +332,8 @@ class DBHelper {
       'isArchived': row['isArchived'] == 1,
       'isFavorite': row['isFavorite'] == 1,
       'isPinnedToNotification': row['isPinnedToNotification'] == 1,
+      'isPinned': row['isPinned'] == 1,
+      if (row['flagColor'] != null) 'flagColor': row['flagColor'],
     };
   }
 

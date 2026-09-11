@@ -2200,6 +2200,27 @@ class AppLocalizationsNl extends AppLocalizations {
   String get tagsMenuItemLabel => 'Labels';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Omslagkleur';
+
+  @override
+  String get noteBgColorDialogTitle => 'Omslagkleur kiezen';
+
+  @override
+  String get flagColorMenuItemLabel => 'Vlagkleur';
+
+  @override
+  String get flagColorPickerTitle => 'Kies vlagkleur';
+
+  @override
+  String get flagColorRemoveOption => 'Vlag verwijderen';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Notitie vastzetten';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Losmaken';
+
+  @override
   String get linkDialogUrlHint => 'https://voorbeeld.com';
 
   @override

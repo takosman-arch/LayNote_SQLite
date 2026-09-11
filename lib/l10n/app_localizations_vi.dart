@@ -2187,6 +2187,27 @@ class AppLocalizationsVi extends AppLocalizations {
   String get tagsMenuItemLabel => 'Thẻ';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Màu bìa';
+
+  @override
+  String get noteBgColorDialogTitle => 'Chọn màu bìa';
+
+  @override
+  String get flagColorMenuItemLabel => 'Màu cờ';
+
+  @override
+  String get flagColorPickerTitle => 'Chọn màu cờ';
+
+  @override
+  String get flagColorRemoveOption => 'Xóa cờ';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Ghim ghi chú';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Bỏ ghim';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

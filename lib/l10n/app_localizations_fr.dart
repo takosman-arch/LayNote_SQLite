@@ -2210,6 +2210,27 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tagsMenuItemLabel => 'Étiquettes';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Couleur de couverture';
+
+  @override
+  String get noteBgColorDialogTitle => 'Choisir la couleur de couverture';
+
+  @override
+  String get flagColorMenuItemLabel => 'Couleur du drapeau';
+
+  @override
+  String get flagColorPickerTitle => 'Choisir la couleur du drapeau';
+
+  @override
+  String get flagColorRemoveOption => 'Supprimer le drapeau';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Épingler la note';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Détacher la note';
+
+  @override
   String get linkDialogUrlHint => 'https://exemple.com';
 
   @override

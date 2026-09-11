@@ -2192,6 +2192,27 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tagsMenuItemLabel => 'Теги';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Цвет обложки';
+
+  @override
+  String get noteBgColorDialogTitle => 'Выбрать цвет обложки';
+
+  @override
+  String get flagColorMenuItemLabel => 'Цвет флажка';
+
+  @override
+  String get flagColorPickerTitle => 'Выберите цвет флажка';
+
+  @override
+  String get flagColorRemoveOption => 'Убрать флажок';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Закрепить заметку';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Открепить заметку';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

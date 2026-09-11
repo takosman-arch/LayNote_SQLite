@@ -2198,6 +2198,27 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tagsMenuItemLabel => 'Tags';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Umschlagfarbe';
+
+  @override
+  String get noteBgColorDialogTitle => 'Umschlagfarbe wählen';
+
+  @override
+  String get flagColorMenuItemLabel => 'Flaggenfarbe';
+
+  @override
+  String get flagColorPickerTitle => 'Flaggenfarbe wählen';
+
+  @override
+  String get flagColorRemoveOption => 'Flagge entfernen';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Notiz anheften';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Anheften aufheben';
+
+  @override
   String get linkDialogUrlHint => 'https://beispiel.de';
 
   @override

@@ -2185,6 +2185,27 @@ class AppLocalizationsFi extends AppLocalizations {
   String get tagsMenuItemLabel => 'Tunnisteet';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Kansiväri';
+
+  @override
+  String get noteBgColorDialogTitle => 'Valitse kansiväri';
+
+  @override
+  String get flagColorMenuItemLabel => 'Lipun väri';
+
+  @override
+  String get flagColorPickerTitle => 'Valitse lipun väri';
+
+  @override
+  String get flagColorRemoveOption => 'Poista lippu';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Kiinnitä muistiinpano';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Poista kiinnitys';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

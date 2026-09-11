@@ -6,6 +6,22 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   // ---- Diğer mixin'lerde tanımlı, burada kullanılan üyeler ----
   Widget _buildAttachmentGrid({ required List<String> ids, required List<Map<String, dynamic>> attachmentsList, required void Function(String id) onRemove, required void Function(Map<String, dynamic> att) onOpen, required String? deletingId, required void Function(String? id) onDeletingIdChanged, });
   Widget _buildDocPreview(Map<String, dynamic> att, String filePath);
+  // note_flag_mixin.dart -> başlık satırının sağına konan, tıklanınca
+  // renk seçtiren flama ikonu ve onu açan renk seçim paneli. Gerçek
+  // tanımı bu dosyada değil, NoteFlagMixin'de.
+  // Alt bardaki çizgi/tarih rengi hesaplanırken (barColor) bayrak
+  // rengine öncelik vermek için de kullanılıyor.
+  Color _flagColorFromHex(String hex);
+  Widget _buildFlagIcon({
+    required String? flagColor,
+    double size = 22,
+    required VoidCallback onTap,
+    String? tooltip,
+  });
+  Future<void> _showFlagColorPicker({
+    required String? currentColor,
+    required ValueChanged<String?> onColorSelected,
+  });
   // Çekmecede seçili aktif kategori ('__reminders__' = Hatırlatıcı bölümü).
   // Gerçek tanımı NoteListDataCategoryMixin'de; burada sadece bu mixin'in
   // erişebilmesi için abstract olarak bildiriliyor.
@@ -33,7 +49,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   // (bkz. showTagsSheet aşağıda).
   Future<String?> _renameTagGlobally(String oldTag);
   Future<bool> _deleteTagGlobally(String tag);
-  bool _saveNoteIfValid( int? index, String noteType, List<Map<String, dynamic>> checkItems, [ List<Map<String, dynamic>> attachments = const [], List<Map<String, dynamic>> blocks = const [], DateTime? reminder, DateTime? assignedDate, String? reminderRepeat, int? bgColor, List<String> tags = const [], ]);
+  bool _saveNoteIfValid( int? index, String noteType, List<Map<String, dynamic>> checkItems, [ List<Map<String, dynamic>> attachments = const [], List<Map<String, dynamic>> blocks = const [], DateTime? reminder, DateTime? assignedDate, String? reminderRepeat, int? bgColor, List<String> tags = const [], String? flagColor, bool isPinned = false, ]);
   // Not arka plan rengi (noteBgColor), artık _saveNoteIfValid'in son
   // parametresi (bgColor) olarak doğrudan geçirilir (gerçek gövde bu
   // dosyada değil, NoteListActionsMixin'de tanımlı). Notu _notes
@@ -326,6 +342,15 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // ana araç çubuğu Row'u ve showBgColorSubToolbar alt barı).
     int? noteBgColor;
     bool showBgColorSubToolbar = false;
+    // Bayrak (flama) rengi: başlığın sağındaki flama ikonundan seçilir.
+    // null = bayrak yok (boş/dış hatlı gösterilir). bgColor ile aynı
+    // desen: modal state'te tutulur, kaydedilirken _saveNoteIfValid'e
+    // geçirilir (bkz. NoteFlagMixin).
+    String? noteFlagColor;
+    // Sabitleme (pin) durumu: üst bardaki üç nokta menüsündeki "Sabitle"
+    // öğesinden değiştirilir. bgColor/flagColor ile aynı desen: modal
+    // state'te tutulur, kaydedilirken _saveNoteIfValid'e geçirilir.
+    bool notePinned = false;
     void Function(VoidCallback)? requestEditorRebuild;
     // Aşama 3: titleFocusNode'un dinleyicisi requestEditorRebuild
     // tanımlandıktan SONRA eklenir (Dart'ta yerel değişkenler kendi
@@ -3212,9 +3237,19 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       noteDate = _notes[index]['date'] ?? "";
       noteType = _notes[index]['type'] ?? 'text';
       noteCategory = _notes[index]['category'] as String?;
-      // Not arka planı özelliği kaldırıldı: eskiden kaydedilmiş bir
-      // bgColor olsa bile artık okunmuyor, notlar her zaman varsayılan
-      // (arka plansız) görünümle açılır.
+      // Not Kapağı: notun kayıtlı bgColor'ı editöre de yüklenir ki üç
+      // nokta menüsündeki "Kapak Rengi" seçicisi o notun mevcut seçimini
+      // (varsa) doğru gösterebilsin. Bu değer YALNIZCA liste/grid
+      // kartının rengini etkiler (bkz. NoteListBuildMixin); editörün
+      // kendi yazma alanının arka planı bundan etkilenmez.
+      noteBgColor = _notes[index]['bgColor'] as int?;
+      // Bayrak: notun kayıtlı flagColor'ı editöre yüklenir ki başlıktaki
+      // flama ikonu notun mevcut seçimini (varsa) doğru göstersin.
+      noteFlagColor = _notes[index]['flagColor'] as String?;
+      // Sabitleme: notun kayıtlı isPinned durumu editöre yüklenir ki üst
+      // bardaki üç nokta menüsü "Sabitle"/"Sabitlemeyi Kaldır" arasında
+      // doğru öğeyi göstersin.
+      notePinned = _notes[index]['isPinned'] == true;
       final rawReminder = _notes[index]['reminderDate'];
       if (rawReminder != null && rawReminder.toString().isNotEmpty) {
         noteReminder = DateTime.tryParse(rawReminder.toString());
@@ -3315,6 +3350,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 noteReminderRepeat,
                 noteBgColor,
                 tags,
+                noteFlagColor,
+                notePinned,
               );
               // DÜZELTME (çift not kopyası): index == null iken
               // _saveNoteIfValid notu _notes listesine YENİ olarak ekliyor;
@@ -3340,6 +3377,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 noteReminderRepeat,
                 noteBgColor,
                 tags,
+                noteFlagColor,
+                notePinned,
               );
               if (saved && index == null && _notes.isNotEmpty) {
                 index = _notes.length - 1;
@@ -3358,6 +3397,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 noteReminderRepeat,
                 noteBgColor,
                 tags,
+                noteFlagColor,
+                notePinned,
               );
               if (saved && index == null && _notes.isNotEmpty) {
                 index = _notes.length - 1;
@@ -5197,6 +5238,29 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 );
               }
 
+              // ── Kapak Rengi: üç nokta menüsündeki "Kapak Rengi"
+              // öğesiyle açılır. Sheet UI'ı ve renk paleti mantığı
+              // note_bg_color_sheet.dart'a taşındı (note_tags_sheet.dart
+              // ile aynı desen — dialog mixin'ini gereksiz büyütmemek
+              // için); burada yalnızca ana modal state'teki `noteBgColor`
+              // değerini geçirip seçimi setModalState ile geri alan ince
+              // bir sarmalayıcı kalıyor. Seçilen renk YALNIZCA bu notun
+              // liste/grid önizleme KARTININ rengini belirler (bkz.
+              // NoteListBuildMixin > baseNoteCardColor/baseGridCardColor);
+              // editörün kendi yazma alanı arka planına dokunmaz.
+              void showBgColorSheet() {
+                showNoteBgColorSheet(
+                  context,
+                  currentColor: noteBgColor,
+                  palette: _categoryPalette,
+                  onChanged: (newColor) {
+                    setModalState(() {
+                      noteBgColor = newColor;
+                    });
+                  },
+                );
+              }
+
               final catColor = _getCategoryColor(noteCategory);
               final isDark =
                   ThemeData.estimateBrightnessForColor(catColor) ==
@@ -5248,7 +5312,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     );
                     return;
                   }
-                  final saved = _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDateSet ? noteAssignedDate : null, noteReminderRepeat, noteBgColor, tags);
+                  final saved = _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDateSet ? noteAssignedDate : null, noteReminderRepeat, noteBgColor, tags, noteFlagColor, notePinned);
                   SystemChrome.setSystemUIOverlayStyle(
                     dNoteSystemBarsStyle(context),
                   );
@@ -5324,6 +5388,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           noteReminderRepeat,
                           noteBgColor,
                           tags,
+                          noteFlagColor,
+                          notePinned,
                         );
                         SystemChrome.setSystemUIOverlayStyle(
                           dNoteSystemBarsStyle(context),
@@ -5418,7 +5484,26 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           color: dNoteEditorAppBarColor(context),
                         ),
                         onSelected: (value) async {
-                          if (value == 'calc_table') {
+                          if (value == 'note_bg_color') {
+                            showBgColorSheet();
+                          } else if (value == 'flag_color') {
+                            _showFlagColorPicker(
+                              currentColor: noteFlagColor,
+                              onColorSelected: (color) {
+                                setModalState(() {
+                                  noteFlagColor = color;
+                                });
+                              },
+                            );
+                          } else if (value == 'pin_note') {
+                            // Sabitleme/kaldırma anında değişir; kayıt her
+                            // zamanki gibi (kapatma/otomatik kayıt anında)
+                            // _saveNoteIfValid'e notePinned olarak geçilir
+                            // (bkz. noteBgColor/noteFlagColor ile aynı desen).
+                            setModalState(() {
+                              notePinned = !notePinned;
+                            });
+                          } else if (value == 'calc_table') {
                             if (noteType != 'text') return;
                             pushUndoCheckpoint();
                             setModalState(() {
@@ -5788,8 +5873,138 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           }
                         },
                         itemBuilder: (_) => [
-                          // "Not Arka Planı" (palet) menü öğesi kaldırıldı:
-                          // artık notlarda arka plan rengi seçilemiyor.
+                          // Menü sırası: Sabitle, Etiketler, Bayrak Rengi,
+                          // Kapak Rengi, ardından bir ayraç ve diğer
+                          // öğeler.
+                          PopupMenuItem(
+                            value: 'pin_note',
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    notePinned
+                                        ? AppLocalizations.of(context)!
+                                              .unpinNoteMenuItemLabel
+                                        : AppLocalizations.of(context)!
+                                              .pinNoteMenuItemLabel,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Icon(
+                                  notePinned
+                                      ? Icons.push_pin
+                                      : Icons.push_pin_outlined,
+                                  color: appAccentColor.value,
+                                  size: 24,
+                                ),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'tags',
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.tagsMenuItemLabel,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Icon(
+                                  Icons.sell_outlined,
+                                  color: appAccentColor.value,
+                                  size: 24,
+                                ),
+                              ],
+                            ),
+                          ),
+                          // "Bayrak Rengi": eskiden başlığın sağında ayrı
+                          // bir ikon olarak duruyordu; artık buradan
+                          // açılıyor (bkz. NoteFlagMixin._showFlagColorPicker).
+                          PopupMenuItem(
+                            value: 'flag_color',
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!
+                                        .flagColorMenuItemLabel,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                // Material'ın hazır "outlined_flag" ikonu
+                                // yerine, kart önizlemesindeki rozetle
+                                // (_buildFlagBadge) aynı özel şekil
+                                // (_FlagShapePainter) kullanılır. Bir renk
+                                // seçiliyse o renkle dolu, seçili değilse
+                                // dış hatlı gösterilir.
+                                SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: Center(
+                                    child: CustomPaint(
+                                      size: const Size(16, 16),
+                                      painter: _FlagShapePainter(
+                                        color: noteFlagColor != null
+                                            ? Color(
+                                                int.parse(
+                                                  'FF${noteFlagColor!.replaceFirst('#', '')}',
+                                                  radix: 16,
+                                                ),
+                                              )
+                                            : appAccentColor.value,
+                                        filled: noteFlagColor != null,
+                                        vertical: true,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // "Kapak Rengi": bu notun liste/grid önizleme
+                          // kartının rengini sabitlemek için (bkz.
+                          // showBgColorSheet). Not tipinden bağımsız her
+                          // zaman gösterilir (checklist notlar da liste
+                          // kartına sahip olduğundan).
+                          PopupMenuItem(
+                            value: 'note_bg_color',
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!
+                                        .noteBgColorMenuItemLabel,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Icon(
+                                  Icons.palette_outlined,
+                                  // Kapak rengi seçilmişse ikon da o renkle
+                                  // gösterilir (bayrak ikonuyla aynı
+                                  // mantık); seçilmemişse eskisi gibi
+                                  // accent rengiyle çizilir.
+                                  color: noteBgColor != null
+                                      ? Color(noteBgColor!)
+                                      : appAccentColor.value,
+                                  size: 24,
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Etiketler/Bayrak Rengi/Kapak Rengi grubunu
+                          // aşağıdaki diğer öğelerden ayıran sabit ayraç.
+                          const PopupMenuDivider(),
+                          // Ayraç yalnızca 'text' tipinde eklenir: checklist
+                          // notlarda aşağıdaki blok öğeleri (drawing/
+                          // calc_table/table/reorder_blocks) hiç
+                          // gösterilmediğinden, zaten var olan (üstteki)
+                          // ayraçla üst üste binip çift çizgi oluşmasın
+                          // diye.
                           if (noteType == 'text')
                             PopupMenuItem(
                               value: 'drawing',
@@ -5871,26 +6086,6 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                 ],
                               ),
                             ),
-                          const PopupMenuDivider(),
-                          PopupMenuItem(
-                            value: 'tags',
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    AppLocalizations.of(context)!.tagsMenuItemLabel,
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Icon(
-                                  Icons.sell_outlined,
-                                  color: appAccentColor.value,
-                                  size: 24,
-                                ),
-                              ],
-                            ),
-                          ),
                           if (noteType == 'text') const PopupMenuDivider(),
                           PopupMenuItem(
                             value: 'import_txt',
@@ -5983,7 +6178,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                         key: _editorContentColumnKey,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextField(
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: TextField(
                             selectionWidthStyle: ui.BoxWidthStyle.tight,
                             contextMenuBuilder: buildCustomContextMenu,
                             selectionHeightStyle: ui.BoxHeightStyle.max,
@@ -6042,6 +6241,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               // Ayarlar > Kişiselleştirme > Yazı Tipi.
                               fontFamily: dNoteFontFamilyValue(_fontFamily),
                             ),
+                                ),
+                              ),
+                              // Bayrak rengi seçimi artık üç nokta menüsüne
+                              // taşındı (bkz. itemBuilder içindeki
+                              // 'flag_color' öğesi ve
+                              // NoteFlagMixin._showFlagColorPicker).
+                            ],
                           ),
                           const SizedBox(height: 20),
                           if (noteType == 'text')
@@ -8181,7 +8387,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                               },
                                             );
                                           } else {
-                                            _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDateSet ? noteAssignedDate : null, noteReminderRepeat, noteBgColor, tags);
+                                            _saveNoteIfValid(index, noteType, checkItems, attachments, blocks, noteReminder, noteAssignedDateSet ? noteAssignedDate : null, noteReminderRepeat, noteBgColor, tags, noteFlagColor, notePinned);
                                             if (_notes.isNotEmpty) {
                                               final newIndex =
                                                   _notes.length - 1;
@@ -8850,7 +9056,23 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                       child: Builder(
                         builder: (context) {
                           final Color barColor;
-                          if (_colorfulNotes && index != null && index! >= 0) {
+                          if (noteFlagColor != null) {
+                            // Bayrak rengi atanmışsa HER ZAMAN önceliklidir:
+                            // hem kapak rengi hem bayrak rengi seçiliyse
+                            // alt bardaki çizgi ve tarih metni bayrak
+                            // rengiyle gösterilir.
+                            barColor = _flagColorFromHex(
+                              noteFlagColor!,
+                            ).withValues(alpha: 0.75);
+                          } else if (noteBgColor != null) {
+                            // Kapak Rengi bu notta ayarlanmışsa, editördeki
+                            // alt barın çizgisi ve tarih metni de HER ZAMAN
+                            // o renkle gösterilir — liste/grid kartındaki
+                            // (NoteListBuildMixin) aynı önceliğe uyar.
+                            barColor = Color(
+                              noteBgColor!,
+                            ).withValues(alpha: 0.75);
+                          } else if (_colorfulNotes && index != null && index! >= 0) {
                             barColor =
                                 _categoryPalette[index! % _categoryPalette.length]
                                     .withValues(alpha: 0.75);

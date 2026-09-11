@@ -2170,6 +2170,27 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tagsMenuItemLabel => 'Etiketler';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Kapak Rengi';
+
+  @override
+  String get noteBgColorDialogTitle => 'Kapak Rengi Seç';
+
+  @override
+  String get flagColorMenuItemLabel => 'Bayrak Rengi';
+
+  @override
+  String get flagColorPickerTitle => 'Bayrak rengi seç';
+
+  @override
+  String get flagColorRemoveOption => 'Bayrağı kaldır';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Sabitle';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Sabitlemeyi Kaldır';
+
+  @override
   String get linkDialogUrlHint => 'https://ornek.com';
 
   @override

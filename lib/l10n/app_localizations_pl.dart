@@ -2197,6 +2197,27 @@ class AppLocalizationsPl extends AppLocalizations {
   String get tagsMenuItemLabel => 'Tagi';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Kolor okładki';
+
+  @override
+  String get noteBgColorDialogTitle => 'Wybierz kolor okładki';
+
+  @override
+  String get flagColorMenuItemLabel => 'Kolor flagi';
+
+  @override
+  String get flagColorPickerTitle => 'Wybierz kolor flagi';
+
+  @override
+  String get flagColorRemoveOption => 'Usuń flagę';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Przypnij notatkę';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Odepnij notatkę';
+
+  @override
   String get linkDialogUrlHint => 'https://example.com';
 
   @override

@@ -2184,6 +2184,27 @@ class AppLocalizationsId extends AppLocalizations {
   String get tagsMenuItemLabel => 'Tag';
 
   @override
+  String get noteBgColorMenuItemLabel => 'Warna Sampul';
+
+  @override
+  String get noteBgColorDialogTitle => 'Pilih Warna Sampul';
+
+  @override
+  String get flagColorMenuItemLabel => 'Warna Bendera';
+
+  @override
+  String get flagColorPickerTitle => 'Pilih Warna Bendera';
+
+  @override
+  String get flagColorRemoveOption => 'Hapus Bendera';
+
+  @override
+  String get pinNoteMenuItemLabel => 'Sematkan Catatan';
+
+  @override
+  String get unpinNoteMenuItemLabel => 'Lepas Sematan';
+
+  @override
   String get linkDialogUrlHint => 'https://contoh.com';
 
   @override
