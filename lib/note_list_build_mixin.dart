@@ -175,6 +175,24 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   // bir alt klasöre basılı tutulduğunda açılan sınırlı kapsamlı sıralama
   // için kullanılır (bkz. _showFolderSortSheet(scopeParent: ...)).
   void _sortCategories(String criterion, {required bool ascending, String? scopeParent}) {
+    _categories = _computeSortedCategories(
+      criterion,
+      ascending: ascending,
+      scopeParent: scopeParent,
+    );
+  }
+
+  // _sortCategories'in saf (side-effect'siz) hesaplama kısmı: `_categories`'i
+  // DEĞİŞTİRMEDEN, verilen kritere göre sıralanmış halinin ne olacağını
+  // döndürür. İki yerde kullanılır:
+  // 1) _sortCategories burada dönen sonucu doğrudan `_categories`'e atar.
+  // 2) _categoriesMatchSortCriterion, mevcut `_categories` sırasını bu
+  //    sonuçla karşılaştırıp hâlâ o kritere uygun mu diye bakar (bkz. orada).
+  List<String> _computeSortedCategories(
+    String criterion, {
+    required bool ascending,
+    String? scopeParent,
+  }) {
     int compare(String a, String b) {
       final result = criterion == 'count'
           ? _getCountForCategory(a).compareTo(_getCountForCategory(b))
@@ -193,8 +211,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       for (var k = 0; k < indices.length; k++) {
         result[indices[k]] = sortedChildren[k];
       }
-      _categories = result;
-      return;
+      return result;
     }
 
     final parents = _categories
@@ -221,7 +238,33 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       ..sort(compare);
     ordered.addAll(missing);
 
-    _categories = ordered;
+    return ordered;
+  }
+
+  // Mevcut `_categories` sırası, kayıtlı kriter+yöne (_folderSortCriterion /
+  // _folderSortAscending) göre sıralanmış haliyle BİREBİR aynı mı?
+  //
+  // Neden gerekli: Kullanıcı önce "İsme göre" sıralasın, sonra yeni bir
+  // klasör eklesin (_showAddCategoryDialog yeni klasörü listenin SONUNA
+  // ekler, otomatik yeniden sıralama yapmaz). Bu noktada `_categories`
+  // artık gerçekten isme göre sıralı DEĞİLDİR, ama `_folderSortCriterion`
+  // hâlâ 'name' olduğu için sheet tekrar açıldığında segmented button
+  // yanıltıcı biçimde "İsim" seçili görünürdü. Bu fonksiyon, sheet
+  // açılırken (bkz. _showFolderSortSheet) gerçek sırayı kayıtlı kriterle
+  // karşılaştırıp uyuşmuyorsa `manuallyReordered` bayrağını true
+  // başlatmak için kullanılır — böylece hiçbir segment seçili görünmez
+  // (manuel taşıma sonrasıyla aynı görsel davranış).
+  bool _categoriesMatchSortCriterion({String? scopeParent}) {
+    final expected = _computeSortedCategories(
+      _folderSortCriterion,
+      ascending: _folderSortAscending,
+      scopeParent: scopeParent,
+    );
+    if (expected.length != _categories.length) return false;
+    for (var i = 0; i < expected.length; i++) {
+      if (expected[i] != _categories[i]) return false;
+    }
+    return true;
   }
 
   // Klasörleri, drawer'daki hiyerarşiyi koruyan "taşınabilir bloklar"a
@@ -317,7 +360,18 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     // segment de pasif (seçimsiz) gösterilir. Kriter veya yön chip'ine
     // tekrar dokunulursa (applySort) otomatik sıralama devreye girer ve bu
     // bayrak tekrar false'a döner.
-    bool manuallyReordered = false;
+    //
+    // Başlangıç değeri de aynı mantıkla hesaplanır: sheet en son "İsme
+    // göre" (veya "Sayıya göre") ile kapatılmış olsa bile, o kapanıştan
+    // sonra yeni bir klasör eklenmiş olabilir (_showAddCategoryDialog yeni
+    // klasörü listenin SONUNA ekler, otomatik sıralamayı tetiklemez). Bu
+    // durumda mevcut `_categories` artık kayıtlı kriterle uyuşmuyordur;
+    // bkz. _categoriesMatchSortCriterion. Uyuşmuyorsa sheet açılır
+    // açılmaz segment'ler seçimsiz gösterilir — kullanıcı "isme göre"
+    // sanıp yanılmasın.
+    bool manuallyReordered = !_categoriesMatchSortCriterion(
+      scopeParent: scopeParent,
+    );
 
     showModalBottomSheet(
       context: context,
@@ -512,7 +566,19 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         children: [
                           IconButton(
                             tooltip: AppLocalizations.of(context)!.reorderFoldersMoveUpTooltip,
-                            icon: const Icon(Icons.arrow_upward),
+                            // "Blokları Sırala" sheet'indeki ok tasarımıyla
+                            // aynı: keyboard_arrow ikonu + etkinken accent,
+                            // pasifken gri renk (bkz.
+                            // note_list_note_dialog_mixin.dart ->
+                            // showBlockReorderSheet).
+                            icon: Icon(
+                              Icons.keyboard_arrow_up,
+                              color:
+                                  selectedGroupIndex != null &&
+                                      selectedGroupIndex! > 0
+                                  ? appAccentColor.value
+                                  : Colors.grey,
+                            ),
                             onPressed:
                                 selectedGroupIndex != null &&
                                     selectedGroupIndex! > 0
@@ -521,7 +587,14 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                           ),
                           IconButton(
                             tooltip: AppLocalizations.of(context)!.reorderFoldersMoveDownTooltip,
-                            icon: const Icon(Icons.arrow_downward),
+                            icon: Icon(
+                              Icons.keyboard_arrow_down,
+                              color:
+                                  selectedGroupIndex != null &&
+                                      selectedGroupIndex! < groups.length - 1
+                                  ? appAccentColor.value
+                                  : Colors.grey,
+                            ),
                             onPressed:
                                 selectedGroupIndex != null &&
                                     selectedGroupIndex! < groups.length - 1
