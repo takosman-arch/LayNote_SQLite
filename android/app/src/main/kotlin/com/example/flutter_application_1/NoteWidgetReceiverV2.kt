@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -63,6 +64,9 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             // Koyu/açık artık bu widget örneğine özel olabildiği için
             // (bkz. darkKey), aynı yaşam döngüsünde temizlenmesi gerekiyor.
             editor.remove(darkKey(id))
+            // Kullanıcı isteği (arka plan rengi paleti, sadece Koyu kapalıyken
+            // devreye girer): darkKey ile AYNI yaşam döngüsünde temizlenir.
+            editor.remove(bgColorKey(id))
             // Kullanıcı isteği (⚙️ ikon görünürlük tercihi) darkKey ile
             // AYNI yaşam döngüsünde temizlenir. (➕ "yeni not" ikonu ve
             // ayrı "Yeni Not Ekle" widget'ı kaldırıldı — showAddIconKey
@@ -104,6 +108,13 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
         private const val DEFAULT_BG_OPACITY = 0.5f
         private const val DEFAULT_DARK = true
 
+        // Kullanıcı isteği: Koyu kapatıldığında seçilebilen arka plan rengi
+        // paleti. Beyaz varsayılan/başlangıç seçili — bu, darkKey false
+        // olup bgColorKey hiç kaydedilmemiş ESKİ widget örnekleri için de
+        // önceki sabit açık-tema rengiyle (0xFFFFFFFF) birebir aynı sonucu
+        // verir, yani geriye dönük davranış DEĞİŞMEZ.
+        const val DEFAULT_BG_COLOR_HEX = "#FFFFFF"
+
         // Kullanıcı isteği: sağ üstteki ⚙️ ikonunun varsayılan olarak
         // gösterilmesi — bu switch'ten ÖNCE eklenmiş widget örnekleri için
         // de (kaydedilmiş tercih yoksa) davranış DEĞİŞMEMİŞ olur, ikon
@@ -135,6 +146,13 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
         // DEFAULT_DARK sabitine düşülür (bkz. updateWidgetInner'daki okuma
         // ve NoteWidget.kt'deki AYNI mantık).
         fun darkKey(appWidgetId: Int): String = "widget_dark_widget_$appWidgetId"
+
+        // Kullanıcı isteği: Koyu switch'i kapatıldığında seçilen arka plan
+        // rengi (hex string, ör. "#1565C0"). darkKey ile AYNI desen:
+        // bulunamazsa DEFAULT_BG_COLOR_HEX sabitine düşülür. Bu değer
+        // SADECE dark=false iken kullanılır — Koyu açıkken hâlâ sabit
+        // #1E1E1E zemin uygulanır (bkz. updateWidgetInner).
+        fun bgColorKey(appWidgetId: Int): String = "widget_bg_color_widget_$appWidgetId"
 
         // Kullanıcı isteği: darkKey ile BİREBİR aynı desen — bu widget
         // örneğine özel, bulunamazsa DEFAULT_SHOW_SETTINGS_ICON sabitine
@@ -209,6 +227,13 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
                 }
             }
         }
+
+        // Kullanıcı isteği (renk paleti): Koyu kapalıyken hangi arka plan
+        // rengi seçilirse seçilsin metnin okunabilir kalması için, rengin
+        // parlaklığına (luminance) bakılıp koyu/açık metin arasında karar
+        // veriliyor. Eşik 0.5 — standart WCAG benzeri yaklaşım.
+        private fun isColorLight(color: Int): Boolean =
+            ColorUtils.calculateLuminance(color) > 0.5
 
         fun updateWidget(
             context: Context,
@@ -286,8 +311,35 @@ class NoteWidgetReceiverV2 : AppWidgetProvider() {
             }
             Log.e(TAG, "ADIM 1 OK -> title='$title' content='$content' count=$count fontSize=$fontSize bgOpacity=$bgOpacity dark=$dark pinnedNoteId=$pinnedNoteId")
 
-            val bgColor = if (dark) 0xFF1E1E1E.toInt() else 0xFFFFFFFF.toInt()
-            val titleColor = if (dark) 0xFFFFFFFF.toInt() else 0xFF1A1A1A.toInt()
+            // DÜZELTME (renk paleti): Koyu kapatıldığında artık sabit beyaz
+            // yerine kullanıcının NoteWidgetConfigActivity'deki paletten
+            // seçtiği renk kullanılıyor (bgColorKey). Koyu açıkken bu hiç
+            // devreye girmiyor, davranış DEĞİŞMEDİ (hâlâ sabit #1E1E1E).
+            val bgColor = if (dark) {
+                0xFF1E1E1E.toInt()
+            } else {
+                val bgColorHex = prefs.getString(bgColorKey(appWidgetId), DEFAULT_BG_COLOR_HEX)
+                    ?: DEFAULT_BG_COLOR_HEX
+                try {
+                    Color.parseColor(bgColorHex)
+                } catch (e: Throwable) {
+                    Log.e(TAG, "bgColorHex parse hatasi ('$bgColorHex'), beyaza dusuluyor: ${e.message}")
+                    Color.parseColor(DEFAULT_BG_COLOR_HEX)
+                }
+            }
+            // Metin/ikon rengi: Koyu açıkken hep beyaz (DEĞİŞMEDİ). Koyu
+            // kapalıyken artık sabit koyu gri yerine seçilen arka plan
+            // rengine göre KONTRAST hesaplanıyor — kullanıcı kırmızı/mavi/
+            // mor gibi koyu tonlu bir renk seçerse metin beyaza, beyaz/
+            // amber/turuncu gibi açık tonlu bir renk seçerse metin koyuya
+            // düşer (bkz. isColorLight, luminance tabanlı).
+            val titleColor = if (dark) {
+                0xFFFFFFFF.toInt()
+            } else if (isColorLight(bgColor)) {
+                0xFF1A1A1A.toInt()
+            } else {
+                0xFFFFFFFF.toInt()
+            }
             // DÜZELTME: alt metin (içerik önizleme + satırlar) soluk/silik
             // görünmemesi için artık başlıkla aynı tam kontrastlı rengi
             // kullanıyor — koyu temada tam beyaz, açık temada tam koyu.

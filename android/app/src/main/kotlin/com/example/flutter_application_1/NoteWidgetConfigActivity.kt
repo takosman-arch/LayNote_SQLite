@@ -13,6 +13,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.Rect
+import android.graphics.SweepGradient
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
@@ -25,6 +26,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -145,6 +147,53 @@ private class ChevronDrawable(
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 }
 
+// Kullanıcı isteği: renk paletinin en sonundaki "kartela" — henüz özel bir
+// renk seçilmemişken bu dairenin arka planında görünen, tüm renkleri
+// gösteren tekerlek. Harici bir görsel/kaynak KULLANILMIYOR; SweepGradient
+// ile runtime'da çiziliyor (ChevronDrawable ile AYNI desen: Drawable alt
+// sınıfı, onBoundsChange'de şekli/shader'ı hazırlar, draw'da çizer).
+private class RainbowWheelDrawable : Drawable() {
+
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    override fun onBoundsChange(bounds: Rect) {
+        super.onBoundsChange(bounds)
+        val cx = bounds.width() / 2f
+        val cy = bounds.height() / 2f
+        // Tam tur (0-360°) boyunca ana renklerden geçip başladığı renge
+        // (kırmızı) geri dönen bir tekerlek — son eleman ilk elemanla AYNI
+        // olmalı, aksi halde tekerleğin "dikiş yeri" belirgin bir renk
+        // sıçramasıyla görünür.
+        val colors = intArrayOf(
+            Color.RED,
+            Color.YELLOW,
+            Color.GREEN,
+            Color.CYAN,
+            Color.BLUE,
+            Color.MAGENTA,
+            Color.RED,
+        )
+        paint.shader = SweepGradient(cx, cy, colors, null)
+    }
+
+    override fun draw(canvas: Canvas) {
+        val cx = bounds.width() / 2f
+        val cy = bounds.height() / 2f
+        canvas.drawCircle(cx, cy, minOf(cx, cy), paint)
+    }
+
+    override fun setAlpha(alpha: Int) {
+        paint.alpha = alpha
+    }
+
+    override fun setColorFilter(colorFilter: ColorFilter?) {
+        paint.colorFilter = colorFilter
+    }
+
+    @Deprecated("Deprecated in Java", ReplaceWith("PixelFormat.TRANSLUCENT"))
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+}
+
 class NoteWidgetConfigActivity : Activity() {
 
     companion object {
@@ -209,6 +258,21 @@ class NoteWidgetConfigActivity : Activity() {
         // değiştirebiliyor ama o tercih de (appThemeMode gibi) native
         // tarafa henüz yazılmıyor; bu yüzden burada sabit tutuluyor.
         private const val COLOR_AMBER = "#FFC107"
+
+        // Kullanıcı isteği: Koyu switch'i kapatıldığında gösterilen arka
+        // plan renk paleti. Beyaz (mevcut açık tema rengiyle AYNI, "#FFFFFF")
+        // listenin başında ve varsayılan/başlangıç seçili olan renk —
+        // NoteWidgetReceiverV2.DEFAULT_BG_COLOR_HEX ile BİREBİR AYNI
+        // tutulmalı. Amber, mevcut vurgu rengiyle (COLOR_AMBER) aynı.
+        private val BG_COLOR_PALETTE = listOf(
+            "#FFFFFF",
+            "#FFC107",
+            "#FF6F00",
+            "#1565C0",
+            "#2E7D32",
+            "#6A1B9A",
+            "#C62828",
+        )
 
         // AŞAMA 3: kaydırıcıların başlangıç değerini okumak için — bu,
         // NoteWidgetReceiverV2.kt'deki (ve NoteWidget.kt'deki) KEY_FONT_SIZE/
@@ -282,6 +346,104 @@ class NoteWidgetConfigActivity : Activity() {
     private fun colorMutedText() =
         if (isDarkTheme) COLOR_MUTED_TEXT_DARK else COLOR_MUTED_TEXT_LIGHT
 
+    // Kullanıcı isteği (renk paleti): NoteWidgetReceiverV2.isColorLight ile
+    // AYNI mantık — seçilen arka plan rengi açıksa koyu metin, koyuysa
+    // beyaz metin döner. İki dosyada birbirinden bağımsız yaşıyor (aynı
+    // proje içindeki diğer "iki dosyada tekrarlanan" yardımcılar gibi,
+    // bkz. getFloatCompat notları); biri değişirse diğeri de gözden
+    // geçirilmeli.
+    private fun contrastTextColorFor(bgColor: Int): Int =
+        if (ColorUtils.calculateLuminance(bgColor) > 0.5) {
+            Color.parseColor("#1A1A1A")
+        } else {
+            Color.parseColor("#FFFFFF")
+        }
+
+    // Kullanıcı isteği: renk paletinin sonundaki kartelaya dokununca açılan,
+    // R/G/B kaydırıcılarıyla HERHANGİ bir rengi seçebilen basit diyalog.
+    // Bilinçli olarak string kaynaklarına (widget_strings.xml) YENİ bir
+    // anahtar eklenmiyor — o dosya bu değişikliğin kapsamında değil ve
+    // olmayan bir R.string.* referansı derlemeyi kırar; bu yüzden metinler
+    // burada doğrudan (Türkçe) sabit string olarak tutuluyor. Tek istisna
+    // "İptal" butonu: android.R.string.cancel sistemin KENDİ (her zaman var
+    // olan, cihazın diline göre otomatik çevrilen) kaynağı.
+    private fun showCustomColorPickerDialog(initialColor: Int, onChosen: (String) -> Unit) {
+        var r = Color.red(initialColor)
+        var g = Color.green(initialColor)
+        var b = Color.blue(initialColor)
+
+        val previewBg = GradientDrawable().apply {
+            cornerRadius = dp(8).toFloat()
+            setColor(Color.rgb(r, g, b))
+            setStroke(dp(1), Color.parseColor(COLOR_CARD_BORDER_LIGHT))
+        }
+        val previewBox = View(this).apply {
+            background = previewBg
+            layoutParams = LinearLayout.LayoutParams(dp(64), dp(64))
+        }
+        val previewRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = android.view.Gravity.CENTER
+            setPadding(0, 0, 0, dp(16))
+            addView(previewBox)
+        }
+
+        fun updatePreview() {
+            previewBg.setColor(Color.rgb(r, g, b))
+        }
+
+        // darkRow/buildIconToggleRow ile AYNI desende: etiket + kaydırıcı
+        // birlikte, tek bir yardımcıdan üretiliyor (R/Y/B satırlarını tekrar
+        // tekrar yazmamak için).
+        fun buildChannelRow(label: String, initial: Int, onChange: (Int) -> Unit): LinearLayout {
+            val labelView = TextView(this).apply {
+                text = "$label: $initial"
+                setTextColor(Color.parseColor(colorTitle()))
+                textSize = 13f
+                setPadding(0, dp(8), 0, 0)
+            }
+            val seekBar = android.widget.SeekBar(this).apply {
+                max = 255
+                progress = initial
+                setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(
+                        seekBar: android.widget.SeekBar?, progress: Int, fromUser: Boolean
+                    ) {
+                        labelView.text = "$label: $progress"
+                        onChange(progress)
+                        updatePreview()
+                    }
+
+                    override fun onStartTrackingTouch(seekBar: android.widget.SeekBar?) {}
+                    override fun onStopTrackingTouch(seekBar: android.widget.SeekBar?) {}
+                })
+            }
+            return LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                addView(labelView)
+                addView(seekBar)
+            }
+        }
+
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(24), dp(20), dp(24), dp(4))
+            addView(previewRow)
+            addView(buildChannelRow("Kırmızı", r) { r = it })
+            addView(buildChannelRow("Yeşil", g) { g = it })
+            addView(buildChannelRow("Mavi", b) { b = it })
+        }
+
+        android.app.AlertDialog.Builder(this)
+            .setTitle("Özel Renk Seç")
+            .setView(container)
+            .setPositiveButton("Seç") { _, _ ->
+                onChosen(String.format(Locale("tr"), "#%02X%02X%02X", r, g, b))
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private lateinit var prefs: SharedPreferences
 
@@ -308,6 +470,12 @@ class NoteWidgetConfigActivity : Activity() {
     // temasını seçebilir (font boyutu/saydamlık ile AYNI desen). Diğer
     // ikisi gibi başlangıçta o anki GLOBAL değerden başlar (bkz. onCreate).
     private var currentDark = true
+
+    // Kullanıcı isteği: Koyu kapalıyken seçilen arka plan rengi (hex).
+    // currentDark ile AYNI desen: bulunamazsa BG_COLOR_PALETTE'in ilk
+    // rengine (Beyaz) düşülür — bkz. NoteWidgetReceiverV2.DEFAULT_BG_COLOR_HEX
+    // ile AYNI değer.
+    private var currentBgColor = BG_COLOR_PALETTE.first()
 
     // Kullanıcı isteği: sağ üstteki ⚙️ ikonunun widget üzerinde gösterilip
     // gösterilmeyeceği, koyu/açık ile AYNI desende, widget'a özel.
@@ -438,6 +606,11 @@ class NoteWidgetConfigActivity : Activity() {
         currentFontSize = globalFontSize.coerceAtLeast(FONT_SIZE_MIN_SP.toFloat())
         currentBgOpacity = globalBgOpacity
         currentDark = prefs.getBoolean(KEY_DARK, true)
+        // NOT: KEY_DARK'ın aksine widget_bg_color için hiçbir zaman genel
+        // (tüm widget'lar ortak) bir anahtar olmadı — renk paleti doğrudan
+        // widget-özel bgColorKey ile başladı (bkz. aşağıdaki openAppearanceStep
+        // bloğu). Burada currentBgColor zaten varsayılan (Beyaz) ile
+        // başlatılmış durumda, ek bir okumaya gerek yok.
 
         // DÜZELTME (widget'a uzun basıp sistemin "düzenle/ayarlar"
         // seçeneğine dokununca da doğrudan Görünümü Ayarla ekranı açılsın):
@@ -474,6 +647,10 @@ class NoteWidgetConfigActivity : Activity() {
                 currentBgOpacity
             ).coerceIn(0f, 1f)
             currentDark = prefs.getBoolean(NoteWidgetReceiverV2.darkKey(appWidgetId), currentDark)
+            currentBgColor = prefs.getString(
+                NoteWidgetReceiverV2.bgColorKey(appWidgetId),
+                currentBgColor
+            ) ?: currentBgColor
             currentShowSettingsIcon = prefs.getBoolean(
                 NoteWidgetReceiverV2.showSettingsIconKey(appWidgetId),
                 currentShowSettingsIcon
@@ -758,10 +935,15 @@ class NoteWidgetConfigActivity : Activity() {
         // teması (currentDark) bağımsız değişebildiğinden, önizleme de
         // ekranın DEĞİL widget'ın temasını yansıtmalı — aksi halde
         // kullanıcı switch'i değiştirdiğinde önizleme yanlış kalırdı.
-        var previewTitleColor =
-            if (currentDark) Color.parseColor("#FFFFFF") else Color.parseColor("#1A1A1A")
+        // DÜZELTME (renk paleti): Koyu kapalıyken artık sabit beyaz zemin +
+        // sabit koyu metin yerine, kullanıcının seçtiği currentBgColor +
+        // ona göre hesaplanan kontrast metin rengi kullanılıyor (bkz.
+        // contrastTextColorFor, NoteWidgetReceiverV2.isColorLight ile AYNI
+        // mantık).
         var previewBgColor =
-            if (currentDark) Color.parseColor("#1E1E1E") else Color.parseColor("#FFFFFF")
+            if (currentDark) Color.parseColor("#1E1E1E") else Color.parseColor(currentBgColor)
+        var previewTitleColor =
+            if (currentDark) Color.parseColor("#FFFFFF") else contrastTextColorFor(previewBgColor)
 
         val previewLabel = TextView(this).apply {
             text = getString(R.string.widget_config_preview_label)
@@ -936,14 +1118,24 @@ class NoteWidgetConfigActivity : Activity() {
         // kullanabilmesi için ikisi de previewBgColor değiştikten SONRA
         // çağrılıyor.
         fun applyPreviewTheme(dark: Boolean) {
-            previewTitleColor =
-                if (dark) Color.parseColor("#FFFFFF") else Color.parseColor("#1A1A1A")
             previewBgColor =
-                if (dark) Color.parseColor("#1E1E1E") else Color.parseColor("#FFFFFF")
+                if (dark) Color.parseColor("#1E1E1E") else Color.parseColor(currentBgColor)
+            previewTitleColor =
+                if (dark) Color.parseColor("#FFFFFF") else contrastTextColorFor(previewBgColor)
             previewTitle.setTextColor(previewTitleColor)
             previewContent.setTextColor(previewTitleColor)
             previewSettingsIcon.setColorFilter(previewTitleColor)
             applyPreviewOpacity(currentBgOpacity)
+        }
+
+        // Kullanıcı isteği (renk paleti): bir renk dairesine dokununca
+        // çağrılır. Bu SADECE Koyu kapalıyken görünür/anlamlı olduğundan
+        // dark parametresi hep false varsayılıyor; applyPreviewTheme(false)
+        // ile AYNI hesaplamayı currentBgColor güncellendikten SONRA
+        // yeniden çalıştırıyor.
+        fun applyPreviewBgColor(hex: String) {
+            currentBgColor = hex
+            applyPreviewTheme(false)
         }
 
         // Yazı boyutu / saydamlık kaydırıcıları — artık bu ekranın ana
@@ -1045,6 +1237,154 @@ class NoteWidgetConfigActivity : Activity() {
                 1f
             )
         }
+
+        // DÜZELTME (derleme hatası: "Unresolved reference 'colorPickerRow'"):
+        // colorPickerRow, aşağıdaki darkSwitch'in setOnCheckedChangeListener
+        // closure'ı İÇİNDE kullanılıyor — Kotlin'de bir local val, onu
+        // kullanan closure'dan ÖNCE (lexical olarak yukarıda) tanımlanmış
+        // olmalı. Bu yüzden renk seçici satırı ve dairesel renk view'ları
+        // darkSwitch'ten ÖNCEYE alındı (sıra dışında bir şey DEĞİŞMEDİ,
+        // sadece tanımlanma noktası taşındı).
+        //
+        // Kullanıcı isteği: Koyu switch'i kapatıldığında, hemen altında bir
+        // arka plan renk seçici (yatay sıralı dairesel renkler) belirir.
+        // Beyaz (BG_COLOR_PALETTE'in ilki, currentBgColor'ın da varsayılanı)
+        // başlangıçta seçili görünür. Seçili renk ince amber kenarlıkla
+        // vurgulanır; diğerleri COLOR_CARD_BORDER_LIGHT ile aynı nötr,
+        // ince kenarlığa sahiptir.
+        // Kullanıcı isteği (kartela): mevcut kaydedilmiş renk BG_COLOR_PALETTE
+        // listesinde YOKSA (daha önce kartela ile özel bir renk seçilmiş
+        // demektir), kartela başlangıçta "+" yerine doğrudan o rengi, seçili
+        // durumda gösterir. customSolidBg, refreshSwatchSelection'ın palet
+        // dairelerinden BAĞIMSIZ olarak kartelanın kenarlığını da
+        // güncelleyebilmesi için ayrı tutuluyor (kartela, ilk açılışta henüz
+        // hiç GradientDrawable'a sahip olmayabilir — "+" gösterirken arka
+        // planı RainbowWheelDrawable, GradientDrawable DEĞİL).
+        val isCurrentColorCustom = BG_COLOR_PALETTE.none { it.equals(currentBgColor, ignoreCase = true) }
+        var customBgColorHex: String? = if (isCurrentColorCustom) currentBgColor else null
+        var customSolidBg: GradientDrawable? = null
+
+        val colorSwatchViews = mutableListOf<Pair<String, GradientDrawable>>()
+        fun refreshSwatchSelection() {
+            colorSwatchViews.forEach { (hex, swatchBg) ->
+                val selected = hex.equals(currentBgColor, ignoreCase = true)
+                swatchBg.setStroke(
+                    if (selected) dp(2) else dp(1),
+                    Color.parseColor(if (selected) COLOR_AMBER else COLOR_CARD_BORDER_LIGHT)
+                )
+            }
+            customSolidBg?.let { swatchBg ->
+                val selected = customBgColorHex?.equals(currentBgColor, ignoreCase = true) == true
+                swatchBg.setStroke(
+                    if (selected) dp(2) else dp(1),
+                    Color.parseColor(if (selected) COLOR_AMBER else COLOR_CARD_BORDER_LIGHT)
+                )
+            }
+        }
+        val colorPickerRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(dp(20), dp(0), dp(20), dp(12))
+            // Ekran ilk açıldığında Koyu'nun o anki (kaydedilmiş) değerine
+            // göre başlangıç görünürlüğü belirlenir.
+            visibility = if (currentDark) View.GONE else View.VISIBLE
+        }
+        val swatchSize = dp(32)
+        BG_COLOR_PALETTE.forEach { hex ->
+            val swatchBg = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setColor(Color.parseColor(hex))
+                val selected = hex.equals(currentBgColor, ignoreCase = true)
+                setStroke(
+                    if (selected) dp(2) else dp(1),
+                    Color.parseColor(if (selected) COLOR_AMBER else COLOR_CARD_BORDER_LIGHT)
+                )
+            }
+            val swatch = View(this).apply {
+                background = swatchBg
+                layoutParams = LinearLayout.LayoutParams(swatchSize, swatchSize).apply {
+                    marginEnd = dp(12)
+                }
+                setOnClickListener {
+                    applyPreviewBgColor(hex)
+                    refreshSwatchSelection()
+                }
+            }
+            colorSwatchViews.add(hex to swatchBg)
+            colorPickerRow.addView(swatch)
+        }
+
+        // Kullanıcı isteği: paletin EN SONUNA, herhangi bir rengi
+        // seçebilecek bir "kartela" eklenir. Seçim yapılmadan önce
+        // RainbowWheelDrawable (çok renkli tekerlek) üzerinde beyaz bir
+        // "+" gösterir; bir renk seçildikten SONRA bu daire, tıpkı diğer
+        // palet renkleri gibi düz o rengi gösteren bir daireye döner ve
+        // AYNI amber-kenarlık seçim mantığına (refreshSwatchSelection)
+        // dahil olur — bkz. yukarıdaki customSolidBg.
+        //
+        // DÜZELTME (önceki derleme hatasıyla AYNI tuzak): customSwatch'ın
+        // KENDİSİNE, onu oluşturan apply/setOnClickListener bloğunun
+        // İÇİNDEN adıyla ("customSwatch...") referans VERİLMİYOR — bunun
+        // yerine setOnClickListener'ın kendi View parametresi (v) ve
+        // customSwatch'ın apply bloğu içindeki örtük "this" kullanılıyor,
+        // çünkü bir val kendi tanımlanma ifadesinin içinden adıyla
+        // çağrılamaz.
+        val customPlusLabel = TextView(this).apply {
+            text = "+"
+            setTextColor(Color.WHITE)
+            textSize = 16f
+            gravity = android.view.Gravity.CENTER
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+        }
+        val customSwatch = FrameLayout(this).apply {
+            layoutParams = LinearLayout.LayoutParams(swatchSize, swatchSize)
+            if (customBgColorHex != null) {
+                // Bu widget'ın kaydedilmiş rengi zaten kartela ile
+                // seçilmiş özel bir renkse, ekran ilk açıldığında "+"
+                // yerine doğrudan o rengi (seçili durumda) göster.
+                val solidBg = GradientDrawable().apply {
+                    shape = GradientDrawable.OVAL
+                    setColor(Color.parseColor(customBgColorHex))
+                    // isCurrentColorCustom true olduğu için bu dal SADECE
+                    // currentBgColor == customBgColorHex iken çalışır,
+                    // yani her zaman seçili.
+                    setStroke(dp(2), Color.parseColor(COLOR_AMBER))
+                }
+                background = solidBg
+                customSolidBg = solidBg
+            } else {
+                background = RainbowWheelDrawable()
+                addView(
+                    customPlusLabel,
+                    FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                    )
+                )
+            }
+            setOnClickListener { v ->
+                val initialColor = customBgColorHex?.let {
+                    try {
+                        Color.parseColor(it)
+                    } catch (e: Throwable) {
+                        Color.WHITE
+                    }
+                } ?: Color.WHITE
+                showCustomColorPickerDialog(initialColor) { hex ->
+                    customBgColorHex = hex
+                    customPlusLabel.visibility = View.GONE
+                    val solidBg = GradientDrawable().apply {
+                        shape = GradientDrawable.OVAL
+                        setColor(Color.parseColor(hex))
+                    }
+                    v.background = solidBg
+                    customSolidBg = solidBg
+                    applyPreviewBgColor(hex)
+                    refreshSwatchSelection()
+                }
+            }
+        }
+        colorPickerRow.addView(customSwatch)
+
         val darkSwitch = android.widget.Switch(this).apply {
             isChecked = currentDark
             // Vurgu rengi ekranın geri kalanıyla (buton, ripple) AYNI amber.
@@ -1068,6 +1408,10 @@ class NoteWidgetConfigActivity : Activity() {
             setOnCheckedChangeListener { _, isChecked ->
                 currentDark = isChecked
                 applyPreviewTheme(currentDark)
+                // Kullanıcı isteği: renk seçici SADECE Koyu kapalıyken
+                // görünür — switch her değiştiğinde satırın görünürlüğü de
+                // anında güncellenir.
+                colorPickerRow.visibility = if (isChecked) View.GONE else View.VISIBLE
             }
         }
         darkRow.addView(darkLabel)
@@ -1149,6 +1493,7 @@ class NoteWidgetConfigActivity : Activity() {
         presetContainer.addView(opacityLabel)
         presetContainer.addView(opacitySeekBar)
         presetContainer.addView(darkRow)
+        presetContainer.addView(colorPickerRow)
         presetContainer.addView(showSettingsRow)
 
         // DÜZELTME (2 EKRANLI AKIŞ): bu ekrana zaten bir not/boş-durum
@@ -1175,6 +1520,7 @@ class NoteWidgetConfigActivity : Activity() {
                     currentFontSize,
                     currentBgOpacity,
                     currentDark,
+                    currentBgColor,
                     currentShowSettingsIcon,
                 )
             }
@@ -1388,6 +1734,7 @@ class NoteWidgetConfigActivity : Activity() {
         fontSize: Float? = null,
         bgOpacity: Float? = null,
         dark: Boolean? = null,
+        bgColor: String? = null,
         showSettingsIcon: Boolean? = null,
     ) {
         val editor = prefs.edit()
@@ -1400,6 +1747,15 @@ class NoteWidgetConfigActivity : Activity() {
         }
         if (dark != null) {
             editor.putBoolean(NoteWidgetReceiverV2.darkKey(appWidgetId), dark)
+        }
+        // Kullanıcı isteği (renk paleti): darkKey ile AYNI desende, bu
+        // widget örneğine özel kaydediliyor. dark=true iken bu değerin
+        // widget üzerinde hiçbir etkisi olmuyor (bkz.
+        // NoteWidgetReceiverV2.updateWidgetInner), ama switch tekrar
+        // kapatıldığında en son seçilen rengin hatırlanması için yine de
+        // kaydediliyor.
+        if (bgColor != null) {
+            editor.putString(NoteWidgetReceiverV2.bgColorKey(appWidgetId), bgColor)
         }
         // Kullanıcı isteği: ⚙️ ikonunun widget'ta gösterilip
         // gösterilmeyeceği, darkKey ile AYNI desende.
