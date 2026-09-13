@@ -709,6 +709,22 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   // note_flag_mixin.dart -> bayrak rozetini (dolu, sabit, tıklanamaz)
   // kart önizlemesinde çizen widget.
   Widget _buildFlagBadge({required String flagColor, double size = 14});
+  // note_flag_mixin.dart -> bir bayrak rengine "Yeniden Adlandır / Sil"
+  // seçeneklerini sunan alttan açılan sheet'i açar (etiketlerdeki
+  // showTagOptionsSheet ile aynı görsel dil). [onDelete] "Sil" seçilince
+  // çağrılır — asıl silme mantığı (notlardan flagColor'ı temizlemek)
+  // burada değil çağıran tarafta (bkz. _handleFlagLongPress) yapılır.
+  // Arama modundaki bayrak filtre chip'ine basılı tutulunca çağrılır —
+  // bkz. _TagFilterStrip.onFlagLongPress.
+  Future<void> _showFlagNameOptionsSheet(
+    String hex, {
+    required VoidCallback onDelete,
+  });
+  // note_flag_mixin.dart -> bir bayrak rengine atanmış ismi hem kalıcı
+  // depodan hem global 'flagColorNames' notifier'ından kaldırır. Bayrak
+  // tamamen silindiğinde (bkz. _deleteFlagColorInList) rengin ismi de
+  // anlamsız kaldığı için burada da çağrılır.
+  Future<void> _removeFlagColorName(String hex);
   String _capitalizeFirstLetterTr(String text);
   List<String> get _categories;
   set _categories(List<String> value);
@@ -2108,12 +2124,27 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                   duration: const Duration(milliseconds: 220),
                   curve: Curves.easeOutCubic,
                   alignment: Alignment.topCenter,
-                  child: (_isSearching &&
-                          (tagStripTags.isNotEmpty ||
-                              tagStripFlagColors.isNotEmpty))
+                  // NOT: Üst boşluk (top: 12) artık SADECE _isSearching'e
+                  // bağlı — içerikte etiket/bayrak olup olmamasına değil.
+                  // Önceden bu Padding'in TAMAMI (top+bottom) sadece
+                  // etiket/bayrak varsa gösteriliyordu; ikisi de
+                  // kaldırıldığında şerit komple 0 yüksekliğe inip Türler
+                  // şeridiyle liste arasında HİÇ boşluk kalmıyordu.
+                  // Şimdi top:12 her zaman (arama açıkken) korunuyor, alt
+                  // boşluk (bottom:12) ve asıl _TagFilterStrip içeriği ise
+                  // yalnızca gerçekten etiket/bayrak varsa ekleniyor.
+                  child: _isSearching
                       ? Padding(
-                          padding: const EdgeInsets.only(top: 12, bottom: 12),
-                          child: _TagFilterStrip(
+                          padding: EdgeInsets.only(
+                            top: 12,
+                            bottom: (tagStripTags.isNotEmpty ||
+                                    tagStripFlagColors.isNotEmpty)
+                                ? 12
+                                : 0,
+                          ),
+                          child: (tagStripTags.isNotEmpty ||
+                                  tagStripFlagColors.isNotEmpty)
+                              ? _TagFilterStrip(
                             allTags: tagStripTags,
                             searchQuery: _searchQuery,
                             textColor: _textColor,
@@ -2133,7 +2164,17 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                     selected ? flagColor : null;
                               });
                             },
-                          ),
+                            // Etiketlerdeki basılı tutma (Yeniden Adlandır/
+                            // Sil sheet'i) ile aynı mantık: NoteFlagMixin'in
+                            // seçenek sheet'ini açar (bkz.
+                            // _showFlagNameOptionsSheet). "Sil" seçeneği
+                            // artık _handleTagLongPress'teki gibi bu
+                            // kapsamdaki (isTrash) notlardan rengi tamamen
+                            // kaldırır — sadece isim etiketini değil.
+                            onFlagLongPress: (flagColor) =>
+                                _handleFlagLongPress(flagColor, isTrash),
+                          )
+                              : const SizedBox.shrink(),
                         )
                       : const SizedBox(width: double.infinity, height: 0),
                 ),
@@ -2172,26 +2213,38 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                           ),
                   )
                 : _isListView
-                ? AnimatedPadding(
-                    // Etiket şeridini büyüten AnimatedSize ile birebir aynı
-                    // süre/eğri: böylece üstteki toplam boşluk (şerit
-                    // yüksekliği + bu padding) her an tutarlı kalır ve
-                    // yumuşakça 12 -> şerit yüksekliği arasında geçiş yapar.
-                    // Önceden padding anında (animasyonsuz) 12'den 0'a
-                    // düşüyordu; şerit ise 0'dan büyümeye yeni başlıyordu.
-                    // Bu ikisi arasındaki an'lık boşluk kaybı, notların
-                    // önce yukarı zıplayıp sonra (şerit büyüdükçe) tekrar
-                    // aşağı inmesine yol açıyordu.
+                ? TweenAnimationBuilder<double>(
+                    // NOT: Üst boşluk artık ListView'ı DIŞARIDAN saran bir
+                    // Padding/AnimatedPadding değil — ListView'ın KENDİ
+                    // `padding` özelliği olarak veriliyor. Önceki halde
+                    // (AnimatedPadding(child: ListView(...))) bu boşluk
+                    // kaydırılabilir alanın (viewport) DIŞINDaydı; yani
+                    // kartları yukarı kaydırsanız bile bu boşluk asla
+                    // kaybolmuyordu (sabit bir düzen boşluğuydu). Şimdi
+                    // ListView'ın kendi padding'i olduğu için kaydırılabilir
+                    // içeriğin bir parçası — yukarı kaydırınca listenin en
+                    // üstündeki her boşluk gibi doğal olarak kayboluyor
+                    // (kullanıcı isteği/hata düzeltmesi).
+                    //
+                    // Animasyon (şerit belirip kaybolurken 12 <-> 0 arası
+                    // yumuşak geçiş) TweenAnimationBuilder ile korunuyor —
+                    // aynı süre/eğri, _TagFilterStrip'i büyüten AnimatedSize
+                    // ile birebir aynı (bkz. yukarıdaki eski yorum).
                     duration: const Duration(milliseconds: 220),
                     curve: Curves.easeOutCubic,
-                    padding: EdgeInsets.only(
-                      top: (_isSearching &&
-                          (tagStripTags.isNotEmpty ||
-                              tagStripFlagColors.isNotEmpty))
-                          ? 0.0
-                          : 12.0,
+                    tween: Tween<double>(
+                      // NOT: Artık sadece _isSearching'e bağlı — etiket/
+                      // bayrak içeriği boş olsa bile üst boşluk (TagFilterStrip'in
+                      // kendi top:12'si) her zaman ayrılıyor (bkz. yukarıdaki
+                      // AnimatedSize yorumu), bu yüzden burada ayrıca
+                      // tagStripTags/tagStripFlagColors kontrolüne gerek yok
+                      // (gerek olsaydı boşluk iki kez sayılır ya da hiç
+                      // sayılmazdı).
+                      begin: 12.0,
+                      end: _isSearching ? 0.0 : 12.0,
                     ),
-                    child: ListView.builder(
+                    builder: (context, topPadding, _) => ListView.builder(
+                    padding: EdgeInsets.only(top: topPadding),
                     itemCount: listItems.length,
                     itemBuilder: (context, index) {
                       final listItem = listItems[index];
@@ -2904,21 +2957,29 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     },
                     ),
                   )
-                : AnimatedPadding(
-                    // Aynı gerekçe: ızgara görünümünde de üst boşluk,
-                    // şeridin AnimatedSize'ı ile aynı süre/eğride
-                    // animasyonlu geçmeli, aksi halde aynı yukarı-aşağı
-                    // zıplama burada da oluşur.
+                : TweenAnimationBuilder<double>(
+                    // NOT: Liste görünümündeki (_isListView) düzeltmeyle
+                    // aynı gerekçe — üst boşluk artık SingleChildScrollView'ı
+                    // DIŞARIDAN saran bir Padding değil, SingleChildScrollView'ın
+                    // KENDİ `padding` özelliği. Böylece kaydırılabilir
+                    // içeriğin parçası olur ve kartları yukarı kaydırınca
+                    // doğal olarak kaybolur (öncesinde sabit/kalıcı bir
+                    // boşluktu).
                     duration: const Duration(milliseconds: 220),
                     curve: Curves.easeOutCubic,
-                    padding: EdgeInsets.only(
-                      top: (_isSearching &&
-                          (tagStripTags.isNotEmpty ||
-                              tagStripFlagColors.isNotEmpty))
-                          ? 0.0
-                          : 12.0,
+                    tween: Tween<double>(
+                      // NOT: Artık sadece _isSearching'e bağlı — etiket/
+                      // bayrak içeriği boş olsa bile üst boşluk (TagFilterStrip'in
+                      // kendi top:12'si) her zaman ayrılıyor (bkz. yukarıdaki
+                      // AnimatedSize yorumu), bu yüzden burada ayrıca
+                      // tagStripTags/tagStripFlagColors kontrolüne gerek yok
+                      // (gerek olsaydı boşluk iki kez sayılır ya da hiç
+                      // sayılmazdı).
+                      begin: 12.0,
+                      end: _isSearching ? 0.0 : 12.0,
                     ),
-                    child: SingleChildScrollView(
+                    builder: (context, topPadding, _) => SingleChildScrollView(
+                      padding: EdgeInsets.only(top: topPadding),
                       child: _buildGridView(
                         filteredNotes: filteredNotes,
                         isTrash: isTrash,
@@ -4003,6 +4064,121 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     await _deleteTagInList(tag, isTrash ? _deletedNotes : _notes);
   }
 
+  // Etiket şeridinde (arama modu) bir bayrak rengine basılı tutulunca
+  // çağrılır. NoteFlagMixin'in seçenek sheet'ini ("Yeniden Adlandır / Sil")
+  // açar; [isTrash] true ise silme işlemi çöp kutusundaki notlar üzerinde,
+  // değilse aktif not listesi üzerinde uygulanır — _handleTagLongPress ile
+  // birebir aynı kapsam mantığı.
+  void _handleFlagLongPress(String flagColor, bool isTrash) {
+    _showFlagNameOptionsSheet(
+      flagColor,
+      onDelete: () => _deleteFlagColorWithConfirmation(flagColor, isTrash),
+    );
+  }
+
+  Future<void> _deleteFlagColorWithConfirmation(
+    String hex,
+    bool isTrash,
+  ) async {
+    await _deleteFlagColorInList(hex, isTrash ? _deletedNotes : _notes);
+  }
+
+  // Verilen not listesinde [hex] rengindeki bayrağı taşıyan kaç not
+  // olduğunu sayar — _deleteFlagColorInList'in onay diyaloğunda "kaç
+  // nottan kaldırılacak" uyarısını oluşturmak için (bkz. countNotesWithTag
+  // ile aynı amaç).
+  int _countNotesWithFlagColor(List<Map<String, dynamic>> notes, String hex) {
+    return notes.where((n) => n['flagColor'] == hex).length;
+  }
+
+  // [hex] rengindeki bayrağı, [target] listesindeki (çöp kutusu ya da aktif
+  // notlar) TÜM notlardan kaldırır — sadece rengin ismini değil, notlardaki
+  // 'flagColor' alanının kendisini temizler (kullanıcı isteği: etiket
+  // silinince etiket tamamen kalkıyor, bayrakta da aynı şekilde tüm
+  // bayraklar kalkmalı). Rengi kullanan not varsa önce kaç nottan
+  // kaldırılacağını belirten bir onay diyaloğu gösterilir (_deleteTagInList
+  // ile aynı desen). Onaylanırsa, notlardan temizlemenin yanında rengin
+  // atanmış ismi de kaldırılır (bkz. NoteFlagMixin._removeFlagColorName) —
+  // etiket silindiğinde etiketin kendisi de tamamen yok oluyor, bayrakta da
+  // aynı tutarlılık sağlanır. Silme gerçekleştiyse true, vazgeçildiyse
+  // false döner.
+  Future<bool> _deleteFlagColorInList(
+    String hex,
+    List<Map<String, dynamic>> target,
+  ) async {
+    final affectedCount = _countNotesWithFlagColor(target, hex);
+
+    final confirmed = affectedCount > 0
+        ? await _showDeleteFlagConfirmDialog(
+            hex: hex,
+            affectedCount: affectedCount,
+          )
+        : true;
+    if (!confirmed) return false;
+
+    setState(() {
+      for (var i = 0; i < target.length; i++) {
+        if (target[i]['flagColor'] == hex) {
+          target[i] = {...target[i], 'flagColor': null};
+        }
+      }
+      if (_activeFlagFilter == hex) _activeFlagFilter = null;
+    });
+    await _removeFlagColorName(hex);
+    _saveData();
+    _showInfoBar(
+      AppLocalizations.of(context)!.flagRemovedInfoMessage,
+      icon: Icons.delete_outline,
+    );
+    return true;
+  }
+
+  // Bayrak silme onay diyaloğu — showDeleteTagConfirmDialog (bkz.
+  // note_tags_sheet.dart) ile aynı görsel dil.
+  Future<bool> _showDeleteFlagConfirmDialog({
+    required String hex,
+    required int affectedCount,
+  }) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
+        final message = affectedCount > 0
+            ? l10n.deleteFlagConfirmMessageWithCount(affectedCount)
+            : l10n.deleteFlagConfirmMessage;
+        return AlertDialog(
+          backgroundColor: dNoteCardColor(ctx),
+          title: Text(
+            l10n.deleteFlagDialogTitle,
+            style: TextStyle(color: dNoteTextColor(ctx)),
+          ),
+          content: Text(
+            message,
+            style: TextStyle(color: dNoteTextColor(ctx).withOpacity(0.85)),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(
+                l10n.deleteFlagDialogCancelButton,
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(
+                l10n.deleteFlagDialogConfirmButton,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+    return result ?? false;
+  }
+
   // Not düzenleme diyaloğundaki "Etiketler" sheet'i (showNoteTagsSheet)
   // için: o sheet her zaman aktif (çöp kutusu olmayan) notlar üzerinde
   // çalışır, bu yüzden isTrash parametresi almadan doğrudan _notes'u
@@ -4194,6 +4370,7 @@ class _TagFilterStrip extends StatefulWidget {
     required this.availableFlagColors,
     required this.selectedFlagColor,
     required this.onFlagSelected,
+    required this.onFlagLongPress,
   });
 
   final List<String> allTags;
@@ -4212,6 +4389,11 @@ class _TagFilterStrip extends StatefulWidget {
   // (_activeTypeFilter) aynı tek-seçimli mantık.
   final String? selectedFlagColor;
   final void Function(String flagColor, bool selected) onFlagSelected;
+  // Bir bayrak rengine basılı tutulunca çağrılır — etiketlerdeki
+  // onTagLongPress ile aynı mantık, o renge Yeniden Adlandır/Sil
+  // seçeneklerini sunan sheet'i açmak için
+  // (bkz. NoteFlagMixin._showFlagNameOptionsSheet).
+  final void Function(String flagColor) onFlagLongPress;
 
   @override
   State<_TagFilterStrip> createState() => _TagFilterStripState();
@@ -4256,64 +4438,175 @@ class _TagFilterStripState extends State<_TagFilterStrip>
         opacity: _fade,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 8,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Bayrak (flama) filtre seçenekleri — etiketlerden ÖNCE,
-              // şeridin en başında. Her chip _FlagShapePainter ile aynı
-              // bayrak şeklini (dikey, dolu) kullanır — bkz.
-              // note_flag_mixin.dart'taki kart rozeti/başlık ikonuyla
-              // tutarlı görünüm. Uzun basma davranışı yok (yeniden
-              // adlandırma/silme kavramı bayrak renkleri için geçerli
-              // değil), bu yüzden etiket chip'lerindeki GestureDetector
-              // sarmalayıcısı burada kullanılmaz.
-              for (final flagColor in widget.availableFlagColors)
-                ChoiceChip(
-                  label: CustomPaint(
-                    size: const Size(16, 16),
-                    painter: _FlagShapePainter(
-                      color: _colorFromFlagHex(flagColor),
-                      filled: true,
-                      vertical: true,
+              // Bayrak (flama) filtre seçenekleri artık etiket Wrap'inin
+              // İÇİNDE değil, kendi yatay kaydırılabilir satırında: renk
+              // sayısı arttıkça alt satıra taşıp etiket şeridinin
+              // düzenini bozmasınlar diye (kullanıcı isteği). Her chip
+              // _FlagShapePainter ile aynı bayrak şeklini (dikey, dolu)
+              // kullanır — bkz. note_flag_mixin.dart'taki kart rozeti/
+              // başlık ikonuyla tutarlı görünüm. Etiket chip'leriyle AYNI
+              // şekilde, basılı tutulunca (kısa dokunuşla seçimi
+              // engellemeden) isim verme diyaloğu açılır — bkz.
+              // onFlagLongPress. İsim atanmışsa ikonun yanında gösterilir;
+              // bunun için global 'flagColorNames' notifier'ı
+              // ValueListenableBuilder ile dinleniyor ki isim
+              // diyaloğundan kaydedilir kaydedilmez (bu widget'ın kendi
+              // setState'i olmadan) chip anında güncellensin.
+              if (widget.availableFlagColors.isNotEmpty)
+                Padding(
+                  // NOT: 12 değeri rastgele değil — bu ekrandaki (arama
+                  // modu) diğer üç boşlukla AYNI: _TypeFilterStrip'in
+                  // üstündeki top:12, bu şeridin (_TagFilterStrip) kendi
+                  // dış Padding'indeki top:12/bottom:12, ve arama kapalıyken
+                  // liste/ızgaranın üst boşluğu (top:12). Aynı 12'lik ritmi
+                  // koruyor (kullanıcı isteği — bkz. yukarıdaki NoteListBuildMixin
+                  // build() yorumları).
+                  //
+                  // ÖNEMLİ: Bu alt boşluk SADECE altında gösterilecek
+                  // etiket varsa ekleniyor (widget.allTags.isNotEmpty).
+                  // Etiketler kaldırıldığında (allTags boşken) bu 12'lik
+                  // boşluk, altındaki boş Wrap'in üstüne bir de dış
+                  // Padding'in kendi bottom:12'siyle üst üste binip
+                  // gereksiz geniş bir boşluğa dönüşüyordu (kullanıcı
+                  // isteğiyle düzeltildi).
+                  padding: EdgeInsets.only(
+                    bottom: widget.allTags.isNotEmpty ? 12 : 0,
+                  ),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        for (int i = 0;
+                            i < widget.availableFlagColors.length;
+                            i++)
+                          Padding(
+                            padding: EdgeInsets.only(
+                              right: i ==
+                                      widget.availableFlagColors.length - 1
+                                  ? 0
+                                  : 8,
+                            ),
+                            child: Builder(builder: (_) {
+                              final flagColor =
+                                  widget.availableFlagColors[i];
+                              return GestureDetector(
+                                onLongPress: () =>
+                                    widget.onFlagLongPress(flagColor),
+                                child: ValueListenableBuilder<
+                                    Map<String, String>>(
+                                  valueListenable: flagColorNames,
+                                  builder: (context, names, _) {
+                                    final name = names[flagColor];
+                                    return ChoiceChip(
+                                      label: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          CustomPaint(
+                                            size: const Size(16, 16),
+                                            painter: _FlagShapePainter(
+                                              color: _colorFromFlagHex(
+                                                flagColor,
+                                              ),
+                                              filled: true,
+                                              vertical: true,
+                                            ),
+                                          ),
+                                          if (name != null) ...[
+                                            const SizedBox(width: 6),
+                                            // NOT: fontSize burada AÇIKÇA
+                                            // 14 olarak sabitlendi.
+                                            // Aşağıdaki etiket chip'inin
+                                            // labelStyle'ı da aynı sabit
+                                            // 14 değerini kullanıyor —
+                                            // ikisi de tema varsayılanına
+                                            // bırakılmadı ki hangi boyutu
+                                            // kullandıkları belirsiz
+                                            // olmasın ve yükseklikleri
+                                            // garanti olarak eşleşsin.
+                                            Text(
+                                              name,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                      selected:
+                                          widget.selectedFlagColor ==
+                                              flagColor,
+                                      onSelected: (selected) => widget
+                                          .onFlagSelected(
+                                              flagColor, selected),
+                                      selectedColor: appAccentColor.value
+                                          .withOpacity(0.3),
+                                      backgroundColor:
+                                          Colors.grey.withOpacity(0.15),
+                                      materialTapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      visualDensity: VisualDensity.compact,
+                                      labelPadding: const EdgeInsets
+                                          .symmetric(horizontal: 2),
+                                    );
+                                  },
+                                ),
+                              );
+                            }),
+                          ),
+                      ],
                     ),
                   ),
-                  selected: widget.selectedFlagColor == flagColor,
-                  onSelected: (selected) =>
-                      widget.onFlagSelected(flagColor, selected),
-                  selectedColor: appAccentColor.value.withOpacity(0.3),
-                  backgroundColor: Colors.grey.withOpacity(0.15),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  visualDensity: VisualDensity.compact,
-                  labelPadding: const EdgeInsets.symmetric(horizontal: 2),
                 ),
-              for (final tag in widget.allTags)
-                // GestureDetector, ChoiceChip'in kendi onSelected'ını
-                // (tap) engellemeden üstüne basılı tutma (long press)
-                // algılamak için sarmalayıcı olarak eklendi — chip'in
-                // normal tıklama/seçim davranışı aynen çalışmaya devam
-                // eder, sadece uzun basışta ek olarak yeniden
-                // adlandır/sil sheet'i açılır.
-                GestureDetector(
-                  onLongPress: () => widget.onTagLongPress(tag),
-                  child: ChoiceChip(
-                    label: Text(tag),
-                    selected: widget.searchQuery == tag,
-                    onSelected: (selected) =>
-                        widget.onTagSelected(tag, selected),
-                    selectedColor: appAccentColor.value.withOpacity(0.3),
-                    backgroundColor: Colors.grey.withOpacity(0.15),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
-                    labelStyle: TextStyle(
-                      fontSize: 16,
-                      color: dNoteEffectiveTextColor(
-                        context,
-                        widget.textColor,
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final tag in widget.allTags)
+                    // GestureDetector, ChoiceChip'in kendi onSelected'ını
+                    // (tap) engellemeden üstüne basılı tutma (long press)
+                    // algılamak için sarmalayıcı olarak eklendi — chip'in
+                    // normal tıklama/seçim davranışı aynen çalışmaya devam
+                    // eder, sadece uzun basışta ek olarak yeniden
+                    // adlandır/sil sheet'i açılır.
+                    GestureDetector(
+                      onLongPress: () => widget.onTagLongPress(tag),
+                      child: ChoiceChip(
+                        label: Text(tag),
+                        selected: widget.searchQuery == tag,
+                        onSelected: (selected) =>
+                            widget.onTagSelected(tag, selected),
+                        selectedColor: appAccentColor.value.withOpacity(0.3),
+                        backgroundColor: Colors.grey.withOpacity(0.15),
+                        materialTapTargetSize:
+                            MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                        // Bayrak chip'iyle (yukarıdaki ChoiceChip) aynı
+                        // labelPadding — ikisi arasında yükseklik farkı
+                        // kalmasın diye (kullanıcı isteği).
+                        labelPadding:
+                            const EdgeInsets.symmetric(horizontal: 2),
+                        // NOT: fontSize burada bayrağın isim metniyle
+                        // (yukarıdaki Text(name)) BİREBİR AYNI sabit
+                        // değere (14) açıkça ayarlandı — önceki fontSize:16
+                        // etiket chip'ini bayraktan kalın/yüksek gösteren
+                        // asıl sebepti. İkisi de artık tema varsayılanına
+                        // değil, aynı sabit sayıya bağlı; yükseklik
+                        // eşleşmesi garanti (kullanıcı isteği).
+                        labelStyle: TextStyle(
+                          fontSize: 14,
+                          color: dNoteEffectiveTextColor(
+                            context,
+                            widget.textColor,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                ],
+              ),
             ],
           ),
         ),

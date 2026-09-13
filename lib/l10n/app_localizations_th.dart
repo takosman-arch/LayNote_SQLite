@@ -2223,6 +2223,53 @@ class AppLocalizationsTh extends AppLocalizations {
   String get flagColorRemoveOption => 'ลบธง';
 
   @override
+  String get flagColorNameRed => 'แดง';
+
+  @override
+  String get flagColorNameOrange => 'ส้ม';
+
+  @override
+  String get flagColorNameYellow => 'เหลือง';
+
+  @override
+  String get flagColorNameGreen => 'เขียว';
+
+  @override
+  String get flagColorNameBlue => 'น้ำเงิน';
+
+  @override
+  String get flagNameDialogTitle => 'ตั้งชื่อธง';
+
+  @override
+  String get flagNameDialogHint => 'เช่น ด่วน, รอดำเนินการ...';
+
+  @override
+  String get flagNameDialogCancelButton => 'ยกเลิก';
+
+  @override
+  String get flagNameDialogSaveButton => 'บันทึก';
+
+  @override
+  String get flagRemovedInfoMessage => 'ลบธงแล้ว';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'ธงนี้จะถูกลบออกจาก $count โน้ต คุณแน่ใจหรือไม่?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage => 'คุณแน่ใจหรือไม่ว่าต้องการลบธงนี้?';
+
+  @override
+  String get deleteFlagDialogTitle => 'ลบธง';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'ยกเลิก';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'ลบ';
+
+  @override
   String get pinNoteMenuItemLabel => 'ปักหมุดโน้ต';
 
   @override

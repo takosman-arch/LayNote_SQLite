@@ -170,6 +170,14 @@
     "description": "Blokları Sırala listesinde bir yatay çizgi (ayraç) bloğu için gösterilen önizleme metni"
   },
   "blockPreviewChecklistLabel": "Kontrol Listesi ({count} madde)",
+  "blockPreviewTableLabel": "Tablo ({count} satır)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "@blockPreviewChecklistLabel": {
     "description": "Blokları Sırala listesinde bir yapılacaklar listesi bloğu için gösterilen önizleme metni",
     "placeholders": {
@@ -2962,6 +2970,28 @@
   "flagColorMenuItemLabel": "Bayrak Rengi",
   "flagColorPickerTitle": "Bayrak rengi seç",
   "flagColorRemoveOption": "Bayrağı kaldır",
+  "flagColorNameRed": "Kırmızı",
+  "flagColorNameOrange": "Turuncu",
+  "flagColorNameYellow": "Sarı",
+  "flagColorNameGreen": "Yeşil",
+  "flagColorNameBlue": "Mavi",
+  "flagNameDialogTitle": "Bayrağı adlandır",
+  "flagNameDialogHint": "Örn. Acil, Beklemede...",
+  "flagNameDialogCancelButton": "Vazgeç",
+  "flagNameDialogSaveButton": "Kaydet",
+  "flagRemovedInfoMessage": "Bayrak kaldırıldı",
+  "deleteFlagConfirmMessageWithCount": "Bu bayrak {count} nottan kaldırılacak. Emin misiniz?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Bu bayrağı silmek istediğinizden emin misiniz?",
+  "deleteFlagDialogTitle": "Bayrağı Sil",
+  "deleteFlagDialogCancelButton": "Vazgeç",
+  "deleteFlagDialogConfirmButton": "Sil",
   "pinNoteMenuItemLabel": "Sabitle",
   "unpinNoteMenuItemLabel": "Sabitlemeyi Kaldır",
   "linkDialogUrlHint": "https://ornek.com",

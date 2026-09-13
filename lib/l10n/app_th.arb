@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "ตาราง ({count} แถว)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(ข้อความว่าง)",
   "reorderBlocksSheetTitle": "จัดเรียงบล็อกใหม่",
   "reorderBlocksMoveUpTooltip": "เลื่อนขึ้น",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "สีธง",
   "flagColorPickerTitle": "เลือกสีธง",
   "flagColorRemoveOption": "ลบธง",
+  "flagColorNameRed": "แดง",
+  "flagColorNameOrange": "ส้ม",
+  "flagColorNameYellow": "เหลือง",
+  "flagColorNameGreen": "เขียว",
+  "flagColorNameBlue": "น้ำเงิน",
+  "flagNameDialogTitle": "ตั้งชื่อธง",
+  "flagNameDialogHint": "เช่น ด่วน, รอดำเนินการ...",
+  "flagNameDialogCancelButton": "ยกเลิก",
+  "flagNameDialogSaveButton": "บันทึก",
+  "flagRemovedInfoMessage": "ลบธงแล้ว",
+  "deleteFlagConfirmMessageWithCount": "ธงนี้จะถูกลบออกจาก {count} โน้ต คุณแน่ใจหรือไม่?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "คุณแน่ใจหรือไม่ว่าต้องการลบธงนี้?",
+  "deleteFlagDialogTitle": "ลบธง",
+  "deleteFlagDialogCancelButton": "ยกเลิก",
+  "deleteFlagDialogConfirmButton": "ลบ",
   "pinNoteMenuItemLabel": "ปักหมุดโน้ต",
   "unpinNoteMenuItemLabel": "เลิกปักหมุด",
   "linkDialogUrlHint": "https://example.com",

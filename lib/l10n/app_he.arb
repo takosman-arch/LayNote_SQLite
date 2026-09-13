@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "טבלה ({count} שורות)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(טקסט ריק)",
   "reorderBlocksSheetTitle": "סידור מחדש של הבלוקים",
   "reorderBlocksMoveUpTooltip": "הזז למעלה",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "צבע דגל",
   "flagColorPickerTitle": "בחר צבע דגל",
   "flagColorRemoveOption": "הסר דגל",
+  "flagColorNameRed": "אדום",
+  "flagColorNameOrange": "כתום",
+  "flagColorNameYellow": "צהוב",
+  "flagColorNameGreen": "ירוק",
+  "flagColorNameBlue": "כחול",
+  "flagNameDialogTitle": "תן שם לדגל",
+  "flagNameDialogHint": "לדוגמה: דחוף, ממתין...",
+  "flagNameDialogCancelButton": "ביטול",
+  "flagNameDialogSaveButton": "שמור",
+  "flagRemovedInfoMessage": "הדגל הוסר",
+  "deleteFlagConfirmMessageWithCount": "הדגל הזה יוסר מ-{count} פתקים. האם אתה בטוח?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "האם אתה בטוח שברצונך למחוק את הדגל הזה?",
+  "deleteFlagDialogTitle": "מחיקת דגל",
+  "deleteFlagDialogCancelButton": "ביטול",
+  "deleteFlagDialogConfirmButton": "מחק",
   "pinNoteMenuItemLabel": "הצמד פתק",
   "unpinNoteMenuItemLabel": "בטל הצמדה",
   "linkDialogUrlHint": "https://example.com",

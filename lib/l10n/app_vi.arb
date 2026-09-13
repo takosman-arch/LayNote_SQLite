@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Bảng ({count} hàng)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(văn bản trống)",
   "reorderBlocksSheetTitle": "Sắp xếp lại khối",
   "reorderBlocksMoveUpTooltip": "Di chuyển lên",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "Màu cờ",
   "flagColorPickerTitle": "Chọn màu cờ",
   "flagColorRemoveOption": "Xóa cờ",
+  "flagColorNameRed": "Đỏ",
+  "flagColorNameOrange": "Cam",
+  "flagColorNameYellow": "Vàng",
+  "flagColorNameGreen": "Xanh lá",
+  "flagColorNameBlue": "Xanh dương",
+  "flagNameDialogTitle": "Đặt tên cho cờ",
+  "flagNameDialogHint": "VD: Khẩn cấp, Đang chờ...",
+  "flagNameDialogCancelButton": "Hủy",
+  "flagNameDialogSaveButton": "Lưu",
+  "flagRemovedInfoMessage": "Đã xóa cờ",
+  "deleteFlagConfirmMessageWithCount": "Cờ này sẽ bị xóa khỏi {count} ghi chú. Bạn có chắc không?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Bạn có chắc muốn xóa cờ này không?",
+  "deleteFlagDialogTitle": "Xóa cờ",
+  "deleteFlagDialogCancelButton": "Hủy",
+  "deleteFlagDialogConfirmButton": "Xóa",
   "pinNoteMenuItemLabel": "Ghim ghi chú",
   "unpinNoteMenuItemLabel": "Bỏ ghim",
   "linkDialogUrlHint": "https://example.com",

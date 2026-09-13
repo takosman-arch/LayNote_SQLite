@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabel ({count} rijen)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(lege tekst)",
   "reorderBlocksSheetTitle": "Blokken opnieuw ordenen",
   "reorderBlocksMoveUpTooltip": "Omhoog verplaatsen",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "Vlagkleur",
   "flagColorPickerTitle": "Kies vlagkleur",
   "flagColorRemoveOption": "Vlag verwijderen",
+  "flagColorNameRed": "Rood",
+  "flagColorNameOrange": "Oranje",
+  "flagColorNameYellow": "Geel",
+  "flagColorNameGreen": "Groen",
+  "flagColorNameBlue": "Blauw",
+  "flagNameDialogTitle": "Vlag een naam geven",
+  "flagNameDialogHint": "Bijv. Urgent, In behandeling...",
+  "flagNameDialogCancelButton": "Annuleren",
+  "flagNameDialogSaveButton": "Opslaan",
+  "flagRemovedInfoMessage": "Vlag verwijderd",
+  "deleteFlagConfirmMessageWithCount": "Deze vlag wordt verwijderd uit {count} notities. Weet je het zeker?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Weet je zeker dat je deze vlag wilt verwijderen?",
+  "deleteFlagDialogTitle": "Vlag verwijderen",
+  "deleteFlagDialogCancelButton": "Annuleren",
+  "deleteFlagDialogConfirmButton": "Verwijderen",
   "pinNoteMenuItemLabel": "Notitie vastzetten",
   "unpinNoteMenuItemLabel": "Losmaken",
   "linkDialogUrlHint": "https://voorbeeld.com",

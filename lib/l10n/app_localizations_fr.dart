@@ -2259,6 +2259,54 @@ class AppLocalizationsFr extends AppLocalizations {
   String get flagColorRemoveOption => 'Supprimer le drapeau';
 
   @override
+  String get flagColorNameRed => 'Rouge';
+
+  @override
+  String get flagColorNameOrange => 'Orange';
+
+  @override
+  String get flagColorNameYellow => 'Jaune';
+
+  @override
+  String get flagColorNameGreen => 'Vert';
+
+  @override
+  String get flagColorNameBlue => 'Bleu';
+
+  @override
+  String get flagNameDialogTitle => 'Nommer le drapeau';
+
+  @override
+  String get flagNameDialogHint => 'Ex. Urgent, En attente...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Annuler';
+
+  @override
+  String get flagNameDialogSaveButton => 'Enregistrer';
+
+  @override
+  String get flagRemovedInfoMessage => 'Drapeau supprimé';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Ce drapeau sera retiré de $count notes. Êtes-vous sûr ?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage =>
+      'Voulez-vous vraiment supprimer ce drapeau ?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Supprimer le drapeau';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Annuler';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Supprimer';
+
+  @override
   String get pinNoteMenuItemLabel => 'Épingler la note';
 
   @override

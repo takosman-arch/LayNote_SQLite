@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabla ({count} filas)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(texto vacío)",
   "reorderBlocksSheetTitle": "Reordenar bloques",
   "reorderBlocksMoveUpTooltip": "Mover arriba",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "Color de la bandera",
   "flagColorPickerTitle": "Elegir color de la bandera",
   "flagColorRemoveOption": "Quitar bandera",
+  "flagColorNameRed": "Rojo",
+  "flagColorNameOrange": "Naranja",
+  "flagColorNameYellow": "Amarillo",
+  "flagColorNameGreen": "Verde",
+  "flagColorNameBlue": "Azul",
+  "flagNameDialogTitle": "Nombrar la bandera",
+  "flagNameDialogHint": "Ej. Urgente, Pendiente...",
+  "flagNameDialogCancelButton": "Cancelar",
+  "flagNameDialogSaveButton": "Guardar",
+  "flagRemovedInfoMessage": "Bandera eliminada",
+  "deleteFlagConfirmMessageWithCount": "Esta bandera se eliminará de {count} notas. ¿Estás seguro?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "¿Seguro que quieres eliminar esta bandera?",
+  "deleteFlagDialogTitle": "Eliminar bandera",
+  "deleteFlagDialogCancelButton": "Cancelar",
+  "deleteFlagDialogConfirmButton": "Eliminar",
   "pinNoteMenuItemLabel": "Fijar nota",
   "unpinNoteMenuItemLabel": "Dejar de fijar",
   "linkDialogUrlHint": "https://ejemplo.com",

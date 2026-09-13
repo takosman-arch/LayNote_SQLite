@@ -2253,6 +2253,54 @@ class AppLocalizationsEs extends AppLocalizations {
   String get flagColorRemoveOption => 'Quitar bandera';
 
   @override
+  String get flagColorNameRed => 'Rojo';
+
+  @override
+  String get flagColorNameOrange => 'Naranja';
+
+  @override
+  String get flagColorNameYellow => 'Amarillo';
+
+  @override
+  String get flagColorNameGreen => 'Verde';
+
+  @override
+  String get flagColorNameBlue => 'Azul';
+
+  @override
+  String get flagNameDialogTitle => 'Nombrar la bandera';
+
+  @override
+  String get flagNameDialogHint => 'Ej. Urgente, Pendiente...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Cancelar';
+
+  @override
+  String get flagNameDialogSaveButton => 'Guardar';
+
+  @override
+  String get flagRemovedInfoMessage => 'Bandera eliminada';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Esta bandera se eliminará de $count notas. ¿Estás seguro?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage =>
+      '¿Seguro que quieres eliminar esta bandera?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Eliminar bandera';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Cancelar';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Eliminar';
+
+  @override
   String get pinNoteMenuItemLabel => 'Fijar nota';
 
   @override

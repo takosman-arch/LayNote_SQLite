@@ -37,6 +37,14 @@
   "blockPreviewAttachmentsLabel": "Вложений: {count} (фото/документ)",
   "blockPreviewDividerLabel": "Разделитель",
   "blockPreviewChecklistLabel": "Чек-лист ({count} пунктов)",
+  "blockPreviewTableLabel": "Таблица ({count} строк)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(пустой текст)",
   "reorderBlocksSheetTitle": "Изменить порядок блоков",
   "reorderBlocksMoveUpTooltip": "Переместить вверх",
@@ -676,6 +684,28 @@
   "flagColorMenuItemLabel": "Цвет флажка",
   "flagColorPickerTitle": "Выберите цвет флажка",
   "flagColorRemoveOption": "Убрать флажок",
+  "flagColorNameRed": "Красный",
+  "flagColorNameOrange": "Оранжевый",
+  "flagColorNameYellow": "Жёлтый",
+  "flagColorNameGreen": "Зелёный",
+  "flagColorNameBlue": "Синий",
+  "flagNameDialogTitle": "Назвать флажок",
+  "flagNameDialogHint": "Напр. Срочно, В ожидании...",
+  "flagNameDialogCancelButton": "Отмена",
+  "flagNameDialogSaveButton": "Сохранить",
+  "flagRemovedInfoMessage": "Флажок удалён",
+  "deleteFlagConfirmMessageWithCount": "Этот флажок будет удалён из {count} заметок. Вы уверены?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Вы уверены, что хотите удалить этот флажок?",
+  "deleteFlagDialogTitle": "Удалить флажок",
+  "deleteFlagDialogCancelButton": "Отмена",
+  "deleteFlagDialogConfirmButton": "Удалить",
   "pinNoteMenuItemLabel": "Закрепить заметку",
   "unpinNoteMenuItemLabel": "Открепить заметку",
   "linkDialogUrlHint": "https://example.com",

@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabela ({count} wierszy)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(pusty tekst)",
   "reorderBlocksSheetTitle": "Zmień kolejność bloków",
   "reorderBlocksMoveUpTooltip": "Przesuń w górę",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "Kolor flagi",
   "flagColorPickerTitle": "Wybierz kolor flagi",
   "flagColorRemoveOption": "Usuń flagę",
+  "flagColorNameRed": "Czerwony",
+  "flagColorNameOrange": "Pomarańczowy",
+  "flagColorNameYellow": "Żółty",
+  "flagColorNameGreen": "Zielony",
+  "flagColorNameBlue": "Niebieski",
+  "flagNameDialogTitle": "Nazwij flagę",
+  "flagNameDialogHint": "Np. Pilne, Oczekujące...",
+  "flagNameDialogCancelButton": "Anuluj",
+  "flagNameDialogSaveButton": "Zapisz",
+  "flagRemovedInfoMessage": "Flaga usunięta",
+  "deleteFlagConfirmMessageWithCount": "Ta flaga zostanie usunięta z {count} notatek. Czy na pewno?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Czy na pewno chcesz usunąć tę flagę?",
+  "deleteFlagDialogTitle": "Usuń flagę",
+  "deleteFlagDialogCancelButton": "Anuluj",
+  "deleteFlagDialogConfirmButton": "Usuń",
   "pinNoteMenuItemLabel": "Przypnij notatkę",
   "unpinNoteMenuItemLabel": "Odepnij notatkę",
   "linkDialogUrlHint": "https://example.com",

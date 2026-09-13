@@ -2246,6 +2246,53 @@ class AppLocalizationsPl extends AppLocalizations {
   String get flagColorRemoveOption => 'Usuń flagę';
 
   @override
+  String get flagColorNameRed => 'Czerwony';
+
+  @override
+  String get flagColorNameOrange => 'Pomarańczowy';
+
+  @override
+  String get flagColorNameYellow => 'Żółty';
+
+  @override
+  String get flagColorNameGreen => 'Zielony';
+
+  @override
+  String get flagColorNameBlue => 'Niebieski';
+
+  @override
+  String get flagNameDialogTitle => 'Nazwij flagę';
+
+  @override
+  String get flagNameDialogHint => 'Np. Pilne, Oczekujące...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Anuluj';
+
+  @override
+  String get flagNameDialogSaveButton => 'Zapisz';
+
+  @override
+  String get flagRemovedInfoMessage => 'Flaga usunięta';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Ta flaga zostanie usunięta z $count notatek. Czy na pewno?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage => 'Czy na pewno chcesz usunąć tę flagę?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Usuń flagę';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Anuluj';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Usuń';
+
+  @override
   String get pinNoteMenuItemLabel => 'Przypnij notatkę';
 
   @override

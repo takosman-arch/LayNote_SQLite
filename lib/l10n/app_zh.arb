@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "表格（{count} 行）",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "（空文本）",
   "reorderBlocksSheetTitle": "重新排序模块",
   "reorderBlocksMoveUpTooltip": "上移",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "旗标颜色",
   "flagColorPickerTitle": "选择旗标颜色",
   "flagColorRemoveOption": "移除旗标",
+  "flagColorNameRed": "红色",
+  "flagColorNameOrange": "橙色",
+  "flagColorNameYellow": "黄色",
+  "flagColorNameGreen": "绿色",
+  "flagColorNameBlue": "蓝色",
+  "flagNameDialogTitle": "为旗标命名",
+  "flagNameDialogHint": "例如：紧急、待处理...",
+  "flagNameDialogCancelButton": "取消",
+  "flagNameDialogSaveButton": "保存",
+  "flagRemovedInfoMessage": "已移除旗标",
+  "deleteFlagConfirmMessageWithCount": "此旗标将从 {count} 条笔记中移除。确定吗？",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "确定要删除此旗标吗？",
+  "deleteFlagDialogTitle": "删除旗标",
+  "deleteFlagDialogCancelButton": "取消",
+  "deleteFlagDialogConfirmButton": "删除",
   "pinNoteMenuItemLabel": "置顶",
   "unpinNoteMenuItemLabel": "取消置顶",
   "linkDialogUrlHint": "https://example.com",

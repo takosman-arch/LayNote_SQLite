@@ -2249,6 +2249,54 @@ class AppLocalizationsIt extends AppLocalizations {
   String get flagColorRemoveOption => 'Rimuovi bandiera';
 
   @override
+  String get flagColorNameRed => 'Rosso';
+
+  @override
+  String get flagColorNameOrange => 'Arancione';
+
+  @override
+  String get flagColorNameYellow => 'Giallo';
+
+  @override
+  String get flagColorNameGreen => 'Verde';
+
+  @override
+  String get flagColorNameBlue => 'Blu';
+
+  @override
+  String get flagNameDialogTitle => 'Assegna un nome alla bandiera';
+
+  @override
+  String get flagNameDialogHint => 'Es. Urgente, In attesa...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Annulla';
+
+  @override
+  String get flagNameDialogSaveButton => 'Salva';
+
+  @override
+  String get flagRemovedInfoMessage => 'Bandiera rimossa';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Questa bandiera verrà rimossa da $count note. Sei sicuro?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage =>
+      'Sei sicuro di voler eliminare questa bandiera?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Elimina bandiera';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Annulla';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Elimina';
+
+  @override
   String get pinNoteMenuItemLabel => 'Fissa in alto';
 
   @override

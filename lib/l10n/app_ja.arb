@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "表（{count}行）",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "（テキストなし）",
   "reorderBlocksSheetTitle": "ブロックの並べ替え",
   "reorderBlocksMoveUpTooltip": "上に移動",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "フラグの色",
   "flagColorPickerTitle": "フラグの色を選択",
   "flagColorRemoveOption": "フラグを削除",
+  "flagColorNameRed": "赤",
+  "flagColorNameOrange": "オレンジ",
+  "flagColorNameYellow": "黄色",
+  "flagColorNameGreen": "緑",
+  "flagColorNameBlue": "青",
+  "flagNameDialogTitle": "フラグに名前を付ける",
+  "flagNameDialogHint": "例：緊急、保留中...",
+  "flagNameDialogCancelButton": "キャンセル",
+  "flagNameDialogSaveButton": "保存",
+  "flagRemovedInfoMessage": "フラグを削除しました",
+  "deleteFlagConfirmMessageWithCount": "このフラグは{count}件のノートから削除されます。よろしいですか？",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "このフラグを削除してもよろしいですか？",
+  "deleteFlagDialogTitle": "フラグを削除",
+  "deleteFlagDialogCancelButton": "キャンセル",
+  "deleteFlagDialogConfirmButton": "削除",
   "pinNoteMenuItemLabel": "ノートを固定",
   "unpinNoteMenuItemLabel": "固定を解除",
   "linkDialogUrlHint": "https://example.com",

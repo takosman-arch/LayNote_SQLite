@@ -37,6 +37,14 @@
   "blockPreviewAttachmentsLabel": "{count} anexos (foto/documento)",
   "blockPreviewDividerLabel": "Divisor",
   "blockPreviewChecklistLabel": "Lista de Verificação ({count} itens)",
+  "blockPreviewTableLabel": "Tabela ({count} linhas)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(texto vazio)",
   "reorderBlocksSheetTitle": "Reordenar Blocos",
   "reorderBlocksMoveUpTooltip": "Mover para Cima",
@@ -676,6 +684,28 @@
   "flagColorMenuItemLabel": "Cor da bandeira",
   "flagColorPickerTitle": "Escolher cor da bandeira",
   "flagColorRemoveOption": "Remover bandeira",
+  "flagColorNameRed": "Vermelho",
+  "flagColorNameOrange": "Laranja",
+  "flagColorNameYellow": "Amarelo",
+  "flagColorNameGreen": "Verde",
+  "flagColorNameBlue": "Azul",
+  "flagNameDialogTitle": "Nomear a bandeira",
+  "flagNameDialogHint": "Ex. Urgente, Pendente...",
+  "flagNameDialogCancelButton": "Cancelar",
+  "flagNameDialogSaveButton": "Guardar",
+  "flagRemovedInfoMessage": "Bandeira removida",
+  "deleteFlagConfirmMessageWithCount": "Esta bandeira será removida de {count} notas. Tem a certeza?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Tem a certeza de que quer eliminar esta bandeira?",
+  "deleteFlagDialogTitle": "Eliminar bandeira",
+  "deleteFlagDialogCancelButton": "Cancelar",
+  "deleteFlagDialogConfirmButton": "Eliminar",
   "pinNoteMenuItemLabel": "Fixar nota",
   "unpinNoteMenuItemLabel": "Desafixar nota",
   "linkDialogUrlHint": "https://exemplo.com",

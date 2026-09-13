@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Таблиця ({count} рядків)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(порожній текст)",
   "reorderBlocksSheetTitle": "Змінити порядок блоків",
   "reorderBlocksMoveUpTooltip": "Перемістити вгору",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "Колір прапорця",
   "flagColorPickerTitle": "Виберіть колір прапорця",
   "flagColorRemoveOption": "Прибрати прапорець",
+  "flagColorNameRed": "Червоний",
+  "flagColorNameOrange": "Помаранчевий",
+  "flagColorNameYellow": "Жовтий",
+  "flagColorNameGreen": "Зелений",
+  "flagColorNameBlue": "Синій",
+  "flagNameDialogTitle": "Назвати прапорець",
+  "flagNameDialogHint": "Напр. Терміново, Очікує...",
+  "flagNameDialogCancelButton": "Скасувати",
+  "flagNameDialogSaveButton": "Зберегти",
+  "flagRemovedInfoMessage": "Прапорець видалено",
+  "deleteFlagConfirmMessageWithCount": "Цей прапорець буде видалено з {count} нотаток. Ви впевнені?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Ви впевнені, що хочете видалити цей прапорець?",
+  "deleteFlagDialogTitle": "Видалити прапорець",
+  "deleteFlagDialogCancelButton": "Скасувати",
+  "deleteFlagDialogConfirmButton": "Видалити",
   "pinNoteMenuItemLabel": "Закріпити нотатку",
   "unpinNoteMenuItemLabel": "Відкріпити нотатку",
   "linkDialogUrlHint": "https://example.com",

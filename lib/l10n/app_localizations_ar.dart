@@ -117,7 +117,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String blockPreviewTableLabel(int count) {
-    return 'جدول ($count صفوف)';
+    return 'جدول ($count صف)';
   }
 
   @override
@@ -2221,6 +2221,53 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get flagColorRemoveOption => 'إزالة العلم';
+
+  @override
+  String get flagColorNameRed => 'أحمر';
+
+  @override
+  String get flagColorNameOrange => 'برتقالي';
+
+  @override
+  String get flagColorNameYellow => 'أصفر';
+
+  @override
+  String get flagColorNameGreen => 'أخضر';
+
+  @override
+  String get flagColorNameBlue => 'أزرق';
+
+  @override
+  String get flagNameDialogTitle => 'تسمية العلم';
+
+  @override
+  String get flagNameDialogHint => 'مثال: عاجل، قيد الانتظار...';
+
+  @override
+  String get flagNameDialogCancelButton => 'إلغاء';
+
+  @override
+  String get flagNameDialogSaveButton => 'حفظ';
+
+  @override
+  String get flagRemovedInfoMessage => 'تمت إزالة العلم';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'سيتم إزالة هذا العلم من $count ملاحظة. هل أنت متأكد؟';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage => 'هل أنت متأكد أنك تريد حذف هذا العلم؟';
+
+  @override
+  String get deleteFlagDialogTitle => 'حذف العلم';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'إلغاء';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'حذف';
 
   @override
   String get pinNoteMenuItemLabel => 'تثبيت الملاحظة';

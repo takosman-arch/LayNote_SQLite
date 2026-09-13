@@ -4939,15 +4939,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                         .blockPreviewChecklistLabel(items.length);
                   case 'table':
                     final rows = List.from(b['rows'] ?? const []);
-                    // NOT: diğer bloklarla aynı desende localization
-                    // kullanmak için AppLocalizations .arb dosyalarınıza
-                    // şu anahtarı eklemeniz gerekir (bkz. mevcut
-                    // blockPreviewCalcTableLabel örneği):
-                    //   "blockPreviewTableLabel": "{count, plural, one{1 satır} other{{count} satır}} tablo"
-                    // Eklendikten sonra aşağıdaki satırı şununla
-                    // değiştirin:
-                    //   AppLocalizations.of(context)!.blockPreviewTableLabel(rows.length)
-                    return 'Tablo (${rows.length} satır)';
+                    return AppLocalizations.of(context)!
+                        .blockPreviewTableLabel(rows.length);
                   default:
                     final t = (b['text'] ?? '').toString().trim();
                     return t.isEmpty
@@ -5932,6 +5925,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     AppLocalizations.of(context)!
                                         .flagColorMenuItemLabel,
                                     style: const TextStyle(fontSize: 16),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                                 const SizedBox(width: 10),

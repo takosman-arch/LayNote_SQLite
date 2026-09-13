@@ -2233,6 +2233,54 @@ class AppLocalizationsId extends AppLocalizations {
   String get flagColorRemoveOption => 'Hapus Bendera';
 
   @override
+  String get flagColorNameRed => 'Merah';
+
+  @override
+  String get flagColorNameOrange => 'Oranye';
+
+  @override
+  String get flagColorNameYellow => 'Kuning';
+
+  @override
+  String get flagColorNameGreen => 'Hijau';
+
+  @override
+  String get flagColorNameBlue => 'Biru';
+
+  @override
+  String get flagNameDialogTitle => 'Beri nama bendera';
+
+  @override
+  String get flagNameDialogHint => 'Cth. Mendesak, Tertunda...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Batal';
+
+  @override
+  String get flagNameDialogSaveButton => 'Simpan';
+
+  @override
+  String get flagRemovedInfoMessage => 'Bendera dihapus';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Bendera ini akan dihapus dari $count catatan. Anda yakin?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage =>
+      'Anda yakin ingin menghapus bendera ini?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Hapus Bendera';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Batal';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Hapus';
+
+  @override
   String get pinNoteMenuItemLabel => 'Sematkan Catatan';
 
   @override

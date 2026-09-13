@@ -37,6 +37,14 @@
   "blockPreviewAttachmentsLabel": "{count} pièce(s) jointe(s) (photo/document)",
   "blockPreviewDividerLabel": "Ligne de séparation",
   "blockPreviewChecklistLabel": "Liste de contrôle ({count} éléments)",
+  "blockPreviewTableLabel": "Tableau ({count} lignes)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(texte vide)",
   "reorderBlocksSheetTitle": "Réorganiser les blocs",
   "reorderBlocksMoveUpTooltip": "Monter",
@@ -676,6 +684,28 @@
   "flagColorMenuItemLabel": "Couleur du drapeau",
   "flagColorPickerTitle": "Choisir la couleur du drapeau",
   "flagColorRemoveOption": "Supprimer le drapeau",
+  "flagColorNameRed": "Rouge",
+  "flagColorNameOrange": "Orange",
+  "flagColorNameYellow": "Jaune",
+  "flagColorNameGreen": "Vert",
+  "flagColorNameBlue": "Bleu",
+  "flagNameDialogTitle": "Nommer le drapeau",
+  "flagNameDialogHint": "Ex. Urgent, En attente...",
+  "flagNameDialogCancelButton": "Annuler",
+  "flagNameDialogSaveButton": "Enregistrer",
+  "flagRemovedInfoMessage": "Drapeau supprimé",
+  "deleteFlagConfirmMessageWithCount": "Ce drapeau sera retiré de {count} notes. Êtes-vous sûr ?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Voulez-vous vraiment supprimer ce drapeau ?",
+  "deleteFlagDialogTitle": "Supprimer le drapeau",
+  "deleteFlagDialogCancelButton": "Annuler",
+  "deleteFlagDialogConfirmButton": "Supprimer",
   "pinNoteMenuItemLabel": "Épingler la note",
   "unpinNoteMenuItemLabel": "Détacher la note",
   "linkDialogUrlHint": "https://exemple.com",

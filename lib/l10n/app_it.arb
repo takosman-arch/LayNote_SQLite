@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabella ({count} righe)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(testo vuoto)",
   "reorderBlocksSheetTitle": "Riordina blocchi",
   "reorderBlocksMoveUpTooltip": "Sposta su",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "Colore bandiera",
   "flagColorPickerTitle": "Scegli colore bandiera",
   "flagColorRemoveOption": "Rimuovi bandiera",
+  "flagColorNameRed": "Rosso",
+  "flagColorNameOrange": "Arancione",
+  "flagColorNameYellow": "Giallo",
+  "flagColorNameGreen": "Verde",
+  "flagColorNameBlue": "Blu",
+  "flagNameDialogTitle": "Assegna un nome alla bandiera",
+  "flagNameDialogHint": "Es. Urgente, In attesa...",
+  "flagNameDialogCancelButton": "Annulla",
+  "flagNameDialogSaveButton": "Salva",
+  "flagRemovedInfoMessage": "Bandiera rimossa",
+  "deleteFlagConfirmMessageWithCount": "Questa bandiera verrà rimossa da {count} note. Sei sicuro?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Sei sicuro di voler eliminare questa bandiera?",
+  "deleteFlagDialogTitle": "Elimina bandiera",
+  "deleteFlagDialogCancelButton": "Annulla",
+  "deleteFlagDialogConfirmButton": "Elimina",
   "pinNoteMenuItemLabel": "Fissa in alto",
   "unpinNoteMenuItemLabel": "Rimuovi fissaggio",
   "linkDialogUrlHint": "https://example.com",

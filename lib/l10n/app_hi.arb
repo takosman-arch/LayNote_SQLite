@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "तालिका ({count} पंक्तियां)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(खाली टेक्स्ट)",
   "reorderBlocksSheetTitle": "ब्लॉक फिर से व्यवस्थित करें",
   "reorderBlocksMoveUpTooltip": "ऊपर ले जाएं",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "फ़्लैग रंग",
   "flagColorPickerTitle": "फ़्लैग रंग चुनें",
   "flagColorRemoveOption": "फ़्लैग हटाएं",
+  "flagColorNameRed": "लाल",
+  "flagColorNameOrange": "नारंगी",
+  "flagColorNameYellow": "पीला",
+  "flagColorNameGreen": "हरा",
+  "flagColorNameBlue": "नीला",
+  "flagNameDialogTitle": "फ़्लैग को नाम दें",
+  "flagNameDialogHint": "उदा. अत्यावश्यक, लंबित...",
+  "flagNameDialogCancelButton": "रद्द करें",
+  "flagNameDialogSaveButton": "सहेजें",
+  "flagRemovedInfoMessage": "फ़्लैग हटा दिया गया",
+  "deleteFlagConfirmMessageWithCount": "यह फ़्लैग {count} नोट्स से हटा दिया जाएगा। क्या आप सुनिश्चित हैं?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "क्या आप वाकई इस फ़्लैग को हटाना चाहते हैं?",
+  "deleteFlagDialogTitle": "फ़्लैग हटाएं",
+  "deleteFlagDialogCancelButton": "रद्द करें",
+  "deleteFlagDialogConfirmButton": "हटाएं",
   "pinNoteMenuItemLabel": "नोट पिन करें",
   "unpinNoteMenuItemLabel": "पिन हटाएं",
   "linkDialogUrlHint": "https://example.com",

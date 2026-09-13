@@ -2206,6 +2206,54 @@ class AppLocalizationsHe extends AppLocalizations {
   String get flagColorRemoveOption => 'הסר דגל';
 
   @override
+  String get flagColorNameRed => 'אדום';
+
+  @override
+  String get flagColorNameOrange => 'כתום';
+
+  @override
+  String get flagColorNameYellow => 'צהוב';
+
+  @override
+  String get flagColorNameGreen => 'ירוק';
+
+  @override
+  String get flagColorNameBlue => 'כחול';
+
+  @override
+  String get flagNameDialogTitle => 'תן שם לדגל';
+
+  @override
+  String get flagNameDialogHint => 'לדוגמה: דחוף, ממתין...';
+
+  @override
+  String get flagNameDialogCancelButton => 'ביטול';
+
+  @override
+  String get flagNameDialogSaveButton => 'שמור';
+
+  @override
+  String get flagRemovedInfoMessage => 'הדגל הוסר';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'הדגל הזה יוסר מ-$count פתקים. האם אתה בטוח?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage =>
+      'האם אתה בטוח שברצונך למחוק את הדגל הזה?';
+
+  @override
+  String get deleteFlagDialogTitle => 'מחיקת דגל';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'ביטול';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'מחק';
+
+  @override
   String get pinNoteMenuItemLabel => 'הצמד פתק';
 
   @override

@@ -2219,6 +2219,54 @@ class AppLocalizationsTr extends AppLocalizations {
   String get flagColorRemoveOption => 'Bayrağı kaldır';
 
   @override
+  String get flagColorNameRed => 'Kırmızı';
+
+  @override
+  String get flagColorNameOrange => 'Turuncu';
+
+  @override
+  String get flagColorNameYellow => 'Sarı';
+
+  @override
+  String get flagColorNameGreen => 'Yeşil';
+
+  @override
+  String get flagColorNameBlue => 'Mavi';
+
+  @override
+  String get flagNameDialogTitle => 'Bayrağı adlandır';
+
+  @override
+  String get flagNameDialogHint => 'Örn. Acil, Beklemede...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Vazgeç';
+
+  @override
+  String get flagNameDialogSaveButton => 'Kaydet';
+
+  @override
+  String get flagRemovedInfoMessage => 'Bayrak kaldırıldı';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Bu bayrak $count nottan kaldırılacak. Emin misiniz?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage =>
+      'Bu bayrağı silmek istediğinizden emin misiniz?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Bayrağı Sil';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Vazgeç';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Sil';
+
+  @override
   String get pinNoteMenuItemLabel => 'Sabitle';
 
   @override

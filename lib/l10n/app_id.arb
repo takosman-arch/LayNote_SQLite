@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabel ({count} baris)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(teks kosong)",
   "reorderBlocksSheetTitle": "Urutkan Ulang Blok",
   "reorderBlocksMoveUpTooltip": "Pindah ke Atas",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "Warna Bendera",
   "flagColorPickerTitle": "Pilih Warna Bendera",
   "flagColorRemoveOption": "Hapus Bendera",
+  "flagColorNameRed": "Merah",
+  "flagColorNameOrange": "Oranye",
+  "flagColorNameYellow": "Kuning",
+  "flagColorNameGreen": "Hijau",
+  "flagColorNameBlue": "Biru",
+  "flagNameDialogTitle": "Beri nama bendera",
+  "flagNameDialogHint": "Cth. Mendesak, Tertunda...",
+  "flagNameDialogCancelButton": "Batal",
+  "flagNameDialogSaveButton": "Simpan",
+  "flagRemovedInfoMessage": "Bendera dihapus",
+  "deleteFlagConfirmMessageWithCount": "Bendera ini akan dihapus dari {count} catatan. Anda yakin?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Anda yakin ingin menghapus bendera ini?",
+  "deleteFlagDialogTitle": "Hapus Bendera",
+  "deleteFlagDialogCancelButton": "Batal",
+  "deleteFlagDialogConfirmButton": "Hapus",
   "pinNoteMenuItemLabel": "Sematkan Catatan",
   "unpinNoteMenuItemLabel": "Lepas Sematan",
   "linkDialogUrlHint": "https://contoh.com",

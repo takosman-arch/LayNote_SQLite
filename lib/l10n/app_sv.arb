@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabell ({count} rader)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(tom text)",
   "reorderBlocksSheetTitle": "Ändra ordning på block",
   "reorderBlocksMoveUpTooltip": "Flytta upp",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "Flaggfärg",
   "flagColorPickerTitle": "Välj flaggfärg",
   "flagColorRemoveOption": "Ta bort flagga",
+  "flagColorNameRed": "Röd",
+  "flagColorNameOrange": "Orange",
+  "flagColorNameYellow": "Gul",
+  "flagColorNameGreen": "Grön",
+  "flagColorNameBlue": "Blå",
+  "flagNameDialogTitle": "Namnge flaggan",
+  "flagNameDialogHint": "T.ex. Brådskande, Väntar...",
+  "flagNameDialogCancelButton": "Avbryt",
+  "flagNameDialogSaveButton": "Spara",
+  "flagRemovedInfoMessage": "Flagga borttagen",
+  "deleteFlagConfirmMessageWithCount": "Den här flaggan tas bort från {count} anteckningar. Är du säker?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Är du säker på att du vill ta bort den här flaggan?",
+  "deleteFlagDialogTitle": "Ta bort flagga",
+  "deleteFlagDialogCancelButton": "Avbryt",
+  "deleteFlagDialogConfirmButton": "Ta bort",
   "pinNoteMenuItemLabel": "Fäst anteckning",
   "unpinNoteMenuItemLabel": "Ta bort fästning",
   "linkDialogUrlHint": "https://example.com",

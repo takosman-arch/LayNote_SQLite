@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabulka ({count} řádků)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(prázdný text)",
   "reorderBlocksSheetTitle": "Přeuspořádat bloky",
   "reorderBlocksMoveUpTooltip": "Posunout nahoru",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "Barva vlajky",
   "flagColorPickerTitle": "Vyberte barvu vlajky",
   "flagColorRemoveOption": "Odebrat vlajku",
+  "flagColorNameRed": "Červená",
+  "flagColorNameOrange": "Oranžová",
+  "flagColorNameYellow": "Žlutá",
+  "flagColorNameGreen": "Zelená",
+  "flagColorNameBlue": "Modrá",
+  "flagNameDialogTitle": "Pojmenovat vlajku",
+  "flagNameDialogHint": "Např. Naléhavé, Čeká se...",
+  "flagNameDialogCancelButton": "Zrušit",
+  "flagNameDialogSaveButton": "Uložit",
+  "flagRemovedInfoMessage": "Vlajka odebrána",
+  "deleteFlagConfirmMessageWithCount": "Tato vlajka bude odebrána z {count} poznámek. Opravdu chcete pokračovat?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Opravdu chcete smazat tuto vlajku?",
+  "deleteFlagDialogTitle": "Smazat vlajku",
+  "deleteFlagDialogCancelButton": "Zrušit",
+  "deleteFlagDialogConfirmButton": "Smazat",
   "pinNoteMenuItemLabel": "Připnout poznámku",
   "unpinNoteMenuItemLabel": "Odepnout poznámku",
   "linkDialogUrlHint": "https://example.com",

@@ -2156,6 +2156,53 @@ class AppLocalizationsZh extends AppLocalizations {
   String get flagColorRemoveOption => '移除旗标';
 
   @override
+  String get flagColorNameRed => '红色';
+
+  @override
+  String get flagColorNameOrange => '橙色';
+
+  @override
+  String get flagColorNameYellow => '黄色';
+
+  @override
+  String get flagColorNameGreen => '绿色';
+
+  @override
+  String get flagColorNameBlue => '蓝色';
+
+  @override
+  String get flagNameDialogTitle => '为旗标命名';
+
+  @override
+  String get flagNameDialogHint => '例如：紧急、待处理...';
+
+  @override
+  String get flagNameDialogCancelButton => '取消';
+
+  @override
+  String get flagNameDialogSaveButton => '保存';
+
+  @override
+  String get flagRemovedInfoMessage => '已移除旗标';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return '此旗标将从 $count 条笔记中移除。确定吗？';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage => '确定要删除此旗标吗？';
+
+  @override
+  String get deleteFlagDialogTitle => '删除旗标';
+
+  @override
+  String get deleteFlagDialogCancelButton => '取消';
+
+  @override
+  String get deleteFlagDialogConfirmButton => '删除';
+
+  @override
   String get pinNoteMenuItemLabel => '置顶';
 
   @override

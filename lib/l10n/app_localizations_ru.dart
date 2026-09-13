@@ -2241,6 +2241,54 @@ class AppLocalizationsRu extends AppLocalizations {
   String get flagColorRemoveOption => 'Убрать флажок';
 
   @override
+  String get flagColorNameRed => 'Красный';
+
+  @override
+  String get flagColorNameOrange => 'Оранжевый';
+
+  @override
+  String get flagColorNameYellow => 'Жёлтый';
+
+  @override
+  String get flagColorNameGreen => 'Зелёный';
+
+  @override
+  String get flagColorNameBlue => 'Синий';
+
+  @override
+  String get flagNameDialogTitle => 'Назвать флажок';
+
+  @override
+  String get flagNameDialogHint => 'Напр. Срочно, В ожидании...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Отмена';
+
+  @override
+  String get flagNameDialogSaveButton => 'Сохранить';
+
+  @override
+  String get flagRemovedInfoMessage => 'Флажок удалён';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Этот флажок будет удалён из $count заметок. Вы уверены?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage =>
+      'Вы уверены, что хотите удалить этот флажок?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Удалить флажок';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Отмена';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Удалить';
+
+  @override
   String get pinNoteMenuItemLabel => 'Закрепить заметку';
 
   @override

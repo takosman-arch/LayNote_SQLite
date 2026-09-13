@@ -2241,6 +2241,53 @@ class AppLocalizationsRo extends AppLocalizations {
   String get flagColorRemoveOption => 'Elimină steagul';
 
   @override
+  String get flagColorNameRed => 'Roșu';
+
+  @override
+  String get flagColorNameOrange => 'Portocaliu';
+
+  @override
+  String get flagColorNameYellow => 'Galben';
+
+  @override
+  String get flagColorNameGreen => 'Verde';
+
+  @override
+  String get flagColorNameBlue => 'Albastru';
+
+  @override
+  String get flagNameDialogTitle => 'Denumește steagul';
+
+  @override
+  String get flagNameDialogHint => 'Ex. Urgent, În așteptare...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Anulare';
+
+  @override
+  String get flagNameDialogSaveButton => 'Salvare';
+
+  @override
+  String get flagRemovedInfoMessage => 'Steag eliminat';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Acest steag va fi eliminat din $count note. Ești sigur?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage => 'Sigur dorești să ștergi acest steag?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Șterge steagul';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Anulare';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Ștergere';
+
+  @override
   String get pinNoteMenuItemLabel => 'Fixează nota';
 
   @override

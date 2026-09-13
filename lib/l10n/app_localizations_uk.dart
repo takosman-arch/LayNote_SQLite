@@ -2244,6 +2244,54 @@ class AppLocalizationsUk extends AppLocalizations {
   String get flagColorRemoveOption => 'Прибрати прапорець';
 
   @override
+  String get flagColorNameRed => 'Червоний';
+
+  @override
+  String get flagColorNameOrange => 'Помаранчевий';
+
+  @override
+  String get flagColorNameYellow => 'Жовтий';
+
+  @override
+  String get flagColorNameGreen => 'Зелений';
+
+  @override
+  String get flagColorNameBlue => 'Синій';
+
+  @override
+  String get flagNameDialogTitle => 'Назвати прапорець';
+
+  @override
+  String get flagNameDialogHint => 'Напр. Терміново, Очікує...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Скасувати';
+
+  @override
+  String get flagNameDialogSaveButton => 'Зберегти';
+
+  @override
+  String get flagRemovedInfoMessage => 'Прапорець видалено';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Цей прапорець буде видалено з $count нотаток. Ви впевнені?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage =>
+      'Ви впевнені, що хочете видалити цей прапорець?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Видалити прапорець';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Скасувати';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Видалити';
+
+  @override
   String get pinNoteMenuItemLabel => 'Закріпити нотатку';
 
   @override

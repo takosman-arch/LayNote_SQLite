@@ -539,6 +539,41 @@ class DBHelper {
     return {for (final r in rows) r['key'] as String: r['value'] as String};
   }
 
+  // ── Bayrak (flama) renk isimleri ─────────────────────────────────────
+  // Bayrak renkleri notlara özel değil, sabit palete (NoteFlagMixin.
+  // _flagPalette) özeldir; bu yüzden ayrı bir sütun yerine mevcut
+  // key-value 'settings' tablosunda tek bir anahtar altında (hex ->
+  // kullanıcı adı) JSON map olarak saklanır. Bir renge isim
+  // verilmemişse map'te hiç anahtarı yoktur.
+  static const String _flagColorNamesSettingKey = 'flagColorNames';
+
+  Future<Map<String, String>> getFlagColorNames() async {
+    final raw = (await getAllSettings())[_flagColorNamesSettingKey];
+    if (raw == null || raw.isEmpty) return {};
+    try {
+      final decoded = jsonDecode(raw) as Map<String, dynamic>;
+      return decoded.map((k, v) => MapEntry(k, v.toString()));
+    } catch (_) {
+      return {};
+    }
+  }
+
+  /// Bir bayrak rengine isim atar. name null veya boşsa o rengin ismi
+  /// silinir (bayrak yine kullanılabilir, sadece isimsiz kalır).
+  Future<void> setFlagColorName(String hexColor, String? name) async {
+    final current = await getFlagColorNames();
+    final trimmed = name?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      current.remove(hexColor);
+    } else {
+      current[hexColor] = trimmed;
+    }
+    await setSetting(
+      _flagColorNamesSettingKey,
+      current.isEmpty ? null : jsonEncode(current),
+    );
+  }
+
   // ── Ek dosyalar (attachments) - fiziksel dosya yönetimi ─────────────────
   Future<Directory> attachmentsDir() async {
     final dbDir = await getDatabasesPath();

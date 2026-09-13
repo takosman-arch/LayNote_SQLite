@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "جدول ({count} صف)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(نص فارغ)",
   "reorderBlocksSheetTitle": "إعادة ترتيب العناصر",
   "reorderBlocksMoveUpTooltip": "تحريك لأعلى",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "لون العلم",
   "flagColorPickerTitle": "اختر لون العلم",
   "flagColorRemoveOption": "إزالة العلم",
+  "flagColorNameRed": "أحمر",
+  "flagColorNameOrange": "برتقالي",
+  "flagColorNameYellow": "أصفر",
+  "flagColorNameGreen": "أخضر",
+  "flagColorNameBlue": "أزرق",
+  "flagNameDialogTitle": "تسمية العلم",
+  "flagNameDialogHint": "مثال: عاجل، قيد الانتظار...",
+  "flagNameDialogCancelButton": "إلغاء",
+  "flagNameDialogSaveButton": "حفظ",
+  "flagRemovedInfoMessage": "تمت إزالة العلم",
+  "deleteFlagConfirmMessageWithCount": "سيتم إزالة هذا العلم من {count} ملاحظة. هل أنت متأكد؟",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "هل أنت متأكد أنك تريد حذف هذا العلم؟",
+  "deleteFlagDialogTitle": "حذف العلم",
+  "deleteFlagDialogCancelButton": "إلغاء",
+  "deleteFlagDialogConfirmButton": "حذف",
   "pinNoteMenuItemLabel": "تثبيت الملاحظة",
   "unpinNoteMenuItemLabel": "إلغاء تثبيت الملاحظة",
   "linkDialogUrlHint": "https://example.com",

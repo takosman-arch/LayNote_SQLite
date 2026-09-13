@@ -119,7 +119,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String blockPreviewTableLabel(int count) {
-    return 'तालिका ($count पंक्तियाँ)';
+    return 'तालिका ($count पंक्तियां)';
   }
 
   @override
@@ -2231,6 +2231,54 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get flagColorRemoveOption => 'फ़्लैग हटाएं';
+
+  @override
+  String get flagColorNameRed => 'लाल';
+
+  @override
+  String get flagColorNameOrange => 'नारंगी';
+
+  @override
+  String get flagColorNameYellow => 'पीला';
+
+  @override
+  String get flagColorNameGreen => 'हरा';
+
+  @override
+  String get flagColorNameBlue => 'नीला';
+
+  @override
+  String get flagNameDialogTitle => 'फ़्लैग को नाम दें';
+
+  @override
+  String get flagNameDialogHint => 'उदा. अत्यावश्यक, लंबित...';
+
+  @override
+  String get flagNameDialogCancelButton => 'रद्द करें';
+
+  @override
+  String get flagNameDialogSaveButton => 'सहेजें';
+
+  @override
+  String get flagRemovedInfoMessage => 'फ़्लैग हटा दिया गया';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'यह फ़्लैग $count नोट्स से हटा दिया जाएगा। क्या आप सुनिश्चित हैं?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage =>
+      'क्या आप वाकई इस फ़्लैग को हटाना चाहते हैं?';
+
+  @override
+  String get deleteFlagDialogTitle => 'फ़्लैग हटाएं';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'रद्द करें';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'हटाएं';
 
   @override
   String get pinNoteMenuItemLabel => 'नोट पिन करें';

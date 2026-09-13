@@ -114,7 +114,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String blockPreviewTableLabel(int count) {
-    return 'テーブル（$count行）';
+    return '表（$count行）';
   }
 
   @override
@@ -2181,6 +2181,53 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get flagColorRemoveOption => 'フラグを削除';
+
+  @override
+  String get flagColorNameRed => '赤';
+
+  @override
+  String get flagColorNameOrange => 'オレンジ';
+
+  @override
+  String get flagColorNameYellow => '黄色';
+
+  @override
+  String get flagColorNameGreen => '緑';
+
+  @override
+  String get flagColorNameBlue => '青';
+
+  @override
+  String get flagNameDialogTitle => 'フラグに名前を付ける';
+
+  @override
+  String get flagNameDialogHint => '例：緊急、保留中...';
+
+  @override
+  String get flagNameDialogCancelButton => 'キャンセル';
+
+  @override
+  String get flagNameDialogSaveButton => '保存';
+
+  @override
+  String get flagRemovedInfoMessage => 'フラグを削除しました';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'このフラグは$count件のノートから削除されます。よろしいですか？';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage => 'このフラグを削除してもよろしいですか？';
+
+  @override
+  String get deleteFlagDialogTitle => 'フラグを削除';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'キャンセル';
+
+  @override
+  String get deleteFlagDialogConfirmButton => '削除';
 
   @override
   String get pinNoteMenuItemLabel => 'ノートを固定';

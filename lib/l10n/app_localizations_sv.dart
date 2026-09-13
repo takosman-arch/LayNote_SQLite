@@ -2232,6 +2232,54 @@ class AppLocalizationsSv extends AppLocalizations {
   String get flagColorRemoveOption => 'Ta bort flagga';
 
   @override
+  String get flagColorNameRed => 'Röd';
+
+  @override
+  String get flagColorNameOrange => 'Orange';
+
+  @override
+  String get flagColorNameYellow => 'Gul';
+
+  @override
+  String get flagColorNameGreen => 'Grön';
+
+  @override
+  String get flagColorNameBlue => 'Blå';
+
+  @override
+  String get flagNameDialogTitle => 'Namnge flaggan';
+
+  @override
+  String get flagNameDialogHint => 'T.ex. Brådskande, Väntar...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Avbryt';
+
+  @override
+  String get flagNameDialogSaveButton => 'Spara';
+
+  @override
+  String get flagRemovedInfoMessage => 'Flagga borttagen';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Den här flaggan tas bort från $count anteckningar. Är du säker?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage =>
+      'Är du säker på att du vill ta bort den här flaggan?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Ta bort flagga';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Avbryt';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Ta bort';
+
+  @override
   String get pinNoteMenuItemLabel => 'Fäst anteckning';
 
   @override

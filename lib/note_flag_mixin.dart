@@ -30,6 +30,31 @@ mixin NoteFlagMixin on State<NoteListScreen> {
     return Color(int.parse('FF$cleaned', radix: 16));
   }
 
+  // _flagPalette'teki her rengin varsayılan Türkçe adı. Kullanıcı henüz
+  // o renge özel bir isim vermediyse (bkz. _flagColorName), seçenek
+  // sheet'inin başlığında ('#2196F3' gibi) çıplak hex kodu yerine bu isim
+  // gösterilir (kullanıcı isteği). Anahtar karşılaştırması büyük/küçük
+  // harf duyarsız yapılır (bkz. toUpperCase) — notlarda eski/farklı
+  // kaynaklı hex string'leri küçük harfle kayıtlı olabilir.
+  Map<String, String> _defaultFlagColorLabels(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return {
+      '#F44336': l10n.flagColorNameRed,
+      '#FF9800': l10n.flagColorNameOrange,
+      '#FFEB3B': l10n.flagColorNameYellow,
+      '#4CAF50': l10n.flagColorNameGreen,
+      '#2196F3': l10n.flagColorNameBlue,
+    };
+  }
+
+  String _defaultFlagColorLabel(BuildContext context, String hex) =>
+      _defaultFlagColorLabels(context)[hex.toUpperCase()] ?? hex;
+
+  // Bir bayrak rengine kullanıcının verdiği isim (varsa). Global
+  // 'flagColorNames' notifier'ından okunur (bkz. main.dart, db_helper.dart
+  // -> getFlagColorNames/setFlagColorName). İsim atanmamışsa null döner.
+  String? _flagColorName(String hex) => flagColorNames.value[hex];
+
   // Başlığın sağına konan flama ikonu. flagColor null ise dış hatlı
   // (sadece kenar çizgisi), doluysa o renkle boyanmış olarak çizilir.
   Widget _buildFlagIcon({
@@ -69,7 +94,7 @@ mixin NoteFlagMixin on State<NoteListScreen> {
   // DİKEY çizilir (düz kenar üstte, çentik altta) — düzenleme
   // ekranındaki _buildFlagIcon ile artık aynı yönelim.
   Widget _buildFlagBadge({required String flagColor, double size = 14}) {
-    return CustomPaint(
+    final badge = CustomPaint(
       size: Size(size, size),
       painter: _FlagShapePainter(
         color: _flagColorFromHex(flagColor),
@@ -77,6 +102,13 @@ mixin NoteFlagMixin on State<NoteListScreen> {
         vertical: true,
       ),
     );
+    // İsim atanmışsa, rozete basılı tutulunca (Tooltip'in dokunmatik
+    // cihazlardaki varsayılan tetikleyicisi) ismi gösterir. İsim yoksa
+    // Tooltip'i hiç sarmalamıyoruz — boş bir mesajla dokunma hedefi
+    // eklememek için.
+    final name = _flagColorName(flagColor);
+    if (name == null) return badge;
+    return Tooltip(message: name, child: badge);
   }
 
   // Renk seçim panelini açar. Bir renk seçilince ya da "kaldır"a
@@ -128,9 +160,10 @@ mixin NoteFlagMixin on State<NoteListScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 12),
                 Row(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     for (int i = 0; i < _flagPalette.length; i++)
                       Builder(builder: (_) {
@@ -139,28 +172,31 @@ mixin NoteFlagMixin on State<NoteListScreen> {
                         final isSelected = currentColor == hex;
                         final isLast = i == _flagPalette.length - 1;
                         return Padding(
-                          padding: EdgeInsets.only(right: isLast ? 0 : 12),
-                          child: GestureDetector(
-                            onTap: () => Navigator.pop(context, hex),
-                            child: Container(
-                              width: 36,
-                              height: 36,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                border: isSelected
-                                    ? Border.all(
-                                        color: dNoteTextColor(context),
-                                        width: 2,
-                                      )
-                                    : null,
-                              ),
-                              child: CustomPaint(
-                                size: const Size(22, 22),
-                                painter: _FlagShapePainter(
-                                  color: color,
-                                  filled: true,
-                                  vertical: true,
+                          padding: EdgeInsets.only(right: isLast ? 0 : 8),
+                          child: SizedBox(
+                            width: 40,
+                            child: GestureDetector(
+                              onTap: () => Navigator.pop(context, hex),
+                              child: Container(
+                                width: 36,
+                                height: 36,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: isSelected
+                                      ? Border.all(
+                                          color: dNoteTextColor(context),
+                                          width: 2,
+                                        )
+                                      : null,
+                                ),
+                                child: CustomPaint(
+                                  size: const Size(22, 22),
+                                  painter: _FlagShapePainter(
+                                    color: color,
+                                    filled: true,
+                                    vertical: true,
+                                  ),
                                 ),
                               ),
                             ),
@@ -201,7 +237,213 @@ mixin NoteFlagMixin on State<NoteListScreen> {
     );
 
     if (selected == null) return;
+
     onColorSelected(selected == _flagRemoveSentinel ? null : selected);
+  }
+
+  // Bir bayrak rengine basılı tutulunca açılan "Yeniden Adlandır / Sil"
+  // seçenek sheet'i — etiket şeridindeki showTagOptionsSheet (bkz.
+  // note_tags_sheet.dart) ile AYNI görsel dil ve mekanizma: alttan açılan
+  // bir showModalBottomSheet, başlıkta simge + isim/hex, altında iki
+  // ListTile. "Sil" seçilince [onDelete] çağrılır — asıl silme (rengi
+  // TÜM notlardan kaldırmak, bkz. NoteListBuildMixin._deleteFlagColorInList)
+  // burada değil çağıran tarafta yapılır, çünkü bu mixin not listesine
+  // (_notes/_deletedNotes) erişemez. "Sil" seçeneği yalnızca renge zaten
+  // bir isim atanmışsa gösterilir (atanmamış bir bayrağı silmenin bir
+  // anlamı yok).
+  Future<void> _showFlagNameOptionsSheet(
+    String hex, {
+    required VoidCallback onDelete,
+  }) async {
+    final currentName = _flagColorName(hex);
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: dNoteCardColor(context),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetCtx) {
+        return SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                child: Row(
+                  children: [
+                    CustomPaint(
+                      size: const Size(18, 18),
+                      painter: _FlagShapePainter(
+                        color: _flagColorFromHex(hex),
+                        filled: true,
+                        vertical: true,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        currentName ?? _defaultFlagColorLabel(sheetCtx, hex),
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: dNoteTextColor(sheetCtx),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.edit_outlined,
+                  color: dNoteTextColor(sheetCtx),
+                ),
+                title: Text(
+                  AppLocalizations.of(sheetCtx)!.tagOptionsRenameLabel,
+                  style: TextStyle(color: dNoteTextColor(sheetCtx)),
+                ),
+                onTap: () {
+                  Navigator.pop(sheetCtx);
+                  _showFlagNameDialog(hex);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete_outline, color: Colors.red),
+                title: Text(
+                  AppLocalizations.of(sheetCtx)!.tagOptionsDeleteLabel,
+                  style: const TextStyle(color: Colors.red),
+                ),
+                onTap: () {
+                  Navigator.pop(sheetCtx);
+                  onDelete();
+                },
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // Boş isimle kaydetmenin (_showFlagNameDialog) ve NoteListBuildMixin'in
+  // bayrağı tamamen silme akışının (bkz. _deleteFlagColorInList — bu
+  // fonksiyon abstract bildirim üzerinden buraya erişir) ortak kullandığı
+  // yardımcı: rengin ismini hem kalıcı depodan hem global
+  // 'flagColorNames' notifier'ından kaldırır.
+  Future<void> _removeFlagColorName(String hex) async {
+    await DBHelper.instance.setFlagColorName(hex, null);
+    final updated = Map<String, String>.from(flagColorNames.value);
+    updated.remove(hex);
+    flagColorNames.value = updated;
+  }
+
+  // Belirli bir bayrak rengine isim atamak/değiştirmek için basit bir
+  // metin girişi diyaloğu. flagColorNames global notifier'ını ve kalıcı
+  // depoyu (DBHelper -> 'settings' tablosu) birlikte günceller. Artık
+  // yalnızca _showFlagNameOptionsSheet'teki "Yeniden Adlandır"
+  // seçeneğinden açılır (silme işi ayrı bir seçeneğe taşındı, bkz.
+  // yukarısı).
+  //
+  // Diyaloğun içeriği (_FlagNameDialogContent) ayrı bir StatefulWidget:
+  // TextEditingController'ı kendi initState/dispose'unda yönetir. Daha
+  // önce controller burada (dialog dışında) oluşturulup showDialog
+  // döndükten HEMEN sonra dispose ediliyordu; ama kapanış animasyonu o
+  // an hâlâ sürdüğünden TextField bir frame daha eski (disposed)
+  // controller'a erişmeye çalışıp "A TextEditingController was used
+  // after being disposed" hatası veriyordu. Controller'ın ömrünü
+  // dialog'un kendi State'ine bağlamak bu sırayı garantiye alıyor.
+  Future<void> _showFlagNameDialog(String hex) async {
+    final result = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => _FlagNameDialogContent(
+        initialName: _flagColorName(hex) ?? '',
+        color: _flagColorFromHex(hex),
+      ),
+    );
+
+    if (result == null || !mounted) return; // Vazgeçildi.
+
+    final trimmed = result.trim();
+    if (trimmed.isEmpty) {
+      await _removeFlagColorName(hex);
+      return;
+    }
+    await DBHelper.instance.setFlagColorName(hex, trimmed);
+    final updated = Map<String, String>.from(flagColorNames.value);
+    updated[hex] = trimmed;
+    flagColorNames.value = updated;
+  }
+}
+
+// _showFlagNameDialog için diyalog içeriği. TextEditingController'ı
+// kendi yaşam döngüsünde (initState/dispose) yönetir — bkz. yukarıdaki
+// açıklama.
+class _FlagNameDialogContent extends StatefulWidget {
+  const _FlagNameDialogContent({
+    required this.initialName,
+    required this.color,
+  });
+
+  final String initialName;
+  final Color color;
+
+  @override
+  State<_FlagNameDialogContent> createState() =>
+      _FlagNameDialogContentState();
+}
+
+class _FlagNameDialogContentState extends State<_FlagNameDialogContent> {
+  late final TextEditingController _controller =
+      TextEditingController(text: widget.initialName);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomPaint(
+            size: const Size(18, 18),
+            painter: _FlagShapePainter(
+              color: widget.color,
+              filled: true,
+              vertical: true,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text(AppLocalizations.of(context)!.flagNameDialogTitle),
+        ],
+      ),
+      content: TextField(
+        controller: _controller,
+        autofocus: true,
+        maxLength: 24,
+        decoration: InputDecoration(
+          hintText: AppLocalizations.of(context)!.flagNameDialogHint,
+        ),
+        onSubmitted: (value) => Navigator.pop(context, value),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text(AppLocalizations.of(context)!.flagNameDialogCancelButton),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop(context, _controller.text),
+          child: Text(AppLocalizations.of(context)!.flagNameDialogSaveButton),
+        ),
+      ],
+    );
   }
 }
 

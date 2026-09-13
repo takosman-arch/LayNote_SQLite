@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Table ({count} rows)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(empty text)",
   "reorderBlocksSheetTitle": "Reorder Blocks",
   "reorderBlocksMoveUpTooltip": "Move Up",
@@ -1033,6 +1041,28 @@
   "flagColorMenuItemLabel": "Flag Color",
   "flagColorPickerTitle": "Choose Flag Color",
   "flagColorRemoveOption": "Remove Flag",
+  "flagColorNameRed": "Red",
+  "flagColorNameOrange": "Orange",
+  "flagColorNameYellow": "Yellow",
+  "flagColorNameGreen": "Green",
+  "flagColorNameBlue": "Blue",
+  "flagNameDialogTitle": "Name the flag",
+  "flagNameDialogHint": "e.g. Urgent, Pending...",
+  "flagNameDialogCancelButton": "Cancel",
+  "flagNameDialogSaveButton": "Save",
+  "flagRemovedInfoMessage": "Flag removed",
+  "deleteFlagConfirmMessageWithCount": "This flag will be removed from {count} notes. Are you sure?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Are you sure you want to delete this flag?",
+  "deleteFlagDialogTitle": "Delete Flag",
+  "deleteFlagDialogCancelButton": "Cancel",
+  "deleteFlagDialogConfirmButton": "Delete",
   "pinNoteMenuItemLabel": "Pin Note",
   "unpinNoteMenuItemLabel": "Unpin Note",
   "linkDialogUrlHint": "https://example.com",

@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Taulukko ({count} riviä)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(tyhjä teksti)",
   "reorderBlocksSheetTitle": "Järjestä lohkot uudelleen",
   "reorderBlocksMoveUpTooltip": "Siirrä ylös",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "Lipun väri",
   "flagColorPickerTitle": "Valitse lipun väri",
   "flagColorRemoveOption": "Poista lippu",
+  "flagColorNameRed": "Punainen",
+  "flagColorNameOrange": "Oranssi",
+  "flagColorNameYellow": "Keltainen",
+  "flagColorNameGreen": "Vihreä",
+  "flagColorNameBlue": "Sininen",
+  "flagNameDialogTitle": "Nimeä lippu",
+  "flagNameDialogHint": "Esim. Kiireellinen, Odottaa...",
+  "flagNameDialogCancelButton": "Peruuta",
+  "flagNameDialogSaveButton": "Tallenna",
+  "flagRemovedInfoMessage": "Lippu poistettu",
+  "deleteFlagConfirmMessageWithCount": "Tämä lippu poistetaan {count} muistiinpanosta. Oletko varma?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Haluatko varmasti poistaa tämän lipun?",
+  "deleteFlagDialogTitle": "Poista lippu",
+  "deleteFlagDialogCancelButton": "Peruuta",
+  "deleteFlagDialogConfirmButton": "Poista",
   "pinNoteMenuItemLabel": "Kiinnitä muistiinpano",
   "unpinNoteMenuItemLabel": "Poista kiinnitys",
   "linkDialogUrlHint": "https://example.com",

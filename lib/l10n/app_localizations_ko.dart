@@ -2186,6 +2186,53 @@ class AppLocalizationsKo extends AppLocalizations {
   String get flagColorRemoveOption => '플래그 제거';
 
   @override
+  String get flagColorNameRed => '빨강';
+
+  @override
+  String get flagColorNameOrange => '주황';
+
+  @override
+  String get flagColorNameYellow => '노랑';
+
+  @override
+  String get flagColorNameGreen => '초록';
+
+  @override
+  String get flagColorNameBlue => '파랑';
+
+  @override
+  String get flagNameDialogTitle => '플래그 이름 지정';
+
+  @override
+  String get flagNameDialogHint => '예: 긴급, 대기 중...';
+
+  @override
+  String get flagNameDialogCancelButton => '취소';
+
+  @override
+  String get flagNameDialogSaveButton => '저장';
+
+  @override
+  String get flagRemovedInfoMessage => '플래그가 제거되었습니다';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return '이 플래그가 $count개의 메모에서 제거됩니다. 계속하시겠습니까?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage => '이 플래그를 삭제하시겠습니까?';
+
+  @override
+  String get deleteFlagDialogTitle => '플래그 삭제';
+
+  @override
+  String get deleteFlagDialogCancelButton => '취소';
+
+  @override
+  String get deleteFlagDialogConfirmButton => '삭제';
+
+  @override
   String get pinNoteMenuItemLabel => '메모 고정';
 
   @override

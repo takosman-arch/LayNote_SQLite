@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "표 ({count}행)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(빈 텍스트)",
   "reorderBlocksSheetTitle": "블록 순서 변경",
   "reorderBlocksMoveUpTooltip": "위로 이동",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "플래그 색상",
   "flagColorPickerTitle": "플래그 색상 선택",
   "flagColorRemoveOption": "플래그 제거",
+  "flagColorNameRed": "빨강",
+  "flagColorNameOrange": "주황",
+  "flagColorNameYellow": "노랑",
+  "flagColorNameGreen": "초록",
+  "flagColorNameBlue": "파랑",
+  "flagNameDialogTitle": "플래그 이름 지정",
+  "flagNameDialogHint": "예: 긴급, 대기 중...",
+  "flagNameDialogCancelButton": "취소",
+  "flagNameDialogSaveButton": "저장",
+  "flagRemovedInfoMessage": "플래그가 제거되었습니다",
+  "deleteFlagConfirmMessageWithCount": "이 플래그가 {count}개의 메모에서 제거됩니다. 계속하시겠습니까?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "이 플래그를 삭제하시겠습니까?",
+  "deleteFlagDialogTitle": "플래그 삭제",
+  "deleteFlagDialogCancelButton": "취소",
+  "deleteFlagDialogConfirmButton": "삭제",
   "pinNoteMenuItemLabel": "메모 고정",
   "unpinNoteMenuItemLabel": "고정 해제",
   "linkDialogUrlHint": "https://example.com",

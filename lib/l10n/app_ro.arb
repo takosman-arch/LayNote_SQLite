@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabel ({count} rânduri)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(text gol)",
   "reorderBlocksSheetTitle": "Reordonare blocuri",
   "reorderBlocksMoveUpTooltip": "Mutare în sus",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "Culoare steag",
   "flagColorPickerTitle": "Alege culoarea steagului",
   "flagColorRemoveOption": "Elimină steagul",
+  "flagColorNameRed": "Roșu",
+  "flagColorNameOrange": "Portocaliu",
+  "flagColorNameYellow": "Galben",
+  "flagColorNameGreen": "Verde",
+  "flagColorNameBlue": "Albastru",
+  "flagNameDialogTitle": "Denumește steagul",
+  "flagNameDialogHint": "Ex. Urgent, În așteptare...",
+  "flagNameDialogCancelButton": "Anulare",
+  "flagNameDialogSaveButton": "Salvare",
+  "flagRemovedInfoMessage": "Steag eliminat",
+  "deleteFlagConfirmMessageWithCount": "Acest steag va fi eliminat din {count} note. Ești sigur?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Sigur dorești să ștergi acest steag?",
+  "deleteFlagDialogTitle": "Șterge steagul",
+  "deleteFlagDialogCancelButton": "Anulare",
+  "deleteFlagDialogConfirmButton": "Ștergere",
   "pinNoteMenuItemLabel": "Fixează nota",
   "unpinNoteMenuItemLabel": "Anulează fixarea",
   "linkDialogUrlHint": "https://example.com",

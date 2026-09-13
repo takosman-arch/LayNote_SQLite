@@ -100,6 +100,14 @@ part 'note_checklist_block.dart';
 // aşağıda (DNoteApp) verilir.
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+// Bayrak (flama) renklerine kullanıcı tarafından verilen isimler (hex ->
+// isim). Notlara özel değil, sabit palete (NoteFlagMixin._flagPalette)
+// özeldir; bu yüzden tek bir global ValueNotifier olarak tutulur ve
+// uygulama açılışında main()'de DBHelper'dan doldurulur (bkz.
+// note_flag_mixin.dart -> _showFlagNameDialog, DBHelper.setFlagColorName).
+final ValueNotifier<Map<String, String>> flagColorNames =
+    ValueNotifier<Map<String, String>>({});
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -141,6 +149,11 @@ void main() async {
 
   // Dil tercihi: kayıtlı ayar yoksa (ilk kurulum) 'system' kalır.
   appLanguage.value = settings['app_language'] ?? 'system';
+
+  // Bayrak renklerine daha önce verilmiş isimler (varsa) ilk çizimden
+  // önce yüklenir; böylece kart rozetleri/menü satırı vb. ilk açılışta
+  // isimsiz görünüp bir an sonra ismiyle güncellenmez.
+  flagColorNames.value = await DBHelper.instance.getFlagColorNames();
 
   SystemChrome.setSystemUIOverlayStyle(
     dNoteSystemBarsStyleForMode(appThemeMode.value),

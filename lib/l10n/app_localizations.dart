@@ -338,7 +338,7 @@ abstract class AppLocalizations {
   /// **'Hesap Listesi ({count} satır)'**
   String blockPreviewCalcTableLabel(int count);
 
-  /// Blokları Sırala listesinde bir tablo bloğu için gösterilen önizleme metni
+  /// No description provided for @blockPreviewTableLabel.
   ///
   /// In tr, this message translates to:
   /// **'Tablo ({count} satır)'**
@@ -4201,6 +4201,96 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Bayrağı kaldır'**
   String get flagColorRemoveOption;
+
+  /// No description provided for @flagColorNameRed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kırmızı'**
+  String get flagColorNameRed;
+
+  /// No description provided for @flagColorNameOrange.
+  ///
+  /// In tr, this message translates to:
+  /// **'Turuncu'**
+  String get flagColorNameOrange;
+
+  /// No description provided for @flagColorNameYellow.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sarı'**
+  String get flagColorNameYellow;
+
+  /// No description provided for @flagColorNameGreen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeşil'**
+  String get flagColorNameGreen;
+
+  /// No description provided for @flagColorNameBlue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mavi'**
+  String get flagColorNameBlue;
+
+  /// No description provided for @flagNameDialogTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bayrağı adlandır'**
+  String get flagNameDialogTitle;
+
+  /// No description provided for @flagNameDialogHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn. Acil, Beklemede...'**
+  String get flagNameDialogHint;
+
+  /// No description provided for @flagNameDialogCancelButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vazgeç'**
+  String get flagNameDialogCancelButton;
+
+  /// No description provided for @flagNameDialogSaveButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydet'**
+  String get flagNameDialogSaveButton;
+
+  /// No description provided for @flagRemovedInfoMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bayrak kaldırıldı'**
+  String get flagRemovedInfoMessage;
+
+  /// No description provided for @deleteFlagConfirmMessageWithCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu bayrak {count} nottan kaldırılacak. Emin misiniz?'**
+  String deleteFlagConfirmMessageWithCount(int count);
+
+  /// No description provided for @deleteFlagConfirmMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu bayrağı silmek istediğinizden emin misiniz?'**
+  String get deleteFlagConfirmMessage;
+
+  /// No description provided for @deleteFlagDialogTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bayrağı Sil'**
+  String get deleteFlagDialogTitle;
+
+  /// No description provided for @deleteFlagDialogCancelButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Vazgeç'**
+  String get deleteFlagDialogCancelButton;
+
+  /// No description provided for @deleteFlagDialogConfirmButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sil'**
+  String get deleteFlagDialogConfirmButton;
 
   /// No description provided for @pinNoteMenuItemLabel.
   ///

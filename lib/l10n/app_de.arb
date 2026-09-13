@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabelle ({count} Zeilen)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(leerer Text)",
   "reorderBlocksSheetTitle": "Blöcke neu anordnen",
   "reorderBlocksMoveUpTooltip": "Nach oben verschieben",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "Flaggenfarbe",
   "flagColorPickerTitle": "Flaggenfarbe wählen",
   "flagColorRemoveOption": "Flagge entfernen",
+  "flagColorNameRed": "Rot",
+  "flagColorNameOrange": "Orange",
+  "flagColorNameYellow": "Gelb",
+  "flagColorNameGreen": "Grün",
+  "flagColorNameBlue": "Blau",
+  "flagNameDialogTitle": "Flagge benennen",
+  "flagNameDialogHint": "z. B. Dringend, Ausstehend...",
+  "flagNameDialogCancelButton": "Abbrechen",
+  "flagNameDialogSaveButton": "Speichern",
+  "flagRemovedInfoMessage": "Flagge entfernt",
+  "deleteFlagConfirmMessageWithCount": "Diese Flagge wird von {count} Notizen entfernt. Bist du sicher?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Möchtest du diese Flagge wirklich löschen?",
+  "deleteFlagDialogTitle": "Flagge löschen",
+  "deleteFlagDialogCancelButton": "Abbrechen",
+  "deleteFlagDialogConfirmButton": "Löschen",
   "pinNoteMenuItemLabel": "Notiz anheften",
   "unpinNoteMenuItemLabel": "Anheften aufheben",
   "linkDialogUrlHint": "https://beispiel.de",

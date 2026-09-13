@@ -79,6 +79,14 @@
       }
     }
   },
+  "blockPreviewTableLabel": "Tabel ({count} rækker)",
+  "@blockPreviewTableLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockPreviewEmptyTextLabel": "(tom tekst)",
   "reorderBlocksSheetTitle": "Omorganiser blokke",
   "reorderBlocksMoveUpTooltip": "Flyt op",
@@ -1015,6 +1023,28 @@
   "flagColorMenuItemLabel": "Flagfarve",
   "flagColorPickerTitle": "Vælg flagfarve",
   "flagColorRemoveOption": "Fjern flag",
+  "flagColorNameRed": "Rød",
+  "flagColorNameOrange": "Orange",
+  "flagColorNameYellow": "Gul",
+  "flagColorNameGreen": "Grøn",
+  "flagColorNameBlue": "Blå",
+  "flagNameDialogTitle": "Navngiv flaget",
+  "flagNameDialogHint": "F.eks. Akut, Afventer...",
+  "flagNameDialogCancelButton": "Annuller",
+  "flagNameDialogSaveButton": "Gem",
+  "flagRemovedInfoMessage": "Flag fjernet",
+  "deleteFlagConfirmMessageWithCount": "Dette flag fjernes fra {count} noter. Er du sikker?",
+  "@deleteFlagConfirmMessageWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFlagConfirmMessage": "Er du sikker på, at du vil slette dette flag?",
+  "deleteFlagDialogTitle": "Slet flag",
+  "deleteFlagDialogCancelButton": "Annuller",
+  "deleteFlagDialogConfirmButton": "Slet",
   "pinNoteMenuItemLabel": "Fastgør note",
   "unpinNoteMenuItemLabel": "Frigør note",
   "linkDialogUrlHint": "https://example.com",

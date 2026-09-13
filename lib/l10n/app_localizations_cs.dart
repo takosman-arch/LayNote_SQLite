@@ -2234,6 +2234,53 @@ class AppLocalizationsCs extends AppLocalizations {
   String get flagColorRemoveOption => 'Odebrat vlajku';
 
   @override
+  String get flagColorNameRed => 'Červená';
+
+  @override
+  String get flagColorNameOrange => 'Oranžová';
+
+  @override
+  String get flagColorNameYellow => 'Žlutá';
+
+  @override
+  String get flagColorNameGreen => 'Zelená';
+
+  @override
+  String get flagColorNameBlue => 'Modrá';
+
+  @override
+  String get flagNameDialogTitle => 'Pojmenovat vlajku';
+
+  @override
+  String get flagNameDialogHint => 'Např. Naléhavé, Čeká se...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Zrušit';
+
+  @override
+  String get flagNameDialogSaveButton => 'Uložit';
+
+  @override
+  String get flagRemovedInfoMessage => 'Vlajka odebrána';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Tato vlajka bude odebrána z $count poznámek. Opravdu chcete pokračovat?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage => 'Opravdu chcete smazat tuto vlajku?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Smazat vlajku';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Zrušit';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Smazat';
+
+  @override
   String get pinNoteMenuItemLabel => 'Připnout poznámku';
 
   @override

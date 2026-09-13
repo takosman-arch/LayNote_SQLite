@@ -2234,6 +2234,54 @@ class AppLocalizationsFi extends AppLocalizations {
   String get flagColorRemoveOption => 'Poista lippu';
 
   @override
+  String get flagColorNameRed => 'Punainen';
+
+  @override
+  String get flagColorNameOrange => 'Oranssi';
+
+  @override
+  String get flagColorNameYellow => 'Keltainen';
+
+  @override
+  String get flagColorNameGreen => 'Vihreä';
+
+  @override
+  String get flagColorNameBlue => 'Sininen';
+
+  @override
+  String get flagNameDialogTitle => 'Nimeä lippu';
+
+  @override
+  String get flagNameDialogHint => 'Esim. Kiireellinen, Odottaa...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Peruuta';
+
+  @override
+  String get flagNameDialogSaveButton => 'Tallenna';
+
+  @override
+  String get flagRemovedInfoMessage => 'Lippu poistettu';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Tämä lippu poistetaan $count muistiinpanosta. Oletko varma?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage =>
+      'Haluatko varmasti poistaa tämän lipun?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Poista lippu';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Peruuta';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Poista';
+
+  @override
   String get pinNoteMenuItemLabel => 'Kiinnitä muistiinpano';
 
   @override

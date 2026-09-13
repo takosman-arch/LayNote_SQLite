@@ -2229,6 +2229,54 @@ class AppLocalizationsNo extends AppLocalizations {
   String get flagColorRemoveOption => 'Fjern flagg';
 
   @override
+  String get flagColorNameRed => 'Rød';
+
+  @override
+  String get flagColorNameOrange => 'Oransje';
+
+  @override
+  String get flagColorNameYellow => 'Gul';
+
+  @override
+  String get flagColorNameGreen => 'Grønn';
+
+  @override
+  String get flagColorNameBlue => 'Blå';
+
+  @override
+  String get flagNameDialogTitle => 'Gi flagget et navn';
+
+  @override
+  String get flagNameDialogHint => 'F.eks. Haster, Venter...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Avbryt';
+
+  @override
+  String get flagNameDialogSaveButton => 'Lagre';
+
+  @override
+  String get flagRemovedInfoMessage => 'Flagg fjernet';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Dette flagget fjernes fra $count notater. Er du sikker?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage =>
+      'Er du sikker på at du vil slette dette flagget?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Slett flagg';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Avbryt';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Slett';
+
+  @override
   String get pinNoteMenuItemLabel => 'Fest notat';
 
   @override

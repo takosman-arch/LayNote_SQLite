@@ -2249,6 +2249,54 @@ class AppLocalizationsNl extends AppLocalizations {
   String get flagColorRemoveOption => 'Vlag verwijderen';
 
   @override
+  String get flagColorNameRed => 'Rood';
+
+  @override
+  String get flagColorNameOrange => 'Oranje';
+
+  @override
+  String get flagColorNameYellow => 'Geel';
+
+  @override
+  String get flagColorNameGreen => 'Groen';
+
+  @override
+  String get flagColorNameBlue => 'Blauw';
+
+  @override
+  String get flagNameDialogTitle => 'Vlag een naam geven';
+
+  @override
+  String get flagNameDialogHint => 'Bijv. Urgent, In behandeling...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Annuleren';
+
+  @override
+  String get flagNameDialogSaveButton => 'Opslaan';
+
+  @override
+  String get flagRemovedInfoMessage => 'Vlag verwijderd';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Deze vlag wordt verwijderd uit $count notities. Weet je het zeker?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage =>
+      'Weet je zeker dat je deze vlag wilt verwijderen?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Vlag verwijderen';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Annuleren';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Verwijderen';
+
+  @override
   String get pinNoteMenuItemLabel => 'Notitie vastzetten';
 
   @override

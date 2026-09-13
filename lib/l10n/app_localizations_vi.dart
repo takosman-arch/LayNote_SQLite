@@ -118,7 +118,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String blockPreviewTableLabel(int count) {
-    return 'Bảng ($count dòng)';
+    return 'Bảng ($count hàng)';
   }
 
   @override
@@ -2234,6 +2234,53 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get flagColorRemoveOption => 'Xóa cờ';
+
+  @override
+  String get flagColorNameRed => 'Đỏ';
+
+  @override
+  String get flagColorNameOrange => 'Cam';
+
+  @override
+  String get flagColorNameYellow => 'Vàng';
+
+  @override
+  String get flagColorNameGreen => 'Xanh lá';
+
+  @override
+  String get flagColorNameBlue => 'Xanh dương';
+
+  @override
+  String get flagNameDialogTitle => 'Đặt tên cho cờ';
+
+  @override
+  String get flagNameDialogHint => 'VD: Khẩn cấp, Đang chờ...';
+
+  @override
+  String get flagNameDialogCancelButton => 'Hủy';
+
+  @override
+  String get flagNameDialogSaveButton => 'Lưu';
+
+  @override
+  String get flagRemovedInfoMessage => 'Đã xóa cờ';
+
+  @override
+  String deleteFlagConfirmMessageWithCount(int count) {
+    return 'Cờ này sẽ bị xóa khỏi $count ghi chú. Bạn có chắc không?';
+  }
+
+  @override
+  String get deleteFlagConfirmMessage => 'Bạn có chắc muốn xóa cờ này không?';
+
+  @override
+  String get deleteFlagDialogTitle => 'Xóa cờ';
+
+  @override
+  String get deleteFlagDialogCancelButton => 'Hủy';
+
+  @override
+  String get deleteFlagDialogConfirmButton => 'Xóa';
 
   @override
   String get pinNoteMenuItemLabel => 'Ghim ghi chú';
