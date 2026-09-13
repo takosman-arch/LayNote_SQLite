@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "Tabel ({count} baris)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(teks kosong)",
   "reorderBlocksSheetTitle": "Urutkan Ulang Blok",
   "reorderBlocksMoveUpTooltip": "Pindah ke Atas",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "Tag",
   "noteBgColorMenuItemLabel": "Warna Sampul",
   "noteBgColorDialogTitle": "Pilih Warna Sampul",
-  "flagColorMenuItemLabel": "Warna Bendera",
+  "flagColorMenuItemLabel": "Bendera",
   "flagColorPickerTitle": "Pilih Warna Bendera",
   "flagColorRemoveOption": "Hapus Bendera",
-  "flagColorNameRed": "Merah",
-  "flagColorNameOrange": "Oranye",
-  "flagColorNameYellow": "Kuning",
-  "flagColorNameGreen": "Hijau",
-  "flagColorNameBlue": "Biru",
+  "flagColorNameRed": "Prioritas",
+  "flagColorNameOrange": "Pribadi",
+  "flagColorNameYellow": "Ide",
+  "flagColorNameGreen": "Dimulai",
+  "flagColorNameBlue": "Selesai",
   "flagNameDialogTitle": "Beri nama bendera",
   "flagNameDialogHint": "Cth. Mendesak, Tertunda...",
   "flagNameDialogCancelButton": "Batal",

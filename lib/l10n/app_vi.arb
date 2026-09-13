@@ -53,7 +53,7 @@
       }
     }
   },
-  "blockPreviewTableLabel": "Bảng ({count} dòng)",
+  "blockPreviewTableLabel": "Bảng ({count} hàng)",
   "@blockPreviewTableLabel": {
     "placeholders": {
       "count": {
@@ -73,14 +73,6 @@
   "blockPreviewDividerLabel": "Đường phân cách",
   "blockPreviewChecklistLabel": "Danh sách việc cần làm ({count} mục)",
   "@blockPreviewChecklistLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "blockPreviewTableLabel": "Bảng ({count} hàng)",
-  "@blockPreviewTableLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "Thẻ",
   "noteBgColorMenuItemLabel": "Màu bìa",
   "noteBgColorDialogTitle": "Chọn màu bìa",
-  "flagColorMenuItemLabel": "Màu cờ",
+  "flagColorMenuItemLabel": "Cờ",
   "flagColorPickerTitle": "Chọn màu cờ",
   "flagColorRemoveOption": "Xóa cờ",
-  "flagColorNameRed": "Đỏ",
-  "flagColorNameOrange": "Cam",
-  "flagColorNameYellow": "Vàng",
-  "flagColorNameGreen": "Xanh lá",
-  "flagColorNameBlue": "Xanh dương",
+  "flagColorNameRed": "Ưu tiên",
+  "flagColorNameOrange": "Cá nhân",
+  "flagColorNameYellow": "Ý tưởng",
+  "flagColorNameGreen": "Đã bắt đầu",
+  "flagColorNameBlue": "Đã hoàn thành",
   "flagNameDialogTitle": "Đặt tên cho cờ",
   "flagNameDialogHint": "VD: Khẩn cấp, Đang chờ...",
   "flagNameDialogCancelButton": "Hủy",

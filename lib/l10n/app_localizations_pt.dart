@@ -2250,7 +2250,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get noteBgColorDialogTitle => 'Escolher Cor da Capa';
 
   @override
-  String get flagColorMenuItemLabel => 'Cor da bandeira';
+  String get flagColorMenuItemLabel => 'Bandeira';
 
   @override
   String get flagColorPickerTitle => 'Escolher cor da bandeira';
@@ -2259,19 +2259,19 @@ class AppLocalizationsPt extends AppLocalizations {
   String get flagColorRemoveOption => 'Remover bandeira';
 
   @override
-  String get flagColorNameRed => 'Vermelho';
+  String get flagColorNameRed => 'Prioridade';
 
   @override
-  String get flagColorNameOrange => 'Laranja';
+  String get flagColorNameOrange => 'Pessoal';
 
   @override
-  String get flagColorNameYellow => 'Amarelo';
+  String get flagColorNameYellow => 'Ideias';
 
   @override
-  String get flagColorNameGreen => 'Verde';
+  String get flagColorNameGreen => 'Iniciadas';
 
   @override
-  String get flagColorNameBlue => 'Azul';
+  String get flagColorNameBlue => 'Concluídas';
 
   @override
   String get flagNameDialogTitle => 'Nomear a bandeira';

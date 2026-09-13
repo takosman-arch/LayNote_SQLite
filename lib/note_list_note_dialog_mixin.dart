@@ -131,6 +131,15 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // yalnızca ilk açılış anlık olur, kullanıcının editörden normal
     // şekilde geri çıkması animasyonsuz kalmaz.
     bool openInstantly = false,
+    // Ana ekranda bir bayrak sayfasındayken ya da arama bölümünde bir
+    // bayrak seçiliyken (+) ile not oluşturulduğunda, notun baştan o
+    // bayrakla açılmasını sağlar (kullanıcı isteği). initialAssignedDate
+    // ile aynı desen: yalnızca yeni not oluştururken (index == null)
+    // kullanılır; düzenlemede notun kendi flagColor'ı (bkz. aşağıdaki
+    // ~satır 3248'deki yükleme) geçerlidir ve bu değeri ezer. Editördeki
+    // bayrak ikonu üzerinden kullanıcı isterse kaydetmeden önce
+    // değiştirebilir ya da kaldırabilir.
+    String? initialFlagColor,
   }) {
     // Diyalog KAPANIRKEN "yeni not oluşturma akışıydı mı?" kontrolü için.
     // `index` parametresi diyalog içinde (kategori seçilirken, bkz. aşağıda
@@ -345,8 +354,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // Bayrak (flama) rengi: başlığın sağındaki flama ikonundan seçilir.
     // null = bayrak yok (boş/dış hatlı gösterilir). bgColor ile aynı
     // desen: modal state'te tutulur, kaydedilirken _saveNoteIfValid'e
-    // geçirilir (bkz. NoteFlagMixin).
-    String? noteFlagColor;
+    // geçirilir (bkz. NoteFlagMixin). Yeni not oluştururken (isNewNote),
+    // başlangıç değeri initialFlagColor'dan gelir (bkz. yukarıdaki
+    // parametre açıklaması) — böylece bir bayrak sayfasında/filtresinde
+    // (+) ile açılan not, editöre o bayrak zaten seçili olarak gelir.
+    String? noteFlagColor = isNewNote ? initialFlagColor : null;
     // Sabitleme (pin) durumu: üst bardaki üç nokta menüsündeki "Sabitle"
     // öğesinden değiştirilir. bgColor/flagColor ile aynı desen: modal
     // state'te tutulur, kaydedilirken _saveNoteIfValid'e geçirilir.
@@ -5866,9 +5878,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           }
                         },
                         itemBuilder: (_) => [
-                          // Menü sırası: Sabitle, Etiketler, Bayrak Rengi,
+                          // Menü sırası: Sabitle, Bayrak Rengi, Etiketler,
                           // Kapak Rengi, ardından bir ayraç ve diğer
-                          // öğeler.
+                          // öğeler. (Bayrak, kullanıcı isteğiyle Etiketler'in
+                          // üzerine alındı — sırayı değiştirmenin dışında
+                          // davranışta bir fark yok, 'value' string'leri
+                          // aynı kaldığı için onSelected switch-case'i
+                          // etkilenmiyor.)
                           PopupMenuItem(
                             value: 'pin_note',
                             child: Row(
@@ -5888,25 +5904,6 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   notePinned
                                       ? Icons.push_pin
                                       : Icons.push_pin_outlined,
-                                  color: appAccentColor.value,
-                                  size: 24,
-                                ),
-                              ],
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: 'tags',
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    AppLocalizations.of(context)!.tagsMenuItemLabel,
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Icon(
-                                  Icons.sell_outlined,
                                   color: appAccentColor.value,
                                   size: 24,
                                 ),
@@ -5955,6 +5952,25 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       ),
                                     ),
                                   ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'tags',
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.tagsMenuItemLabel,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Icon(
+                                  Icons.sell_outlined,
+                                  color: appAccentColor.value,
+                                  size: 24,
                                 ),
                               ],
                             ),

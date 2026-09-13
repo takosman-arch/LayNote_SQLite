@@ -47,3 +47,17 @@
 # google_mlkit_text_recognition bu paket altında (gms dışında) çalışıyor.
 -keep class com.google.mlkit.** { *; }
 -dontwarn com.google.mlkit.**
+
+# ── ucrop (cunning_document_scanner bağımlılığı) opsiyonel olarak
+# okhttp3 ile URL'den resim indirme özelliğine sahip, ancak projede
+# okhttp3 bağımlılığı bulunmuyor (bu özellik kullanılmıyor). R8'in
+# "Missing class okhttp3.*" hatası vermesini engellemek için sadece
+# dontwarn yeterli; gerçek bir okhttp3 kullanımı olmadığından keep
+# gerekmiyor.
+-dontwarn okhttp3.Call
+-dontwarn okhttp3.Dispatcher
+-dontwarn okhttp3.OkHttpClient
+-dontwarn okhttp3.Request$Builder
+-dontwarn okhttp3.Request
+-dontwarn okhttp3.Response
+-dontwarn okhttp3.ResponseBody

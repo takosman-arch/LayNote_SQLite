@@ -53,7 +53,7 @@
       }
     }
   },
-  "blockPreviewTableLabel": "तालिका ({count} पंक्तियाँ)",
+  "blockPreviewTableLabel": "तालिका ({count} पंक्तियां)",
   "@blockPreviewTableLabel": {
     "placeholders": {
       "count": {
@@ -73,14 +73,6 @@
   "blockPreviewDividerLabel": "विभाजक",
   "blockPreviewChecklistLabel": "चेकलिस्ट ({count} आइटम)",
   "@blockPreviewChecklistLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "blockPreviewTableLabel": "तालिका ({count} पंक्तियां)",
-  "@blockPreviewTableLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "टैग",
   "noteBgColorMenuItemLabel": "कवर रंग",
   "noteBgColorDialogTitle": "कवर रंग चुनें",
-  "flagColorMenuItemLabel": "फ़्लैग रंग",
+  "flagColorMenuItemLabel": "फ़्लैग",
   "flagColorPickerTitle": "फ़्लैग रंग चुनें",
   "flagColorRemoveOption": "फ़्लैग हटाएं",
-  "flagColorNameRed": "लाल",
-  "flagColorNameOrange": "नारंगी",
-  "flagColorNameYellow": "पीला",
-  "flagColorNameGreen": "हरा",
-  "flagColorNameBlue": "नीला",
+  "flagColorNameRed": "प्राथमिकता",
+  "flagColorNameOrange": "व्यक्तिगत",
+  "flagColorNameYellow": "विचार",
+  "flagColorNameGreen": "शुरू किए गए",
+  "flagColorNameBlue": "पूर्ण",
   "flagNameDialogTitle": "फ़्लैग को नाम दें",
   "flagNameDialogHint": "उदा. अत्यावश्यक, लंबित...",
   "flagNameDialogCancelButton": "रद्द करें",

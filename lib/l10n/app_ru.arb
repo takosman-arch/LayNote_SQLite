@@ -37,7 +37,6 @@
   "blockPreviewAttachmentsLabel": "Вложений: {count} (фото/документ)",
   "blockPreviewDividerLabel": "Разделитель",
   "blockPreviewChecklistLabel": "Чек-лист ({count} пунктов)",
-  "blockPreviewTableLabel": "Таблица ({count} строк)",
   "@blockPreviewTableLabel": {
     "placeholders": {
       "count": {
@@ -681,14 +680,14 @@
   "tagsMenuItemLabel": "Теги",
   "noteBgColorMenuItemLabel": "Цвет обложки",
   "noteBgColorDialogTitle": "Выбрать цвет обложки",
-  "flagColorMenuItemLabel": "Цвет флажка",
+  "flagColorMenuItemLabel": "Флажок",
   "flagColorPickerTitle": "Выберите цвет флажка",
   "flagColorRemoveOption": "Убрать флажок",
-  "flagColorNameRed": "Красный",
-  "flagColorNameOrange": "Оранжевый",
-  "flagColorNameYellow": "Жёлтый",
-  "flagColorNameGreen": "Зелёный",
-  "flagColorNameBlue": "Синий",
+  "flagColorNameRed": "Приоритет",
+  "flagColorNameOrange": "Личное",
+  "flagColorNameYellow": "Идеи",
+  "flagColorNameGreen": "Начатые",
+  "flagColorNameBlue": "Завершённые",
   "flagNameDialogTitle": "Назвать флажок",
   "flagNameDialogHint": "Напр. Срочно, В ожидании...",
   "flagNameDialogCancelButton": "Отмена",

@@ -2224,7 +2224,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get noteBgColorDialogTitle => 'कवर रंग चुनें';
 
   @override
-  String get flagColorMenuItemLabel => 'फ़्लैग रंग';
+  String get flagColorMenuItemLabel => 'फ़्लैग';
 
   @override
   String get flagColorPickerTitle => 'फ़्लैग रंग चुनें';
@@ -2233,19 +2233,19 @@ class AppLocalizationsHi extends AppLocalizations {
   String get flagColorRemoveOption => 'फ़्लैग हटाएं';
 
   @override
-  String get flagColorNameRed => 'लाल';
+  String get flagColorNameRed => 'प्राथमिकता';
 
   @override
-  String get flagColorNameOrange => 'नारंगी';
+  String get flagColorNameOrange => 'व्यक्तिगत';
 
   @override
-  String get flagColorNameYellow => 'पीला';
+  String get flagColorNameYellow => 'विचार';
 
   @override
-  String get flagColorNameGreen => 'हरा';
+  String get flagColorNameGreen => 'शुरू किए गए';
 
   @override
-  String get flagColorNameBlue => 'नीला';
+  String get flagColorNameBlue => 'पूर्ण';
 
   @override
   String get flagNameDialogTitle => 'फ़्लैग को नाम दें';

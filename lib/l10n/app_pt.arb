@@ -37,7 +37,6 @@
   "blockPreviewAttachmentsLabel": "{count} anexos (foto/documento)",
   "blockPreviewDividerLabel": "Divisor",
   "blockPreviewChecklistLabel": "Lista de Verificação ({count} itens)",
-  "blockPreviewTableLabel": "Tabela ({count} linhas)",
   "@blockPreviewTableLabel": {
     "placeholders": {
       "count": {
@@ -681,14 +680,14 @@
   "tagsMenuItemLabel": "Etiquetas",
   "noteBgColorMenuItemLabel": "Cor da Capa",
   "noteBgColorDialogTitle": "Escolher Cor da Capa",
-  "flagColorMenuItemLabel": "Cor da bandeira",
+  "flagColorMenuItemLabel": "Bandeira",
   "flagColorPickerTitle": "Escolher cor da bandeira",
   "flagColorRemoveOption": "Remover bandeira",
-  "flagColorNameRed": "Vermelho",
-  "flagColorNameOrange": "Laranja",
-  "flagColorNameYellow": "Amarelo",
-  "flagColorNameGreen": "Verde",
-  "flagColorNameBlue": "Azul",
+  "flagColorNameRed": "Prioridade",
+  "flagColorNameOrange": "Pessoal",
+  "flagColorNameYellow": "Ideias",
+  "flagColorNameGreen": "Iniciadas",
+  "flagColorNameBlue": "Concluídas",
   "flagNameDialogTitle": "Nomear a bandeira",
   "flagNameDialogHint": "Ex. Urgente, Pendente...",
   "flagNameDialogCancelButton": "Cancelar",

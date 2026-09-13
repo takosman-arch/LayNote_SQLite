@@ -2214,7 +2214,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noteBgColorDialogTitle => 'اختر لون الغلاف';
 
   @override
-  String get flagColorMenuItemLabel => 'لون العلم';
+  String get flagColorMenuItemLabel => 'العلم';
 
   @override
   String get flagColorPickerTitle => 'اختر لون العلم';
@@ -2223,19 +2223,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get flagColorRemoveOption => 'إزالة العلم';
 
   @override
-  String get flagColorNameRed => 'أحمر';
+  String get flagColorNameRed => 'أولوية';
 
   @override
-  String get flagColorNameOrange => 'برتقالي';
+  String get flagColorNameOrange => 'شخصي';
 
   @override
-  String get flagColorNameYellow => 'أصفر';
+  String get flagColorNameYellow => 'أفكار';
 
   @override
-  String get flagColorNameGreen => 'أخضر';
+  String get flagColorNameGreen => 'قيد التنفيذ';
 
   @override
-  String get flagColorNameBlue => 'أزرق';
+  String get flagColorNameBlue => 'مكتملة';
 
   @override
   String get flagNameDialogTitle => 'تسمية العلم';

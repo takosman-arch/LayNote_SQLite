@@ -4187,7 +4187,7 @@ abstract class AppLocalizations {
   /// No description provided for @flagColorMenuItemLabel.
   ///
   /// In tr, this message translates to:
-  /// **'Bayrak Rengi'**
+  /// **'Bayrak'**
   String get flagColorMenuItemLabel;
 
   /// No description provided for @flagColorPickerTitle.
@@ -4205,31 +4205,31 @@ abstract class AppLocalizations {
   /// No description provided for @flagColorNameRed.
   ///
   /// In tr, this message translates to:
-  /// **'Kırmızı'**
+  /// **'Öncelikli'**
   String get flagColorNameRed;
 
   /// No description provided for @flagColorNameOrange.
   ///
   /// In tr, this message translates to:
-  /// **'Turuncu'**
+  /// **'Kişisel'**
   String get flagColorNameOrange;
 
   /// No description provided for @flagColorNameYellow.
   ///
   /// In tr, this message translates to:
-  /// **'Sarı'**
+  /// **'Fikirler'**
   String get flagColorNameYellow;
 
   /// No description provided for @flagColorNameGreen.
   ///
   /// In tr, this message translates to:
-  /// **'Yeşil'**
+  /// **'Başlananlar'**
   String get flagColorNameGreen;
 
   /// No description provided for @flagColorNameBlue.
   ///
   /// In tr, this message translates to:
-  /// **'Mavi'**
+  /// **'Bitenler'**
   String get flagColorNameBlue;
 
   /// No description provided for @flagNameDialogTitle.

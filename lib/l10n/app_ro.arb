@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "Tabel ({count} rânduri)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(text gol)",
   "reorderBlocksSheetTitle": "Reordonare blocuri",
   "reorderBlocksMoveUpTooltip": "Mutare în sus",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "Etichete",
   "noteBgColorMenuItemLabel": "Culoare copertă",
   "noteBgColorDialogTitle": "Alege culoarea copertei",
-  "flagColorMenuItemLabel": "Culoare steag",
+  "flagColorMenuItemLabel": "Steag",
   "flagColorPickerTitle": "Alege culoarea steagului",
   "flagColorRemoveOption": "Elimină steagul",
-  "flagColorNameRed": "Roșu",
-  "flagColorNameOrange": "Portocaliu",
-  "flagColorNameYellow": "Galben",
-  "flagColorNameGreen": "Verde",
-  "flagColorNameBlue": "Albastru",
+  "flagColorNameRed": "Prioritate",
+  "flagColorNameOrange": "Personal",
+  "flagColorNameYellow": "Idei",
+  "flagColorNameGreen": "Începute",
+  "flagColorNameBlue": "Finalizate",
   "flagNameDialogTitle": "Denumește steagul",
   "flagNameDialogHint": "Ex. Urgent, În așteptare...",
   "flagNameDialogCancelButton": "Anulare",

@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "表格（{count} 行）",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "（空文本）",
   "reorderBlocksSheetTitle": "重新排序模块",
   "reorderBlocksMoveUpTooltip": "上移",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "标签",
   "noteBgColorMenuItemLabel": "封面颜色",
   "noteBgColorDialogTitle": "选择封面颜色",
-  "flagColorMenuItemLabel": "旗标颜色",
+  "flagColorMenuItemLabel": "旗标",
   "flagColorPickerTitle": "选择旗标颜色",
   "flagColorRemoveOption": "移除旗标",
-  "flagColorNameRed": "红色",
-  "flagColorNameOrange": "橙色",
-  "flagColorNameYellow": "黄色",
-  "flagColorNameGreen": "绿色",
-  "flagColorNameBlue": "蓝色",
+  "flagColorNameRed": "优先",
+  "flagColorNameOrange": "个人",
+  "flagColorNameYellow": "想法",
+  "flagColorNameGreen": "进行中",
+  "flagColorNameBlue": "已完成",
   "flagNameDialogTitle": "为旗标命名",
   "flagNameDialogHint": "例如：紧急、待处理...",
   "flagNameDialogCancelButton": "取消",

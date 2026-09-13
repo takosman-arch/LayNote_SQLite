@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "Tabela ({count} wierszy)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(pusty tekst)",
   "reorderBlocksSheetTitle": "Zmień kolejność bloków",
   "reorderBlocksMoveUpTooltip": "Przesuń w górę",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "Tagi",
   "noteBgColorMenuItemLabel": "Kolor okładki",
   "noteBgColorDialogTitle": "Wybierz kolor okładki",
-  "flagColorMenuItemLabel": "Kolor flagi",
+  "flagColorMenuItemLabel": "Flaga",
   "flagColorPickerTitle": "Wybierz kolor flagi",
   "flagColorRemoveOption": "Usuń flagę",
-  "flagColorNameRed": "Czerwony",
-  "flagColorNameOrange": "Pomarańczowy",
-  "flagColorNameYellow": "Żółty",
-  "flagColorNameGreen": "Zielony",
-  "flagColorNameBlue": "Niebieski",
+  "flagColorNameRed": "Priorytet",
+  "flagColorNameOrange": "Osobiste",
+  "flagColorNameYellow": "Pomysły",
+  "flagColorNameGreen": "Rozpoczęte",
+  "flagColorNameBlue": "Zakończone",
   "flagNameDialogTitle": "Nazwij flagę",
   "flagNameDialogHint": "Np. Pilne, Oczekujące...",
   "flagNameDialogCancelButton": "Anuluj",

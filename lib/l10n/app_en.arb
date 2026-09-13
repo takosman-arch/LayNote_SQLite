@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "Table ({count} rows)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(empty text)",
   "reorderBlocksSheetTitle": "Reorder Blocks",
   "reorderBlocksMoveUpTooltip": "Move Up",
@@ -1038,14 +1030,14 @@
   "tagsMenuItemLabel": "Tags",
   "noteBgColorMenuItemLabel": "Cover Color",
   "noteBgColorDialogTitle": "Choose Cover Color",
-  "flagColorMenuItemLabel": "Flag Color",
+  "flagColorMenuItemLabel": "Flag",
   "flagColorPickerTitle": "Choose Flag Color",
   "flagColorRemoveOption": "Remove Flag",
-  "flagColorNameRed": "Red",
-  "flagColorNameOrange": "Orange",
-  "flagColorNameYellow": "Yellow",
-  "flagColorNameGreen": "Green",
-  "flagColorNameBlue": "Blue",
+  "flagColorNameRed": "Priority",
+  "flagColorNameOrange": "Personal",
+  "flagColorNameYellow": "Ideas",
+  "flagColorNameGreen": "Started",
+  "flagColorNameBlue": "Done",
   "flagNameDialogTitle": "Name the flag",
   "flagNameDialogHint": "e.g. Urgent, Pending...",
   "flagNameDialogCancelButton": "Cancel",

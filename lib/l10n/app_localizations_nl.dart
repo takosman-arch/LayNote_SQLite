@@ -2240,7 +2240,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noteBgColorDialogTitle => 'Omslagkleur kiezen';
 
   @override
-  String get flagColorMenuItemLabel => 'Vlagkleur';
+  String get flagColorMenuItemLabel => 'Vlag';
 
   @override
   String get flagColorPickerTitle => 'Kies vlagkleur';
@@ -2249,19 +2249,19 @@ class AppLocalizationsNl extends AppLocalizations {
   String get flagColorRemoveOption => 'Vlag verwijderen';
 
   @override
-  String get flagColorNameRed => 'Rood';
+  String get flagColorNameRed => 'Prioriteit';
 
   @override
-  String get flagColorNameOrange => 'Oranje';
+  String get flagColorNameOrange => 'Persoonlijk';
 
   @override
-  String get flagColorNameYellow => 'Geel';
+  String get flagColorNameYellow => 'Ideeën';
 
   @override
-  String get flagColorNameGreen => 'Groen';
+  String get flagColorNameGreen => 'Gestart';
 
   @override
-  String get flagColorNameBlue => 'Blauw';
+  String get flagColorNameBlue => 'Afgerond';
 
   @override
   String get flagNameDialogTitle => 'Vlag een naam geven';

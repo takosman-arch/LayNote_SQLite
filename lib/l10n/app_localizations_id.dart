@@ -2224,7 +2224,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get noteBgColorDialogTitle => 'Pilih Warna Sampul';
 
   @override
-  String get flagColorMenuItemLabel => 'Warna Bendera';
+  String get flagColorMenuItemLabel => 'Bendera';
 
   @override
   String get flagColorPickerTitle => 'Pilih Warna Bendera';
@@ -2233,19 +2233,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get flagColorRemoveOption => 'Hapus Bendera';
 
   @override
-  String get flagColorNameRed => 'Merah';
+  String get flagColorNameRed => 'Prioritas';
 
   @override
-  String get flagColorNameOrange => 'Oranye';
+  String get flagColorNameOrange => 'Pribadi';
 
   @override
-  String get flagColorNameYellow => 'Kuning';
+  String get flagColorNameYellow => 'Ide';
 
   @override
-  String get flagColorNameGreen => 'Hijau';
+  String get flagColorNameGreen => 'Dimulai';
 
   @override
-  String get flagColorNameBlue => 'Biru';
+  String get flagColorNameBlue => 'Selesai';
 
   @override
   String get flagNameDialogTitle => 'Beri nama bendera';

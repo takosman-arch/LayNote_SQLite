@@ -2177,7 +2177,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get noteBgColorDialogTitle => '커버 색상 선택';
 
   @override
-  String get flagColorMenuItemLabel => '플래그 색상';
+  String get flagColorMenuItemLabel => '플래그';
 
   @override
   String get flagColorPickerTitle => '플래그 색상 선택';
@@ -2186,19 +2186,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get flagColorRemoveOption => '플래그 제거';
 
   @override
-  String get flagColorNameRed => '빨강';
+  String get flagColorNameRed => '우선순위';
 
   @override
-  String get flagColorNameOrange => '주황';
+  String get flagColorNameOrange => '개인';
 
   @override
-  String get flagColorNameYellow => '노랑';
+  String get flagColorNameYellow => '아이디어';
 
   @override
-  String get flagColorNameGreen => '초록';
+  String get flagColorNameGreen => '진행 중';
 
   @override
-  String get flagColorNameBlue => '파랑';
+  String get flagColorNameBlue => '완료';
 
   @override
   String get flagNameDialogTitle => '플래그 이름 지정';

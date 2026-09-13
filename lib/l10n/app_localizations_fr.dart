@@ -2250,7 +2250,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noteBgColorDialogTitle => 'Choisir la couleur de couverture';
 
   @override
-  String get flagColorMenuItemLabel => 'Couleur du drapeau';
+  String get flagColorMenuItemLabel => 'Drapeau';
 
   @override
   String get flagColorPickerTitle => 'Choisir la couleur du drapeau';
@@ -2259,19 +2259,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get flagColorRemoveOption => 'Supprimer le drapeau';
 
   @override
-  String get flagColorNameRed => 'Rouge';
+  String get flagColorNameRed => 'Priorité';
 
   @override
-  String get flagColorNameOrange => 'Orange';
+  String get flagColorNameOrange => 'Personnel';
 
   @override
-  String get flagColorNameYellow => 'Jaune';
+  String get flagColorNameYellow => 'Idées';
 
   @override
-  String get flagColorNameGreen => 'Vert';
+  String get flagColorNameGreen => 'Commencées';
 
   @override
-  String get flagColorNameBlue => 'Bleu';
+  String get flagColorNameBlue => 'Terminées';
 
   @override
   String get flagNameDialogTitle => 'Nommer le drapeau';

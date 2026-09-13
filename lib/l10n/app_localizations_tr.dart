@@ -2210,7 +2210,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get noteBgColorDialogTitle => 'Kapak Rengi Seç';
 
   @override
-  String get flagColorMenuItemLabel => 'Bayrak Rengi';
+  String get flagColorMenuItemLabel => 'Bayrak';
 
   @override
   String get flagColorPickerTitle => 'Bayrak rengi seç';
@@ -2219,19 +2219,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get flagColorRemoveOption => 'Bayrağı kaldır';
 
   @override
-  String get flagColorNameRed => 'Kırmızı';
+  String get flagColorNameRed => 'Öncelikli';
 
   @override
-  String get flagColorNameOrange => 'Turuncu';
+  String get flagColorNameOrange => 'Kişisel';
 
   @override
-  String get flagColorNameYellow => 'Sarı';
+  String get flagColorNameYellow => 'Fikirler';
 
   @override
-  String get flagColorNameGreen => 'Yeşil';
+  String get flagColorNameGreen => 'Başlananlar';
 
   @override
-  String get flagColorNameBlue => 'Mavi';
+  String get flagColorNameBlue => 'Bitenler';
 
   @override
   String get flagNameDialogTitle => 'Bayrağı adlandır';

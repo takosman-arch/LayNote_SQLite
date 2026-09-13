@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "ตาราง ({count} แถว)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(ข้อความว่าง)",
   "reorderBlocksSheetTitle": "จัดเรียงบล็อกใหม่",
   "reorderBlocksMoveUpTooltip": "เลื่อนขึ้น",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "แท็ก",
   "noteBgColorMenuItemLabel": "สีปก",
   "noteBgColorDialogTitle": "เลือกสีปก",
-  "flagColorMenuItemLabel": "สีธง",
+  "flagColorMenuItemLabel": "ธง",
   "flagColorPickerTitle": "เลือกสีธง",
   "flagColorRemoveOption": "ลบธง",
-  "flagColorNameRed": "แดง",
-  "flagColorNameOrange": "ส้ม",
-  "flagColorNameYellow": "เหลือง",
-  "flagColorNameGreen": "เขียว",
-  "flagColorNameBlue": "น้ำเงิน",
+  "flagColorNameRed": "สำคัญ",
+  "flagColorNameOrange": "ส่วนตัว",
+  "flagColorNameYellow": "ไอเดีย",
+  "flagColorNameGreen": "เริ่มแล้ว",
+  "flagColorNameBlue": "เสร็จแล้ว",
   "flagNameDialogTitle": "ตั้งชื่อธง",
   "flagNameDialogHint": "เช่น ด่วน, รอดำเนินการ...",
   "flagNameDialogCancelButton": "ยกเลิก",

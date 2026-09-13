@@ -2225,7 +2225,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get noteBgColorDialogTitle => 'Vybrat barvu obálky';
 
   @override
-  String get flagColorMenuItemLabel => 'Barva vlajky';
+  String get flagColorMenuItemLabel => 'Vlajka';
 
   @override
   String get flagColorPickerTitle => 'Vyberte barvu vlajky';
@@ -2234,19 +2234,19 @@ class AppLocalizationsCs extends AppLocalizations {
   String get flagColorRemoveOption => 'Odebrat vlajku';
 
   @override
-  String get flagColorNameRed => 'Červená';
+  String get flagColorNameRed => 'Priorita';
 
   @override
-  String get flagColorNameOrange => 'Oranžová';
+  String get flagColorNameOrange => 'Osobní';
 
   @override
-  String get flagColorNameYellow => 'Žlutá';
+  String get flagColorNameYellow => 'Nápady';
 
   @override
-  String get flagColorNameGreen => 'Zelená';
+  String get flagColorNameGreen => 'Zahájené';
 
   @override
-  String get flagColorNameBlue => 'Modrá';
+  String get flagColorNameBlue => 'Dokončené';
 
   @override
   String get flagNameDialogTitle => 'Pojmenovat vlajku';

@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "Tabell ({count} rader)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(tom text)",
   "reorderBlocksSheetTitle": "Ändra ordning på block",
   "reorderBlocksMoveUpTooltip": "Flytta upp",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "Taggar",
   "noteBgColorMenuItemLabel": "Omslagsfärg",
   "noteBgColorDialogTitle": "Välj omslagsfärg",
-  "flagColorMenuItemLabel": "Flaggfärg",
+  "flagColorMenuItemLabel": "Flagga",
   "flagColorPickerTitle": "Välj flaggfärg",
   "flagColorRemoveOption": "Ta bort flagga",
-  "flagColorNameRed": "Röd",
-  "flagColorNameOrange": "Orange",
-  "flagColorNameYellow": "Gul",
-  "flagColorNameGreen": "Grön",
-  "flagColorNameBlue": "Blå",
+  "flagColorNameRed": "Prioritet",
+  "flagColorNameOrange": "Personligt",
+  "flagColorNameYellow": "Idéer",
+  "flagColorNameGreen": "Påbörjade",
+  "flagColorNameBlue": "Avslutade",
   "flagNameDialogTitle": "Namnge flaggan",
   "flagNameDialogHint": "T.ex. Brådskande, Väntar...",
   "flagNameDialogCancelButton": "Avbryt",

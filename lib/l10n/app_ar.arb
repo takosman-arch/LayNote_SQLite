@@ -53,7 +53,7 @@
       }
     }
   },
-  "blockPreviewTableLabel": "جدول ({count} صفوف)",
+  "blockPreviewTableLabel": "جدول ({count} صف)",
   "@blockPreviewTableLabel": {
     "placeholders": {
       "count": {
@@ -73,14 +73,6 @@
   "blockPreviewDividerLabel": "فاصل",
   "blockPreviewChecklistLabel": "قائمة مهام ({count} عناصر)",
   "@blockPreviewChecklistLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "blockPreviewTableLabel": "جدول ({count} صف)",
-  "@blockPreviewTableLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "الوسوم",
   "noteBgColorMenuItemLabel": "لون الغلاف",
   "noteBgColorDialogTitle": "اختر لون الغلاف",
-  "flagColorMenuItemLabel": "لون العلم",
+  "flagColorMenuItemLabel": "العلم",
   "flagColorPickerTitle": "اختر لون العلم",
   "flagColorRemoveOption": "إزالة العلم",
-  "flagColorNameRed": "أحمر",
-  "flagColorNameOrange": "برتقالي",
-  "flagColorNameYellow": "أصفر",
-  "flagColorNameGreen": "أخضر",
-  "flagColorNameBlue": "أزرق",
+  "flagColorNameRed": "أولوية",
+  "flagColorNameOrange": "شخصي",
+  "flagColorNameYellow": "أفكار",
+  "flagColorNameGreen": "قيد التنفيذ",
+  "flagColorNameBlue": "مكتملة",
   "flagNameDialogTitle": "تسمية العلم",
   "flagNameDialogHint": "مثال: عاجل، قيد الانتظار...",
   "flagNameDialogCancelButton": "إلغاء",

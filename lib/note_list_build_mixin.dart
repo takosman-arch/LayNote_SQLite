@@ -724,6 +724,12 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   // depodan hem global 'flagColorNames' notifier'ından kaldırır. Bayrak
   // tamamen silindiğinde (bkz. _deleteFlagColorInList) rengin ismi de
   // anlamsız kaldığı için burada da çağrılır.
+  // note_flag_mixin.dart -> bir bayrak rengine kullanıcı henüz özel isim
+  // vermediyse ('flagColorNames'te kaydı yoksa) gösterilecek varsayılan
+  // Türkçe renk adını döndürür (örn. '#F44336' -> 'Kırmızı'). Üstteki
+  // başlıkta bayrak sayfaları arasında kaydırılırken (bkz. AppBar title)
+  // isimsiz bayraklarda bu ad gösterilir.
+  String _defaultFlagColorLabel(BuildContext context, String hex);
   Future<void> _removeFlagColorName(String hex);
   String _capitalizeFirstLetterTr(String text);
   List<String> get _categories;
@@ -788,7 +794,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     Color backgroundColor,
   });
   void _showNoteActions( BuildContext ctx, int noteIndex, bool isTrash, { DateTime? editorReminder, String? editorReminderRepeat, void Function(DateTime? reminder, String? repeat)? onReminderChanged, VoidCallback? onDiscard, void Function(String text)? onInsertText, void Function(String? category)? onCategoryChanged, bool showSelectAction = false, });
-  Future<void> _showNoteDialog({ int? index, String type = 'text', String? initialText, DateTime? initialAssignedDate, bool openInstantly = false, });
+  Future<void> _showNoteDialog({ int? index, String type = 'text', String? initialText, DateTime? initialAssignedDate, bool openInstantly = false, String? initialFlagColor, });
   String get _sortCriteria;
   set _sortCriteria(String value);
   Color? get _textColor;
@@ -853,40 +859,18 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     ];
   }
 
-  @override
-  Widget build(BuildContext context) {
+  // Belirli bir bayrak (flama) filtresine göre filtrelenmiş ve
+  // sıralanmış not listesini hesaplar. Arama modundaki tekil liste
+  // (_activeFlagFilter ile) ve ana ekrandaki bayrak sayfa kaydırmasının
+  // (PageView, her sayfa kendi bayrak rengiyle) HER İKİSİ de aynı bu
+  // fonksiyonu çağırır — filtreleme/sıralama mantığı tek yerde,
+  // davranış birebir aynı kalır.
+  List<Map<String, dynamic>> _computeFilteredNotes(
+    BuildContext context,
+    bool isTrash,
+    String? flagFilter,
+  ) {
     List<Map<String, dynamic>> filteredNotes;
-    SystemChrome.setSystemUIOverlayStyle(
-      dNoteSystemBarsStyle(
-        context,
-        // Not düzenleyicisi açıkken bu build tekrar tetiklenirse (ör. bir
-        // setState nedeniyle), gezinme çubuğunu düzenleyicinin ayarladığı
-        // renge (#EDEDED) geri döndürüyoruz; aksi halde varsayılan
-        // (#F5F5F5) rengine sıfırlanıp düzenleyicinin rengini eziyordu.
-        // Yalnızca açık temada uygulanır; koyu tema davranışı değişmez.
-        navigationBarColor: (!dNoteIsDark(context) && dNoteNoteEditorOpen.value)
-            ? const Color(0xFFEDEDED)
-            : null,
-      ),
-    );
-    bool isTrash = _activeCategory == '__trash__';
-    // Arama modundaki etiket şeridi için: aktif bölümde (Tümü/Notlar,
-    // Favoriler, klasör, vb.) hangi etiketlerin bulunduğu build başında bir
-    // kez hesaplanır. Liste boşsa aşağıda `bottom` tamamen null bırakılır —
-    // sadece içeriği boş bir widget döndürmek yeterli değil, çünkü
-    // PreferredSize'ın yüksekliği (44) her durumda ayrılan alanı belirler;
-    // bu da etiket olmasa bile boş bir şeridin açılmasına yol açardı.
-    final tagStripScopeNotes = _notesForActiveTagScope(isTrash);
-    final tagStripTags = collectAllKnownTags(tagStripScopeNotes);
-    // Etiket şeridinin başında gösterilecek bayrak renkleri — aynı kapsam
-    // (tagStripScopeNotes), aynı "sadece o bölümde fiilen görünenler"
-    // mantığı (bkz. _notesForActiveTagScope yorumu).
-    final tagStripFlagColors = _availableFlagColors(tagStripScopeNotes);
-    // Etiket şeridinden bağımsız "Türler" şeridi: içerik olsun ya da olmasın
-    // (kullanıcı isteği üzerine) her zaman sabit 7 ikon gösterilir — etiket
-    // şeridinin aksine, o an hangi türden not olduğuna bakılmaz.
-    final typeStripTypes = _kAllTypeFilterKeys;
-
     if (isTrash) {
       filteredNotes = _deletedNotes.where((note) {
         final title = (note['title'] ?? '').toString().toLowerCase();
@@ -906,8 +890,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             title.contains(query) || content.contains(query) || matchesTags;
         final matchesType = _activeTypeFilter == null ||
             _noteMatchesTypeFilter(note, _activeTypeFilter!);
-        final matchesFlag = _activeFlagFilter == null ||
-            note['flagColor'] == _activeFlagFilter;
+        final matchesFlag = flagFilter == null ||
+            note['flagColor'] == flagFilter;
         return matchesSearch && matchesType && matchesFlag;
       }).toList();
     } else {
@@ -926,8 +910,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             title.contains(query) || content.contains(query) || matchesTags;
         final matchesType = _activeTypeFilter == null ||
             _noteMatchesTypeFilter(note, _activeTypeFilter!);
-        final matchesFlag = _activeFlagFilter == null ||
-            note['flagColor'] == _activeFlagFilter;
+        final matchesFlag = flagFilter == null ||
+            note['flagColor'] == flagFilter;
         final isArchived = note['isArchived'] == true;
         final isFavorite = note['isFavorite'] == true;
         final isLocked = note['isLocked'] == true;
@@ -1068,12 +1052,18 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         return _isAscending ? compareResult : -compareResult;
       });
     }
+    return filteredNotes;
+  }
 
-    final bool showDateGroups =
-        _isListView &&
-        !isTrash &&
-        _activeCategory != '__reminders__' &&
-        (_sortCriteria == 'Son Düzenleme' || _sortCriteria == 'Oluşturulma');
+  // Verilen filtrelenmiş nota listesini (bkz. _computeFilteredNotes),
+  // gösterim sırası kriterine göre tarih başlıklarıyla gruplayıp
+  // (showDateGroups true ise) daraltılmış grupların altındaki kartları
+  // gizler. Arama modundaki tekil liste ile ana ekrandaki her bayrak
+  // sayfası (PageView) aynı bu fonksiyonu çağırır.
+  List<dynamic> _computeListItems(
+    List<Map<String, dynamic>> filteredNotes,
+    bool showDateGroups,
+  ) {
     final List<dynamic> rawListItems = showDateGroups
         ? _buildDateGroupedItems(filteredNotes)
         : filteredNotes;
@@ -1099,6 +1089,886 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
             return filtered;
           })()
         : rawListItems;
+    return listItems;
+  }
+
+  Widget _buildNoteListArea(
+    BuildContext context,
+    List<Map<String, dynamic>> filteredNotes,
+    List<dynamic> listItems,
+    bool isTrash,
+    bool showDateGroups,
+  ) {
+    return filteredNotes.isEmpty
+                ? Center(
+                    child: isTrash
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 32),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.trashEmptyTitle,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  AppLocalizations.of(context)!.trashEmptySubtitle,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Text(
+                            AppLocalizations.of(context)!.noNotesFoundMessage,
+                            style: const TextStyle(color: Colors.grey, fontSize: 16),
+                          ),
+                  )
+                : _isListView
+                ? TweenAnimationBuilder<double>(
+                    // NOT: Üst boşluk artık ListView'ı DIŞARIDAN saran bir
+                    // Padding/AnimatedPadding değil — ListView'ın KENDİ
+                    // `padding` özelliği olarak veriliyor. Önceki halde
+                    // (AnimatedPadding(child: ListView(...))) bu boşluk
+                    // kaydırılabilir alanın (viewport) DIŞINDaydı; yani
+                    // kartları yukarı kaydırsanız bile bu boşluk asla
+                    // kaybolmuyordu (sabit bir düzen boşluğuydu). Şimdi
+                    // ListView'ın kendi padding'i olduğu için kaydırılabilir
+                    // içeriğin bir parçası — yukarı kaydırınca listenin en
+                    // üstündeki her boşluk gibi doğal olarak kayboluyor
+                    // (kullanıcı isteği/hata düzeltmesi).
+                    //
+                    // Animasyon (şerit belirip kaybolurken 12 <-> 0 arası
+                    // yumuşak geçiş) TweenAnimationBuilder ile korunuyor —
+                    // aynı süre/eğri, _TagFilterStrip'i büyüten AnimatedSize
+                    // ile birebir aynı (bkz. yukarıdaki eski yorum).
+                    duration: const Duration(milliseconds: 220),
+                    curve: Curves.easeOutCubic,
+                    tween: Tween<double>(
+                      // NOT: Artık sadece _isSearching'e bağlı — etiket/
+                      // bayrak içeriği boş olsa bile üst boşluk (TagFilterStrip'in
+                      // kendi top:12'si) her zaman ayrılıyor (bkz. yukarıdaki
+                      // AnimatedSize yorumu), bu yüzden burada ayrıca
+                      // tagStripTags/tagStripFlagColors kontrolüne gerek yok
+                      // (gerek olsaydı boşluk iki kez sayılır ya da hiç
+                      // sayılmazdı).
+                      begin: 12.0,
+                      end: _isSearching ? 0.0 : 12.0,
+                    ),
+                    builder: (context, topPadding, _) => ListView.builder(
+                    padding: EdgeInsets.only(top: topPadding),
+                    itemCount: listItems.length,
+                    itemBuilder: (context, index) {
+                      final listItem = listItems[index];
+                      if (listItem is String) {
+                        // İlk öğe bir tarih başlığıysa (ör. "Bugün"), üstteki
+                        // ListView padding'i (12) ile bu başlığın kendi üst
+                        // boşluğu (18) üst üste binip gereksiz büyük bir boşluk
+                        // oluşturuyordu (Izgara görünümünde böyle bir başlık
+                        // olmadığından bu fazlalık orada yoktu). Sadece en
+                        // baştaki başlık için üst boşluğu küçültüyoruz; sonraki
+                        // gruplar arasındaki ayraç boşluğu aynı kalıyor.
+                        final bool isDateGroupCollapsed =
+                            _collapsedDateGroups.contains(listItem);
+                        return Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            14,
+                            index == 0 ? 4 : 18,
+                            14,
+                            6,
+                          ),
+                          // Başlığın tamamına dokununca (metin + ikon) bu
+                          // tarih grubunun altındaki not kartları
+                          // gizlenir/tekrar gösterilir; durum kalıcıdır
+                          // (bkz. note_list_data_category_mixin.dart ->
+                          // _loadData / _saveData, 'collapsed_date_groups').
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(6),
+                            onTap: () {
+                              setState(() {
+                                if (isDateGroupCollapsed) {
+                                  _collapsedDateGroups.remove(listItem);
+                                } else {
+                                  _collapsedDateGroups.add(listItem);
+                                }
+                              });
+                              _saveData();
+                            },
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    listItem,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: dNoteIsDark(context)
+                                          ? Colors.grey[400]
+                                          : Colors.grey[700],
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  isDateGroupCollapsed
+                                      ? Icons.chevron_right
+                                      : Icons.expand_more,
+                                  size: 22,
+                                  color: dNoteIsDark(context)
+                                      ? Colors.grey[400]
+                                      : Colors.grey[700],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      final note = listItem as Map<String, dynamic>;
+                      final originalIndex = isTrash
+                          ? _deletedNotes.indexWhere(
+                              (n) =>
+                                  n['id'] == note['id'] &&
+                                  n['createdDate'] == note['createdDate'],
+                            )
+                          : _notes.indexWhere(
+                              (n) =>
+                                  n['id'] == note['id'] &&
+                                  n['createdDate'] == note['createdDate'],
+                            );
+                      final hasTitle = (note['title'] ?? '')
+                          .toString()
+                          .isNotEmpty;
+                      final isChecklist = note['type'] == 'checklist';
+                      final isFavorite = note['isFavorite'] == true;
+                      final isSelected =
+                          _isSelectionMode &&
+                          _selectedNoteKeys.contains(_noteKey(note));
+                      // Not Kapağı: kullanıcı üç nokta menüsünden ("Kapak
+                      // Rengi", bkz. NoteListNoteDialogMixin >
+                      // showBgColorSheet) bu not için sabit bir renk
+                      // seçmişse, kart HER ZAMAN o renkle gösterilir;
+                      // aksi halde (eskisi gibi) colorfulNotes/kategori
+                      // rengi mantığı geçerli olur.
+                      final noteOwnBgColor = note['bgColor'] as int?;
+                      final baseNoteCardColor = noteOwnBgColor != null
+                          ? Color(noteOwnBgColor).withValues(alpha: 0.75)
+                          : (_colorfulNotes
+                                ? _categoryPalette[(originalIndex < 0
+                                              ? 0
+                                              : originalIndex) %
+                                          _categoryPalette.length]
+                                      .withValues(alpha: 0.75)
+                                : (dNoteIsDark(context)
+                                      ? const Color(0xFF2D2D2D)
+                                      : Theme.of(context).cardColor));
+                      // Seçili notlar, dokununca beliren parlaklık efektiyle
+                      // aynı tonda (amber) sürekli vurgulanır.
+                      final noteCardColor = isSelected
+                          ? Color.alphaBlend(
+                              appAccentColor.value.withValues(alpha: 0.30),
+                              baseNoteCardColor,
+                            )
+                          : baseNoteCardColor;
+                      final fontScale = _previewFontScale(note);
+                      final previewImage = _firstImageAttachment(note);
+                      final previewDrawingStrokes = previewImage == null
+                          ? _firstDrawingStrokes(note)
+                          : null;
+                      // Eski (legacy) checklist notları ve yeni blok tabanlı
+                      // checklist içeren notlar için karışık önizleme kullanılır.
+                      final _noteBlocks = ContentBlocks.parse(note['content'] as String?);
+                      final _hasChecklistBlock = _noteBlocks.any((b) => b['type'] == 'checklist');
+                      final showMixedPreview = isChecklist || _hasChecklistBlock;
+                      // previewContentText, ContentBlocks.plainText() ile
+                      // BİREBİR AYNI metni üretir (metin karakterleri hiç
+                      // değişmedi) — previewContentSpans ise o metindeki
+                      // kalın/italik/renk/link/vurgu aralıklarını taşır,
+                      // aşağıda RichText + buildStaticTextSpan ile çizilsin
+                      // diye eklendi.
+                      final previewTextData = showMixedPreview
+                          ? const ('', <Map<String, dynamic>>[])
+                          : ContentBlocks.previewTextWithSpans(
+                              note['content'] as String?,
+                              totalLabelBuilder: (amount) =>
+                                  AppLocalizations.of(context)!
+                                      .calcTableTotalLabel(amount),
+                            );
+                      final previewContentText = previewTextData.$1;
+                      final previewContentSpans = previewTextData.$2;
+                      final previewChecklistItems = showMixedPreview
+                          ? _previewLineItems(note)
+                          : const [];
+                      final previewReminderText = _formattedReminderText(
+                        note,
+                      );
+                      final previewCategoryText = (note['category'] ?? '')
+                          .toString();
+                      // Not sadece bir görselden oluşuyorsa (başlık, metin,
+                      // kontrol listesi öğesi, hatırlatıcı, kategori veya
+                      // yıldız rozeti yoksa) altta boş bir satır bırakmamak
+                      // için gövde bölümü (Padding) hiç çizilmez.
+                      final previewShowFavoriteAlone =
+                          isFavorite && !hasTitle && !isChecklist &&
+                          previewContentText.isEmpty;
+                      final previewHasBody = hasTitle ||
+                          previewChecklistItems.isNotEmpty ||
+                          previewContentText.isNotEmpty ||
+                          previewReminderText != null ||
+                          previewCategoryText.isNotEmpty ||
+                          previewShowFavoriteAlone;
+
+                      return GestureDetector(
+                        onLongPress: isTrash
+                            ? () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  backgroundColor: Theme.of(context).cardColor,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20),
+                                    ),
+                                  ),
+                                  builder: (_) => SafeArea(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          ElevatedButton.icon(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: appAccentColor.value,
+                                            ),
+                                            icon: const Icon(
+                                              Icons.restore_outlined,
+                                              color: Colors.black,
+                                            ),
+                                            label: Text(
+                                              AppLocalizations.of(context)!.trashRestoreButtonLabel,
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              final restoredNote =
+                                                  _deletedNotes[originalIndex];
+                                              setState(() {
+                                                _notes.insert(
+                                                  0,
+                                                  _deletedNotes[originalIndex],
+                                                );
+                                                _deletedNotes.removeAt(
+                                                  originalIndex,
+                                                );
+                                              });
+                                              _saveData();
+                                              _rescheduleNoteReminder(
+                                                restoredNote,
+                                              );
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                          ElevatedButton.icon(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                            ),
+                                            icon: const Icon(
+                                              Icons.delete_forever,
+                                              color: Colors.white,
+                                            ),
+                                            label: Text(
+                                              AppLocalizations.of(context)!.trashPermanentDeleteButtonLabel,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              _cleanupAttachmentFiles(_deletedNotes[originalIndex]);
+                                            setState(() {
+                                              _deletedNotes.removeAt(originalIndex);
+                                            });
+                                              _saveData();
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            : (_isSelectionMode
+                                  ? () => _toggleNoteSelection(note)
+                                  : () => _showNoteActions(
+                                      context,
+                                      originalIndex,
+                                      false,
+                                      showSelectAction: true,
+                                      onInsertText: (text) =>
+                                          _appendSpeechTranscriptToNote(
+                                            originalIndex,
+                                            text,
+                                          ),
+                                    )),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Card(
+                            margin: EdgeInsets.zero,
+                            color: noteCardColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              side: isSelected
+                                  ? BorderSide(
+                                      color: appAccentColor.value,
+                                      width: 2,
+                                    )
+                                  : BorderSide.none,
+                            ),
+                            // Bayrak rozeti artık burada (Card'ın en dış
+                            // Stack'i içinde) sabit bir Positioned olarak
+                            // çizilir — böylece hem kartın en üst kenarına
+                            // değer (top: 0) hem de isFavorite'e bakılmaksızın
+                            // (yıldız olsun/olmasın) hep aynı sağ üst köşede
+                            // sabit kalır; ızgara kartındaki (_buildGridNoteCard)
+                            // aynı mantıkla tutarlı.
+                            child: Stack(
+                              children: [
+                                InkWell(
+                                  onTap: isTrash
+                                  ? () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        backgroundColor: Theme.of(context).cardColor,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(20),
+                                          ),
+                                        ),
+                                        builder: (_) => SafeArea(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                ElevatedButton.icon(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                        backgroundColor:
+                                                            appAccentColor.value,
+                                                      ),
+                                                  icon: const Icon(
+                                                    Icons.restore_outlined,
+                                                    color: Colors.black,
+                                                  ),
+                                                  label: Text(
+                                                    AppLocalizations.of(context)!.trashRestoreButtonLabel,
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    final restoredNote =
+                                                        _deletedNotes[originalIndex];
+                                                    setState(() {
+                                                      _deletedNotes[originalIndex]['createdDate'] =
+                                                          DateTime.now()
+                                                              .toString();
+                                                      _deletedNotes[originalIndex]['modifiedDate'] =
+                                                          DateTime.now()
+                                                              .toString();
+                                                      _notes.insert(
+                                                        0,
+                                                        _deletedNotes[originalIndex],
+                                                      );
+                                                      _deletedNotes.removeAt(
+                                                        originalIndex,
+                                                      );
+                                                    });
+                                                    _saveData();
+                                                    _rescheduleNoteReminder(
+                                                      restoredNote,
+                                                    );
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                                ElevatedButton.icon(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                        backgroundColor:
+                                                            Colors.red,
+                                                      ),
+                                                  icon: const Icon(
+                                                    Icons.delete_forever,
+                                                    color: Colors.white,
+                                                  ),
+                                                  label: Text(
+                                                    AppLocalizations.of(context)!.trashPermanentDeleteButtonLabel,
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  onPressed: () {
+                                                    _cleanupAttachmentFiles(_deletedNotes[originalIndex]);
+                                            setState(() {
+                                              _deletedNotes.removeAt(originalIndex);
+                                            });
+                                                    _saveData();
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  : (_isSelectionMode
+                                        ? () => _toggleNoteSelection(note)
+                                        : () => _openNoteWithPasswordCheck(
+                                            originalIndex,
+                                          )),
+                              borderRadius: BorderRadius.circular(12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (previewImage != null &&
+                                      _attachmentsDirPath != null)
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(12),
+                                      ),
+                                      child: AspectRatio(
+                                        aspectRatio: _kGridPreviewAspectRatio,
+                                        child: Image.file(
+                                          File(
+                                            p.join(
+                                              _attachmentsDirPath!,
+                                              previewImage['storedName']
+                                                  .toString(),
+                                            ),
+                                          ),
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (_, __, ___) =>
+                                              Container(
+                                                color: dNoteSurfaceVariant(
+                                                  context,
+                                                ),
+                                                child: const Icon(
+                                                  Icons
+                                                      .broken_image_outlined,
+                                                  color: Colors.grey,
+                                                  size: 20,
+                                                ),
+                                              ),
+                                        ),
+                                      ),
+                                    )
+                                  else if (previewDrawingStrokes != null)
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(12),
+                                      ),
+                                      child: AspectRatio(
+                                        aspectRatio: _kGridPreviewAspectRatio,
+                                        child: _gridPreviewDrawingTile(
+                                          previewDrawingStrokes,
+                                        ),
+                                      ),
+                                    ),
+                                  if (previewHasBody)
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (hasTitle) ...[
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: RichText(
+                                              // Aşama 5: bkz. grid karttaki
+                                              // aynı isimli açıklama —
+                                              // maxLines/overflow eskiden de
+                                              // yoktu, davranış değişmedi.
+                                              text: buildStaticTextSpan(
+                                                _capitalizeFirstLetterTr(
+                                                  (note['title'] ?? '')
+                                                      .toString(),
+                                                ),
+                                                note['titleSpans'] as List?,
+                                                TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  // Başlık, notun kendi (veya
+                                                  // Ayarlar > Metin Boyutu'ndan
+                                                  // gelen) yazı boyutunun 2
+                                                  // birim fazlası. fontScale =
+                                                  // noteFontSize/16 olduğundan
+                                                  // noteFontSize = 16*fontScale.
+                                                  fontSize: (16 * fontScale) + 2,
+                                                  color: dNoteEffectiveTextColor(context, _textColor),
+                                                  fontFamily: dNoteFontFamilyValue(_fontFamily),
+                                                ),
+                                                isDark: dNoteIsDark(context),
+                                              ),
+                                            ),
+                                          ),
+                                          // Yıldız, kilit ve bayrak artık
+                                          // başlığın yanında değil, kartın
+                                          // köşesindeki sabit rozetlerde
+                                          // gösteriliyor (bkz. Card'ı saran
+                                          // Stack + _buildNoteCornerBadges).
+                                        ],
+                                      ),
+                                      const SizedBox(height: 8),
+                                    ],
+                                    if (previewChecklistItems.isNotEmpty)
+                                      ...(previewChecklistItems
+                                          .take(_previewLines)
+                                          .map<Widget>((item) {
+                                            final isItemChecklist =
+                                                item['checklist'] == true;
+                                            final isChecked =
+                                                item['checked'] == true;
+                                            final textWidget = Text(
+                                              (item['text'] ?? '').toString(),
+                                              style: TextStyle(
+                                                color:
+                                                    isItemChecklist &&
+                                                        isChecked
+                                                    ? dNoteEffectiveTextColor(context, _textColor)
+                                                          ?.withOpacity(0.5)
+                                                    : (dNoteEffectiveTextColor(context, _textColor)),
+                                                decoration:
+                                                    isItemChecklist &&
+                                                        isChecked
+                                                    ? TextDecoration
+                                                          .lineThrough
+                                                    : null,
+                                                decorationColor:
+                                                    isItemChecklist &&
+                                                        isChecked
+                                                    ? Colors.grey[700]
+                                                    : null,
+                                                decorationStyle:
+                                                    TextDecorationStyle.solid,
+                                                fontSize:
+                                                    (note['fontSize'] as num?)
+                                                        ?.toDouble() ??
+                                                    _globalFontSize,
+                                                fontFamily: dNoteFontFamilyValue(_fontFamily),
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            );
+                                            if (!isItemChecklist) {
+                                              return textWidget;
+                                            }
+                                            return Row(
+                                              children: [
+                                                Icon(
+                                                  isChecked
+                                                      ? Icons.check_box_rounded
+                                                      : Icons
+                                                            .check_box_outline_blank_rounded,
+                                                  color: appAccentColor.value,
+                                                  size: 16,
+                                                ),
+                                                const SizedBox(width: 6),
+                                                Expanded(child: textWidget),
+                                              ],
+                                            );
+                                          })
+                                          .toList())
+                                    else if (previewContentText.isNotEmpty ||
+                                        previewShowFavoriteAlone)
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Text.rich(
+                                              // DÜZELTME: RichText, Text'in
+                                              // aksine çevredeki
+                                              // DefaultTextStyle'ı (ve metin
+                                              // ölçekleme ayarlarını)
+                                              // otomatik miras almıyor —
+                                              // bu yüzden önceki Text(...)
+                                              // widget'ının GÖRÜNÜMÜNÜ birebir
+                                              // korumak için RichText yerine
+                                              // Text.rich kullanılıyor
+                                              // (Text.rich, Text ile aynı
+                                              // DefaultTextStyle birleştirme
+                                              // mantığını kullanır). TextStyle/
+                                              // maxLines/overflow öncekiyle
+                                              // birebir aynı korunuyor,
+                                              // sadece kalın/italik/renk/
+                                              // link/vurgu artık görünüyor.
+                                              buildStaticTextSpan(
+                                                previewContentText,
+                                                previewContentSpans,
+                                                TextStyle(
+                                                  color: dNoteEffectiveTextColor(context, _textColor),
+                                                  fontSize:
+                                                      (note['fontSize'] as num?)
+                                                          ?.toDouble() ??
+                                                      _globalFontSize,
+                                                  fontFamily: dNoteFontFamilyValue(_fontFamily),
+                                                ),
+                                                isDark: dNoteIsDark(context),
+                                              ),
+                                              maxLines: _previewLines,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          // Yıldız ve bayrak artık kartın
+                                          // köşesindeki sabit rozetlerde
+                                          // gösteriliyor (bkz. Card'ı saran
+                                          // Stack + _buildNoteCornerBadges).
+                                        ],
+                                      ),
+                                    if (_formattedReminderText(note) !=
+                                        null) ...[
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            note['reminderRepeat'] == null
+                                                ? Icons.notifications
+                                                : Icons.repeat,
+                                            color: Colors.lightBlueAccent,
+                                            size: 16,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Flexible(
+                                            child: Text(
+                                              _formattedReminderText(note)!,
+                                              style: TextStyle(
+                                                color: dNoteEffectiveTextColor(
+                                                  context,
+                                                  _textColor,
+                                                ),
+                                                fontSize:
+                                                    ((note['fontSize'] as num?)
+                                                        ?.toDouble() ??
+                                                    _globalFontSize) -
+                                                    1,
+                                                fontFamily: dNoteFontFamilyValue(
+                                                  _fontFamily,
+                                                ),
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                    if (_showsGundemBadge(note)) ...[
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.today_outlined,
+                                            color: appAccentColor.value,
+                                            size: 16,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Flexible(
+                                            child: Text(
+                                              _gundemBadgeDateLabel(context, note)!,
+                                              style: TextStyle(
+                                                color: dNoteEffectiveTextColor(
+                                                  context,
+                                                  _textColor,
+                                                ),
+                                                fontSize:
+                                                    ((note['fontSize'] as num?)
+                                                        ?.toDouble() ??
+                                                    _globalFontSize) -
+                                                    1,
+                                                fontFamily: dNoteFontFamilyValue(
+                                                  _fontFamily,
+                                                ),
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                    if ((note['category'] ?? '')
+                                        .toString()
+                                        .isNotEmpty) ...[
+                                      const SizedBox(height: 6),
+                                      Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.folder_outlined,
+                                              color: _getCategoryColor(
+                                                note['category'] as String,
+                                              ),
+                                              size: 16,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Flexible(
+                                              child: Text(
+                                                _folderTagLabel(
+                                                  note['category'] as String,
+                                                ),
+                                                style: TextStyle(
+                                                  color:
+                                                      dNoteEffectiveTextColor(
+                                                    context,
+                                                    _textColor,
+                                                  ),
+                                                  fontSize:
+                                                      ((note['fontSize']
+                                                              as num?)
+                                                          ?.toDouble() ??
+                                                      _globalFontSize) -
+                                                      1,
+                                                  fontFamily:
+                                                      dNoteFontFamilyValue(
+                                                    _fontFamily,
+                                                  ),
+                                                ),
+                                                maxLines: 1,
+                                                overflow:
+                                                    TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                    _buildNoteTagChips(note),
+                                  ],
+                                ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                                ..._buildNoteCornerBadges(
+                                  isFavorite: isFavorite,
+                                  isLocked: note['isLocked'] == true,
+                                  flagColor: note['flagColor'] as String?,
+                                  isPinned: note['isPinned'] == true,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    ),
+                  )
+                : TweenAnimationBuilder<double>(
+                    // NOT: Liste görünümündeki (_isListView) düzeltmeyle
+                    // aynı gerekçe — üst boşluk artık SingleChildScrollView'ı
+                    // DIŞARIDAN saran bir Padding değil, SingleChildScrollView'ın
+                    // KENDİ `padding` özelliği. Böylece kaydırılabilir
+                    // içeriğin parçası olur ve kartları yukarı kaydırınca
+                    // doğal olarak kaybolur (öncesinde sabit/kalıcı bir
+                    // boşluktu).
+                    duration: const Duration(milliseconds: 220),
+                    curve: Curves.easeOutCubic,
+                    tween: Tween<double>(
+                      // NOT: Artık sadece _isSearching'e bağlı — etiket/
+                      // bayrak içeriği boş olsa bile üst boşluk (TagFilterStrip'in
+                      // kendi top:12'si) her zaman ayrılıyor (bkz. yukarıdaki
+                      // AnimatedSize yorumu), bu yüzden burada ayrıca
+                      // tagStripTags/tagStripFlagColors kontrolüne gerek yok
+                      // (gerek olsaydı boşluk iki kez sayılır ya da hiç
+                      // sayılmazdı).
+                      begin: 12.0,
+                      end: _isSearching ? 0.0 : 12.0,
+                    ),
+                    builder: (context, topPadding, _) => SingleChildScrollView(
+                      padding: EdgeInsets.only(top: topPadding),
+                      child: _buildGridView(
+                        filteredNotes: filteredNotes,
+                        isTrash: isTrash,
+                      ),
+                    ),
+                  );
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      dNoteSystemBarsStyle(
+        context,
+        // Not düzenleyicisi açıkken bu build tekrar tetiklenirse (ör. bir
+        // setState nedeniyle), gezinme çubuğunu düzenleyicinin ayarladığı
+        // renge (#EDEDED) geri döndürüyoruz; aksi halde varsayılan
+        // (#F5F5F5) rengine sıfırlanıp düzenleyicinin rengini eziyordu.
+        // Yalnızca açık temada uygulanır; koyu tema davranışı değişmez.
+        navigationBarColor: (!dNoteIsDark(context) && dNoteNoteEditorOpen.value)
+            ? const Color(0xFFEDEDED)
+            : null,
+      ),
+    );
+    bool isTrash = _activeCategory == '__trash__';
+    // Arama modundaki etiket şeridi için: aktif bölümde (Tümü/Notlar,
+    // Favoriler, klasör, vb.) hangi etiketlerin bulunduğu build başında bir
+    // kez hesaplanır. Liste boşsa aşağıda `bottom` tamamen null bırakılır —
+    // sadece içeriği boş bir widget döndürmek yeterli değil, çünkü
+    // PreferredSize'ın yüksekliği (44) her durumda ayrılan alanı belirler;
+    // bu da etiket olmasa bile boş bir şeridin açılmasına yol açardı.
+    final tagStripScopeNotes = _notesForActiveTagScope(isTrash);
+    final tagStripTags = collectAllKnownTags(tagStripScopeNotes);
+    // Etiket şeridinin başında gösterilecek bayrak renkleri — aynı kapsam
+    // (tagStripScopeNotes), aynı "sadece o bölümde fiilen görünenler"
+    // mantığı (bkz. _notesForActiveTagScope yorumu).
+    final tagStripFlagColors = _availableFlagColors(tagStripScopeNotes);
+    // Ana ekranda (arama modu KAPALIYKEN) parmakla kaydırarak bayrak
+    // değiştirmek için kullanılan sayfa döngüsü — arama modundaki bayrak
+    // şeridiyle AYNI kapsamı (tagStripScopeNotes/tagStripFlagColors)
+    // kullanır. null (Tümü) her zaman döngünün başında yer alır: Tümü ->
+    // 1. renk -> 2. renk -> ... -> son renk -> (tekrar sola kaydırınca)
+    // Tümü'ye döner (bkz. aşağıdaki PageView.builder — kullanıcı isteği).
+    final flagCycle = <String?>[null, ...tagStripFlagColors];
+    int initialFlagPageIndex = flagCycle.indexOf(_activeFlagFilter);
+    if (initialFlagPageIndex < 0) initialFlagPageIndex = 0;
+    // Bayrak sayfaları (PageView) için tek bir controller: hem
+    // `PageView.builder`'ın `controller` alanında hem de aşağıdaki
+    // `itemBuilder` içinde o anki kaydırma konumunu (controller.page)
+    // okumak için AYNI referans kullanılıyor (bkz. _flagPageGutter).
+    final PageController _flagPageController = PageController(
+      initialPage: initialFlagPageIndex,
+    );
+    // Etiket şeridinden bağımsız "Türler" şeridi: içerik olsun ya da olmasın
+    // (kullanıcı isteği üzerine) her zaman sabit 7 ikon gösterilir — etiket
+    // şeridinin aksine, o an hangi türden not olduğuna bakılmaz.
+    final typeStripTypes = _kAllTypeFilterKeys;
+
+    final filteredNotes = _computeFilteredNotes(context, isTrash, _activeFlagFilter);
+
+    final bool showDateGroups =
+        _isListView &&
+        !isTrash &&
+        _activeCategory != '__reminders__' &&
+        (_sortCriteria == 'Son Düzenleme' || _sortCriteria == 'Oluşturulma');
+    final List<dynamic> listItems = _computeListItems(
+      filteredNotes,
+      showDateGroups,
+    );
 
     return PopScope(
       canPop: false,
@@ -1186,6 +2056,36 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     setState(() {
                       _searchQuery = value;
                     });
+                  },
+                )
+              : _activeFlagFilter != null
+              // Bayrak sayfaları arasında (ana ekrandaki PageView, bkz.
+              // flagCycle) parmakla kaydırılırken, üstteki başlıkta artık
+              // kategori adı yerine o an gösterilen bayrağın adı yazıyor
+              // (kullanıcı isteği) — büyüteç ikonunun solunda kalan aynı
+              // alan. İsim atanmamış bayraklarda varsayılan renk adı
+              // (_defaultFlagColorLabel, bkz. note_flag_mixin.dart)
+              // kullanılır. 'flagColorNames' notifier'ı dinleniyor ki isim
+              // sonradan değiştirilirse (isim diyaloğu) başlık bu widget'ın
+              // kendi setState'ine ihtiyaç duymadan anında güncellensin.
+              ? ValueListenableBuilder<Map<String, String>>(
+                  valueListenable: flagColorNames,
+                  builder: (context, names, _) {
+                    final hex = _activeFlagFilter!;
+                    final label =
+                        names[hex] ?? _defaultFlagColorLabel(context, hex);
+                    return Text(
+                      label,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        // Başlık artık nötr bar rengi yerine, o an
+                        // gösterilen bayrağın kendi rengiyle yazılıyor
+                        // (kullanıcı isteği) — "Kırmızı" yazısı kırmızı
+                        // görünsün diye.
+                        color: _colorFromFlagHex(hex),
+                        fontSize: 18,
+                      ),
+                    );
                   },
                 )
               : Text(
@@ -2100,6 +3000,22 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                 // checklist, resim, belge, hatırlatıcı, ses, video) göre
                 // tek seçimli filtreleme. Etiket şeridiyle aynı mantıkla
                 // (AnimatedSize) açılıp kapanır, ayrı bir şerit olarak.
+                // Türler/Bayraklar/Etiketler şeritlerini saran bu blok,
+                // dokunmaları burada durdurup (no-op) altındaki genel
+                // "boş alana dokunca aramayı kapat" GestureDetector'ına
+                // (bkz. yukarıdaki body GestureDetector) hiç ulaşmasını
+                // engeller. Chip'ler/ikonlar arasındaki dar boşluklara
+                // (iki bayrak arası, iki tür ikonu arası) ya da şeritlerin
+                // kendi arasındaki dikey boşluğa yanlışlıkla dokunulduğunda
+                // arama artık kapanmıyor — chip'lerin kendi dokunma
+                // alanları yine önceliklidir, sadece "ölü bölge" ortadan
+                // kalkıyor (kullanıcı isteği).
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {},
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
                 AnimatedSize(
                   duration: const Duration(milliseconds: 220),
                   curve: Curves.easeOutCubic,
@@ -2178,821 +3094,130 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         )
                       : const SizedBox(width: double.infinity, height: 0),
                 ),
-                Expanded(
-                  child: filteredNotes.isEmpty
-                ? Center(
-                    child: isTrash
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 32),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.trashEmptyTitle,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  AppLocalizations.of(context)!.trashEmptySubtitle,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : Text(
-                            AppLocalizations.of(context)!.noNotesFoundMessage,
-                            style: const TextStyle(color: Colors.grey, fontSize: 16),
-                          ),
-                  )
-                : _isListView
-                ? TweenAnimationBuilder<double>(
-                    // NOT: Üst boşluk artık ListView'ı DIŞARIDAN saran bir
-                    // Padding/AnimatedPadding değil — ListView'ın KENDİ
-                    // `padding` özelliği olarak veriliyor. Önceki halde
-                    // (AnimatedPadding(child: ListView(...))) bu boşluk
-                    // kaydırılabilir alanın (viewport) DIŞINDaydı; yani
-                    // kartları yukarı kaydırsanız bile bu boşluk asla
-                    // kaybolmuyordu (sabit bir düzen boşluğuydu). Şimdi
-                    // ListView'ın kendi padding'i olduğu için kaydırılabilir
-                    // içeriğin bir parçası — yukarı kaydırınca listenin en
-                    // üstündeki her boşluk gibi doğal olarak kayboluyor
-                    // (kullanıcı isteği/hata düzeltmesi).
-                    //
-                    // Animasyon (şerit belirip kaybolurken 12 <-> 0 arası
-                    // yumuşak geçiş) TweenAnimationBuilder ile korunuyor —
-                    // aynı süre/eğri, _TagFilterStrip'i büyüten AnimatedSize
-                    // ile birebir aynı (bkz. yukarıdaki eski yorum).
-                    duration: const Duration(milliseconds: 220),
-                    curve: Curves.easeOutCubic,
-                    tween: Tween<double>(
-                      // NOT: Artık sadece _isSearching'e bağlı — etiket/
-                      // bayrak içeriği boş olsa bile üst boşluk (TagFilterStrip'in
-                      // kendi top:12'si) her zaman ayrılıyor (bkz. yukarıdaki
-                      // AnimatedSize yorumu), bu yüzden burada ayrıca
-                      // tagStripTags/tagStripFlagColors kontrolüne gerek yok
-                      // (gerek olsaydı boşluk iki kez sayılır ya da hiç
-                      // sayılmazdı).
-                      begin: 12.0,
-                      end: _isSearching ? 0.0 : 12.0,
-                    ),
-                    builder: (context, topPadding, _) => ListView.builder(
-                    padding: EdgeInsets.only(top: topPadding),
-                    itemCount: listItems.length,
-                    itemBuilder: (context, index) {
-                      final listItem = listItems[index];
-                      if (listItem is String) {
-                        // İlk öğe bir tarih başlığıysa (ör. "Bugün"), üstteki
-                        // ListView padding'i (12) ile bu başlığın kendi üst
-                        // boşluğu (18) üst üste binip gereksiz büyük bir boşluk
-                        // oluşturuyordu (Izgara görünümünde böyle bir başlık
-                        // olmadığından bu fazlalık orada yoktu). Sadece en
-                        // baştaki başlık için üst boşluğu küçültüyoruz; sonraki
-                        // gruplar arasındaki ayraç boşluğu aynı kalıyor.
-                        final bool isDateGroupCollapsed =
-                            _collapsedDateGroups.contains(listItem);
-                        return Padding(
-                          padding: EdgeInsets.fromLTRB(
-                            14,
-                            index == 0 ? 4 : 18,
-                            14,
-                            6,
-                          ),
-                          // Başlığın tamamına dokununca (metin + ikon) bu
-                          // tarih grubunun altındaki not kartları
-                          // gizlenir/tekrar gösterilir; durum kalıcıdır
-                          // (bkz. note_list_data_category_mixin.dart ->
-                          // _loadData / _saveData, 'collapsed_date_groups').
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(6),
-                            onTap: () {
-                              setState(() {
-                                if (isDateGroupCollapsed) {
-                                  _collapsedDateGroups.remove(listItem);
-                                } else {
-                                  _collapsedDateGroups.add(listItem);
-                                }
-                              });
-                              _saveData();
-                            },
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    listItem,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: dNoteIsDark(context)
-                                          ? Colors.grey[400]
-                                          : Colors.grey[700],
-                                    ),
-                                  ),
-                                ),
-                                Icon(
-                                  isDateGroupCollapsed
-                                      ? Icons.chevron_right
-                                      : Icons.expand_more,
-                                  size: 22,
-                                  color: dNoteIsDark(context)
-                                      ? Colors.grey[400]
-                                      : Colors.grey[700],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }
-                      final note = listItem as Map<String, dynamic>;
-                      final originalIndex = isTrash
-                          ? _deletedNotes.indexWhere(
-                              (n) =>
-                                  n['id'] == note['id'] &&
-                                  n['createdDate'] == note['createdDate'],
-                            )
-                          : _notes.indexWhere(
-                              (n) =>
-                                  n['id'] == note['id'] &&
-                                  n['createdDate'] == note['createdDate'],
-                            );
-                      final hasTitle = (note['title'] ?? '')
-                          .toString()
-                          .isNotEmpty;
-                      final isChecklist = note['type'] == 'checklist';
-                      final isFavorite = note['isFavorite'] == true;
-                      final isSelected =
-                          _isSelectionMode &&
-                          _selectedNoteKeys.contains(_noteKey(note));
-                      // Not Kapağı: kullanıcı üç nokta menüsünden ("Kapak
-                      // Rengi", bkz. NoteListNoteDialogMixin >
-                      // showBgColorSheet) bu not için sabit bir renk
-                      // seçmişse, kart HER ZAMAN o renkle gösterilir;
-                      // aksi halde (eskisi gibi) colorfulNotes/kategori
-                      // rengi mantığı geçerli olur.
-                      final noteOwnBgColor = note['bgColor'] as int?;
-                      final baseNoteCardColor = noteOwnBgColor != null
-                          ? Color(noteOwnBgColor).withValues(alpha: 0.75)
-                          : (_colorfulNotes
-                                ? _categoryPalette[(originalIndex < 0
-                                              ? 0
-                                              : originalIndex) %
-                                          _categoryPalette.length]
-                                      .withValues(alpha: 0.75)
-                                : (dNoteIsDark(context)
-                                      ? const Color(0xFF2D2D2D)
-                                      : Theme.of(context).cardColor));
-                      // Seçili notlar, dokununca beliren parlaklık efektiyle
-                      // aynı tonda (amber) sürekli vurgulanır.
-                      final noteCardColor = isSelected
-                          ? Color.alphaBlend(
-                              appAccentColor.value.withValues(alpha: 0.30),
-                              baseNoteCardColor,
-                            )
-                          : baseNoteCardColor;
-                      final fontScale = _previewFontScale(note);
-                      final previewImage = _firstImageAttachment(note);
-                      final previewDrawingStrokes = previewImage == null
-                          ? _firstDrawingStrokes(note)
-                          : null;
-                      // Eski (legacy) checklist notları ve yeni blok tabanlı
-                      // checklist içeren notlar için karışık önizleme kullanılır.
-                      final _noteBlocks = ContentBlocks.parse(note['content'] as String?);
-                      final _hasChecklistBlock = _noteBlocks.any((b) => b['type'] == 'checklist');
-                      final showMixedPreview = isChecklist || _hasChecklistBlock;
-                      // previewContentText, ContentBlocks.plainText() ile
-                      // BİREBİR AYNI metni üretir (metin karakterleri hiç
-                      // değişmedi) — previewContentSpans ise o metindeki
-                      // kalın/italik/renk/link/vurgu aralıklarını taşır,
-                      // aşağıda RichText + buildStaticTextSpan ile çizilsin
-                      // diye eklendi.
-                      final previewTextData = showMixedPreview
-                          ? const ('', <Map<String, dynamic>>[])
-                          : ContentBlocks.previewTextWithSpans(
-                              note['content'] as String?,
-                              totalLabelBuilder: (amount) =>
-                                  AppLocalizations.of(context)!
-                                      .calcTableTotalLabel(amount),
-                            );
-                      final previewContentText = previewTextData.$1;
-                      final previewContentSpans = previewTextData.$2;
-                      final previewChecklistItems = showMixedPreview
-                          ? _previewLineItems(note)
-                          : const [];
-                      final previewReminderText = _formattedReminderText(
-                        note,
-                      );
-                      final previewCategoryText = (note['category'] ?? '')
-                          .toString();
-                      // Not sadece bir görselden oluşuyorsa (başlık, metin,
-                      // kontrol listesi öğesi, hatırlatıcı, kategori veya
-                      // yıldız rozeti yoksa) altta boş bir satır bırakmamak
-                      // için gövde bölümü (Padding) hiç çizilmez.
-                      final previewShowFavoriteAlone =
-                          isFavorite && !hasTitle && !isChecklist &&
-                          previewContentText.isEmpty;
-                      final previewHasBody = hasTitle ||
-                          previewChecklistItems.isNotEmpty ||
-                          previewContentText.isNotEmpty ||
-                          previewReminderText != null ||
-                          previewCategoryText.isNotEmpty ||
-                          previewShowFavoriteAlone;
-
-                      return GestureDetector(
-                        onLongPress: isTrash
-                            ? () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  backgroundColor: Theme.of(context).cardColor,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(20),
-                                    ),
-                                  ),
-                                  builder: (_) => SafeArea(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          ElevatedButton.icon(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: appAccentColor.value,
-                                            ),
-                                            icon: const Icon(
-                                              Icons.restore_outlined,
-                                              color: Colors.black,
-                                            ),
-                                            label: Text(
-                                              AppLocalizations.of(context)!.trashRestoreButtonLabel,
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            onPressed: () {
-                                              final restoredNote =
-                                                  _deletedNotes[originalIndex];
-                                              setState(() {
-                                                _notes.insert(
-                                                  0,
-                                                  _deletedNotes[originalIndex],
-                                                );
-                                                _deletedNotes.removeAt(
-                                                  originalIndex,
-                                                );
-                                              });
-                                              _saveData();
-                                              _rescheduleNoteReminder(
-                                                restoredNote,
-                                              );
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                          ElevatedButton.icon(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red,
-                                            ),
-                                            icon: const Icon(
-                                              Icons.delete_forever,
-                                              color: Colors.white,
-                                            ),
-                                            label: Text(
-                                              AppLocalizations.of(context)!.trashPermanentDeleteButtonLabel,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            onPressed: () {
-                                              _cleanupAttachmentFiles(_deletedNotes[originalIndex]);
-                                            setState(() {
-                                              _deletedNotes.removeAt(originalIndex);
-                                            });
-                                              _saveData();
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }
-                            : (_isSelectionMode
-                                  ? () => _toggleNoteSelection(note)
-                                  : () => _showNoteActions(
-                                      context,
-                                      originalIndex,
-                                      false,
-                                      showSelectAction: true,
-                                      onInsertText: (text) =>
-                                          _appendSpeechTranscriptToNote(
-                                            originalIndex,
-                                            text,
-                                          ),
-                                    )),
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Card(
-                            margin: EdgeInsets.zero,
-                            color: noteCardColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              side: isSelected
-                                  ? BorderSide(
-                                      color: appAccentColor.value,
-                                      width: 2,
-                                    )
-                                  : BorderSide.none,
-                            ),
-                            // Bayrak rozeti artık burada (Card'ın en dış
-                            // Stack'i içinde) sabit bir Positioned olarak
-                            // çizilir — böylece hem kartın en üst kenarına
-                            // değer (top: 0) hem de isFavorite'e bakılmaksızın
-                            // (yıldız olsun/olmasın) hep aynı sağ üst köşede
-                            // sabit kalır; ızgara kartındaki (_buildGridNoteCard)
-                            // aynı mantıkla tutarlı.
-                            child: Stack(
-                              children: [
-                                InkWell(
-                                  onTap: isTrash
-                                  ? () {
-                                      showModalBottomSheet(
-                                        context: context,
-                                        backgroundColor: Theme.of(context).cardColor,
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(20),
-                                          ),
-                                        ),
-                                        builder: (_) => SafeArea(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(16),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                ElevatedButton.icon(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                        backgroundColor:
-                                                            appAccentColor.value,
-                                                      ),
-                                                  icon: const Icon(
-                                                    Icons.restore_outlined,
-                                                    color: Colors.black,
-                                                  ),
-                                                  label: Text(
-                                                    AppLocalizations.of(context)!.trashRestoreButtonLabel,
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-                                                    final restoredNote =
-                                                        _deletedNotes[originalIndex];
-                                                    setState(() {
-                                                      _deletedNotes[originalIndex]['createdDate'] =
-                                                          DateTime.now()
-                                                              .toString();
-                                                      _deletedNotes[originalIndex]['modifiedDate'] =
-                                                          DateTime.now()
-                                                              .toString();
-                                                      _notes.insert(
-                                                        0,
-                                                        _deletedNotes[originalIndex],
-                                                      );
-                                                      _deletedNotes.removeAt(
-                                                        originalIndex,
-                                                      );
-                                                    });
-                                                    _saveData();
-                                                    _rescheduleNoteReminder(
-                                                      restoredNote,
-                                                    );
-                                                    Navigator.pop(context);
-                                                  },
-                                                ),
-                                                ElevatedButton.icon(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                        backgroundColor:
-                                                            Colors.red,
-                                                      ),
-                                                  icon: const Icon(
-                                                    Icons.delete_forever,
-                                                    color: Colors.white,
-                                                  ),
-                                                  label: Text(
-                                                    AppLocalizations.of(context)!.trashPermanentDeleteButtonLabel,
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-                                                    _cleanupAttachmentFiles(_deletedNotes[originalIndex]);
-                                            setState(() {
-                                              _deletedNotes.removeAt(originalIndex);
-                                            });
-                                                    _saveData();
-                                                    Navigator.pop(context);
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                  : (_isSelectionMode
-                                        ? () => _toggleNoteSelection(note)
-                                        : () => _openNoteWithPasswordCheck(
-                                            originalIndex,
-                                          )),
-                              borderRadius: BorderRadius.circular(12),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (previewImage != null &&
-                                      _attachmentsDirPath != null)
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(12),
-                                      ),
-                                      child: AspectRatio(
-                                        aspectRatio: _kGridPreviewAspectRatio,
-                                        child: Image.file(
-                                          File(
-                                            p.join(
-                                              _attachmentsDirPath!,
-                                              previewImage['storedName']
-                                                  .toString(),
-                                            ),
-                                          ),
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) =>
-                                              Container(
-                                                color: dNoteSurfaceVariant(
-                                                  context,
-                                                ),
-                                                child: const Icon(
-                                                  Icons
-                                                      .broken_image_outlined,
-                                                  color: Colors.grey,
-                                                  size: 20,
-                                                ),
-                                              ),
-                                        ),
-                                      ),
-                                    )
-                                  else if (previewDrawingStrokes != null)
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(12),
-                                      ),
-                                      child: AspectRatio(
-                                        aspectRatio: _kGridPreviewAspectRatio,
-                                        child: _gridPreviewDrawingTile(
-                                          previewDrawingStrokes,
-                                        ),
-                                      ),
-                                    ),
-                                  if (previewHasBody)
-                                  Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                      child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (hasTitle) ...[
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: RichText(
-                                              // Aşama 5: bkz. grid karttaki
-                                              // aynı isimli açıklama —
-                                              // maxLines/overflow eskiden de
-                                              // yoktu, davranış değişmedi.
-                                              text: buildStaticTextSpan(
-                                                _capitalizeFirstLetterTr(
-                                                  (note['title'] ?? '')
-                                                      .toString(),
-                                                ),
-                                                note['titleSpans'] as List?,
-                                                TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  // Başlık, notun kendi (veya
-                                                  // Ayarlar > Metin Boyutu'ndan
-                                                  // gelen) yazı boyutunun 2
-                                                  // birim fazlası. fontScale =
-                                                  // noteFontSize/16 olduğundan
-                                                  // noteFontSize = 16*fontScale.
-                                                  fontSize: (16 * fontScale) + 2,
-                                                  color: dNoteEffectiveTextColor(context, _textColor),
-                                                  fontFamily: dNoteFontFamilyValue(_fontFamily),
-                                                ),
-                                                isDark: dNoteIsDark(context),
-                                              ),
-                                            ),
-                                          ),
-                                          // Yıldız, kilit ve bayrak artık
-                                          // başlığın yanında değil, kartın
-                                          // köşesindeki sabit rozetlerde
-                                          // gösteriliyor (bkz. Card'ı saran
-                                          // Stack + _buildNoteCornerBadges).
-                                        ],
-                                      ),
-                                      const SizedBox(height: 8),
-                                    ],
-                                    if (previewChecklistItems.isNotEmpty)
-                                      ...(previewChecklistItems
-                                          .take(_previewLines)
-                                          .map<Widget>((item) {
-                                            final isItemChecklist =
-                                                item['checklist'] == true;
-                                            final isChecked =
-                                                item['checked'] == true;
-                                            final textWidget = Text(
-                                              (item['text'] ?? '').toString(),
-                                              style: TextStyle(
-                                                color:
-                                                    isItemChecklist &&
-                                                        isChecked
-                                                    ? dNoteEffectiveTextColor(context, _textColor)
-                                                          ?.withOpacity(0.5)
-                                                    : (dNoteEffectiveTextColor(context, _textColor)),
-                                                decoration:
-                                                    isItemChecklist &&
-                                                        isChecked
-                                                    ? TextDecoration
-                                                          .lineThrough
-                                                    : null,
-                                                decorationColor:
-                                                    isItemChecklist &&
-                                                        isChecked
-                                                    ? Colors.grey[700]
-                                                    : null,
-                                                decorationStyle:
-                                                    TextDecorationStyle.solid,
-                                                fontSize:
-                                                    (note['fontSize'] as num?)
-                                                        ?.toDouble() ??
-                                                    _globalFontSize,
-                                                fontFamily: dNoteFontFamilyValue(_fontFamily),
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            );
-                                            if (!isItemChecklist) {
-                                              return textWidget;
-                                            }
-                                            return Row(
-                                              children: [
-                                                Icon(
-                                                  isChecked
-                                                      ? Icons.check_box_rounded
-                                                      : Icons
-                                                            .check_box_outline_blank_rounded,
-                                                  color: appAccentColor.value,
-                                                  size: 16,
-                                                ),
-                                                const SizedBox(width: 6),
-                                                Expanded(child: textWidget),
-                                              ],
-                                            );
-                                          })
-                                          .toList())
-                                    else if (previewContentText.isNotEmpty ||
-                                        previewShowFavoriteAlone)
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            child: Text.rich(
-                                              // DÜZELTME: RichText, Text'in
-                                              // aksine çevredeki
-                                              // DefaultTextStyle'ı (ve metin
-                                              // ölçekleme ayarlarını)
-                                              // otomatik miras almıyor —
-                                              // bu yüzden önceki Text(...)
-                                              // widget'ının GÖRÜNÜMÜNÜ birebir
-                                              // korumak için RichText yerine
-                                              // Text.rich kullanılıyor
-                                              // (Text.rich, Text ile aynı
-                                              // DefaultTextStyle birleştirme
-                                              // mantığını kullanır). TextStyle/
-                                              // maxLines/overflow öncekiyle
-                                              // birebir aynı korunuyor,
-                                              // sadece kalın/italik/renk/
-                                              // link/vurgu artık görünüyor.
-                                              buildStaticTextSpan(
-                                                previewContentText,
-                                                previewContentSpans,
-                                                TextStyle(
-                                                  color: dNoteEffectiveTextColor(context, _textColor),
-                                                  fontSize:
-                                                      (note['fontSize'] as num?)
-                                                          ?.toDouble() ??
-                                                      _globalFontSize,
-                                                  fontFamily: dNoteFontFamilyValue(_fontFamily),
-                                                ),
-                                                isDark: dNoteIsDark(context),
-                                              ),
-                                              maxLines: _previewLines,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          // Yıldız ve bayrak artık kartın
-                                          // köşesindeki sabit rozetlerde
-                                          // gösteriliyor (bkz. Card'ı saran
-                                          // Stack + _buildNoteCornerBadges).
-                                        ],
-                                      ),
-                                    if (_formattedReminderText(note) !=
-                                        null) ...[
-                                      const SizedBox(height: 8),
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            note['reminderRepeat'] == null
-                                                ? Icons.notifications
-                                                : Icons.repeat,
-                                            color: Colors.lightBlueAccent,
-                                            size: 16,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Flexible(
-                                            child: Text(
-                                              _formattedReminderText(note)!,
-                                              style: TextStyle(
-                                                color: dNoteEffectiveTextColor(
-                                                  context,
-                                                  _textColor,
-                                                ),
-                                                fontSize:
-                                                    ((note['fontSize'] as num?)
-                                                        ?.toDouble() ??
-                                                    _globalFontSize) -
-                                                    1,
-                                                fontFamily: dNoteFontFamilyValue(
-                                                  _fontFamily,
-                                                ),
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                    if (_showsGundemBadge(note)) ...[
-                                      const SizedBox(height: 8),
-                                      Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            Icons.today_outlined,
-                                            color: appAccentColor.value,
-                                            size: 16,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Flexible(
-                                            child: Text(
-                                              _gundemBadgeDateLabel(context, note)!,
-                                              style: TextStyle(
-                                                color: dNoteEffectiveTextColor(
-                                                  context,
-                                                  _textColor,
-                                                ),
-                                                fontSize:
-                                                    ((note['fontSize'] as num?)
-                                                        ?.toDouble() ??
-                                                    _globalFontSize) -
-                                                    1,
-                                                fontFamily: dNoteFontFamilyValue(
-                                                  _fontFamily,
-                                                ),
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                    if ((note['category'] ?? '')
-                                        .toString()
-                                        .isNotEmpty) ...[
-                                      const SizedBox(height: 6),
-                                      Align(
-                                        alignment: Alignment.bottomLeft,
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(
-                                              Icons.folder_outlined,
-                                              color: _getCategoryColor(
-                                                note['category'] as String,
-                                              ),
-                                              size: 16,
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Flexible(
-                                              child: Text(
-                                                _folderTagLabel(
-                                                  note['category'] as String,
-                                                ),
-                                                style: TextStyle(
-                                                  color:
-                                                      dNoteEffectiveTextColor(
-                                                    context,
-                                                    _textColor,
-                                                  ),
-                                                  fontSize:
-                                                      ((note['fontSize']
-                                                              as num?)
-                                                          ?.toDouble() ??
-                                                      _globalFontSize) -
-                                                      1,
-                                                  fontFamily:
-                                                      dNoteFontFamilyValue(
-                                                    _fontFamily,
-                                                  ),
-                                                ),
-                                                maxLines: 1,
-                                                overflow:
-                                                    TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                    _buildNoteTagChips(note),
-                                  ],
-                                ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                                ..._buildNoteCornerBadges(
-                                  isFavorite: isFavorite,
-                                  isLocked: note['isLocked'] == true,
-                                  flagColor: note['flagColor'] as String?,
-                                  isPinned: note['isPinned'] == true,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    ),
-                  )
-                : TweenAnimationBuilder<double>(
-                    // NOT: Liste görünümündeki (_isListView) düzeltmeyle
-                    // aynı gerekçe — üst boşluk artık SingleChildScrollView'ı
-                    // DIŞARIDAN saran bir Padding değil, SingleChildScrollView'ın
-                    // KENDİ `padding` özelliği. Böylece kaydırılabilir
-                    // içeriğin parçası olur ve kartları yukarı kaydırınca
-                    // doğal olarak kaybolur (öncesinde sabit/kalıcı bir
-                    // boşluktu).
-                    duration: const Duration(milliseconds: 220),
-                    curve: Curves.easeOutCubic,
-                    tween: Tween<double>(
-                      // NOT: Artık sadece _isSearching'e bağlı — etiket/
-                      // bayrak içeriği boş olsa bile üst boşluk (TagFilterStrip'in
-                      // kendi top:12'si) her zaman ayrılıyor (bkz. yukarıdaki
-                      // AnimatedSize yorumu), bu yüzden burada ayrıca
-                      // tagStripTags/tagStripFlagColors kontrolüne gerek yok
-                      // (gerek olsaydı boşluk iki kez sayılır ya da hiç
-                      // sayılmazdı).
-                      begin: 12.0,
-                      end: _isSearching ? 0.0 : 12.0,
-                    ),
-                    builder: (context, topPadding, _) => SingleChildScrollView(
-                      padding: EdgeInsets.only(top: topPadding),
-                      child: _buildGridView(
-                        filteredNotes: filteredNotes,
-                        isTrash: isTrash,
-                      ),
-                    ),
+                    ],
                   ),
+                ),
+                Expanded(
+                  // Arama modundayken tek bir liste (o anki _activeFlagFilter'a
+                  // göre) gösterilir — bayrak şeridinden dokunarak seçiliyor.
+                  // Arama modu KAPALIYKEN ise gerçek bir PageView kullanılır:
+                  // parmak sayfayı takip eder, bırakınca ilgili bayrağa
+                  // (veya yarıda bırakılırsa eskisine) yaslanır — üst üste
+                  // binen bir çekmece değil, yan yana kayan sayfalar
+                  // (kullanıcı isteği). `key`, kategori/çöp kutusu/bayrak
+                  // sayısı değiştiğinde PageView'ın (ve dahili
+                  // PageController'ının) sıfırdan kurulmasını sağlar; böylece
+                  // her zaman doğru başlangıç sayfasıyla (initialFlagPageIndex)
+                  // yeniden oluşur.
+                  child: _isSearching
+                      ? _buildNoteListArea(
+                          context,
+                          filteredNotes,
+                          listItems,
+                          isTrash,
+                          showDateGroups,
+                        )
+                      : PageView.builder(
+                          key: ValueKey(
+                            'flagPageView|$_activeCategory|$isTrash|${flagCycle.length}',
+                          ),
+                          controller: _flagPageController,
+                          itemCount: flagCycle.length,
+                          onPageChanged: (index) {
+                            setState(() {
+                              _activeFlagFilter = flagCycle[index];
+                            });
+                          },
+                          itemBuilder: (context, index) {
+                            final pageFlag = flagCycle[index];
+                            final pageFilteredNotes = _computeFilteredNotes(
+                              context,
+                              isTrash,
+                              pageFlag,
+                            );
+                            final pageListItems = _computeListItems(
+                              pageFilteredNotes,
+                              showDateGroups,
+                            );
+                            // ESKİ (kaldırılan) yaklaşım: her sayfaya SABİT
+                            // yatay padding (6) verilmişti. Bu, sayfa
+                            // otururken de (kaydırma bitince) kenar
+                            // boşluğunu kalıcı olarak büyütüyordu — dış
+                            // Padding zaten 8px verirken toplamda 14px'e
+                            // çıkıyordu (kullanıcı şikayeti: kenar
+                            // boşlukları eskisine göre artmış görünüyor).
+                            //
+                            // YENİ yaklaşım: boşluk artık SABİT değil,
+                            // `_flagPageController`'ın o anki kayma
+                            // durumuna (controller.page) bağlı DİNAMİK bir
+                            // değer. Sayfa tam otururken (page == index)
+                            // boşluk 0'dır -> kenarlar eskisi gibi (dış
+                            // Padding'in verdiği sabit 8px) kalır. Parmak
+                            // bu sayfayı bir komşusuna doğru kaydırmaya
+                            // başladığında, YALNIZCA kayma yönündeki
+                            // kenarda (sağa kayarken sağ, sola kayarken
+                            // sol) küçük bir boşluk belirmeye başlar ve
+                            // kaydırma tamamlanıp yeni sayfa oturunca
+                            // tekrar 0'a iner — yani boşluk sadece iki
+                            // sayfa arasındaki "dikişte", geçici olarak var
+                            // olur, kartlar asla yapışmaz ama duruşta
+                            // kenar boşluğu şişmez (kullanıcı isteği).
+                            return AnimatedBuilder(
+                              animation: _flagPageController,
+                              builder: (context, child) {
+                                double page = index.toDouble();
+                                try {
+                                  page = _flagPageController.page ??
+                                      initialFlagPageIndex.toDouble();
+                                } catch (_) {
+                                  // Controller henüz bir PageView'a
+                                  // bağlanıp boyut almadıysa (.page)
+                                  // assertion fırlatabilir — ilk karede bu
+                                  // durum normal, sayfanın kendi index'ini
+                                  // (kaymamış hali) varsayıyoruz.
+                                }
+                                const double maxGutter = 10;
+                                final delta = page - index;
+                                final leftGutter = delta < 0
+                                    ? (-delta).clamp(0.0, 1.0) * maxGutter
+                                    : 0.0;
+                                final rightGutter = delta > 0
+                                    ? delta.clamp(0.0, 1.0) * maxGutter
+                                    : 0.0;
+                                return Padding(
+                                  padding: EdgeInsets.only(
+                                    left: leftGutter,
+                                    right: rightGutter,
+                                  ),
+                                  child: child,
+                                );
+                              },
+                              child: _buildNoteListArea(
+                                context,
+                                pageFilteredNotes,
+                                pageListItems,
+                                isTrash,
+                                showDateGroups,
+                              ),
+                            );
+                          },
+                        ),
                 ),
               ],
             ),
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => _showNoteDialog(type: 'text'),
+          // _activeFlagFilter hem ana ekrandaki bayrak sayfası kaydırmasıyla
+          // (PageView.onPageChanged) hem arama bölümündeki bayrak chip'iyle
+          // (onFlagSelected) güncellenen TEK ortak durum değişkeni; burada
+          // olduğu gibi geçirilmesi, her iki giriş noktasını da otomatik
+          // kapsar (kullanıcı isteği: bir bayrak sayfasındayken/seçiliyken
+          // (+) ile açılan not baştan o bayrakla gelsin).
+          onPressed: () => _showNoteDialog(
+            type: 'text',
+            initialFlagColor: _activeFlagFilter,
+          ),
           backgroundColor: appAccentColor.value,
           child: const Icon(Icons.add, color: Colors.black, size: 30),
         ),
@@ -4551,6 +4776,14 @@ class _TagFilterStripState extends State<_TagFilterStrip>
                                       visualDensity: VisualDensity.compact,
                                       labelPadding: const EdgeInsets
                                           .symmetric(horizontal: 2),
+                                      // Seçili durumda Material'ın
+                                      // varsayılan check işaretini
+                                      // etiketin başına eklemesini
+                                      // engeller (kullanıcı isteği) —
+                                      // bayrak şekli zaten dolu/boş
+                                      // görünümle seçili olduğunu
+                                      // gösteriyor.
+                                      showCheckmark: false,
                                     );
                                   },
                                 ),

@@ -2197,7 +2197,7 @@ class AppLocalizationsHe extends AppLocalizations {
   String get noteBgColorDialogTitle => 'בחר צבע כריכה';
 
   @override
-  String get flagColorMenuItemLabel => 'צבע דגל';
+  String get flagColorMenuItemLabel => 'דגל';
 
   @override
   String get flagColorPickerTitle => 'בחר צבע דגל';
@@ -2206,19 +2206,19 @@ class AppLocalizationsHe extends AppLocalizations {
   String get flagColorRemoveOption => 'הסר דגל';
 
   @override
-  String get flagColorNameRed => 'אדום';
+  String get flagColorNameRed => 'עדיפות';
 
   @override
-  String get flagColorNameOrange => 'כתום';
+  String get flagColorNameOrange => 'אישי';
 
   @override
-  String get flagColorNameYellow => 'צהוב';
+  String get flagColorNameYellow => 'רעיונות';
 
   @override
-  String get flagColorNameGreen => 'ירוק';
+  String get flagColorNameGreen => 'בתהליך';
 
   @override
-  String get flagColorNameBlue => 'כחול';
+  String get flagColorNameBlue => 'הושלמו';
 
   @override
   String get flagNameDialogTitle => 'תן שם לדגל';

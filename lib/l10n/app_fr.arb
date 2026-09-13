@@ -37,7 +37,6 @@
   "blockPreviewAttachmentsLabel": "{count} pièce(s) jointe(s) (photo/document)",
   "blockPreviewDividerLabel": "Ligne de séparation",
   "blockPreviewChecklistLabel": "Liste de contrôle ({count} éléments)",
-  "blockPreviewTableLabel": "Tableau ({count} lignes)",
   "@blockPreviewTableLabel": {
     "placeholders": {
       "count": {
@@ -681,14 +680,14 @@
   "tagsMenuItemLabel": "Étiquettes",
   "noteBgColorMenuItemLabel": "Couleur de couverture",
   "noteBgColorDialogTitle": "Choisir la couleur de couverture",
-  "flagColorMenuItemLabel": "Couleur du drapeau",
+  "flagColorMenuItemLabel": "Drapeau",
   "flagColorPickerTitle": "Choisir la couleur du drapeau",
   "flagColorRemoveOption": "Supprimer le drapeau",
-  "flagColorNameRed": "Rouge",
-  "flagColorNameOrange": "Orange",
-  "flagColorNameYellow": "Jaune",
-  "flagColorNameGreen": "Vert",
-  "flagColorNameBlue": "Bleu",
+  "flagColorNameRed": "Priorité",
+  "flagColorNameOrange": "Personnel",
+  "flagColorNameYellow": "Idées",
+  "flagColorNameGreen": "Commencées",
+  "flagColorNameBlue": "Terminées",
   "flagNameDialogTitle": "Nommer le drapeau",
   "flagNameDialogHint": "Ex. Urgent, En attente...",
   "flagNameDialogCancelButton": "Annuler",

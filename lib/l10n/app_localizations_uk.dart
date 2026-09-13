@@ -2235,7 +2235,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get noteBgColorDialogTitle => 'Вибрати колір обкладинки';
 
   @override
-  String get flagColorMenuItemLabel => 'Колір прапорця';
+  String get flagColorMenuItemLabel => 'Прапорець';
 
   @override
   String get flagColorPickerTitle => 'Виберіть колір прапорця';
@@ -2244,19 +2244,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get flagColorRemoveOption => 'Прибрати прапорець';
 
   @override
-  String get flagColorNameRed => 'Червоний';
+  String get flagColorNameRed => 'Пріоритет';
 
   @override
-  String get flagColorNameOrange => 'Помаранчевий';
+  String get flagColorNameOrange => 'Особисте';
 
   @override
-  String get flagColorNameYellow => 'Жовтий';
+  String get flagColorNameYellow => 'Ідеї';
 
   @override
-  String get flagColorNameGreen => 'Зелений';
+  String get flagColorNameGreen => 'Розпочаті';
 
   @override
-  String get flagColorNameBlue => 'Синій';
+  String get flagColorNameBlue => 'Завершені';
 
   @override
   String get flagNameDialogTitle => 'Назвати прапорець';

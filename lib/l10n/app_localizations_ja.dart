@@ -2174,7 +2174,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noteBgColorDialogTitle => 'カバーカラーを選択';
 
   @override
-  String get flagColorMenuItemLabel => 'フラグの色';
+  String get flagColorMenuItemLabel => 'フラグ';
 
   @override
   String get flagColorPickerTitle => 'フラグの色を選択';
@@ -2183,19 +2183,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get flagColorRemoveOption => 'フラグを削除';
 
   @override
-  String get flagColorNameRed => '赤';
+  String get flagColorNameRed => '優先';
 
   @override
-  String get flagColorNameOrange => 'オレンジ';
+  String get flagColorNameOrange => '個人';
 
   @override
-  String get flagColorNameYellow => '黄色';
+  String get flagColorNameYellow => 'アイデア';
 
   @override
-  String get flagColorNameGreen => '緑';
+  String get flagColorNameGreen => '進行中';
 
   @override
-  String get flagColorNameBlue => '青';
+  String get flagColorNameBlue => '完了';
 
   @override
   String get flagNameDialogTitle => 'フラグに名前を付ける';

@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "Taulukko ({count} riviä)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(tyhjä teksti)",
   "reorderBlocksSheetTitle": "Järjestä lohkot uudelleen",
   "reorderBlocksMoveUpTooltip": "Siirrä ylös",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "Tunnisteet",
   "noteBgColorMenuItemLabel": "Kansiväri",
   "noteBgColorDialogTitle": "Valitse kansiväri",
-  "flagColorMenuItemLabel": "Lipun väri",
+  "flagColorMenuItemLabel": "Lippu",
   "flagColorPickerTitle": "Valitse lipun väri",
   "flagColorRemoveOption": "Poista lippu",
-  "flagColorNameRed": "Punainen",
-  "flagColorNameOrange": "Oranssi",
-  "flagColorNameYellow": "Keltainen",
-  "flagColorNameGreen": "Vihreä",
-  "flagColorNameBlue": "Sininen",
+  "flagColorNameRed": "Prioriteetti",
+  "flagColorNameOrange": "Henkilökohtainen",
+  "flagColorNameYellow": "Ideat",
+  "flagColorNameGreen": "Aloitetut",
+  "flagColorNameBlue": "Valmiit",
   "flagNameDialogTitle": "Nimeä lippu",
   "flagNameDialogHint": "Esim. Kiireellinen, Odottaa...",
   "flagNameDialogCancelButton": "Peruuta",

@@ -2232,7 +2232,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get noteBgColorDialogTitle => 'Alege culoarea copertei';
 
   @override
-  String get flagColorMenuItemLabel => 'Culoare steag';
+  String get flagColorMenuItemLabel => 'Steag';
 
   @override
   String get flagColorPickerTitle => 'Alege culoarea steagului';
@@ -2241,19 +2241,19 @@ class AppLocalizationsRo extends AppLocalizations {
   String get flagColorRemoveOption => 'Elimină steagul';
 
   @override
-  String get flagColorNameRed => 'Roșu';
+  String get flagColorNameRed => 'Prioritate';
 
   @override
-  String get flagColorNameOrange => 'Portocaliu';
+  String get flagColorNameOrange => 'Personal';
 
   @override
-  String get flagColorNameYellow => 'Galben';
+  String get flagColorNameYellow => 'Idei';
 
   @override
-  String get flagColorNameGreen => 'Verde';
+  String get flagColorNameGreen => 'Începute';
 
   @override
-  String get flagColorNameBlue => 'Albastru';
+  String get flagColorNameBlue => 'Finalizate';
 
   @override
   String get flagNameDialogTitle => 'Denumește steagul';

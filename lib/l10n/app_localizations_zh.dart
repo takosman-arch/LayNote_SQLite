@@ -2147,7 +2147,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noteBgColorDialogTitle => '选择封面颜色';
 
   @override
-  String get flagColorMenuItemLabel => '旗标颜色';
+  String get flagColorMenuItemLabel => '旗标';
 
   @override
   String get flagColorPickerTitle => '选择旗标颜色';
@@ -2156,19 +2156,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String get flagColorRemoveOption => '移除旗标';
 
   @override
-  String get flagColorNameRed => '红色';
+  String get flagColorNameRed => '优先';
 
   @override
-  String get flagColorNameOrange => '橙色';
+  String get flagColorNameOrange => '个人';
 
   @override
-  String get flagColorNameYellow => '黄色';
+  String get flagColorNameYellow => '想法';
 
   @override
-  String get flagColorNameGreen => '绿色';
+  String get flagColorNameGreen => '进行中';
 
   @override
-  String get flagColorNameBlue => '蓝色';
+  String get flagColorNameBlue => '已完成';
 
   @override
   String get flagNameDialogTitle => '为旗标命名';

@@ -135,6 +135,10 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
             'color': 'Amber',
             'type': 'text',
             'isLocked': false,
+            // Uygulama ilk açıldığında oluşan karşılama notu, baştan
+            // kırmızı bayrakla gelsin diye (kullanıcı isteği).
+            // '#F44336' -> NoteFlagMixin._flagPalette'teki kırmızı.
+            'flagColor': '#F44336',
           },
         ];
       }

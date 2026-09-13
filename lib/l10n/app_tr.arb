@@ -145,7 +145,6 @@
   },
   "blockPreviewTableLabel": "Tablo ({count} satır)",
   "@blockPreviewTableLabel": {
-    "description": "Blokları Sırala listesinde bir tablo bloğu için gösterilen önizleme metni",
     "placeholders": {
       "count": {
         "type": "int"
@@ -170,14 +169,6 @@
     "description": "Blokları Sırala listesinde bir yatay çizgi (ayraç) bloğu için gösterilen önizleme metni"
   },
   "blockPreviewChecklistLabel": "Kontrol Listesi ({count} madde)",
-  "blockPreviewTableLabel": "Tablo ({count} satır)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "@blockPreviewChecklistLabel": {
     "description": "Blokları Sırala listesinde bir yapılacaklar listesi bloğu için gösterilen önizleme metni",
     "placeholders": {
@@ -2967,14 +2958,14 @@
   "tagsMenuItemLabel": "Etiketler",
   "noteBgColorMenuItemLabel": "Kapak Rengi",
   "noteBgColorDialogTitle": "Kapak Rengi Seç",
-  "flagColorMenuItemLabel": "Bayrak Rengi",
+  "flagColorMenuItemLabel": "Bayrak",
   "flagColorPickerTitle": "Bayrak rengi seç",
   "flagColorRemoveOption": "Bayrağı kaldır",
-  "flagColorNameRed": "Kırmızı",
-  "flagColorNameOrange": "Turuncu",
-  "flagColorNameYellow": "Sarı",
-  "flagColorNameGreen": "Yeşil",
-  "flagColorNameBlue": "Mavi",
+  "flagColorNameRed": "Öncelikli",
+  "flagColorNameOrange": "Kişisel",
+  "flagColorNameYellow": "Fikirler",
+  "flagColorNameGreen": "Başlananlar",
+  "flagColorNameBlue": "Bitenler",
   "flagNameDialogTitle": "Bayrağı adlandır",
   "flagNameDialogHint": "Örn. Acil, Beklemede...",
   "flagNameDialogCancelButton": "Vazgeç",

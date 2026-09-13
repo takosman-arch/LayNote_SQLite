@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "Tabel ({count} rijen)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(lege tekst)",
   "reorderBlocksSheetTitle": "Blokken opnieuw ordenen",
   "reorderBlocksMoveUpTooltip": "Omhoog verplaatsen",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "Labels",
   "noteBgColorMenuItemLabel": "Omslagkleur",
   "noteBgColorDialogTitle": "Omslagkleur kiezen",
-  "flagColorMenuItemLabel": "Vlagkleur",
+  "flagColorMenuItemLabel": "Vlag",
   "flagColorPickerTitle": "Kies vlagkleur",
   "flagColorRemoveOption": "Vlag verwijderen",
-  "flagColorNameRed": "Rood",
-  "flagColorNameOrange": "Oranje",
-  "flagColorNameYellow": "Geel",
-  "flagColorNameGreen": "Groen",
-  "flagColorNameBlue": "Blauw",
+  "flagColorNameRed": "Prioriteit",
+  "flagColorNameOrange": "Persoonlijk",
+  "flagColorNameYellow": "Ideeën",
+  "flagColorNameGreen": "Gestart",
+  "flagColorNameBlue": "Afgerond",
   "flagNameDialogTitle": "Vlag een naam geven",
   "flagNameDialogHint": "Bijv. Urgent, In behandeling...",
   "flagNameDialogCancelButton": "Annuleren",

@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "Tabel ({count} rækker)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(tom tekst)",
   "reorderBlocksSheetTitle": "Omorganiser blokke",
   "reorderBlocksMoveUpTooltip": "Flyt op",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "Tags",
   "noteBgColorMenuItemLabel": "Omslagsfarve",
   "noteBgColorDialogTitle": "Vælg omslagsfarve",
-  "flagColorMenuItemLabel": "Flagfarve",
+  "flagColorMenuItemLabel": "Flag",
   "flagColorPickerTitle": "Vælg flagfarve",
   "flagColorRemoveOption": "Fjern flag",
-  "flagColorNameRed": "Rød",
-  "flagColorNameOrange": "Orange",
-  "flagColorNameYellow": "Gul",
-  "flagColorNameGreen": "Grøn",
-  "flagColorNameBlue": "Blå",
+  "flagColorNameRed": "Prioritet",
+  "flagColorNameOrange": "Personligt",
+  "flagColorNameYellow": "Idéer",
+  "flagColorNameGreen": "Påbegyndte",
+  "flagColorNameBlue": "Afsluttede",
   "flagNameDialogTitle": "Navngiv flaget",
   "flagNameDialogHint": "F.eks. Akut, Afventer...",
   "flagNameDialogCancelButton": "Annuller",

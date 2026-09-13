@@ -2214,7 +2214,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get noteBgColorDialogTitle => 'เลือกสีปก';
 
   @override
-  String get flagColorMenuItemLabel => 'สีธง';
+  String get flagColorMenuItemLabel => 'ธง';
 
   @override
   String get flagColorPickerTitle => 'เลือกสีธง';
@@ -2223,19 +2223,19 @@ class AppLocalizationsTh extends AppLocalizations {
   String get flagColorRemoveOption => 'ลบธง';
 
   @override
-  String get flagColorNameRed => 'แดง';
+  String get flagColorNameRed => 'สำคัญ';
 
   @override
-  String get flagColorNameOrange => 'ส้ม';
+  String get flagColorNameOrange => 'ส่วนตัว';
 
   @override
-  String get flagColorNameYellow => 'เหลือง';
+  String get flagColorNameYellow => 'ไอเดีย';
 
   @override
-  String get flagColorNameGreen => 'เขียว';
+  String get flagColorNameGreen => 'เริ่มแล้ว';
 
   @override
-  String get flagColorNameBlue => 'น้ำเงิน';
+  String get flagColorNameBlue => 'เสร็จแล้ว';
 
   @override
   String get flagNameDialogTitle => 'ตั้งชื่อธง';

@@ -53,7 +53,7 @@
       }
     }
   },
-  "blockPreviewTableLabel": "テーブル（{count}行）",
+  "blockPreviewTableLabel": "表（{count}行）",
   "@blockPreviewTableLabel": {
     "placeholders": {
       "count": {
@@ -73,14 +73,6 @@
   "blockPreviewDividerLabel": "区切り線",
   "blockPreviewChecklistLabel": "チェックリスト（{count}項目）",
   "@blockPreviewChecklistLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "blockPreviewTableLabel": "表（{count}行）",
-  "@blockPreviewTableLabel": {
     "placeholders": {
       "count": {
         "type": "int"
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "タグ",
   "noteBgColorMenuItemLabel": "カバーカラー",
   "noteBgColorDialogTitle": "カバーカラーを選択",
-  "flagColorMenuItemLabel": "フラグの色",
+  "flagColorMenuItemLabel": "フラグ",
   "flagColorPickerTitle": "フラグの色を選択",
   "flagColorRemoveOption": "フラグを削除",
-  "flagColorNameRed": "赤",
-  "flagColorNameOrange": "オレンジ",
-  "flagColorNameYellow": "黄色",
-  "flagColorNameGreen": "緑",
-  "flagColorNameBlue": "青",
+  "flagColorNameRed": "優先",
+  "flagColorNameOrange": "個人",
+  "flagColorNameYellow": "アイデア",
+  "flagColorNameGreen": "進行中",
+  "flagColorNameBlue": "完了",
   "flagNameDialogTitle": "フラグに名前を付ける",
   "flagNameDialogHint": "例：緊急、保留中...",
   "flagNameDialogCancelButton": "キャンセル",

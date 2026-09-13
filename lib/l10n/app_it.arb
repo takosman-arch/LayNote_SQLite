@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "Tabella ({count} righe)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(testo vuoto)",
   "reorderBlocksSheetTitle": "Riordina blocchi",
   "reorderBlocksMoveUpTooltip": "Sposta su",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "Tag",
   "noteBgColorMenuItemLabel": "Colore di Copertina",
   "noteBgColorDialogTitle": "Scegli Colore di Copertina",
-  "flagColorMenuItemLabel": "Colore bandiera",
+  "flagColorMenuItemLabel": "Bandiera",
   "flagColorPickerTitle": "Scegli colore bandiera",
   "flagColorRemoveOption": "Rimuovi bandiera",
-  "flagColorNameRed": "Rosso",
-  "flagColorNameOrange": "Arancione",
-  "flagColorNameYellow": "Giallo",
-  "flagColorNameGreen": "Verde",
-  "flagColorNameBlue": "Blu",
+  "flagColorNameRed": "Priorità",
+  "flagColorNameOrange": "Personale",
+  "flagColorNameYellow": "Idee",
+  "flagColorNameGreen": "Iniziate",
+  "flagColorNameBlue": "Completate",
   "flagNameDialogTitle": "Assegna un nome alla bandiera",
   "flagNameDialogHint": "Es. Urgente, In attesa...",
   "flagNameDialogCancelButton": "Annulla",

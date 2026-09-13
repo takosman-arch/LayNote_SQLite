@@ -2216,7 +2216,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noteBgColorDialogTitle => 'Choose Cover Color';
 
   @override
-  String get flagColorMenuItemLabel => 'Flag Color';
+  String get flagColorMenuItemLabel => 'Flag';
 
   @override
   String get flagColorPickerTitle => 'Choose Flag Color';
@@ -2225,19 +2225,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get flagColorRemoveOption => 'Remove Flag';
 
   @override
-  String get flagColorNameRed => 'Red';
+  String get flagColorNameRed => 'Priority';
 
   @override
-  String get flagColorNameOrange => 'Orange';
+  String get flagColorNameOrange => 'Personal';
 
   @override
-  String get flagColorNameYellow => 'Yellow';
+  String get flagColorNameYellow => 'Ideas';
 
   @override
-  String get flagColorNameGreen => 'Green';
+  String get flagColorNameGreen => 'Started';
 
   @override
-  String get flagColorNameBlue => 'Blue';
+  String get flagColorNameBlue => 'Done';
 
   @override
   String get flagNameDialogTitle => 'Name the flag';

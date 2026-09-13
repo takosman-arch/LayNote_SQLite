@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "표 ({count}행)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(빈 텍스트)",
   "reorderBlocksSheetTitle": "블록 순서 변경",
   "reorderBlocksMoveUpTooltip": "위로 이동",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "태그",
   "noteBgColorMenuItemLabel": "커버 색상",
   "noteBgColorDialogTitle": "커버 색상 선택",
-  "flagColorMenuItemLabel": "플래그 색상",
+  "flagColorMenuItemLabel": "플래그",
   "flagColorPickerTitle": "플래그 색상 선택",
   "flagColorRemoveOption": "플래그 제거",
-  "flagColorNameRed": "빨강",
-  "flagColorNameOrange": "주황",
-  "flagColorNameYellow": "노랑",
-  "flagColorNameGreen": "초록",
-  "flagColorNameBlue": "파랑",
+  "flagColorNameRed": "우선순위",
+  "flagColorNameOrange": "개인",
+  "flagColorNameYellow": "아이디어",
+  "flagColorNameGreen": "진행 중",
+  "flagColorNameBlue": "완료",
   "flagNameDialogTitle": "플래그 이름 지정",
   "flagNameDialogHint": "예: 긴급, 대기 중...",
   "flagNameDialogCancelButton": "취소",

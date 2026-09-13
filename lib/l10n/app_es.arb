@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "Tabla ({count} filas)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(texto vacío)",
   "reorderBlocksSheetTitle": "Reordenar bloques",
   "reorderBlocksMoveUpTooltip": "Mover arriba",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "Etiquetas",
   "noteBgColorMenuItemLabel": "Color de Portada",
   "noteBgColorDialogTitle": "Elegir Color de Portada",
-  "flagColorMenuItemLabel": "Color de la bandera",
+  "flagColorMenuItemLabel": "Bandera",
   "flagColorPickerTitle": "Elegir color de la bandera",
   "flagColorRemoveOption": "Quitar bandera",
-  "flagColorNameRed": "Rojo",
-  "flagColorNameOrange": "Naranja",
-  "flagColorNameYellow": "Amarillo",
-  "flagColorNameGreen": "Verde",
-  "flagColorNameBlue": "Azul",
+  "flagColorNameRed": "Prioridad",
+  "flagColorNameOrange": "Personal",
+  "flagColorNameYellow": "Ideas",
+  "flagColorNameGreen": "Iniciadas",
+  "flagColorNameBlue": "Completadas",
   "flagNameDialogTitle": "Nombrar la bandera",
   "flagNameDialogHint": "Ej. Urgente, Pendiente...",
   "flagNameDialogCancelButton": "Cancelar",

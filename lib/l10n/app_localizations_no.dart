@@ -2220,7 +2220,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get noteBgColorDialogTitle => 'Velg omslagsfarge';
 
   @override
-  String get flagColorMenuItemLabel => 'Flaggfarge';
+  String get flagColorMenuItemLabel => 'Flagg';
 
   @override
   String get flagColorPickerTitle => 'Velg flaggfarge';
@@ -2229,19 +2229,19 @@ class AppLocalizationsNo extends AppLocalizations {
   String get flagColorRemoveOption => 'Fjern flagg';
 
   @override
-  String get flagColorNameRed => 'Rød';
+  String get flagColorNameRed => 'Prioritet';
 
   @override
-  String get flagColorNameOrange => 'Oransje';
+  String get flagColorNameOrange => 'Personlig';
 
   @override
-  String get flagColorNameYellow => 'Gul';
+  String get flagColorNameYellow => 'Ideer';
 
   @override
-  String get flagColorNameGreen => 'Grønn';
+  String get flagColorNameGreen => 'Påbegynt';
 
   @override
-  String get flagColorNameBlue => 'Blå';
+  String get flagColorNameBlue => 'Fullført';
 
   @override
   String get flagNameDialogTitle => 'Gi flagget et navn';

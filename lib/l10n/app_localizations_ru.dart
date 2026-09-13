@@ -2232,7 +2232,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get noteBgColorDialogTitle => 'Выбрать цвет обложки';
 
   @override
-  String get flagColorMenuItemLabel => 'Цвет флажка';
+  String get flagColorMenuItemLabel => 'Флажок';
 
   @override
   String get flagColorPickerTitle => 'Выберите цвет флажка';
@@ -2241,19 +2241,19 @@ class AppLocalizationsRu extends AppLocalizations {
   String get flagColorRemoveOption => 'Убрать флажок';
 
   @override
-  String get flagColorNameRed => 'Красный';
+  String get flagColorNameRed => 'Приоритет';
 
   @override
-  String get flagColorNameOrange => 'Оранжевый';
+  String get flagColorNameOrange => 'Личное';
 
   @override
-  String get flagColorNameYellow => 'Жёлтый';
+  String get flagColorNameYellow => 'Идеи';
 
   @override
-  String get flagColorNameGreen => 'Зелёный';
+  String get flagColorNameGreen => 'Начатые';
 
   @override
-  String get flagColorNameBlue => 'Синий';
+  String get flagColorNameBlue => 'Завершённые';
 
   @override
   String get flagNameDialogTitle => 'Назвать флажок';

@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "טבלה ({count} שורות)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(טקסט ריק)",
   "reorderBlocksSheetTitle": "סידור מחדש של הבלוקים",
   "reorderBlocksMoveUpTooltip": "הזז למעלה",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "תגים",
   "noteBgColorMenuItemLabel": "צבע כריכה",
   "noteBgColorDialogTitle": "בחר צבע כריכה",
-  "flagColorMenuItemLabel": "צבע דגל",
+  "flagColorMenuItemLabel": "דגל",
   "flagColorPickerTitle": "בחר צבע דגל",
   "flagColorRemoveOption": "הסר דגל",
-  "flagColorNameRed": "אדום",
-  "flagColorNameOrange": "כתום",
-  "flagColorNameYellow": "צהוב",
-  "flagColorNameGreen": "ירוק",
-  "flagColorNameBlue": "כחול",
+  "flagColorNameRed": "עדיפות",
+  "flagColorNameOrange": "אישי",
+  "flagColorNameYellow": "רעיונות",
+  "flagColorNameGreen": "בתהליך",
+  "flagColorNameBlue": "הושלמו",
   "flagNameDialogTitle": "תן שם לדגל",
   "flagNameDialogHint": "לדוגמה: דחוף, ממתין...",
   "flagNameDialogCancelButton": "ביטול",

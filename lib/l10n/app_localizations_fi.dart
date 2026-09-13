@@ -2225,7 +2225,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get noteBgColorDialogTitle => 'Valitse kansiväri';
 
   @override
-  String get flagColorMenuItemLabel => 'Lipun väri';
+  String get flagColorMenuItemLabel => 'Lippu';
 
   @override
   String get flagColorPickerTitle => 'Valitse lipun väri';
@@ -2234,19 +2234,19 @@ class AppLocalizationsFi extends AppLocalizations {
   String get flagColorRemoveOption => 'Poista lippu';
 
   @override
-  String get flagColorNameRed => 'Punainen';
+  String get flagColorNameRed => 'Prioriteetti';
 
   @override
-  String get flagColorNameOrange => 'Oranssi';
+  String get flagColorNameOrange => 'Henkilökohtainen';
 
   @override
-  String get flagColorNameYellow => 'Keltainen';
+  String get flagColorNameYellow => 'Ideat';
 
   @override
-  String get flagColorNameGreen => 'Vihreä';
+  String get flagColorNameGreen => 'Aloitetut';
 
   @override
-  String get flagColorNameBlue => 'Sininen';
+  String get flagColorNameBlue => 'Valmiit';
 
   @override
   String get flagNameDialogTitle => 'Nimeä lippu';

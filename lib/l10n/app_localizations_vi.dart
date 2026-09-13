@@ -2227,7 +2227,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get noteBgColorDialogTitle => 'Chọn màu bìa';
 
   @override
-  String get flagColorMenuItemLabel => 'Màu cờ';
+  String get flagColorMenuItemLabel => 'Cờ';
 
   @override
   String get flagColorPickerTitle => 'Chọn màu cờ';
@@ -2236,19 +2236,19 @@ class AppLocalizationsVi extends AppLocalizations {
   String get flagColorRemoveOption => 'Xóa cờ';
 
   @override
-  String get flagColorNameRed => 'Đỏ';
+  String get flagColorNameRed => 'Ưu tiên';
 
   @override
-  String get flagColorNameOrange => 'Cam';
+  String get flagColorNameOrange => 'Cá nhân';
 
   @override
-  String get flagColorNameYellow => 'Vàng';
+  String get flagColorNameYellow => 'Ý tưởng';
 
   @override
-  String get flagColorNameGreen => 'Xanh lá';
+  String get flagColorNameGreen => 'Đã bắt đầu';
 
   @override
-  String get flagColorNameBlue => 'Xanh dương';
+  String get flagColorNameBlue => 'Đã hoàn thành';
 
   @override
   String get flagNameDialogTitle => 'Đặt tên cho cờ';

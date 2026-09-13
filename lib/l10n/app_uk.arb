@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "Таблиця ({count} рядків)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(порожній текст)",
   "reorderBlocksSheetTitle": "Змінити порядок блоків",
   "reorderBlocksMoveUpTooltip": "Перемістити вгору",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "Теги",
   "noteBgColorMenuItemLabel": "Колір обкладинки",
   "noteBgColorDialogTitle": "Вибрати колір обкладинки",
-  "flagColorMenuItemLabel": "Колір прапорця",
+  "flagColorMenuItemLabel": "Прапорець",
   "flagColorPickerTitle": "Виберіть колір прапорця",
   "flagColorRemoveOption": "Прибрати прапорець",
-  "flagColorNameRed": "Червоний",
-  "flagColorNameOrange": "Помаранчевий",
-  "flagColorNameYellow": "Жовтий",
-  "flagColorNameGreen": "Зелений",
-  "flagColorNameBlue": "Синій",
+  "flagColorNameRed": "Пріоритет",
+  "flagColorNameOrange": "Особисте",
+  "flagColorNameYellow": "Ідеї",
+  "flagColorNameGreen": "Розпочаті",
+  "flagColorNameBlue": "Завершені",
   "flagNameDialogTitle": "Назвати прапорець",
   "flagNameDialogHint": "Напр. Терміново, Очікує...",
   "flagNameDialogCancelButton": "Скасувати",

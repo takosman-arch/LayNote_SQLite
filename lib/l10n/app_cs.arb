@@ -79,14 +79,6 @@
       }
     }
   },
-  "blockPreviewTableLabel": "Tabulka ({count} řádků)",
-  "@blockPreviewTableLabel": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "blockPreviewEmptyTextLabel": "(prázdný text)",
   "reorderBlocksSheetTitle": "Přeuspořádat bloky",
   "reorderBlocksMoveUpTooltip": "Posunout nahoru",
@@ -1020,14 +1012,14 @@
   "tagsMenuItemLabel": "Štítky",
   "noteBgColorMenuItemLabel": "Barva obálky",
   "noteBgColorDialogTitle": "Vybrat barvu obálky",
-  "flagColorMenuItemLabel": "Barva vlajky",
+  "flagColorMenuItemLabel": "Vlajka",
   "flagColorPickerTitle": "Vyberte barvu vlajky",
   "flagColorRemoveOption": "Odebrat vlajku",
-  "flagColorNameRed": "Červená",
-  "flagColorNameOrange": "Oranžová",
-  "flagColorNameYellow": "Žlutá",
-  "flagColorNameGreen": "Zelená",
-  "flagColorNameBlue": "Modrá",
+  "flagColorNameRed": "Priorita",
+  "flagColorNameOrange": "Osobní",
+  "flagColorNameYellow": "Nápady",
+  "flagColorNameGreen": "Zahájené",
+  "flagColorNameBlue": "Dokončené",
   "flagNameDialogTitle": "Pojmenovat vlajku",
   "flagNameDialogHint": "Např. Naléhavé, Čeká se...",
   "flagNameDialogCancelButton": "Zrušit",
