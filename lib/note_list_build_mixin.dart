@@ -853,14 +853,16 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
         ),
       if (isPinned)
         Positioned(
-          top: edge - 4,
+          // Kartın üst kenarının biraz dışına taşsın diye negatif top.
+          top: -6,
           left: edge,
-          // Sola yatık (döndürülmüş) görünüm: Google Keep'teki eğik iğne
-          // ikonuyla benzer bir izlenim vermesi için saat yönünün TERSİNE
-          // (negatif radyan) hafifçe döndürülür.
+          // Dik (döndürülmemiş) görünüm: açı 0 radyan.
           child: Transform.rotate(
-            angle: -0.5,
-            child: const Icon(Icons.push_pin, color: Colors.grey, size: 18),
+            angle: 0,
+            child: Opacity(
+              opacity: 0.9,
+              child: Image.asset('assets/icon/pin.png', width: 20, height: 20),
+            ),
           ),
         ),
     ];
@@ -1514,6 +1516,9 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                           child: Card(
                             margin: EdgeInsets.zero,
                             color: noteCardColor,
+                            // Kartın dışına taşan sabitleme (pin) rozeti
+                            // kırpılmasın diye clip yok.
+                            clipBehavior: Clip.none,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                               side: isSelected
@@ -1531,6 +1536,11 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                             // sabit kalır; ızgara kartındaki (_buildGridNoteCard)
                             // aynı mantıkla tutarlı.
                             child: Stack(
+                              // Pin rozetinin (top: -6) kartın üstüne taşan
+                              // kısmı kırpılmasın diye: Stack'in varsayılan
+                              // clipBehavior'ı Clip.hardEdge'dir, Card'daki
+                              // Clip.none ayarı bunu kapsamaz.
+                              clipBehavior: Clip.none,
                               children: [
                                 InkWell(
                                   onTap: isTrash
@@ -3850,6 +3860,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
       child: Card(
         margin: EdgeInsets.zero,
         color: gridCardColor,
+        // Kartın dışına taşan sabitleme (pin) rozeti kırpılmasın diye clip yok.
+        clipBehavior: Clip.none,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: isSelected
@@ -3936,6 +3948,10 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                     : () => _openNoteWithPasswordCheck(originalIndex)),
           borderRadius: BorderRadius.circular(12),
           child: Stack(
+            // Pin rozetinin (top: -6) kartın üstüne taşan kısmı kırpılmasın
+            // diye: Stack'in varsayılan clipBehavior'ı Clip.hardEdge'dir,
+            // Card'daki Clip.none ayarı bunu kapsamaz.
+            clipBehavior: Clip.none,
             children: [
               if (photoOnlyMode)
                 // ── Yazısız (sadece foto/çizim) not ────────────────────
