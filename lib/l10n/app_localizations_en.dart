@@ -382,6 +382,33 @@ class AppLocalizationsEn extends AppLocalizations {
       'Notes moved here will be permanently deleted after 30 days.';
 
   @override
+  String get favoritesEmptySubtitle => 'Notes you favorite will appear here.';
+
+  @override
+  String get lockedEmptyTitle => 'No locked notes';
+
+  @override
+  String get lockedEmptySubtitle => 'Notes you lock will appear here.';
+
+  @override
+  String get remindersEmptyTitle => 'No reminders';
+
+  @override
+  String get remindersEmptySubtitle => 'Notes with reminders will appear here.';
+
+  @override
+  String get folderEmptyTitle => 'No notes in this folder';
+
+  @override
+  String get folderEmptySubtitle => 'Move notes here to organize them.';
+
+  @override
+  String get archiveEmptyTitle => 'No archived notes';
+
+  @override
+  String get archiveEmptySubtitle => 'Notes you archive will appear here.';
+
+  @override
   String get trashRestoreButtonLabel => 'Restore';
 
   @override
@@ -1046,6 +1073,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Each note card gets a different color tone.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Flag Color as Cover';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Uses the flag color as the cover color.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Drawer Menu';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle => 'All sections visible';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle => 'Some sections hidden';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Drawer Menu Sections';
 
   @override
   String get settingsTextColorSheetTitle => 'Text Color';
@@ -2207,13 +2253,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Delete table';
 
   @override
-  String get tagsMenuItemLabel => 'Tags';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Cover Color';
-
-  @override
-  String get noteBgColorDialogTitle => 'Choose Cover Color';
+  String get tagsMenuItemLabel => 'Tag';
 
   @override
   String get flagColorMenuItemLabel => 'Flag';

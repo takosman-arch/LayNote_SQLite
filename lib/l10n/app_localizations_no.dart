@@ -382,6 +382,34 @@ class AppLocalizationsNo extends AppLocalizations {
       'Notater flyttet hit slettes permanent etter 30 dager.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Notater du merker som favoritt, vises her.';
+
+  @override
+  String get lockedEmptyTitle => 'Ingen låste notater';
+
+  @override
+  String get lockedEmptySubtitle => 'Notater du låser, vises her.';
+
+  @override
+  String get remindersEmptyTitle => 'Ingen påminnelser';
+
+  @override
+  String get remindersEmptySubtitle => 'Notater med påminnelser vises her.';
+
+  @override
+  String get folderEmptyTitle => 'Ingen notater i denne mappen';
+
+  @override
+  String get folderEmptySubtitle => 'Flytt notater hit for å organisere dem.';
+
+  @override
+  String get archiveEmptyTitle => 'Ingen arkiverte notater';
+
+  @override
+  String get archiveEmptySubtitle => 'Notater du arkiverer, vises her.';
+
+  @override
   String get trashRestoreButtonLabel => 'Gjenopprett';
 
   @override
@@ -1042,6 +1070,27 @@ class AppLocalizationsNo extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Hvert notatkort får en annen fargetone.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Flaggfarge som omslag';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Bruker flaggfargen som omslagsfarge.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Sidemeny';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'Alle seksjoner synlige';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Noen seksjoner skjult';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Sidemenyens seksjoner';
 
   @override
   String get settingsTextColorSheetTitle => 'Tekstfarge';
@@ -2211,13 +2260,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Slett tabell';
 
   @override
-  String get tagsMenuItemLabel => 'Emneknagger';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Omslagsfarge';
-
-  @override
-  String get noteBgColorDialogTitle => 'Velg omslagsfarge';
+  String get tagsMenuItemLabel => 'Emneknagg';
 
   @override
   String get flagColorMenuItemLabel => 'Flagg';

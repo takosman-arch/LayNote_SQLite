@@ -374,6 +374,33 @@ class AppLocalizationsZh extends AppLocalizations {
   String get trashEmptySubtitle => '移动到此处的笔记将在30天后永久删除。';
 
   @override
+  String get favoritesEmptySubtitle => '你收藏的笔记会显示在这里。';
+
+  @override
+  String get lockedEmptyTitle => '没有锁定的笔记';
+
+  @override
+  String get lockedEmptySubtitle => '你锁定的笔记会显示在这里。';
+
+  @override
+  String get remindersEmptyTitle => '没有提醒';
+
+  @override
+  String get remindersEmptySubtitle => '带有提醒的笔记会显示在这里。';
+
+  @override
+  String get folderEmptyTitle => '此文件夹中没有笔记';
+
+  @override
+  String get folderEmptySubtitle => '将笔记移到这里以整理它们。';
+
+  @override
+  String get archiveEmptyTitle => '没有已归档的笔记';
+
+  @override
+  String get archiveEmptySubtitle => '你归档的笔记会显示在这里。';
+
+  @override
   String get trashRestoreButtonLabel => '恢复';
 
   @override
@@ -1019,6 +1046,24 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settingsColorfulNotesSubtitle => '每张笔记卡片会显示不同的颜色。';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => '旗帜颜色作为封面';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle => '使用旗帜颜色作为封面颜色。';
+
+  @override
+  String get settingsDrawerSectionsTitle => '抽屉菜单';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle => '所有部分均可见';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle => '部分内容已隐藏';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => '抽屉菜单部分';
 
   @override
   String get settingsTextColorSheetTitle => '文字颜色';
@@ -2139,12 +2184,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get tagsMenuItemLabel => '标签';
-
-  @override
-  String get noteBgColorMenuItemLabel => '封面颜色';
-
-  @override
-  String get noteBgColorDialogTitle => '选择封面颜色';
 
   @override
   String get flagColorMenuItemLabel => '旗标';

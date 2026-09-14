@@ -385,6 +385,38 @@ class AppLocalizationsId extends AppLocalizations {
       'Catatan yang dipindahkan ke sini akan dihapus secara permanen setelah 30 hari.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Catatan yang Anda favoritkan akan muncul di sini.';
+
+  @override
+  String get lockedEmptyTitle => 'Tidak ada catatan terkunci';
+
+  @override
+  String get lockedEmptySubtitle =>
+      'Catatan yang Anda kunci akan muncul di sini.';
+
+  @override
+  String get remindersEmptyTitle => 'Tidak ada pengingat';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Catatan dengan pengingat akan muncul di sini.';
+
+  @override
+  String get folderEmptyTitle => 'Tidak ada catatan di folder ini';
+
+  @override
+  String get folderEmptySubtitle =>
+      'Pindahkan catatan ke sini untuk mengaturnya.';
+
+  @override
+  String get archiveEmptyTitle => 'Tidak ada catatan yang diarsipkan';
+
+  @override
+  String get archiveEmptySubtitle =>
+      'Catatan yang Anda arsipkan akan muncul di sini.';
+
+  @override
   String get trashRestoreButtonLabel => 'Pulihkan';
 
   @override
@@ -1050,6 +1082,27 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Setiap kartu catatan mendapat corak warna yang berbeda.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Warna Bendera sebagai Sampul';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Menggunakan warna bendera sebagai warna sampul.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Menu Laci';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'Semua bagian terlihat';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Beberapa bagian disembunyikan';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Bagian Menu Laci';
 
   @override
   String get settingsTextColorSheetTitle => 'Warna Teks';
@@ -2216,12 +2269,6 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get tagsMenuItemLabel => 'Tag';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Warna Sampul';
-
-  @override
-  String get noteBgColorDialogTitle => 'Pilih Warna Sampul';
 
   @override
   String get flagColorMenuItemLabel => 'Bendera';

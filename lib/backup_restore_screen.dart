@@ -1260,7 +1260,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                   const SizedBox(height: 16),
                   _actionCard(
                     context,
-                    icon: Icons.backup_outlined,
+                    icon: Icons.save_alt_outlined,
                     title: AppLocalizations.of(context)!.backupDeviceCardTitle,
                     subtitle:
                         AppLocalizations.of(context)!.backupDeviceCardSubtitle,

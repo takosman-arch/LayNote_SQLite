@@ -381,6 +381,36 @@ class AppLocalizationsTr extends AppLocalizations {
       'Buraya taşınan notlar 30 gün sonra kalıcı olarak silinir.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Favorilediğin notlar burada listelenir.';
+
+  @override
+  String get lockedEmptyTitle => 'Kilitli not yok';
+
+  @override
+  String get lockedEmptySubtitle => 'Kilitlediğin notlar burada listelenir.';
+
+  @override
+  String get remindersEmptyTitle => 'Hatırlatıcı yok';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Hatırlatıcı eklediğin notlar burada listelenir.';
+
+  @override
+  String get folderEmptyTitle => 'Bu klasörde not yok';
+
+  @override
+  String get folderEmptySubtitle =>
+      'Notlarını bu klasöre taşıyarak düzenleyebilirsin.';
+
+  @override
+  String get archiveEmptyTitle => 'Arşivde not yok';
+
+  @override
+  String get archiveEmptySubtitle => 'Arşivlediğin notlar burada listelenir.';
+
+  @override
   String get trashRestoreButtonLabel => 'Geri Yükle';
 
   @override
@@ -1043,6 +1073,25 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Her not kartı farklı renk tonu alır.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Bayrak Rengini Kapak Yap';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Bayrak rengini kapak rengi olarak kullanır.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Çekmece Menüsü';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle => 'Tüm bölümler görünür';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle => 'Bazı bölümler gizli';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Çekmece Menüsü Bölümleri';
 
   @override
   String get settingsTextColorSheetTitle => 'Yazı Rengi';
@@ -2201,13 +2250,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Tabloyu sil';
 
   @override
-  String get tagsMenuItemLabel => 'Etiketler';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Kapak Rengi';
-
-  @override
-  String get noteBgColorDialogTitle => 'Kapak Rengi Seç';
+  String get tagsMenuItemLabel => 'Etiket';
 
   @override
   String get flagColorMenuItemLabel => 'Bayrak';

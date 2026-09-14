@@ -386,6 +386,37 @@ class AppLocalizationsDe extends AppLocalizations {
       'Hierher verschobene Notizen werden nach 30 Tagen dauerhaft gelöscht.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Notizen, die du favorisierst, erscheinen hier.';
+
+  @override
+  String get lockedEmptyTitle => 'Keine gesperrten Notizen';
+
+  @override
+  String get lockedEmptySubtitle => 'Notizen, die du sperrst, erscheinen hier.';
+
+  @override
+  String get remindersEmptyTitle => 'Keine Erinnerungen';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Notizen mit Erinnerungen erscheinen hier.';
+
+  @override
+  String get folderEmptyTitle => 'Keine Notizen in diesem Ordner';
+
+  @override
+  String get folderEmptySubtitle =>
+      'Verschiebe Notizen hierher, um sie zu organisieren.';
+
+  @override
+  String get archiveEmptyTitle => 'Keine archivierten Notizen';
+
+  @override
+  String get archiveEmptySubtitle =>
+      'Notizen, die du archivierst, erscheinen hier.';
+
+  @override
   String get trashRestoreButtonLabel => 'Wiederherstellen';
 
   @override
@@ -1056,6 +1087,27 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Jede Notizkarte erhält einen anderen Farbton.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Flaggenfarbe als Deckfarbe';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Verwendet die Flaggenfarbe als Umschlagfarbe.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Menüleiste';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'Alle Bereiche sichtbar';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Einige Bereiche ausgeblendet';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Menüleisten-Bereiche';
 
   @override
   String get settingsTextColorSheetTitle => 'Textfarbe';
@@ -2229,13 +2281,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Tabelle löschen';
 
   @override
-  String get tagsMenuItemLabel => 'Tags';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Umschlagfarbe';
-
-  @override
-  String get noteBgColorDialogTitle => 'Umschlagfarbe wählen';
+  String get tagsMenuItemLabel => 'Tag';
 
   @override
   String get flagColorMenuItemLabel => 'Flagge';

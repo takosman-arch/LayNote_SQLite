@@ -385,6 +385,35 @@ class AppLocalizationsHi extends AppLocalizations {
       'यहाँ ले जाए गए नोट्स 30 दिनों के बाद स्थायी रूप से हटा दिए जाएंगे।';
 
   @override
+  String get favoritesEmptySubtitle => 'आपके पसंदीदा नोट्स यहां दिखाई देंगे।';
+
+  @override
+  String get lockedEmptyTitle => 'कोई लॉक्ड नोट नहीं';
+
+  @override
+  String get lockedEmptySubtitle => 'आपके लॉक किए गए नोट्स यहां दिखाई देंगे।';
+
+  @override
+  String get remindersEmptyTitle => 'कोई रिमाइंडर नहीं';
+
+  @override
+  String get remindersEmptySubtitle => 'रिमाइंडर वाले नोट्स यहां दिखाई देंगे।';
+
+  @override
+  String get folderEmptyTitle => 'इस फ़ोल्डर में कोई नोट नहीं है';
+
+  @override
+  String get folderEmptySubtitle =>
+      'नोट्स को व्यवस्थित करने के लिए उन्हें यहां ले जाएं।';
+
+  @override
+  String get archiveEmptyTitle => 'कोई संग्रहीत नोट नहीं';
+
+  @override
+  String get archiveEmptySubtitle =>
+      'आपके संग्रहीत (आर्काइव) किए गए नोट्स यहां दिखाई देंगे।';
+
+  @override
   String get trashRestoreButtonLabel => 'पुनर्स्थापित करें';
 
   @override
@@ -1047,6 +1076,27 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'प्रत्येक नोट कार्ड को एक अलग रंग टोन मिलता है।';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'कवर के रूप में फ़्लैग रंग';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'फ़्लैग रंग को कवर रंग के रूप में उपयोग करता है।';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'ड्रॉअर मेनू';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'सभी सेक्शन दिखाई दे रहे हैं';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'कुछ सेक्शन छिपे हुए हैं';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'ड्रॉअर मेनू के सेक्शन';
 
   @override
   String get settingsTextColorSheetTitle => 'टेक्स्ट रंग';
@@ -2216,12 +2266,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get tagsMenuItemLabel => 'टैग';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'कवर रंग';
-
-  @override
-  String get noteBgColorDialogTitle => 'कवर रंग चुनें';
 
   @override
   String get flagColorMenuItemLabel => 'फ़्लैग';

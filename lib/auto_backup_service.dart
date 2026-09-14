@@ -49,6 +49,21 @@ enum AutoBackupTarget { local, drive, both }
 const String _autoBackupTaskName = 'dnote_auto_backup_task';
 const String _autoBackupTaskUniqueName = 'dnote_auto_backup_unique';
 
+// Çöp kutusu temizliği artık otomatik yedekleme ayarından TAMAMEN
+// BAĞIMSIZ çalışır: kullanıcı otomatik yedeklemeyi kapatsa bile, 30 günü
+// geçen çöp kutusu notları arka planda düzenli olarak silinmeye devam
+// eder. Önceden bu temizlik yalnızca _runBackupTask() içinde yapılıyordu,
+// ki o görev de sadece otomatik yedekleme AÇIKKEN kayıtlı/tetikleniyordu
+// — yani kullanıcı yedeklemeyi kapatınca fark etmeden çöp kutusu temizliği
+// de sessizce devre dışı kalıyordu. Bu yüzden ayrı, her zaman kayıtlı bir
+// periyodik görev olarak çıkarıldı (bkz. scheduleTrashCleanupTask).
+const String _trashCleanupTaskName = 'dnote_trash_cleanup_task';
+const String _trashCleanupTaskUniqueName = 'dnote_trash_cleanup_unique';
+// 30 günlük eşiğe göre günde bir kontrol yeterlidir; WorkManager'ın izin
+// verdiği minimum periyodik aralık zaten 15 dakikadır ama gereksiz pil
+// tüketiminden kaçınmak için burada 24 saat kullanılıyor.
+const Duration _trashCleanupInterval = Duration(hours: 24);
+
 // WorkManager'ın arka plan isolate'inde ilk açtığı, TÜM periyodik
 // görevler için tek giriş noktası. Üst seviyede (top-level) ve
 // @pragma('vm:entry-point') ile işaretli olmak ZORUNDADIR — aksi halde
@@ -65,6 +80,15 @@ void callbackDispatcher() {
         debugPrint('Arka plan otomatik yedekleme görevi hata verdi: $e');
         // false dönmek WorkManager'a görevin başarısız olduğunu ve
         // (constraints uygunsa) yeniden denenmesi gerektiğini bildirir.
+        return Future.value(false);
+      }
+    }
+    if (task == _trashCleanupTaskName) {
+      try {
+        await AutoBackupService.instance._runTrashCleanupTask();
+        return Future.value(true);
+      } catch (e) {
+        debugPrint('Arka plan çöp kutusu temizliği görevi hata verdi: $e');
         return Future.value(false);
       }
     }
@@ -279,6 +303,33 @@ class AutoBackupService {
     );
   }
 
+  // ── Çöp Kutusu Temizliği — Bağımsız Periyodik Görev ──────────────────
+  //
+  // Otomatik yedeklemeden TAMAMEN BAĞIMSIZ olarak, uygulama açık ya da
+  // kapalı olsun her zaman kayıtlı kalır. main.dart -> _initBackgroundServices()
+  // içinde, otomatik yedeklemenin açık/kapalı olmasına bakılmaksızın HER
+  // uygulama açılışında çağrılır. ExistingWorkPolicy.keep kullanılır ki
+  // (rescheduleFromSavedSettings'teki 'keep' mantığıyla aynı sebeple) her
+  // açılışta görevin geri sayımı sıfırlanmasın.
+  Future<void> scheduleTrashCleanupTask() async {
+    await Workmanager().registerPeriodicTask(
+      _trashCleanupTaskUniqueName,
+      _trashCleanupTaskName,
+      frequency: _trashCleanupInterval,
+      constraints: Constraints(networkType: NetworkType.not_required),
+      existingWorkPolicy: ExistingWorkPolicy.keep,
+      backoffPolicy: BackoffPolicy.linear,
+      backoffPolicyDelay: const Duration(minutes: 15),
+    );
+  }
+
+  // callbackDispatcher() tarafından çağrılır (bkz. yukarısı). Otomatik
+  // yedekleme görevinden bağımsız çalıştığı için burada sadece 30 günü
+  // geçen çöp kutusu notlarını temizler.
+  Future<void> _runTrashCleanupTask() async {
+    await DBHelper.instance.autoCleanOldDeletedNotes();
+  }
+
   // ── AŞAMA 9: Ön Planda "Yakalama" (Catch-up) Mantığı ─────────────────
   //
   // NEDEN GEREKLİ: Bazı OEM'lerin (Samsung, Xiaomi, Huawei) agresif pil
@@ -327,14 +378,13 @@ class AutoBackupService {
   // test etmek isterseniz de doğrudan çağrılabilir (ayarlar ekranına
   // "Şimdi Yedekle" gibi bir test butonu eklemek isterseniz kullanışlı).
   Future<void> _runBackupTask() async {
-    // 1. Çöp kutusu temizliği (Aşama 7.1 ile aynı davranış korunur).
-    try {
-      await DBHelper.instance.autoCleanOldDeletedNotes();
-    } catch (_) {
-      // Çöp kutusu temizliği başarısız olsa da yedeklemeyi engellemesin.
-    }
+    // NOT: Çöp kutusu temizliği artık burada YAPILMIYOR — otomatik
+    // yedekleme kapalıyken de çalışabilmesi için bağımsız bir periyodik
+    // göreve taşındı (bkz. _runTrashCleanupTask ve
+    // scheduleTrashCleanupTask). Bu, kullanıcı yedeklemeyi kapatınca
+    // çöp kutusu temizliğinin de sessizce durmasını önler.
 
-    // 1.1 Ana ekran widget'ını tazele (bkz. note_widget_service.dart).
+    // 1. Ana ekran widget'ını tazele (bkz. note_widget_service.dart).
     // Normalde her not kaydında zaten senkronize olur (db_helper.dart ->
     // replaceNotes), ama bu adım ek bir güvenlik ağı sağlar: uygulama
     // günlerce hiç açılmasa bile widget güncel kalır ve widget yakın

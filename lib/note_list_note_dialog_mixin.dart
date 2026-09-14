@@ -5243,28 +5243,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 );
               }
 
-              // ── Kapak Rengi: üç nokta menüsündeki "Kapak Rengi"
-              // öğesiyle açılır. Sheet UI'ı ve renk paleti mantığı
-              // note_bg_color_sheet.dart'a taşındı (note_tags_sheet.dart
-              // ile aynı desen — dialog mixin'ini gereksiz büyütmemek
-              // için); burada yalnızca ana modal state'teki `noteBgColor`
-              // değerini geçirip seçimi setModalState ile geri alan ince
-              // bir sarmalayıcı kalıyor. Seçilen renk YALNIZCA bu notun
-              // liste/grid önizleme KARTININ rengini belirler (bkz.
-              // NoteListBuildMixin > baseNoteCardColor/baseGridCardColor);
-              // editörün kendi yazma alanı arka planına dokunmaz.
-              void showBgColorSheet() {
-                showNoteBgColorSheet(
-                  context,
-                  currentColor: noteBgColor,
-                  palette: _categoryPalette,
-                  onChanged: (newColor) {
-                    setModalState(() {
-                      noteBgColor = newColor;
-                    });
-                  },
-                );
-              }
+              // Not: "Kapak Rengi" üç nokta menü öğesi kaldırıldı (bkz.
+              // aşağıdaki itemBuilder). Bu notun mevcut kapak rengi
+              // (noteBgColor) ve liste/grid kartındaki gösterimi
+              // (NoteListBuildMixin > baseNoteCardColor/baseGridCardColor)
+              // aynen korunuyor; sadece menüden yeni renk seçme imkanı
+              // kalktı.
 
               final catColor = _getCategoryColor(noteCategory);
               final isDark =
@@ -5474,11 +5458,6 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               }
                             : null,
                       ),
-                      // "Not Arka Planı" (palet) seçeneği artık aşağıdaki
-                      // üç nokta (PopupMenuButton) menüsünün en üstünde
-                      // (bkz. itemBuilder içindeki 'note_bg_color' öğesi);
-                      // tıklanınca aynı showBgColorSubToolbar mekanizması
-                      // üzerinden alt araç çubuğunda renk kartelası açılır.
                       // Not üzerindeki ek özellikler menüsü: "Hesap Tablosu
                       // Ekle"; ileride aynı ikonun altına yeni seçenekler
                       // eklenebilir. (Checklist ekleme özelliği kaldırıldı.)
@@ -5489,9 +5468,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           color: dNoteEditorAppBarColor(context),
                         ),
                         onSelected: (value) async {
-                          if (value == 'note_bg_color') {
-                            showBgColorSheet();
-                          } else if (value == 'flag_color') {
+                          if (value == 'flag_color') {
                             _showFlagColorPicker(
                               currentColor: noteFlagColor,
                               onColorSelected: (color) {
@@ -5975,39 +5952,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               ],
                             ),
                           ),
-                          // "Kapak Rengi": bu notun liste/grid önizleme
-                          // kartının rengini sabitlemek için (bkz.
-                          // showBgColorSheet). Not tipinden bağımsız her
-                          // zaman gösterilir (checklist notlar da liste
-                          // kartına sahip olduğundan).
-                          PopupMenuItem(
-                            value: 'note_bg_color',
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    AppLocalizations.of(context)!
-                                        .noteBgColorMenuItemLabel,
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Icon(
-                                  Icons.palette_outlined,
-                                  // Kapak rengi seçilmişse ikon da o renkle
-                                  // gösterilir (bayrak ikonuyla aynı
-                                  // mantık); seçilmemişse eskisi gibi
-                                  // accent rengiyle çizilir.
-                                  color: noteBgColor != null
-                                      ? Color(noteBgColor!)
-                                      : appAccentColor.value,
-                                  size: 24,
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Etiketler/Bayrak Rengi/Kapak Rengi grubunu
-                          // aşağıdaki diğer öğelerden ayıran sabit ayraç.
+                          // Etiketler/Bayrak Rengi grubunu aşağıdaki diğer
+                          // öğelerden ayıran sabit ayraç. ("Kapak Rengi"
+                          // seçeneği kaldırıldı; not zaten sahip olduğu
+                          // kapak rengini korumaya devam ediyor, sadece
+                          // menüden yeni renk seçme imkanı kalktı.)
                           const PopupMenuDivider(),
                           // Ayraç yalnızca 'text' tipinde eklenir: checklist
                           // notlarda aşağıdaki blok öğeleri (drawing/

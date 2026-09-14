@@ -374,6 +374,33 @@ class AppLocalizationsJa extends AppLocalizations {
   String get trashEmptySubtitle => 'ここに移動したメモは30日後に完全に削除されます。';
 
   @override
+  String get favoritesEmptySubtitle => 'お気に入りに追加したメモがここに表示されます。';
+
+  @override
+  String get lockedEmptyTitle => 'ロックされたメモはありません';
+
+  @override
+  String get lockedEmptySubtitle => 'ロックしたメモがここに表示されます。';
+
+  @override
+  String get remindersEmptyTitle => 'リマインダーはありません';
+
+  @override
+  String get remindersEmptySubtitle => 'リマインダー付きのメモがここに表示されます。';
+
+  @override
+  String get folderEmptyTitle => 'このフォルダにメモはありません';
+
+  @override
+  String get folderEmptySubtitle => 'メモをここに移動して整理できます。';
+
+  @override
+  String get archiveEmptyTitle => 'アーカイブされたメモはありません';
+
+  @override
+  String get archiveEmptySubtitle => 'アーカイブしたメモがここに表示されます。';
+
+  @override
   String get trashRestoreButtonLabel => '復元';
 
   @override
@@ -1022,6 +1049,24 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get settingsColorfulNotesSubtitle => '各メモカードに異なる色調が適用されます。';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'フラグの色をカバーにする';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle => 'フラグの色をカバーカラーとして使用します。';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'ドロワーメニュー';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle => 'すべてのセクションが表示されています';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle => '一部のセクションが非表示です';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'ドロワーメニューのセクション';
 
   @override
   String get settingsTextColorSheetTitle => '文字色';
@@ -2166,12 +2211,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tagsMenuItemLabel => 'タグ';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'カバーカラー';
-
-  @override
-  String get noteBgColorDialogTitle => 'カバーカラーを選択';
 
   @override
   String get flagColorMenuItemLabel => 'フラグ';

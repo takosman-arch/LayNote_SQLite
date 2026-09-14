@@ -380,6 +380,33 @@ class AppLocalizationsHe extends AppLocalizations {
       'פתקים שהועברו לכאן יימחקו לצמיתות לאחר 30 יום.';
 
   @override
+  String get favoritesEmptySubtitle => 'פתקיות שתסמן כמועדפות יופיעו כאן.';
+
+  @override
+  String get lockedEmptyTitle => 'אין פתקים נעולים';
+
+  @override
+  String get lockedEmptySubtitle => 'פתקים שתנעל יופיעו כאן.';
+
+  @override
+  String get remindersEmptyTitle => 'אין תזכורות';
+
+  @override
+  String get remindersEmptySubtitle => 'פתקים עם תזכורות יופיעו כאן.';
+
+  @override
+  String get folderEmptyTitle => 'אין פתקים בתיקייה זו';
+
+  @override
+  String get folderEmptySubtitle => 'העבר פתקים לכאן כדי לארגן אותם.';
+
+  @override
+  String get archiveEmptyTitle => 'אין פתקים בארכיון';
+
+  @override
+  String get archiveEmptySubtitle => 'פתקים שתעביר לארכיון יופיעו כאן.';
+
+  @override
   String get trashRestoreButtonLabel => 'שחזר';
 
   @override
@@ -1034,6 +1061,24 @@ class AppLocalizationsHe extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'כל כרטיס פתקית מקבל גוון צבע שונה.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'צבע הדגל ככריכה';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle => 'משתמש בצבע הדגל כצבע הכריכה.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'תפריט צד';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle => 'כל הקטעים גלויים';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle => 'כמה קטעים מוסתרים';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'קטעי תפריט הצד';
 
   @override
   String get settingsTextColorSheetTitle => 'צבע טקסט';
@@ -2188,13 +2233,7 @@ class AppLocalizationsHe extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'מחק טבלה';
 
   @override
-  String get tagsMenuItemLabel => 'תגים';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'צבע כריכה';
-
-  @override
-  String get noteBgColorDialogTitle => 'בחר צבע כריכה';
+  String get tagsMenuItemLabel => 'תג';
 
   @override
   String get flagColorMenuItemLabel => 'דגל';

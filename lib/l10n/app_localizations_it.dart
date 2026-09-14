@@ -384,6 +384,35 @@ class AppLocalizationsIt extends AppLocalizations {
       'Le note spostate qui verranno eliminate definitivamente dopo 30 giorni.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Le note che aggiungi ai preferiti appariranno qui.';
+
+  @override
+  String get lockedEmptyTitle => 'Nessuna nota bloccata';
+
+  @override
+  String get lockedEmptySubtitle => 'Le note che blocchi appariranno qui.';
+
+  @override
+  String get remindersEmptyTitle => 'Nessun promemoria';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Le note con promemoria appariranno qui.';
+
+  @override
+  String get folderEmptyTitle => 'Nessuna nota in questa cartella';
+
+  @override
+  String get folderEmptySubtitle => 'Sposta le note qui per organizzarle.';
+
+  @override
+  String get archiveEmptyTitle => 'Nessuna nota archiviata';
+
+  @override
+  String get archiveEmptySubtitle => 'Le note che archivi appariranno qui.';
+
+  @override
   String get trashRestoreButtonLabel => 'Ripristina';
 
   @override
@@ -1058,6 +1087,27 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Ogni scheda nota ottiene una tonalità di colore diversa.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Colore Bandiera come Copertina';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Usa il colore della bandiera come colore di copertina.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Menu laterale';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'Tutte le sezioni visibili';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Alcune sezioni nascoste';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Sezioni del menu laterale';
 
   @override
   String get settingsTextColorSheetTitle => 'Colore testo';
@@ -2232,12 +2282,6 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get tagsMenuItemLabel => 'Tag';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Colore di Copertina';
-
-  @override
-  String get noteBgColorDialogTitle => 'Scegli Colore di Copertina';
 
   @override
   String get flagColorMenuItemLabel => 'Bandiera';

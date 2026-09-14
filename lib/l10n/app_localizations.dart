@@ -842,6 +842,60 @@ abstract class AppLocalizations {
   /// **'Buraya taşınan notlar 30 gün sonra kalıcı olarak silinir.'**
   String get trashEmptySubtitle;
 
+  /// Favoriler bölümü boşken başlığın altında gösterilen küçük açıklama metni (Ajanda ekranındaki boş durumla aynı stil)
+  ///
+  /// In tr, this message translates to:
+  /// **'Favorilediğin notlar burada listelenir.'**
+  String get favoritesEmptySubtitle;
+
+  /// No description provided for @lockedEmptyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kilitli not yok'**
+  String get lockedEmptyTitle;
+
+  /// No description provided for @lockedEmptySubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kilitlediğin notlar burada listelenir.'**
+  String get lockedEmptySubtitle;
+
+  /// No description provided for @remindersEmptyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatırlatıcı yok'**
+  String get remindersEmptyTitle;
+
+  /// No description provided for @remindersEmptySubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatırlatıcı eklediğin notlar burada listelenir.'**
+  String get remindersEmptySubtitle;
+
+  /// No description provided for @folderEmptyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu klasörde not yok'**
+  String get folderEmptyTitle;
+
+  /// No description provided for @folderEmptySubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Notlarını bu klasöre taşıyarak düzenleyebilirsin.'**
+  String get folderEmptySubtitle;
+
+  /// No description provided for @archiveEmptyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arşivde not yok'**
+  String get archiveEmptyTitle;
+
+  /// No description provided for @archiveEmptySubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arşivlediğin notlar burada listelenir.'**
+  String get archiveEmptySubtitle;
+
   /// Çöp ekranında bir nota basılı tutulunca açılan alt menüde notu geri yükleme düğmesinin etiketi (liste ve ızgara görünümünde ortak)
   ///
   /// In tr, this message translates to:
@@ -2113,6 +2167,42 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Her not kartı farklı renk tonu alır.'**
   String get settingsColorfulNotesSubtitle;
+
+  /// Tema bölümünde bayrak rengini kapak yapma anahtarının başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Bayrak Rengini Kapak Yap'**
+  String get settingsFlagAsCoverColorTitle;
+
+  /// Bayrak rengini kapak yapma anahtarının alt metni
+  ///
+  /// In tr, this message translates to:
+  /// **'Bayrak rengini kapak rengi olarak kullanır.'**
+  String get settingsFlagAsCoverColorSubtitle;
+
+  /// No description provided for @settingsDrawerSectionsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çekmece Menüsü'**
+  String get settingsDrawerSectionsTitle;
+
+  /// No description provided for @settingsDrawerSectionsAllVisibleSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm bölümler görünür'**
+  String get settingsDrawerSectionsAllVisibleSubtitle;
+
+  /// No description provided for @settingsDrawerSectionsSomeHiddenSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bazı bölümler gizli'**
+  String get settingsDrawerSectionsSomeHiddenSubtitle;
+
+  /// No description provided for @settingsDrawerSectionsDialogTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çekmece Menüsü Bölümleri'**
+  String get settingsDrawerSectionsDialogTitle;
 
   /// Not içerik metni rengi seçim panelinin başlığı
   ///
@@ -4169,20 +4259,8 @@ abstract class AppLocalizations {
   /// No description provided for @tagsMenuItemLabel.
   ///
   /// In tr, this message translates to:
-  /// **'Etiketler'**
+  /// **'Etiket'**
   String get tagsMenuItemLabel;
-
-  /// No description provided for @noteBgColorMenuItemLabel.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kapak Rengi'**
-  String get noteBgColorMenuItemLabel;
-
-  /// No description provided for @noteBgColorDialogTitle.
-  ///
-  /// In tr, this message translates to:
-  /// **'Kapak Rengi Seç'**
-  String get noteBgColorDialogTitle;
 
   /// No description provided for @flagColorMenuItemLabel.
   ///

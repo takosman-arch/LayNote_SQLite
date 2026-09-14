@@ -383,6 +383,38 @@ class AppLocalizationsPl extends AppLocalizations {
       'Notatki przeniesione tutaj zostaną trwale usunięte po 30 dniach.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Tutaj pojawią się notatki oznaczone jako ulubione.';
+
+  @override
+  String get lockedEmptyTitle => 'Brak zablokowanych notatek';
+
+  @override
+  String get lockedEmptySubtitle =>
+      'Notatki, które zablokujesz, pojawią się tutaj.';
+
+  @override
+  String get remindersEmptyTitle => 'Brak przypomnień';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Notatki z przypomnieniami pojawią się tutaj.';
+
+  @override
+  String get folderEmptyTitle => 'Brak notatek w tym folderze';
+
+  @override
+  String get folderEmptySubtitle =>
+      'Przenoś tutaj notatki, aby je uporządkować.';
+
+  @override
+  String get archiveEmptyTitle => 'Brak zarchiwizowanych notatek';
+
+  @override
+  String get archiveEmptySubtitle =>
+      'Notatki, które zarchiwizujesz, pojawią się tutaj.';
+
+  @override
   String get trashRestoreButtonLabel => 'Przywróć';
 
   @override
@@ -1057,6 +1089,27 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Każda karta notatki ma inny odcień koloru.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Kolor flagi jako okładka';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Używa koloru flagi jako koloru okładki.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Menu boczne';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'Wszystkie sekcje widoczne';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Niektóre sekcje ukryte';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Sekcje menu bocznego';
 
   @override
   String get settingsTextColorSheetTitle => 'Kolor tekstu';
@@ -2228,13 +2281,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Usuń tabelę';
 
   @override
-  String get tagsMenuItemLabel => 'Tagi';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Kolor okładki';
-
-  @override
-  String get noteBgColorDialogTitle => 'Wybierz kolor okładki';
+  String get tagsMenuItemLabel => 'Tag';
 
   @override
   String get flagColorMenuItemLabel => 'Flaga';

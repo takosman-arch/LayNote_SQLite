@@ -87,6 +87,11 @@ mixin NoteListLifecycleMixin on State<NoteListScreen>, WidgetsBindingObserver {
   // burada sadece Ayarlar ekranındaki seçili seçeneği göstermek için tutulur.
   String _appLanguage = 'system';
   bool _colorfulNotes = false;
+  // Ayarlar > Tema > "Bayrak Rengini Kapak Yap": açıkken bayraklı
+  // notların kart arkaplanı bayrak rengiyle boyanır, köşedeki bayrak
+  // rozeti gizlenir. Bkz. NoteListBuildMixin — baseNoteCardColor/
+  // baseGridCardColor hesaplaması ve _buildNoteCornerBadges çağrıları.
+  bool _flagAsCoverColor = false;
   // Vurgu Rengi — gerçek kaynak appAccentColor notifier'ıdır, burada sadece
   // Ayarlar ekranındaki seçili rengi göstermek için tutulur (bkz. theme.dart).
   Color _accentColor = Colors.amber;

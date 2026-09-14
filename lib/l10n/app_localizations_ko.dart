@@ -376,6 +376,33 @@ class AppLocalizationsKo extends AppLocalizations {
   String get trashEmptySubtitle => '여기로 이동된 메모는 30일 후 영구적으로 삭제됩니다.';
 
   @override
+  String get favoritesEmptySubtitle => '즐겨찾기한 노트가 여기에 표시됩니다.';
+
+  @override
+  String get lockedEmptyTitle => '잠긴 노트가 없습니다';
+
+  @override
+  String get lockedEmptySubtitle => '잠근 노트가 여기에 표시됩니다.';
+
+  @override
+  String get remindersEmptyTitle => '알림이 없습니다';
+
+  @override
+  String get remindersEmptySubtitle => '알림이 있는 노트가 여기에 표시됩니다.';
+
+  @override
+  String get folderEmptyTitle => '이 폴더에 노트가 없습니다';
+
+  @override
+  String get folderEmptySubtitle => '노트를 여기로 이동하여 정리하세요.';
+
+  @override
+  String get archiveEmptyTitle => '보관된 노트가 없습니다';
+
+  @override
+  String get archiveEmptySubtitle => '보관한 노트가 여기에 표시됩니다.';
+
+  @override
   String get trashRestoreButtonLabel => '복원';
 
   @override
@@ -1025,6 +1052,24 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsColorfulNotesSubtitle => '각 노트 카드가 서로 다른 색상 톤을 가집니다.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => '깃발 색을 표지로 사용';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle => '깃발 색을 커버 색상으로 사용합니다.';
+
+  @override
+  String get settingsDrawerSectionsTitle => '드로어 메뉴';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle => '모든 섹션이 표시됩니다';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle => '일부 섹션이 숨겨져 있습니다';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => '드로어 메뉴 섹션';
 
   @override
   String get settingsTextColorSheetTitle => '글자 색상';
@@ -2169,12 +2214,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get tagsMenuItemLabel => '태그';
-
-  @override
-  String get noteBgColorMenuItemLabel => '커버 색상';
-
-  @override
-  String get noteBgColorDialogTitle => '커버 색상 선택';
 
   @override
   String get flagColorMenuItemLabel => '플래그';

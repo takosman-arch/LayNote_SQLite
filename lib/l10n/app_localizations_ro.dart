@@ -382,6 +382,37 @@ class AppLocalizationsRo extends AppLocalizations {
       'Notele mutate aici vor fi șterse definitiv după 30 de zile.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Notițele pe care le adaugi la favorite vor apărea aici.';
+
+  @override
+  String get lockedEmptyTitle => 'Nicio notiță blocată';
+
+  @override
+  String get lockedEmptySubtitle =>
+      'Notițele pe care le blochezi vor apărea aici.';
+
+  @override
+  String get remindersEmptyTitle => 'Niciun memento';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Notițele cu mementouri vor apărea aici.';
+
+  @override
+  String get folderEmptyTitle => 'Nicio notiță în acest folder';
+
+  @override
+  String get folderEmptySubtitle => 'Mută notițe aici pentru a le organiza.';
+
+  @override
+  String get archiveEmptyTitle => 'Nicio notiță arhivată';
+
+  @override
+  String get archiveEmptySubtitle =>
+      'Notițele pe care le arhivezi vor apărea aici.';
+
+  @override
   String get trashRestoreButtonLabel => 'Restaurare';
 
   @override
@@ -1055,6 +1086,27 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Fiecare card de notiță primește o nuanță de culoare diferită.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Culoarea Steagului ca Copertă';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Folosește culoarea steagului ca și culoare a copertei.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Meniu lateral';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'Toate secțiunile sunt vizibile';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Unele secțiuni sunt ascunse';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Secțiunile meniului lateral';
 
   @override
   String get settingsTextColorSheetTitle => 'Culoare text';
@@ -2223,13 +2275,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Șterge tabelul';
 
   @override
-  String get tagsMenuItemLabel => 'Etichete';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Culoare copertă';
-
-  @override
-  String get noteBgColorDialogTitle => 'Alege culoarea copertei';
+  String get tagsMenuItemLabel => 'Etichetă';
 
   @override
   String get flagColorMenuItemLabel => 'Steag';

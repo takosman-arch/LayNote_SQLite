@@ -23,12 +23,20 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
   set _colorfulNotes(bool value);
   List<Map<String, dynamic>> get _deletedNotes;
   set _deletedNotes(List<Map<String, dynamic>> value);
+  bool get _flagAsCoverColor;
+  set _flagAsCoverColor(bool value);
   String get _fontFamily;
   set _fontFamily(String value);
   Color _getCategoryColor(String? category);
   double get _globalFontSize;
   set _globalFontSize(double value);
   bool _hasActiveReminder(Map<String, dynamic> note);
+  // Çekmece (drawer) menüsünde kullanıcının kapatmayı seçtiği bölümlerin
+  // anahtar kümesi (ör. '__archive__', '__agenda__'). "Tümü" hariç tüm
+  // sabit bölümler burada listelenebilir; küme içinde geçen bir bölüm
+  // drawer'da hiç render edilmez (bkz. note_list_build_mixin.dart).
+  Set<String> get _hiddenDrawerSections;
+  set _hiddenDrawerSections(Set<String> value);
   bool get _isAscending;
   set _isAscending(bool value);
   bool get _isListView;
@@ -79,6 +87,12 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
 
     final catData = await db.getCategoriesData();
     final notes = await db.getNotes();
+    // Ek güvenlik ağı: 30 günü geçen çöp kutusu notlarını arka plan
+    // görevinin (bkz. auto_backup_service.dart -> scheduleTrashCleanupTask)
+    // tetiklenip tetiklenmediğine bakılmaksızın, uygulama her açıldığında
+    // burada da temizler. Idempotent bir işlem olduğu için tekrar
+    // çağrılması zararsızdır.
+    await db.autoCleanOldDeletedNotes();
     final deletedNotes = await db.getDeletedNotes();
     final settings = await db.getAllSettings();
     // Veritabanı hiç yazılmamışsa (uygulamanın ilk açılışı) 'never
@@ -109,6 +123,12 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       _collapsedDateGroups = collapsedDateRaw.isEmpty
           ? <String>{}
           : collapsedDateRaw.split('\u0001').toSet();
+      // Kullanıcının Ayarlar > Çekmece Menüsü'nden kapattığı bölümler
+      // (ör. Arşiv, Takvim). "Tümü" bu kümeye asla girmez (kapatılamaz).
+      final hiddenDrawerRaw = settings['hidden_drawer_sections'] ?? '';
+      _hiddenDrawerSections = hiddenDrawerRaw.isEmpty
+          ? <String>{}
+          : hiddenDrawerRaw.split('\u0001').toSet();
 
       if (notes.isNotEmpty || !neverInitialized) {
         _notes = notes;
@@ -187,6 +207,8 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       _appLanguage = settings['app_language'] ?? 'system';
       appLanguage.value = _appLanguage;
       _colorfulNotes = (settings['colorful_notes'] ?? 'false') == 'true';
+      _flagAsCoverColor =
+          (settings['flag_as_cover_color'] ?? 'false') == 'true';
       _fontFamily = settings['font_family'] ?? 'Varsayılan';
       _globalFontSize =
           double.tryParse(settings['global_font_size'] ?? '') ?? 19.0;
@@ -272,6 +294,10 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
         'collapsed_date_groups',
         _collapsedDateGroups.join('\u0001'),
       );
+      await db.setSetting(
+        'hidden_drawer_sections',
+        _hiddenDrawerSections.join('\u0001'),
+      );
 
       // Ayarlar
       await db.setSetting(
@@ -285,6 +311,10 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
       await db.setSetting('accent_color', accentColorToSettingValue(_accentColor));
       await db.setSetting('app_language', _appLanguage);
       await db.setSetting('colorful_notes', _colorfulNotes.toString());
+      await db.setSetting(
+        'flag_as_cover_color',
+        _flagAsCoverColor.toString(),
+      );
       await db.setSetting('font_family', _fontFamily);
       await db.setSetting('global_font_size', _globalFontSize.toString());
       await db.setSetting('note_line_height', _noteLineHeight.toString());

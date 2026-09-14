@@ -381,6 +381,33 @@ class AppLocalizationsAr extends AppLocalizations {
       'سيتم حذف الملاحظات المنقولة إلى هنا نهائيًا بعد 30 يومًا.';
 
   @override
+  String get favoritesEmptySubtitle => 'الملاحظات التي تفضّلها ستظهر هنا.';
+
+  @override
+  String get lockedEmptyTitle => 'لا توجد ملاحظات مقفلة';
+
+  @override
+  String get lockedEmptySubtitle => 'الملاحظات التي تقفلها ستظهر هنا.';
+
+  @override
+  String get remindersEmptyTitle => 'لا توجد تذكيرات';
+
+  @override
+  String get remindersEmptySubtitle => 'الملاحظات التي بها تذكيرات ستظهر هنا.';
+
+  @override
+  String get folderEmptyTitle => 'لا توجد ملاحظات في هذا المجلد';
+
+  @override
+  String get folderEmptySubtitle => 'انقل الملاحظات إلى هنا لتنظيمها.';
+
+  @override
+  String get archiveEmptyTitle => 'لا توجد ملاحظات مؤرشفة';
+
+  @override
+  String get archiveEmptySubtitle => 'الملاحظات التي تؤرشفها ستظهر هنا.';
+
+  @override
   String get trashRestoreButtonLabel => 'استعادة';
 
   @override
@@ -1038,6 +1065,25 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'تحصل كل بطاقة ملاحظة على درجة لون مختلفة.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'لون العلم كغلاف';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'يستخدم لون العلم كلون الغلاف.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'القائمة الجانبية';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle => 'جميع الأقسام مرئية';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle => 'بعض الأقسام مخفية';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'أقسام القائمة الجانبية';
 
   @override
   String get settingsTextColorSheetTitle => 'لون النص';
@@ -2205,13 +2251,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'حذف الجدول';
 
   @override
-  String get tagsMenuItemLabel => 'الوسوم';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'لون الغلاف';
-
-  @override
-  String get noteBgColorDialogTitle => 'اختر لون الغلاف';
+  String get tagsMenuItemLabel => 'الوسم';
 
   @override
   String get flagColorMenuItemLabel => 'العلم';

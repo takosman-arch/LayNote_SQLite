@@ -383,6 +383,38 @@ class AppLocalizationsCs extends AppLocalizations {
       'Poznámky přesunuté sem budou po 30 dnech trvale odstraněny.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Zde se zobrazí poznámky, které si oblíbíte.';
+
+  @override
+  String get lockedEmptyTitle => 'Žádné uzamčené poznámky';
+
+  @override
+  String get lockedEmptySubtitle =>
+      'Poznámky, které uzamknete, se zobrazí zde.';
+
+  @override
+  String get remindersEmptyTitle => 'Žádné připomínky';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Poznámky s připomínkami se zobrazí zde.';
+
+  @override
+  String get folderEmptyTitle => 'V této složce nejsou žádné poznámky';
+
+  @override
+  String get folderEmptySubtitle =>
+      'Přesuňte sem poznámky, abyste je uspořádali.';
+
+  @override
+  String get archiveEmptyTitle => 'Žádné archivované poznámky';
+
+  @override
+  String get archiveEmptySubtitle =>
+      'Poznámky, které archivujete, se zobrazí zde.';
+
+  @override
   String get trashRestoreButtonLabel => 'Obnovit';
 
   @override
@@ -1054,6 +1086,27 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Každá karta poznámky získá jiný barevný odstín.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Barva vlajky jako obálka';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Použije barvu vlajky jako barvu obálky.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Postranní nabídka';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'Všechny sekce jsou viditelné';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Některé sekce jsou skryté';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Sekce postranní nabídky';
 
   @override
   String get settingsTextColorSheetTitle => 'Barva textu';
@@ -2216,13 +2269,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Smazat tabulku';
 
   @override
-  String get tagsMenuItemLabel => 'Štítky';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Barva obálky';
-
-  @override
-  String get noteBgColorDialogTitle => 'Vybrat barvu obálky';
+  String get tagsMenuItemLabel => 'Štítek';
 
   @override
   String get flagColorMenuItemLabel => 'Vlajka';

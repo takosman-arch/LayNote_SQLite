@@ -383,6 +383,38 @@ class AppLocalizationsUk extends AppLocalizations {
       'Нотатки, переміщені сюди, будуть остаточно видалені через 30 днів.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Тут з\'являтимуться нотатки, додані в обране.';
+
+  @override
+  String get lockedEmptyTitle => 'Немає заблокованих нотаток';
+
+  @override
+  String get lockedEmptySubtitle =>
+      'Нотатки, які ви заблокуєте, з\'являтимуться тут.';
+
+  @override
+  String get remindersEmptyTitle => 'Немає нагадувань';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Нотатки з нагадуваннями з\'являтимуться тут.';
+
+  @override
+  String get folderEmptyTitle => 'У цій папці немає нотаток';
+
+  @override
+  String get folderEmptySubtitle =>
+      'Переміщуйте нотатки сюди, щоб упорядкувати їх.';
+
+  @override
+  String get archiveEmptyTitle => 'Немає архівних нотаток';
+
+  @override
+  String get archiveEmptySubtitle =>
+      'Нотатки, які ви заархівуєте, з\'являтимуться тут.';
+
+  @override
   String get trashRestoreButtonLabel => 'Відновити';
 
   @override
@@ -1051,6 +1083,26 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Кожна картка нотатки отримує інший відтінок кольору.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Колір прапорця як обкладинка';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Використовує колір прапорця як колір обкладинки.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Бічне меню';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle => 'Усі розділи видимі';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Деякі розділи приховані';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Розділи бічного меню';
 
   @override
   String get settingsTextColorSheetTitle => 'Колір тексту';
@@ -2226,13 +2278,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Видалити таблицю';
 
   @override
-  String get tagsMenuItemLabel => 'Теги';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Колір обкладинки';
-
-  @override
-  String get noteBgColorDialogTitle => 'Вибрати колір обкладинки';
+  String get tagsMenuItemLabel => 'Тег';
 
   @override
   String get flagColorMenuItemLabel => 'Прапорець';

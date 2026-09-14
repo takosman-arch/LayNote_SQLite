@@ -70,7 +70,6 @@ part 'note_list_actions_mixin.dart';
 part 'note_list_attachment_mixin.dart';
 part 'note_list_note_dialog_mixin.dart';
 part 'note_tags_sheet.dart';
-part 'note_bg_color_sheet.dart';
 part 'note_list_build_mixin.dart';
 part 'note_flag_mixin.dart';
 part 'settings_page.dart';
@@ -199,6 +198,13 @@ Future<void> _initBackgroundServices() async {
   await AutoBackupService.instance.initializeWorkmanager();
   await AutoBackupService.instance
       .rescheduleFromSavedSettings(resetIfExists: false);
+
+  // Çöp kutusu temizliği: otomatik yedekleme AÇIK/KAPALI olmasından
+  // bağımsız olarak her zaman kayıtlı tutulur — böylece kullanıcı
+  // yedeklemeyi kapatsa bile 30 günü geçen çöp kutusu notları arka
+  // planda silinmeye devam eder (bkz. auto_backup_service.dart ->
+  // scheduleTrashCleanupTask).
+  await AutoBackupService.instance.scheduleTrashCleanupTask();
 
   // AŞAMA 9: Arka plan görevi (WorkManager) OEM pil optimizasyonu
   // yüzünden çalışmamış olabilir; süresi dolmuşsa yedeklemeyi burada,

@@ -383,6 +383,38 @@ class AppLocalizationsRu extends AppLocalizations {
       'Заметки, перемещённые сюда, будут безвозвратно удалены через 30 дней.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Здесь будут отображаться заметки, добавленные в избранное.';
+
+  @override
+  String get lockedEmptyTitle => 'Нет заблокированных заметок';
+
+  @override
+  String get lockedEmptySubtitle =>
+      'Заметки, которые вы заблокируете, появятся здесь.';
+
+  @override
+  String get remindersEmptyTitle => 'Нет напоминаний';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Заметки с напоминаниями появятся здесь.';
+
+  @override
+  String get folderEmptyTitle => 'В этой папке нет заметок';
+
+  @override
+  String get folderEmptySubtitle =>
+      'Перемещайте заметки сюда, чтобы упорядочить их.';
+
+  @override
+  String get archiveEmptyTitle => 'Нет архивных заметок';
+
+  @override
+  String get archiveEmptySubtitle =>
+      'Заметки, которые вы отправите в архив, появятся здесь.';
+
+  @override
   String get trashRestoreButtonLabel => 'Восстановить';
 
   @override
@@ -1050,6 +1082,26 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Каждая карточка заметки получает свой цветовой оттенок.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Цвет флажка как обложка';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Использует цвет флажка как цвет обложки.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Боковое меню';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle => 'Все разделы видны';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Некоторые разделы скрыты';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Разделы бокового меню';
 
   @override
   String get settingsTextColorSheetTitle => 'Цвет текста';
@@ -2223,13 +2275,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Удалить таблицу';
 
   @override
-  String get tagsMenuItemLabel => 'Теги';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Цвет обложки';
-
-  @override
-  String get noteBgColorDialogTitle => 'Выбрать цвет обложки';
+  String get tagsMenuItemLabel => 'Тег';
 
   @override
   String get flagColorMenuItemLabel => 'Флажок';

@@ -386,6 +386,37 @@ class AppLocalizationsPt extends AppLocalizations {
       'As notas movidas para cá serão excluídas permanentemente após 30 dias.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'As notas que você favoritar aparecerão aqui.';
+
+  @override
+  String get lockedEmptyTitle => 'Nenhuma nota bloqueada';
+
+  @override
+  String get lockedEmptySubtitle =>
+      'As notas que você bloquear aparecerão aqui.';
+
+  @override
+  String get remindersEmptyTitle => 'Nenhum lembrete';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'As notas com lembretes aparecerão aqui.';
+
+  @override
+  String get folderEmptyTitle => 'Nenhuma nota nesta pasta';
+
+  @override
+  String get folderEmptySubtitle => 'Mova notas para cá para organizá-las.';
+
+  @override
+  String get archiveEmptyTitle => 'Nenhuma nota arquivada';
+
+  @override
+  String get archiveEmptySubtitle =>
+      'As notas que você arquivar aparecerão aqui.';
+
+  @override
   String get trashRestoreButtonLabel => 'Restaurar';
 
   @override
@@ -1059,6 +1090,27 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Cada cartão de nota recebe um tom de cor diferente.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Cor da Bandeira como Capa';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Usa a cor da bandeira como cor da capa.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Menu lateral';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'Todas as seções visíveis';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Algumas seções ocultas';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Seções do menu lateral';
 
   @override
   String get settingsTextColorSheetTitle => 'Cor do Texto';
@@ -2241,13 +2293,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Excluir tabela';
 
   @override
-  String get tagsMenuItemLabel => 'Etiquetas';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Cor da Capa';
-
-  @override
-  String get noteBgColorDialogTitle => 'Escolher Cor da Capa';
+  String get tagsMenuItemLabel => 'Etiqueta';
 
   @override
   String get flagColorMenuItemLabel => 'Bandeira';

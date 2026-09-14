@@ -384,6 +384,35 @@ class AppLocalizationsEs extends AppLocalizations {
       'Las notas movidas aquí se eliminarán permanentemente después de 30 días.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Aquí aparecerán las notas que marques como favoritas.';
+
+  @override
+  String get lockedEmptyTitle => 'No hay notas bloqueadas';
+
+  @override
+  String get lockedEmptySubtitle => 'Las notas que bloquees aparecerán aquí.';
+
+  @override
+  String get remindersEmptyTitle => 'No hay recordatorios';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Las notas con recordatorios aparecerán aquí.';
+
+  @override
+  String get folderEmptyTitle => 'No hay notas en esta carpeta';
+
+  @override
+  String get folderEmptySubtitle => 'Mueve notas aquí para organizarlas.';
+
+  @override
+  String get archiveEmptyTitle => 'No hay notas archivadas';
+
+  @override
+  String get archiveEmptySubtitle => 'Las notas que archives aparecerán aquí.';
+
+  @override
   String get trashRestoreButtonLabel => 'Restaurar';
 
   @override
@@ -1053,6 +1082,27 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Cada tarjeta de nota recibe un tono de color diferente.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Color de bandera como portada';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Usa el color de bandera como color de portada.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Menú lateral';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'Todas las secciones visibles';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Algunas secciones ocultas';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Secciones del menú lateral';
 
   @override
   String get settingsTextColorSheetTitle => 'Color de texto';
@@ -2235,13 +2285,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Eliminar tabla';
 
   @override
-  String get tagsMenuItemLabel => 'Etiquetas';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Color de Portada';
-
-  @override
-  String get noteBgColorDialogTitle => 'Elegir Color de Portada';
+  String get tagsMenuItemLabel => 'Etiqueta';
 
   @override
   String get flagColorMenuItemLabel => 'Bandera';

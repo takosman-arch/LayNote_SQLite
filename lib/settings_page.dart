@@ -722,6 +722,122 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   // ─────────────────────────────────────────────────────────────────
+  // ÇEKMECE MENÜSÜ BÖLÜMLERİ — kullanıcı, "Tümü" hariç sabit drawer
+  // bölümlerinden (Favoriler, Ajanda, Hatırlatıcı, Kilitli, Arşiv, Çöp,
+  // Takvim) istediklerini kapatabilir; kapatılan bölüm drawer'da hiç
+  // render edilmez (bkz. note_list_build_mixin.dart — collection-if).
+  // "Tümü" bu listede YOK ve kapatılamaz (kullanıcı isteği).
+  // Anahtarlar, note_list_build_mixin.dart'taki _activeCategory
+  // değerleriyle (ya da Ajanda/Takvim için aynı kalıptaki uydurma
+  // anahtarlarla) birebir eşleşir.
+  // ─────────────────────────────────────────────────────────────────
+  List<({String key, IconData icon, String Function(BuildContext) label})>
+  _drawerSectionOptions() => [
+    (
+      key: '__favorites__',
+      icon: Icons.star_outline,
+      label: (c) => AppLocalizations.of(c)!.drawerFavoritesLabel,
+    ),
+    (
+      key: '__agenda__',
+      icon: Icons.event_note_outlined,
+      label: (c) => AppLocalizations.of(c)!.drawerAgendaLabel,
+    ),
+    (
+      key: '__reminders__',
+      icon: Icons.notifications_outlined,
+      label: (c) => AppLocalizations.of(c)!.drawerRemindersLabel,
+    ),
+    (
+      key: '__locked__',
+      icon: Icons.lock_outline,
+      label: (c) => AppLocalizations.of(c)!.drawerLockedLabel,
+    ),
+    (
+      key: '__archive__',
+      icon: Icons.archive_outlined,
+      label: (c) => AppLocalizations.of(c)!.selectionModeArchiveTooltip,
+    ),
+    (
+      key: '__trash__',
+      icon: Icons.delete_outline,
+      label: (c) => AppLocalizations.of(c)!.drawerTrashLabel,
+    ),
+    (
+      key: '__calendar__',
+      icon: Icons.calendar_month,
+      label: (c) => AppLocalizations.of(c)!.drawerCalendarLabel,
+    ),
+  ];
+
+  void _showDrawerSectionsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dialogCtx) {
+        return StatefulBuilder(
+          builder: (ctx, setDlg) => AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.settingsDrawerSectionsDialogTitle,
+              style: TextStyle(
+                color: dNoteTextColor(context),
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  for (final option in _drawerSectionOptions())
+                    _settingTile(
+                      icon: option.icon,
+                      iconColor: !s._hiddenDrawerSections.contains(option.key)
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey[500]!,
+                      title: option.label(context),
+                      trailing: _compactSwitch(
+                        value: !s._hiddenDrawerSections.contains(option.key),
+                        activeThumbColor: Theme.of(context).primaryColor,
+                        onChanged: (visible) {
+                          s.setState(() {
+                            if (visible) {
+                              s._hiddenDrawerSections.remove(option.key);
+                            } else {
+                              s._hiddenDrawerSections.add(option.key);
+                              // Kullanıcı o an görüntülemekte olduğu bölümü
+                              // kapatırsa not listesi güvenli varsayılana
+                              // ("Tümü") döner (kullanıcı isteği).
+                              if (s._activeCategory == option.key) {
+                                s._activeCategory = 'Tümü';
+                              }
+                            }
+                          });
+                          setDlg(() {});
+                          s._saveData();
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogCtx),
+                child: Text(
+                  AppLocalizations.of(context)!.commonOkButton,
+                  style: TextStyle(color: Theme.of(context).primaryColor),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────
   // DİL (Sistem / Türkçe / English) — Tema diyaloğuyla birebir aynı kalıp.
   // Gerçek kaynak appLanguage notifier'ıdır (bkz. theme.dart);
   // s._appLanguage yalnızca bu ekrandaki seçili durumu göstermek için
@@ -1043,6 +1159,28 @@ class _SettingsPageState extends State<SettingsPage> {
                   // yukarıdaki not (Not Şifresi bölümü başı). Soru/cevap
                   // artık sadece şifre ilk kurulurken belirleniyor;
                   // değiştirmek için şifre kaldırılıp yeniden kurulmalı.
+                  Divider(
+                    color: Theme.of(context).dividerColor,
+                    height: 1,
+                    indent: 56,
+                  ),
+                  // Çekmece (drawer) menüsündeki sabit bölümlerden (Tümü
+                  // hariç) hangilerinin görünür olacağını seçtiren ayar
+                  // (kullanıcı isteği). Alt açıklama, kapalı bölüm sayısını
+                  // gösterir; hiçbiri kapalı değilse "Tümü görünür" yazar.
+                  _settingTile(
+                    icon: Icons.view_sidebar_outlined,
+                    iconColor: Theme.of(context).primaryColor,
+                    title: AppLocalizations.of(context)!.settingsDrawerSectionsTitle,
+                    subtitle: s._hiddenDrawerSections.isEmpty
+                        ? AppLocalizations.of(context)!.settingsDrawerSectionsAllVisibleSubtitle
+                        : AppLocalizations.of(context)!.settingsDrawerSectionsSomeHiddenSubtitle,
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      color: dNoteIsDark(context) ? Colors.grey[400] : Colors.grey[600],
+                    ),
+                    onTap: () => _showDrawerSectionsDialog(context),
+                  ),
                 ],
               ),
             ),
@@ -1058,7 +1196,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 children: [
                   _settingTile(
-                    icon: Icons.palette_outlined,
+                    icon: Icons.brightness_6_outlined,
                     iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsThemeChangeTileTitle,
                     subtitle: switch (s._themeMode) {
@@ -1075,7 +1213,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     indent: 56,
                   ),
                   _settingTile(
-                    icon: Icons.color_lens_outlined,
+                    icon: Icons.colorize_outlined,
                     iconColor: dNoteResolveAccentColor(
                       s._accentColor,
                       Theme.of(context).brightness == Brightness.dark,
@@ -1104,7 +1242,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     indent: 56,
                   ),
                   _settingTile(
-                    icon: Icons.color_lens_outlined,
+                    icon: Icons.auto_awesome_mosaic_outlined,
                     iconColor: Theme.of(context).primaryColor,
                     title: AppLocalizations.of(context)!.settingsColorfulNotesTitle,
                     subtitle: AppLocalizations.of(context)!.settingsColorfulNotesSubtitle,
@@ -1113,6 +1251,33 @@ class _SettingsPageState extends State<SettingsPage> {
                       activeThumbColor: Theme.of(context).primaryColor,
                       onChanged: (val) {
                         s.setState(() => s._colorfulNotes = val);
+                        setState(() {});
+                        s._saveData();
+                      },
+                    ),
+                  ),
+                  Divider(
+                    color: Theme.of(context).dividerColor,
+                    height: 1,
+                    indent: 56,
+                  ),
+                  // Bayrak (flama) rengi seçilmiş notlarda, köşedeki küçük
+                  // bayrak rozeti yerine kartın TAMAMI bayrak rengiyle
+                  // (mevcut "Kapak Rengi" opaklığıyla — alpha 0.75) boyanır.
+                  // Bayrak rengi, notun kendi Kapak Rengi'nden ve Renkli
+                  // Notlar/kategori renginden ÖNCELİKLİDİR (kullanıcı
+                  // isteği). Bkz. NoteListBuildMixin.build() — hem liste
+                  // hem ızgara kartındaki baseNoteCardColor hesaplaması.
+                  _settingTile(
+                    icon: Icons.flag_outlined,
+                    iconColor: Theme.of(context).primaryColor,
+                    title: AppLocalizations.of(context)!.settingsFlagAsCoverColorTitle,
+                    subtitle: AppLocalizations.of(context)!.settingsFlagAsCoverColorSubtitle,
+                    trailing: _compactSwitch(
+                      value: s._flagAsCoverColor,
+                      activeThumbColor: Theme.of(context).primaryColor,
+                      onChanged: (val) {
+                        s.setState(() => s._flagAsCoverColor = val);
                         setState(() {});
                         s._saveData();
                       },

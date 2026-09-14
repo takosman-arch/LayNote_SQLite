@@ -498,6 +498,18 @@
   "@noNotesFoundMessage": {
     "description": "Not listesi (arama sonucu dahil) boş olduğunda listenin ortasında gösterilen mesaj"
   },
+  "favoritesEmptySubtitle": "Favorilediğin notlar burada listelenir.",
+  "lockedEmptyTitle": "Kilitli not yok",
+  "lockedEmptySubtitle": "Kilitlediğin notlar burada listelenir.",
+  "remindersEmptyTitle": "Hatırlatıcı yok",
+  "remindersEmptySubtitle": "Hatırlatıcı eklediğin notlar burada listelenir.",
+  "folderEmptyTitle": "Bu klasörde not yok",
+  "folderEmptySubtitle": "Notlarını bu klasöre taşıyarak düzenleyebilirsin.",
+  "archiveEmptyTitle": "Arşivde not yok",
+  "archiveEmptySubtitle": "Arşivlediğin notlar burada listelenir.",
+  "@favoritesEmptySubtitle": {
+    "description": "Favoriler bölümü boşken başlığın altında gösterilen küçük açıklama metni (Ajanda ekranındaki boş durumla aynı stil)"
+  },
   "trashRestoreButtonLabel": "Geri Yükle",
   "@trashRestoreButtonLabel": {
     "description": "Çöp ekranında bir nota basılı tutulunca açılan alt menüde notu geri yükleme düğmesinin etiketi (liste ve ızgara görünümünde ortak)"
@@ -1376,6 +1388,18 @@
   "settingsColorfulNotesSubtitle": "Her not kartı farklı renk tonu alır.",
   "@settingsColorfulNotesSubtitle": {
     "description": "Değişken not renkleri anahtarının alt metni"
+  },
+  "settingsFlagAsCoverColorTitle": "Bayrak Rengini Kapak Yap",
+  "@settingsFlagAsCoverColorTitle": {
+    "description": "Tema bölümünde bayrak rengini kapak yapma anahtarının başlığı"
+  },
+  "settingsFlagAsCoverColorSubtitle": "Bayrak rengini kapak rengi olarak kullanır.",
+  "settingsDrawerSectionsTitle": "Çekmece Menüsü",
+  "settingsDrawerSectionsAllVisibleSubtitle": "Tüm bölümler görünür",
+  "settingsDrawerSectionsSomeHiddenSubtitle": "Bazı bölümler gizli",
+  "settingsDrawerSectionsDialogTitle": "Çekmece Menüsü Bölümleri",
+  "@settingsFlagAsCoverColorSubtitle": {
+    "description": "Bayrak rengini kapak yapma anahtarının alt metni"
   },
   "settingsTextColorSheetTitle": "Yazı Rengi",
   "@settingsTextColorSheetTitle": {
@@ -2955,9 +2979,7 @@
   "tableSizePickerTitle": "Tablo boyutu seç",
   "tableSizePickerCancel": "Vazgeç",
   "tableSizePickerDeleteTooltip": "Tabloyu sil",
-  "tagsMenuItemLabel": "Etiketler",
-  "noteBgColorMenuItemLabel": "Kapak Rengi",
-  "noteBgColorDialogTitle": "Kapak Rengi Seç",
+  "tagsMenuItemLabel": "Etiket",
   "flagColorMenuItemLabel": "Bayrak",
   "flagColorPickerTitle": "Bayrak rengi seç",
   "flagColorRemoveOption": "Bayrağı kaldır",

@@ -383,6 +383,37 @@ class AppLocalizationsFi extends AppLocalizations {
       'Tänne siirretyt muistiinpanot poistetaan pysyvästi 30 päivän kuluttua.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Suosikiksi merkitsemäsi muistiinpanot näkyvät täällä.';
+
+  @override
+  String get lockedEmptyTitle => 'Ei lukittuja muistiinpanoja';
+
+  @override
+  String get lockedEmptySubtitle => 'Lukitsemasi muistiinpanot näkyvät täällä.';
+
+  @override
+  String get remindersEmptyTitle => 'Ei muistutuksia';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Muistiinpanot, joissa on muistutus, näkyvät täällä.';
+
+  @override
+  String get folderEmptyTitle => 'Tässä kansiossa ei ole muistiinpanoja';
+
+  @override
+  String get folderEmptySubtitle =>
+      'Siirrä muistiinpanoja tänne järjestääksesi niitä.';
+
+  @override
+  String get archiveEmptyTitle => 'Ei arkistoituja muistiinpanoja';
+
+  @override
+  String get archiveEmptySubtitle =>
+      'Arkistoimasi muistiinpanot näkyvät täällä.';
+
+  @override
   String get trashRestoreButtonLabel => 'Palauta';
 
   @override
@@ -1046,6 +1077,27 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Jokainen muistiinpanokortti saa eri värisävyn.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Lipun väri kansikuvana';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Käyttää lipun väriä kansivärinä.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Sivuvalikko';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'Kaikki osiot näkyvissä';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Osa osioista piilotettu';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Sivuvalikon osiot';
 
   @override
   String get settingsTextColorSheetTitle => 'Tekstin väri';
@@ -2216,13 +2268,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Poista taulukko';
 
   @override
-  String get tagsMenuItemLabel => 'Tunnisteet';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Kansiväri';
-
-  @override
-  String get noteBgColorDialogTitle => 'Valitse kansiväri';
+  String get tagsMenuItemLabel => 'Tunniste';
 
   @override
   String get flagColorMenuItemLabel => 'Lippu';

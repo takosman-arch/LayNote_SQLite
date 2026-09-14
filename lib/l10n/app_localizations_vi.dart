@@ -382,6 +382,37 @@ class AppLocalizationsVi extends AppLocalizations {
       'Các ghi chú được chuyển vào đây sẽ bị xóa vĩnh viễn sau 30 ngày.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Các ghi chú bạn yêu thích sẽ hiển thị ở đây.';
+
+  @override
+  String get lockedEmptyTitle => 'Không có ghi chú nào bị khóa';
+
+  @override
+  String get lockedEmptySubtitle => 'Các ghi chú bạn khóa sẽ hiển thị ở đây.';
+
+  @override
+  String get remindersEmptyTitle => 'Không có nhắc nhở';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Các ghi chú có nhắc nhở sẽ hiển thị ở đây.';
+
+  @override
+  String get folderEmptyTitle => 'Không có ghi chú nào trong thư mục này';
+
+  @override
+  String get folderEmptySubtitle =>
+      'Di chuyển ghi chú vào đây để sắp xếp chúng.';
+
+  @override
+  String get archiveEmptyTitle => 'Không có ghi chú nào được lưu trữ';
+
+  @override
+  String get archiveEmptySubtitle =>
+      'Các ghi chú bạn lưu trữ sẽ hiển thị ở đây.';
+
+  @override
   String get trashRestoreButtonLabel => 'Khôi phục';
 
   @override
@@ -1050,6 +1081,26 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Mỗi thẻ ghi chú có một tông màu khác nhau.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Màu cờ làm bìa';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle => 'Dùng màu cờ làm màu bìa.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Menu ngăn kéo';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'Tất cả các mục đều hiển thị';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Một số mục đang bị ẩn';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Các mục trong menu ngăn kéo';
 
   @override
   String get settingsTextColorSheetTitle => 'Màu chữ';
@@ -2219,12 +2270,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get tagsMenuItemLabel => 'Thẻ';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Màu bìa';
-
-  @override
-  String get noteBgColorDialogTitle => 'Chọn màu bìa';
 
   @override
   String get flagColorMenuItemLabel => 'Cờ';

@@ -386,6 +386,38 @@ class AppLocalizationsNl extends AppLocalizations {
       'Notities die hierheen zijn verplaatst, worden na 30 dagen permanent verwijderd.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Notities die u als favoriet markeert, verschijnen hier.';
+
+  @override
+  String get lockedEmptyTitle => 'Geen vergrendelde notities';
+
+  @override
+  String get lockedEmptySubtitle =>
+      'Notities die u vergrendelt, verschijnen hier.';
+
+  @override
+  String get remindersEmptyTitle => 'Geen herinneringen';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Notities met herinneringen verschijnen hier.';
+
+  @override
+  String get folderEmptyTitle => 'Geen notities in deze map';
+
+  @override
+  String get folderEmptySubtitle =>
+      'Verplaats notities hierheen om ze te organiseren.';
+
+  @override
+  String get archiveEmptyTitle => 'Geen gearchiveerde notities';
+
+  @override
+  String get archiveEmptySubtitle =>
+      'Notities die u archiveert, verschijnen hier.';
+
+  @override
   String get trashRestoreButtonLabel => 'Herstellen';
 
   @override
@@ -1057,6 +1089,27 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Elke notitiekaart krijgt een andere kleurtint.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'Vlagkleur als omslag';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Gebruikt de vlagkleur als omslagkleur.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Zijmenu';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'Alle secties zichtbaar';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Sommige secties verborgen';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Secties van het zijmenu';
 
   @override
   String get settingsTextColorSheetTitle => 'Tekstkleur';
@@ -2231,13 +2284,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Tabel verwijderen';
 
   @override
-  String get tagsMenuItemLabel => 'Labels';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Omslagkleur';
-
-  @override
-  String get noteBgColorDialogTitle => 'Omslagkleur kiezen';
+  String get tagsMenuItemLabel => 'Label';
 
   @override
   String get flagColorMenuItemLabel => 'Vlag';

@@ -384,6 +384,38 @@ class AppLocalizationsFr extends AppLocalizations {
       'Les notes déplacées ici seront définitivement supprimées après 30 jours.';
 
   @override
+  String get favoritesEmptySubtitle =>
+      'Les notes que vous mettez en favori apparaîtront ici.';
+
+  @override
+  String get lockedEmptyTitle => 'Aucune note verrouillée';
+
+  @override
+  String get lockedEmptySubtitle =>
+      'Les notes que vous verrouillez apparaîtront ici.';
+
+  @override
+  String get remindersEmptyTitle => 'Aucun rappel';
+
+  @override
+  String get remindersEmptySubtitle =>
+      'Les notes avec des rappels apparaîtront ici.';
+
+  @override
+  String get folderEmptyTitle => 'Aucune note dans ce dossier';
+
+  @override
+  String get folderEmptySubtitle =>
+      'Déplacez des notes ici pour les organiser.';
+
+  @override
+  String get archiveEmptyTitle => 'Aucune note archivée';
+
+  @override
+  String get archiveEmptySubtitle =>
+      'Les notes que vous archivez apparaîtront ici.';
+
+  @override
   String get trashRestoreButtonLabel => 'Restaurer';
 
   @override
@@ -1063,6 +1095,28 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'Chaque carte de note prend une teinte différente.';
+
+  @override
+  String get settingsFlagAsCoverColorTitle =>
+      'Couleur du drapeau en couverture';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle =>
+      'Utilise la couleur du drapeau comme couleur de couverture.';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'Menu latéral';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle =>
+      'Toutes les sections visibles';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle =>
+      'Certaines sections masquées';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'Sections du menu latéral';
 
   @override
   String get settingsTextColorSheetTitle => 'Couleur du texte';
@@ -2241,13 +2295,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tableSizePickerDeleteTooltip => 'Supprimer le tableau';
 
   @override
-  String get tagsMenuItemLabel => 'Étiquettes';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'Couleur de couverture';
-
-  @override
-  String get noteBgColorDialogTitle => 'Choisir la couleur de couverture';
+  String get tagsMenuItemLabel => 'Étiquette';
 
   @override
   String get flagColorMenuItemLabel => 'Drapeau';

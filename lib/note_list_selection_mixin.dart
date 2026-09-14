@@ -28,6 +28,12 @@ mixin NoteListSelectionMixin on State<NoteListScreen> {
   // bağımsız daralt/genişlet durumuna sahiptir ve kalıcıdır (bkz.
   // note_list_data_category_mixin.dart -> _loadData / _saveData).
   Set<String> _collapsedDateGroups = {};
+  // Ayarlar > Çekmece Menüsü'nden kullanıcının kapattığı sabit drawer
+  // bölümlerinin anahtar kümesi (ör. '__archive__', '__agenda__').
+  // "Tümü" hiçbir zaman bu kümeye girmez (kapatılamaz). Bkz.
+  // note_list_build_mixin.dart (drawer render, collection-if) ve
+  // note_list_data_category_mixin.dart (_loadData/_saveData).
+  Set<String> _hiddenDrawerSections = {};
   String _activeCategory = 'Tümü';
   DateTime? _lastBackPressTime;
 

@@ -381,6 +381,33 @@ class AppLocalizationsTh extends AppLocalizations {
       'บันทึกที่ย้ายมาที่นี่จะถูกลบอย่างถาวรหลังจาก 30 วัน';
 
   @override
+  String get favoritesEmptySubtitle => 'โน้ตที่คุณกดรายการโปรดจะปรากฏที่นี่';
+
+  @override
+  String get lockedEmptyTitle => 'ไม่มีโน้ตที่ล็อก';
+
+  @override
+  String get lockedEmptySubtitle => 'โน้ตที่คุณล็อกจะปรากฏที่นี่';
+
+  @override
+  String get remindersEmptyTitle => 'ไม่มีการแจ้งเตือน';
+
+  @override
+  String get remindersEmptySubtitle => 'โน้ตที่มีการแจ้งเตือนจะปรากฏที่นี่';
+
+  @override
+  String get folderEmptyTitle => 'ไม่มีโน้ตในโฟลเดอร์นี้';
+
+  @override
+  String get folderEmptySubtitle => 'ย้ายโน้ตมาที่นี่เพื่อจัดระเบียบ';
+
+  @override
+  String get archiveEmptyTitle => 'ไม่มีโน้ตที่เก็บถาวร';
+
+  @override
+  String get archiveEmptySubtitle => 'โน้ตที่คุณเก็บถาวรจะปรากฏที่นี่';
+
+  @override
   String get trashRestoreButtonLabel => 'กู้คืน';
 
   @override
@@ -1042,6 +1069,24 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get settingsColorfulNotesSubtitle =>
       'การ์ดโน้ตแต่ละใบจะได้รับโทนสีที่แตกต่างกัน';
+
+  @override
+  String get settingsFlagAsCoverColorTitle => 'สีธงเป็นปก';
+
+  @override
+  String get settingsFlagAsCoverColorSubtitle => 'ใช้สีธงเป็นสีปก';
+
+  @override
+  String get settingsDrawerSectionsTitle => 'เมนูลิ้นชัก';
+
+  @override
+  String get settingsDrawerSectionsAllVisibleSubtitle => 'แสดงทุกส่วน';
+
+  @override
+  String get settingsDrawerSectionsSomeHiddenSubtitle => 'บางส่วนถูกซ่อนอยู่';
+
+  @override
+  String get settingsDrawerSectionsDialogTitle => 'ส่วนต่าง ๆ ของเมนูลิ้นชัก';
 
   @override
   String get settingsTextColorSheetTitle => 'สีตัวอักษร';
@@ -2206,12 +2251,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get tagsMenuItemLabel => 'แท็ก';
-
-  @override
-  String get noteBgColorMenuItemLabel => 'สีปก';
-
-  @override
-  String get noteBgColorDialogTitle => 'เลือกสีปก';
 
   @override
   String get flagColorMenuItemLabel => 'ธง';
