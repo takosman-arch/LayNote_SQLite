@@ -827,14 +827,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Retirer des favoris';
 
   @override
-  String get noteActionClassifyLabel => 'Sélectionner un dossier';
+  String get noteActionClassifyLabel => 'Dossier';
 
   @override
   String get noteActionDeleteLabel => 'Supprimer';
 
   @override
-  String get noteActionPinToNotificationLabel =>
-      'Épingler au panneau de notifications';
+  String get noteActionPinToNotificationLabel => 'Épingler à la\nnotification';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Retirer l\'épinglage';
@@ -2355,10 +2354,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get deleteFlagDialogConfirmButton => 'Supprimer';
 
   @override
-  String get pinNoteMenuItemLabel => 'Épingler la note';
+  String get pinNoteMenuItemLabel => 'Épingler';
 
   @override
-  String get unpinNoteMenuItemLabel => 'Détacher la note';
+  String get unpinNoteMenuItemLabel => 'Détacher';
 
   @override
   String get linkDialogUrlHint => 'https://exemple.com';

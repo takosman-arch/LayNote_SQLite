@@ -812,13 +812,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Favoriden Çıkar';
 
   @override
-  String get noteActionClassifyLabel => 'Klasör Seç';
+  String get noteActionClassifyLabel => 'Klasör';
 
   @override
   String get noteActionDeleteLabel => 'Sil';
 
   @override
-  String get noteActionPinToNotificationLabel => 'Bildirim Paneline Sabitle';
+  String get noteActionPinToNotificationLabel => 'Bildirime Ekle';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Sabitlemeyi Kaldır';
@@ -2313,7 +2313,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get pinNoteMenuItemLabel => 'Sabitle';
 
   @override
-  String get unpinNoteMenuItemLabel => 'Sabitlemeyi Kaldır';
+  String get unpinNoteMenuItemLabel => 'Kaldır';
 
   @override
   String get linkDialogUrlHint => 'https://ornek.com';

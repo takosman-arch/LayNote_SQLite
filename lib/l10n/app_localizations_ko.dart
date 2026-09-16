@@ -798,13 +798,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get noteActionUnfavoriteLabel => '즐겨찾기에서 제거';
 
   @override
-  String get noteActionClassifyLabel => '폴더 선택';
+  String get noteActionClassifyLabel => '폴더';
 
   @override
   String get noteActionDeleteLabel => '삭제';
 
   @override
-  String get noteActionPinToNotificationLabel => '알림 패널에 고정';
+  String get noteActionPinToNotificationLabel => '알림에 고정';
 
   @override
   String get noteActionUnpinFromNotificationLabel => '고정 해제';

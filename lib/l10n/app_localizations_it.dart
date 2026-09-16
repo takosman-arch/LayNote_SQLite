@@ -821,14 +821,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Rimuovi dai preferiti';
 
   @override
-  String get noteActionClassifyLabel => 'Seleziona cartella';
+  String get noteActionClassifyLabel => 'Cartella';
 
   @override
   String get noteActionDeleteLabel => 'Elimina';
 
   @override
-  String get noteActionPinToNotificationLabel =>
-      'Fissa al pannello delle notifiche';
+  String get noteActionPinToNotificationLabel => 'Fissa alla\nnotifica';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Rimuovi fissaggio';

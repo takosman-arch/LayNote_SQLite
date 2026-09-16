@@ -808,13 +808,13 @@ class AppLocalizationsTh extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'นำออกจากรายการโปรด';
 
   @override
-  String get noteActionClassifyLabel => 'เลือกโฟลเดอร์';
+  String get noteActionClassifyLabel => 'โฟลเดอร์';
 
   @override
   String get noteActionDeleteLabel => 'ลบ';
 
   @override
-  String get noteActionPinToNotificationLabel => 'ปักหมุดไปยังแผงการแจ้งเตือน';
+  String get noteActionPinToNotificationLabel => 'ปักหมุดในการแจ้งเตือน';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'ยกเลิกการปักหมุด';

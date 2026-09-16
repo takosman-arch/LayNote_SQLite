@@ -14,11 +14,14 @@ part of 'main.dart';
 // tuval üzerindeki tek tek stroke'lar not genelindeki Ctrl+Z'ye karışmaz.
 // ════════════════════════════════════════════════════════════════════════
 
-// Kalem için hazır renk paleti. Beyaz ve siyah her iki temada da (koyu/açık
-// arka plan) en az bir tanesi görünür kalsın diye bilerek ikisi de var.
+// Kalem için hazır renk paleti. Beyaz preset, dNoteEffectiveStrokeColor
+// sayesinde zaten temaya göre otomatik kontrast sağlıyor (koyu temada
+// beyaz, açık temada siyah çizer/görünür) — bu yüzden ayrı bir sabit siyah
+// preset'e gerek yok: açık temada beyazın ürettiğiyle birebir aynı sonucu
+// (siyah çizgi) verirken, koyu temada koyu zemin üzerinde görünmez
+// olduğundan hiçbir zaman gerçek bir katkısı yoktu.
 const List<Color> kDrawingColorPresets = [
   Color(0xFFFFFFFF),
-  Color(0xFF000000),
   Color(0xFFFFC400),
   Color(0xFFFF1744),
   Color(0xFF2979FF),
@@ -135,6 +138,86 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
   // Şekil modunda sürüklemenin BAŞLANGIÇ noktası (ilk pointer-down konumu).
   // _livePoints her zaman [_shapeStartPoint, güncel_konum] şeklinde tutulur.
   Offset? _shapeStartPoint;
+
+  // ── Hizalama (Snap) ────────────────────────────────────────────────────
+  // Açıkken iki bağımsız yardım birlikte, ÖNCELİK SIRASIYLA çalışır:
+  //  1) UÇ YAKALAMA: parmak, mevcut bir stroke'un başlangıç/bitiş noktasına
+  //     yeterince yakınsa, tam o noktaya "mıknatıslanır" — çizgileri
+  //     birbirine köşeden bağlamak (ör. ok-kutu diyagramları) için.
+  //  2) AÇI KİLİDİ: uç yakalama devreye girmediyse (yakında mevcut bir uç
+  //     yoksa) VE çizilen bir düz çizgininse, açısı en yakın 15°'ye
+  //     yuvarlanır (yatay/dikey/45° gibi düzgün açılar).
+  // İkisi de yalnızca BİR stroke'un BAŞLANGIÇ noktasına (şekil/serbest el
+  // fark etmez) ve şekil araçlarının (line/rect/ellipse) SÜRÜKLENEN
+  // (ikinci) ucuna uygulanır — serbest el çiziminin ARA noktalarına asla
+  // dokunulmaz (aksi halde elle çizilen eğri bozulurdu, bkz.
+  // _onPointerMove'daki freehand dalı).
+  bool _snapEnabled = false;
+
+  // Uç yakalama yarıçapı, TUVAL koordinatında. _effectiveEraseRadius ile
+  // birebir aynı mantık: zoom'a göre ters orantılı ölçeklenir ki ekrandaki
+  // (parmakla eşleşen) fiziksel boyutu her zoom seviyesinde aynı kalsın.
+  static const double _kEndpointSnapRadius = 18.0;
+  double get _effectiveSnapRadius => _kEndpointSnapRadius / _scale;
+
+  // Açı kilidinin adımı: 15°'lik dilimler (yatay, dikey, 45°'ler dahil
+  // toplam 24 yön).
+  static final double _kAngleSnapStep = math.pi / 12;
+
+  // Tüm mevcut stroke'ların başlangıç/bitiş noktalarını tarayıp verilen
+  // noktaya en yakın olanı (yarıçap içindeyse) döner; yakında hiçbir uç
+  // yoksa null. Henüz çizilmekte olan (bitmemiş) stroke _strokes'a
+  // eklenmediğinden burada taranmaz — bir çizgi kendi ucuna kilitlenmez.
+  Offset? _nearestStrokeEndpoint(Offset pos) {
+    Offset? best;
+    double bestDistSq = double.infinity;
+    final r = _effectiveSnapRadius;
+    for (final s in _strokes) {
+      final pts = s['points'] as List? ?? const [];
+      if (pts.isEmpty) continue;
+      for (final raw in [pts.first, pts.last]) {
+        final p = Offset(
+          ((raw as List)[0] as num).toDouble(),
+          (raw[1] as num).toDouble(),
+        );
+        final dx = p.dx - pos.dx;
+        final dy = p.dy - pos.dy;
+        final distSq = dx * dx + dy * dy;
+        if (distSq <= r * r && distSq < bestDistSq) {
+          bestDistSq = distSq;
+          best = p;
+        }
+      }
+    }
+    return best;
+  }
+
+  // [end] noktasının [start]'a göre açısını en yakın _kAngleSnapStep
+  // katına yuvarlayıp, AYNI UZAKLIKTA o açıdaki noktayı döner.
+  Offset _snapAngle(Offset start, Offset end) {
+    final dx = end.dx - start.dx;
+    final dy = end.dy - start.dy;
+    final dist = math.sqrt(dx * dx + dy * dy);
+    if (dist == 0) return end;
+    final angle = math.atan2(dy, dx);
+    final snappedAngle = (angle / _kAngleSnapStep).round() * _kAngleSnapStep;
+    return Offset(
+      start.dx + dist * math.cos(snappedAngle),
+      start.dy + dist * math.sin(snappedAngle),
+    );
+  }
+
+  // Snap açıkken ham bir çizim noktasını çözümler: önce uç yakalamayı
+  // dener; bulamazsa VE [angleAnchor] verilmişse (yani bir düz çizginin
+  // sürüklenen ikinci ucu işleniyorsa) açı kilidini uygular. Snap kapalıysa
+  // ya da hiçbiri devreye girmezse ham noktayı olduğu gibi döner.
+  Offset _resolveSnappedPoint(Offset raw, {Offset? angleAnchor}) {
+    if (!_snapEnabled) return raw;
+    final endpoint = _nearestStrokeEndpoint(raw);
+    if (endpoint != null) return endpoint;
+    if (angleAnchor != null) return _snapAngle(angleAnchor, raw);
+    return raw;
+  }
 
   // ── AŞAMA 1.1: Zoom/Pan Altyapısı ─────────────────────────────────────
   // Tuvalin görüntü ölçeği (1.0 = %100) ve kaydırma ofseti (mantıksal
@@ -829,12 +912,14 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
       // içindeki not: ikinci parmak pinch başlatırsa buradaki başlangıç
       // noktası hiç commit edilmeyebilir, o durumda gereksiz bir geri al
       // adımı da eklenmemiş olur).
-      _shapeStartPoint = pos;
-      _livePoints = [pos, pos];
+      final startPos = _resolveSnappedPoint(pos);
+      _shapeStartPoint = startPos;
+      _livePoints = [startPos, startPos];
       setState(() {});
     } else {
       // AYNI NOT: geri al kaydı burada değil, _finishStroke()'ta atılır.
-      _livePoints = [pos];
+      final startPos = _resolveSnappedPoint(pos);
+      _livePoints = [startPos];
       setState(() {});
     }
   }
@@ -857,7 +942,11 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
       _eraseAt(pos);
     } else if (_shapeTool != null) {
       if (_shapeStartPoint != null) {
-        setState(() => _livePoints = [_shapeStartPoint!, pos]);
+        final resolved = _resolveSnappedPoint(
+          pos,
+          angleAnchor: _shapeTool == 'line' ? _shapeStartPoint : null,
+        );
+        setState(() => _livePoints = [_shapeStartPoint!, resolved]);
       }
     } else if (_livePoints != null) {
       setState(() => _livePoints!.add(pos));
@@ -1459,6 +1548,19 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
     );
   }
 
+  // Hizalama (snap) aç/kapa anahtarı. Açıkken uç yakalama + düz çizgilerde
+  // açı kilidi devreye girer (bkz. _resolveSnappedPoint). Diğer araçlarla
+  // (kalem/silgi/şekil) karşılıklı dışlayıcı DEĞİLDİR — bağımsız bir
+  // ayardır, o yüzden _toolButton'daki 'selected' sadece _snapEnabled'a
+  // bakar, aktif araca değil.
+  Widget _snapToolButton() {
+    return _toolButton(
+      icon: Icons.straighten,
+      selected: _snapEnabled,
+      onTap: () => setState(() => _snapEnabled = !_snapEnabled),
+    );
+  }
+
   Widget _divider() => Container(
         width: 1,
         height: 22,
@@ -1567,6 +1669,7 @@ class _NoteDrawingBlockState extends State<NoteDrawingBlock> {
                     icon: Icons.circle_outlined,
                     shape: 'ellipse',
                   ),
+                  _snapToolButton(),
                   _divider(),
                   IconButton(
                     tooltip: AppLocalizations.of(context)!.editorUndoTooltip,

@@ -819,14 +819,13 @@ class AppLocalizationsUk extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Видалити з обраного';
 
   @override
-  String get noteActionClassifyLabel => 'Вибрати папку';
+  String get noteActionClassifyLabel => 'Папка';
 
   @override
   String get noteActionDeleteLabel => 'Видалити';
 
   @override
-  String get noteActionPinToNotificationLabel =>
-      'Закріпити на панелі сповіщень';
+  String get noteActionPinToNotificationLabel => 'Закріпити у\nсповіщеннях';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Відкріпити';
@@ -2338,10 +2337,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get deleteFlagDialogConfirmButton => 'Видалити';
 
   @override
-  String get pinNoteMenuItemLabel => 'Закріпити нотатку';
+  String get pinNoteMenuItemLabel => 'Закріпити';
 
   @override
-  String get unpinNoteMenuItemLabel => 'Відкріпити нотатку';
+  String get unpinNoteMenuItemLabel => 'Відкріпити';
 
   @override
   String get linkDialogUrlHint => 'https://example.com';

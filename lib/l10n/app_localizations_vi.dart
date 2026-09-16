@@ -817,13 +817,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Bỏ khỏi yêu thích';
 
   @override
-  String get noteActionClassifyLabel => 'Chọn thư mục';
+  String get noteActionClassifyLabel => 'Thư mục';
 
   @override
   String get noteActionDeleteLabel => 'Xóa';
 
   @override
-  String get noteActionPinToNotificationLabel => 'Ghim vào bảng thông báo';
+  String get noteActionPinToNotificationLabel => 'Ghim vào\nthông báo';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Bỏ ghim';
@@ -2328,7 +2328,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get deleteFlagDialogConfirmButton => 'Xóa';
 
   @override
-  String get pinNoteMenuItemLabel => 'Ghim ghi chú';
+  String get pinNoteMenuItemLabel => 'Ghim';
 
   @override
   String get unpinNoteMenuItemLabel => 'Bỏ ghim';

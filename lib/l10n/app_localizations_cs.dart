@@ -821,13 +821,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Odebrat z oblíbených';
 
   @override
-  String get noteActionClassifyLabel => 'Vybrat složku';
+  String get noteActionClassifyLabel => 'Složka';
 
   @override
   String get noteActionDeleteLabel => 'Smazat';
 
   @override
-  String get noteActionPinToNotificationLabel => 'Připnout na panel oznámení';
+  String get noteActionPinToNotificationLabel => 'Připnout k\noznámení';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Odepnout';
@@ -2328,10 +2328,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get deleteFlagDialogConfirmButton => 'Smazat';
 
   @override
-  String get pinNoteMenuItemLabel => 'Připnout poznámku';
+  String get pinNoteMenuItemLabel => 'Připnout';
 
   @override
-  String get unpinNoteMenuItemLabel => 'Odepnout poznámku';
+  String get unpinNoteMenuItemLabel => 'Odepnout';
 
   @override
   String get linkDialogUrlHint => 'https://example.com';

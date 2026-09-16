@@ -806,13 +806,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'إزالة من المفضلة';
 
   @override
-  String get noteActionClassifyLabel => 'اختيار مجلد';
+  String get noteActionClassifyLabel => 'مجلد';
 
   @override
   String get noteActionDeleteLabel => 'حذف';
 
   @override
-  String get noteActionPinToNotificationLabel => 'تثبيت في لوحة الإشعارات';
+  String get noteActionPinToNotificationLabel => 'تثبيت في الإشعارات';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'إزالة التثبيت';
@@ -2310,10 +2310,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get deleteFlagDialogConfirmButton => 'حذف';
 
   @override
-  String get pinNoteMenuItemLabel => 'تثبيت الملاحظة';
+  String get pinNoteMenuItemLabel => 'تثبيت';
 
   @override
-  String get unpinNoteMenuItemLabel => 'إلغاء تثبيت الملاحظة';
+  String get unpinNoteMenuItemLabel => 'إلغاء التثبيت';
 
   @override
   String get linkDialogUrlHint => 'https://example.com';

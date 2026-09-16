@@ -1667,7 +1667,7 @@ abstract class AppLocalizations {
   /// Eylem panelinde, notun klasörünü değiştiren eylemin etiketi
   ///
   /// In tr, this message translates to:
-  /// **'Klasör Seç'**
+  /// **'Klasör'**
   String get noteActionClassifyLabel;
 
   /// Eylem panelinde, notu çöp kutusuna taşıyan eylemin etiketi
@@ -1679,7 +1679,7 @@ abstract class AppLocalizations {
   /// Eylem panelinde, notu bildirim paneline sabitleyen eylemin etiketi (not henüz sabitlenmemişken)
   ///
   /// In tr, this message translates to:
-  /// **'Bildirim Paneline Sabitle'**
+  /// **'Bildirime Ekle'**
   String get noteActionPinToNotificationLabel;
 
   /// Eylem panelinde, bildirim panelindeki notun sabitlemesini kaldıran eylemin etiketi
@@ -4379,7 +4379,7 @@ abstract class AppLocalizations {
   /// No description provided for @unpinNoteMenuItemLabel.
   ///
   /// In tr, this message translates to:
-  /// **'Sabitlemeyi Kaldır'**
+  /// **'Kaldır'**
   String get unpinNoteMenuItemLabel;
 
   /// No description provided for @linkDialogUrlHint.

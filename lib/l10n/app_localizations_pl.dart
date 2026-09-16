@@ -822,14 +822,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Usuń z ulubionych';
 
   @override
-  String get noteActionClassifyLabel => 'Wybierz folder';
+  String get noteActionClassifyLabel => 'Folder';
 
   @override
   String get noteActionDeleteLabel => 'Usuń';
 
   @override
-  String get noteActionPinToNotificationLabel =>
-      'Przypnij do panelu powiadomień';
+  String get noteActionPinToNotificationLabel => 'Przypnij do\npowiadomień';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Usuń przypięcie';
@@ -2340,10 +2339,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get deleteFlagDialogConfirmButton => 'Usuń';
 
   @override
-  String get pinNoteMenuItemLabel => 'Przypnij notatkę';
+  String get pinNoteMenuItemLabel => 'Przypnij';
 
   @override
-  String get unpinNoteMenuItemLabel => 'Odepnij notatkę';
+  String get unpinNoteMenuItemLabel => 'Odepnij';
 
   @override
   String get linkDialogUrlHint => 'https://example.com';

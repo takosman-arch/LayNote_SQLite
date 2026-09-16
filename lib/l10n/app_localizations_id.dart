@@ -819,13 +819,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Hapus dari Favorit';
 
   @override
-  String get noteActionClassifyLabel => 'Pilih Folder';
+  String get noteActionClassifyLabel => 'Folder';
 
   @override
   String get noteActionDeleteLabel => 'Hapus';
 
   @override
-  String get noteActionPinToNotificationLabel => 'Sematkan ke Panel Notifikasi';
+  String get noteActionPinToNotificationLabel => 'Sematkan ke\nNotifikasi';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Lepas Sematan';

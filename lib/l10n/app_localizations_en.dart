@@ -239,7 +239,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get textBlockHint => 'Write your note here...';
 
   @override
-  String get drawingBoardMenuItemLabel => 'Drawing Board';
+  String get drawingBoardMenuItemLabel => 'Drawing';
 
   @override
   String get voiceToTextTextNotesOnlyMessage =>
@@ -810,13 +810,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Remove from Favorites';
 
   @override
-  String get noteActionClassifyLabel => 'Select Folder';
+  String get noteActionClassifyLabel => 'Folder';
 
   @override
   String get noteActionDeleteLabel => 'Delete';
 
   @override
-  String get noteActionPinToNotificationLabel => 'Pin to Notification Panel';
+  String get noteActionPinToNotificationLabel => 'Pin to\nNotification';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Remove Pin';
@@ -2238,7 +2238,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not create the zip archive (ZipEncoder returned null).';
 
   @override
-  String get calcTableMenuItemLabel => 'Calculation List';
+  String get calcTableMenuItemLabel => 'Calculation';
 
   @override
   String get tableBlockMenuItemLabel => 'Table';
@@ -2313,10 +2313,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteFlagDialogConfirmButton => 'Delete';
 
   @override
-  String get pinNoteMenuItemLabel => 'Pin Note';
+  String get pinNoteMenuItemLabel => 'Pin';
 
   @override
-  String get unpinNoteMenuItemLabel => 'Unpin Note';
+  String get unpinNoteMenuItemLabel => 'Unpin';
 
   @override
   String get linkDialogUrlHint => 'https://example.com';

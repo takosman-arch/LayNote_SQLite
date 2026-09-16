@@ -809,13 +809,13 @@ class AppLocalizationsNo extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Fjern fra favoritter';
 
   @override
-  String get noteActionClassifyLabel => 'Velg mappe';
+  String get noteActionClassifyLabel => 'Mappe';
 
   @override
   String get noteActionDeleteLabel => 'Slett';
 
   @override
-  String get noteActionPinToNotificationLabel => 'Fest til varslingspanel';
+  String get noteActionPinToNotificationLabel => 'Fest til\nvarsling';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Fjern feste';
@@ -2320,10 +2320,10 @@ class AppLocalizationsNo extends AppLocalizations {
   String get deleteFlagDialogConfirmButton => 'Slett';
 
   @override
-  String get pinNoteMenuItemLabel => 'Fest notat';
+  String get pinNoteMenuItemLabel => 'Fest';
 
   @override
-  String get unpinNoteMenuItemLabel => 'Løsne notat';
+  String get unpinNoteMenuItemLabel => 'Løsne';
 
   @override
   String get linkDialogUrlHint => 'https://eksempel.com';

@@ -803,13 +803,13 @@ class AppLocalizationsHe extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'הסר מהמועדפים';
 
   @override
-  String get noteActionClassifyLabel => 'בחר תיקייה';
+  String get noteActionClassifyLabel => 'תיקייה';
 
   @override
   String get noteActionDeleteLabel => 'מחק';
 
   @override
-  String get noteActionPinToNotificationLabel => 'נעץ לחלונית ההתראות';
+  String get noteActionPinToNotificationLabel => 'נעץ להתראות';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'הסר נעיצה';
@@ -2293,7 +2293,7 @@ class AppLocalizationsHe extends AppLocalizations {
   String get deleteFlagDialogConfirmButton => 'מחק';
 
   @override
-  String get pinNoteMenuItemLabel => 'הצמד פתק';
+  String get pinNoteMenuItemLabel => 'הצמד';
 
   @override
   String get unpinNoteMenuItemLabel => 'בטל הצמדה';

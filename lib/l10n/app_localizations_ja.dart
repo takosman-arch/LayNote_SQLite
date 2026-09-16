@@ -796,13 +796,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'お気に入りから解除';
 
   @override
-  String get noteActionClassifyLabel => 'フォルダを選択';
+  String get noteActionClassifyLabel => 'フォルダ';
 
   @override
   String get noteActionDeleteLabel => '削除';
 
   @override
-  String get noteActionPinToNotificationLabel => '通知パネルにピン留め';
+  String get noteActionPinToNotificationLabel => '通知にピン留め';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'ピン留めを解除';
@@ -2269,10 +2269,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get deleteFlagDialogConfirmButton => '削除';
 
   @override
-  String get pinNoteMenuItemLabel => 'ノートを固定';
+  String get pinNoteMenuItemLabel => '固定';
 
   @override
-  String get unpinNoteMenuItemLabel => '固定を解除';
+  String get unpinNoteMenuItemLabel => '固定解除';
 
   @override
   String get linkDialogUrlHint => 'https://example.com';

@@ -2156,6 +2156,17 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     final isLocked = hasValidNote && _notes[noteIndex]['isLocked'] == true;
     final isPinnedToNotification =
         hasValidNote && _notes[noteIndex]['isPinnedToNotification'] == true;
+    // "Sınıflandır" eylemi: not bir klasöre atanmışsa ikon dolu (Icons.folder)
+    // olur ve o klasörün rengini alır; atanmamışsa varsayılan boş/yeşil ikon
+    // gösterilir.
+    final noteCategory = hasValidNote
+        ? _notes[noteIndex]['category'] as String?
+        : null;
+    final hasCategoryAssigned =
+        noteCategory != null && noteCategory.isNotEmpty;
+    final classifyColor = hasCategoryAssigned
+        ? _getCategoryColor(noteCategory)
+        : Colors.green;
 
     // Düzenleyiciden çağrıldıysa editorReminder kullanılır; not listesinden
     // (uzun basma) çağrıldıysa mevcut hatırlatıcı doğrudan nottan okunur.
@@ -2218,9 +2229,11 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         'key': 'favorite',
       },
       {
-        'icon': Icons.folder_outlined,
+        'icon': hasCategoryAssigned
+            ? Icons.folder
+            : Icons.folder_outlined,
         'label': AppLocalizations.of(context)!.noteActionClassifyLabel,
-        'color': Colors.green,
+        'color': classifyColor,
         'key': 'classify',
       },
       {
@@ -2229,6 +2242,14 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         'color': Colors.red,
         'key': 'delete',
       },
+      reminderAction,
+      {
+        'icon': Icons.share_outlined,
+        'label': AppLocalizations.of(context)!.noteActionShareLabel,
+        'color': Colors.blue,
+        'key': 'share',
+      },
+      if (onInsertText != null) speechToTextAction,
       {
         'icon': isPinnedToNotification
             ? Icons.push_pin
@@ -2238,14 +2259,6 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
             : AppLocalizations.of(context)!.noteActionPinToNotificationLabel,
         'color': Colors.indigo,
         'key': 'pin_notification',
-      },
-      reminderAction,
-      if (onInsertText != null) speechToTextAction,
-      {
-        'icon': Icons.share_outlined,
-        'label': AppLocalizations.of(context)!.noteActionShareLabel,
-        'color': Colors.blue,
-        'key': 'share',
       },
       {
         'icon': Icons.copy_all_outlined,

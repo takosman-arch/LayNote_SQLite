@@ -329,17 +329,56 @@ String _reminderDateLabelTr(BuildContext context, DateTime date) {
 // zorunda değildir; "Toplam: 2+4=" gibi öncesinde düz metin bulunan
 // satırlarda da yalnızca "=" işaretine kadar geriye doğru geçerli olan
 // en uzun matematik ifadesi ("2+4") hesaplanır.
+// "=" işaretinden hemen önce bir boşluk varsa (ör. "100 + 12 ="), sonuç da
+// bir boşlukla eklenir ("100 + 12 = 112"); boşluk yoksa sonuç doğrudan "="
+// işaretinin ardına eklenir (ör. "2+4=6").
 // Üs (kuvvet) işareti için hem "^" hem de "'" kabul edilir; bazı
 // klavyelerde "^" yazmak zahmetli olduğundan kullanıcı tırnak işaretiyle
 // de (ör. "2'2") üs alabilir.
 //
+// Yüzde (%): "+" veya "-" işaretinden HEMEN SONRA "%sayı" yazılırsa,
+// bu sayı sabit bir değer değil, o ana kadar biriken sonucun YÜZDESİ
+// olarak yorumlanır — normal cep hesap makinelerindeki "+ %" tuşuyla
+// AYNI mantık. Örn: "100+%12=" -> 100 + (100'ün %12'si) = 112.
+// "250-%10=" -> 250 - (250'nin %10'u) = 225.
+// "%" işareti "*" veya "/"'den sonra ya da ifadenin başında/parantez
+// içinde kullanılırsa (ör. "50*%20"), bu durumda bağlamdan bağımsız,
+// sadece o sayıyı 100'e bölen bir kısayoldur ("%20" = 0,2) — yani
+// "50*%20=10" olur (50 * 0,2).
+//
 // Not: Bu yalnızca sözdizimsel olarak geçerli bir matematik ifadesiyse
 // devreye girer (yalnızca rakam, boşluk, ondalık ayırıcı ve + - * / ^ '
-// ( ) karakterleri). Harf içeren normal cümlelerde ("Toplam=" gibi) veya
-// "=" satırın ortasına eklendiğinde hiçbir şey yapmaz; kullanıcının
-// yazdığı "=" olduğu gibi kalır.
+// ( ) karakterleri). Harf içeren normal cümlelerde veya "=" satırın
+// ortasına eklendiğinde hiçbir şey yapmaz; kullanıcının yazdığı "="
+// olduğu gibi kalır. TEK İSTİSNA: satır yalnızca bir "toplam" anahtar
+// kelimesinden ibaretse ("toplam=", "Total=") üstteki liste satırlarını
+// toplama modu devreye girer (bkz. _dNoteAutoSumAboveLines).
+//
+// Birim (para birimi) sembolü: bir sayının HEMEN ardına ₺, $, €, £, ¥,
+// ₽ ya da ₹ sembollerinden biri eklenirse, bu sembol hesaba katılmadan
+// çıkarılıp aslında ifade hesaplanır, ardından aynı sembol sonuca da
+// eklenir. Örn: "100$+%5=" -> "100$+%5=105$". Bir satırda birden fazla
+// sayının ardında birim varsa hepsi AYNI sembol olmalıdır; farklı
+// birimlerin karışık kullanımı (ör. "100$+5€") geçersiz sayılır ve
+// normal metin gibi davranılıp hiçbir hesaplama yapılmaz.
 
 class _MathExprSyntaxError implements Exception {}
+
+// Sonuca eklenebilecek "birim" (para birimi) sembolleri. Bir sayının HEMEN
+// ardına yazılan bu semboller ifadeden çıkarılıp asıl hesap yapılır, sonra
+// aynı sembol sonuca da eklenir. Örn: "100$+%5=" -> "100$+%5=105$".
+// İfadede birden fazla sayının ardında birim varsa hepsi AYNI sembol olmak
+// zorundadır; farklı birimlerin karışık kullanımı (ör. "100$+5€") geçersiz
+// sayılır ve normal metin gibi davranılıp hiçbir hesaplama yapılmaz.
+const List<String> _dNoteCalcUnitSymbols = ['₺', '\$', '€', '£', '¥', '₽', '₹'];
+
+// _MathExpressionEvaluator.tryEvaluateWithUnit'in dönüş değeri: hesaplanan
+// sayısal sonuç ve (varsa) ifadede bulunan birim sembolü.
+class _CalcResult {
+  final double value;
+  final String? unit;
+  const _CalcResult(this.value, this.unit);
+}
 
 class _MathExpressionEvaluator {
   final String _src;
@@ -354,7 +393,7 @@ class _MathExpressionEvaluator {
     if (trimmed.isEmpty) return null;
     // Sadece rakam / boşluk / ondalık ayırıcı (. veya ,) / dört işlem /
     // üs (^ veya ') / parantez içeriyorsa bir hesap ifadesi say.
-    if (!RegExp(r"^[0-9\s.,+\-*/^'()]+$").hasMatch(trimmed)) return null;
+    if (!RegExp(r"^[0-9\s.,+\-*/^'()%]+$").hasMatch(trimmed)) return null;
     if (!RegExp(r'[0-9]').hasMatch(trimmed)) return null;
     try {
       final evaluator = _MathExpressionEvaluator._(
@@ -373,6 +412,30 @@ class _MathExpressionEvaluator {
     }
   }
 
+  /// [tryEvaluate] ile aynı işi yapar, ek olarak ifadede bir birim sembolü
+  /// (ör. "100$" içindeki "$") olup olmadığını da tespit eder. Sembol,
+  /// hesaplama öncesinde ifadeden çıkarılır; sonuçta hem sayı hem de (varsa)
+  /// aynı sembol [_CalcResult.unit] olarak geri döner. Bir sembolün sayı
+  /// SONRASI dışında bir yerde geçmesi ya da birden fazla FARKLI sembolün
+  /// bir arada kullanılması durumunda null döner (hesap yapılmaz).
+  static _CalcResult? tryEvaluateWithUnit(String raw) {
+    var stripped = raw;
+    String? unit;
+    for (final symbol in _dNoteCalcUnitSymbols) {
+      if (!stripped.contains(symbol)) continue;
+      if (unit != null) return null; // birden fazla farklı birim: geçersiz
+      final afterDigit = RegExp('([0-9])${RegExp.escape(symbol)}');
+      final totalOccurrences = symbol.allMatches(stripped).length;
+      final afterDigitOccurrences = afterDigit.allMatches(stripped).length;
+      if (totalOccurrences != afterDigitOccurrences) return null;
+      unit = symbol;
+      stripped = stripped.replaceAllMapped(afterDigit, (m) => m.group(1)!);
+    }
+    final value = tryEvaluate(stripped);
+    if (value == null) return null;
+    return _CalcResult(value, unit);
+  }
+
   void _skipSpaces() {
     while (_pos < _src.length && _src[_pos] == ' ') {
       _pos++;
@@ -389,8 +452,19 @@ class _MathExpressionEvaluator {
     while (_pos < _src.length && (_src[_pos] == '+' || _src[_pos] == '-')) {
       final op = _src[_pos];
       _pos++;
+      _skipSpaces();
+      // "+%12" / "-%12": '%' işareti operatörden HEMEN SONRA geldiyse
+      // bu bir sabit sayı DEĞİL, soldaki (o ana kadar biriken) değerin
+      // yüzdesidir (ör. "100+%12" -> 100 + 100*12/100). Bu yüzden '%'yi
+      // burada tüketip sağ tarafı normal bir terim olarak (yüzde
+      // OLMADAN, düz sayı olarak) okuyoruz; _parseUnary'deki genel
+      // "%sayı = sayı/100" kısayoluna düşmesin diye '%' zaten burada
+      // yutuldu.
+      final isPercentOfValue = _pos < _src.length && _src[_pos] == '%';
+      if (isPercentOfValue) _pos++;
       final rhs = _parseTerm();
-      value = op == '+' ? value + rhs : value - rhs;
+      final delta = isPercentOfValue ? value * rhs / 100 : rhs;
+      value = op == '+' ? value + delta : value - delta;
       _skipSpaces();
     }
     return value;
@@ -434,6 +508,18 @@ class _MathExpressionEvaluator {
   // Tekli artı/eksi: -5, +(2+3) gibi.
   double _parseUnary() {
     _skipSpaces();
+    // Genel '%' kısayolu: burada (yani '+' / '-' operatöründen HEMEN
+    // sonrası DIŞINDAKİ her yerde — çarpma/bölme, ifadenin başı, parantez
+    // içi vb.) '%sayı' bağlamdan bağımsız olarak sadece sayı/100'dür.
+    // Bağlama duyarlı ("soldaki değerin yüzdesi") özel durum zaten
+    // _parseExpression içinde '+'/'-' için ayrıca ele alınıp '%' orada
+    // tüketiliyor; oraya hiç gelmeyen (ör. "50*%20") tüm '%' kullanımları
+    // buraya düşer.
+    if (_pos < _src.length && _src[_pos] == '%') {
+      _pos++;
+      final value = _parseUnary();
+      return value / 100;
+    }
     if (_pos < _src.length && (_src[_pos] == '+' || _src[_pos] == '-')) {
       final op = _src[_pos];
       _pos++;
@@ -497,6 +583,227 @@ final Expando<String> _dNoteAutoCalcLastText = Expando<String>(
   'dNoteAutoCalcLastText',
 );
 
+// ── "Toplam=" ile üstteki listeyi toplama ───────────────────────────────
+// Bir satıra yalnızca aşağıdaki anahtar kelimelerden biri + "=" yazılırsa
+// (ör. "toplam=", "Total=", büyük/küçük harf farketmez), normal matematik
+// ifadesi aranmaz; bunun yerine o satırın HEMEN ÜSTÜNDEKİ ardışık sayı
+// satırları toplanır ve sonuç "=" işaretinin ardına yazılır.
+// Örn:
+//   100
+//   200
+//   300
+//   toplam=
+// ->
+//   100
+//   200
+//   300
+//   toplam=600
+//
+// Satırlar çıplak sayı olmak zorunda değildir: sayının ÖNÜNDE düz metin
+// (etiket) bulunan satırlar da toplanır (bkz. [_dNoteIsPlainLabel]). Örn:
+//   ekmek 50
+//   su: 30
+//   toplam=
+// ->
+//   ekmek 50
+//   su: 30
+//   toplam=80
+//
+// DİL KONUSU: Bu kelime listesi, uygulamanın arayüz dilinden (appLanguage)
+// BAĞIMSIZ olarak tutulur ve hepsi AYNI ANDA tanınır. Sebebi: not içeriği
+// kullanıcının o an serbestçe yazdığı bir metindir, arayüz diliyle aynı
+// olmak zorunda değildir (ör. arayüz Türkçe olsa da kullanıcı notuna
+// İngilizce "Total=" yazmış olabilir). Aşağıdaki liste kapsayıcı olmaya
+// çalışır ama eksiksiz değildir; eksik bir dil/eş anlamlı varsa listeye
+// yeni bir satır eklemek yeterlidir.
+const List<String> _dNoteCalcTotalKeywords = [
+  'toplam', // Türkçe
+  'total', // İngilizce, İspanyolca, Portekizce, Fransızca, Rumence
+  'summe', 'gesamt', // Almanca
+  'totale', // İtalyanca
+  'итого', 'сумма', // Rusça
+  '合計', '合计', '总计', // Japonca / Çince
+  '합계', // Korece
+  'कुल', // Hintçe
+  'jumlah', // Endonezyaca
+  'tổng', // Vietnamca
+  'รวม', // Tayca
+  'suma', 'razem', // Lehçe
+  'totaal', // Felemenkçe
+  'i alt', // Danca
+  'totalt', 'summa', // İsveççe
+  'المجموع', // Arapça
+  'סהכ', // İbranice (tırnak işaretleri normalize edildikten sonraki hali)
+  'разом', 'сума', // Ukraynaca
+  'součet', 'celkem', // Çekçe
+  'sum', // Norveççe ve genel kısaltma
+  'yhteensä', // Fince
+];
+
+// Karşılaştırma öncesi normalize eder: baş/son boşlukları kırpar, küçük
+// harfe çevirir ve bazı dillerde farklı biçimlerde yazılabilen tırnak
+// işaretlerini (ör. İbranice gershayim) kaldırır.
+String _dNoteNormalizeCalcWord(String s) {
+  var t = s.trim().toLowerCase();
+  t = t.replaceAll('"', '').replaceAll("'", '').replaceAll('״', '');
+  return t;
+}
+
+bool _dNoteIsTotalKeyword(String raw) {
+  final normalized = _dNoteNormalizeCalcWord(raw);
+  if (normalized.isEmpty) return false;
+  return _dNoteCalcTotalKeywords.any(
+    (k) => _dNoteNormalizeCalcWord(k) == normalized,
+  );
+}
+
+// Satırın TAMAMI (baştan sona) çıplak bir sayıysa (isteğe bağlı birimle,
+// ör. "150" veya "150$") eşleşir.
+final RegExp _dNoteBareNumberLineRegex = RegExp(
+  r'^(-?[0-9]+(?:[.,][0-9]+)?)(₺|\$|€|£|¥|₽|₹)?$',
+);
+
+// Etiketli satır: "ekmek 50", "su: 30₺" gibi, sayıdan ÖNCE düz metin
+// (etiket) bulunan satırlar. Etiket ile sayı arasında en az bir boşluk ya
+// da ':' olmalı ve sayı satırın SONUNDA bulunmalıdır. Ayırıcıya '-' dahil
+// edilmez; aksi halde "ekmek -50" gibi satırlarda eksi işareti ayırıcı
+// sanılırdı.
+final RegExp _dNoteLabeledNumberLineRegex = RegExp(
+  r'^(.*?[^\s])[\s:：]+(-?[0-9]+(?:[.,][0-9]+)?)(₺|\$|€|£|¥|₽|₹)?$',
+);
+
+// Bir metin parçasının "etiket" sayılabilmesi için en az bir harf içermeli,
+// buna karşılık rakam ya da matematik/eşittir karakteri İÇERMEMELİDİR.
+// Böylece "36 + 43" veya "2 4" gibi henüz hesaplanmamış ifade satırları
+// yanlışlıkla "etiket + sayı" sanılıp toplamaya katılmaz.
+bool _dNoteIsPlainLabel(String raw) {
+  final label = raw.trim();
+  if (label.isEmpty) return false;
+  if (RegExp(r'''[0-9=+*/^%()'-]''').hasMatch(label)) return false;
+  return RegExp(r'\p{L}', unicode: true).hasMatch(label);
+}
+
+// Satırın SONUNDA daha önce hesaplanmış bir "ifade=sonuç" var mı (ör.
+// "1500$+200$=1700$" satırındaki "=1700$" kısmı) diye bakar.
+final RegExp _dNoteLineEndsWithCalcResultRegex = RegExp(
+  r'=(-?[0-9]+(?:[.,][0-9]+)?)(₺|\$|€|£|¥|₽|₹)?$',
+);
+
+// Bir liste satırının "toplam="a katkısını bulmaya çalışır: satır ya
+// baştan sona çıplak bir sayıysa (bkz. [_dNoteBareNumberLineRegex]) ya da
+// zaten hesaplanmış bir "ifade=sonuç" satırıysa (bu durumda yalnızca
+// SONUÇ kısmı alınır, ifade tekrar hesaplanmaz) ya da "ekmek 50" gibi
+// etiketli bir sayı satırıysa (bkz. [_dNoteLabeledNumberLineRegex] ve
+// [_dNoteIsPlainLabel]) bir değer döner. Bunların hiçbiri değilse (boş
+// satır, düz metin, henüz "=" ile hesaplanmamış bir ifade vb.) null döner — bu, yukarı doğru taramanın DURDUĞU noktadır.
+_CalcResult? _dNoteTryLineAsListValue(String line) {
+  final trimmed = line.trim();
+  if (trimmed.isEmpty) return null;
+  final calcMatch = _dNoteLineEndsWithCalcResultRegex.firstMatch(trimmed);
+  if (calcMatch != null) {
+    final value = double.tryParse(calcMatch.group(1)!.replaceAll(',', '.'));
+    if (value == null) return null;
+    return _CalcResult(value, calcMatch.group(2));
+  }
+  final bareMatch = _dNoteBareNumberLineRegex.firstMatch(trimmed);
+  if (bareMatch != null) {
+    final value = double.tryParse(bareMatch.group(1)!.replaceAll(',', '.'));
+    if (value == null) return null;
+    return _CalcResult(value, bareMatch.group(2));
+  }
+  final labeledMatch = _dNoteLabeledNumberLineRegex.firstMatch(trimmed);
+  if (labeledMatch != null && _dNoteIsPlainLabel(labeledMatch.group(1)!)) {
+    final value = double.tryParse(labeledMatch.group(2)!.replaceAll(',', '.'));
+    if (value == null) return null;
+    return _CalcResult(value, labeledMatch.group(3));
+  }
+  return null;
+}
+
+// "<toplam kelimesi>=" satırının hemen ÜSTÜNDEKİ ardışık liste satırlarını
+// toplar (bkz. [_dNoteTryLineAsListValue]). Yukarı doğru tarama, ilk
+// "sayı satırı" OLMAYAN satırda (boş satır, düz metin, henüz hesaplanmamış
+// bir ifade vb.) ya da notun başına ulaşınca durur; hiç değer bulunamazsa
+// (ör. hemen üstteki satır boşsa) hiçbir şey yapmadan döner. Toplanan
+// satırların hepsinde AYNI birim (₺, $, vb.) varsa sonuca o birim de
+// eklenir; birimler karışıksa (ör. bir satır "$" bir satır "€") sonuç
+// birimsiz, yalnızca sayı olarak yazılır.
+void _dNoteAutoSumAboveLines(
+  TextEditingController controller,
+  String text,
+  int cursor,
+  int lineStart, {
+  void Function(String newText)? onTextChanged,
+  List<Map<String, dynamic>> Function()? getSpans,
+  void Function(List<Map<String, dynamic>> newSpans)? onSpansChanged,
+  int? resultColor,
+}) {
+  final values = <_CalcResult>[];
+  int aboveLineEnd = lineStart - 1;
+  while (aboveLineEnd >= 0) {
+    final aboveLineStart =
+        text.lastIndexOf('\n', aboveLineEnd > 0 ? aboveLineEnd - 1 : 0) + 1;
+    final aboveLine = text.substring(aboveLineStart, aboveLineEnd);
+    final value = _dNoteTryLineAsListValue(aboveLine);
+    if (value == null) break;
+    values.add(value);
+    if (aboveLineStart == 0) break;
+    aboveLineEnd = aboveLineStart - 1;
+  }
+  if (values.isEmpty) return;
+
+  double total = 0;
+  String? unit;
+  var unitConsistent = true;
+  for (final v in values) {
+    total += v.value;
+    if (v.unit != null) {
+      if (unit == null) {
+        unit = v.unit;
+      } else if (unit != v.unit) {
+        unitConsistent = false;
+      }
+    }
+  }
+  final resultText =
+      _formatMathResult(total) + (unitConsistent ? (unit ?? '') : '');
+
+  final hasSpaceBeforeEquals = cursor >= 2 && text[cursor - 2] == ' ';
+  final insertText = hasSpaceBeforeEquals ? ' $resultText' : resultText;
+  final newText =
+      text.substring(0, cursor) + insertText + text.substring(cursor);
+  final newCursor = cursor + insertText.length;
+  final resultNumberStart = newCursor - resultText.length;
+  final resultNumberEnd = newCursor;
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (controller.text != text) return;
+    if (getSpans != null && onSpansChanged != null && resultColor != null) {
+      var spans = RichTextSpans.shiftForInsert(
+        getSpans(),
+        cursor,
+        insertText.length,
+      );
+      spans = RichTextSpans.setColor(
+        spans,
+        newText.length,
+        resultNumberStart,
+        resultNumberEnd,
+        resultColor,
+      );
+      onSpansChanged(spans);
+    }
+    controller.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newCursor),
+      composing: TextRange.empty,
+    );
+    _dNoteAutoCalcLastText[controller] = newText;
+    onTextChanged?.call(newText);
+  });
+}
+
+
 // Bir not metni alanında kullanıcı tam olarak satırın SONUNA "=" yazdığında
 // çağrılır. O satırdaki "=" öncesi ifadeyi hesaplamayı dener; başarılıysa
 // controller'ın metnine sonucu ekler ve imleci sonucun ardına taşır, ardından
@@ -506,6 +813,13 @@ final Expando<String> _dNoteAutoCalcLastText = Expando<String>(
 void dNoteMaybeAutoCalculate(
   TextEditingController controller, {
   void Function(String newText)? onTextChanged,
+  // Sonuç sayısını (ör. "=12" içindeki "12") vurgu renginde göstermek
+  // isteyen çağıranlar için opsiyonel span desteği. Üçü de sağlanmadıkça
+  // (getSpans + onSpansChanged + resultColor) span'lara hiç dokunulmaz —
+  // eski davranış (sadece metin ekleme) aynen korunur.
+  List<Map<String, dynamic>> Function()? getSpans,
+  void Function(List<Map<String, dynamic>> newSpans)? onSpansChanged,
+  int? resultColor,
 }) {
   final text = controller.text;
   final previousText = _dNoteAutoCalcLastText[controller];
@@ -517,7 +831,22 @@ void dNoteMaybeAutoCalculate(
   if (!selection.isValid || !selection.isCollapsed) return;
   final cursor = selection.end;
   if (cursor <= 0 || cursor > text.length) return;
-  if (text[cursor - 1] != '=') return;
+  if (text[cursor - 1] != '=') {
+    // Kullanıcı şu an TAM OLARAK "=" yazmadı — ama daha önce hesaplanmış
+    // bir "ifade=sonuç" satırındaki İFADE kısmında bir sayıyı değiştirmiş
+    // olabilir (ör. "100+%12=112" satırındaki "100"ü "150" yapmak).
+    // Bu durumda sonucu da otomatik güncelle (bkz. aşağıdaki fonksiyon).
+    _dNoteMaybeLiveRecalculate(
+      controller,
+      text,
+      cursor,
+      onTextChanged: onTextChanged,
+      getSpans: getSpans,
+      onSpansChanged: onSpansChanged,
+      resultColor: resultColor,
+    );
+    return;
+  }
 
   // ÖNEMLİ (silme sırasında sonucun geri gelmesini önler): "imleçten önceki
   // karakter '=' ve satır sonunda" koşulu, kullanıcı "=79" gibi bir sonucu
@@ -531,14 +860,36 @@ void dNoteMaybeAutoCalculate(
   final isEndOfLine = cursor == text.length || text[cursor] == '\n';
   if (!isEndOfLine) return;
 
+  // "Toplam=" (ve dillere göre karşılıkları): satırın "=" öncesindeki
+  // TÜM içeriği (baştan sona) bir "toplam" anahtar kelimesiyse, normal
+  // matematik ifadesi aramak yerine ÜSTTEKİ ardışık liste satırlarını
+  // toplama moduna geçilir (bkz. _dNoteAutoSumAboveLines).
+  final lineStart = text.lastIndexOf('\n', cursor > 0 ? cursor - 1 : 0) + 1;
+  final beforeEqualsOnLine = text.substring(lineStart, cursor - 1);
+  if (_dNoteIsTotalKeyword(beforeEqualsOnLine)) {
+    _dNoteAutoSumAboveLines(
+      controller,
+      text,
+      cursor,
+      lineStart,
+      onTextChanged: onTextChanged,
+      getSpans: getSpans,
+      onSpansChanged: onSpansChanged,
+      resultColor: resultColor,
+    );
+    return;
+  }
+
   // "=" işaretinden geriye doğru, satırın neresinde olursa olsun geçerli
   // bir matematik ifadesi oluşturan en uzun kuyruğu bul. Böylece
   // "Toplam: 2+4=" gibi ifadeden önce düz metin bulunan satırlarda da
   // (yalnızca satırın en başından başlayan ifadelerde değil) yalnızca
   // "2+4" kısmı ifade olarak değerlendirilir. Satır sınırını aşmamak
-  // için '\n' karakterinde her zaman durulur.
+  // için '\n' karakterinde her zaman durulur. Birim sembolleri (₺ $ € £
+  // ¥ ₽ ₹) de ifadenin parçası sayılır ki "100$" gibi bir uç tarama
+  // sırasında kesilmesin.
   bool isExprChar(String ch) =>
-      ch != '\n' && RegExp(r"[0-9.,+\-*/^'()\s]").hasMatch(ch);
+      ch != '\n' && RegExp(r"[0-9.,+\-*/^'()%\s₺$€£¥₽₹]").hasMatch(ch);
   int exprStart = cursor - 1;
   while (exprStart > 0 && isExprChar(text[exprStart - 1])) {
     exprStart--;
@@ -553,23 +904,33 @@ void dNoteMaybeAutoCalculate(
   // (en uzundan en kısaya) geçerli bir alt ifade bulana kadar tekrar deniyoruz;
   // böylece önceki sonucun hemen ardından aynı satıra yeni bir hesap daha
   // yazılabiliyor.
-  double? result;
+  _CalcResult? calc;
   for (int start = exprStart; start < cursor - 1; start++) {
     final candidate = text.substring(start, cursor - 1);
-    final value = _MathExpressionEvaluator.tryEvaluate(candidate);
+    final value = _MathExpressionEvaluator.tryEvaluateWithUnit(candidate);
     if (value != null) {
-      result = value;
+      calc = value;
       break;
     }
   }
-  if (result == null) return;
+  if (calc == null) return;
 
-  final resultText = _formatMathResult(result);
-  // Kullanıcı isteği: "=" ile sonuç arasına boşluk konmasın, sonuç
-  // doğrudan "=" işaretinin ardına eklensin (ör. "2+4=6").
+  // Sonuç metnine, ifadede bulunan birim sembolü (varsa) doğrudan eklenir:
+  // "100$+%5=" -> sonuç "105$" olur.
+  final resultText = _formatMathResult(calc.value) + (calc.unit ?? '');
+  // Kullanıcı ifadeyle "=" arasına boşluk bırakmışsa (ör. "100 + 12 ="),
+  // sonuç da bir boşlukla eklenir ("100 + 12 = 112"); boşluk yoksa eskisi
+  // gibi doğrudan "=" işaretinin ardına eklenir (ör. "2+4=6").
+  final hasSpaceBeforeEquals = cursor >= 2 && text[cursor - 2] == ' ';
+  final insertText = hasSpaceBeforeEquals ? ' $resultText' : resultText;
   final newText =
-      text.substring(0, cursor) + resultText + text.substring(cursor);
-  final newCursor = cursor + resultText.length;
+      text.substring(0, cursor) + insertText + text.substring(cursor);
+  final newCursor = cursor + insertText.length;
+  // Eklenen sonuç metninde yalnızca SAYI (+ varsa birim) kısmının (baştaki
+  // isteğe bağlı boşluk HARİÇ) kapladığı aralık — vurgu rengi sadece bu
+  // aralığa uygulanacak, boşluğa değil.
+  final resultNumberStart = newCursor - resultText.length;
+  final resultNumberEnd = newCursor;
 
   // ÖNEMLİ: controller.value'yu bu onChanged geri çağrısı içinde SENKRON
   // olarak değiştirmek, platform klavyesinin (özellikle Gboard) o an
@@ -583,6 +944,26 @@ void dNoteMaybeAutoCalculate(
     // Callback tetiklenene kadar kullanıcı yazmaya devam ettiyse (metin
     // değiştiyse) artık geçersiz bir hesaplamayı uygulama.
     if (controller.text != text) return;
+    // ÖNEMLİ: span güncellemesi, controller.value ataması yapılmadan
+    // ÖNCE tamamlanmalı — controller.value ataması (aşağıda) senkron
+    // olarak notifyListeners() tetikleyip TextField'ı hemen yeniden
+    // çizdirir; span'lar o ana kadar güncellenmemişse ilk çizimde sonuç
+    // rengi eksik görünür ve ancak BİR SONRAKİ rebuild'de düzelir.
+    if (getSpans != null && onSpansChanged != null && resultColor != null) {
+      var spans = RichTextSpans.shiftForInsert(
+        getSpans(),
+        cursor,
+        insertText.length,
+      );
+      spans = RichTextSpans.setColor(
+        spans,
+        newText.length,
+        resultNumberStart,
+        resultNumberEnd,
+        resultColor,
+      );
+      onSpansChanged(spans);
+    }
     controller.value = TextEditingValue(
       text: newText,
       selection: TextSelection.collapsed(offset: newCursor),
@@ -592,6 +973,139 @@ void dNoteMaybeAutoCalculate(
     // işaretle; aksi halde bir sonraki onChanged (kullanıcının ekli sonucu
     // silmeye başlaması) bunu hâlâ eski (sonuçsuz) "text" ile kıyaslar ve
     // yanlışlıkla "uzama" sanabilir.
+    _dNoteAutoCalcLastText[controller] = newText;
+    onTextChanged?.call(newText);
+  });
+}
+
+// Kullanıcı, daha önce dNoteMaybeAutoCalculate tarafından hesaplanmış bir
+// "ifade=sonuç" satırındaki İFADE kısmında (yani "=" işaretinden ÖNCESİNDE)
+// herhangi bir değişiklik yaptığında (bir sayıyı değiştirme, silme, ekleme)
+// çağrılır: ifadeyi imleç konumundan bağımsız olarak yeniden hesaplar ve
+// "=" işaretinden sonraki sonucu günceller. Böylece "100+%12=112" satırında
+// kullanıcı "100"ü "150" yaptığında sonuç yeniden "=" yazmasına gerek
+// kalmadan otomatik olarak "162" olur. Sonuçta bir birim sembolü varsa
+// (ör. "100$+%5=105$") yeniden hesaplama sonrasında da korunur.
+//
+// Kullanıcı doğrudan "=" işaretinden SONRAKİ (yani sonuç) kısmı elle
+// düzenliyorsa buraya hiç dokunulmaz — o zaman kullanıcı sonucu bilerek
+// kendi eliyle değiştiriyor sayılır.
+//
+// NOT: Bir satırda birden fazla "ifade=sonuç" art arda varsa (ör.
+// "36+43=79   36+12=91"), yalnızca satırın EN SONUNDAKİ "=sonuç" canlı
+// olarak güncellenir; dNoteMaybeAutoCalculate'in yeni bir hesabı da hep
+// satır sonuna eklemesiyle tutarlı bir sınırlama.
+void _dNoteMaybeLiveRecalculate(
+  TextEditingController controller,
+  String text,
+  int cursor, {
+  void Function(String newText)? onTextChanged,
+  List<Map<String, dynamic>> Function()? getSpans,
+  void Function(List<Map<String, dynamic>> newSpans)? onSpansChanged,
+  int? resultColor,
+}) {
+  // Düzenlenen satırın metin içindeki sınırlarını bul.
+  final lineStart = text.lastIndexOf('\n', cursor > 0 ? cursor - 1 : 0) + 1;
+  final nextNewline = text.indexOf('\n', cursor);
+  final lineEnd = nextNewline == -1 ? text.length : nextNewline;
+  if (lineStart > lineEnd || lineEnd > text.length) return;
+  final line = text.substring(lineStart, lineEnd);
+  final cursorInLine = cursor - lineStart;
+
+  // Satırın TAM SONUNDA (araya başka karakter girmeden) "=<sayı>" ya da
+  // "= <sayı>" var mı? Sondaki isteğe bağlı birim sembolü (ör. "=105$")
+  // de eşleşmeye dahil edilir. dNoteMaybeAutoCalculate'in sonucu eklerken
+  // izlediği "boşluk varsa korunur, yoksa eklenmez" kuralıyla BİREBİR AYNI
+  // biçimi arıyoruz (1. grup: boşluk var mı, 2. grup: sayının kendisi,
+  // 3. grup: varsa birim sembolü).
+  final resultMatch = RegExp(
+    r'=( ?)(-?[0-9]+(?:[.,][0-9]+)?)(₺|\$|€|£|¥|₽|₹)?$',
+  ).firstMatch(line);
+  if (resultMatch == null) return;
+  final equalsIndexInLine = resultMatch.start;
+  final spaceBeforeResult = resultMatch.group(1)!;
+
+  // Değişiklik "=" işaretinden SONRA (sonuç kısmında) olduysa dokunma —
+  // yalnızca ifade kısmındaki değişiklikler canlı yeniden hesaplamayı
+  // tetikler.
+  if (cursorInLine > equalsIndexInLine) return;
+
+  final oldResultText = resultMatch.group(2)! + (resultMatch.group(3) ?? '');
+  final beforeEquals = line.substring(0, equalsIndexInLine);
+
+  // dNoteMaybeAutoCalculate ile BİREBİR AYNI mantık: "=" işaretinden geriye
+  // doğru geçerli en uzun matematik ifadesini bul (öncesinde "Toplam: " gibi
+  // düz metin olabilir), ardından soldan daraltarak (aynı satırda önceki
+  // bir hesabın sonucunu ifadeye dahil etmemek için) geçerli bir alt ifade
+  // arar. Birim sembolleri de ifadenin parçası sayılır.
+  bool isExprChar(String ch) =>
+      RegExp(r"[0-9.,+\-*/^'()%\s₺$€£¥₽₹]").hasMatch(ch);
+  int exprStart = beforeEquals.length;
+  while (exprStart > 0 && isExprChar(beforeEquals[exprStart - 1])) {
+    exprStart--;
+  }
+  _CalcResult? calc;
+  for (int start = exprStart; start < beforeEquals.length; start++) {
+    final candidate = beforeEquals.substring(start);
+    final value = _MathExpressionEvaluator.tryEvaluateWithUnit(candidate);
+    if (value != null) {
+      calc = value;
+      break;
+    }
+  }
+  if (calc == null) return;
+
+  final newResultText = _formatMathResult(calc.value) + (calc.unit ?? '');
+  // Sonuç zaten güncel/aynıysa (ör. bu çağrı, az önce BİZİM yaptığımız
+  // programatik güncellemenin tetiklediği yankı onChanged'i ise) hiçbir
+  // şey yapma — sonsuz döngüye girmemesi bunu garantiler.
+  if (newResultText == oldResultText) return;
+
+  final resultStartInText =
+      lineStart + equalsIndexInLine + 1 + spaceBeforeResult.length;
+  final resultEndInText = resultStartInText + oldResultText.length;
+  final newText =
+      text.substring(0, resultStartInText) +
+      newResultText +
+      text.substring(resultEndInText);
+
+  // İmleç "=" işaretinden ÖNCE olduğundan (yukarıdaki kontrol) ve yalnızca
+  // '='den SONRAKİ kısım değiştiğinden, imlecin mutlak konumu (cursor)
+  // AYNEN korunur — dNoteMaybeAutoCalculate'in "yeni sonucun
+  // ardına taşı" mantığına burada gerek yok.
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (controller.text != text) return;
+    // ÖNEMLİ: yukarıdaki insert fonksiyonundaki AYNI sıralama nedeniyle
+    // (bkz. dNoteMaybeAutoCalculate içindeki açıklama), span güncellemesi
+    // controller.value atamasından ÖNCE yapılır.
+    if (getSpans != null && onSpansChanged != null && resultColor != null) {
+      // Eski sonuç aralığını kaldırıp yeni (muhtemelen farklı uzunlukta)
+      // sonucu aynı noktaya ekle — bu, aradaki uzunluk farkını da diğer
+      // span'lara doğru şekilde yansıtır.
+      var spans = RichTextSpans.shiftForDelete(
+        getSpans(),
+        resultStartInText,
+        resultEndInText,
+      );
+      spans = RichTextSpans.shiftForInsert(
+        spans,
+        resultStartInText,
+        newResultText.length,
+      );
+      spans = RichTextSpans.setColor(
+        spans,
+        newText.length,
+        resultStartInText,
+        resultStartInText + newResultText.length,
+        resultColor,
+      );
+      onSpansChanged(spans);
+    }
+    controller.value = TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: cursor),
+      composing: TextRange.empty,
+    );
     _dNoteAutoCalcLastText[controller] = newText;
     onTextChanged?.call(newText);
   });

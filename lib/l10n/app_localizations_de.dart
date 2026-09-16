@@ -822,14 +822,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Aus Favoriten entfernen';
 
   @override
-  String get noteActionClassifyLabel => 'Ordner auswählen';
+  String get noteActionClassifyLabel => 'Ordner';
 
   @override
   String get noteActionDeleteLabel => 'Löschen';
 
   @override
   String get noteActionPinToNotificationLabel =>
-      'An Benachrichtigungsleiste anheften';
+      'An Benachrichtigung\nanheften';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Anheftung entfernen';
@@ -2341,10 +2341,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deleteFlagDialogConfirmButton => 'Löschen';
 
   @override
-  String get pinNoteMenuItemLabel => 'Notiz anheften';
+  String get pinNoteMenuItemLabel => 'Anheften';
 
   @override
-  String get unpinNoteMenuItemLabel => 'Anheften aufheben';
+  String get unpinNoteMenuItemLabel => 'Loslösen';
 
   @override
   String get linkDialogUrlHint => 'https://beispiel.de';

@@ -824,14 +824,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Uit favorieten verwijderen';
 
   @override
-  String get noteActionClassifyLabel => 'Map selecteren';
+  String get noteActionClassifyLabel => 'Map';
 
   @override
   String get noteActionDeleteLabel => 'Verwijderen';
 
   @override
-  String get noteActionPinToNotificationLabel =>
-      'Vastzetten in meldingenpaneel';
+  String get noteActionPinToNotificationLabel => 'Vastzetten in\nmelding';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Vastzetten opheffen';

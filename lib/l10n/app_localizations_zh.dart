@@ -796,13 +796,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noteActionUnfavoriteLabel => '取消收藏';
 
   @override
-  String get noteActionClassifyLabel => '选择文件夹';
+  String get noteActionClassifyLabel => '文件夹';
 
   @override
   String get noteActionDeleteLabel => '删除';
 
   @override
-  String get noteActionPinToNotificationLabel => '置顶到通知栏';
+  String get noteActionPinToNotificationLabel => '置顶到通知';
 
   @override
   String get noteActionUnpinFromNotificationLabel => '取消置顶';

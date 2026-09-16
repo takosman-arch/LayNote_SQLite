@@ -820,14 +820,13 @@ class AppLocalizationsRo extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Eliminare din favorite';
 
   @override
-  String get noteActionClassifyLabel => 'Selectare folder';
+  String get noteActionClassifyLabel => 'Folder';
 
   @override
   String get noteActionDeleteLabel => 'Ștergere';
 
   @override
-  String get noteActionPinToNotificationLabel =>
-      'Fixare în panoul de notificări';
+  String get noteActionPinToNotificationLabel => 'Fixare în\nnotificări';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Eliminare fixare';
@@ -2334,7 +2333,7 @@ class AppLocalizationsRo extends AppLocalizations {
   String get deleteFlagDialogConfirmButton => 'Ștergere';
 
   @override
-  String get pinNoteMenuItemLabel => 'Fixează nota';
+  String get pinNoteMenuItemLabel => 'Fixează';
 
   @override
   String get unpinNoteMenuItemLabel => 'Anulează fixarea';

@@ -813,14 +813,13 @@ class AppLocalizationsSv extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Ta bort från favoriter';
 
   @override
-  String get noteActionClassifyLabel => 'Välj mapp';
+  String get noteActionClassifyLabel => 'Mapp';
 
   @override
   String get noteActionDeleteLabel => 'Ta bort';
 
   @override
-  String get noteActionPinToNotificationLabel =>
-      'Nåla fast i aviseringspanelen';
+  String get noteActionPinToNotificationLabel => 'Nåla fast i\navisering';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Ta bort nål';

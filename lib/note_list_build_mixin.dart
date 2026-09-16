@@ -860,7 +860,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
           child: Transform.rotate(
             angle: 0,
             child: Opacity(
-              opacity: 0.9,
+              opacity: 1.0,
               child: Image.asset('assets/icon/pin.png', width: 20, height: 20),
             ),
           ),
@@ -2005,11 +2005,27 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       begin: 12.0,
                       end: _isSearching ? 0.0 : 12.0,
                     ),
-                    builder: (context, topPadding, _) => SingleChildScrollView(
-                      padding: EdgeInsets.only(top: topPadding),
-                      child: _buildGridView(
-                        filteredNotes: filteredNotes,
-                        isTrash: isTrash,
+                    builder: (context, topPadding, _) => LayoutBuilder(
+                      // DÜZELTME: _buildGridView önceden sütun genişliğini
+                      // MediaQuery.of(context).size.width (TAM EKRAN
+                      // genişliği) üzerinden hesaplıyordu. Ama burası zaten
+                      // dış Column'un 8+8=16px yatay Padding'i içinde —
+                      // yani gerçekte kullanılabilir genişlik ekran
+                      // genişliğinden 16px daha dar. Bu fark,
+                      // _estimateNoteHeight'e giden cardContentWidth'i
+                      // olduğundan geniş gösteriyor, dolayısıyla gerçekte
+                      // kaç satıra saracağı yanlış tahmin ediliyor (sütun
+                      // dengesi/kart yüksekliği tutarsızlaşıyor). LayoutBuilder
+                      // ile buradaki GERÇEK constraint genişliği alınıp
+                      // _buildGridView'e parametre olarak geçiriliyor.
+                      builder: (context, constraints) =>
+                          SingleChildScrollView(
+                        padding: EdgeInsets.only(top: topPadding),
+                        child: _buildGridView(
+                          filteredNotes: filteredNotes,
+                          isTrash: isTrash,
+                          availableWidth: constraints.maxWidth,
+                        ),
                       ),
                     ),
                   );
@@ -3300,10 +3316,27 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                 final rightGutter = delta > 0
                                     ? delta.clamp(0.0, 1.0) * maxGutter
                                     : 0.0;
-                                return Padding(
-                                  padding: EdgeInsets.only(
-                                    left: leftGutter,
-                                    right: rightGutter,
+                                // DÜZELTME: Önceden burada Padding
+                                // kullanılıyordu. Padding bir LAYOUT
+                                // widget'ı olduğundan, verdiği inset kadar
+                                // çocuğun genişlik constraint'ini de
+                                // küçültüyordu — bu da kaydırma sırasında
+                                // (her karede 0-10px arası değişen) kart
+                                // içindeki önizleme metninin (Text.rich,
+                                // maxLines: _previewLines) GERÇEKTEN
+                                // yeniden sarılmasına, dolayısıyla kart
+                                // içeriğinin aşağı/yukarı zıplamasına yol
+                                // açıyordu. Transform.translate ise sadece
+                                // BOYAMA (paint) aşamasında kaydırır,
+                                // çocuğa geçen constraint'i hiç değiştirmez
+                                // — kartlar aynı "dikişte boşluk belirir"
+                                // görsel efektini korur ama metin artık
+                                // kaydırma boyunca sabit genişlikte
+                                // ölçülüp sarıldığı için kaymaz.
+                                return Transform.translate(
+                                  offset: Offset(
+                                    leftGutter - rightGutter,
+                                    0,
                                   ),
                                   child: child,
                                 );
@@ -3348,6 +3381,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
   Widget _buildGridView({
     required List<Map<String, dynamic>> filteredNotes,
     required bool isTrash,
+    required double availableWidth,
   }) {
     const int crossAxisCount = 2;
     const double spacing = 10;
@@ -3355,11 +3389,16 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     const double cardInnerPadding =
         16.0; // _buildGridNoteCard içindeki Padding değeri
 
-    // Her sütunun gerçek genişliğini hesapla: ekran genişliğinden dış
-    // padding'leri ve sütunlar arası boşluğu çıkar, crossAxisCount'a böl.
-    final screenWidth = MediaQuery.of(context).size.width;
+    // Her sütunun gerçek genişliğini hesapla: GERÇEK kullanılabilir
+    // genişlikten (dış 8+8 padding zaten çıkarılmış hali, bkz. çağıran
+    // LayoutBuilder) sütunlar arası boşluğu çıkar, crossAxisCount'a böl.
+    // DÜZELTME: Önceden burada MediaQuery.of(context).size.width (tam
+    // ekran genişliği) kullanılıyordu; bu, dış 16px padding'i hesaba
+    // katmadığı için cardContentWidth'i olduğundan geniş gösteriyor ve
+    // metin sarma tahminini (dolayısıyla sütun yükseklik dengesini)
+    // bozuyordu.
     final totalSpacing = (outerPadding * 2) + (spacing * (crossAxisCount - 1));
-    final columnWidth = (screenWidth - totalSpacing) / crossAxisCount;
+    final columnWidth = (availableWidth - totalSpacing) / crossAxisCount;
     // Kartın iç padding'ini çıkararak metnin gerçekte sarabileceği genişliği bul.
     final cardContentWidth = (columnWidth - (cardInnerPadding * 2)).clamp(
       0.0,

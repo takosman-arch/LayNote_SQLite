@@ -1050,7 +1050,7 @@
   "@noteActionUnfavoriteLabel": {
     "description": "Eylem panelinde, favorideki notu favorilerden çıkaran eylemin etiketi"
   },
-  "noteActionClassifyLabel": "Klasör Seç",
+  "noteActionClassifyLabel": "Klasör",
   "@noteActionClassifyLabel": {
     "description": "Eylem panelinde, notun klasörünü değiştiren eylemin etiketi"
   },
@@ -1058,7 +1058,7 @@
   "@noteActionDeleteLabel": {
     "description": "Eylem panelinde, notu çöp kutusuna taşıyan eylemin etiketi"
   },
-  "noteActionPinToNotificationLabel": "Bildirim Paneline Sabitle",
+  "noteActionPinToNotificationLabel": "Bildirime Ekle",
   "@noteActionPinToNotificationLabel": {
     "description": "Eylem panelinde, notu bildirim paneline sabitleyen eylemin etiketi (not henüz sabitlenmemişken)"
   },
@@ -3006,7 +3006,7 @@
   "deleteFlagDialogCancelButton": "Vazgeç",
   "deleteFlagDialogConfirmButton": "Sil",
   "pinNoteMenuItemLabel": "Sabitle",
-  "unpinNoteMenuItemLabel": "Sabitlemeyi Kaldır",
+  "unpinNoteMenuItemLabel": "Kaldır",
   "linkDialogUrlHint": "https://ornek.com",
   "checklistItemHint": "Madde ekle...",
   "@checklistItemHint": {

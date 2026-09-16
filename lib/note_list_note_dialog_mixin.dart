@@ -7871,11 +7871,22 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     // Kullanıcı satırın sonuna "=" yazdıysa
                                     // (ör. "(2+4)+5*4+2^2-4/2=") ifadeyi
                                     // hesaplayıp sonucu otomatik ekler.
+                                    // Sonuç sayısı, uygulamanın vurgu
+                                    // rengiyle (Ayarlar'dan seçilen renk)
+                                    // boyanır — böylece "10+2=12" içindeki
+                                    // "12" gözle hemen ayırt edilebilir.
                                     dNoteMaybeAutoCalculate(
                                       blockControllers[i]!,
                                       onTextChanged: (newText) {
                                         block['text'] = newText;
                                       },
+                                      getSpans: () =>
+                                          RichTextSpans.parse(block['spans']),
+                                      onSpansChanged: (newSpans) {
+                                        block['spans'] = newSpans;
+                                      },
+                                      resultColor:
+                                          appAccentColor.value.toARGB32(),
                                     );
                                   },
                                   onTap: () {

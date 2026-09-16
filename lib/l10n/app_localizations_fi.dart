@@ -818,13 +818,13 @@ class AppLocalizationsFi extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Poista suosikeista';
 
   @override
-  String get noteActionClassifyLabel => 'Valitse kansio';
+  String get noteActionClassifyLabel => 'Kansio';
 
   @override
   String get noteActionDeleteLabel => 'Poista';
 
   @override
-  String get noteActionPinToNotificationLabel => 'Kiinnitä ilmoituspaneeliin';
+  String get noteActionPinToNotificationLabel => 'Kiinnitä\nilmoitukseen';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Poista kiinnitys';

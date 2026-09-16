@@ -815,13 +815,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'पसंदीदा से हटाएं';
 
   @override
-  String get noteActionClassifyLabel => 'फ़ोल्डर चुनें';
+  String get noteActionClassifyLabel => 'फ़ोल्डर';
 
   @override
   String get noteActionDeleteLabel => 'हटाएं';
 
   @override
-  String get noteActionPinToNotificationLabel => 'सूचना पैनल में पिन करें';
+  String get noteActionPinToNotificationLabel => 'सूचना में पिन\nकरें';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'पिन हटाएं';

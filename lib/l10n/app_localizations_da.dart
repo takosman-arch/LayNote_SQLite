@@ -812,14 +812,13 @@ class AppLocalizationsDa extends AppLocalizations {
   String get noteActionUnfavoriteLabel => 'Fjern fra favoritter';
 
   @override
-  String get noteActionClassifyLabel => 'Vælg mappe';
+  String get noteActionClassifyLabel => 'Mappe';
 
   @override
   String get noteActionDeleteLabel => 'Slet';
 
   @override
-  String get noteActionPinToNotificationLabel =>
-      'Fastgør til notifikationspanel';
+  String get noteActionPinToNotificationLabel => 'Fastgør til\nnotifikation';
 
   @override
   String get noteActionUnpinFromNotificationLabel => 'Fjern fastgøring';
@@ -2322,10 +2321,10 @@ class AppLocalizationsDa extends AppLocalizations {
   String get deleteFlagDialogConfirmButton => 'Slet';
 
   @override
-  String get pinNoteMenuItemLabel => 'Fastgør note';
+  String get pinNoteMenuItemLabel => 'Fastgør';
 
   @override
-  String get unpinNoteMenuItemLabel => 'Frigør note';
+  String get unpinNoteMenuItemLabel => 'Frigør';
 
   @override
   String get linkDialogUrlHint => 'https://example.com';
