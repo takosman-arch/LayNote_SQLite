@@ -2579,4 +2579,34 @@ class AppLocalizationsSv extends AppLocalizations {
   @override
   String get imageViewerFileNotFoundMessage =>
       'Den här filen finns inte längre';
+
+  @override
+  String get findMenuItemLabel => 'Sök';
+
+  @override
+  String get findSearchHint => 'Sök';
+
+  @override
+  String get findReplaceHint => 'Ersätt med';
+
+  @override
+  String get findReplaceButton => 'Ersätt';
+
+  @override
+  String get findReplaceAllButton => 'Ersätt alla';
+
+  @override
+  String get findPreviousTooltip => 'Föregående träff';
+
+  @override
+  String get findNextTooltip => 'Nästa träff';
+
+  @override
+  String get findShowReplaceTooltip => 'Visa ersättningsfält';
+
+  @override
+  String get findHideReplaceTooltip => 'Dölj ersättningsfält';
+
+  @override
+  String get findCloseTooltip => 'Stäng sökning';
 }

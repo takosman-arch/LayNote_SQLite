@@ -2543,4 +2543,34 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'הקובץ הזה כבר לא קיים';
+
+  @override
+  String get findMenuItemLabel => 'חיפוש';
+
+  @override
+  String get findSearchHint => 'חיפוש';
+
+  @override
+  String get findReplaceHint => 'החלף ב-';
+
+  @override
+  String get findReplaceButton => 'החלף';
+
+  @override
+  String get findReplaceAllButton => 'החלף הכול';
+
+  @override
+  String get findPreviousTooltip => 'התאמה קודמת';
+
+  @override
+  String get findNextTooltip => 'התאמה הבאה';
+
+  @override
+  String get findShowReplaceTooltip => 'הצג שדה החלפה';
+
+  @override
+  String get findHideReplaceTooltip => 'הסתר שדה החלפה';
+
+  @override
+  String get findCloseTooltip => 'סגור חיפוש';
 }

@@ -2579,4 +2579,34 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'Tệp này không còn tồn tại';
+
+  @override
+  String get findMenuItemLabel => 'Tìm kiếm';
+
+  @override
+  String get findSearchHint => 'Tìm kiếm';
+
+  @override
+  String get findReplaceHint => 'Thay thế bằng';
+
+  @override
+  String get findReplaceButton => 'Thay thế';
+
+  @override
+  String get findReplaceAllButton => 'Thay thế tất cả';
+
+  @override
+  String get findPreviousTooltip => 'Kết quả trước';
+
+  @override
+  String get findNextTooltip => 'Kết quả tiếp theo';
+
+  @override
+  String get findShowReplaceTooltip => 'Hiện ô thay thế';
+
+  @override
+  String get findHideReplaceTooltip => 'Ẩn ô thay thế';
+
+  @override
+  String get findCloseTooltip => 'Đóng tìm kiếm';
 }

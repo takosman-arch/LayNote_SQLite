@@ -2577,4 +2577,34 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'Denne fil findes ikke længere';
+
+  @override
+  String get findMenuItemLabel => 'Find';
+
+  @override
+  String get findSearchHint => 'Søg';
+
+  @override
+  String get findReplaceHint => 'Erstat med';
+
+  @override
+  String get findReplaceButton => 'Erstat';
+
+  @override
+  String get findReplaceAllButton => 'Erstat alle';
+
+  @override
+  String get findPreviousTooltip => 'Forrige match';
+
+  @override
+  String get findNextTooltip => 'Næste match';
+
+  @override
+  String get findShowReplaceTooltip => 'Vis erstatningsfelt';
+
+  @override
+  String get findHideReplaceTooltip => 'Skjul erstatningsfelt';
+
+  @override
+  String get findCloseTooltip => 'Luk søgning';
 }

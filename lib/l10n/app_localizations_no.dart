@@ -2575,4 +2575,34 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'Denne filen finnes ikke lenger';
+
+  @override
+  String get findMenuItemLabel => 'Søk';
+
+  @override
+  String get findSearchHint => 'Søk';
+
+  @override
+  String get findReplaceHint => 'Erstatt med';
+
+  @override
+  String get findReplaceButton => 'Erstatt';
+
+  @override
+  String get findReplaceAllButton => 'Erstatt alle';
+
+  @override
+  String get findPreviousTooltip => 'Forrige treff';
+
+  @override
+  String get findNextTooltip => 'Neste treff';
+
+  @override
+  String get findShowReplaceTooltip => 'Vis erstatningsfelt';
+
+  @override
+  String get findHideReplaceTooltip => 'Skjul erstatningsfelt';
+
+  @override
+  String get findCloseTooltip => 'Lukk søk';
 }

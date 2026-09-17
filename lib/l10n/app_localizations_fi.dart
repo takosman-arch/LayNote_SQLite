@@ -2584,4 +2584,34 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'Tätä tiedostoa ei enää ole';
+
+  @override
+  String get findMenuItemLabel => 'Etsi';
+
+  @override
+  String get findSearchHint => 'Haku';
+
+  @override
+  String get findReplaceHint => 'Korvaa sanalla';
+
+  @override
+  String get findReplaceButton => 'Korvaa';
+
+  @override
+  String get findReplaceAllButton => 'Korvaa kaikki';
+
+  @override
+  String get findPreviousTooltip => 'Edellinen osuma';
+
+  @override
+  String get findNextTooltip => 'Seuraava osuma';
+
+  @override
+  String get findShowReplaceTooltip => 'Näytä korvauskenttä';
+
+  @override
+  String get findHideReplaceTooltip => 'Piilota korvauskenttä';
+
+  @override
+  String get findCloseTooltip => 'Sulje haku';
 }

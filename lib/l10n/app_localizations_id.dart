@@ -2579,4 +2579,34 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'File ini sudah tidak ada';
+
+  @override
+  String get findMenuItemLabel => 'Cari';
+
+  @override
+  String get findSearchHint => 'Cari';
+
+  @override
+  String get findReplaceHint => 'Ganti dengan';
+
+  @override
+  String get findReplaceButton => 'Ganti';
+
+  @override
+  String get findReplaceAllButton => 'Ganti Semua';
+
+  @override
+  String get findPreviousTooltip => 'Hasil sebelumnya';
+
+  @override
+  String get findNextTooltip => 'Hasil berikutnya';
+
+  @override
+  String get findShowReplaceTooltip => 'Tampilkan kolom ganti';
+
+  @override
+  String get findHideReplaceTooltip => 'Sembunyikan kolom ganti';
+
+  @override
+  String get findCloseTooltip => 'Tutup pencarian';
 }

@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "Salvat în album",
   "imageViewerSaveFailedMessage": "Salvarea a eșuat: {error}",
   "imageViewerSavingInProgressMessage": "Se salvează…",
-  "imageViewerFileNotFoundMessage": "Acest fișier nu mai există"
+  "imageViewerFileNotFoundMessage": "Acest fișier nu mai există",
+  "findMenuItemLabel": "Găsește",
+  "findSearchHint": "Căutare",
+  "findReplaceHint": "Înlocuiește cu",
+  "findReplaceButton": "Înlocuiește",
+  "findReplaceAllButton": "Înlocuiește tot",
+  "findPreviousTooltip": "Rezultatul anterior",
+  "findNextTooltip": "Rezultatul următor",
+  "findShowReplaceTooltip": "Afișează câmpul de înlocuire",
+  "findHideReplaceTooltip": "Ascunde câmpul de înlocuire",
+  "findCloseTooltip": "Închide căutarea"
 }

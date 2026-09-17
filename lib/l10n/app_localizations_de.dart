@@ -2596,4 +2596,34 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get imageViewerFileNotFoundMessage =>
       'Diese Datei ist nicht mehr vorhanden';
+
+  @override
+  String get findMenuItemLabel => 'Suchen';
+
+  @override
+  String get findSearchHint => 'Suchen';
+
+  @override
+  String get findReplaceHint => 'Ersetzen durch';
+
+  @override
+  String get findReplaceButton => 'Ersetzen';
+
+  @override
+  String get findReplaceAllButton => 'Alle ersetzen';
+
+  @override
+  String get findPreviousTooltip => 'Vorheriger Treffer';
+
+  @override
+  String get findNextTooltip => 'Nächster Treffer';
+
+  @override
+  String get findShowReplaceTooltip => 'Ersetzen-Feld anzeigen';
+
+  @override
+  String get findHideReplaceTooltip => 'Ersetzen-Feld ausblenden';
+
+  @override
+  String get findCloseTooltip => 'Suche schließen';
 }

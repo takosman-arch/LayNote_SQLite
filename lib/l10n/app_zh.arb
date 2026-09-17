@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "已保存到相册",
   "imageViewerSaveFailedMessage": "保存失败：{error}",
   "imageViewerSavingInProgressMessage": "正在保存…",
-  "imageViewerFileNotFoundMessage": "该文件已不存在"
+  "imageViewerFileNotFoundMessage": "该文件已不存在",
+  "findMenuItemLabel": "查找",
+  "findSearchHint": "搜索",
+  "findReplaceHint": "替换为",
+  "findReplaceButton": "替换",
+  "findReplaceAllButton": "全部替换",
+  "findPreviousTooltip": "上一个匹配项",
+  "findNextTooltip": "下一个匹配项",
+  "findShowReplaceTooltip": "显示替换栏",
+  "findHideReplaceTooltip": "隐藏替换栏",
+  "findCloseTooltip": "关闭查找"
 }

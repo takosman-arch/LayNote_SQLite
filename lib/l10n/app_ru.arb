@@ -787,5 +787,15 @@
   "imageViewerSavedToGalleryMessage": "Сохранено в альбом",
   "imageViewerSaveFailedMessage": "Не удалось сохранить: {error}",
   "imageViewerSavingInProgressMessage": "Сохранение…",
-  "imageViewerFileNotFoundMessage": "Этот файл больше не существует"
+  "imageViewerFileNotFoundMessage": "Этот файл больше не существует",
+  "findMenuItemLabel": "Найти",
+  "findSearchHint": "Поиск",
+  "findReplaceHint": "Заменить на",
+  "findReplaceButton": "Заменить",
+  "findReplaceAllButton": "Заменить всё",
+  "findPreviousTooltip": "Предыдущее совпадение",
+  "findNextTooltip": "Следующее совпадение",
+  "findShowReplaceTooltip": "Показать поле замены",
+  "findHideReplaceTooltip": "Скрыть поле замены",
+  "findCloseTooltip": "Закрыть поиск"
 }

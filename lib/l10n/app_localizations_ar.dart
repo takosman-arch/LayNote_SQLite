@@ -2562,4 +2562,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'لم يعد هذا الملف موجودًا';
+
+  @override
+  String get findMenuItemLabel => 'بحث';
+
+  @override
+  String get findSearchHint => 'بحث';
+
+  @override
+  String get findReplaceHint => 'استبدال بـ';
+
+  @override
+  String get findReplaceButton => 'استبدال';
+
+  @override
+  String get findReplaceAllButton => 'استبدال الكل';
+
+  @override
+  String get findPreviousTooltip => 'التطابق السابق';
+
+  @override
+  String get findNextTooltip => 'التطابق التالي';
+
+  @override
+  String get findShowReplaceTooltip => 'إظهار حقل الاستبدال';
+
+  @override
+  String get findHideReplaceTooltip => 'إخفاء حقل الاستبدال';
+
+  @override
+  String get findCloseTooltip => 'إغلاق البحث';
 }

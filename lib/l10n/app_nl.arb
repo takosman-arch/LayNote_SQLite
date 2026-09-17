@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "Opgeslagen in album",
   "imageViewerSaveFailedMessage": "Opslaan mislukt: {error}",
   "imageViewerSavingInProgressMessage": "Opslaan…",
-  "imageViewerFileNotFoundMessage": "Dit bestand bestaat niet meer"
+  "imageViewerFileNotFoundMessage": "Dit bestand bestaat niet meer",
+  "findMenuItemLabel": "Zoeken",
+  "findSearchHint": "Zoeken",
+  "findReplaceHint": "Vervangen door",
+  "findReplaceButton": "Vervangen",
+  "findReplaceAllButton": "Alles vervangen",
+  "findPreviousTooltip": "Vorige overeenkomst",
+  "findNextTooltip": "Volgende overeenkomst",
+  "findShowReplaceTooltip": "Vervangveld weergeven",
+  "findHideReplaceTooltip": "Vervangveld verbergen",
+  "findCloseTooltip": "Zoeken sluiten"
 }

@@ -2578,4 +2578,34 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'यह फ़ाइल अब मौजूद नहीं है';
+
+  @override
+  String get findMenuItemLabel => 'खोजें';
+
+  @override
+  String get findSearchHint => 'खोजें';
+
+  @override
+  String get findReplaceHint => 'इससे बदलें';
+
+  @override
+  String get findReplaceButton => 'बदलें';
+
+  @override
+  String get findReplaceAllButton => 'सभी बदलें';
+
+  @override
+  String get findPreviousTooltip => 'पिछला मिलान';
+
+  @override
+  String get findNextTooltip => 'अगला मिलान';
+
+  @override
+  String get findShowReplaceTooltip => 'बदलें फ़ील्ड दिखाएं';
+
+  @override
+  String get findHideReplaceTooltip => 'बदलें फ़ील्ड छिपाएं';
+
+  @override
+  String get findCloseTooltip => 'खोज बंद करें';
 }

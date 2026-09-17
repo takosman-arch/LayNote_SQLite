@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "บันทึกลงอัลบั้มแล้ว",
   "imageViewerSaveFailedMessage": "บันทึกไม่สำเร็จ: {error}",
   "imageViewerSavingInProgressMessage": "กำลังบันทึก…",
-  "imageViewerFileNotFoundMessage": "ไม่พบไฟล์นี้แล้ว"
+  "imageViewerFileNotFoundMessage": "ไม่พบไฟล์นี้แล้ว",
+  "findMenuItemLabel": "ค้นหา",
+  "findSearchHint": "ค้นหา",
+  "findReplaceHint": "แทนที่ด้วย",
+  "findReplaceButton": "แทนที่",
+  "findReplaceAllButton": "แทนที่ทั้งหมด",
+  "findPreviousTooltip": "รายการก่อนหน้า",
+  "findNextTooltip": "รายการถัดไป",
+  "findShowReplaceTooltip": "แสดงช่องแทนที่",
+  "findHideReplaceTooltip": "ซ่อนช่องแทนที่",
+  "findCloseTooltip": "ปิดการค้นหา"
 }

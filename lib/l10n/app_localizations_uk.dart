@@ -2593,4 +2593,34 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'Цей файл більше не існує';
+
+  @override
+  String get findMenuItemLabel => 'Знайти';
+
+  @override
+  String get findSearchHint => 'Пошук';
+
+  @override
+  String get findReplaceHint => 'Замінити на';
+
+  @override
+  String get findReplaceButton => 'Замінити';
+
+  @override
+  String get findReplaceAllButton => 'Замінити все';
+
+  @override
+  String get findPreviousTooltip => 'Попередній збіг';
+
+  @override
+  String get findNextTooltip => 'Наступний збіг';
+
+  @override
+  String get findShowReplaceTooltip => 'Показати поле заміни';
+
+  @override
+  String get findHideReplaceTooltip => 'Сховати поле заміни';
+
+  @override
+  String get findCloseTooltip => 'Закрити пошук';
 }

@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "Lagret i album",
   "imageViewerSaveFailedMessage": "Kunne ikke lagre: {error}",
   "imageViewerSavingInProgressMessage": "Lagrer…",
-  "imageViewerFileNotFoundMessage": "Denne filen finnes ikke lenger"
+  "imageViewerFileNotFoundMessage": "Denne filen finnes ikke lenger",
+  "findMenuItemLabel": "Søk",
+  "findSearchHint": "Søk",
+  "findReplaceHint": "Erstatt med",
+  "findReplaceButton": "Erstatt",
+  "findReplaceAllButton": "Erstatt alle",
+  "findPreviousTooltip": "Forrige treff",
+  "findNextTooltip": "Neste treff",
+  "findShowReplaceTooltip": "Vis erstatningsfelt",
+  "findHideReplaceTooltip": "Skjul erstatningsfelt",
+  "findCloseTooltip": "Lukk søk"
 }

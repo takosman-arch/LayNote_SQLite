@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "Збережено в альбом",
   "imageViewerSaveFailedMessage": "Не вдалося зберегти: {error}",
   "imageViewerSavingInProgressMessage": "Збереження…",
-  "imageViewerFileNotFoundMessage": "Цей файл більше не існує"
+  "imageViewerFileNotFoundMessage": "Цей файл більше не існує",
+  "findMenuItemLabel": "Знайти",
+  "findSearchHint": "Пошук",
+  "findReplaceHint": "Замінити на",
+  "findReplaceButton": "Замінити",
+  "findReplaceAllButton": "Замінити все",
+  "findPreviousTooltip": "Попередній збіг",
+  "findNextTooltip": "Наступний збіг",
+  "findShowReplaceTooltip": "Показати поле заміни",
+  "findHideReplaceTooltip": "Сховати поле заміни",
+  "findCloseTooltip": "Закрити пошук"
 }

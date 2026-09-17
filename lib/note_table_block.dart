@@ -76,6 +76,7 @@ class NoteTableBlock extends StatefulWidget {
     this.fontFamily,
     this.fontSize = 14,
     this.autofocus = false,
+    this.getCellHighlights,
   });
 
   /// Bloğun mevcut satır/hücre verisi (content_blocks.dart ->
@@ -128,6 +129,17 @@ class NoteTableBlock extends StatefulWidget {
 
   /// Blok yeni eklendiğinde ilk hücreye otomatik odaklanmak için.
   final bool autofocus;
+
+  /// Aşama 1'deki arama vurgu katmanını (bkz. rich_block_text_controller.dart
+  /// -> TextHighlightSnapshot) hücrelere bağlamak için opsiyonel köprü.
+  /// Hücre controller'ları bu widget'ın KENDİ state'inde (_NoteTableBlockState
+  /// -> _controllers) tutulduğundan, dışarıdaki NoteFindSession'ın tek tek
+  /// hücrelere erişimi yok — bu yüzden getSpans ile aynı desende, (satır,
+  /// sütun) alıp o hücre için o anki vurgu durumunu döndüren bir fonksiyon
+  /// olarak enjekte ediliyor. null bırakılırsa (mevcut tüm kuruluş
+  /// noktalarında olduğu gibi, Aşama 6 entegrasyonuna kadar) davranış hiç
+  /// değişmez.
+  final TextHighlightSnapshot Function(int row, int col)? getCellHighlights;
 
   /// "Blok ekle" menüsünden çağrılacak fabrika: varsayılan 2x2 boş tablo.
   /// Her hücre, 'text' bloğuyla aynı boş {"text":"", "spans":[]} şeklinde
@@ -645,6 +657,13 @@ class _NoteTableBlockState extends State<NoteTableBlock> {
         (c) => RichBlockTextController(
           text: (_rows[r][c]['text'] ?? '').toString(),
           getSpans: () => RichTextSpans.parse(_rows[r][c]['spans']),
+          // Aşama 1: widget.getCellHighlights sağlanmışsa (Aşama 6'da
+          // NoteFindSession tarafından), o anki (r, c) hücresi için arama
+          // vurgu durumu her çizimde buradan okunur. Sağlanmamışsa (henüz
+          // varsayılan durum) null kalır ve vurgu katmanı devre dışı olur.
+          getHighlights: widget.getCellHighlights == null
+              ? null
+              : () => widget.getCellHighlights!(r, c),
         ),
       ),
     );

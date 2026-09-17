@@ -2580,4 +2580,34 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'Tento soubor již neexistuje';
+
+  @override
+  String get findMenuItemLabel => 'Najít';
+
+  @override
+  String get findSearchHint => 'Hledat';
+
+  @override
+  String get findReplaceHint => 'Nahradit čím';
+
+  @override
+  String get findReplaceButton => 'Nahradit';
+
+  @override
+  String get findReplaceAllButton => 'Nahradit vše';
+
+  @override
+  String get findPreviousTooltip => 'Předchozí shoda';
+
+  @override
+  String get findNextTooltip => 'Další shoda';
+
+  @override
+  String get findShowReplaceTooltip => 'Zobrazit pole Nahradit';
+
+  @override
+  String get findHideReplaceTooltip => 'Skrýt pole Nahradit';
+
+  @override
+  String get findCloseTooltip => 'Zavřít vyhledávání';
 }

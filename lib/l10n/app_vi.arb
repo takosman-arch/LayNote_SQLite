@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "Đã lưu vào album",
   "imageViewerSaveFailedMessage": "Không thể lưu: {error}",
   "imageViewerSavingInProgressMessage": "Đang lưu…",
-  "imageViewerFileNotFoundMessage": "Tệp này không còn tồn tại"
+  "imageViewerFileNotFoundMessage": "Tệp này không còn tồn tại",
+  "findMenuItemLabel": "Tìm kiếm",
+  "findSearchHint": "Tìm kiếm",
+  "findReplaceHint": "Thay thế bằng",
+  "findReplaceButton": "Thay thế",
+  "findReplaceAllButton": "Thay thế tất cả",
+  "findPreviousTooltip": "Kết quả trước",
+  "findNextTooltip": "Kết quả tiếp theo",
+  "findShowReplaceTooltip": "Hiện ô thay thế",
+  "findHideReplaceTooltip": "Ẩn ô thay thế",
+  "findCloseTooltip": "Đóng tìm kiếm"
 }

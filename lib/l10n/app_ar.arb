@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "تم الحفظ في الألبوم",
   "imageViewerSaveFailedMessage": "تعذر الحفظ: {error}",
   "imageViewerSavingInProgressMessage": "جارٍ الحفظ…",
-  "imageViewerFileNotFoundMessage": "لم يعد هذا الملف موجودًا"
+  "imageViewerFileNotFoundMessage": "لم يعد هذا الملف موجودًا",
+  "findMenuItemLabel": "بحث",
+  "findSearchHint": "بحث",
+  "findReplaceHint": "استبدال بـ",
+  "findReplaceButton": "استبدال",
+  "findReplaceAllButton": "استبدال الكل",
+  "findPreviousTooltip": "التطابق السابق",
+  "findNextTooltip": "التطابق التالي",
+  "findShowReplaceTooltip": "إظهار حقل الاستبدال",
+  "findHideReplaceTooltip": "إخفاء حقل الاستبدال",
+  "findCloseTooltip": "إغلاق البحث"
 }

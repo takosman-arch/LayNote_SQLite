@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "एल्बम में सहेजा गया",
   "imageViewerSaveFailedMessage": "सहेजा नहीं जा सका: {error}",
   "imageViewerSavingInProgressMessage": "सहेजा जा रहा है…",
-  "imageViewerFileNotFoundMessage": "यह फ़ाइल अब मौजूद नहीं है"
+  "imageViewerFileNotFoundMessage": "यह फ़ाइल अब मौजूद नहीं है",
+  "findMenuItemLabel": "खोजें",
+  "findSearchHint": "खोजें",
+  "findReplaceHint": "इससे बदलें",
+  "findReplaceButton": "बदलें",
+  "findReplaceAllButton": "सभी बदलें",
+  "findPreviousTooltip": "पिछला मिलान",
+  "findNextTooltip": "अगला मिलान",
+  "findShowReplaceTooltip": "बदलें फ़ील्ड दिखाएं",
+  "findHideReplaceTooltip": "बदलें फ़ील्ड छिपाएं",
+  "findCloseTooltip": "खोज बंद करें"
 }

@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "Sparad i albumet",
   "imageViewerSaveFailedMessage": "Det gick inte att spara: {error}",
   "imageViewerSavingInProgressMessage": "Sparar…",
-  "imageViewerFileNotFoundMessage": "Den här filen finns inte längre"
+  "imageViewerFileNotFoundMessage": "Den här filen finns inte längre",
+  "findMenuItemLabel": "Sök",
+  "findSearchHint": "Sök",
+  "findReplaceHint": "Ersätt med",
+  "findReplaceButton": "Ersätt",
+  "findReplaceAllButton": "Ersätt alla",
+  "findPreviousTooltip": "Föregående träff",
+  "findNextTooltip": "Nästa träff",
+  "findShowReplaceTooltip": "Visa ersättningsfält",
+  "findHideReplaceTooltip": "Dölj ersättningsfält",
+  "findCloseTooltip": "Stäng sökning"
 }

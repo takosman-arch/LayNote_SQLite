@@ -2602,4 +2602,34 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'Este archivo ya no existe';
+
+  @override
+  String get findMenuItemLabel => 'Buscar';
+
+  @override
+  String get findSearchHint => 'Buscar';
+
+  @override
+  String get findReplaceHint => 'Reemplazar con';
+
+  @override
+  String get findReplaceButton => 'Reemplazar';
+
+  @override
+  String get findReplaceAllButton => 'Reemplazar todo';
+
+  @override
+  String get findPreviousTooltip => 'Coincidencia anterior';
+
+  @override
+  String get findNextTooltip => 'Coincidencia siguiente';
+
+  @override
+  String get findShowReplaceTooltip => 'Mostrar campo de reemplazo';
+
+  @override
+  String get findHideReplaceTooltip => 'Ocultar campo de reemplazo';
+
+  @override
+  String get findCloseTooltip => 'Cerrar búsqueda';
 }

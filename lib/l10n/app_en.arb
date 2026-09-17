@@ -1225,5 +1225,15 @@
   "imageViewerSavedToGalleryMessage": "Saved to album",
   "imageViewerSaveFailedMessage": "Could not save: {error}",
   "imageViewerSavingInProgressMessage": "Saving…",
-  "imageViewerFileNotFoundMessage": "This file no longer exists"
+  "imageViewerFileNotFoundMessage": "This file no longer exists",
+  "findMenuItemLabel": "Find",
+  "findSearchHint": "Search",
+  "findReplaceHint": "Replace with",
+  "findReplaceButton": "Replace",
+  "findReplaceAllButton": "Replace All",
+  "findPreviousTooltip": "Previous match",
+  "findNextTooltip": "Next match",
+  "findShowReplaceTooltip": "Show replace field",
+  "findHideReplaceTooltip": "Hide replace field",
+  "findCloseTooltip": "Close find"
 }

@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "נשמר באלבום",
   "imageViewerSaveFailedMessage": "השמירה נכשלה: {error}",
   "imageViewerSavingInProgressMessage": "שומר…",
-  "imageViewerFileNotFoundMessage": "הקובץ הזה כבר לא קיים"
+  "imageViewerFileNotFoundMessage": "הקובץ הזה כבר לא קיים",
+  "findMenuItemLabel": "חיפוש",
+  "findSearchHint": "חיפוש",
+  "findReplaceHint": "החלף ב-",
+  "findReplaceButton": "החלף",
+  "findReplaceAllButton": "החלף הכול",
+  "findPreviousTooltip": "התאמה קודמת",
+  "findNextTooltip": "התאמה הבאה",
+  "findShowReplaceTooltip": "הצג שדה החלפה",
+  "findHideReplaceTooltip": "הסתר שדה החלפה",
+  "findCloseTooltip": "סגור חיפוש"
 }

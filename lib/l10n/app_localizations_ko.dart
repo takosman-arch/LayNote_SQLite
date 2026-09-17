@@ -2517,4 +2517,34 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => '이 파일이 더 이상 존재하지 않습니다';
+
+  @override
+  String get findMenuItemLabel => '찾기';
+
+  @override
+  String get findSearchHint => '검색';
+
+  @override
+  String get findReplaceHint => '바꿀 내용';
+
+  @override
+  String get findReplaceButton => '바꾸기';
+
+  @override
+  String get findReplaceAllButton => '모두 바꾸기';
+
+  @override
+  String get findPreviousTooltip => '이전 항목';
+
+  @override
+  String get findNextTooltip => '다음 항목';
+
+  @override
+  String get findShowReplaceTooltip => '바꾸기 필드 표시';
+
+  @override
+  String get findHideReplaceTooltip => '바꾸기 필드 숨기기';
+
+  @override
+  String get findCloseTooltip => '찾기 닫기';
 }

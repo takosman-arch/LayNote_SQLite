@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "Gemt i album",
   "imageViewerSaveFailedMessage": "Kunne ikke gemme: {error}",
   "imageViewerSavingInProgressMessage": "Gemmer…",
-  "imageViewerFileNotFoundMessage": "Denne fil findes ikke længere"
+  "imageViewerFileNotFoundMessage": "Denne fil findes ikke længere",
+  "findMenuItemLabel": "Find",
+  "findSearchHint": "Søg",
+  "findReplaceHint": "Erstat med",
+  "findReplaceButton": "Erstat",
+  "findReplaceAllButton": "Erstat alle",
+  "findPreviousTooltip": "Forrige match",
+  "findNextTooltip": "Næste match",
+  "findShowReplaceTooltip": "Vis erstatningsfelt",
+  "findHideReplaceTooltip": "Skjul erstatningsfelt",
+  "findCloseTooltip": "Luk søgning"
 }

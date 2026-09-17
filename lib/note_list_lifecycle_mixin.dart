@@ -145,8 +145,25 @@ mixin NoteListLifecycleMixin on State<NoteListScreen>, WidgetsBindingObserver {
   // değeri (muhtemelen '') doğrulayamadım — gövde bloklarındaki her
   // kullanımda text: açıkça veriliyordu. Eğer text: zorunluysa
   // aşağıdaki satıra text: '' eklemek gerekir.
+  // Aşama 6: "Bul ve Değiştir" özelliğinin başlık vurgu kaynağı.
+  // RichBlockTextController.getHighlights final olduğundan (bkz. sınıf
+  // tanımı, rich_block_text_controller.dart) controller kurulduktan sonra
+  // dışarıdan atanamaz — ama _titleController burada State ömrü boyunca
+  // (late final) YAŞARKEN, "Bul" oturumu (NoteFindSession) her editör
+  // açılışına özel, dialog_mixin'in _showNoteDialog'u içinde kurulup
+  // kapanıyor. Bu ömür uyuşmazlığını çözmek için controller sabit bir
+  // "provider'a sor" kapanışıyla kurulur; provider'ın kendisini
+  // dialog_mixin doldurur/boşaltır (editör açılırken findHighlights('title')
+  // ile, kapanırken null ile). "Bul" modu kapalıyken/editör kapalıyken bu
+  // her zaman null olduğundan getHighlights TextHighlightSnapshot.empty
+  // döner — davranış hiç değişmez.
+  TextHighlightSnapshot Function()? _titleHighlightsProvider;
   late final RichBlockTextController _titleController =
-      RichBlockTextController(getSpans: () => _titleSpans);
+      RichBlockTextController(
+        getSpans: () => _titleSpans,
+        getHighlights: () =>
+            _titleHighlightsProvider?.call() ?? TextHighlightSnapshot.empty,
+      );
   // Aşama 3 revizyonu: span'lar artık düz bir List alanında değil, TEK
   // 'spans' anahtarlı bir Map içinde tutuluyor — birebir gövde
   // bloklarındaki desen (block['spans']). Sebep: _resolveFocusedSpansHolder()

@@ -2515,4 +2515,34 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'このファイルは存在しません';
+
+  @override
+  String get findMenuItemLabel => '検索';
+
+  @override
+  String get findSearchHint => '検索';
+
+  @override
+  String get findReplaceHint => '置換後の文字列';
+
+  @override
+  String get findReplaceButton => '置換';
+
+  @override
+  String get findReplaceAllButton => 'すべて置換';
+
+  @override
+  String get findPreviousTooltip => '前の一致';
+
+  @override
+  String get findNextTooltip => '次の一致';
+
+  @override
+  String get findShowReplaceTooltip => '置換欄を表示';
+
+  @override
+  String get findHideReplaceTooltip => '置換欄を非表示';
+
+  @override
+  String get findCloseTooltip => '検索を閉じる';
 }

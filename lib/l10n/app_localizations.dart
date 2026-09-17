@@ -4799,6 +4799,66 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Bu dosya artık mevcut değil'**
   String get imageViewerFileNotFoundMessage;
+
+  /// No description provided for @findMenuItemLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bul'**
+  String get findMenuItemLabel;
+
+  /// No description provided for @findSearchHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ara'**
+  String get findSearchHint;
+
+  /// No description provided for @findReplaceHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şununla değiştir'**
+  String get findReplaceHint;
+
+  /// No description provided for @findReplaceButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Değiştir'**
+  String get findReplaceButton;
+
+  /// No description provided for @findReplaceAllButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tümünü Değiştir'**
+  String get findReplaceAllButton;
+
+  /// No description provided for @findPreviousTooltip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önceki eşleşme'**
+  String get findPreviousTooltip;
+
+  /// No description provided for @findNextTooltip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki eşleşme'**
+  String get findNextTooltip;
+
+  /// No description provided for @findShowReplaceTooltip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Değiştir alanını göster'**
+  String get findShowReplaceTooltip;
+
+  /// No description provided for @findHideReplaceTooltip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Değiştir alanını gizle'**
+  String get findHideReplaceTooltip;
+
+  /// No description provided for @findCloseTooltip.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bul modunu kapat'**
+  String get findCloseTooltip;
 }
 
 class _AppLocalizationsDelegate

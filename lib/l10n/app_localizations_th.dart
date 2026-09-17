@@ -2560,4 +2560,34 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'ไม่พบไฟล์นี้แล้ว';
+
+  @override
+  String get findMenuItemLabel => 'ค้นหา';
+
+  @override
+  String get findSearchHint => 'ค้นหา';
+
+  @override
+  String get findReplaceHint => 'แทนที่ด้วย';
+
+  @override
+  String get findReplaceButton => 'แทนที่';
+
+  @override
+  String get findReplaceAllButton => 'แทนที่ทั้งหมด';
+
+  @override
+  String get findPreviousTooltip => 'รายการก่อนหน้า';
+
+  @override
+  String get findNextTooltip => 'รายการถัดไป';
+
+  @override
+  String get findShowReplaceTooltip => 'แสดงช่องแทนที่';
+
+  @override
+  String get findHideReplaceTooltip => 'ซ่อนช่องแทนที่';
+
+  @override
+  String get findCloseTooltip => 'ปิดการค้นหา';
 }

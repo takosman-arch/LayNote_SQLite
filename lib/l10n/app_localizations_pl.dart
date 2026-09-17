@@ -2596,4 +2596,34 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'Ten plik już nie istnieje';
+
+  @override
+  String get findMenuItemLabel => 'Znajdź';
+
+  @override
+  String get findSearchHint => 'Szukaj';
+
+  @override
+  String get findReplaceHint => 'Zamień na';
+
+  @override
+  String get findReplaceButton => 'Zamień';
+
+  @override
+  String get findReplaceAllButton => 'Zamień wszystko';
+
+  @override
+  String get findPreviousTooltip => 'Poprzednie dopasowanie';
+
+  @override
+  String get findNextTooltip => 'Następne dopasowanie';
+
+  @override
+  String get findShowReplaceTooltip => 'Pokaż pole zamiany';
+
+  @override
+  String get findHideReplaceTooltip => 'Ukryj pole zamiany';
+
+  @override
+  String get findCloseTooltip => 'Zamknij wyszukiwanie';
 }

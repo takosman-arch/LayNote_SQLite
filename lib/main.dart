@@ -9,6 +9,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart'; // NoteEditorScrollPhysics (uzun not editöründe daha yumuşak/uzun kayma) için
 import 'package:flutter/rendering.dart' hide Constraints;
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart'; // TapGestureRecognizer için (link tıklama)
@@ -60,6 +61,11 @@ part 'reminder_service.dart';
 part 'content_blocks.dart';
 part 'rich_text_spans.dart';
 part 'rich_block_text_controller.dart';
+// Aşama 6: not içi "Bul ve Değiştir" özelliği. rich_block_text_controller.
+// dart'ın hemen altına eklendi — ikisi de RichBlockTextController'ın vurgu
+// katmanına (TextHighlightSnapshot) bağlı, birbirine en yakın iki part.
+part 'note_find_session.dart';
+part 'note_find_bar.dart';
 part 'text_selection_menu.dart';
 part 'theme.dart';
 part 'note_list_screen.dart';

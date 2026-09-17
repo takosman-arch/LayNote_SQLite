@@ -33,6 +33,50 @@ const Color _highlightColorLight = Color(0xFFFFF59D);
 // "vurgu kalemi" hissini (amber/sarı ton) korur.
 const Color _highlightColorDark = Color(0xFF7A5B00);
 
+// ── Aşama 1: "Bul ve Değiştir" arama vurgu renkleri ─────────────────────
+// Yukarıdaki _highlightColor* çiftinden KASITLI olarak farklı tonlarda:
+// kullanıcı manuel olarak vurgulamış (highlight:true) bir metni ararken
+// ikisi aynı anda görünebilir, bu yüzden arama vurgusu her zaman öncelikli
+// uygulanır (bkz. buildTextSpan) ve manuel vurgudan ayırt edilebilecek
+// ayrı bir ton kullanır. Pasif eşleşmeler (sorguya uyan ama şu an aktif
+// olmayan tüm sonuçlar) daha soluk bir amber; aktif eşleşme (o an
+// odaklanılan/gezinilen sonuç) daha belirgin bir turuncu.
+const Color _searchPassiveColorLight = Color(0xFFFFE082);
+const Color _searchPassiveColorDark = Color(0xFF8D6E00);
+const Color _searchActiveColorLight = Color(0xFFFFB74D);
+const Color _searchActiveColorDark = Color(0xFFA85D00);
+
+// Bir metin bloğu için o anki arama eşleşme durumunu taşıyan salt-veri
+// sınıfı. RichBlockTextController'a dışarıdan (NoteFindSession'dan, Aşama
+// 3'te) bir "vurgu kaynağı" fonksiyonu olarak enjekte edilir. Bu dosya
+// arama MANTIĞINI bilmez — sadece kendisine verilen aralıkları boyar.
+//
+// - activeRange: o an aktif/odaklanılan eşleşme (varsa) — TEK bir aralık.
+// - passiveRanges: sorguya uyan DİĞER tüm eşleşmeler (aktif olan hariç).
+// start/end anlamı formatting span'larıyla aynıdır (start dahil, end
+// hariç — String.substring kuralı).
+class TextHighlightRange {
+  const TextHighlightRange(this.start, this.end);
+  final int start;
+  final int end;
+}
+
+class TextHighlightSnapshot {
+  const TextHighlightSnapshot({
+    this.activeRange,
+    this.passiveRanges = const [],
+  });
+
+  final TextHighlightRange? activeRange;
+  final List<TextHighlightRange> passiveRanges;
+
+  // Arama kapalıyken/o blokta hiç eşleşme yokken kullanılan sabit boş
+  // değer — her buildTextSpan çağrısında yeni obje oluşturmamak için.
+  static const TextHighlightSnapshot empty = TextHighlightSnapshot();
+
+  bool get isEmpty => activeRange == null && passiveRanges.isEmpty;
+}
+
 // ── "Kalın" AÇIK olduğunda uygulanacak fontWeight'i belirler ───────────
 // Sabit FontWeight.bold (w700) her zaman kullanılırsa, TABAN stil zaten
 // yarı-kalınsa (ör. not başlığının kendi stili FontWeight.w600 taşıyor —
@@ -98,13 +142,26 @@ class _LinkTextSpan extends TextSpan {
 // gerek kalmaz.
 // ════════════════════════════════════════════════════════════════════════
 class RichBlockTextController extends TextEditingController {
-  RichBlockTextController({super.text, required this.getSpans});
+  RichBlockTextController({
+    super.text,
+    required this.getSpans,
+    this.getHighlights,
+  });
 
   /// O anki text bloğunun spans listesini döndürür (start/end/bold/italic
   /// map'leri). Her çizimde çağrılır; RichTextSpans.parse zaten ucuz bir
   /// işlem olduğundan burada normalize edilmiş veri döndürülmesi önerilir:
   ///   getSpans: () => RichTextSpans.parse(blocks[i]['spans'])
   final List<Map<String, dynamic>> Function() getSpans;
+
+  // ── Aşama 1: opsiyonel arama vurgu kaynağı ──────────────────────────────
+  // null bırakılırsa (mevcut tüm kuruluş noktalarında olduğu gibi, Aşama 6
+  // entegrasyonuna kadar) davranış hiç değişmez — vurgu katmanı devre dışı
+  // kalır. Aşama 3'te NoteFindSession, Aşama 6'da ise sadece "Bul" modu
+  // açıkken dialog mixin bu alanı dolduracak. getSpans() gibi her çizimde
+  // çağrılır; ucuz olması beklenir (NoteFindSession zaten eşleşmeleri
+  // önceden hesaplayıp burada sadece o anki blok için olanları döndürür).
+  final TextHighlightSnapshot Function()? getHighlights;
 
   // ── Link (URL) span'ları için tıklama tanıyıcıları ──────────────────────
   // Bir span 'link' alanına sahipse, o aralığın TextSpan'ine bir
@@ -183,26 +240,50 @@ class RichBlockTextController extends TextEditingController {
     // hiç kaybolmasın) aşağıda spans her zaman uygulanarak korunuyor.
     final text = this.text;
     final spans = getSpans();
+    // Aşama 1: bu bloğun o anki arama eşleşme durumu (varsa). getHighlights
+    // null olduğu (henüz hiçbir kuruluş noktası bunu doldurmadığı) sürece
+    // her zaman .empty döner, yani aşağıdaki mantık hiç devreye girmez.
+    final highlights = getHighlights?.call() ?? TextHighlightSnapshot.empty;
     // O anki temaya göre uygulanacak highlight rengi. Ekran her yeniden
     // çizildiğinde (ör. tema değişince) buildTextSpan zaten yeniden
     // çağrılır, dolayısıyla bu her seferinde güncel kalır.
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final effectiveHighlightColor =
         isDark ? _highlightColorDark : _highlightColorLight;
+    final effectiveSearchPassiveColor =
+        isDark ? _searchPassiveColorDark : _searchPassiveColorLight;
+    final effectiveSearchActiveColor =
+        isDark ? _searchActiveColorDark : _searchActiveColorLight;
     // Bu çizimde yeniden oluşturulacak recognizer'lardan önce, bir ÖNCEKİ
     // çizimden kalanları serbest bırak (bkz. sınıf başındaki not).
     _disposeLinkRecognizers();
-    if (spans.isEmpty || text.isEmpty) {
+    // DÜZELTME (Aşama 1): eskiden burada sadece 'spans.isEmpty' bakılıyordu.
+    // Ama checklist/tablo/calc_table gibi getSpans: () => [] olan
+    // controller'larda arama vurgusu bu erken dönüşe takılıp hiç
+    // çizilemezdi (Aşama 2'nin bu controller'ları buraya bağlamasının
+    // anlamı kalmazdı). Artık yalnızca span YOK ve arama vurgusu da YOK ise
+    // erken dönülüyor.
+    if ((spans.isEmpty && highlights.isEmpty) || text.isEmpty) {
       return TextSpan(style: style, text: text);
     }
 
-    // Metni, herhangi bir span'in başladığı/bittiği her noktada kesecek
-    // "kırılma noktaları" çıkar; ardından her parçayı, o aralıkta etkili
-    // olan bold/italic durumuna göre ayrı bir TextSpan olarak oluştur.
+    // Metni, herhangi bir span'in ya da arama eşleşmesinin başladığı/
+    // bittiği her noktada kesecek "kırılma noktaları" çıkar; ardından her
+    // parçayı, o aralıkta etkili olan bold/italic/arama-vurgusu durumuna
+    // göre ayrı bir TextSpan olarak oluştur.
     final breakpoints = <int>{0, text.length};
     for (final s in spans) {
       breakpoints.add(_clampIndex(s['start'] as num, text.length));
       breakpoints.add(_clampIndex(s['end'] as num, text.length));
+    }
+    final activeRange = highlights.activeRange;
+    if (activeRange != null) {
+      breakpoints.add(_clampIndex(activeRange.start, text.length));
+      breakpoints.add(_clampIndex(activeRange.end, text.length));
+    }
+    for (final r in highlights.passiveRanges) {
+      breakpoints.add(_clampIndex(r.start, text.length));
+      breakpoints.add(_clampIndex(r.end, text.length));
     }
     final points = breakpoints.toList()..sort();
 
@@ -239,10 +320,31 @@ class RichBlockTextController extends TextEditingController {
           if (lk is String && lk.isNotEmpty) link = lk;
         }
       }
+      // Aşama 1: bu run bir arama eşleşmesinin İÇİNDE mi? Aktif eşleşme
+      // pasiften önceliklidir (bir aralık teorik olarak ikisine de tam
+      // denk gelmez çünkü activeRange zaten passiveRanges'ten ayrı
+      // tutulur, ama yine de sırayı belirgin tutuyoruz).
+      bool searchActive = false;
+      if (activeRange != null) {
+        final aStart = _clampIndex(activeRange.start, text.length);
+        final aEnd = _clampIndex(activeRange.end, text.length);
+        if (start >= aStart && end <= aEnd) searchActive = true;
+      }
+      bool searchPassive = false;
+      if (!searchActive) {
+        for (final r in highlights.passiveRanges) {
+          final rStart = _clampIndex(r.start, text.length);
+          final rEnd = _clampIndex(r.end, text.length);
+          if (start >= rStart && end <= rEnd) {
+            searchPassive = true;
+            break;
+          }
+        }
+      }
       TextStyle? partStyle = style;
       if (bold || italic || underline || strikethrough || highlight ||
           fontSize != null || color != null || fontFamily != null ||
-          link != null) {
+          link != null || searchActive || searchPassive) {
         // Altı çizili ve üzeri çizili aynı anda AÇIK olabilir — bunlar
         // Flutter'da tek bir TextDecoration.underline/lineThrough
         // değeriyle değil, TextDecoration.combine([...]) ile birlikte
@@ -274,12 +376,20 @@ class RichBlockTextController extends TextEditingController {
           fontSize: fontSize ?? style?.fontSize,
           color: effectiveColor,
           fontFamily: fontFamily ?? style?.fontFamily,
-          // Vurgu, metnin kendi rengine dokunmadan sadece arkasına sarı
+          // Vurgu, metnin kendi rengine dokunmadan sadece arkasına renkli
           // bir bant ekler (Google Docs vurgu kalemiyle aynı görsel
-          // davranış). Vurgulanmamış kısımda önceki backgroundColor
-          // (varsa) korunur.
-          backgroundColor:
-              highlight ? effectiveHighlightColor : style?.backgroundColor,
+          // davranış). Öncelik sırası: arama-aktif > arama-pasif > manuel
+          // vurgu (highlight:true) > önceki backgroundColor (varsa).
+          // Arama vurgusu her zaman manuel vurgunun ÜSTÜNDE gösterilir —
+          // kullanıcı manuel vurguladığı bir kelimeyi ararsa, o an aktif/
+          // eşleşen olduğu net kalsın diye.
+          backgroundColor: searchActive
+              ? effectiveSearchActiveColor
+              : searchPassive
+                  ? effectiveSearchPassiveColor
+                  : highlight
+                      ? effectiveHighlightColor
+                      : style?.backgroundColor,
         );
       }
       GestureRecognizer? recognizer;

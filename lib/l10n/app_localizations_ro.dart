@@ -2585,4 +2585,34 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'Acest fișier nu mai există';
+
+  @override
+  String get findMenuItemLabel => 'Găsește';
+
+  @override
+  String get findSearchHint => 'Căutare';
+
+  @override
+  String get findReplaceHint => 'Înlocuiește cu';
+
+  @override
+  String get findReplaceButton => 'Înlocuiește';
+
+  @override
+  String get findReplaceAllButton => 'Înlocuiește tot';
+
+  @override
+  String get findPreviousTooltip => 'Rezultatul anterior';
+
+  @override
+  String get findNextTooltip => 'Rezultatul următor';
+
+  @override
+  String get findShowReplaceTooltip => 'Afișează câmpul de înlocuire';
+
+  @override
+  String get findHideReplaceTooltip => 'Ascunde câmpul de înlocuire';
+
+  @override
+  String get findCloseTooltip => 'Închide căutarea';
 }

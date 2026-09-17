@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "Disimpan ke album",
   "imageViewerSaveFailedMessage": "Gagal menyimpan: {error}",
   "imageViewerSavingInProgressMessage": "Menyimpan…",
-  "imageViewerFileNotFoundMessage": "File ini sudah tidak ada"
+  "imageViewerFileNotFoundMessage": "File ini sudah tidak ada",
+  "findMenuItemLabel": "Cari",
+  "findSearchHint": "Cari",
+  "findReplaceHint": "Ganti dengan",
+  "findReplaceButton": "Ganti",
+  "findReplaceAllButton": "Ganti Semua",
+  "findPreviousTooltip": "Hasil sebelumnya",
+  "findNextTooltip": "Hasil berikutnya",
+  "findShowReplaceTooltip": "Tampilkan kolom ganti",
+  "findHideReplaceTooltip": "Sembunyikan kolom ganti",
+  "findCloseTooltip": "Tutup pencarian"
 }

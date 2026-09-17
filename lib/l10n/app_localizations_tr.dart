@@ -2560,4 +2560,34 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'Bu dosya artık mevcut değil';
+
+  @override
+  String get findMenuItemLabel => 'Bul';
+
+  @override
+  String get findSearchHint => 'Ara';
+
+  @override
+  String get findReplaceHint => 'Şununla değiştir';
+
+  @override
+  String get findReplaceButton => 'Değiştir';
+
+  @override
+  String get findReplaceAllButton => 'Tümünü Değiştir';
+
+  @override
+  String get findPreviousTooltip => 'Önceki eşleşme';
+
+  @override
+  String get findNextTooltip => 'Sonraki eşleşme';
+
+  @override
+  String get findShowReplaceTooltip => 'Değiştir alanını göster';
+
+  @override
+  String get findHideReplaceTooltip => 'Değiştir alanını gizle';
+
+  @override
+  String get findCloseTooltip => 'Bul modunu kapat';
 }

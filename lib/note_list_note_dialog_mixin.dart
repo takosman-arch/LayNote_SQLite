@@ -2,6 +2,58 @@ part of 'main.dart';
 
 // ignore_for_file: unused_element
 
+// ── Uzun Not Editörü İçin Yumuşak/Uzun Kayma Fiziği ─────────────────
+// Kullanıcı isteği: uzun notlarda parmağı çekince sayfanın daha yumuşak
+// ve daha uzun süre kaymaya devam etmesi. Flutter'ın varsayılan momentum
+// (kayma) süresi createBallisticSimulation içindeki FrictionSimulation'ın
+// friction değerine bağlıdır (varsayılan ~0.135). Bu değeri küçültmek
+// (yani sürtünmeyi azaltmak) parmak çekildikten sonraki kaymanın daha
+// uzun sürmesini ve daha yumuşak yavaşlamasını sağlar.
+//
+// NOT: Önceki sürüm BouncingScrollPhysics temel alıyordu (iOS tarzı
+// "sınırın dışına esneme/bounce" efekti). Düşük friction ile hızlı
+// kaydırışlarda, sınıra ulaşıldığında hâlâ yüksek hız kaldığından bu
+// esneme aşırı büyüyor ve üstte/altta devasa bir boşluk açılıyordu.
+// ClampingScrollPhysics (Android'in standart fiziği) taşmaya izin
+// vermediği için bu sorunu ortadan kaldırır; kayma yine de yumuşak ve
+// uzun sürer, sadece sınıra ulaşınca sertçe durur (esneme olmadan).
+class NoteEditorScrollPhysics extends ClampingScrollPhysics {
+  const NoteEditorScrollPhysics({super.parent});
+
+  // Varsayılan friction'dan çok daha düşük — kayma belirgin şekilde
+  // uzuyor. 0.10-0.135 arası "hafif fark", 0.03-0.06 arası "belirgin
+  // uzun kayma", 0.015 ve altı "buzda kayma" hissi verir. İstenirse bu
+  // değer aşağı/yukarı ayarlanabilir.
+  static const double _friction = 0.045;
+
+  @override
+  NoteEditorScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return NoteEditorScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  Simulation? createBallisticSimulation(
+    ScrollMetrics position,
+    double velocity,
+  ) {
+    // Sınırların dışındaysa (nadir bir durum — ClampingScrollPhysics
+    // normalde pozisyonu zaten sınır içinde tutar) orijinal davranışa
+    // (sınıra geri yaylanma) bırak.
+    if (position.outOfRange) {
+      return super.createBallisticSimulation(position, velocity);
+    }
+    if (velocity.abs() < tolerance.velocity) {
+      return null;
+    }
+    return FrictionSimulation(
+      _friction,
+      position.pixels,
+      velocity,
+      tolerance: tolerance,
+    );
+  }
+}
+
 mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   // ---- Diğer mixin'lerde tanımlı, burada kullanılan üyeler ----
   Widget _buildAttachmentGrid({ required List<String> ids, required List<Map<String, dynamic>> attachmentsList, required void Function(String id) onRemove, required void Function(Map<String, dynamic> att) onOpen, required String? deletingId, required void Function(String? id) onDeletingIdChanged, });
@@ -76,6 +128,15 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   // bloklarında List<TextEditingController> içine konulabiliyor olması),
   // bu dosyadaki mevcut .text / .clear() kullanımları değişmeden çalışır.
   RichBlockTextController get _titleController;
+  // ── Aşama 6: başlığın arama vurgusu ───────────────────────────────────
+  // _titleController bu dosyada DEĞİL, note_list_lifecycle_mixin.dart'ta
+  // (State ömrü boyunca) kuruluyor; RichBlockTextController.getHighlights
+  // ise final olduğundan sonradan atanamaz. Bu yüzden lifecycle mixin
+  // controller'ı kurarken sabit bir "provider'a sor" kapanışı verir,
+  // provider'ı da editör açılırken/kapanırken _showNoteDialog doldurur.
+  // Gerçek alan (TextHighlightSnapshot Function()? _titleHighlightsProvider)
+  // _titleController'ın tanımlı olduğu yerde eklenmelidir.
+  set _titleHighlightsProvider(TextHighlightSnapshot Function()? value);
   // ── Aşama 1: başlık span verisi (kalın/italik/vb.) ────────────────────
   // _titleController gibi, notlar arasında geçişte sıfırlanan/yüklenen
   // PAYLAŞILAN (State düzeyinde) bir alan. _saveNoteIfValid'in gerçek
@@ -364,6 +425,43 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // state'te tutulur, kaydedilirken _saveNoteIfValid'e geçirilir.
     bool notePinned = false;
     void Function(VoidCallback)? requestEditorRebuild;
+    // ── Aşama 6: "Bul ve Değiştir" oturumu ────────────────────────────────
+    // requestEditorRebuild ile BİREBİR AYNI gerekçeyle nullable bırakıldı:
+    // bu değişkenin rebuildBlockControllers()/syncControllersAndFocusNodes()
+    // içindeki getHighlights kapanışlarından ÖNCE bildirilmiş olması
+    // gerekiyor (Dart'ta yerel değişkenler kendi bildirim satırından önce
+    // kapanışlardan bile erişilemez), ama GERÇEK örneği ancak
+    // pushUndoCheckpoint ve buildFindFields tanımlandıktan SONRA kurulabilir
+    // (bkz. aşağıda, syncControllersAndFocusNodes() çağrısının hemen üstü).
+    // Kapanışlar null durumunda TextHighlightSnapshot.empty döndürür — yani
+    // oturum kurulmadan önceki ilk frame'lerde vurgu katmanı pasiftir.
+    NoteFindSession? findSession;
+    // "Bul" modu açık mı (üç nokta menüsünden açılır, bardaki X ile kapanır).
+    bool findMode = false;
+    // NoteFindBar Stateless olduğundan "Değiştir" satırının açık/kapalı
+    // durumu burada tutulur (bkz. o dosyadaki replaceExpanded açıklaması).
+    bool findReplaceExpanded = false;
+    // Sahiplik NoteFindBar'da DEĞİL burada: bar ağaçtan kaldırılıp tekrar
+    // eklendiğinde (findMode aç/kapa) controller'lar hayatta kalsın diye.
+    // Dispose'ları en sonda, diğer yerel node'larla birlikte yapılır.
+    final findQueryController = TextEditingController();
+    final findReplaceController = TextEditingController();
+    final findQueryFocusNode = FocusNode();
+
+    // Bir alanın Aşama 1 (vurgu) ile Aşama 3 (arama mantığı) arasındaki
+    // KARARLI kimliği. Kimlik, alanın veri Map'inin NESNE KİMLİĞİNDEN
+    // üretilir — pozisyondan (blok/satır/madde indeksinden) DEĞİL. Sebebi
+    // bu dosyada zaten defalarca karşılaşılan durum: bir madde/satır
+    // sürüklenip taşınınca ya da araya blok eklenince indeksler kayar, ama
+    // controller aynı veri Map'ine bağlı kalır (bkz. checklistItemCtrlByRef,
+    // capturedRow, _locateChecklistItem'ın varlık sebebi). Kimlik Map'e
+    // bağlandığında highlightsFor() her zaman doğru alanı bulur.
+    // applySnapshot (undo/redo) tamamen YENİ Map'ler üretir; o yolda
+    // controller'lar da yeniden kurulduğundan iki taraf yine tutarlı kalır.
+    String findIdFor(String prefix, Object ref) =>
+        '${prefix}_${identityHashCode(ref)}';
+    TextHighlightSnapshot findHighlights(String id) =>
+        findSession?.highlightsFor(id) ?? TextHighlightSnapshot.empty;
     // Aşama 3: titleFocusNode'un dinleyicisi requestEditorRebuild
     // tanımlandıktan SONRA eklenir (Dart'ta yerel değişkenler kendi
     // bildirim satırından önce kapanışlardan bile erişilemez).
@@ -724,6 +822,14 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
               getSpans: () => RichTextSpans.parse(
                 blocks[capturedIndex]['spans'],
               ),
+              // Aşama 6: getSpans ile AYNI desen — kimlik her çizimde
+              // blocks[capturedIndex]'ten TAZE okunur, sabitlenmez. (Metin
+              // controller'ları yalnızca AYNI indeks korunduğunda yeniden
+              // kullanıldığından capturedIndex bayatlamaz, ama o indeksteki
+              // blok Map'i undo/redo ile tamamen değişebilir.)
+              getHighlights: () => capturedIndex < blocks.length
+                  ? findHighlights(findIdFor('block', blocks[capturedIndex]))
+                  : TextHighlightSnapshot.empty,
             );
             ctrl.addListener(() {
               final sel = ctrl.selection;
@@ -830,10 +936,16 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 labelCtrls.add(RichBlockTextController(
                   text: (capturedRow['label'] ?? '').toString(),
                   getSpans: () => RichTextSpans.parse(capturedRow['spans']),
+                  // Aşama 6: getSpans ile aynı gerekçe — kimlik satır
+                  // REFERANSINDAN üretilir, pozisyondan değil.
+                  getHighlights: () =>
+                      findHighlights(findIdFor('calclabel', capturedRow)),
                 ));
                 valueCtrls.add(RichBlockTextController(
                   text: (capturedRow['value'] ?? '').toString(),
                   getSpans: () => _calcTableValueSpans(capturedRow),
+                  getHighlights: () =>
+                      findHighlights(findIdFor('calcvalue', capturedRow)),
                 ));
                 final newLabelFn = FocusNode();
                 // DÜZELTME (çift dinleyici birikmesi riski — checklist'teki
@@ -856,6 +968,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 RichBlockTextController(
                   text: (r['label'] ?? '').toString(),
                   getSpans: () => RichTextSpans.parse(r['spans']),
+                  getHighlights: () =>
+                      findHighlights(findIdFor('calclabel', r)),
                 ),
             ];
             valueCtrls = [
@@ -863,6 +977,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 RichBlockTextController(
                   text: (r['value'] ?? '').toString(),
                   getSpans: () => _calcTableValueSpans(r),
+                  getHighlights: () =>
+                      findHighlights(findIdFor('calcvalue', r)),
                 ),
             ];
             labelFns = [];
@@ -933,6 +1049,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 // DÜZELTME: yukarıdaki AYNI sebep — pozisyon yerine
                 // doğrudan madde referansından okunuyor.
                 getSpans: () => RichTextSpans.parse(capturedItem['spans']),
+                // Aşama 6: kimlik de aynı sebeple madde referansından.
+                getHighlights: () =>
+                    findHighlights(findIdFor('item', capturedItem)),
               );
               final fn = FocusNode();
               fn.addListener(() {
@@ -1083,8 +1202,23 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           f.dispose();
         }
       });
+      // Aşama 2 (kullanıcı isteğiyle genişletildi): tüm-not checklist türü
+      // (bir blok DEĞİL, notun tamamı checklist olan eski/ana tip) artık
+      // düz TextEditingController yerine RichBlockTextController kuruluyor
+      // — bu sayede Aşama 1'deki arama vurgu katmanı burada da çalışabilir
+      // (bkz. rich_block_text_controller.dart). Bu maddelerin zaten bir
+      // 'spans' (kalın/italik/vb.) alanı YOK, bu yüzden getSpans sabit boş
+      // liste döndürüyor — biçimlendirme davranışı hiç değişmiyor, sadece
+      // vurgu katmanı için gerekli olan controller TİPİ sağlanmış oluyor
+      // (bkz. Aşama 1'deki "getSpans: () => [] olan controller'larda sadece
+      // vurgu katmanı devreye girer" notu).
       checkControllers = checkItems
-          .map((it) => TextEditingController(text: (it['text'] ?? '').toString()))
+          .map((it) => RichBlockTextController(
+                text: (it['text'] ?? '').toString(),
+                getSpans: () => const [],
+                // Aşama 6: bu türde 'spans' yok, sadece vurgu katmanı.
+                getHighlights: () => findHighlights(findIdFor('check', it)),
+              ))
           .toList();
       checkFocusNodes = checkItems.map((_) => FocusNode()).toList();
     }
@@ -1437,6 +1571,21 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       return 1;
     }
 
+    // DÜZELTME (hot restart derleme hatası — "Local variable
+    // '_replaceLineMarker'/'_shiftOffsetForMarkerReplace' can't be
+    // referenced before it is declared"): Dart'ta local fonksiyonlar,
+    // class/top-level metodların aksine İLERİYE REFERANS VEREMEZ — bir
+    // local fonksiyon, kendisinden SONRA tanımlanan başka bir local
+    // fonksiyonu çağıramaz (aşağıdaki değişkenlerden biri gibi ele
+    // alınır: kullanılmadan önce tanımlanmış olması gerekir). Aşağıdaki
+    // iki yardımcı ( _replaceLineMarker, _shiftOffsetForMarkerReplace )
+    // eskiden bu bloğun ALTINDA, toggleBulletForFocusedBlock'un hemen
+    // öncesinde tanımlıydı; ama onları çağıran _applyBulletToLines /
+    // _precomputeNumberMarkersForLines / _applyNumberToLines bu bloğun
+    // ALTINDA (yani metinde bunlardan SONRA) yer alıyor — bu yüzden
+    // taşındılar: şimdi _applyBulletToLines'tan ÖNCE tanımlanıyorlar.
+    // Gövdeleri DEĞİŞMEDİ, sadece dosyadaki konumları değişti.
+
     // [lineStart, lineStart+oldLen) aralığını [newMarker] ile değiştirir;
     // spans'ı (varsa silme + varsa ekleme olarak) kaydırır ve yeni metni
     // döndürür. oldLen=0 saf ekleme, newMarker='' saf kaldırma, ikisi de
@@ -1496,6 +1645,348 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       return lineStart + newLen;
     }
 
+    // ── Aşama 1 (çoklu satır madde/numara desteği): Seçimin kapsadığı
+    // SATIRLARIN başlangıç offsetlerini bulma ──────────────────────────────
+    // toggleBulletForFocusedBlock/toggleNumberForFocusedBlock şu an yalnızca
+    // imlecin/seçimin BAŞLANGICININ bulunduğu tek satırı etkiliyor (yukarıdaki
+    // "Basitlik için..." notuna bkz.). Bu fonksiyon, o kısıtlamayı kaldırmanın
+    // ilk adımı olarak, seçimin kapsadığı TÜM satırların [lineStart]
+    // offsetlerini metindeki sırayla (yukarıdan aşağıya) bir listede
+    // döndürür. Bu aşamada henüz toggleBulletForFocusedBlock /
+    // toggleNumberForFocusedBlock içinde KULLANILMIYOR — yalnızca sonraki
+    // aşamalarda (satır satır işaret ekleme/kaldırma) kullanılacak temel
+    // veriyi hazırlıyoruz. Tek nokta imleç (seçim yok) durumunda liste tek
+    // elemanlıdır ve o eleman, mevcut kodun bugün hesapladığı [lineStart]
+    // ile birebir aynıdır — yani bu fonksiyon tek başına hiçbir mevcut
+    // davranışı değiştirmez.
+    //
+    // NOT: sel.baseOffset/extentOffset kullanıcının sürükleme yönüne göre
+    // ters sıralı olabilir (aşağıdan yukarıya seçim de mümkün), bu yüzden
+    // önce sel.start/sel.end (TextSelection'ın kendi min/max'ı) ile
+    // normalize ediyoruz.
+    List<int> _lineStartsForSelection(String text, TextSelection sel) {
+      final len = text.length;
+      final selStart = sel.start.clamp(0, len);
+      final selEnd = sel.end.clamp(0, len);
+
+      final firstLineStart = _safeLastNewlineIndex(text, selStart - 1) + 1;
+
+      // Seçim birden fazla karakteri kapsıyorsa VE tam bir '\n' karakterinin
+      // hemen sonunda bitiyorsa, o bitiş noktası aslında görsel olarak
+      // seçilmemiş bir SONRAKİ satırın başlangıcıdır (ör. bir paragrafı
+      // sonundaki satır sonuyla birlikte seçip bir sonraki, boş/dokunulmamış
+      // satıra taşmak istemiyoruz). Bu durumda etkili bitişi bir geri alarak
+      // o sonraki satırı listeye dahil etmiyoruz.
+      var effectiveEnd = selEnd;
+      if (effectiveEnd > selStart &&
+          effectiveEnd > 0 &&
+          effectiveEnd <= len &&
+          text[effectiveEnd - 1] == '\n') {
+        effectiveEnd -= 1;
+      }
+
+      final lastLineStart = _safeLastNewlineIndex(text, effectiveEnd - 1) + 1;
+
+      final starts = <int>[firstLineStart];
+      var cursor = firstLineStart;
+      while (cursor < lastLineStart) {
+        final nextNewline = text.indexOf('\n', cursor);
+        if (nextNewline == -1) break; // Güvenlik: normalde buraya düşmemeli.
+        final nextStart = nextNewline + 1;
+        starts.add(nextStart);
+        cursor = nextStart;
+      }
+      return starts;
+    }
+
+    // ── Aşama 2 (çoklu satır madde/numara desteği): Hedef eylemi İLK
+    // SATIRA göre belirleme ──────────────────────────────────────────────
+    // Tek satırda her satır kendi durumuna (madde mi/numaralı mı/hiçbiri mi)
+    // göre bağımsız karar veriyordu (bkz. toggleBulletForFocusedBlock/
+    // toggleNumberForFocusedBlock'un mevcut gövdesi). Çoklu satırda ise
+    // butona bir kez basıldığında TÜM seçili satırların aynı yöne gitmesi
+    // gerekir — aksi halde "üç satırdan ikisi zaten maddeliydi, biri değildi;
+    // butona basınca ne olacak?" gibi tutarsız/kafa karıştırıcı bir sonuç
+    // çıkar. Bu yüzden hedef eylem yalnızca seçimin İLK satırının mevcut
+    // durumuna bakılarak belirlenir; kalan satırlar (Aşama 3'te) bu tek
+    // hedefe göre işlenecek:
+    //   - İlk satır zaten o işarete sahipse -> hedef = TÜM satırlardan o
+    //     işareti KALDIR.
+    //   - İlk satır o işarete sahip değilse -> hedef = TÜM satırlara o
+    //     işareti UYGULA (satırda öbür türden bir işaret varsa önce o
+    //     kaldırılıp yenisiyle değiştirilir — bkz. Aşama 3).
+    //
+    // NOT: Bu iki fonksiyon henüz toggleBulletForFocusedBlock /
+    // toggleNumberForFocusedBlock içinde ÇAĞRILMIYOR; mevcut tek-satır
+    // davranışı bu adımda da değişmeden duruyor. Aşama 3'te bu karar,
+    // gerçek satır satır uygulama döngüsüne bağlanacak.
+    bool _shouldRemoveBulletForSelection(String text, List<int> lineStarts) {
+      final firstLineStart = lineStarts.first;
+      return text.startsWith(bulletMarker, firstLineStart);
+    }
+
+    bool _shouldRemoveNumberForSelection(String text, List<int> lineStarts) {
+      final firstLineStart = lineStarts.first;
+      return numberedLoop.matchAsPrefix(text.substring(firstLineStart)) !=
+          null;
+    }
+
+    // ── Aşama 3 (çoklu satır madde/numara desteği): Tek satırlık
+    // _replaceLineMarker mantığını ÇOK SATIRA genelleme ─────────────────────
+    // Aşama 2'de belirlenen tek hedef eylemi ([remove]), [lineStarts]
+    // listesindeki HER satıra uygular. Satırlar SONDAN BAŞA doğru (listenin
+    // tersten sırasıyla) işlenir: bir satırdaki ekleme/kaldırma işlemi o
+    // satırdan SONRAKİ metnin uzunluğunu değiştirir, ama ondan ÖNCEKİ
+    // (henüz işlenmemiş) satırların [lineStart] offsetlerini etkilemez —
+    // çünkü onlar metinde daha erken bir konumda. Bu sayede her satır için
+    // halihazırda var olan tek-satırlık _replaceLineMarker aynen kullanılır
+    // ve ayrı bir "kümülatif offset kaydırma" hesabına gerek kalmaz.
+    //
+    // Her satırın OLDLEN/newMarker değeri, o satırın KENDİ mevcut durumuna
+    // göre hesaplanır (tıpkı mevcut tek-satırlık toggleBulletForFocusedBlock
+    // gövdesindeki gibi); yalnızca "ekle mi kaldır mı" yönü [remove] ile
+    // dıştan sabitlenmiştir:
+    //   - remove == true: satırda madde işareti YOKSA o satıra dokunulmaz
+    //     (zaten "kaldırılacak" bir şey yok — idempotent).
+    //   - remove == false: satırda ZATEN madde işareti VARSA o satıra
+    //     dokunulmaz (zaten hedef durumda — idempotent); numaralıysa numara
+    //     kaldırılıp madde işaretiyle değiştirilir; hiçbiri yoksa madde
+    //     işareti eklenir.
+    //
+    // ── Aşama 4 (çoklu satır madde/numara desteği): Seçim offsetlerinin
+    // ÇOK SATIRDA doğru kayması ────────────────────────────────────────────
+    // Tek satırlık orijinal kodda (bkz. toggleBulletForFocusedBlock'un
+    // GÖVDESİ) tek bir _shiftOffsetForMarkerReplace çağrısı yeterliydi,
+    // çünkü değişen tek bir (lineStart, oldLen, newLen) üçlüsü vardı. Çok
+    // satırda ise HER satır değişikliği, o satırdan SONRAKİ satırlardaki
+    // (ve dolayısıyla seçimin base/extent uçlarındaki, eğer onlar da o
+    // sonraki satırlardaysa) offsetleri etkileyebilir. Aşama 3'teki döngü
+    // zaten SONDAN BAŞA işliyordu (metin/span kaydırması için); burada
+    // AYNI döngüye, her adımda base/extent'i güncelleyen bir zincirleme
+    // ekleniyor: bir adımda hesaplanan yeni base/extent, bir SONRAKİ
+    // adımın (yani bir önceki/daha yukarıdaki satırın) girdisi olur. Son
+    // satırdan ilk satıra doğru ilerledikçe bu offsetler doğru birikir —
+    // tıpkı tek satırlık sürümdeki tek _shiftOffsetForMarkerReplace
+    // çağrısının, artık N kez zincirlenmiş hali gibi.
+    //
+    // Dönüş tipi olarak dosyada başka yerlerde de kullanılan (bkz.
+    // _locateChecklistItem) adlandırılmış record söz dizimi seçildi —
+    // ayrı bir sınıf tanımlamaya gerek kalmadan üç değeri (yeni metin,
+    // yeni base, yeni extent) birlikte döndürür.
+    //
+    // NOT: Bu fonksiyon henüz toggleBulletForFocusedBlock içinde
+    // ÇAĞRILMIYOR — mevcut tek-satır davranışı bu aşamada da değişmeden
+    // duruyor. [base]/[extent] parametreleri şimdilik çağıran taraf
+    // (Aşama 6'da) sel.baseOffset/sel.extentOffset olarak geçirilecek;
+    // burada sadece hesaplama mekanizması kuruluyor.
+    ({String text, int base, int extent}) _applyBulletToLines({
+      required Map<String, dynamic> holder,
+      required String text,
+      required List<int> lineStarts,
+      required bool remove,
+      required int base,
+      required int extent,
+    }) {
+      var currentText = text;
+      var currentBase = base;
+      var currentExtent = extent;
+      for (final lineStart in lineStarts.reversed) {
+        final hasBullet = currentText.startsWith(bulletMarker, lineStart);
+        final numberMatch = hasBullet
+            ? null
+            : numberedLoop.matchAsPrefix(currentText.substring(lineStart));
+
+        final int oldLen;
+        final String newMarker;
+        if (remove) {
+          if (!hasBullet) continue; // Zaten madde işaretsiz -> dokunma.
+          oldLen = bulletMarker.length;
+          newMarker = '';
+        } else {
+          if (hasBullet) continue; // Zaten madde işaretli -> dokunma.
+          if (numberMatch != null) {
+            oldLen = numberMatch.group(0)!.length;
+            newMarker = bulletMarker;
+          } else {
+            oldLen = 0;
+            newMarker = bulletMarker;
+          }
+        }
+        final newLen = newMarker.length;
+
+        currentText = _replaceLineMarker(
+          holder: holder,
+          text: currentText,
+          lineStart: lineStart,
+          oldLen: oldLen,
+          newMarker: newMarker,
+        );
+
+        // Bu satır için offset kaydırması: bir sonraki (yukarıdaki) satır
+        // işlenmeden önce, bu satırın değişiminin base/extent üzerindeki
+        // etkisi hemen uygulanır — böylece zincir doğru birikir.
+        currentBase = _shiftOffsetForMarkerReplace(
+          currentBase,
+          lineStart,
+          oldLen,
+          newLen,
+        );
+        currentExtent = _shiftOffsetForMarkerReplace(
+          currentExtent,
+          lineStart,
+          oldLen,
+          newLen,
+        );
+      }
+      return (
+        text: currentText,
+        base: currentBase.clamp(0, currentText.length),
+        extent: currentExtent.clamp(0, currentText.length),
+      );
+    }
+
+    // ── Aşama 5 (çoklu satır madde/numara desteği): "Sıradaki numara"
+    // hesabının SATIR SATIR, yukarıdan aşağıya doğru ÖNCEDEN yapılması ──────
+    // [nextNumberForLine] yalnızca BİR ÖNCEKİ satıra bakarak "sıradaki
+    // numara"yı hesaplıyor — bu, tek satırlık ekleme senaryosu için
+    // yeterliydi (o satırdan öncesi hiç değişmiyordu). Ama _applyNumberToLines
+    // satırları SONDAN BAŞA işliyor (Aşama 3/4'ün metin/offset kaydırması
+    // bunu gerektiriyor); bu sırayla giderken işlenen satırın BİR ÖNCESİ
+    // (yukarısı), eğer o da seçimin bir parçasıysa, HENÜZ numaralanmamış
+    // olur (sırada daha sonra/daha geç işlenecek) — yani [nextNumberForLine]
+    // o satırın mutasyona uğramamış eski haline bakar ve her satır için
+    // (yanlışlıkla) aynı "1. " sonucunu üretebilir.
+    //
+    // Çözüm: "doğru numara SIRASINI hesaplama" işini "metin/span'ı SONDAN
+    // BAŞA kaydırma" işinden ayırmak. Bu fonksiyon, [lineStarts]'ı BAŞTAN
+    // SONA (yukarıdan aşağıya, metindeki gerçek sırayla) gezip her satırın
+    // alacağı numarayı önceden hesaplar ve bir Map<lineStart, marker>
+    // içinde döndürür:
+    //   - Seçimin İLK satırı: numarası, seçimden ÖNCEKİ (değişmeyen) satıra
+    //     bakılarak eskisi gibi [nextNumberForLine] ile bulunur.
+    //   - Sonraki her satır: kendisinden ÖNCEKİ, seçim içindeki satıra
+    //     (o satırın GERÇEK metindeki eski numarasına değil, bu ön-geçişte
+    //     KENDİSİNE atanmış YENİ numaraya) göre +1 olarak belirlenir.
+    // Böylece "1. 2. 3. ..." sıralaması, satırların hangi sırada
+    // metinde değiştirildiğinden bağımsız olarak garanti edilir.
+    //
+    // [text] burada her zaman özgün (henüz hiçbir satırı değişmemiş) metin
+    // olmalıdır — ilk satırın "önceki satırı" ancak bu şekilde doğru okunur;
+    // bu yüzden _applyNumberToLines bunu SONDAN BAŞA döngüden ÖNCE, orijinal
+    // [text] parametresiyle bir kere çağırır.
+    Map<int, String> _precomputeNumberMarkersForLines({
+      required String text,
+      required List<int> lineStarts,
+    }) {
+      final markers = <int, String>{};
+      var previousNumber = 0;
+      for (var i = 0; i < lineStarts.length; i++) {
+        final lineStart = lineStarts[i];
+        final number =
+            i == 0 ? nextNumberForLine(text, lineStart) : previousNumber + 1;
+        markers[lineStart] = '$number. ';
+        previousNumber = number;
+      }
+      return markers;
+    }
+
+    // Numara işareti için simetrik uygulama (bkz. _applyBulletToLines'ın
+    // başındaki Aşama 4 açıklaması — aynı base/extent zincirleme mekanizması
+    // burada da geçerli). Aşama 5 ile birlikte "sıradaki numara" artık
+    // yukarıdaki ön-geçişten ([_precomputeNumberMarkersForLines]) okunuyor;
+    // sondan başa giden asıl döngü (metin/span kaydırması + offset
+    // zincirleme için hâlâ gerekli) sadece bu haritadan okuma yapıyor,
+    // kendi başına numara HESAPLAMIYOR.
+    ({String text, int base, int extent}) _applyNumberToLines({
+      required Map<String, dynamic> holder,
+      required String text,
+      required List<int> lineStarts,
+      required bool remove,
+      required int base,
+      required int extent,
+    }) {
+      // NOT: Ön-geçiş her zaman özgün [text] üzerinde, döngü başlamadan
+      // ÖNCE çalıştırılır (remove == true iken hiç kullanılmayacak olsa
+      // bile hesaplaması ucuz ve zararsızdır) — bkz. yukarıdaki fonksiyon
+      // açıklaması.
+      final precomputedMarkers = remove
+          ? const <int, String>{}
+          : _precomputeNumberMarkersForLines(text: text, lineStarts: lineStarts);
+
+      var currentText = text;
+      var currentBase = base;
+      var currentExtent = extent;
+      for (final lineStart in lineStarts.reversed) {
+        final existingNumberMatch =
+            numberedLoop.matchAsPrefix(currentText.substring(lineStart));
+        final hasBullet = existingNumberMatch == null &&
+            currentText.startsWith(bulletMarker, lineStart);
+
+        final int oldLen;
+        final String newMarker;
+        if (remove) {
+          if (existingNumberMatch == null) continue; // Zaten numarasız.
+          oldLen = existingNumberMatch.group(0)!.length;
+          newMarker = '';
+        } else {
+          if (existingNumberMatch != null) continue; // Zaten numaralı.
+          // Aşama 5: numara artık burada [nextNumberForLine] ile ANLIK
+          // (ve bu noktada güvenilmez biçimde mutasyona uğramış) metinden
+          // hesaplanmıyor; döngüden önce yukarıdan aşağıya hesaplanmış
+          // haritadan okunuyor — bu sayede "1. 2. 3." sıralaması, satırların
+          // sondan başa işlenme sırasından bağımsız olarak doğru kalır.
+          newMarker = precomputedMarkers[lineStart]!;
+          oldLen = hasBullet ? bulletMarker.length : 0;
+        }
+        final newLen = newMarker.length;
+
+        currentText = _replaceLineMarker(
+          holder: holder,
+          text: currentText,
+          lineStart: lineStart,
+          oldLen: oldLen,
+          newMarker: newMarker,
+        );
+
+        currentBase = _shiftOffsetForMarkerReplace(
+          currentBase,
+          lineStart,
+          oldLen,
+          newLen,
+        );
+        currentExtent = _shiftOffsetForMarkerReplace(
+          currentExtent,
+          lineStart,
+          oldLen,
+          newLen,
+        );
+      }
+      return (
+        text: currentText,
+        base: currentBase.clamp(0, currentText.length),
+        extent: currentExtent.clamp(0, currentText.length),
+      );
+    }
+
+    // ── Aşama 6 (çoklu satır madde/numara desteği): toggleBulletForFocusedBlock
+    // gövdesi, artık Aşama 1-5'te hazırlanan yardımcılara BAĞLANIYOR ─────────
+    // Eskiden burada tek bir [lineStart] hesaplanıp doğrudan
+    // _replaceLineMarker/_shiftOffsetForMarkerReplace çağrılıyordu (tek satır
+    // davranışı). Şimdi:
+    //   1) _lineStartsForSelection ile seçimin kapsadığı TÜM satırların
+    //      başlangıçları bulunuyor (tek nokta imleçte tek elemanlı liste
+    //      döner -> eski davranış otomatik olarak korunur, kenar durum (a)).
+    //   2) Hedef eylem (ekle/kaldır) SADECE ilk satıra bakılarak
+    //      _shouldRemoveBulletForSelection ile bir kere belirleniyor -> tüm
+    //      satırlar aynı yöne gider (bkz. Aşama 2 açıklaması).
+    //   3) pushUndoCheckpoint() döngüden ÖNCE, tek seferde çağrılıyor ->
+    //      tek Ctrl+Z tüm satırları geri alır (kenar durum c'nin undo kısmı).
+    //   4) _applyBulletToLines tüm satırları sondan başa işleyip metni,
+    //      span'ları ve base/extent'i zincirleme kaydırarak döndürüyor
+    //      (kenar durum (b): boş satırlar da listede olduğu için onlara da
+    //      işaret eklenir, atlanmaz).
+    //   5) requestEditorRebuild yalnızca döngü tamamen bittikten sonra, tek
+    //      sefer çağrılıyor (kenar durum c'nin rebuild kısmı).
     void toggleBulletForFocusedBlock() {
       final controller = _resolveFocusedFormatController();
       final holder = _resolveFocusedSpansHolder();
@@ -1504,60 +1995,38 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       if (!sel.isValid) return;
 
       final text = controller.text;
-      final cursor = sel.start.clamp(0, text.length);
-      final lineStart = _safeLastNewlineIndex(text, cursor - 1) + 1;
-
-      final hasBullet = text.startsWith(bulletMarker, lineStart);
-      final numberMatch =
-          hasBullet ? null : numberedLoop.matchAsPrefix(text.substring(lineStart));
+      final lineStarts = _lineStartsForSelection(text, sel);
+      final remove = _shouldRemoveBulletForSelection(text, lineStarts);
 
       pushUndoCheckpoint();
 
-      final int oldLen;
-      final String newMarker;
-      if (hasBullet) {
-        // Satır zaten madde işaretli -> kaldır.
-        oldLen = bulletMarker.length;
-        newMarker = '';
-      } else if (numberMatch != null) {
-        // Satır numaralı -> numarayı kaldırıp yerine madde işareti koy.
-        oldLen = numberMatch.group(0)!.length;
-        newMarker = bulletMarker;
-      } else {
-        // Satır hiçbir işarete sahip değil -> başına madde işareti ekle.
-        oldLen = 0;
-        newMarker = bulletMarker;
-      }
-      final newLen = newMarker.length;
-
-      final newText = _replaceLineMarker(
+      final result = _applyBulletToLines(
         holder: holder,
         text: text,
-        lineStart: lineStart,
-        oldLen: oldLen,
-        newMarker: newMarker,
+        lineStarts: lineStarts,
+        remove: remove,
+        base: sel.baseOffset,
+        extent: sel.extentOffset,
       );
 
-      final newBase = _shiftOffsetForMarkerReplace(
-        sel.baseOffset,
-        lineStart,
-        oldLen,
-        newLen,
-      ).clamp(0, newText.length);
-      final newExtent = _shiftOffsetForMarkerReplace(
-        sel.extentOffset,
-        lineStart,
-        oldLen,
-        newLen,
-      ).clamp(0, newText.length);
-
       controller.value = TextEditingValue(
-        text: newText,
-        selection: TextSelection(baseOffset: newBase, extentOffset: newExtent),
+        text: result.text,
+        selection: TextSelection(
+          baseOffset: result.base,
+          extentOffset: result.extent,
+        ),
       );
       requestEditorRebuild?.call(() {});
     }
 
+    // ── Aşama 6 (çoklu satır madde/numara desteği): toggleNumberForFocusedBlock
+    // gövdesi de aynı şekilde Aşama 1-5 yardımcılarına bağlanıyor. Tek fark,
+    // _applyBulletToLines yerine _applyNumberToLines kullanılması ve hedef
+    // kararının _shouldRemoveNumberForSelection ile verilmesi — "sıradaki
+    // numara" hesabının satır satır (1. 2. 3. ...) doğru ilerlemesi zaten
+    // _applyNumberToLines'ın içindeki Aşama 5 ön-geçişiyle ([_precomputeNumberMarkersForLines])
+    // garanti ediliyor, bu fonksiyonun burada tekrar bir şey hesaplamasına
+    // gerek yok.
     void toggleNumberForFocusedBlock() {
       final controller = _resolveFocusedFormatController();
       final holder = _resolveFocusedSpansHolder();
@@ -1566,57 +2035,26 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       if (!sel.isValid) return;
 
       final text = controller.text;
-      final cursor = sel.start.clamp(0, text.length);
-      final lineStart = _safeLastNewlineIndex(text, cursor - 1) + 1;
-
-      final existingNumberMatch = numberedLoop.matchAsPrefix(text.substring(lineStart));
-      final hasBullet = existingNumberMatch == null &&
-          text.startsWith(bulletMarker, lineStart);
+      final lineStarts = _lineStartsForSelection(text, sel);
+      final remove = _shouldRemoveNumberForSelection(text, lineStarts);
 
       pushUndoCheckpoint();
 
-      final int oldLen;
-      final String newMarker;
-      if (existingNumberMatch != null) {
-        // Satır zaten numaralı -> kaldır.
-        oldLen = existingNumberMatch.group(0)!.length;
-        newMarker = '';
-      } else if (hasBullet) {
-        // Satır madde işaretli -> madde işaretini kaldırıp yerine numara
-        // koy.
-        oldLen = bulletMarker.length;
-        newMarker = '${nextNumberForLine(text, lineStart)}. ';
-      } else {
-        // Satır hiçbir işarete sahip değil -> başına numara ekle.
-        oldLen = 0;
-        newMarker = '${nextNumberForLine(text, lineStart)}. ';
-      }
-      final newLen = newMarker.length;
-
-      final newText = _replaceLineMarker(
+      final result = _applyNumberToLines(
         holder: holder,
         text: text,
-        lineStart: lineStart,
-        oldLen: oldLen,
-        newMarker: newMarker,
+        lineStarts: lineStarts,
+        remove: remove,
+        base: sel.baseOffset,
+        extent: sel.extentOffset,
       );
 
-      final newBase = _shiftOffsetForMarkerReplace(
-        sel.baseOffset,
-        lineStart,
-        oldLen,
-        newLen,
-      ).clamp(0, newText.length);
-      final newExtent = _shiftOffsetForMarkerReplace(
-        sel.extentOffset,
-        lineStart,
-        oldLen,
-        newLen,
-      ).clamp(0, newText.length);
-
       controller.value = TextEditingValue(
-        text: newText,
-        selection: TextSelection(baseOffset: newBase, extentOffset: newExtent),
+        text: result.text,
+        selection: TextSelection(
+          baseOffset: result.base,
+          extentOffset: result.extent,
+        ),
       );
       requestEditorRebuild?.call(() {});
     }
@@ -2120,6 +2558,95 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           offset = text.length;
         }
 
+        // AŞAMA 1: Çok satırlı seçim desteği — checklist'e çevir butonuna
+        // basıldığında seçim tek bir imleç (collapsed) mi, yoksa birden
+        // fazla satırı kapsayabilecek bir ARALIK mı, burada belirlenir.
+        // Not: baseOffset/extentOffset sıralı olmayabilir (seçim sağdan
+        // sola da yapılmış olabilir), bu yüzden min/max ile normalize
+        // ediliyor. Şimdilik bu değerler sadece hesaplanıyor; aşağıdaki
+        // tek-satır akışı (Aşama 1 itibarıyla) DEĞİŞTİRİLMEDİ — bir
+        // sonraki aşamada isRangeSelection true olduğunda ayrı bir yola
+        // yönlendirilecek.
+        final rawSelection = controller?.selection;
+        final bool isRangeSelection = rawSelection != null &&
+            rawSelection.isValid &&
+            rawSelection.baseOffset != rawSelection.extentOffset;
+        final int selStart = isRangeSelection
+            ? rawSelection.start.clamp(0, text.length)
+            : offset;
+        final int selEnd = isRangeSelection
+            ? rawSelection.end.clamp(0, text.length)
+            : offset;
+
+        // AŞAMA 2: isRangeSelection true ise, seçim tam satır sınırlarına
+        // GENİŞLETİLİR. Seçim bir satırın ortasından başlayıp/bitiyor
+        // olsa bile (ör. kullanıcı 2. satırın ortasından 4. satırın
+        // ortasına kadar seçtiyse) o satırların TAMAMI checklist'e dahil
+        // edilmeli. Yöntem, tek-satır akışındaki lineStartIdx/lineEndIdx
+        // hesabıyla birebir aynı desen — sadece offset yerine selStart/
+        // selEnd kullanılıyor:
+        //   rangeLineStartIdx: selStart'tan geriye doğru ilk '\n'den
+        //     sonraki konum (selStart'ın bulunduğu satırın başı).
+        //   rangeLineEndIdx: selEnd'ten ileriye doğru ilk '\n'nin konumu
+        //     (yoksa metnin sonu) — bu, selEnd'in bulunduğu satırın sonu.
+        // Şimdilik bu değerler sadece hesaplanıyor; blok oluşturma akışı
+        // (aşağıdaki tek-satır kodu) bir sonraki aşamada bunları
+        // kullanmaya başlayacak.
+        final int rangeLineStartIdx = isRangeSelection
+            ? _safeLastNewlineIndex(text, selStart - 1) + 1
+            : selStart;
+        final int rangeLineEndIdx = isRangeSelection
+            ? (() {
+                final nl = text.indexOf('\n', selEnd);
+                return nl == -1 ? text.length : nl;
+              })()
+            : selEnd;
+
+        // AŞAMA 3: isRangeSelection true ise, [rangeLineStartIdx,
+        // rangeLineEndIdx) aralığındaki metin '\n' karakterine göre
+        // satırlara bölünüp her satır ayrı bir checklist maddesine
+        // dönüştürülür. Karar: BOŞ satırlar da (kullanıcının seçtiği
+        // satır sayısını/sırasını bozmamak için) birer madde olarak
+        // eklenir — istenirse ileride ayrıca filtrelenebilir.
+        // rangeItems, tek-satır akışındaki tek elemanlı
+        // [{'text': currentLineText, 'checked': false}] listesinin
+        // çok-satırlı karşılığıdır. Şimdilik sadece hesaplanıyor; blok
+        // oluşturma akışı bir sonraki aşamada bunu kullanmaya başlayacak.
+        final List<Map<String, dynamic>> rangeItems = isRangeSelection
+            ? text
+                .substring(rangeLineStartIdx, rangeLineEndIdx)
+                .split('\n')
+                .map((line) => <String, dynamic>{
+                      'text': line,
+                      'checked': false,
+                    })
+                .toList()
+            : const [];
+
+        // AŞAMA 4: Üst/alt kalan metnin ayrılması — tek-satır akışındaki
+        // aboveText/belowText/finalAboveText hesabıyla BİREBİR AYNI desen,
+        // sadece lineStartIdx/nextNewline yerine rangeLineStartIdx/
+        // rangeLineEndIdx (ve seçimin son satırının '\n' konumu)
+        // kullanılıyor. rangeNextNewline, rangeLineEndIdx'in '\n' mi yoksa
+        // metnin sonu mu olduğunu ayırt etmek için ayrıca tutuluyor
+        // (belowText hesabında '\n' sonrasının mı yoksa boş metnin mi
+        // alınacağına karar vermek için gerekli — tek-satır akışındaki
+        // nextNewline == -1 kontrolüyle aynı gerekçe).
+        final int rangeNextNewline =
+            isRangeSelection && rangeLineEndIdx < text.length
+                ? rangeLineEndIdx
+                : -1;
+        final String rangeAboveText =
+            isRangeSelection ? text.substring(0, rangeLineStartIdx) : '';
+        final String rangeBelowText = isRangeSelection
+            ? (rangeNextNewline == -1
+                ? ''
+                : text.substring(rangeNextNewline + 1))
+            : '';
+        final String rangeFinalAboveText = rangeAboveText.endsWith('\n')
+            ? rangeAboveText.substring(0, rangeAboveText.length - 1)
+            : rangeAboveText;
+
         // İmlecin bulunduğu satırın başını ve sonunu bul.
         // Satır başı: offset'ten geriye doğru ilk '\n'den sonraki konum.
         // Satır sonu: offset'ten ileriye doğru ilk '\n'nin konumu (yoksa
@@ -2141,6 +2668,29 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         final finalAboveText = aboveText.endsWith('\n')
             ? aboveText.substring(0, aboveText.length - 1)
             : aboveText;
+
+        // AŞAMA 5: Blok oluşturma akışının genelleştirilmesi.
+        // Aşağıdaki kod artık iki kaynaktan birini seçiyor:
+        //  - isRangeSelection == false ise: tek-satır akışının ürettiği
+        //    lineStartIdx / finalAboveText / currentLineText / belowText
+        //    (davranış TAMAMEN eskisiyle aynı — geriye dönük uyumluluk).
+        //  - isRangeSelection == true ise: Aşama 2-4'te hesaplanan
+        //    rangeLineStartIdx / rangeFinalAboveText / rangeItems /
+        //    rangeBelowText — yani seçilen TÜM satırlar.
+        // Bu "effective*" değerleri, alttaki blok yerleştirme kodunun
+        // TEK bir yol izlemesini sağlıyor; iki ayrı kopya kod yazmaktan
+        // kaçınıyoruz.
+        final int effectiveLineStartIdx =
+            isRangeSelection ? rangeLineStartIdx : lineStartIdx;
+        final String effectiveFinalAboveText =
+            isRangeSelection ? rangeFinalAboveText : finalAboveText;
+        final List<Map<String, dynamic>> effectiveItems = isRangeSelection
+            ? rangeItems
+            : [
+                {'text': currentLineText, 'checked': false},
+              ];
+        final String effectiveBelowText =
+            isRangeSelection ? rangeBelowText : belowText;
 
         // DÜZELTME (checklist bir alt satıra ekleniyordu): finalAboveText
         // boşsa (checklist'e dönüştürülen satır, metin bloğundaki tek/ilk
@@ -2167,31 +2717,39 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         // bir satır olup olmadığına (lineStartIdx == 0) bakıyoruz; o satır
         // boş olsa bile ayrı bir (boş) metin bloğu olarak korunuyor.
         final int checklistIdx;
-        if (lineStartIdx == 0) {
+        if (effectiveLineStartIdx == 0) {
           blocks[idx] = {
             'type': 'checklist',
-            'items': [
-              {'text': currentLineText, 'checked': false},
-            ],
+            'items': effectiveItems,
           };
           checklistIdx = idx;
         } else {
-          blocks[idx]['text'] = finalAboveText;
+          blocks[idx]['text'] = effectiveFinalAboveText;
           blocks.insert(idx + 1, {
             'type': 'checklist',
-            'items': [
-              {'text': currentLineText, 'checked': false},
-            ],
+            'items': effectiveItems,
           });
           checklistIdx = idx + 1;
         }
-        if (belowText.isNotEmpty) {
-          blocks.insert(checklistIdx + 1, {'type': 'text', 'text': belowText});
+        if (effectiveBelowText.isNotEmpty) {
+          blocks.insert(checklistIdx + 1, {
+            'type': 'text',
+            'text': effectiveBelowText,
+          });
         }
 
         rebuildBlockControllers();
 
         // Yeni eklenen checklist bloğunun ilk maddesine odaklan.
+        // AŞAMA 6 (doğrulama): Bu odak mantığı checklistIdx ve
+        // blockItemFocusNodes[checklistIdx] üzerinden çalıştığı, madde
+        // sayısına hiçbir yerde sabit (hardcoded) referans vermediği için
+        // hem tek-satırlık (effectiveItems.length == 1) hem çok-satırlık
+        // (effectiveItems.length > 1) durumda DEĞİŞİKLİK GEREKTİRMEDEN
+        // doğru çalışır: newItemFocusNodes, rebuildBlockControllers()
+        // tarafından effectiveItems ile aynı uzunlukta üretilir;
+        // focusedItemIndex = 0 her durumda ilk maddeye (kullanıcının
+        // seçtiği ilk satıra) odaklanmayı sağlar.
         // DÜZELTME: eskiden çift addPostFrameCallback kullanılıyordu (ilk
         // frame'de rebuildBlockControllers'ın dispose callback'i, ikinci
         // frame'de requestFocus). Bu ekstra frame gecikmesi, eski odağın
@@ -2668,16 +3226,39 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // bold/italic span'ların start/end değerleri de kaydırılmalı — aksi
     // halde span'lar yanlış karakter aralığını işaretlemeye devam eder
     // (bkz. RichTextSpans.shiftForInsert/shiftForDelete).
-    void _maybeHandleBulletShortcut(
+    // DÜZELTME (boş madde satırında Enter'a basınca işaret "bazen"
+    // kalkmıyordu): eskiden burada "prevLine == bulletMarker" ile TAM
+    // string eşitliği aranıyordu. Bazı öngörülü/otomatik düzeltmeli
+    // klavyeler (Gboard, Samsung Klavye vb.) Enter'a basıldığında satır
+    // sonuna sessizce fazladan bir boşluk ekleyebiliyor ya da mevcut
+    // boşluğu farklı bir karakterle değiştirebiliyor; bu durumda
+    // "prevLine" tam olarak "• " olmuyor (ör. "•  " iki boşlukla) ve
+    // eşitlik kontrolü başarısız olup çıkış işlemi SESSİZCE atlanıyordu.
+    // Bu davranış klavyenin o an düzeltme uygulayıp uygulamadığına bağlı
+    // olduğundan "bazen çalışıyor bazen çalışmıyor" gibi görünüyordu.
+    // Artık "• " + isteğe bağlı fazladan boşluk(lar)" toleranslı bir
+    // regex ile yakalanıyor ve silinecek uzunluk sabit bulletMarker.length
+    // yerine GERÇEK prevLine.length üzerinden hesaplanıyor.
+    //
+    // Fonksiyon ayrıca artık bool döndürüyor: true, bu tuş vuruşunu
+    // (Enter/"- "/"* ") gerçekten işlediği anlamına gelir. Bu bilgi, aynı
+    // onChanged döngüsünde ardından çağrılan _maybeHandleBulletBackspace /
+    // _maybeHandleNumberShortcut gibi fonksiyonların, bu fonksiyonun
+    // controller.value üzerinde yaptığı değişikliği yanlışlıkla "tek
+    // karakterlik bir Backspace" sanıp üstüne bir daha dokunmasını
+    // (uzunluk hesabının tesadüfen çakışabildiği durumları) önlemek için
+    // çağrı noktasında kullanılıyor.
+    final RegExp _bulletEmptyLineRe = RegExp(r'^•\s*$');
+    bool _maybeHandleBulletShortcut(
       TextEditingController controller,
       Map<String, dynamic> block, {
       required void Function(String newText) onTextChanged,
     }) {
       final sel = controller.selection;
-      if (!sel.isValid || !sel.isCollapsed) return;
+      if (!sel.isValid || !sel.isCollapsed) return false;
       final text = controller.text;
       final cursor = sel.baseOffset;
-      if (cursor <= 0 || cursor > text.length) return;
+      if (cursor <= 0 || cursor > text.length) return false;
 
       final justTyped = text[cursor - 1];
 
@@ -2695,8 +3276,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
             selection: TextSelection.collapsed(offset: newCursor),
           );
           onTextChanged(newText);
+          return true;
         }
-        return;
+        return false;
       }
 
       // 2) Enter: bullet'li satırdan sonra yeni satır da bullet olsun;
@@ -2704,14 +3286,16 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       if (justTyped == '\n') {
         final prevLineStart = _safeLastNewlineIndex(text, cursor - 2) + 1;
         final prevLineEnd = cursor - 1;
-        if (prevLineEnd < prevLineStart) return;
+        if (prevLineEnd < prevLineStart) return false;
         final prevLine = text.substring(prevLineStart, prevLineEnd);
-        if (prevLine == bulletMarker) {
+        if (_bulletEmptyLineRe.hasMatch(prevLine)) {
           // Boş madde satırında Enter -> bullet modundan çık, işareti
-          // önceki (şimdi terk edilen) satırdan kaldır. Bu, [prevLineStart,
-          // prevLineEnd) aralığında (2 karakter) bir SİLME işlemidir.
+          // önceki (şimdi terk edilen) satırdan kaldır. removeLen, sabit
+          // bulletMarker.length YERİNE gerçek prevLine.length: klavyenin
+          // eklediği olası fazladan boşluğu da kapsayarak siler.
+          final removeLen = prevLine.length;
           final newText = text.replaceRange(prevLineStart, prevLineEnd, '');
-          final newCursor = cursor - bulletMarker.length;
+          final newCursor = cursor - removeLen;
           block['spans'] = RichTextSpans.shiftForDelete(
             block['spans'] as List?,
             prevLineStart,
@@ -2724,8 +3308,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
             ),
           );
           onTextChanged(newText);
+          return true;
         } else if (prevLine.startsWith(bulletMarker) &&
-            prevLine.length > bulletMarker.length) {
+            prevLine.trimRight().length > bulletMarker.trimRight().length) {
           // Doldurulmuş bullet satırından sonra Enter -> yeni satır da
           // bullet olarak devam etsin. Bu, [cursor] konumuna bulletMarker
           // uzunluğunda (2 karakter) bir EKLEME işlemidir.
@@ -2741,8 +3326,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
             selection: TextSelection.collapsed(offset: newCursor),
           );
           onTextChanged(newText);
+          return true;
         }
       }
+      return false;
     }
 
     // ── Backspace ile madde işaretini TEK seferde silme ────────────────────
@@ -2761,7 +3348,18 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       Map<String, dynamic> block,
       String oldText, {
       required void Function(String newText) onTextChanged,
+      // DÜZELTME: bu fonksiyon "tam olarak 1 karakter kısaldı mı" diye
+      // bakarak Backspace'i tespit ediyor. Ama _maybeHandleBulletShortcut
+      // Enter'da bullet modundan ÇIKARKEN de metni net 1 karakter
+      // kısaltabiliyor (satır sonu Enter ile +1 uzuyor, sonra 2 karakterlik
+      // işaret siliniyor: net -1). Bu iki durum uzunluk hesabıyla
+      // AYIRT EDİLEMİYOR ve aynı onChanged döngüsünde ikisi art arda
+      // çağrıldığında yanlış tetiklenme riski oluşuyordu. Bu yüzden çağrı
+      // noktası, bullet-shortcut o döngüde zaten bir şey işlediyse
+      // (handledByShortcut=true) burayı hiç çalıştırmamalı.
+      bool handledByShortcut = false,
     }) {
+      if (handledByShortcut) return;
       final sel = controller.selection;
       if (!sel.isValid || !sel.isCollapsed) return;
       final text = controller.text;
@@ -2798,32 +3396,38 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
     // YOKTUR — kullanıcı zaten "1. " yazdığında metin olduğu gibi görünür,
     // ayrıca bir karaktere çevrilmesi gerekmez; yalnızca Enter'a basılınca
     // numaralamanın devam/çıkış davranışını yönetiriz.
-    final numberedLoopShortcut = RegExp(r'^(\d+)\. ');
-    void _maybeHandleNumberShortcut(
+    // Not: eşleşme artık sonda tek zorunlu boşluk aramıyor ("\s*"),
+    // çünkü bazı klavyeler Enter'a basılınca "N. " sonuna sessizce
+    // fazladan boşluk ekleyebiliyor; bu da aşağıdaki "boş satır mı"
+    // kontrolünü (bulletMarker'daki ile aynı sebepten) bazen kırıyordu.
+    final numberedLoopShortcut = RegExp(r'^(\d+)\.\s*');
+    bool _maybeHandleNumberShortcut(
       TextEditingController controller,
       Map<String, dynamic> block, {
       required void Function(String newText) onTextChanged,
     }) {
       final sel = controller.selection;
-      if (!sel.isValid || !sel.isCollapsed) return;
+      if (!sel.isValid || !sel.isCollapsed) return false;
       final text = controller.text;
       final cursor = sel.baseOffset;
-      if (cursor <= 0 || cursor > text.length) return;
+      if (cursor <= 0 || cursor > text.length) return false;
 
       final justTyped = text[cursor - 1];
-      if (justTyped != '\n') return;
+      if (justTyped != '\n') return false;
 
       final prevLineStart = _safeLastNewlineIndex(text, cursor - 2) + 1;
       final prevLineEnd = cursor - 1;
-      if (prevLineEnd < prevLineStart) return;
+      if (prevLineEnd < prevLineStart) return false;
       final prevLine = text.substring(prevLineStart, prevLineEnd);
       final match = numberedLoopShortcut.matchAsPrefix(prevLine);
-      if (match == null) return;
+      if (match == null) return false;
       final markerLen = match.group(0)!.length;
 
       if (prevLine.length == markerLen) {
         // Boş numaralı satırda Enter -> numaralama modundan çık, işareti
-        // önceki (şimdi terk edilen) satırdan kaldır.
+        // önceki (şimdi terk edilen) satırdan kaldır. markerLen artık
+        // (yukarıdaki \s* sayesinde) klavyenin eklediği olası fazladan
+        // boşluğu da kapsıyor, bu yüzden ayrıca tolerans eklemeye gerek yok.
         final newText = text.replaceRange(prevLineStart, prevLineEnd, '');
         final newCursor = cursor - markerLen;
         block['spans'] = RichTextSpans.shiftForDelete(
@@ -2838,6 +3442,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           ),
         );
         onTextChanged(newText);
+        return true;
       } else {
         // Doldurulmuş numaralı satırdan sonra Enter -> yeni satır bir
         // sonraki numarayla devam etsin.
@@ -2855,6 +3460,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           selection: TextSelection.collapsed(offset: newCursor),
         );
         onTextChanged(newText);
+        return true;
       }
     }
 
@@ -2869,7 +3475,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       Map<String, dynamic> block,
       String oldText, {
       required void Function(String newText) onTextChanged,
+      // bkz. _maybeHandleBulletBackspace'teki aynı parametrenin açıklaması.
+      bool handledByShortcut = false,
     }) {
+      if (handledByShortcut) return;
       final sel = controller.selection;
       if (!sel.isValid || !sel.isCollapsed) return;
       final text = controller.text;
@@ -3309,6 +3918,315 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         newlyAddedIndex = 0;
       }
     }
+    // ════════════════════════════════════════════════════════════════════
+    // Aşama 6: NoteFindSession'ın "aranabilir alanlar" köprüsü
+    // ════════════════════════════════════════════════════════════════════
+
+    // Bir alanın metni PROGRAMATİK olarak değiştiğinde span'ları
+    // (kalın/italik/renk/vb.) yeni karakter indekslerine kaydırır.
+    //
+    // Merkezi _shiftSpansForTextChange KULLANILMIYOR — o fonksiyon aynı
+    // zamanda "önce butona bas sonra yaz" (pendingBold/pendingColor/...)
+    // mantığını da uyguluyor; bu kullanıcının YAZMASI için doğru, ama
+    // "Değiştir" sonucu giren metne o bekleyen biçimleri uygulamak
+    // istenmez (kullanıcı Kalın'a basıp sonra "Tümünü Değiştir"e bastığında
+    // tüm sonuçlar kalınlaşırdı). Burada yalnızca saf kaydırma yapılır.
+    //
+    // DÜZELTME (zengin metin hatası — "bir kalın bir ince" — burada
+    // yaşanıyordu): bu fonksiyon eskiden düzenleme aralığını ortak
+    // önek/sonek TAHMİNİYLE hesaplıyordu (aynı zamanda _shiftSpansForTextChange
+    // fonksiyonunun artık sadece YEDEK dalında tuttuğu algoritmanın
+    // aynısıydı). Ama "Değiştir"de bu aralık TAHMİN edilecek bir şey
+    // değil — NoteFindSession zaten match.start/match.end üzerinden KESİN
+    // olarak biliyor ve bunu artık NoteFindField.setText'in editStart/
+    // oldEditEnd/newEditEnd parametreleri olarak buraya taşıyor (bkz. o
+    // parametrelerin note_find_session.dart'taki dokümanı). Bu fonksiyon
+    // artık sadece o kesin değerleri RichTextSpans.shiftForDelete/
+    // shiftForInsert'e iletiyor — diff YOK. "Tümünü Değiştir" de artık
+    // aynı alandaki her eşleşme için AYRI (sondan başa) çağrılıyor
+    // (bkz. NoteFindSession.replaceAll), o yüzden çoklu eşleşmede de
+    // sınırlar bulanıklaşmıyor.
+    void findRewriteSpans(
+      Map<String, dynamic>? spansHolder,
+      int editStart,
+      int oldEditEnd,
+      int newEditEnd,
+    ) {
+      if (spansHolder == null) return;
+      List? spans = spansHolder['spans'] as List?;
+      if (oldEditEnd > editStart) {
+        spans = RichTextSpans.shiftForDelete(spans, editStart, oldEditEnd);
+      }
+      if (newEditEnd > editStart) {
+        spans = RichTextSpans.shiftForInsert(
+            spans, editStart, newEditEnd - editStart);
+      }
+      spansHolder['spans'] = spans;
+    }
+
+    // Editörün O ANKİ aranabilir alanları. Her tarama/değiştirmede SIFIRDAN
+    // üretilir (bkz. NoteFindSession.fieldsProvider dokümanı) — blok/madde/
+    // satır ekleme-silme-sıralama ve undo/redo sonrası bile her zaman
+    // güncel veriyle çalışılır. Sıra, kullanıcının ekranda gördüğü sıradır
+    // (başlık → bloklar → tüm-not checklist maddeleri) ki ↑/↓ gezinmesi
+    // yukarıdan aşağıya doğal aksın.
+    List<NoteFindField> buildFindFields() {
+      final fields = <NoteFindField>[];
+
+      // ── Başlık ────────────────────────────────────────────────────────
+      fields.add(NoteFindField(
+        id: 'title',
+        // Controller'ın değil MODELİN değeri okunur — bkz. dosyanın
+        // başındaki titleModel açıklaması (onChanged sırasında controller
+        // ileride, model geride kalabiliyor; setText'in oldText'i model
+        // üzerinden tutarlı olsun diye).
+        getText: () => titleModel,
+        setText: (newText, editStart, oldEditEnd, newEditEnd) {
+          findRewriteSpans(_titleSpansHolder, editStart, oldEditEnd, newEditEnd);
+          titleModel = newText;
+          _titleController.text = newText;
+        },
+        focusAndSelect: (start, end) {
+          _titleController.selection =
+              TextSelection(baseOffset: start, extentOffset: end);
+          titleFocusNode.requestFocus();
+        },
+      ));
+
+      // ── İçerik blokları ───────────────────────────────────────────────
+      for (int i = 0; i < blocks.length; i++) {
+        final block = blocks[i];
+        final bi = i;
+        final type = block['type'] as String?;
+
+        if (type == 'text') {
+          fields.add(NoteFindField(
+            id: findIdFor('block', block),
+            getText: () {
+              final t = (block['text'] ?? '').toString();
+              // Görünmez "boş satır" işaretçisi aramaya dahil edilmez
+              // (bkz. emptyTextSentinel açıklaması) — aksi halde mantıken
+              // boş satırlar sıfır genişlikli bir karakter taşıdığından
+              // eşleşme indeksleri bir kayardı.
+              return t == emptyTextSentinel ? '' : t;
+            },
+            setText: (newText, editStart, oldEditEnd, newEditEnd) {
+              findRewriteSpans(block, editStart, oldEditEnd, newEditEnd);
+              block['text'] = newText;
+              final ctrl =
+                  bi < blockControllers.length ? blockControllers[bi] : null;
+              if (ctrl != null && ctrl.text != newText) ctrl.text = newText;
+            },
+            focusAndSelect: (start, end) {
+              final ctrl =
+                  bi < blockControllers.length ? blockControllers[bi] : null;
+              final fn =
+                  bi < blockFocusNodes.length ? blockFocusNodes[bi] : null;
+              if (ctrl == null || fn == null) return;
+              ctrl.selection =
+                  TextSelection(baseOffset: start, extentOffset: end);
+              fn.requestFocus();
+            },
+          ));
+
+        } else if (type == 'checklist') {
+          final items = block['items'] as List? ?? const [];
+          for (final raw in items) {
+            final item = raw as Map<String, dynamic>;
+            fields.add(NoteFindField(
+              id: findIdFor('item', item),
+              getText: () => (item['text'] ?? '').toString(),
+              setText: (newText, editStart, oldEditEnd, newEditEnd) {
+                findRewriteSpans(item, editStart, oldEditEnd, newEditEnd);
+                item['text'] = newText;
+                // Pozisyon yerine madde REFERANSINDAN çözülüyor — madde
+                // sürüklenerek taşınmış olabilir (bkz. bu haritaların
+                // varlık sebebi).
+                final ctrl = checklistItemCtrlByRef[item];
+                if (ctrl != null && ctrl.text != newText) ctrl.text = newText;
+              },
+              focusAndSelect: (start, end) {
+                final ctrl = checklistItemCtrlByRef[item];
+                final fn = checklistItemFnByRef[item];
+                if (ctrl == null || fn == null) return;
+                ctrl.selection =
+                    TextSelection(baseOffset: start, extentOffset: end);
+                fn.requestFocus();
+              },
+            ));
+          }
+
+        } else if (type == 'calc_table') {
+          final rows = block['rows'] as List? ?? const [];
+          for (int j = 0; j < rows.length; j++) {
+            final row = rows[j] as Map<String, dynamic>;
+            final ri = j;
+
+            // Kalem
+            fields.add(NoteFindField(
+              id: findIdFor('calclabel', row),
+              getText: () => (row['label'] ?? '').toString(),
+              setText: (newText, editStart, oldEditEnd, newEditEnd) {
+                findRewriteSpans(row, editStart, oldEditEnd, newEditEnd);
+                row['label'] = newText;
+                final ctrls = bi < blockTableLabelControllers.length
+                    ? blockTableLabelControllers[bi]
+                    : null;
+                if (ctrls != null &&
+                    ri < ctrls.length &&
+                    ctrls[ri].text != newText) {
+                  ctrls[ri].text = newText;
+                }
+              },
+              focusAndSelect: (start, end) {
+                final ctrls = bi < blockTableLabelControllers.length
+                    ? blockTableLabelControllers[bi]
+                    : null;
+                final fns = bi < blockTableLabelFocusNodes.length
+                    ? blockTableLabelFocusNodes[bi]
+                    : null;
+                if (ctrls == null || fns == null) return;
+                if (ri >= ctrls.length || ri >= fns.length) return;
+                ctrls[ri].selection =
+                    TextSelection(baseOffset: start, extentOffset: end);
+                fns[ri].requestFocus();
+              },
+            ));
+
+            // Tutar — span'ları satırda DEĞİL, satırın içindeki ayrı
+            // 'valueSpansHolder' alt Map'inin 'spans' anahtarında (bkz.
+            // _calcTableValueSpans ve _resolveFocusedSpansHolder).
+            fields.add(NoteFindField(
+              id: findIdFor('calcvalue', row),
+              getText: () => (row['value'] ?? '').toString(),
+              setText: (newText, editStart, oldEditEnd, newEditEnd) {
+                final existing = row['valueSpansHolder'];
+                final Map<String, dynamic> valueHolder;
+                if (existing is Map<String, dynamic>) {
+                  valueHolder = existing;
+                } else {
+                  // Henüz hiç biçimlendirilmemiş (ya da eski kayıttan
+                  // yüklenmiş) satırda bu alt Map yoktur.
+                  valueHolder = <String, dynamic>{};
+                  row['valueSpansHolder'] = valueHolder;
+                }
+                findRewriteSpans(valueHolder, editStart, oldEditEnd, newEditEnd);
+                row['value'] = newText;
+                final ctrls = bi < blockTableValueControllers.length
+                    ? blockTableValueControllers[bi]
+                    : null;
+                if (ctrls != null &&
+                    ri < ctrls.length &&
+                    ctrls[ri].text != newText) {
+                  ctrls[ri].text = newText;
+                }
+              },
+              focusAndSelect: (start, end) {
+                final ctrls = bi < blockTableValueControllers.length
+                    ? blockTableValueControllers[bi]
+                    : null;
+                final fns = bi < blockTableValueFocusNodes.length
+                    ? blockTableValueFocusNodes[bi]
+                    : null;
+                if (ctrls == null || fns == null) return;
+                if (ri >= ctrls.length || ri >= fns.length) return;
+                ctrls[ri].selection =
+                    TextSelection(baseOffset: start, extentOffset: end);
+                fns[ri].requestFocus();
+              },
+            ));
+          }
+
+        } else if (type == 'table') {
+          final rows = block['rows'] as List? ?? const [];
+          for (int r = 0; r < rows.length; r++) {
+            final cells = rows[r] as List;
+            for (int c = 0; c < cells.length; c++) {
+              final cell = cells[c] as Map<String, dynamic>;
+              final cr = r;
+              final cc = c;
+              fields.add(NoteFindField(
+                id: findIdFor('cell', cell),
+                getText: () => (cell['text'] ?? '').toString(),
+                setText: (newText, editStart, oldEditEnd, newEditEnd) {
+                  // Tablo hücrelerinin controller'ı NoteTableBlock'un KENDİ
+                  // state'inde; dışarıdan .text yazılamaz. Ama o widget,
+                  // hücre Map REFERANSI değiştiğinde bunu "dışarıdan gelen
+                  // değişiklik" olarak algılayıp (bkz. _sameCellIdentities →
+                  // didUpdateWidget) controller ızgarasını yeniden kurar VE
+                  // _findChangedCell ile metni gerçekten değişen hücreye
+                  // odağı geri verir — yani undo/redo'nun kullandığı yolun
+                  // aynısı. Bu yüzden hücreyi YERİNDE değiştirmek yerine
+                  // aynı içerikte YENİ bir Map ile takas ediyoruz; böylece
+                  // odaklanma/kaydırma da bedavaya gelir (bu yüzden
+                  // aşağıda focusAndSelect verilmiyor).
+                  final newCell = Map<String, dynamic>.from(cell);
+                  findRewriteSpans(newCell, editStart, oldEditEnd, newEditEnd);
+                  newCell['text'] = newText;
+                  final rs = block['rows'] as List?;
+                  if (rs == null || cr >= rs.length) return;
+                  final live = rs[cr] as List;
+                  if (cc >= live.length) return;
+                  live[cc] = newCell;
+                },
+                // focusAndSelect KASITLI olarak verilmiyor (null) — bkz.
+                // yukarıdaki not ve NoteFindField dokümanındaki "null
+                // bırakılırsa o eşleşmeye geçişte sadece Aşama 1 vurgusu
+                // görünür" maddesi. Sonuç: ↑/↓ ile bir tablo hücresine
+                // gidildiğinde hücre turuncu vurgulanır ama otomatik
+                // odaklanma/kaydırma olmaz; "Değiştir"de ise yukarıdaki
+                // takas sayesinde imleç doğru hücreye gider.
+              ));
+            }
+          }
+        }
+      }
+
+      // ── Tüm-not checklist türü ────────────────────────────────────────
+      if (noteType == 'checklist') {
+        for (int j = 0; j < checkItems.length; j++) {
+          final item = checkItems[j];
+          final ci = j;
+          fields.add(NoteFindField(
+            id: findIdFor('check', item),
+            getText: () => (item['text'] ?? '').toString(),
+            setText: (newText, editStart, oldEditEnd, newEditEnd) {
+              // Bu türde 'spans' alanı YOK (bkz. syncControllersAndFocusNodes
+              // içindeki getSpans: () => const []) — kaydırılacak bir şey
+              // olmadığından findRewriteSpans çağrılmıyor.
+              item['text'] = newText;
+              if (ci < checkControllers.length &&
+                  checkControllers[ci].text != newText) {
+                checkControllers[ci].text = newText;
+              }
+            },
+            focusAndSelect: (start, end) {
+              if (ci >= checkControllers.length ||
+                  ci >= checkFocusNodes.length) {
+                return;
+              }
+              checkControllers[ci].selection =
+                  TextSelection(baseOffset: start, extentOffset: end);
+              checkFocusNodes[ci].requestFocus();
+            },
+          ));
+        }
+      }
+
+      return fields;
+    }
+
+    findSession = NoteFindSession(
+      fieldsProvider: buildFindFields,
+      // setModalState'e dolaylı erişim — pushUndoCheckpoint ile aynı desen.
+      requestRebuild: () => requestEditorRebuild?.call(() {}),
+      pushUndoCheckpoint: pushUndoCheckpoint,
+    );
+    // Başlık controller'ı State ömürlü olduğundan (bkz. dosyanın başındaki
+    // _titleHighlightsProvider bildirimi) vurgu kaynağı burada, editör
+    // açılışında bağlanır; kapanışta (aşağıdaki .then içinde) bırakılır.
+    _titleHighlightsProvider = () => findHighlights('title');
+
     syncControllersAndFocusNodes();
     rebuildBlockControllers();
 
@@ -5477,6 +6395,26 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                 });
                               },
                             );
+                          } else if (value == 'find') {
+                            // Aşama 6: üst barın geri kalanına (geri
+                            // butonu, undo/redo, menünün diğer öğeleri)
+                            // hiç dokunulmuyor — tek yaptığı findMode'u
+                            // açıp barı ağaca sokmak.
+                            setModalState(() {
+                              findMode = true;
+                              findReplaceExpanded = false;
+                            });
+                            // NoteFindBar'ın TextField'ındaki autofocus tek
+                            // başına yetmiyor: menü kapanırken Flutter, menü
+                            // açılmadan ÖNCE odaklı olan alana odağı
+                            // OTOMATİK geri veriyor ve bu, autofocus'tan
+                            // daha GEÇ gerçekleşip onu eziyor (bkz.
+                            // note_table_block.dart initState'teki aynı
+                            // desen ve açıklaması). Bu yüzden bar ağaca
+                            // girdikten sonra odağı elle istiyoruz.
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              findQueryFocusNode.requestFocus();
+                            });
                           } else if (value == 'pin_note') {
                             // Sabitleme/kaldırma anında değişir; kayıt her
                             // zamanki gibi (kapatma/otomatik kayıt anında)
@@ -5856,9 +6794,12 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                         },
                         itemBuilder: (_) => [
                           // Menü sırası: Sabitle, Bayrak Rengi, Etiketler,
-                          // Kapak Rengi, ardından bir ayraç ve diğer
-                          // öğeler. (Bayrak, kullanıcı isteğiyle Etiketler'in
-                          // üzerine alındı — sırayı değiştirmenin dışında
+                          // Bul, ardından bir ayraç ve diğer öğeler. (Bul,
+                          // kullanıcı isteğiyle bu grubun EN ALTINA alındı
+                          // — Sabitle/Bayrak/Etiket üçlüsü notun kalıcı
+                          // özellikleri, Bul ise bir eylem olduğundan bu
+                          // üçlünün arkasında, ama hâlâ menünün üst
+                          // kısmında duruyor. Sırayı değiştirmenin dışında
                           // davranışta bir fark yok, 'value' string'leri
                           // aynı kaldığı için onSelected switch-case'i
                           // etkilenmiyor.)
@@ -5957,6 +6898,30 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           // seçeneği kaldırıldı; not zaten sahip olduğu
                           // kapak rengini korumaya devam ediyor, sadece
                           // menüden yeni renk seçme imkanı kalktı.)
+                          // Aşama 6: not içi "Bul ve Değiştir". Bu grubun
+                          // (Sabitle/Bayrak/Etiket) EN ALTINDA duruyor —
+                          // bkz. itemBuilder başındaki sıralama notu.
+                          PopupMenuItem(
+                            value: 'find',
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!
+                                        .findMenuItemLabel,
+                                    style: const TextStyle(fontSize: 16),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Icon(
+                                  Icons.search_rounded,
+                                  color: appAccentColor.value,
+                                  size: 24,
+                                ),
+                              ],
+                            ),
+                          ),
                           const PopupMenuDivider(),
                           // Ayraç yalnızca 'text' tipinde eklenir: checklist
                           // notlarda aşağıdaki blok öğeleri (drawing/
@@ -6132,6 +7097,9 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                         }
                       },
                       child: SingleChildScrollView(
+                      physics: const NoteEditorScrollPhysics(
+                        parent: AlwaysScrollableScrollPhysics(),
+                      ),
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         key: _editorContentColumnKey,
@@ -6605,6 +7573,215 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                               ?.toDouble() ??
                                           _globalFontSize)
                                     : _globalFontSize;
+                                // DÜZELTME (kullanıcı isteği): çarpı ikonuyla
+                                // BOŞ bir madde kaldırılırken de (Backspace'te
+                                // olduğu gibi) düz metin satırına dönüşsün —
+                                // sadece silinmesin. Bu yüzden checklist
+                                // bölme/komşu metinle birleştirme mantığı
+                                // onConvertItemToText'ten ortak bir fonksiyona
+                                // çıkarıldı; hem onConvertItemToText
+                                // (Backspace, madde her zaman boş olduğu için
+                                // koşulsuz çağırır) hem de
+                                // onRemoveAnimationComplete (çarpı ikonu,
+                                // yalnızca madde BOŞSA — doluysa eskisi gibi
+                                // tamamen silinir) bunu çağırır. Davranış
+                                // (bölme/birleştirme/odak) BİREBİR AYNI kalır.
+                                void convertChecklistItemToText(int j) {
+                                  int focusBlockIndex = i;
+                                  int caretOffset = 0;
+                                  setModalState(() {
+                                    if (j < 0 || j >= items.length) return;
+                                    items.removeAt(j);
+                                    if (items.isEmpty) {
+                                      // Tek maddeydi: checklist bloğu
+                                      // tamamen kaldırılır. removeTableBlockAt/
+                                      // removeDrawingBlockAt/removeDividerBlockAt
+                                      // ile AYNI desen: komşu iki taraf da
+                                      // metin bloğuysa birleştirilir (imleç
+                                      // birleşim noktasında kalır), sadece
+                                      // tek taraf metinse ona eklenir,
+                                      // hiçbiri metin değilse (ya da bu not
+                                      // içindeki tek blok buysa) checklist'in
+                                      // yerine boş bir metin bloğu konur.
+                                      final prevIsText = i > 0 &&
+                                          blocks[i - 1]['type'] == 'text';
+                                      final nextIsText =
+                                          i < blocks.length - 1 &&
+                                              blocks[i + 1]['type'] ==
+                                                  'text';
+                                      if (prevIsText && nextIsText) {
+                                        final prevText =
+                                            (blocks[i - 1]['text'] ?? '')
+                                                .toString();
+                                        final nextText =
+                                            (blocks[i + 1]['text'] ?? '')
+                                                .toString();
+                                        caretOffset = prevText.length;
+                                        // İki metin doğrudan yan yana değil,
+                                        // ikisi de doluysa aralarına '\n'
+                                        // konarak birleştirilir; biri boşsa
+                                        // gereksiz boş satır eklenmeden
+                                        // sadece diğeri kullanılır.
+                                        final String mergedText;
+                                        final int nextSpanOffset;
+                                        if (prevText.isEmpty) {
+                                          mergedText = nextText;
+                                          nextSpanOffset = 0;
+                                        } else if (nextText.isEmpty) {
+                                          mergedText = prevText;
+                                          nextSpanOffset = 0;
+                                        } else {
+                                          mergedText =
+                                              '$prevText\n$nextText';
+                                          nextSpanOffset =
+                                              prevText.length + 1;
+                                        }
+                                        // Biçimlendirme (kalın/italik/vb.)
+                                        // kaybolmasın diye 'spans' de aynı
+                                        // şekilde taşınır: üstteki span'lar
+                                        // aynen korunur, alttakiler yeni
+                                        // konumlarına göre kaydırılıp eklenir.
+                                        final mergedSpans =
+                                            <Map<String, dynamic>>[];
+                                        if (prevText.isNotEmpty) {
+                                          mergedSpans.addAll(
+                                            RichTextSpans.parse(
+                                              blocks[i - 1]['spans'],
+                                            ),
+                                          );
+                                        }
+                                        if (nextText.isNotEmpty) {
+                                          for (final s
+                                              in RichTextSpans.parse(
+                                            blocks[i + 1]['spans'],
+                                          )) {
+                                            final shifted =
+                                                Map<String, dynamic>.from(s);
+                                            shifted['start'] =
+                                                (s['start'] as int) +
+                                                    nextSpanOffset;
+                                            shifted['end'] =
+                                                (s['end'] as int) +
+                                                    nextSpanOffset;
+                                            mergedSpans.add(shifted);
+                                          }
+                                        }
+                                        blocks[i - 1]['text'] = mergedText;
+                                        blocks[i - 1]['spans'] = mergedSpans;
+                                        blocks.removeAt(i + 1);
+                                        blocks.removeAt(i);
+                                        focusBlockIndex = i - 1;
+                                      } else if (prevIsText) {
+                                        blocks.removeAt(i);
+                                        focusBlockIndex = i - 1;
+                                        caretOffset =
+                                            (blocks[i - 1]['text'] ?? '')
+                                                .toString()
+                                                .length;
+                                      } else if (nextIsText) {
+                                        blocks.removeAt(i);
+                                        focusBlockIndex = i;
+                                        caretOffset = 0;
+                                      } else {
+                                        blocks[i] = {
+                                          'type': 'text',
+                                          'text': ''
+                                        };
+                                        focusBlockIndex = i;
+                                        caretOffset = 0;
+                                      }
+                                    } else if (j == 0) {
+                                      // İlk madde çıkarıldı. Önceki blok
+                                      // zaten metinse yeni blok eklenmiyor,
+                                      // imleç direkt o metnin sonuna gidiyor;
+                                      // değilse yeni boş bir metin bloğu
+                                      // ekleniyor.
+                                      block['items'] = items;
+                                      final prevIsText = i > 0 &&
+                                          blocks[i - 1]['type'] == 'text';
+                                      if (prevIsText) {
+                                        focusBlockIndex = i - 1;
+                                        caretOffset =
+                                            (blocks[i - 1]['text'] ?? '')
+                                                .toString()
+                                                .length;
+                                      } else {
+                                        blocks.insert(
+                                          i,
+                                          {'type': 'text', 'text': ''},
+                                        );
+                                        focusBlockIndex = i;
+                                      }
+                                    } else if (j >= items.length) {
+                                      // Son madde çıkarıldı. Sonraki blok
+                                      // zaten metinse yeni blok eklenmiyor,
+                                      // imleç o metnin başına gidiyor.
+                                      block['items'] = items;
+                                      final nextIsText =
+                                          i < blocks.length - 1 &&
+                                              blocks[i + 1]['type'] ==
+                                                  'text';
+                                      if (nextIsText) {
+                                        focusBlockIndex = i + 1;
+                                        caretOffset = 0;
+                                      } else {
+                                        blocks.insert(
+                                          i + 1,
+                                          {'type': 'text', 'text': ''},
+                                        );
+                                        focusBlockIndex = i + 1;
+                                      }
+                                    } else {
+                                      // Ortadan çıkarıldı: bloğu ikiye böl,
+                                      // arasına boş metin satırı koy.
+                                      final upperItems = items.sublist(0, j);
+                                      final lowerItems = items.sublist(j);
+                                      block['items'] = upperItems;
+                                      blocks.insert(
+                                        i + 1,
+                                        {'type': 'text', 'text': ''},
+                                      );
+                                      blocks.insert(i + 2, {
+                                        'type': 'checklist',
+                                        'items': lowerItems,
+                                      });
+                                      focusBlockIndex = i + 1;
+                                    }
+                                    if (blocks.isEmpty) {
+                                      blocks.add({
+                                        'type': 'text',
+                                        'text': '',
+                                      });
+                                      focusBlockIndex = 0;
+                                    }
+                                    rebuildBlockControllers();
+                                  });
+                                  focusedBlockIndex = focusBlockIndex;
+                                  focusedItemIndex = -1;
+                                  pendingBlockFocus = true;
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    final idx = focusBlockIndex.clamp(
+                                      0,
+                                      blockFocusNodes.length - 1,
+                                    );
+                                    final fn = blockFocusNodes[idx];
+                                    if (fn != null) {
+                                      fn.requestFocus();
+                                      final ctrl = blockControllers[idx];
+                                      if (ctrl != null) {
+                                        ctrl.selection =
+                                            TextSelection.collapsed(
+                                          offset: caretOffset.clamp(
+                                            0,
+                                            ctrl.text.length,
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  });
+                                }
+
                                 return NoteChecklistBlock(
                                   key: ValueKey('blk_checklist_$i'),
                                   blockIndex: i,
@@ -6674,7 +7851,23 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     // senkron) belirlenip taşınıyor — klavye
                                     // hiç kapanmıyor, sadece silinen satır
                                     // kendi başına küçülüp kayboluyor.
-                                    if (j < itemFns.length &&
+                                    //
+                                    // DÜZELTME (kullanıcı isteği): madde
+                                    // BOŞSA animasyon bitince silinmeyecek,
+                                    // convertChecklistItemToText ile düz
+                                    // metne dönüştürülecek (bkz.
+                                    // onRemoveAnimationComplete) — o zaten
+                                    // odağı kendi (metin bloğu) hedefine
+                                    // taşıyor. Burada AYRICA komşu maddeye
+                                    // sıçratmak, 200ms sonra tekrar metne
+                                    // sıçramasına, yani gereksiz bir odak
+                                    // "titremesine" yol açardı; bu yüzden bu
+                                    // ön-taşıma SADECE madde DOLUYSA (gerçekten
+                                    // silinecekse) yapılır.
+                                    final removingItemText =
+                                        (items[j]['text'] ?? '').toString();
+                                    if (removingItemText.isNotEmpty &&
+                                        j < itemFns.length &&
                                         itemFns[j].hasFocus &&
                                         items.length > 1) {
                                       final nextFocusIndex =
@@ -6722,6 +7915,25 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     // ardından, AYNI (tek) frame içinde
                                     // yapılıyor.
                                     pushUndoCheckpoint();
+                                    // DÜZELTME (kullanıcı isteği): çarpı
+                                    // ikonuna basılan madde BOŞSA (hiç metin
+                                    // yazılmamışsa), tamamen silmek yerine
+                                    // Backspace'teki (onConvertItemToText)
+                                    // ile AYNI davranışla düz metin satırına
+                                    // dönüştürülür — animasyon (soluklaşma+
+                                    // daralma) yine oynar, sadece animasyon
+                                    // bitince yapılan işlem "sil" değil
+                                    // "dönüştür" olur. Madde DOLUYSA (kullanıcı
+                                    // bir şeyler yazmışsa) eskisi gibi
+                                    // tamamen silinir — aşağıdaki mevcut kod
+                                    // değişmeden devam eder.
+                                    final removedItemText =
+                                        (items[j]['text'] ?? '')
+                                            .toString();
+                                    if (removedItemText.isEmpty) {
+                                      convertChecklistItemToText(j);
+                                      return;
+                                    }
                                     // NOT: odak taşıma, checklist'te BİRDEN
                                     // FAZLA madde kalıyorsa dokunma anında
                                     // (bkz. onRemoveItem) zaten komşu
@@ -7044,270 +8256,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   // aynı yaklaşım, bkz. insertChecklistBlock).
                                   onConvertItemToText: (j) {
                                     pushUndoCheckpoint();
-                                    int focusBlockIndex = i;
-                                    int caretOffset = 0;
-                                    setModalState(() {
-                                      if (j < 0 || j >= items.length) return;
-                                      items.removeAt(j);
-                                      if (items.isEmpty) {
-                                        // Tek maddeydi: checklist bloğu
-                                        // tamamen kaldırılır. removeTableBlockAt/
-                                        // removeDrawingBlockAt/removeDividerBlockAt
-                                        // ile AYNI desen: komşu iki taraf da
-                                        // metin bloğuysa birleştirilir (imleç
-                                        // birleşim noktasında kalır), sadece
-                                        // tek taraf metinse ona eklenir,
-                                        // hiçbiri metin değilse (ya da bu not
-                                        // içindeki tek blok buysa) checklist'in
-                                        // yerine boş bir metin bloğu konur.
-                                        //
-                                        // DÜZELTME: eskiden burada koşulsuz
-                                        // `blocks[i] = {'type':'text','text':''}`
-                                        // yapılıyordu — checklist iki metin
-                                        // bloğu arasındaysa bile komşularla
-                                        // hiç birleştirilmiyor, üç ayrı blok
-                                        // (metin/boş metin/metin) olarak
-                                        // kalıyordu.
-                                        final prevIsText = i > 0 &&
-                                            blocks[i - 1]['type'] == 'text';
-                                        final nextIsText =
-                                            i < blocks.length - 1 &&
-                                                blocks[i + 1]['type'] ==
-                                                    'text';
-                                        if (prevIsText && nextIsText) {
-                                          final prevText =
-                                              (blocks[i - 1]['text'] ?? '')
-                                                  .toString();
-                                          final nextText =
-                                              (blocks[i + 1]['text'] ?? '')
-                                                  .toString();
-                                          caretOffset = prevText.length;
-                                          // DÜZELTME: iki metin doğrudan
-                                          // yan yana (araya '\n' konmadan)
-                                          // birleştiriliyordu — bu da alttaki
-                                          // metnin görsel olarak üstteki
-                                          // satırın SONUNA eklenmesine sebep
-                                          // oluyordu, oysa iki ayrı satır
-                                          // olarak kalması bekleniyor. İkisi
-                                          // de doluysa aralarına '\n' konur;
-                                          // biri boşsa gereksiz boş satır
-                                          // eklenmemesi için sadece diğeri
-                                          // kullanılır.
-                                          final String mergedText;
-                                          final int nextSpanOffset;
-                                          if (prevText.isEmpty) {
-                                            mergedText = nextText;
-                                            nextSpanOffset = 0;
-                                          } else if (nextText.isEmpty) {
-                                            mergedText = prevText;
-                                            nextSpanOffset = 0;
-                                          } else {
-                                            mergedText =
-                                                '$prevText\n$nextText';
-                                            nextSpanOffset =
-                                                prevText.length + 1;
-                                          }
-                                          // DÜZELTME (biçimlendirme kaybı):
-                                          // metinler birleştirilirken 'spans'
-                                          // (kalın/italik/altı çizili)
-                                          // verisi hiç taşınmıyordu — alttaki
-                                          // metnin biçimlendirmesi
-                                          // kayboluyordu. 'text' bloğundaki
-                                          // aynı desenle (bkz. plainText()
-                                          // içindeki span kaydırma) tutarlı:
-                                          // üstteki span'lar aynen korunur,
-                                          // alttakiler yeni konumlarına göre
-                                          // kaydırılıp eklenir.
-                                          final mergedSpans =
-                                              <Map<String, dynamic>>[];
-                                          if (prevText.isNotEmpty) {
-                                            mergedSpans.addAll(
-                                              RichTextSpans.parse(
-                                                blocks[i - 1]['spans'],
-                                              ),
-                                            );
-                                          }
-                                          if (nextText.isNotEmpty) {
-                                            for (final s
-                                                in RichTextSpans.parse(
-                                              blocks[i + 1]['spans'],
-                                            )) {
-                                              final shifted =
-                                                  Map<String, dynamic>.from(
-                                                      s);
-                                              shifted['start'] =
-                                                  (s['start'] as int) +
-                                                      nextSpanOffset;
-                                              shifted['end'] =
-                                                  (s['end'] as int) +
-                                                      nextSpanOffset;
-                                              mergedSpans.add(shifted);
-                                            }
-                                          }
-                                          blocks[i - 1]['text'] = mergedText;
-                                          blocks[i - 1]['spans'] =
-                                              mergedSpans;
-                                          blocks.removeAt(i + 1);
-                                          blocks.removeAt(i);
-                                          focusBlockIndex = i - 1;
-                                        } else if (prevIsText) {
-                                          blocks.removeAt(i);
-                                          focusBlockIndex = i - 1;
-                                          caretOffset =
-                                              (blocks[i - 1]['text'] ?? '')
-                                                  .toString()
-                                                  .length;
-                                        } else if (nextIsText) {
-                                          blocks.removeAt(i);
-                                          focusBlockIndex = i;
-                                          caretOffset = 0;
-                                        } else {
-                                          blocks[i] = {
-                                            'type': 'text',
-                                            'text': ''
-                                          };
-                                          focusBlockIndex = i;
-                                          caretOffset = 0;
-                                        }
-                                      } else if (j == 0) {
-                                        // İlk madde çıkarıldı.
-                                        //
-                                        // DÜZELTME: eskiden burada koşulsuz
-                                        // yeni bir boş metin bloğu ekleniyordu
-                                        // — checklist'in HEMEN ÖNÜNDE zaten
-                                        // bir metin bloğu olsa bile. Çok
-                                        // maddeli bir checklist'te maddeler
-                                        // teker teker (baştan) silinince, her
-                                        // silmede bu "hayalet" boş bloklardan
-                                        // bir tane daha birikiyor ve checklist
-                                        // tamamen bitince bile bu bloklar
-                                        // önceki metinle hiç birleşmiyordu.
-                                        // Artık: önceki blok zaten metinse
-                                        // yeni blok eklenmiyor, imleç direkt
-                                        // o metnin sonuna gidiyor; önceki blok
-                                        // metin değilse (ya da checklist notun
-                                        // en başındaysa) eskisi gibi yeni boş
-                                        // bir metin bloğu ekleniyor.
-                                        block['items'] = items;
-                                        final prevIsText = i > 0 &&
-                                            blocks[i - 1]['type'] == 'text';
-                                        if (prevIsText) {
-                                          focusBlockIndex = i - 1;
-                                          caretOffset =
-                                              (blocks[i - 1]['text'] ?? '')
-                                                  .toString()
-                                                  .length;
-                                        } else {
-                                          blocks.insert(
-                                            i,
-                                            {'type': 'text', 'text': ''},
-                                          );
-                                          focusBlockIndex = i;
-                                        }
-                                      } else if (j >= items.length) {
-                                        // Son madde çıkarıldı.
-                                        //
-                                        // DÜZELTME: aynı sorun tersi yönde —
-                                        // checklist'in HEMEN ARDINDA zaten
-                                        // bir metin bloğu varsa yeni bir tane
-                                        // eklemek yerine imleç o metnin
-                                        // başına gidiyor.
-                                        block['items'] = items;
-                                        final nextIsText =
-                                            i < blocks.length - 1 &&
-                                                blocks[i + 1]['type'] ==
-                                                    'text';
-                                        if (nextIsText) {
-                                          focusBlockIndex = i + 1;
-                                          caretOffset = 0;
-                                        } else {
-                                          blocks.insert(
-                                            i + 1,
-                                            {'type': 'text', 'text': ''},
-                                          );
-                                          focusBlockIndex = i + 1;
-                                        }
-                                      } else {
-                                        // Ortadan çıkarıldı: bloğu ikiye
-                                        // böl, arasına boş metin satırı koy.
-                                        final upperItems = items.sublist(0, j);
-                                        final lowerItems = items.sublist(j);
-                                        block['items'] = upperItems;
-                                        blocks.insert(
-                                          i + 1,
-                                          {'type': 'text', 'text': ''},
-                                        );
-                                        blocks.insert(i + 2, {
-                                          'type': 'checklist',
-                                          'items': lowerItems,
-                                        });
-                                        focusBlockIndex = i + 1;
-                                      }
-                                      if (blocks.isEmpty) {
-                                        blocks.add({
-                                          'type': 'text',
-                                          'text': '',
-                                        });
-                                        focusBlockIndex = 0;
-                                      }
-                                      rebuildBlockControllers();
-                                    });
-                                    // DÜZELTME: insertChecklistBlock'taki
-                                    // toggle yoluyla aynı kalıp —
-                                    // rebuildBlockControllers() zaten eski
-                                    // FocusNode'ların unfocus+dispose
-                                    // işlemini KENDİ postFrameCallback'i
-                                    // içinde sıraya koyuyor; burada AYRICA
-                                    // bir frame daha beklemek klavyenin
-                                    // görünür şekilde kapanıp yeniden
-                                    // açılmasına (ve imlecin bir üst
-                                    // satıra gidip gelmesine) sebep
-                                    // oluyordu. Tek callback'e indirildi.
-                                    // DÜZELTME 2 (çarpıya basıp checklist'i
-                                    // kapatırken zengin metin barı bir an
-                                    // kaybolup geri geliyordu): odak hedefi
-                                    // burada senkron belirlenmiyordu, sadece
-                                    // gerçek requestFocus() bir frame sonra
-                                    // FocusNode listener'ında güncelliyordu
-                                    // — aradaki frame'de bar ham hasFocus'a
-                                    // bakıp kayboluyordu. Diğer checklist
-                                    // akışlarındaki (onAddItem,
-                                    // insertChecklistBlock) aynı pendingBlockFocus
-                                    // köprüsü burada da uygulanıyor.
-                                    focusedBlockIndex = focusBlockIndex;
-                                    focusedItemIndex = -1;
-                                    pendingBlockFocus = true;
-                                    WidgetsBinding.instance
-                                        .addPostFrameCallback((_) {
-                                      final idx = focusBlockIndex.clamp(
-                                        0,
-                                        blockFocusNodes.length - 1,
-                                      );
-                                      final fn = blockFocusNodes[idx];
-                                      if (fn != null) {
-                                        fn.requestFocus();
-                                        final ctrl = blockControllers[idx];
-                                        if (ctrl != null) {
-                                          // DÜZELTME: sabit offset:0 yerine
-                                          // caretOffset kullanılıyor — iki
-                                          // metin bloğu checklist'in
-                                          // kaldırılmasıyla birleştiğinde
-                                          // imleç birleşim noktasında
-                                          // (önceki metnin sonunda) kalmalı,
-                                          // satır başına atlamamalı. Diğer
-                                          // dallarda (j==0, j>=items.length,
-                                          // orta bölme) caretOffset hâlâ 0
-                                          // olduğundan davranış değişmiyor.
-                                          ctrl.selection =
-                                              TextSelection.collapsed(
-                                            offset: caretOffset.clamp(
-                                              0,
-                                              ctrl.text.length,
-                                            ),
-                                          );
-                                        }
-                                      }
-                                    });
+                                    convertChecklistItemToText(j);
                                   },
                                   // Sürükleme tutamacıyla bir madde başka
                                   // bir konuma taşındığında: items,
@@ -7513,6 +8462,30 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       focusedTableCellSpansHolder =
                                           spansHolder;
                                       requestEditorRebuild?.call(() {});
+                                    },
+                                    // Aşama 6: hücre controller'ları
+                                    // NoteTableBlock'un KENDİ state'inde
+                                    // tutulduğundan (dışarıdaki
+                                    // NoteFindSession'ın tek tek hücrelere
+                                    // erişimi yok), vurgu (satır, sütun) →
+                                    // snapshot köprüsüyle bağlanıyor — bkz.
+                                    // note_table_block.dart'taki
+                                    // getCellHighlights açıklaması. rows
+                                    // yerel değişkeni her build'de yeniden
+                                    // KOPYALANDIĞI için kimlik burada
+                                    // block['rows'] üzerinden CANLI okunur.
+                                    getCellHighlights: (r, c) {
+                                      final rs = block['rows'] as List?;
+                                      if (rs == null || r >= rs.length) {
+                                        return TextHighlightSnapshot.empty;
+                                      }
+                                      final cells = rs[r] as List;
+                                      if (c >= cells.length) {
+                                        return TextHighlightSnapshot.empty;
+                                      }
+                                      return findHighlights(
+                                        findIdFor('cell', cells[c] as Object),
+                                      );
                                     },
                                     onDelete: () => removeTableBlockAt(i),
                                   ),
@@ -7823,7 +8796,15 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                     }
                                     // Aşama 5: "- "/"* " -> "• " kısayolu ve
                                     // Enter'da bullet modunun devamı/çıkışı.
-                                    _maybeHandleBulletShortcut(
+                                    // DÜZELTME: dönüş değeri artık
+                                    // yakalanıyor — bu adım Enter/kısayolu
+                                    // gerçekten işlediyse (handledByBullet),
+                                    // aşağıdaki Backspace yardımcısı aynı
+                                    // döngüde tekrar devreye girip net -1
+                                    // karakterlik değişimi yanlışlıkla
+                                    // "tek Backspace" sanmasın diye atlanır.
+                                    final handledByBullet =
+                                        _maybeHandleBulletShortcut(
                                       blockControllers[i]!,
                                       block,
                                       onTextChanged: (newText) {
@@ -7841,12 +8822,14 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       onTextChanged: (newText) {
                                         block['text'] = newText;
                                       },
+                                      handledByShortcut: handledByBullet,
                                     );
                                     // Numaralı liste: Enter'da devam/çıkış
                                     // ve tek Backspace'te işareti tamamen
                                     // silme (bkz. yukarıdaki bullet
                                     // handler'larıyla aynı desen).
-                                    _maybeHandleNumberShortcut(
+                                    final handledByNumber =
+                                        _maybeHandleNumberShortcut(
                                       blockControllers[i]!,
                                       block,
                                       onTextChanged: (newText) {
@@ -7860,6 +8843,8 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       onTextChanged: (newText) {
                                         block['text'] = newText;
                                       },
+                                      handledByShortcut:
+                                          handledByBullet || handledByNumber,
                                     );
                                     // Madde/numara işaretinden hemen
                                     // sonraki ilk harfi büyütür (bkz.
@@ -8537,6 +9522,26 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           // FocusNode.hasFocus true olmuyordu ve bar bir an
                           // kaybolup geri geliyordu. Bu bayrak o pencerede
                           // barı görünür tutar.
+                          // DÜZELTME (kullanıcı geri bildirimi): "Bul"
+                          // modunda, ↑/↓ ile bir eşleşmeye gidildiğinde ya
+                          // da "Değiştir"e basıldığında NoteFindSession.
+                          // focusAndSelect GERÇEK odağı içerik alanına
+                          // (metin bloğu/checklist maddesi/vb.) veriyor —
+                          // bu da yukarıdaki hasFocusedTextBlock ve benzeri
+                          // bayrakları true yapıp bu barı GERİ getiriyordu;
+                          // Bul barının üstüne binip iki barın klavye
+                          // üstünde üst üste durmasına, ayrıca kullanıcının
+                          // niyeti arama iken aniden Kalın/İtalik gibi
+                          // biçimlendirme butonlarının aktifleşmesine yol
+                          // açıyordu. Değiştir kutusu zaten düz bir
+                          // TextField (RichBlockTextController değil), bu
+                          // barın ona uygulayabileceği bir şey de yok. Bu
+                          // yüzden iki bar KARŞILIKLI DIŞLAYICI yapıldı:
+                          // Bul modu açıkken bu bar, odak durumuna hiç
+                          // bakılmadan tamamen gizlenir.
+                          if (findMode) {
+                            return const SizedBox.shrink();
+                          }
                           if (!hasFocusedTextBlock &&
                               !hasFocusedChecklistItem &&
                               !hasFocusedCalcTableLabel &&
@@ -9022,6 +10027,67 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           );
                         },
                       ),
+                      // ── Aşama 6: "Bul ve Değiştir" barı ─────────────────
+                      // DÜZELTME (kullanıcı geri bildirimi): eskiden body
+                      // Column'un EN SON çocuğuydu — bu, alt/tarih barının
+                      // (hemen aşağıdaki SafeArea) ALTINA, klavyenin tam
+                      // üzerine düşüyordu. Zengin metin araç çubuğu (yukarıdaki
+                      // Builder) ise HER ZAMAN tarih barının ÜSTÜNDE durur;
+                      // Bul barı da findMode'dayken tam o barın YERİNİ aldığı
+                      // (bkz. toolbar Builder'ının en başındaki "if (findMode)
+                      // return SizedBox.shrink()" — ikisi asla aynı anda
+                      // görünmez) için aynı slota, yani buraya, tarih barının
+                      // ÜSTÜNE taşındı. Sonuç: tarih/etiket barı Bul modunda
+                      // da her zaman en altta (klavyenin hemen üstünde)
+                      // görünür kalıyor, Bul barı da toolbar'ın eskiden
+                      // durduğu yerde beliriyor. resizeToAvoidBottomInset:
+                      // true zaten body'yi klavyenin üstünde tuttuğundan ve
+                      // bu konumda artık viewInsets.bottom sıfırlanmamış
+                      // ham haliyle geliyor (SafeArea/toolbar'ın ALTINDA,
+                      // klavyenin DEĞİL), NoteFindBar'ın kendi
+                      // AnimatedPadding'i klavye kapalıyken 0'a, açıkken de
+                      // tarih barının kendi yüksekliği kadar fazladan boşluk
+                      // BIRAKMAZ — çünkü tarih barı (SafeArea) bu widget'ın
+                      // ALTINDA, ayrı bir Column çocuğu olarak zaten kendi
+                      // yerini kaplıyor; NoteFindBar klavyenin üstünde değil,
+                      // tarih barının hemen üstünde normal bir Column
+                      // çocuğu gibi akışa dahil oluyor.
+                      if (findMode && findSession != null)
+                        NoteFindBar(
+                          queryController: findQueryController,
+                          queryFocusNode: findQueryFocusNode,
+                          replaceController: findReplaceController,
+                          matchCount: findSession!.matchCount,
+                          activeIndex: findSession!.activeIndex,
+                          replaceExpanded: findReplaceExpanded,
+                          // setQuery odağı ÇALMAZ (bkz. o metodun
+                          // dokümanındaki açıklama), bu yüzden kullanıcı
+                          // arama kutusuna yazmaya kesintisiz devam eder.
+                          onQueryChanged: (q) => findSession!.setQuery(q),
+                          onNext: () => findSession!.next(),
+                          onPrevious: () => findSession!.previous(),
+                          onToggleReplaceExpanded: () => setModalState(() {
+                            findReplaceExpanded = !findReplaceExpanded;
+                          }),
+                          onReplacePressed: () => findSession!
+                              .replaceActive(findReplaceController.text),
+                          onReplaceAllPressed: () => findSession!
+                              .replaceAll(findReplaceController.text),
+                          onClose: () {
+                            // clear() eşleşmeleri boşaltır → highlightsFor
+                            // her alan için empty döner → vurgular kalkar.
+                            findSession!.clear();
+                            findQueryController.clear();
+                            findReplaceController.clear();
+                            if (findQueryFocusNode.hasFocus) {
+                              findQueryFocusNode.unfocus();
+                            }
+                            setModalState(() {
+                              findMode = false;
+                              findReplaceExpanded = false;
+                            });
+                          },
+                        ),
                       SafeArea(
                       child: Builder(
                         builder: (context) {
@@ -9423,6 +10489,18 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
       // serbest bırakılmalı.
       if (titleFocusNode.hasFocus) titleFocusNode.unfocus();
       titleFocusNode.dispose();
+      // Aşama 6: Bul barının controller/node'ları da bu dialog açılışına
+      // özel yerel nesneler (sahiplik NoteFindBar'da değil burada).
+      if (findQueryFocusNode.hasFocus) findQueryFocusNode.unfocus();
+      findQueryFocusNode.dispose();
+      findQueryController.dispose();
+      findReplaceController.dispose();
+      // _titleController State ömürlü olduğu için yaşamaya devam ediyor;
+      // vurgu kaynağı ise bu editör açılışına ait olduğundan bırakılır
+      // (aksi halde kapandıktan sonra da ölü findSession'a sorardı).
+      _titleHighlightsProvider = null;
+      // NoteFindSession'ın dispose edilmesi gereken bir kaynağı yok (bkz.
+      // o dosyadaki clear() açıklaması).
       for (final f in checkFocusNodes) {
         if (f.hasFocus) f.unfocus();
       }

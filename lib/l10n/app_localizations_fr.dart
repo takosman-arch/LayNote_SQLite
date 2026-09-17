@@ -2609,4 +2609,34 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'Ce fichier n\'existe plus';
+
+  @override
+  String get findMenuItemLabel => 'Rechercher';
+
+  @override
+  String get findSearchHint => 'Rechercher';
+
+  @override
+  String get findReplaceHint => 'Remplacer par';
+
+  @override
+  String get findReplaceButton => 'Remplacer';
+
+  @override
+  String get findReplaceAllButton => 'Tout remplacer';
+
+  @override
+  String get findPreviousTooltip => 'Occurrence précédente';
+
+  @override
+  String get findNextTooltip => 'Occurrence suivante';
+
+  @override
+  String get findShowReplaceTooltip => 'Afficher le champ de remplacement';
+
+  @override
+  String get findHideReplaceTooltip => 'Masquer le champ de remplacement';
+
+  @override
+  String get findCloseTooltip => 'Fermer la recherche';
 }

@@ -2596,4 +2596,34 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => 'Dit bestand bestaat niet meer';
+
+  @override
+  String get findMenuItemLabel => 'Zoeken';
+
+  @override
+  String get findSearchHint => 'Zoeken';
+
+  @override
+  String get findReplaceHint => 'Vervangen door';
+
+  @override
+  String get findReplaceButton => 'Vervangen';
+
+  @override
+  String get findReplaceAllButton => 'Alles vervangen';
+
+  @override
+  String get findPreviousTooltip => 'Vorige overeenkomst';
+
+  @override
+  String get findNextTooltip => 'Volgende overeenkomst';
+
+  @override
+  String get findShowReplaceTooltip => 'Vervangveld weergeven';
+
+  @override
+  String get findHideReplaceTooltip => 'Vervangveld verbergen';
+
+  @override
+  String get findCloseTooltip => 'Zoeken sluiten';
 }

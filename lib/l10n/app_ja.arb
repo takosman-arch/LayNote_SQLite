@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "アルバムに保存しました",
   "imageViewerSaveFailedMessage": "保存できませんでした: {error}",
   "imageViewerSavingInProgressMessage": "保存中…",
-  "imageViewerFileNotFoundMessage": "このファイルは存在しません"
+  "imageViewerFileNotFoundMessage": "このファイルは存在しません",
+  "findMenuItemLabel": "検索",
+  "findSearchHint": "検索",
+  "findReplaceHint": "置換後の文字列",
+  "findReplaceButton": "置換",
+  "findReplaceAllButton": "すべて置換",
+  "findPreviousTooltip": "前の一致",
+  "findNextTooltip": "次の一致",
+  "findShowReplaceTooltip": "置換欄を表示",
+  "findHideReplaceTooltip": "置換欄を非表示",
+  "findCloseTooltip": "検索を閉じる"
 }

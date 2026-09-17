@@ -787,5 +787,15 @@
   "imageViewerSavedToGalleryMessage": "Enregistré dans l'album",
   "imageViewerSaveFailedMessage": "Échec de l'enregistrement : {error}",
   "imageViewerSavingInProgressMessage": "Enregistrement…",
-  "imageViewerFileNotFoundMessage": "Ce fichier n'existe plus"
+  "imageViewerFileNotFoundMessage": "Ce fichier n'existe plus",
+  "findMenuItemLabel": "Rechercher",
+  "findSearchHint": "Rechercher",
+  "findReplaceHint": "Remplacer par",
+  "findReplaceButton": "Remplacer",
+  "findReplaceAllButton": "Tout remplacer",
+  "findPreviousTooltip": "Occurrence précédente",
+  "findNextTooltip": "Occurrence suivante",
+  "findShowReplaceTooltip": "Afficher le champ de remplacement",
+  "findHideReplaceTooltip": "Masquer le champ de remplacement",
+  "findCloseTooltip": "Fermer la recherche"
 }

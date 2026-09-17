@@ -2485,4 +2485,34 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get imageViewerFileNotFoundMessage => '该文件已不存在';
+
+  @override
+  String get findMenuItemLabel => '查找';
+
+  @override
+  String get findSearchHint => '搜索';
+
+  @override
+  String get findReplaceHint => '替换为';
+
+  @override
+  String get findReplaceButton => '替换';
+
+  @override
+  String get findReplaceAllButton => '全部替换';
+
+  @override
+  String get findPreviousTooltip => '上一个匹配项';
+
+  @override
+  String get findNextTooltip => '下一个匹配项';
+
+  @override
+  String get findShowReplaceTooltip => '显示替换栏';
+
+  @override
+  String get findHideReplaceTooltip => '隐藏替换栏';
+
+  @override
+  String get findCloseTooltip => '关闭查找';
 }

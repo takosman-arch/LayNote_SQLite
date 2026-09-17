@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "Tallennettu albumiin",
   "imageViewerSaveFailedMessage": "Tallennus epäonnistui: {error}",
   "imageViewerSavingInProgressMessage": "Tallennetaan…",
-  "imageViewerFileNotFoundMessage": "Tätä tiedostoa ei enää ole"
+  "imageViewerFileNotFoundMessage": "Tätä tiedostoa ei enää ole",
+  "findMenuItemLabel": "Etsi",
+  "findSearchHint": "Haku",
+  "findReplaceHint": "Korvaa sanalla",
+  "findReplaceButton": "Korvaa",
+  "findReplaceAllButton": "Korvaa kaikki",
+  "findPreviousTooltip": "Edellinen osuma",
+  "findNextTooltip": "Seuraava osuma",
+  "findShowReplaceTooltip": "Näytä korvauskenttä",
+  "findHideReplaceTooltip": "Piilota korvauskenttä",
+  "findCloseTooltip": "Sulje haku"
 }

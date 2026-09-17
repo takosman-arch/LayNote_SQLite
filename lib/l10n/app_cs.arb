@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "Uloženo do alba",
   "imageViewerSaveFailedMessage": "Uložení se nezdařilo: {error}",
   "imageViewerSavingInProgressMessage": "Ukládání…",
-  "imageViewerFileNotFoundMessage": "Tento soubor již neexistuje"
+  "imageViewerFileNotFoundMessage": "Tento soubor již neexistuje",
+  "findMenuItemLabel": "Najít",
+  "findSearchHint": "Hledat",
+  "findReplaceHint": "Nahradit čím",
+  "findReplaceButton": "Nahradit",
+  "findReplaceAllButton": "Nahradit vše",
+  "findPreviousTooltip": "Předchozí shoda",
+  "findNextTooltip": "Další shoda",
+  "findShowReplaceTooltip": "Zobrazit pole Nahradit",
+  "findHideReplaceTooltip": "Skrýt pole Nahradit",
+  "findCloseTooltip": "Zavřít vyhledávání"
 }

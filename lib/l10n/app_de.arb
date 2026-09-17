@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "Im Album gespeichert",
   "imageViewerSaveFailedMessage": "Speichern fehlgeschlagen: {error}",
   "imageViewerSavingInProgressMessage": "Wird gespeichert…",
-  "imageViewerFileNotFoundMessage": "Diese Datei ist nicht mehr vorhanden"
+  "imageViewerFileNotFoundMessage": "Diese Datei ist nicht mehr vorhanden",
+  "findMenuItemLabel": "Suchen",
+  "findSearchHint": "Suchen",
+  "findReplaceHint": "Ersetzen durch",
+  "findReplaceButton": "Ersetzen",
+  "findReplaceAllButton": "Alle ersetzen",
+  "findPreviousTooltip": "Vorheriger Treffer",
+  "findNextTooltip": "Nächster Treffer",
+  "findShowReplaceTooltip": "Ersetzen-Feld anzeigen",
+  "findHideReplaceTooltip": "Ersetzen-Feld ausblenden",
+  "findCloseTooltip": "Suche schließen"
 }

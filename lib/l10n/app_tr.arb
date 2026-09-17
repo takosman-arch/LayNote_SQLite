@@ -3324,5 +3324,15 @@
   "imageViewerFileNotFoundMessage": "Bu dosya artık mevcut değil",
   "@imageViewerFileNotFoundMessage": {
     "description": "Kırp/Kaydet/Paylaş butonlarına basıldığında hedef dosya diskten silinmiş veya taşınmışsa, işlem başlatılmadan önceki varlık kontrolünde gösterilen snackbar mesajı"
-  }
+  },
+  "findMenuItemLabel": "Bul",
+  "findSearchHint": "Ara",
+  "findReplaceHint": "Şununla değiştir",
+  "findReplaceButton": "Değiştir",
+  "findReplaceAllButton": "Tümünü Değiştir",
+  "findPreviousTooltip": "Önceki eşleşme",
+  "findNextTooltip": "Sonraki eşleşme",
+  "findShowReplaceTooltip": "Değiştir alanını göster",
+  "findHideReplaceTooltip": "Değiştir alanını gizle",
+  "findCloseTooltip": "Bul modunu kapat"
 }

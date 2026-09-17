@@ -1207,5 +1207,15 @@
   "imageViewerSavedToGalleryMessage": "Zapisano w albumie",
   "imageViewerSaveFailedMessage": "Nie udało się zapisać: {error}",
   "imageViewerSavingInProgressMessage": "Zapisywanie…",
-  "imageViewerFileNotFoundMessage": "Ten plik już nie istnieje"
+  "imageViewerFileNotFoundMessage": "Ten plik już nie istnieje",
+  "findMenuItemLabel": "Znajdź",
+  "findSearchHint": "Szukaj",
+  "findReplaceHint": "Zamień na",
+  "findReplaceButton": "Zamień",
+  "findReplaceAllButton": "Zamień wszystko",
+  "findPreviousTooltip": "Poprzednie dopasowanie",
+  "findNextTooltip": "Następne dopasowanie",
+  "findShowReplaceTooltip": "Pokaż pole zamiany",
+  "findHideReplaceTooltip": "Ukryj pole zamiany",
+  "findCloseTooltip": "Zamknij wyszukiwanie"
 }
