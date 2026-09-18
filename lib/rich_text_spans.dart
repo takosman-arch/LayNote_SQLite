@@ -214,6 +214,120 @@ class RichTextSpans {
     return result;
   }
 
+  // ── DÜZELTME: blok bölme sırasında span'ların da bölünmesi ──────────────
+  // Bir metin bloğu ikiye ayrıldığında (araya checklist/calc_table/drawing/
+  // table/divider/ek bloğu eklenirken) eskiden yalnızca 'text' alanı
+  // bölünüyor, 'spans' alanına hiç dokunulmuyordu. Sonuç:
+  //   - Sol blok: metin kısaldığı halde span'lar eski (uzun) metnin
+  //     aralıklarını taşımaya devam ediyor -> aralık-dışı, geçersiz veri.
+  //     Render tarafı bunu kırpıp (clampIndex) gizlediği için hata gözle
+  //     görülmüyor ama veri bozuk kalıyor; sonraki shiftForInsert/
+  //     shiftForDelete çağrıları bu bozuk değerleri daha da kaydırıp
+  //     kalıcı hale getiriyordu.
+  //   - Sağ blok: yeni Map'te 'spans' alanı hiç olmadığından parse(null)
+  //     boş liste döndürüyor -> metnin TÜM biçimlendirmesi yok oluyordu.
+  // Aşağıdaki üç yardımcı bu deseni tek noktada çözer.
+
+  // [start, end) aralığındaki metne ait span'ları döndürür; indeksler yeni
+  // metnin başına (0'a) göre yeniden hesaplanır. Aralığın ortasından geçen
+  // span'lar kırpılır, ama tüm özelliklerini (bold/fontSize/color/link ...)
+  // korur. text.substring(start, end) ile birlikte kullanılır.
+  static List<Map<String, dynamic>> sub(List? spans, int start, int end) {
+    if (end <= start) return <Map<String, dynamic>>[];
+    final result = <Map<String, dynamic>>[];
+    for (final s in parse(spans)) {
+      final sStart = s['start'] as int;
+      final sEnd = s['end'] as int;
+      final nStart = (sStart < start ? start : sStart) - start;
+      final nEnd = (sEnd > end ? end : sEnd) - start;
+      if (nEnd <= nStart) continue; // aralıkla hiç kesişmiyor
+      result.add(_withRange(s, nStart, nEnd));
+    }
+    return result;
+  }
+
+  // Bir metin bloğu [at] konumundan ikiye bölündüğünde span'ları da böler.
+  // Dönen ilk liste sol bloğa (indeksler değişmez), ikincisi sağ bloğa
+  // (indeksler [at] kadar geri kaydırılır) aittir. Kesim noktasının
+  // ortasından geçen span'lar iki parçaya ayrılır ve her iki parça da tüm
+  // özelliklerini korur.
+  //
+  // ÖNEMLİ: [at], BÖLÜNEN metindeki kesim indeksidir (yani leftText.length).
+  // Bölme sırasında ayrıca karakter atılıyorsa (ör. checklist'e çevirirken
+  // satır sonundaki '\n'), önce shiftForDelete ile o aralığı düşürün ya da
+  // doğrudan sub() kullanın.
+  static (List<Map<String, dynamic>>, List<Map<String, dynamic>>) split(
+    List? spans,
+    int at,
+    int textLength,
+  ) {
+    var cut = at;
+    if (cut < 0) cut = 0;
+    if (cut > textLength) cut = textLength;
+    return (sub(spans, 0, cut), sub(spans, cut, textLength));
+  }
+
+  // Aralık dışına taşmış span'ları metin uzunluğuna kırpar. parse()/clean()
+  // metin uzunluğunu BİLMEDİĞİ için, geçmişte oluşmuş bozuk kayıtların
+  // temizlenebileceği tek yer burasıdır — content_blocks.dart -> serialize()
+  // içinde her metin/hücre/madde için çağrılır.
+  static List<Map<String, dynamic>> clampToLength(List? spans, int textLength) {
+    final max = textLength < 0 ? 0 : textLength;
+    final result = <Map<String, dynamic>>[];
+    for (final s in parse(spans)) {
+      var start = s['start'] as int;
+      var end = s['end'] as int;
+      if (start > max) start = max;
+      if (end > max) end = max;
+      if (end <= start) continue;
+      result.add(_withRange(s, start, end));
+    }
+    return result;
+  }
+
+  // İki metin PEŞ PEŞE birleştirildiğinde (ör. bir checklist maddesi
+  // düz metne geri dönüştürülüp önündeki metin bloğunun sonuna eklenirken)
+  // span'ları da birleştirir. [leftTextLength], sağdaki metinden ÖNCE gelen
+  // tüm karakterlerin sayısıdır — araya bir ayırıcı ('\n' gibi) konuyorsa
+  // onun uzunluğu da buna DAHİL edilmelidir.
+  static List<Map<String, dynamic>> merge(
+    List? leftSpans,
+    int leftTextLength,
+    List? rightSpans,
+  ) {
+    final result = clampToLength(leftSpans, leftTextLength);
+    for (final s in parse(rightSpans)) {
+      result.add(_withRange(
+        s,
+        (s['start'] as int) + leftTextLength,
+        (s['end'] as int) + leftTextLength,
+      ));
+    }
+    return result;
+  }
+
+  // Bir span'ın tüm biçim alanlarını koruyarak yalnızca start/end'ini
+  // değiştiren kopyasını üretir (sub/split/clampToLength ortak yardımcısı).
+  static Map<String, dynamic> _withRange(
+    Map<String, dynamic> s,
+    int start,
+    int end,
+  ) {
+    return {
+      'start': start,
+      'end': end,
+      'bold': s['bold'],
+      'italic': s['italic'],
+      'underline': s['underline'],
+      'strikethrough': s['strikethrough'],
+      'highlight': s['highlight'],
+      'fontSize': s['fontSize'],
+      'color': s['color'],
+      'fontFamily': s['fontFamily'],
+      'link': s['link'],
+    };
+  }
+
   // Verilen span listesini, [0, textLength] aralığını tamamen kapsayan,
   // örtüşmeyen "run"lara ayırır (RichBlockTextController.buildTextSpan ile
   // AYNI breakpoint mantığı). Seçim sınırları (start/end) da kırılma

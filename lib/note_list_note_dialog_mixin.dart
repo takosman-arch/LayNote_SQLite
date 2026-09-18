@@ -2392,6 +2392,15 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         }
         final leftText = text.substring(0, offset);
         final rightText = text.substring(offset);
+        // DÜZELTME (zengin metin yok oluyordu): metin ikiye bölünürken
+        // 'spans' de AYNI noktadan bölünmeli. Eskiden sol blok eski (uzun)
+        // metnin aralıklarını taşımaya devam ediyor, sağ blokta ise 'spans'
+        // alanı hiç oluşturulmadığından tüm biçimlendirme kayboluyordu.
+        final (leftSpans, rightSpans) = RichTextSpans.split(
+          blocks[idx]['spans'] as List?,
+          offset,
+          text.length,
+        );
 
         // DÜZELTME (checklist'teki ile aynı sorun): leftText boşsa (imleç
         // metnin en başındaysa), ayrı bir boş metin bloğu bırakmak yerine
@@ -2404,11 +2413,16 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           dividerIdx = idx;
         } else {
           blocks[idx]['text'] = leftText;
+          blocks[idx]['spans'] = leftSpans;
           blocks.insert(idx + 1, {'type': 'divider'});
           dividerIdx = idx + 1;
         }
         if (rightText.isNotEmpty) {
-          blocks.insert(dividerIdx + 1, {'type': 'text', 'text': rightText});
+          blocks.insert(dividerIdx + 1, {
+            'type': 'text',
+            'text': rightText,
+            'spans': rightSpans,
+          });
         }
 
         rebuildBlockControllers();
@@ -2456,6 +2470,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
               ? focusedItemIndex
               : 0;
           final removedText = (items[itemIdx]['text'] ?? '').toString();
+          // DÜZELTME (checklist'ten düz metne dönerken biçimlendirme
+          // kayboluyordu): madde kendi 'spans' alanını taşıyor (bkz.
+          // content_blocks.dart -> _parseChecklistItems), ama aşağıda
+          // yalnızca metni taşınıyordu. Madde listeden çıkarılmadan ÖNCE
+          // span'ları da alınıp hedef metin bloğuna RichTextSpans.merge ile
+          // doğru offset'ten ekleniyor.
+          final removedSpans = RichTextSpans.parse(items[itemIdx]['spans']);
 
           if (items.length <= 1) {
             // Tek madde kaldı → tüm blok düz metne dönüşür (eski davranış).
@@ -2467,6 +2488,20 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
               final nextText = (blocks[idx + 1]['text'] ?? '').toString();
               final sep = prevText.isNotEmpty && removedText.isNotEmpty ? '\n' : '';
               final sep2 = (prevText + removedText).isNotEmpty && nextText.isNotEmpty ? '\n' : '';
+              // Üç parça sırayla birleşiyor: prevText + sep + removedText
+              // + sep2 + nextText. Her birleştirmede sağ tarafın offset'i,
+              // ondan önce gelen TÜM karakterlerin (ayırıcılar dahil)
+              // uzunluğu kadar kaydırılır.
+              final mergedLeft = RichTextSpans.merge(
+                blocks[idx - 1]['spans'] as List?,
+                prevText.length + sep.length,
+                removedSpans,
+              );
+              blocks[idx - 1]['spans'] = RichTextSpans.merge(
+                mergedLeft,
+                prevText.length + sep.length + removedText.length + sep2.length,
+                blocks[idx + 1]['spans'] as List?,
+              );
               blocks[idx - 1]['text'] = prevText + sep + removedText + sep2 + nextText;
               blocks.removeAt(idx + 1);
               blocks.removeAt(idx);
@@ -2474,11 +2509,20 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
             } else if (prevIsText) {
               final prevText = (blocks[idx - 1]['text'] ?? '').toString();
               final sep = prevText.isNotEmpty && removedText.isNotEmpty ? '\n' : '';
+              blocks[idx - 1]['spans'] = RichTextSpans.merge(
+                blocks[idx - 1]['spans'] as List?,
+                prevText.length + sep.length,
+                removedSpans,
+              );
               blocks[idx - 1]['text'] = prevText + sep + removedText;
               blocks.removeAt(idx);
               focusedBlockIndex = idx - 1;
             } else {
-              blocks[idx] = {'type': 'text', 'text': removedText};
+              blocks[idx] = {
+                'type': 'text',
+                'text': removedText,
+                'spans': removedSpans,
+              };
             }
           } else {
             // Birden fazla madde var → sadece odaklı maddeyi çıkar.
@@ -2495,10 +2539,19 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
               if (prevIsText) {
                 final prevText = (blocks[idx - 1]['text'] ?? '').toString();
                 final sep = prevText.isNotEmpty && removedText.isNotEmpty ? '\n' : '';
+                blocks[idx - 1]['spans'] = RichTextSpans.merge(
+                  blocks[idx - 1]['spans'] as List?,
+                  prevText.length + sep.length,
+                  removedSpans,
+                );
                 blocks[idx - 1]['text'] = prevText + sep + removedText;
                 focusedBlockIndex = idx - 1;
               } else {
-                blocks.insert(idx, {'type': 'text', 'text': removedText});
+                blocks.insert(idx, {
+                  'type': 'text',
+                  'text': removedText,
+                  'spans': removedSpans,
+                });
                 focusedBlockIndex = idx;
                 // checklist bloğu idx+1'e kaydı, focusedItemIndex güncelle
               }
@@ -2508,7 +2561,11 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
               final upperItems = items.sublist(0, itemIdx);
               final lowerItems = items.sublist(itemIdx);
               blocks[idx]['items'] = upperItems;
-              blocks.insert(idx + 1, {'type': 'text', 'text': removedText});
+              blocks.insert(idx + 1, {
+                'type': 'text',
+                'text': removedText,
+                'spans': removedSpans,
+              });
               if (lowerItems.isNotEmpty) {
                 blocks.insert(idx + 2, {'type': 'checklist', 'items': lowerItems});
               }
@@ -2692,6 +2749,45 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
         final String effectiveBelowText =
             isRangeSelection ? rangeBelowText : belowText;
 
+        // ── DÜZELTME (checklist'e çevirirken zengin metin kayboluyordu) ──
+        // Metin bloğu üst metin / checklist maddeleri / alt metin olarak
+        // üçe ayrılırken eskiden yalnızca METİN bölünüyordu; 'spans'
+        // hiçbir parçaya taşınmıyordu. Artık her parçanın span'ları asıl
+        // metindeki karakter aralığından kesilerek üretiliyor (bkz.
+        // RichTextSpans.sub). Checklist maddeleri kendi 'spans' alanını
+        // zaten destekliyor (bkz. content_blocks.dart ->
+        // _parseChecklistItems), bu yüzden madde başına ayrı ayrı yazılır.
+        final rawBlockSpans = blocks[idx]['spans'] as List?;
+        // Üst taraf: [0, effectiveLineStartIdx). effectiveFinalAboveText
+        // sondaki '\n' atılmış hali olduğundan ayrıca uzunluğa kırpılır.
+        final aboveSpans = RichTextSpans.clampToLength(
+          RichTextSpans.sub(rawBlockSpans, 0, effectiveLineStartIdx),
+          effectiveFinalAboveText.length,
+        );
+        // Maddeler: satır başlangıçları effectiveLineStartIdx'ten itibaren,
+        // her adımda satır uzunluğu + 1 ('\n') kadar ilerler — effectiveItems
+        // ile BİREBİR aynı sırada üretildiğinden tek/çok satır farketmez.
+        int itemSpanCursor = effectiveLineStartIdx;
+        for (final item in effectiveItems) {
+          final itemText = (item['text'] ?? '').toString();
+          item['spans'] = RichTextSpans.sub(
+            rawBlockSpans,
+            itemSpanCursor,
+            itemSpanCursor + itemText.length,
+          );
+          itemSpanCursor += itemText.length + 1;
+        }
+        // Alt taraf: son satırın '\n'inden sonrası. effectiveBelowText
+        // metnin sonuna kadar uzandığından başlangıç indeksi uzunluk
+        // farkından güvenle hesaplanabilir.
+        final belowSpans = effectiveBelowText.isEmpty
+            ? <Map<String, dynamic>>[]
+            : RichTextSpans.sub(
+                rawBlockSpans,
+                text.length - effectiveBelowText.length,
+                text.length,
+              );
+
         // DÜZELTME (checklist bir alt satıra ekleniyordu): finalAboveText
         // boşsa (checklist'e dönüştürülen satır, metin bloğundaki tek/ilk
         // satırsa), eskiden yine de blocks[idx] boş bir metin bloğu olarak
@@ -2725,6 +2821,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           checklistIdx = idx;
         } else {
           blocks[idx]['text'] = effectiveFinalAboveText;
+          blocks[idx]['spans'] = aboveSpans;
           blocks.insert(idx + 1, {
             'type': 'checklist',
             'items': effectiveItems,
@@ -2735,6 +2832,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
           blocks.insert(checklistIdx + 1, {
             'type': 'text',
             'text': effectiveBelowText,
+            'spans': belowSpans,
           });
         }
 
@@ -4446,6 +4544,14 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                       }
                       final leftText = text.substring(0, offset);
                       final rightText = text.substring(offset);
+                      // DÜZELTME (zengin metin yok oluyordu): bkz.
+                      // insertDividerBlock'taki aynı açıklama — metinle
+                      // birlikte 'spans' de bölünüyor.
+                      final (leftSpans, rightSpans) = RichTextSpans.split(
+                        blocks[idx]['spans'] as List?,
+                        offset,
+                        text.length,
+                      );
 
                       if (leftText.trim().isEmpty &&
                           idx > 0 &&
@@ -4454,6 +4560,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                         // ekle, bu metin bloğunu (sağ kalan) koru.
                         (blocks[idx - 1]['ids'] as List).addAll(newIds);
                         blocks[idx]['text'] = rightText;
+                        blocks[idx]['spans'] = rightSpans;
                       } else if (rightText.trim().isEmpty &&
                           idx < blocks.length - 1 &&
                           blocks[idx + 1]['type'] == 'attachments') {
@@ -4461,8 +4568,10 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                         // ekle, bu metin bloğunu (sol kalan) koru.
                         (blocks[idx + 1]['ids'] as List).addAll(newIds);
                         blocks[idx]['text'] = leftText;
+                        blocks[idx]['spans'] = leftSpans;
                       } else {
                         blocks[idx]['text'] = leftText;
+                        blocks[idx]['spans'] = leftSpans;
                         blocks.insert(idx + 1, {
                           'type': 'attachments',
                           'ids': newIds,
@@ -4470,6 +4579,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                         blocks.insert(idx + 2, {
                           'type': 'text',
                           'text': rightText,
+                          'spans': rightSpans,
                         });
                         focusedBlockIndex = idx + 2;
                       }
@@ -4786,6 +4896,16 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                         (needsLeadingNewline ? '\n' : '') + recognizedText;
                     final newLeft = leftText + insertion;
                     blocks[idx]['text'] = newLeft + rightText;
+                    // DÜZELTME (araya metin eklenince biçimlendirme kayıyordu):
+                    // [offset] konumuna [insertion] eklendiğinden, o noktadan
+                    // SONRAKİ span'lar da aynı uzunlukta ileri kaydırılmalı —
+                    // aksi halde kalın/renkli aralıklar yanlış karakterleri
+                    // işaret etmeye başlıyordu.
+                    blocks[idx]['spans'] = RichTextSpans.shiftForInsert(
+                      blocks[idx]['spans'] as List?,
+                      offset,
+                      insertion.length,
+                    );
                     focusedBlockIndex = idx;
                     rebuildBlockControllers();
                     final newCaretOffset = newLeft.length;
@@ -4918,9 +5038,25 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                           i < blocks.length - 1 &&
                           blocks[i + 1]['type'] == 'text';
                       if (prevIsText && nextIsText) {
+                        final prevTextForMerge =
+                            (blocks[i - 1]['text'] ?? '').toString();
                         final mergedText =
-                            ((blocks[i - 1]['text'] ?? '').toString()) +
+                            prevTextForMerge +
                             ((blocks[i + 1]['text'] ?? '').toString());
+                        // DÜZELTME (blok silinince zengin metin kayboluyordu):
+                        // iki metin bloğu birleştirilirken 'spans' de
+                        // birleştirilmeli. Eskiden yalnızca METİN birleşiyor,
+                        // alttaki bloğun TÜM biçimlendirmesi sessizce
+                        // atılıyordu — üstteki bloğun span'ları kısa metni
+                        // kapsadığı için not "biçimsiz" görünüyordu. Alttaki
+                        // span'lar prevText uzunluğu kadar kaydırılarak
+                        // ekleniyor (bkz. RichTextSpans.merge). Checklist/
+                        // hesap satırı silme yollarında bu zaten yapılıyordu.
+                        blocks[i - 1]['spans'] = RichTextSpans.merge(
+                          blocks[i - 1]['spans'] as List?,
+                          prevTextForMerge.length,
+                          blocks[i + 1]['spans'] as List?,
+                        );
                         blocks[i - 1]['text'] = mergedText;
                         blocks.removeAt(i + 1);
                         blocks.removeAt(i);
@@ -4956,9 +5092,25 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                       i < blocks.length - 1 &&
                       blocks[i + 1]['type'] == 'text';
                   if (prevIsText && nextIsText) {
+                    final prevTextForMerge =
+                        (blocks[i - 1]['text'] ?? '').toString();
                     final mergedText =
-                        ((blocks[i - 1]['text'] ?? '').toString()) +
+                        prevTextForMerge +
                         ((blocks[i + 1]['text'] ?? '').toString());
+                    // DÜZELTME (blok silinince zengin metin kayboluyordu):
+                    // iki metin bloğu birleştirilirken 'spans' de
+                    // birleştirilmeli. Eskiden yalnızca METİN birleşiyor,
+                    // alttaki bloğun TÜM biçimlendirmesi sessizce
+                    // atılıyordu — üstteki bloğun span'ları kısa metni
+                    // kapsadığı için not "biçimsiz" görünüyordu. Alttaki
+                    // span'lar prevText uzunluğu kadar kaydırılarak
+                    // ekleniyor (bkz. RichTextSpans.merge). Checklist/
+                    // hesap satırı silme yollarında bu zaten yapılıyordu.
+                    blocks[i - 1]['spans'] = RichTextSpans.merge(
+                      blocks[i - 1]['spans'] as List?,
+                      prevTextForMerge.length,
+                      blocks[i + 1]['spans'] as List?,
+                    );
                     blocks[i - 1]['text'] = mergedText;
                     blocks.removeAt(i + 1);
                     blocks.removeAt(i);
@@ -4987,9 +5139,25 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                       i < blocks.length - 1 &&
                       blocks[i + 1]['type'] == 'text';
                   if (prevIsText && nextIsText) {
+                    final prevTextForMerge =
+                        (blocks[i - 1]['text'] ?? '').toString();
                     final mergedText =
-                        ((blocks[i - 1]['text'] ?? '').toString()) +
+                        prevTextForMerge +
                         ((blocks[i + 1]['text'] ?? '').toString());
+                    // DÜZELTME (blok silinince zengin metin kayboluyordu):
+                    // iki metin bloğu birleştirilirken 'spans' de
+                    // birleştirilmeli. Eskiden yalnızca METİN birleşiyor,
+                    // alttaki bloğun TÜM biçimlendirmesi sessizce
+                    // atılıyordu — üstteki bloğun span'ları kısa metni
+                    // kapsadığı için not "biçimsiz" görünüyordu. Alttaki
+                    // span'lar prevText uzunluğu kadar kaydırılarak
+                    // ekleniyor (bkz. RichTextSpans.merge). Checklist/
+                    // hesap satırı silme yollarında bu zaten yapılıyordu.
+                    blocks[i - 1]['spans'] = RichTextSpans.merge(
+                      blocks[i - 1]['spans'] as List?,
+                      prevTextForMerge.length,
+                      blocks[i + 1]['spans'] as List?,
+                    );
                     blocks[i - 1]['text'] = mergedText;
                     blocks.removeAt(i + 1);
                     blocks.removeAt(i);
@@ -5018,9 +5186,25 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                       i < blocks.length - 1 &&
                       blocks[i + 1]['type'] == 'text';
                   if (prevIsText && nextIsText) {
+                    final prevTextForMerge =
+                        (blocks[i - 1]['text'] ?? '').toString();
                     final mergedText =
-                        ((blocks[i - 1]['text'] ?? '').toString()) +
+                        prevTextForMerge +
                         ((blocks[i + 1]['text'] ?? '').toString());
+                    // DÜZELTME (blok silinince zengin metin kayboluyordu):
+                    // iki metin bloğu birleştirilirken 'spans' de
+                    // birleştirilmeli. Eskiden yalnızca METİN birleşiyor,
+                    // alttaki bloğun TÜM biçimlendirmesi sessizce
+                    // atılıyordu — üstteki bloğun span'ları kısa metni
+                    // kapsadığı için not "biçimsiz" görünüyordu. Alttaki
+                    // span'lar prevText uzunluğu kadar kaydırılarak
+                    // ekleniyor (bkz. RichTextSpans.merge). Checklist/
+                    // hesap satırı silme yollarında bu zaten yapılıyordu.
+                    blocks[i - 1]['spans'] = RichTextSpans.merge(
+                      blocks[i - 1]['spans'] as List?,
+                      prevTextForMerge.length,
+                      blocks[i + 1]['spans'] as List?,
+                    );
                     blocks[i - 1]['text'] = mergedText;
                     blocks.removeAt(i + 1);
                     blocks.removeAt(i);
@@ -6452,8 +6636,18 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               }
                               final leftText = text.substring(0, offset);
                               final rightText = text.substring(offset);
+                              // DÜZELTME (zengin metin yok oluyordu): bkz.
+                              // insertDividerBlock'taki aynı açıklama —
+                              // metinle birlikte 'spans' de bölünüyor.
+                              final (leftSpans, rightSpans) =
+                                  RichTextSpans.split(
+                                blocks[idx]['spans'] as List?,
+                                offset,
+                                text.length,
+                              );
 
                               blocks[idx]['text'] = leftText;
+                              blocks[idx]['spans'] = leftSpans;
                               blocks.insert(idx + 1, {
                                 'type': 'calc_table',
                                 'rows': [
@@ -6467,6 +6661,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               blocks.insert(idx + 2, {
                                 'type': 'text',
                                 'text': rightText,
+                                'spans': rightSpans,
                               });
 
                               rebuildBlockControllers();
@@ -6515,8 +6710,18 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               }
                               final leftText = text.substring(0, offset);
                               final rightText = text.substring(offset);
+                              // DÜZELTME (zengin metin yok oluyordu): bkz.
+                              // insertDividerBlock'taki aynı açıklama —
+                              // metinle birlikte 'spans' de bölünüyor.
+                              final (leftSpans, rightSpans) =
+                                  RichTextSpans.split(
+                                blocks[idx]['spans'] as List?,
+                                offset,
+                                text.length,
+                              );
 
                               blocks[idx]['text'] = leftText;
+                              blocks[idx]['spans'] = leftSpans;
                               blocks.insert(idx + 1, {
                                 'type': 'drawing',
                                 'strokes': [],
@@ -6525,6 +6730,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               blocks.insert(idx + 2, {
                                 'type': 'text',
                                 'text': rightText,
+                                'spans': rightSpans,
                               });
 
                               rebuildBlockControllers();
@@ -6581,8 +6787,18 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               }
                               final leftText = text.substring(0, offset);
                               final rightText = text.substring(offset);
+                              // DÜZELTME (zengin metin yok oluyordu): bkz.
+                              // insertDividerBlock'taki aynı açıklama —
+                              // metinle birlikte 'spans' de bölünüyor.
+                              final (leftSpans, rightSpans) =
+                                  RichTextSpans.split(
+                                blocks[idx]['spans'] as List?,
+                                offset,
+                                text.length,
+                              );
 
                               blocks[idx]['text'] = leftText;
+                              blocks[idx]['spans'] = leftSpans;
                               blocks.insert(idx + 1, {
                                 'type': 'table',
                                 'rows': pickedRows,
@@ -6590,6 +6806,7 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               blocks.insert(idx + 2, {
                                 'type': 'text',
                                 'text': rightText,
+                                'spans': rightSpans,
                               });
 
                               rebuildBlockControllers();
@@ -6723,6 +6940,16 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                       txtContent;
                                   final newLeft = leftText + insertion;
                                   blocks[idx]['text'] = newLeft + rightText;
+                                  // DÜZELTME (araya metin eklenince biçimlendirme kayıyordu):
+                                  // [offset] konumuna [insertion] eklendiğinden, o noktadan
+                                  // SONRAKİ span'lar da aynı uzunlukta ileri kaydırılmalı —
+                                  // aksi halde kalın/renkli aralıklar yanlış karakterleri
+                                  // işaret etmeye başlıyordu.
+                                  blocks[idx]['spans'] = RichTextSpans.shiftForInsert(
+                                    blocks[idx]['spans'] as List?,
+                                    offset,
+                                    insertion.length,
+                                  );
                                   focusedBlockIndex = idx;
                                   rebuildBlockControllers();
                                   final newCaretOffset = newLeft.length;
@@ -7514,11 +7741,28 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             i < blocks.length - 1 &&
                                             blocks[i + 1]['type'] == 'text';
                                         if (prevIsText && nextIsText) {
+                                          final prevTextForMerge =
+                                              (blocks[i - 1]['text'] ?? '')
+                                                  .toString();
                                           final mergedText =
-                                              ((blocks[i - 1]['text'] ?? '')
-                                                  .toString()) +
+                                              prevTextForMerge +
                                               ((blocks[i + 1]['text'] ?? '')
                                                   .toString());
+                                          // DÜZELTME (blok silinince zengin metin kayboluyordu):
+                                          // iki metin bloğu birleştirilirken 'spans' de
+                                          // birleştirilmeli. Eskiden yalnızca METİN birleşiyor,
+                                          // alttaki bloğun TÜM biçimlendirmesi sessizce
+                                          // atılıyordu — üstteki bloğun span'ları kısa metni
+                                          // kapsadığı için not "biçimsiz" görünüyordu. Alttaki
+                                          // span'lar prevText uzunluğu kadar kaydırılarak
+                                          // ekleniyor (bkz. RichTextSpans.merge). Checklist/
+                                          // hesap satırı silme yollarında bu zaten yapılıyordu.
+                                          blocks[i - 1]['spans'] =
+                                              RichTextSpans.merge(
+                                            blocks[i - 1]['spans'] as List?,
+                                            prevTextForMerge.length,
+                                            blocks[i + 1]['spans'] as List?,
+                                          );
                                           blocks[i - 1]['text'] = mergedText;
                                           blocks.removeAt(i + 1);
                                           blocks.removeAt(i);
@@ -10428,6 +10672,16 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                             text;
                                         final newLeft = leftText + insertion;
                                         blocks[idx]['text'] = newLeft + rightText;
+                                        // DÜZELTME (araya metin eklenince biçimlendirme kayıyordu):
+                                        // [offset] konumuna [insertion] eklendiğinden, o noktadan
+                                        // SONRAKİ span'lar da aynı uzunlukta ileri kaydırılmalı —
+                                        // aksi halde kalın/renkli aralıklar yanlış karakterleri
+                                        // işaret etmeye başlıyordu.
+                                        blocks[idx]['spans'] = RichTextSpans.shiftForInsert(
+                                          blocks[idx]['spans'] as List?,
+                                          offset,
+                                          insertion.length,
+                                        );
                                         focusedBlockIndex = idx;
                                         rebuildBlockControllers();
                                         final newCaretOffset = newLeft.length;

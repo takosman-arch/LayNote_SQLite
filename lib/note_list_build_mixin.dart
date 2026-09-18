@@ -1733,63 +1733,112 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                       const SizedBox(height: 8),
                                     ],
                                     if (previewChecklistItems.isNotEmpty)
-                                      ...(previewChecklistItems
-                                          .take(_previewLines)
-                                          .map<Widget>((item) {
-                                            final isItemChecklist =
-                                                item['checklist'] == true;
-                                            final isChecked =
-                                                item['checked'] == true;
-                                            final textWidget = Text(
-                                              (item['text'] ?? '').toString(),
-                                              style: TextStyle(
-                                                color:
-                                                    isItemChecklist &&
-                                                        isChecked
-                                                    ? dNoteEffectiveTextColor(context, _textColor)
-                                                          ?.withOpacity(0.5)
-                                                    : (dNoteEffectiveTextColor(context, _textColor)),
-                                                decoration:
-                                                    isItemChecklist &&
-                                                        isChecked
-                                                    ? TextDecoration
-                                                          .lineThrough
-                                                    : null,
-                                                decorationColor:
-                                                    isItemChecklist &&
-                                                        isChecked
-                                                    ? Colors.grey[700]
-                                                    : null,
-                                                decorationStyle:
-                                                    TextDecorationStyle.solid,
-                                                fontSize:
-                                                    (note['fontSize'] as num?)
-                                                        ?.toDouble() ??
-                                                    _globalFontSize,
-                                                fontFamily: dNoteFontFamilyValue(_fontFamily),
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            );
-                                            if (!isItemChecklist) {
-                                              return textWidget;
-                                            }
-                                            return Row(
-                                              children: [
-                                                Icon(
-                                                  isChecked
-                                                      ? Icons.check_box_rounded
-                                                      : Icons
-                                                            .check_box_outline_blank_rounded,
-                                                  color: appAccentColor.value,
-                                                  size: 16,
+                                      LayoutBuilder(
+                                        // DÜZELTME: notta checklist bloğu
+                                        // varken metin blokları da bu
+                                        // "karışık önizleme" listesine
+                                        // giriyor (bkz. _previewLineItems),
+                                        // ama önceden HER öğeye sabit
+                                        // maxLines:1 veriliyordu — metin
+                                        // satırları ilk satırdan sonra
+                                        // "..." ile kesiliyordu, oysa
+                                        // checklist YOKKEN metin birden
+                                        // fazla satır boyunca akabiliyordu.
+                                        // _mixedPreviewBudget artık her
+                                        // öğeye ayrı ayrı gerçek sarma
+                                        // ölçümüyle satır ayırıyor
+                                        // (checklist maddesi hep 1 satır,
+                                        // metin öğesi kalan bütçeye göre
+                                        // birden fazla satır alabiliyor).
+                                        // Gerçek genişlik gerektiğinden
+                                        // (TextPainter ölçümü için)
+                                        // LayoutBuilder ile bu Column'un
+                                        // gerçek constraint genişliği
+                                        // alınıyor.
+                                        builder: (context, constraints) {
+                                          final budget = _mixedPreviewBudget(
+                                            note,
+                                            constraints.maxWidth,
+                                          );
+                                          return Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: budget.map<Widget>((
+                                              entry,
+                                            ) {
+                                              final item = entry.item;
+                                              final isItemChecklist =
+                                                  item['checklist'] == true;
+                                              final isChecked =
+                                                  item['checked'] == true;
+                                              final textWidget = Text(
+                                                (item['text'] ?? '')
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  color:
+                                                      isItemChecklist &&
+                                                          isChecked
+                                                      ? dNoteEffectiveTextColor(
+                                                          context,
+                                                          _textColor,
+                                                        )?.withOpacity(0.5)
+                                                      : (dNoteEffectiveTextColor(
+                                                          context,
+                                                          _textColor,
+                                                        )),
+                                                  decoration:
+                                                      isItemChecklist &&
+                                                          isChecked
+                                                      ? TextDecoration
+                                                            .lineThrough
+                                                      : null,
+                                                  decorationColor:
+                                                      isItemChecklist &&
+                                                          isChecked
+                                                      ? Colors.grey[700]
+                                                      : null,
+                                                  decorationStyle:
+                                                      TextDecorationStyle
+                                                          .solid,
+                                                  fontSize:
+                                                      (note['fontSize']
+                                                              as num?)
+                                                          ?.toDouble() ??
+                                                      _globalFontSize,
+                                                  fontFamily:
+                                                      dNoteFontFamilyValue(
+                                                        _fontFamily,
+                                                      ),
                                                 ),
-                                                const SizedBox(width: 6),
-                                                Expanded(child: textWidget),
-                                              ],
-                                            );
-                                          })
-                                          .toList())
+                                                maxLines: entry.maxLines,
+                                                overflow:
+                                                    TextOverflow.ellipsis,
+                                              );
+                                              if (!isItemChecklist) {
+                                                return textWidget;
+                                              }
+                                              return Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Icon(
+                                                    isChecked
+                                                        ? Icons
+                                                              .check_box_rounded
+                                                        : Icons
+                                                              .check_box_outline_blank_rounded,
+                                                    color:
+                                                        appAccentColor.value,
+                                                    size: 16,
+                                                  ),
+                                                  const SizedBox(width: 6),
+                                                  Expanded(child: textWidget),
+                                                ],
+                                              );
+                                            }).toList(),
+                                          );
+                                        },
+                                      )
                                     else if (previewContentText.isNotEmpty ||
                                         previewShowFavoriteAlone)
                                       Row(
@@ -3445,6 +3494,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
               note: note,
               originalIndex: originalIndex,
               isTrash: isTrash,
+              cardContentWidth: cardContentWidth,
             ),
           ),
         ),
@@ -3640,6 +3690,43 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     return painter.computeLineMetrics().length;
   }
 
+  /// Karışık önizlemede (checklist + metin) her _previewLineItems() öğesine
+  /// kaç satır ayrılacağını belirler. Checklist maddeleri her zaman 1 satır
+  /// alır (editördeki gibi). Metin satırları ise gerçek sarma ölçümüyle
+  /// ölçülüp kalan bütçeye clamp edilir. Toplam ayrılan satır sayısı asla
+  /// _previewLines'ı geçmez; bütçe biterse kalan öğeler listeye hiç girmez
+  /// (render tarafı .take(N) yerine bu listenin uzunluğunu kullanmalı).
+  ///
+  /// contentWidth: metnin gerçekte saracağı genişlik — liste görünümünde
+  /// LayoutBuilder'dan, ızgara görünümünde cardContentWidth'ten gelir.
+  /// _estimateNoteHeight de AYNI fonksiyonu çağırır; böylece kart yüksekliği
+  /// tahmini ile gerçek render birbirini tutar.
+  List<({Map<String, dynamic> item, int maxLines})> _mixedPreviewBudget(
+    Map<String, dynamic> note,
+    double contentWidth,
+  ) {
+    final items = _previewLineItems(note);
+    final result = <({Map<String, dynamic> item, int maxLines})>[];
+    int remaining = _previewLines;
+    final fontSize = (note['fontSize'] as num?)?.toDouble() ?? _globalFontSize;
+    final style = TextStyle(fontSize: fontSize, height: 1.3);
+
+    for (final item in items) {
+      if (remaining <= 0) break;
+      if (item['checklist'] == true) {
+        result.add((item: item, maxLines: 1));
+        remaining -= 1;
+        continue;
+      }
+      final text = (item['text'] ?? '').toString();
+      final wrapped = _measureWrappedLineCount(text, contentWidth, style)
+          .clamp(1, remaining);
+      result.add((item: item, maxLines: wrapped));
+      remaining -= wrapped;
+    }
+    return result;
+  }
+
   // Kartın gerçekte kaç piksel yükseklik kaplayacağını ölçer (sütun
   // dengelemesi için). Önceki sürüm sadece "satır sayısı" topluyordu; bu,
   // başlık/içerik/checklist satırlarının farklı font boyutlarına ve kartın
@@ -3708,11 +3795,15 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     }
 
     if (isMixedChecklist) {
-      final items = _previewLineItems(note);
-      final itemCount = items.length.clamp(0, _previewLines);
-      // Her önizleme satırı (checklist maddesi ya da metin satırı) tek
-      // satır + altında 4px boşluk.
-      height += itemCount * ((12 * fontScale) * 1.3 + 4.0);
+      final budget = _mixedPreviewBudget(note, cardContentWidth);
+      final lineHeight = (12 * fontScale) * 1.3;
+      for (int i = 0; i < budget.length; i++) {
+        height += budget[i].maxLines * lineHeight;
+        // 4px'lik ayraç sadece öğeler ARASINDA var, son öğeden sonra yok
+        // (bkz. _buildGridNoteCard'daki aynı düzeltme) — bu yüzden tahmin
+        // de son öğede bu payı eklemiyor.
+        if (i != budget.length - 1) height += 4.0;
+      }
     } else {
       final content = ContentBlocks.plainText(
         note['content'] as String?,
@@ -3752,6 +3843,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
     required Map<String, dynamic> note,
     required int originalIndex,
     required bool isTrash,
+    required double cardContentWidth,
   }) {
     final hasTitle = (note['title'] ?? '').toString().isNotEmpty;
     final isChecklist = note['type'] == 'checklist';
@@ -4098,11 +4190,36 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         if (hasTitle) const SizedBox(height: 12),
                         showMixedPreview
                             ? Column(
+                                // DÜZELTME: notta checklist bloğu varken
+                                // metin blokları da bu "karışık önizleme"
+                                // listesine giriyor (bkz.
+                                // _previewLineItems), ama önceden HER
+                                // öğeye sabit maxLines:1 veriliyordu —
+                                // metin satırları ilk satırdan sonra
+                                // "..." ile kesiliyordu. _mixedPreviewBudget
+                                // artık her öğeye ayrı ayrı gerçek sarma
+                                // ölçümüyle satır ayırıyor (checklist
+                                // maddesi hep 1 satır, metin öğesi kalan
+                                // bütçeye göre birden fazla satır
+                                // alabiliyor). cardContentWidth burada
+                                // _estimateNoteHeight'e giden değerle
+                                // AYNI değer — böylece sütun dengesi/kart
+                                // yüksekliği tahmini gerçek render ile
+                                // tutarlı kalır.
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: _previewLineItems(note)
-                                    .take(_previewLines)
-                                    .map<Widget>((item) {
+                                children: () {
+                                  final _mixedBudget = _mixedPreviewBudget(
+                                    note,
+                                    cardContentWidth,
+                                  );
+                                  return _mixedBudget.asMap().entries.map<Widget>((
+                                      mapEntry) {
+                                      final isLastItem =
+                                          mapEntry.key ==
+                                          _mixedBudget.length - 1;
+                                      final entry = mapEntry.value;
+                                      final item = entry.item;
                                       final isItemChecklist =
                                           item['checklist'] == true;
                                       final isChecked =
@@ -4129,17 +4246,26 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                               _globalFontSize,
                                           fontFamily: dNoteFontFamilyValue(_fontFamily),
                                         ),
-                                        maxLines: 1,
+                                        maxLines: entry.maxLines,
                                         overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.start,
                                       );
                                       return Padding(
-                                        padding: const EdgeInsets.only(
-                                          bottom: 4,
+                                        // 4px'lik boşluk sadece öğeler
+                                        // ARASINDA olmalı; son öğeden sonra
+                                        // eklenirse checklist'li kartlar,
+                                        // checklist'siz (Text.rich)
+                                        // kartlara göre altta fazladan boş
+                                        // alan bırakıyordu — bkz. bu
+                                        // metodun üstündeki DÜZELTME notu.
+                                        padding: EdgeInsets.only(
+                                          bottom: isLastItem ? 0 : 4,
                                         ),
                                         child: !isItemChecklist
                                             ? textWidget
                                             : Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Icon(
                                                     isChecked
@@ -4155,7 +4281,8 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                               ),
                                       );
                                     })
-                                    .toList(),
+                                    .toList();
+                                }(),
                               )
                             : Text.rich(
                                 // DÜZELTME: RichText, DefaultTextStyle'ı

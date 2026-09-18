@@ -269,7 +269,15 @@ class ContentBlocks {
     }).map((b) {
       if (b['type'] == 'text') {
         final m = Map<String, dynamic>.from(b);
-        m['spans'] = RichTextSpans.clean(b['spans'] as List?);
+        // DÜZELTME (blok bölme sırasında bozulan span'ların temizlenmesi):
+        // clean()/parse() metin uzunluğunu BİLMEZ, bu yüzden aralık-dışı
+        // (metnin sonundan taşan) span'lar eskiden diske olduğu gibi
+        // yazılıyordu. clampToLength, hem bu oturumda oluşmuş hem de
+        // geçmişte kaydedilmiş bozuk aralıkları metin uzunluğuna kırpar.
+        m['spans'] = RichTextSpans.clampToLength(
+          b['spans'] as List?,
+          (b['text'] ?? '').toString().length,
+        );
         return m;
       }
       if (b['type'] == 'table') {
@@ -277,7 +285,10 @@ class ContentBlocks {
         m['rows'] = (b['rows'] as List? ?? const []).map((r) {
           return (r as List).map((c) {
             final cell = _normalizeTableCell(c);
-            cell['spans'] = RichTextSpans.clean(cell['spans'] as List?);
+            cell['spans'] = RichTextSpans.clampToLength(
+              cell['spans'] as List?,
+              (cell['text'] ?? '').toString().length,
+            );
             return cell;
           }).toList();
         }).toList();
@@ -295,11 +306,17 @@ class ContentBlocks {
         final m = Map<String, dynamic>.from(b);
         m['rows'] = (b['rows'] as List? ?? const []).map((r) {
           final row = Map<String, dynamic>.from(r as Map);
-          row['spans'] = RichTextSpans.clean(row['spans'] as List?);
+          row['spans'] = RichTextSpans.clampToLength(
+            row['spans'] as List?,
+            (row['label'] ?? '').toString().length,
+          );
           final holder = row['valueSpansHolder'] as Map?;
           if (holder != null) {
             row['valueSpansHolder'] = {
-              'spans': RichTextSpans.clean(holder['spans'] as List?),
+              'spans': RichTextSpans.clampToLength(
+                holder['spans'] as List?,
+                (row['value'] ?? '').toString().length,
+              ),
             };
           }
           return row;
@@ -316,7 +333,10 @@ class ContentBlocks {
         final m = Map<String, dynamic>.from(b);
         m['items'] = (b['items'] as List? ?? const []).map((it) {
           final item = Map<String, dynamic>.from(it as Map);
-          item['spans'] = RichTextSpans.clean(item['spans'] as List?);
+          item['spans'] = RichTextSpans.clampToLength(
+            item['spans'] as List?,
+            (item['text'] ?? '').toString().length,
+          );
           return item;
         }).toList();
         return m;
