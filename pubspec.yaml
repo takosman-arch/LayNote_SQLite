@@ -199,3 +199,15 @@ flutter:
     - family: DNoteElegant
       fonts:
         - asset: assets/fonts/ElmsSans-VariableFont_wght.ttf
+
+    # ── PDF dışa aktarmada emoji desteği için yedek (fallback) font ──
+    # NotoSansTr/DNote* fontlarının hiçbiri emoji glyph'i içermediğinden,
+    # PdfExportService bu fontu ayrıca fontFallback olarak yüklüyor (bkz.
+    # pdf_export_service.dart -> _loadEmojiFallbackFont). Bu bir "renkli"
+    # emoji fontu DEĞİL — pdf paketi renkli/COLR font formatlarını
+    # render edemediği için tek renkli/outline bir font kullanılıyor.
+    # TTF dosyasını buradan indirip assets/fonts/ klasörüne ekle:
+    # https://fonts.google.com/noto/specimen/Noto+Emoji (OFL lisanslı).
+    - family: NotoEmoji
+      fonts:
+        - asset: assets/fonts/NotoEmoji-Regular.ttf

@@ -48,6 +48,59 @@ class PdfExportService {
     bold: 'assets/fonts/NotoSans-Bold.ttf',
   );
 
+  // ── Emoji YEDEK (fallback) fontu ───────────────────────────────────────
+  // Yukarıdaki NotoSans/JetBrainsMono/Merriweather/DancingScript TTF'lerinin
+  // HİÇBİRİ emoji glyph'i içermiyor (yalnızca standart Latin/Türkçe
+  // karakter setini kapsıyorlar). "pdf" paketi de aktif fontta bulunmayan
+  // bir karakter için otomatik başka bir fonta düşmüyor — bu yüzden not
+  // metnine yazılan emojiler (ve aşağıdaki sabit '📎' ek dosya ikonu)
+  // PDF'te hiç görünmüyordu.
+  //
+  // Çözüm: TEK RENKLİ (outline, telefondaki renkli emoji tasarımıyla BİREBİR
+  // aynı değil ama aynı şekli/anlamı taşıyan) bir emoji fontunu (ör. Google
+  // Fonts'taki "Noto Emoji") ayrı bir yedek font olarak yükleyip her
+  // pw.TextStyle'a `fontFallback` listesiyle veriyoruz. pdf paketi, birincil
+  // fontta (regular/bold) bulunmayan her karakter için bu listedeki
+  // fontlara sırayla bakıyor; böylece aynı pw.Text içinde Türkçe harfler
+  // NotoSans'tan, emoji ise bu yedek fonttan render edilebiliyor.
+  //
+  // ÖNEMLİ (kurulum): bu asset projeye BENİM tarafımdan eklenemez — TTF
+  // dosyasını indirip pubspec.yaml'a eklemek gerekiyor, aşağıdaki
+  // _loadEmojiFallbackFont yorumuna bakın. Font asset'i henüz eklenmediyse
+  // yükleme sessizce başarısız olur ve emoji YİNE görünmez (eskisi gibi) —
+  // yani bu değişiklik font eklenene kadar davranışı BOZMAZ.
+  static const String _emojiFontAsset = 'assets/fonts/NotoEmoji-Regular.ttf';
+  static pw.Font? _emojiFallbackFont;
+  static bool _emojiFallbackLoadAttempted = false;
+
+  // pubspec.yaml'a şu satırı eklemeyi unutmayın (diğer font asset'leriyle
+  // aynı bloğa):
+  //   - assets/fonts/NotoEmoji-Regular.ttf
+  // TTF'i şuradan indirebilirsiniz: https://fonts.google.com/noto/specimen/Noto+Emoji
+  // (OFL lisanslı, tek renkli/outline emoji fontu — "Color Emoji" DEĞİL,
+  // çünkü pdf paketi renkli/COLR font formatlarını render edemiyor).
+  static Future<pw.Font?> _loadEmojiFallbackFont() async {
+    if (_emojiFallbackFont != null) return _emojiFallbackFont;
+    if (_emojiFallbackLoadAttempted) return null;
+    _emojiFallbackLoadAttempted = true;
+    try {
+      final data = await rootBundle.load(_emojiFontAsset);
+      _emojiFallbackFont = pw.Font.ttf(data);
+    } catch (e, st) {
+      // Asset henüz pubspec.yaml'a eklenmediyse (veya dosya eksikse) buraya
+      // düşer: emoji desteği olmadan (eski davranış) PDF üretimi devam eder
+      // — export asla bu yüzden BAŞARISIZ olmaz.
+      debugPrint('[PDF] emoji fallback fontu yüklenemedi: $e\n$st');
+    }
+    return _emojiFallbackFont;
+  }
+
+  // Her pw.TextStyle çağrısına eklenecek ortak fallback listesi. Font henüz
+  // yüklenmediyse (veya yüklenemediyse) boş liste döner — bu durumda
+  // davranış tamamen eskisiyle aynıdır (fallback'siz).
+  static List<pw.Font> get _emojiFallback =>
+      _emojiFallbackFont != null ? [_emojiFallbackFont!] : const [];
+
   // ── Zengin metin (rich text) renkleri ──────────────────────────────────
   // PDF sayfası her zaman beyaz zemin olduğundan, kullanıcının telefonunda
   // hangi tema (açık/koyu) aktif olursa olsun editördeki AÇIK TEMA vurgu
@@ -193,6 +246,7 @@ class PdfExportService {
           font: defaultFont,
           fontSize: fontSize,
           lineSpacing: lineHeight,
+          fontFallback: _emojiFallback,
         ),
       );
     }
@@ -277,6 +331,7 @@ class PdfExportService {
             // bant ekler (bkz. sınıf başındaki _highlightColorPdf notu).
             background:
                 highlight ? pw.BoxDecoration(color: _highlightColorPdf) : null,
+            fontFallback: _emojiFallback,
           ),
         ),
       );
@@ -286,7 +341,7 @@ class PdfExportService {
       textAlign: textAlign,
       text: pw.TextSpan(
         children: children,
-        style: pw.TextStyle(lineSpacing: lineHeight),
+        style: pw.TextStyle(lineSpacing: lineHeight, fontFallback: _emojiFallback),
       ),
     );
   }
@@ -320,6 +375,10 @@ class PdfExportService {
     final asset = _fontAssetMap[fontFamily] ?? _defaultFontAsset;
     final regular = await _loadCachedFont(asset.regular);
     final bold = await _loadCachedFont(asset.bold);
+    // Emoji yedek fontu, seçilen yazı stilinden (Mono/Serif/Cursive/vs.)
+    // BAĞIMSIZ olarak bir kez yüklenir; her stille birlikte fallback olarak
+    // kullanılabilsin diye önbelleğe alınır (bkz. _loadEmojiFallbackFont).
+    await _loadEmojiFallbackFont();
     // Geriye dönük uyumluluk: eski _regularFont/_boldFont alanlarını hâlâ
     // okuyan bir kod kalmışsa (AŞAMA 3 tamamlanana kadar exportNoteToPdf
     // bunu yapıyor) en son yüklenen fontu bu alanlara da yazıyoruz.
@@ -396,7 +455,12 @@ class PdfExportService {
         child: pw.Text(
           '📎 $name',
           textAlign: pw.TextAlign.center,
-          style: pw.TextStyle(font: regular, fontSize: placeholderFontSize, color: PdfColors.grey700),
+          style: pw.TextStyle(
+            font: regular,
+            fontSize: placeholderFontSize,
+            color: PdfColors.grey700,
+            fontFallback: _emojiFallback,
+          ),
         ),
       );
     }
@@ -606,6 +670,7 @@ class PdfExportService {
                   fontSize: effectiveFontSize,
                   decoration: checked ? pw.TextDecoration.lineThrough : null,
                   color: checked ? PdfColors.grey600 : PdfColors.black,
+                  fontFallback: _emojiFallback,
                 ),
               ),
             ),
