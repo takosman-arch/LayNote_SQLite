@@ -1439,7 +1439,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get backupDriveNetworkErrorMessage =>
-      'Не вдалося встановити з\'єднання з інтернетом. Перевірте з\'єднання і спробуйте ще раз.';
+      'Не вдалося встановити зєднання з інтернетом. Перевірте зєднання і спробуйте ще раз.';
 
   @override
   String get backupDriveBackupNotFoundMessage =>
@@ -1963,10 +1963,11 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => 'Ласкаво просимо до Layout! 🚀';
+  String get welcomeNoteTitle => 'Ласкаво просимо до Layout! 👋';
 
   @override
-  String get welcomeNoteContent => 'Додано нові функції!';
+  String get welcomeNoteContent =>
+      '[{\"type\": \"text\", \"text\": \"\\nПишіть свої нотатки, впорядковуйте їх і легко знаходьте, коли вони вам потрібні. \\n\\n\\nОзнайомтеся з кількома функціями;\\n\\nЗустріч – 25 серпня \\n• Новий план проєкту \\n• Призначити завдання \\n• Термін: 10 вересня \\n\\n✈️ Підготовка до подорожі \", \"spans\": []}, {\"type\": \"checklist\", \"items\": [{\"text\": \"Авіаквиток \", \"checked\": false, \"spans\": []}, {\"text\": \"Бронювання готелю \", \"checked\": false, \"spans\": []}, {\"text\": \"Паспорт \", \"checked\": true, \"spans\": []}]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"table\", \"rows\": [[{\"text\": \"Матеріал \", \"spans\": [{\"start\": 0, \"end\": 8, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"Запас\", \"spans\": [{\"start\": 0, \"end\": 5, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"Статус \", \"spans\": [{\"start\": 0, \"end\": 6, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}], [{\"text\": \"Кабель \", \"spans\": []}, {\"text\": \"25\", \"spans\": []}, {\"text\": \"Достатньо \", \"spans\": []}]]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"calc_table\", \"rows\": [{\"label\": \"Витрати \", \"spans\": [], \"value\": \"1 500\", \"valueSpansHolder\": {\"spans\": []}}, {\"label\": \"Видатки\", \"spans\": [], \"value\": \"800\", \"valueSpansHolder\": {\"spans\": []}}]}, {\"type\": \"text\", \"text\": \"\\nВведіть вираз і натисніть дорівнює, щоб обчислити його автоматично. \\n\\n15+6 = 21    (10+2)*3 = 36    3^2 = 9\\n500+18 % = 590      \$100*3 = \$300\\n\\nЯйця \$3\\nХліб \$2\\nМолоко \$4\\nРазом = \$9\\n \", \"spans\": [{\"start\": 78, \"end\": 80, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 95, \"end\": 97, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 107, \"end\": 108, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 120, \"end\": 123, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 138, \"end\": 142, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}]}]';
 
   @override
   String get noteListDateGroupToday => 'Сьогодні';

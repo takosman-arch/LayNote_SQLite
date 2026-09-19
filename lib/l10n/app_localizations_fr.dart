@@ -65,7 +65,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get cameraPermissionPermanentlyDeniedMessage =>
-      'L\'autorisation de la caméra a été refusée. Vous devez l\'autoriser dans les paramètres pour filmer une vidéo.';
+      'Lautorisation de la caméra a été refusée. Vous devez lautoriser dans les paramètres pour filmer une vidéo.';
 
   @override
   String get cameraPermissionRequiredMessage =>
@@ -103,7 +103,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get audioPermissionPermanentlyDeniedMessage =>
-      'L\'autorisation du microphone a été refusée. Vous devez l\'autoriser dans les paramètres pour enregistrer un son.';
+      'Lautorisation du microphone a été refusée. Vous devez lautoriser dans les paramètres pour enregistrer un son.';
 
   @override
   String get audioPermissionRequiredMessage =>
@@ -468,8 +468,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tagsSheetTitle => 'Étiquettes';
 
   @override
-  String get tagsSheetEmptyMessage =>
-      'Cette note n\'a pas encore d\'étiquette.';
+  String get tagsSheetEmptyMessage => 'Cette note na pas encore détiquette.';
 
   @override
   String get tagsSheetInputHint => 'Écrire une nouvelle étiquette...';
@@ -1216,7 +1215,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsLineHeightSampleParagraph =>
-      'Ceci est une ligne d\'exemple.\nVoici une deuxième ligne.\nVous voyez l\'espacement ici.';
+      'Ceci est une ligne dexemple.\nVoici une deuxième ligne.\nVous voyez lespacement ici.';
 
   @override
   String get settingsLineHeightCancelButton => 'Annuler';
@@ -1346,7 +1345,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupDriveNotSignedInMessage =>
-      'Vous n\'êtes pas connecté(e) à Google Drive. Veuillez d\'abord vous connecter avec votre compte Google.';
+      'Vous nêtes pas connecté(e) à Google Drive. Veuillez dabord vous connecter avec votre compte Google.';
 
   @override
   String get backupDriveUploadingLabel =>
@@ -1407,7 +1406,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String backupLargeOperationBody(String sizeText, String actionLabel) {
-    return 'La taille des données à traiter est d\'environ $sizeText. Une opération de $actionLabel de cette taille peut prendre un certain temps selon votre appareil. Ne quittez simplement pas l\'application pendant le traitement — voulez-vous continuer ?';
+    return 'La taille des données à traiter est denviron {sizeText}. Une opération de {actionLabel} de cette taille peut prendre un certain temps selon votre appareil. Ne quittez simplement pas lapplication pendant le traitement — voulez-vous continuer ?';
   }
 
   @override
@@ -1459,7 +1458,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String backupDriveUnknownErrorMessage(String error) {
-    return 'Une erreur inattendue s\'est produite pendant l\'opération Google Drive : $error';
+    return 'Une erreur inattendue sest produite pendant lopération Google Drive : $error';
   }
 
   @override
@@ -1596,7 +1595,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupHistoryCardSubtitle =>
-      'Consultez toutes les sauvegardes enregistrées sur l\'appareil avec leur date et leur taille ; vous pouvez les partager, les restaurer ou les supprimer directement d\'ici.';
+      'Consultez toutes les sauvegardes enregistrées sur lappareil avec leur date et leur taille ; vous pouvez les partager, les restaurer ou les supprimer directement dici.';
 
   @override
   String get backupHistoryTabDevice => 'Appareil';
@@ -1670,7 +1669,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupOverlayWarningMessage =>
-      'Veuillez patienter, ne quittez pas l\'application avant la fin de l\'opération.';
+      'Veuillez patienter, ne quittez pas lapplication avant la fin de lopération.';
 
   @override
   String get pdfExportUntitledNoteLabel => 'Note sans titre';
@@ -1683,15 +1682,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get screenshotExportBoundaryNotFoundMessage =>
-      'La capture d\'écran n\'a pas pu être prise (limite introuvable)';
+      'La capture décran na pas pu être prise (limite introuvable)';
 
   @override
   String get screenshotExportByteDataNullMessage =>
-      'Les données de la capture d\'écran n\'ont pas pu être générées';
+      'Les données de la capture décran nont pas pu être générées';
 
   @override
   String get screenshotExportPngDecodeFailedMessage =>
-      'L\'image n\'a pas pu être traitée (échec du décodage PNG)';
+      'Limage na pas pu être traitée (échec du décodage PNG)';
 
   @override
   String get screenshotCalcTableTotalLabel => 'Total';
@@ -1976,11 +1975,11 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => 'Bienvenue sur Layout ! 🚀';
+  String get welcomeNoteTitle => 'Bienvenue sur Layout ! 👋';
 
   @override
   String get welcomeNoteContent =>
-      'De nouvelles fonctionnalités ont été ajoutées !';
+      '[{\"type\": \"text\", \"text\": \"\\nRédigez vos notes, organisez-les et retrouvez-les facilement quand vous en avez besoin. \\n\\n\\nDécouvrez quelques fonctionnalités;\\n\\nRéunion – 25 août \\n• Nouveau plan de projet \\n• Assigner une tâche \\n• Échéance: 10 septembre \\n\\n✈️ Préparatifs de voyage \", \"spans\": []}, {\"type\": \"checklist\", \"items\": [{\"text\": \"Billet d\'avion \", \"checked\": false, \"spans\": []}, {\"text\": \"Réservation d\'hôtel \", \"checked\": false, \"spans\": []}, {\"text\": \"Passeport \", \"checked\": true, \"spans\": []}]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"table\", \"rows\": [[{\"text\": \"Matériel \", \"spans\": [{\"start\": 0, \"end\": 8, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"Stock\", \"spans\": [{\"start\": 0, \"end\": 5, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"État \", \"spans\": [{\"start\": 0, \"end\": 4, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}], [{\"text\": \"Câble \", \"spans\": []}, {\"text\": \"25\", \"spans\": []}, {\"text\": \"Suffisant \", \"spans\": []}]]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"calc_table\", \"rows\": [{\"label\": \"Dépenses \", \"spans\": [], \"value\": \"1 500\", \"valueSpansHolder\": {\"spans\": []}}, {\"label\": \"Frais\", \"spans\": [], \"value\": \"800\", \"valueSpansHolder\": {\"spans\": []}}]}, {\"type\": \"text\", \"text\": \"\\nSaisissez une expression et appuyez sur égal pour la calculer automatiquement. \\n\\n15+6 = 21    (10+2)*3 = 36    3^2 = 9\\n500+18 % = 590      \$100*3 = \$300\\n\\nŒufs \$3\\nPain \$2\\nLait \$4\\nTotal = \$9\\n \", \"spans\": [{\"start\": 89, \"end\": 91, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 106, \"end\": 108, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 118, \"end\": 119, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 131, \"end\": 134, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 149, \"end\": 153, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}]}]';
 
   @override
   String get noteListDateGroupToday => 'Aujourd\'hui';
@@ -2008,7 +2007,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get speechToTextMicPermissionDeniedMessage =>
-      'L\'autorisation du microphone n\'a pas été accordée.';
+      'Lautorisation du microphone na pas été accordée.';
 
   @override
   String get speechToTextUnavailableMessage =>
@@ -2214,7 +2213,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupValidationNotDnoteBackupMessage =>
-      'Ce fichier n\'est pas une sauvegarde de l\'application layout.';
+      'Ce fichier nest pas une sauvegarde de lapplication layout.';
 
   @override
   String get backupValidationVersionUnreadableMessage =>
@@ -2222,7 +2221,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupValidationIncompatibleVersionMessage =>
-      'Cette sauvegarde est dans un format plus récent que celui pris en charge par la version actuelle de l\'application. Veuillez mettre à jour l\'application.';
+      'Cette sauvegarde est dans un format plus récent que celui pris en charge par la version actuelle de lapplication. Veuillez mettre à jour lapplication.';
 
   @override
   String get backupValidationInvalidVersionMessage =>
@@ -2258,7 +2257,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get backupErrorInsufficientStorageMessage =>
-      'Espace de stockage insuffisant sur l\'appareil. Veuillez libérer de l\'espace et réessayer.';
+      'Espace de stockage insuffisant sur lappareil. Veuillez libérer de lespace et réessayer.';
 
   @override
   String get backupErrorPermissionDeniedMessage =>
@@ -2266,7 +2265,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String backupErrorFileOperationMessage(String detail) {
-    return 'Une erreur s\'est produite lors de l\'opération sur le fichier : $detail';
+    return 'Une erreur sest produite lors de lopération sur le fichier : $detail';
   }
 
   @override
@@ -2384,7 +2383,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get autoBackupDriveSkippedNotConnectedMessage =>
-      'Sauvegarde Drive ignorée : le compte Google n\'est pas connecté ou la session a expiré. Veuillez ouvrir l\'application et vous reconnecter.';
+      'Sauvegarde Drive ignorée : le compte Google nest pas connecté ou la session a expiré. Veuillez ouvrir lapplication et vous reconnecter.';
 
   @override
   String get autoBackupDriveSuccessMessage => 'Sauvegarde Drive réussie.';
@@ -2539,7 +2538,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get textSelectionMenuTranslateFailedSnackbar =>
-      'La traduction n\'a pas pu s\'ouvrir.';
+      'La traduction na pas pu souvrir.';
 
   @override
   String lastBackupInfoTodayFormat(String time) {

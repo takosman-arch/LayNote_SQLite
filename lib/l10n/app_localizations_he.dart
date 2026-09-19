@@ -543,7 +543,7 @@ class AppLocalizationsHe extends AppLocalizations {
   String get noContentToReadInfoMessage => 'אין תוכן לקריאה';
 
   @override
-  String get backPressExitInfoMessage => 'לחץ שוב על \'חזור\' כדי לצאת';
+  String get backPressExitInfoMessage => 'לחץ שוב על חזור כדי לצאת';
 
   @override
   String get reminderChannelName => 'תזכורות פתקיות';
@@ -1922,10 +1922,11 @@ class AppLocalizationsHe extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => 'ברוכים הבאים ל-Layout! 🚀';
+  String get welcomeNoteTitle => 'ברוכים הבאים ל-Layout! 👋';
 
   @override
-  String get welcomeNoteContent => 'נוספו תכונות חדשות!';
+  String get welcomeNoteContent =>
+      '[{\"type\": \"text\", \"text\": \"\\nכתבו את הפתקים שלכם, ארגנו אותם ומצאו אותם בקלות בכל פעם שתצטרכו. \\n\\n\\nגלו כמה תכונות;\\n\\nפגישה – 25 באוגוסט \\n• תוכנית פרויקט חדשה \\n• הקצאת משימה \\n• תאריך יעד: 10 בספטמבר \\n\\n✈️ הכנות לנסיעה \", \"spans\": []}, {\"type\": \"checklist\", \"items\": [{\"text\": \"כרטיס טיסה \", \"checked\": false, \"spans\": []}, {\"text\": \"הזמנת מלון \", \"checked\": false, \"spans\": []}, {\"text\": \"דרכון \", \"checked\": true, \"spans\": []}]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"table\", \"rows\": [[{\"text\": \"חומר \", \"spans\": [{\"start\": 0, \"end\": 4, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"מלאי\", \"spans\": [{\"start\": 0, \"end\": 4, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"סטטוס \", \"spans\": [{\"start\": 0, \"end\": 5, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}], [{\"text\": \"כבל \", \"spans\": []}, {\"text\": \"25\", \"spans\": []}, {\"text\": \"מספיק \", \"spans\": []}]]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"calc_table\", \"rows\": [{\"label\": \"הוצאות \", \"spans\": [], \"value\": \"1,500\", \"valueSpansHolder\": {\"spans\": []}}, {\"label\": \"עלות\", \"spans\": [], \"value\": \"800\", \"valueSpansHolder\": {\"spans\": []}}]}, {\"type\": \"text\", \"text\": \"\\nהקלידו ביטוי ולחצו שווה כדי לחשב אותו אוטומטית. \\n\\n15+6 = 21    (10+2)*3 = 36    3^2 = 9\\n500+18% = 590      \$100*3 = \$300\\n\\nביצים \$3\\nלחם \$2\\nחלב \$4\\nסה״כ = \$9\\n \", \"spans\": [{\"start\": 58, \"end\": 60, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 75, \"end\": 77, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 87, \"end\": 88, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 99, \"end\": 102, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 117, \"end\": 121, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}]}]';
 
   @override
   String get noteListDateGroupToday => 'היום';

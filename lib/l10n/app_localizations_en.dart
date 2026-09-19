@@ -1290,7 +1290,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupDriveDisconnectBody =>
-      'If you disconnect, manual or automatic backups to Drive won\'t be possible. Backups already stored on Drive won\'t be deleted — only access from this device will be removed.';
+      'If you disconnect, manual or automatic backups to Drive wont be possible. Backups already stored on Drive wont be deleted — only access from this device will be removed.';
 
   @override
   String get backupDriveDisconnectedMessage =>
@@ -1379,7 +1379,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String backupLargeOperationBody(String sizeText, String actionLabel) {
-    return 'The data to be processed is approximately $sizeText. A $actionLabel of this size may take a while depending on your device. Just don\'t leave the app while it\'s in progress — would you like to continue?';
+    return 'The data to be processed is approximately $sizeText. A $actionLabel of this size may take a while depending on your device. Just dont leave the app while its in progress — would you like to continue?';
   }
 
   @override
@@ -1940,10 +1940,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => 'Welcome to Layout! 🚀';
+  String get welcomeNoteTitle => 'Welcome to Layout! 👋';
 
   @override
-  String get welcomeNoteContent => 'New features added!';
+  String get welcomeNoteContent =>
+      '[{\"type\": \"text\", \"text\": \"\\nWrite your notes, organize them, and find them easily whenever you need. \\n\\n\\nCheck out a few features;\\n\\nMeeting – August 25 \\n• New project plan \\n• Assign a task \\n• Due date: September 10 \\n\\n✈️ Trip preparations \", \"spans\": []}, {\"type\": \"checklist\", \"items\": [{\"text\": \"Flight ticket \", \"checked\": false, \"spans\": []}, {\"text\": \"Hotel reservation \", \"checked\": false, \"spans\": []}, {\"text\": \"Passport \", \"checked\": true, \"spans\": []}]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"table\", \"rows\": [[{\"text\": \"Material \", \"spans\": [{\"start\": 0, \"end\": 8, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"Stock\", \"spans\": [{\"start\": 0, \"end\": 5, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"Status \", \"spans\": [{\"start\": 0, \"end\": 6, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}], [{\"text\": \"Cable \", \"spans\": []}, {\"text\": \"25\", \"spans\": []}, {\"text\": \"Sufficient \", \"spans\": []}]]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"calc_table\", \"rows\": [{\"label\": \"Expenses \", \"spans\": [], \"value\": \"1,500\", \"valueSpansHolder\": {\"spans\": []}}, {\"label\": \"Fee\", \"spans\": [], \"value\": \"800\", \"valueSpansHolder\": {\"spans\": []}}]}, {\"type\": \"text\", \"text\": \"\\nType an expression and press equals to calculate it automatically. \\n\\n15+6 = 21    (10+2)*3 = 36    3^2 = 9\\n500+18% = 590      \$100*3 = \$300\\n\\nEggs \$3\\nBread \$2\\nMilk \$4\\nTotal = \$9\\n \", \"spans\": [{\"start\": 77, \"end\": 79, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 94, \"end\": 96, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 106, \"end\": 107, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 118, \"end\": 121, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 136, \"end\": 140, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}]}]';
 
   @override
   String get noteListDateGroupToday => 'Today';

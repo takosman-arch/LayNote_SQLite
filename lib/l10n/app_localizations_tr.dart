@@ -1289,7 +1289,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get backupDriveDisconnectBody =>
-      'Bağlantı kesilirse Drive\'a manuel veya otomatik yedekleme yapılamaz. Drive\'da halihazırda duran yedekleriniz silinmez, yalnızca bu cihazdan erişim kaldırılır.';
+      'Bağlantı kesilirse Drivea manuel veya otomatik yedekleme yapılamaz. Driveda halihazırda duran yedekleriniz silinmez, yalnızca bu cihazdan erişim kaldırılır.';
 
   @override
   String get backupDriveDisconnectedMessage =>
@@ -1938,10 +1938,11 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => 'Layout\'a Hoş Geldiniz! 🚀';
+  String get welcomeNoteTitle => 'Layout\'a Hoş Geldiniz! 👋';
 
   @override
-  String get welcomeNoteContent => 'Yeni özellikler eklendi!';
+  String get welcomeNoteContent =>
+      '[{\"type\": \"text\", \"text\": \"\\nNotlarınızı yazın, düzenleyin ve ihtiyaç duyduğunuzda kolayca bulun.\\n\\n\\nBazı özelliklere göz atın;\\n\\nToplantı – 25 Ağustos \\n• Yeni proje planı \\n• Görev atayın \\n• Son tarih: 10 Eylül \\n\\n✈️ Seyahat hazırlığı \", \"spans\": []}, {\"type\": \"checklist\", \"items\": [{\"text\": \"Uçak bileti \", \"checked\": false, \"spans\": []}, {\"text\": \"Otel rezervasyonu \", \"checked\": false, \"spans\": []}, {\"text\": \"Pasaport \", \"checked\": true, \"spans\": []}]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"table\", \"rows\": [[{\"text\": \"Malzeme \", \"spans\": [{\"start\": 0, \"end\": 7, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"Stok\", \"spans\": [{\"start\": 0, \"end\": 3, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"Durum \", \"spans\": [{\"start\": 0, \"end\": 5, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}], [{\"text\": \"Kablo \", \"spans\": []}, {\"text\": \"25\", \"spans\": []}, {\"text\": \"Yeterli \", \"spans\": []}]]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"calc_table\", \"rows\": [{\"label\": \"Giderler \", \"spans\": [], \"value\": \"1.500\", \"valueSpansHolder\": {\"spans\": []}}, {\"label\": \"Masraf\", \"spans\": [], \"value\": \"800\", \"valueSpansHolder\": {\"spans\": []}}]}, {\"type\": \"text\", \"text\": \"\\nİşlem yapıp eşittire basarak otomatik hesap yaptırabilirsiniz. \\n\\n15+6 = 21    (10+2)*3 = 36    3^2 = 9\\n500+%18 = 590      \$100*3 = \$300\\n\\nYumurta \$3\\nEkmek \$2\\nSüt \$4\\nToplam = \$9\\n \", \"spans\": [{\"start\": 73, \"end\": 75, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 90, \"end\": 92, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 102, \"end\": 103, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 114, \"end\": 117, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 132, \"end\": 136, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 174, \"end\": 176, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}]}]';
 
   @override
   String get noteListDateGroupToday => 'Bugün';

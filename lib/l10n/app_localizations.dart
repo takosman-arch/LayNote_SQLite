@@ -791,7 +791,7 @@ abstract class AppLocalizations {
   /// Çekmece menüsünde Pro sürümüne yükseltme satırının etiketi
   ///
   /// In tr, this message translates to:
-  /// **'Pro\'ya Yükselt'**
+  /// **'Pro\'\'ya Yükselt'**
   String get drawerUpgradeToProLabel;
 
   /// Çekmece menüsünde Pro'ya Yükselt satırının yanında gösterilen küçük PRO rozeti metni
@@ -2603,19 +2603,19 @@ abstract class AppLocalizations {
   /// Drive işlemi (yükleme/listeleme/indirme/silme) sırasında oturum açılmamışsa fırlatılan hatanın mesajı
   ///
   /// In tr, this message translates to:
-  /// **'Google Drive\'a bağlı değilsiniz. Lütfen önce Google hesabınızla giriş yapın.'**
+  /// **'Google Drive\'\'a bağlı değilsiniz. Lütfen önce Google hesabınızla giriş yapın.'**
   String get backupDriveNotSignedInMessage;
 
   /// Yedek dosyası Drive'a yüklenirken gösterilen ilerleme metni
   ///
   /// In tr, this message translates to:
-  /// **'Yedek Drive\'a yükleniyor...'**
+  /// **'Yedek Drive\'\'a yükleniyor...'**
   String get backupDriveUploadingLabel;
 
   /// Drive'a yükleme isteği 120 saniye içinde sunucudan yanıt alamadığında fırlatılan hatanın mesajı
   ///
   /// In tr, this message translates to:
-  /// **'Google Drive\'a yükleme 120 saniye içinde tamamlanamadı (sunucudan yanıt gelmedi). Lütfen bağlantınızı kontrol edip tekrar deneyin.'**
+  /// **'Google Drive\'\'a yükleme 120 saniye içinde tamamlanamadı (sunucudan yanıt gelmedi). Lütfen bağlantınızı kontrol edip tekrar deneyin.'**
   String get backupDriveUploadTimeoutMessage;
 
   /// Drive'a yükleme veya Drive'dan indirme işlemi tamamlandığında gösterilen ilerleme metni (%100)
@@ -2627,7 +2627,7 @@ abstract class AppLocalizations {
   /// Büyük Yedek uyarı diyaloğunda, Drive'a yedekleme işlemi için kullanılan işlem adı
   ///
   /// In tr, this message translates to:
-  /// **'Drive\'a yedekleme'**
+  /// **'Drive\'\'a yedekleme'**
   String get backupToDriveActionLabel;
 
   /// Büyük Yedek uyarı diyaloğunda, cihaza yedekleme işlemi için kullanılan işlem adı
@@ -2651,13 +2651,13 @@ abstract class AppLocalizations {
   /// Yedeğin Google Drive'a yüklenmesi başarısız olduğunda gösterilen hata mesajı
   ///
   /// In tr, this message translates to:
-  /// **'Google Drive\'a yükleme başarısız: {error}'**
+  /// **'Google Drive\'\'a yükleme başarısız: {error}'**
   String backupDriveUploadFailedMessage(String error);
 
   /// Yedek Google Drive'a başarıyla yüklendiğinde gösterilen mesaj
   ///
   /// In tr, this message translates to:
-  /// **'Yedek Google Drive\'a başarıyla yüklendi.'**
+  /// **'Yedek Google Drive\'\'a başarıyla yüklendi.'**
   String get backupDriveUploadSuccessMessage;
 
   /// Yedek cihaza başarıyla oluşturulduğunda gösterilen mesaj
@@ -2723,25 +2723,25 @@ abstract class AppLocalizations {
   /// Drive'da hiç yedek bulunamadığında gösterilen mesaj
   ///
   /// In tr, this message translates to:
-  /// **'Google Drive\'da henüz bir yedek bulunmuyor.'**
+  /// **'Google Drive\'\'da henüz bir yedek bulunmuyor.'**
   String get backupDriveNoBackupsMessage;
 
   /// Drive'daki yedeklerin listelendiği seçim diyaloğunun başlığı
   ///
   /// In tr, this message translates to:
-  /// **'Drive\'dan Yedek Seç'**
+  /// **'Drive\'\'dan Yedek Seç'**
   String get backupDrivePickTitle;
 
   /// Seçilen yedek Drive'dan indirilirken gösterilen meşgul göstergesi metni
   ///
   /// In tr, this message translates to:
-  /// **'Yedek Drive\'dan indiriliyor...'**
+  /// **'Yedek Drive\'\'dan indiriliyor...'**
   String get backupDriveDownloadingLabel;
 
   /// Drive'dan indirme sırasında, indirilen ve toplam dosya boyutuyla birlikte gösterilen ilerleme metni
   ///
   /// In tr, this message translates to:
-  /// **'Yedek Drive\'dan indiriliyor... ({downloaded} / {total})'**
+  /// **'Yedek Drive\'\'dan indiriliyor... ({downloaded} / {total})'**
   String backupDriveDownloadingWithSizeLabel(String downloaded, String total);
 
   /// Drive'dan indirilen dosya cihaza yazılırken gösterilen ilerleme metni
@@ -2759,7 +2759,7 @@ abstract class AppLocalizations {
   /// Drive işlemi sırasında depolama kotası aşıldığında fırlatılan hatanın mesajı
   ///
   /// In tr, this message translates to:
-  /// **'Google Drive depolama alanınız dolu. Lütfen Drive\'da yer açıp tekrar deneyin.'**
+  /// **'Google Drive depolama alanınız dolu. Lütfen Drive\'\'da yer açıp tekrar deneyin.'**
   String get backupDriveStorageFullMessage;
 
   /// Drive işlemi sırasında ağ/bağlantı hatası oluştuğunda fırlatılan hatanın mesajı
@@ -2771,7 +2771,7 @@ abstract class AppLocalizations {
   /// Belirtilen yedek dosyası Drive'da (404) bulunamadığında fırlatılan hatanın mesajı
   ///
   /// In tr, this message translates to:
-  /// **'Belirtilen yedek dosyası Drive\'da bulunamadı. Silinmiş olabilir.'**
+  /// **'Belirtilen yedek dosyası Drive\'\'da bulunamadı. Silinmiş olabilir.'**
   String get backupDriveBackupNotFoundMessage;
 
   /// Drive işlemi sırasında sınıflandırılamayan bir hata oluştuğunda fırlatılan hatanın mesajı
@@ -2951,19 +2951,19 @@ abstract class AppLocalizations {
   /// Google Drive'a manuel yedekleme action card'ının başlığı
   ///
   /// In tr, this message translates to:
-  /// **'Google Drive\'a Yedekle'**
+  /// **'Google Drive\'\'a Yedekle'**
   String get backupDriveCardTitle;
 
   /// Google Drive'a manuel yedekleme action card'ının açıklama metni
   ///
   /// In tr, this message translates to:
-  /// **'Yeni bir yedek oluşturup doğrudan Google Drive\'ınızın gizli alanına yükleyin.'**
+  /// **'Yeni bir yedek oluşturup doğrudan Google Drive\'\'ınızın gizli alanına yükleyin.'**
   String get backupDriveCardSubtitle;
 
   /// Google Drive'a manuel yedekleme action card'ının buton etiketi
   ///
   /// In tr, this message translates to:
-  /// **'Drive\'a Yedekle'**
+  /// **'Drive\'\'a Yedekle'**
   String get backupDriveCardButtonLabel;
 
   /// Cihaza yedekleme action card'ının başlığı
@@ -3035,7 +3035,7 @@ abstract class AppLocalizations {
   /// Google Drive'daki bir yedeği silme onay diyaloğunun içeriği
   ///
   /// In tr, this message translates to:
-  /// **'\"{fileName}\" adlı yedeği Google Drive\'dan kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz ve dosya çöp kutusuna taşınmaz.'**
+  /// **'\"{fileName}\" adlı yedeği Google Drive\'\'dan kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz ve dosya çöp kutusuna taşınmaz.'**
   String backupHistoryDriveDeleteDialogBody(String fileName);
 
   /// Google Drive'daki bir yedek başarıyla silindiğinde gösterilen mesaj
@@ -3065,7 +3065,7 @@ abstract class AppLocalizations {
   /// Drive sekmesinde hiç yedek olmadığında gösterilen alt metin
   ///
   /// In tr, this message translates to:
-  /// **'\"Google Drive\'a Yedekle\" ile ilk bulut yedeğinizi oluşturabilirsiniz.'**
+  /// **'\"Google Drive\'\'a Yedekle\" ile ilk bulut yedeğinizi oluşturabilirsiniz.'**
   String get backupHistoryDriveEmptySubtitle;
 
   /// Google hesabı bağlı değilken Drive sekmesinde gösterilen davet metni
@@ -3701,13 +3701,13 @@ abstract class AppLocalizations {
   /// Uygulama ilk kez açıldığında otomatik eklenen örnek hoş geldin notunun başlığı
   ///
   /// In tr, this message translates to:
-  /// **'Layout\'a Hoş Geldiniz! 🚀'**
+  /// **'Layout\'\'a Hoş Geldiniz! 👋'**
   String get welcomeNoteTitle;
 
   /// Uygulama ilk kez açıldığında otomatik eklenen örnek hoş geldin notunun içeriği
   ///
   /// In tr, this message translates to:
-  /// **'Yeni özellikler eklendi!'**
+  /// **'\'[{\"type\": \"text\", \"text\": \"\\nNotlarınızı yazın, düzenleyin ve ihtiyaç duyduğunuzda kolayca bulun.\\n\\n\\nBazı özelliklere göz atın;\\n\\nToplantı – 25 Ağustos \\n• Yeni proje planı \\n• Görev atayın \\n• Son tarih: 10 Eylül \\n\\n✈️ Seyahat hazırlığı \", \"spans\": []}, {\"type\": \"checklist\", \"items\": [{\"text\": \"Uçak bileti \", \"checked\": false, \"spans\": []}, {\"text\": \"Otel rezervasyonu \", \"checked\": false, \"spans\": []}, {\"text\": \"Pasaport \", \"checked\": true, \"spans\": []}]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"table\", \"rows\": [[{\"text\": \"Malzeme \", \"spans\": [{\"start\": 0, \"end\": 7, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"Stok\", \"spans\": [{\"start\": 0, \"end\": 3, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"Durum \", \"spans\": [{\"start\": 0, \"end\": 5, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}], [{\"text\": \"Kablo \", \"spans\": []}, {\"text\": \"25\", \"spans\": []}, {\"text\": \"Yeterli \", \"spans\": []}]]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"calc_table\", \"rows\": [{\"label\": \"Giderler \", \"spans\": [], \"value\": \"1.500\", \"valueSpansHolder\": {\"spans\": []}}, {\"label\": \"Masraf\", \"spans\": [], \"value\": \"800\", \"valueSpansHolder\": {\"spans\": []}}]}, {\"type\": \"text\", \"text\": \"\\nİşlem yapıp eşittire basarak otomatik hesap yaptırabilirsiniz. \\n\\n15+6 = 21    (10+2)*3 = 36    3^2 = 9\\n500+%18 = 590      \$100*3 = \$300\\n\\nYumurta \$3\\nEkmek \$2\\nSüt \$4\\nToplam = \$9\\n \", \"spans\": [{\"start\": 73, \"end\": 75, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 90, \"end\": 92, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 102, \"end\": 103, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 114, \"end\": 117, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 132, \"end\": 136, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 174, \"end\": 176, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}]}]\''**
   String get welcomeNoteContent;
 
   /// Not listesinde, tarihe göre sıralamada bugüne ait notların üstünde gösterilen grup başlığı

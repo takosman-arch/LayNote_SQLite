@@ -1300,7 +1300,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupDriveConnectFailedMessage =>
-      'Impossibile connettersi all\'account Google, oppure l\'operazione è stata annullata.';
+      'Impossibile connettersi allaccount Google, oppure loperazione è stata annullata.';
 
   @override
   String get backupDriveDisconnectTitle => 'Disconnetti Google Drive';
@@ -1655,7 +1655,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupOverlayWarningMessage =>
-      'Attendi, non uscire dall\'app finché l\'operazione non è completata.';
+      'Attendi, non uscire dallapp finché loperazione non è completata.';
 
   @override
   String get pdfExportUntitledNoteLabel => 'Nota senza titolo';
@@ -1961,10 +1961,11 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get welcomeNoteTitle => 'Benvenuto su Layout! 🚀';
+  String get welcomeNoteTitle => 'Benvenuto su Layout! 👋';
 
   @override
-  String get welcomeNoteContent => 'Nuove funzionalità aggiunte!';
+  String get welcomeNoteContent =>
+      '[{\"type\": \"text\", \"text\": \"\\nScrivi le tue note, organizzale e trovale facilmente quando ne hai bisogno. \\n\\n\\nScopri alcune funzionalità;\\n\\nRiunione – 25 agosto \\n• Nuovo piano di progetto \\n• Assegna un\'attività \\n• Scadenza: 10 settembre \\n\\n✈️ Preparativi di viaggio \", \"spans\": []}, {\"type\": \"checklist\", \"items\": [{\"text\": \"Biglietto aereo \", \"checked\": false, \"spans\": []}, {\"text\": \"Prenotazione hotel \", \"checked\": false, \"spans\": []}, {\"text\": \"Passaporto \", \"checked\": true, \"spans\": []}]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"table\", \"rows\": [[{\"text\": \"Materiale \", \"spans\": [{\"start\": 0, \"end\": 9, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"Scorta\", \"spans\": [{\"start\": 0, \"end\": 6, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"Stato \", \"spans\": [{\"start\": 0, \"end\": 5, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}], [{\"text\": \"Cavo \", \"spans\": []}, {\"text\": \"25\", \"spans\": []}, {\"text\": \"Sufficiente \", \"spans\": []}]]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"calc_table\", \"rows\": [{\"label\": \"Spese \", \"spans\": [], \"value\": \"1.500\", \"valueSpansHolder\": {\"spans\": []}}, {\"label\": \"Costo\", \"spans\": [], \"value\": \"800\", \"valueSpansHolder\": {\"spans\": []}}]}, {\"type\": \"text\", \"text\": \"\\nDigita un\'espressione e premi uguale per calcolarla automaticamente. \\n\\n15+6 = 21    (10+2)*3 = 36    3^2 = 9\\n500+18 % = 590      \$100*3 = \$300\\n\\nUova \$3\\nPane \$2\\nLatte \$4\\nTotale = \$9\\n \", \"spans\": [{\"start\": 79, \"end\": 81, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 96, \"end\": 98, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 108, \"end\": 109, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 121, \"end\": 124, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 139, \"end\": 143, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}]}]';
 
   @override
   String get noteListDateGroupToday => 'Oggi';
@@ -2208,7 +2209,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupValidationIncompatibleVersionMessage =>
-      'Questo backup è in un formato più recente non supportato dalla versione attuale dell\'app. Aggiorna l\'app.';
+      'Questo backup è in un formato più recente non supportato dalla versione attuale dellapp. Aggiorna lapp.';
 
   @override
   String get backupValidationInvalidVersionMessage =>
@@ -2370,7 +2371,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get autoBackupDriveSkippedNotConnectedMessage =>
-      'Backup su Drive saltato: l\'account Google non è connesso o la sessione è scaduta. Apri l\'app e riconnettiti.';
+      'Backup su Drive saltato: laccount Google non è connesso o la sessione è scaduta. Apri lapp e riconnettiti.';
 
   @override
   String get autoBackupDriveSuccessMessage => 'Backup su Drive riuscito.';

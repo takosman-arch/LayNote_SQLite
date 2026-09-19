@@ -42,8 +42,8 @@
   "scanResultTextOnlyOption": "Aggiungi solo come testo",
   "scanResultTextAndImageOption": "Aggiungi testo + immagine scansionata",
   "scanResultCancelOption": "Annulla",
-  "audioPermissionPermanentlyDeniedMessage": "Permesso microfono negato. Devi consentirlo dalle impostazioni per registrare l'audio.",
-  "audioPermissionRequiredMessage": "È necessario il permesso del microfono per registrare l'audio.",
+  "audioPermissionPermanentlyDeniedMessage": "Permesso microfono negato. Devi consentirlo dalle impostazioni per registrare l''audio.",
+  "audioPermissionRequiredMessage": "È necessario il permesso del microfono per registrare l''audio.",
   "voiceRecordingDefaultLabel": "Registrazione vocale",
   "blockPreviewCalcTableLabel": "Lista di calcolo ({count} righe)",
   "@blockPreviewCalcTableLabel": {
@@ -160,7 +160,7 @@
   "drawerProBadgeLabel": "PRO",
   "drawerSupportDevelopmentLabel": "Sostieni lo sviluppo",
   "drawerFeedbackLabel": "Feedback",
-  "drawerRateAppLabel": "Valuta l'app",
+  "drawerRateAppLabel": "Valuta l''app",
   "drawerAboutLabel": "Informazioni",
   "noNotesFoundMessage": "Nessuna nota trovata.",
   "favoritesEmptySubtitle": "Le note che aggiungi ai preferiti appariranno qui.",
@@ -228,16 +228,16 @@
   "exportOpenActionLabel": "Apri",
   "wrongPasswordInfoMessage": "Password errata.",
   "noteArchivedInfoMessage": "Nota archiviata",
-  "noteUnarchivedInfoMessage": "Rimossa dall'archivio",
+  "noteUnarchivedInfoMessage": "Rimossa dall''archivio",
   "noteUnlockedInfoMessage": "Sbloccata",
   "noteLockedInfoMessage": "Nota bloccata",
   "notificationUnpinnedInfoMessage": "Rimossa dai fissati",
   "emptyNotePinBlockedInfoMessage": "Una nota vuota non può essere fissata.",
   "notificationPinnedInfoMessage": "Fissata al pannello delle notifiche",
-  "noContentToReadInfoMessage": "Non c'è alcun contenuto da leggere",
+  "noContentToReadInfoMessage": "Non c''è alcun contenuto da leggere",
   "backPressExitInfoMessage": "Premi di nuovo indietro per uscire",
   "reminderChannelName": "Promemoria note",
-  "reminderChannelDescription": "Promemoria delle note nell'app Layout",
+  "reminderChannelDescription": "Promemoria delle note nell''app Layout",
   "pinnedChannelName": "Note fissate",
   "pinnedChannelDescription": "Note di Layout fissate al pannello delle notifiche",
   "notificationUnpinActionLabel": "Rimuovi",
@@ -283,7 +283,7 @@
   "editFolderDialogTitle": "Modifica cartella",
   "newSubfolderDialogTitle": "Nuova sottocartella",
   "addFolderDialogTitle": "Aggiungi cartella",
-  "subfolderParentInfoMessage": "Verrà creata all'interno di \"{parentCategory}\"",
+  "subfolderParentInfoMessage": "Verrà creata all''interno di \"{parentCategory}\"",
   "@subfolderParentInfoMessage": {
     "placeholders": {
       "parentCategory": {
@@ -330,12 +330,12 @@
   "addAttachmentVoiceOption": "Registrazione vocale",
   "addAttachmentVideoOption": "Registra video",
   "addAttachmentScanOption": "Scansiona documento",
-  "noteActionsSheetTitle": "Scegli un'azione",
+  "noteActionsSheetTitle": "Scegli un''azione",
   "noteActionReminderLabel": "Promemoria",
   "noteActionEditReminderLabel": "Modifica promemoria",
   "noteActionSpeechToTextLabel": "Voce in testo",
   "noteActionArchiveLabel": "Archivia",
-  "noteActionUnarchiveLabel": "Rimuovi dall'archivio",
+  "noteActionUnarchiveLabel": "Rimuovi dall''archivio",
   "noteActionLockLabel": "Blocca",
   "noteActionUnlockLabel": "Sblocca",
   "noteActionFavoriteLabel": "Preferiti",
@@ -412,7 +412,7 @@
   "settingsThemeSystemDefault": "Predefinito di sistema",
   "settingsThemeLightOption": "Tema chiaro",
   "settingsThemeDarkOption": "Tema scuro",
-  "settingsAccentColorDialogTitle": "Scegli colore d'accento",
+  "settingsAccentColorDialogTitle": "Scegli colore d''accento",
   "settingsThemeChangeTileTitle": "Cambia tema",
   "settingsThemeLightLabel": "Chiaro",
   "settingsThemeDarkLabel": "Scuro",
@@ -420,8 +420,8 @@
   "settingsLanguageTileTitle": "Lingua",
   "settingsLanguageDialogTitle": "Seleziona lingua",
   "settingsLanguageSystemOption": "Sistema",
-  "settingsAccentColorTileTitle": "Colore d'accento",
-  "settingsAccentColorTileSubtitle": "Colore usato nella barra dell'app, nei pulsanti e negli interruttori",
+  "settingsAccentColorTileTitle": "Colore d''accento",
+  "settingsAccentColorTileSubtitle": "Colore usato nella barra dell''app, nei pulsanti e negli interruttori",
   "settingsColorfulNotesTitle": "Colori vari per le note",
   "settingsColorfulNotesSubtitle": "Ogni scheda nota ottiene una tonalità di colore diversa.",
   "settingsFlagAsCoverColorTitle": "Colore Bandiera come Copertina",
@@ -447,7 +447,7 @@
   "aboutTermsTitle": "Termini di utilizzo",
   "aboutLicensesTitle": "Licenze open source",
   "aboutSectionSupport": "Valuta",
-  "aboutRateAppTitle": "Valuta l'app",
+  "aboutRateAppTitle": "Valuta l''app",
   "aboutLinkOpenError": "Impossibile aprire il link.",
   "settingsFontFamilyTileTitle": "Carattere",
   "settingsFontFamilyDefaultLabel": "Predefinito",
@@ -507,12 +507,12 @@
   "backupUnknownDateLabel": "Sconosciuta",
   "backupProcessingDefaultLabel": "Elaborazione...",
   "backupPermissionRequiredTitle": "Permesso di archiviazione richiesto",
-  "backupPermissionRequiredBodyPermanent": "Questa versione di Android richiede il permesso di archiviazione per backup/ripristino. Poiché il permesso è stato negato definitivamente, abilitalo manualmente dalle impostazioni dell'app.",
+  "backupPermissionRequiredBodyPermanent": "Questa versione di Android richiede il permesso di archiviazione per backup/ripristino. Poiché il permesso è stato negato definitivamente, abilitalo manualmente dalle impostazioni dell''app.",
   "backupPermissionRequiredBodyNormal": "Questa versione di Android richiede il permesso di archiviazione per backup/ripristino. Concedi il permesso per continuare.",
   "backupGoToSettingsButton": "Vai alle impostazioni",
   "backupRetryButton": "Riprova",
-  "backupDriveConnectingLabel": "Connessione all'account Google...",
-  "backupDriveConnectedWithEmailMessage": "Connesso all'account Google Drive: {email}",
+  "backupDriveConnectingLabel": "Connessione all''account Google...",
+  "backupDriveConnectedWithEmailMessage": "Connesso all''account Google Drive: {email}",
   "@backupDriveConnectedWithEmailMessage": {
     "placeholders": {
       "email": {
@@ -520,10 +520,10 @@
       }
     }
   },
-  "backupDriveConnectedMessage": "Connesso all'account Google Drive.",
+  "backupDriveConnectedMessage": "Connesso all''account Google Drive.",
   "backupDriveConnectFailedMessage": "Impossibile connettersi all'account Google, oppure l'operazione è stata annullata.",
   "backupDriveDisconnectTitle": "Disconnetti Google Drive",
-  "backupDriveDisconnectBody": "Se ti disconnetti, non sarà possibile eseguire backup manuali o automatici su Drive. I backup già archiviati su Drive non verranno eliminati — verrà rimosso solo l'accesso da questo dispositivo.",
+  "backupDriveDisconnectBody": "Se ti disconnetti, non sarà possibile eseguire backup manuali o automatici su Drive. I backup già archiviati su Drive non verranno eliminati — verrà rimosso solo l''accesso da questo dispositivo.",
   "backupDriveDisconnectedMessage": "Connessione a Google Drive rimossa.",
   "backupDriveRequiredTitle": "Account Google richiesto",
   "backupDriveRequiredBody": "Questa azione richiede la connessione del tuo account Google. Vuoi connetterti ora?",
@@ -537,7 +537,7 @@
   },
   "backupDriveStatusConnected": "Google Drive: connesso",
   "backupDriveStatusDisconnected": "Google Drive: non connesso",
-  "backupDriveAuthenticatingLabel": "Verifica dell'account Google...",
+  "backupDriveAuthenticatingLabel": "Verifica dell''account Google...",
   "backupDriveNotSignedInMessage": "Non sei connesso a Google Drive. Accedi prima con il tuo account Google.",
   "backupDriveUploadingLabel": "Caricamento del backup su Drive...",
   "backupDriveUploadTimeoutMessage": "Il caricamento su Google Drive non si è completato entro 120 secondi (nessuna risposta dal server). Controlla la connessione e riprova.",
@@ -585,7 +585,7 @@
     }
   },
   "backupLargeOperationTitle": "Backup di grandi dimensioni",
-  "backupLargeOperationBody": "I dati da elaborare sono di circa {sizeText}. Un {actionLabel} di queste dimensioni potrebbe richiedere del tempo a seconda del tuo dispositivo. Non uscire dall'app mentre è in corso — vuoi continuare?",
+  "backupLargeOperationBody": "I dati da elaborare sono di circa {sizeText}. Un {actionLabel} di queste dimensioni potrebbe richiedere del tempo a seconda del tuo dispositivo. Non uscire dall''app mentre è in corso — vuoi continuare?",
   "@backupLargeOperationBody": {
     "placeholders": {
       "sizeText": {
@@ -625,7 +625,7 @@
   "backupDriveStorageFullMessage": "Lo spazio di archiviazione di Google Drive è pieno. Libera spazio su Drive e riprova.",
   "backupDriveNetworkErrorMessage": "Impossibile stabilire una connessione Internet. Controlla la connessione e riprova.",
   "backupDriveBackupNotFoundMessage": "Il file di backup specificato non è stato trovato su Drive. Potrebbe essere stato eliminato.",
-  "backupDriveUnknownErrorMessage": "Si è verificato un errore imprevisto durante l'operazione di Google Drive: {error}",
+  "backupDriveUnknownErrorMessage": "Si è verificato un errore imprevisto durante l''operazione di Google Drive: {error}",
   "@backupDriveUnknownErrorMessage": {
     "placeholders": {
       "error": {
@@ -709,7 +709,7 @@
   },
   "backupRestoreConfirmBody": "Questo SOSTITUIRÀ tutte le tue note attuali, il cestino, le categorie, le impostazioni e gli allegati con i dati del backup sopra indicato. I tuoi dati attuali andranno persi definitivamente e questa azione non può essere annullata.",
   "backupRestoringLabel": "Ripristino del backup...",
-  "backupRestoreSuccessWithMissingMessage": "Backup ripristinato. Tuttavia, {count} allegati non sono stati trovati nel backup e non è stato possibile ripristinarli. Si consiglia di riavviare l'app affinché le modifiche abbiano pieno effetto.",
+  "backupRestoreSuccessWithMissingMessage": "Backup ripristinato. Tuttavia, {count} allegati non sono stati trovati nel backup e non è stato possibile ripristinarli. Si consiglia di riavviare l''app affinché le modifiche abbiano pieno effetto.",
   "@backupRestoreSuccessWithMissingMessage": {
     "placeholders": {
       "count": {
@@ -717,7 +717,7 @@
       }
     }
   },
-  "backupRestoreSuccessMessage": "Backup ripristinato con successo. Si consiglia di riavviare l'app affinché le modifiche abbiano pieno effetto.",
+  "backupRestoreSuccessMessage": "Backup ripristinato con successo. Si consiglia di riavviare l''app affinché le modifiche abbiano pieno effetto.",
   "backupRestoreFailedMessage": "Si è verificato un errore durante il ripristino: {error}",
   "@backupRestoreFailedMessage": {
     "placeholders": {
@@ -727,11 +727,11 @@
     }
   },
   "backupScreenTitle": "Backup e ripristino",
-  "backupBlockedExitWarningMessage": "Un'operazione è in corso, attendi il suo completamento.",
+  "backupBlockedExitWarningMessage": "Un''operazione è in corso, attendi il suo completamento.",
   "backupBusyBackTooltip": "Operazione in corso",
   "backupIntroText": "Puoi eseguire il backup di note, categorie, impostazioni e allegati come un unico file .zip, oppure ripristinare un backup effettuato in precedenza.",
   "backupDriveCardTitle": "Esegui backup su Google Drive",
-  "backupDriveCardSubtitle": "Crea un nuovo backup e caricalo direttamente nell'area privata del tuo Google Drive.",
+  "backupDriveCardSubtitle": "Crea un nuovo backup e caricalo direttamente nell''area privata del tuo Google Drive.",
   "backupDriveCardButtonLabel": "Backup su Drive",
   "backupDeviceCardTitle": "Esegui backup sul dispositivo",
   "backupDeviceCardSubtitle": "Salva tutti i tuoi dati come un unico file .zip sul dispositivo e condividilo se lo desideri.",
@@ -784,9 +784,9 @@
   "pdfExportDefaultFileName": "nota",
   "screenshotExportBoundaryNotFoundMessage": "Impossibile acquisire lo screenshot (limite non trovato)",
   "screenshotExportByteDataNullMessage": "Impossibile generare i dati dello screenshot",
-  "screenshotExportPngDecodeFailedMessage": "Impossibile elaborare l'immagine (decodifica PNG non riuscita)",
+  "screenshotExportPngDecodeFailedMessage": "Impossibile elaborare l''immagine (decodifica PNG non riuscita)",
   "screenshotCalcTableTotalLabel": "Totale",
-  "gundemMenuRemoveFromAgenda": "Rimuovi dall'agenda",
+  "gundemMenuRemoveFromAgenda": "Rimuovi dall''agenda",
   "gundemMenuDeleteNote": "Elimina nota",
   "gundemSectionOverdue": "In ritardo",
   "gundemSectionToday": "Oggi",
@@ -897,8 +897,8 @@
       }
     }
   },
-  "welcomeNoteTitle": "Benvenuto su Layout! 🚀",
-  "welcomeNoteContent": "Nuove funzionalità aggiunte!",
+  "welcomeNoteTitle": "Benvenuto su Layout! 👋",
+  "welcomeNoteContent": "'[{\"type\": \"text\", \"text\": \"\\nScrivi le tue note, organizzale e trovale facilmente quando ne hai bisogno. \\n\\n\\nScopri alcune funzionalità;\\n\\nRiunione – 25 agosto \\n• Nuovo piano di progetto \\n• Assegna un''attività \\n• Scadenza: 10 settembre \\n\\n✈️ Preparativi di viaggio \", \"spans\": []}, {\"type\": \"checklist\", \"items\": [{\"text\": \"Biglietto aereo \", \"checked\": false, \"spans\": []}, {\"text\": \"Prenotazione hotel \", \"checked\": false, \"spans\": []}, {\"text\": \"Passaporto \", \"checked\": true, \"spans\": []}]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"table\", \"rows\": [[{\"text\": \"Materiale \", \"spans\": [{\"start\": 0, \"end\": 9, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"Scorta\", \"spans\": [{\"start\": 0, \"end\": 6, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}, {\"text\": \"Stato \", \"spans\": [{\"start\": 0, \"end\": 5, \"bold\": true, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": null, \"fontFamily\": null, \"link\": null}]}], [{\"text\": \"Cavo \", \"spans\": []}, {\"text\": \"25\", \"spans\": []}, {\"text\": \"Sufficiente \", \"spans\": []}]]}, {\"type\": \"text\", \"text\": \"\", \"spans\": []}, {\"type\": \"calc_table\", \"rows\": [{\"label\": \"Spese \", \"spans\": [], \"value\": \"1.500\", \"valueSpansHolder\": {\"spans\": []}}, {\"label\": \"Costo\", \"spans\": [], \"value\": \"800\", \"valueSpansHolder\": {\"spans\": []}}]}, {\"type\": \"text\", \"text\": \"\\nDigita un''espressione e premi uguale per calcolarla automaticamente. \\n\\n15+6 = 21    (10+2)*3 = 36    3^2 = 9\\n500+18 % = 590      $100*3 = $300\\n\\nUova $3\\nPane $2\\nLatte $4\\nTotale = $9\\n \", \"spans\": [{\"start\": 79, \"end\": 81, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 96, \"end\": 98, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 108, \"end\": 109, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 121, \"end\": 124, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}, {\"start\": 139, \"end\": 143, \"bold\": false, \"italic\": false, \"underline\": false, \"strikethrough\": false, \"highlight\": false, \"fontSize\": null, \"color\": 4294951175, \"fontFamily\": null, \"link\": null}]}]'",
   "noteListDateGroupToday": "Oggi",
   "noteListDateGroupYesterday": "Ieri",
   "noteListDateGroupLast7Days": "Ultimi 7 giorni",
@@ -914,7 +914,7 @@
   "speechToTextStartSpeakingPlaceholder": "Inizia a parlare…",
   "speechToTextCancelButton": "Annulla",
   "speechToTextStopAddButton": "Interrompi e aggiungi",
-  "textToSpeechNoContentMessage": "Non c'è alcun contenuto da leggere.",
+  "textToSpeechNoContentMessage": "Non c''è alcun contenuto da leggere.",
   "textToSpeechReadErrorMessage": "Si è verificato un errore durante la lettura.",
   "textToSpeechUnavailableMessage": "La sintesi vocale non è disponibile su questo dispositivo.",
   "textToSpeechPreparingLabel": "Preparazione…",
@@ -987,9 +987,9 @@
   },
   "backupRestoreCompletedLabel": "Completato",
   "backupValidationCorruptedFileMessage": "Il file è danneggiato o non è un file di backup valido.",
-  "backupValidationMissingDataMessage": "Nessun dato trovato all'interno del file di backup (backup_data.json mancante).",
+  "backupValidationMissingDataMessage": "Nessun dato trovato all''interno del file di backup (backup_data.json mancante).",
   "backupValidationInvalidJsonMessage": "Impossibile leggere i dati di backup (JSON danneggiato).",
-  "backupValidationNotDnoteBackupMessage": "Questo file non è un backup dell'app layout.",
+  "backupValidationNotDnoteBackupMessage": "Questo file non è un backup dell''app layout.",
   "backupValidationVersionUnreadableMessage": "Impossibile leggere le informazioni sulla versione del file di backup.",
   "backupValidationIncompatibleVersionMessage": "Questo backup è in un formato più recente non supportato dalla versione attuale dell'app. Aggiorna l'app.",
   "backupValidationInvalidVersionMessage": "Le informazioni sulla versione del file di backup non sono valide.",
@@ -1001,8 +1001,8 @@
   "backupValidationMissingNoteIdMessage": "I dati di backup non sono nel formato previsto (è stato trovato un record di nota senza ID).",
   "backupValidationFileNotFoundMessage": "File di backup non trovato.",
   "backupErrorInsufficientStorageMessage": "Spazio di archiviazione insufficiente sul dispositivo. Libera spazio e riprova.",
-  "backupErrorPermissionDeniedMessage": "Il permesso di accesso ai file è stato negato. Controlla i permessi dell'app e riprova.",
-  "backupErrorFileOperationMessage": "Si è verificato un errore durante l'operazione sul file: {detail}",
+  "backupErrorPermissionDeniedMessage": "Il permesso di accesso ai file è stato negato. Controlla i permessi dell''app e riprova.",
+  "backupErrorFileOperationMessage": "Si è verificato un errore durante l''operazione sul file: {detail}",
   "@backupErrorFileOperationMessage": {
     "placeholders": {
       "detail": {
@@ -1018,7 +1018,7 @@
       }
     }
   },
-  "backupErrorZipEncodeFailedMessage": "Impossibile creare l'archivio zip (ZipEncoder ha restituito null).",
+  "backupErrorZipEncodeFailedMessage": "Impossibile creare l''archivio zip (ZipEncoder ha restituito null).",
   "calcTableMenuItemLabel": "Lista di calcolo",
   "tableBlockMenuItemLabel": "Tabella",
   "tableSizePickerTitle": "Seleziona dimensione tabella",
@@ -1133,7 +1133,7 @@
   },
   "autoBackupSettingsStatusSuccessLabel": "Riuscito",
   "autoBackupSettingsStatusFailedLabel": "Non riuscito",
-  "autoBackupSettingsDriveConnectFailedSnackbar": "Impossibile connettersi all'account Google.",
+  "autoBackupSettingsDriveConnectFailedSnackbar": "Impossibile connettersi all''account Google.",
   "autoBackupSettingsSavedSnackbar": "Impostazioni di backup automatico aggiornate.",
   "selectionModeDeletedMessage": "{count} note eliminate",
   "@selectionModeDeletedMessage": {
@@ -1204,7 +1204,7 @@
   "imageViewerSaveToGalleryButtonLabel": "Salva",
   "imageViewerShareButtonLabel": "Condividi",
   "imageViewerGalleryPermissionDeniedMessage": "Permesso galleria non concesso",
-  "imageViewerSavedToGalleryMessage": "Salvato nell'album",
+  "imageViewerSavedToGalleryMessage": "Salvato nell''album",
   "imageViewerSaveFailedMessage": "Salvataggio non riuscito: {error}",
   "imageViewerSavingInProgressMessage": "Salvataggio…",
   "imageViewerFileNotFoundMessage": "Questo file non esiste più",
