@@ -71,7 +71,7 @@ mixin NoteListLifecycleMixin on State<NoteListScreen>, WidgetsBindingObserver {
 
   String _sortCriteria = "Son Düzenleme";
   bool _isAscending = false;
-  bool _isListView = true;
+  bool _isListView = false;
 
   // ── Ayarlar ──────────────────────────────────────────────
   // Güvenlik
@@ -103,7 +103,7 @@ mixin NoteListLifecycleMixin on State<NoteListScreen>, WidgetsBindingObserver {
   // temada koyu gri). Kullanıcı Metin Rengi seçiciden bir renk seçerse bu
   // alan o rengi tutar ve tema değişse bile sabit kalır.
   Color? _textColor;
-  int _previewLines = 3;
+  int _previewLines = 5;
   // Not düzenleme/görüntüleme ekranındaki metin bloklarının satır aralığı
   // çarpanı (TextStyle.height). Önceden bu değer sabit 1.6 olarak
   // kodlanmıştı (bkz. note_list_note_dialog_mixin.dart, buildTextBlockField);

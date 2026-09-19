@@ -155,10 +155,6 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
             'color': 'Amber',
             'type': 'text',
             'isLocked': false,
-            // Uygulama ilk açıldığında oluşan karşılama notu, baştan
-            // kırmızı bayrakla gelsin diye (kullanıcı isteği).
-            // '#F44336' -> NoteFlagMixin._flagPalette'teki kırmızı.
-            'flagColor': '#F44336',
           },
         ];
       }
@@ -167,7 +163,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
 
       _sortCriteria = settings['sort_criteria'] ?? 'Son Düzenleme';
       _isAscending = (settings['is_ascending'] ?? 'false') == 'true';
-      _isListView = (settings['is_list_view'] ?? 'true') == 'true';
+      _isListView = (settings['is_list_view'] ?? 'false') == 'true';
       _activeCategory = 'Tümü'; // Her açılışta Notlar ekranından başlat
       // Güvenlik: uygulama kapanıp açıldığında "Kilitli" klasörü şifre
       // sorulmadan otomatik açılmasın; varsayılan görünüme dön.
@@ -219,7 +215,7 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
           double.tryParse(settings['note_line_height'] ?? '') ?? 1.6;
       final textColorVal = int.tryParse(settings['text_color'] ?? '');
       _textColor = textColorVal != null ? Color(textColorVal) : null;
-      _previewLines = int.tryParse(settings['preview_lines'] ?? '') ?? 6;
+      _previewLines = int.tryParse(settings['preview_lines'] ?? '') ?? 5;
     });
 
     // Uygulama tamamen kapalıyken bir DNote bildirimine (hatırlatıcı veya
