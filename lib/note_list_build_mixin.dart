@@ -1819,7 +1819,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                               }
                                               return Row(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.center,
                                                 children: [
                                                   Icon(
                                                     isChecked
@@ -4273,7 +4273,7 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                                             ? textWidget
                                             : Row(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.center,
                                                 children: [
                                                   Icon(
                                                     isChecked
