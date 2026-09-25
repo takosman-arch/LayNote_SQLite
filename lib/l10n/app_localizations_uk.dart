@@ -2624,4 +2624,144 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Закрити пошук';
+
+  @override
+  String get proUpgradeHeadline => 'Більше з Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Блокування папок';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'Захистіть паролем будь-які папки.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Підпапки';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Додайте один рівень підпапок до своїх папок.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Більше акцентних кольорів';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Обирайте колір із розширеної палітри.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Повторювані будильники';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Повторюйте нагадування щодня, щотижня та не тільки.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Необмежене закріплення нотаток';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Закріплюйте на панелі сповіщень скільки завгодно нотаток.';
+
+  @override
+  String get proFeatureExportTitle => 'Експорт у PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Експортуйте нотатки у PDF або як зображення.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Сканування документів';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Скануйте паперові документи камерою та додавайте їх до нотатки.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Голос у текст';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Диктуйте нотатки — вони автоматично перетворяться на текст.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Необмежені зображення та файли';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Прикріплюйте до нотаток скільки завгодно зображень і файлів.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Систему покупок ще не підключено.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Щомісячний Pro';
+
+  @override
+  String get proPlanMonthlySubtitle => 'Автоматично поновлюється щомісяця.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Pro назавжди';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'Одноразовий платіж — назавжди ваше.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / міс.';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price одноразово';
+  }
+
+  @override
+  String get proPurchaseButton => 'Продовжити';
+
+  @override
+  String get proRestorePurchasesButton => 'Відновити покупки';
+
+  @override
+  String get proSubscriptionNote =>
+      'Щомісячний Pro автоматично поновлюється. Ви можете скасувати його будь-коли в Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro активний';
+
+  @override
+  String get proActiveSubtitle => 'Ви розблокували всі функції Pro.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Не вдалося завантажити ціни. Перевірте з’єднання та спробуйте ще раз.';
+
+  @override
+  String get proRetryButton => 'Повторити';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Ласкаво просимо до Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Вашу покупку відновлено. Pro активний.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Для цього облікового запису не знайдено активної покупки Pro.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Ваш платіж очікує підтвердження. Pro активується автоматично після підтвердження.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Покупку скасовано.';
+
+  @override
+  String get proPurchaseErrorMessage => 'Щось пішло не так. Спробуйте ще раз.';
+
+  @override
+  String get proStoreUnavailableMessage => 'Google Play зараз недоступний.';
 }

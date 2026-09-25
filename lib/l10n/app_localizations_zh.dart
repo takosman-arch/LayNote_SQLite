@@ -2516,4 +2516,128 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get findCloseTooltip => '关闭查找';
+
+  @override
+  String get proUpgradeHeadline => '使用 Layout Pro 解锁更多';
+
+  @override
+  String get proFeatureFolderLockTitle => '文件夹锁定';
+
+  @override
+  String get proFeatureFolderLockSubtitle => '用密码保护任意文件夹。';
+
+  @override
+  String get proFeatureSubfoldersTitle => '子文件夹';
+
+  @override
+  String get proFeatureSubfoldersSubtitle => '在文件夹中添加一层子文件夹。';
+
+  @override
+  String get proFeatureAccentColorsTitle => '更多强调色';
+
+  @override
+  String get proFeatureAccentColorsSubtitle => '从扩展的调色板中任意选择。';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => '重复闹钟';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle => '让提醒按每天、每周等周期重复。';
+
+  @override
+  String get proFeaturePinNotesTitle => '无限置顶笔记';
+
+  @override
+  String get proFeaturePinNotesSubtitle => '在通知面板中置顶任意数量的笔记。';
+
+  @override
+  String get proFeatureExportTitle => '导出 PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle => '将笔记导出为 PDF 或图片。';
+
+  @override
+  String get proFeatureDocumentScanTitle => '文档扫描';
+
+  @override
+  String get proFeatureDocumentScanSubtitle => '用相机扫描纸质文档并添加到笔记中。';
+
+  @override
+  String get proFeatureSpeechToTextTitle => '语音转文字';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle => '说话即可记笔记，自动转换为文字。';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle => '无限图片和文件';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle => '为笔记添加任意数量的图片和文件。';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage => '购买功能尚未接入。';
+
+  @override
+  String get proPlanMonthlyTitle => '包月专业版';
+
+  @override
+  String get proPlanMonthlySubtitle => '每月自动续订。';
+
+  @override
+  String get proPlanLifetimeTitle => '永久专业版';
+
+  @override
+  String get proPlanLifetimeSubtitle => '一次付费，永久拥有。';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price/月';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price（一次性）';
+  }
+
+  @override
+  String get proPurchaseButton => '继续';
+
+  @override
+  String get proRestorePurchasesButton => '恢复购买';
+
+  @override
+  String get proSubscriptionNote => '包月专业版会自动续订，你可以随时在 Google Play 中取消。';
+
+  @override
+  String get proActiveTitle => '专业版已激活';
+
+  @override
+  String get proActiveSubtitle => '你已解锁全部专业版功能。';
+
+  @override
+  String get proProductsLoadErrorMessage => '无法加载价格，请检查网络连接后重试。';
+
+  @override
+  String get proRetryButton => '重试';
+
+  @override
+  String get proPurchaseSuccessMessage => '欢迎使用专业版！';
+
+  @override
+  String get proRestoreSuccessMessage => '已恢复你的购买记录，专业版已激活。';
+
+  @override
+  String get proRestoreNothingFoundMessage => '未在此账号下找到有效的专业版购买记录。';
+
+  @override
+  String get proPurchasePendingMessage => '你的付款正在处理中，审核通过后专业版将自动解锁。';
+
+  @override
+  String get proPurchaseCanceledMessage => '购买已取消。';
+
+  @override
+  String get proPurchaseErrorMessage => '出错了，请重试。';
+
+  @override
+  String get proStoreUnavailableMessage => '目前无法连接 Google Play。';
 }

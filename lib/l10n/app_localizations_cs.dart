@@ -2611,4 +2611,145 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Zavřít vyhledávání';
+
+  @override
+  String get proUpgradeHeadline => 'Více s Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Zamykání složek';
+
+  @override
+  String get proFeatureFolderLockSubtitle => 'Chraňte libovolné složky heslem.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Podsložky';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Přidejte jednu úroveň podsložek do svých složek.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Více zvýrazňujících barev';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Vybírejte z rozšířené palety barev.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Opakující se alarmy';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Opakujte připomínky denně, týdně a dál.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Neomezené připínání poznámek';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Připněte do panelu oznámení tolik poznámek, kolik chcete.';
+
+  @override
+  String get proFeatureExportTitle => 'Export do PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Exportujte poznámky jako PDF nebo obrázek.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Skenování dokumentů';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Skenujte papírové dokumenty fotoaparátem a přidejte je do poznámky.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Převod řeči na text';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Diktujte poznámky a automaticky se převedou na text.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Neomezené obrázky a soubory';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Přidejte k poznámkám tolik obrázků a souborů, kolik chcete.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Systém nákupů zatím není připojen.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Měsíční Pro';
+
+  @override
+  String get proPlanMonthlySubtitle => 'Automaticky se obnovuje každý měsíc.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Doživotní Pro';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'Jednorázová platba, navždy vaše.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / měsíc';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price jednorázově';
+  }
+
+  @override
+  String get proPurchaseButton => 'Pokračovat';
+
+  @override
+  String get proRestorePurchasesButton => 'Obnovit nákupy';
+
+  @override
+  String get proSubscriptionNote =>
+      'Měsíční Pro se automaticky obnovuje. Kdykoli jej můžete zrušit v Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro je aktivní';
+
+  @override
+  String get proActiveSubtitle => 'Odemkli jste všechny funkce Pro.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Ceny se nepodařilo načíst. Zkontrolujte připojení a zkuste to znovu.';
+
+  @override
+  String get proRetryButton => 'Zkusit znovu';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Vítejte v Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Váš nákup byl obnoven. Pro je aktivní.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Pro tento účet nebyl nalezen žádný aktivní nákup Pro.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Vaše platba čeká na schválení. Pro se automaticky odemkne po jejím potvrzení.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Nákup zrušen.';
+
+  @override
+  String get proPurchaseErrorMessage =>
+      'Něco se pokazilo. Zkuste to prosím znovu.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play je momentálně nedostupný.';
 }

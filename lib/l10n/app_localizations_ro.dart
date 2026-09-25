@@ -2616,4 +2616,148 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Închide căutarea';
+
+  @override
+  String get proUpgradeHeadline => 'Mai mult cu Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Blocarea folderelor';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'Protejați cu parolă folderele dorite.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Subfoldere';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Adaugă un nivel de subfoldere în folderele tale.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Mai multe culori de accent';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Alegeți dintr-o paletă extinsă de culori.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Alarme recurente';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Repetați mementourile zilnic, săptămânal și nu numai.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Fixare nelimitată a notițelor';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Fixați în panoul de notificări câte notițe doriți.';
+
+  @override
+  String get proFeatureExportTitle => 'Export în PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Exportați notițele ca PDF sau imagine.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Scanarea documentelor';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Scanați documente pe hârtie cu camera și adăugați-le la notiță.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Voce în text';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Dictați notițele și vor fi convertite automat în text.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Imagini și fișiere nelimitate';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Atașați la notițe câte imagini și fișiere doriți.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Sistemul de achiziții nu este încă conectat.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Pro lunar';
+
+  @override
+  String get proPlanMonthlySubtitle =>
+      'Se reînnoiește automat în fiecare lună.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Pro pe viață';
+
+  @override
+  String get proPlanLifetimeSubtitle =>
+      'Plată unică, este al tău pentru totdeauna.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / lună';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price plată unică';
+  }
+
+  @override
+  String get proPurchaseButton => 'Continuă';
+
+  @override
+  String get proRestorePurchasesButton => 'Restaurează achizițiile';
+
+  @override
+  String get proSubscriptionNote =>
+      'Pro lunar se reînnoiește automat. Îl poți anula oricând din Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro activ';
+
+  @override
+  String get proActiveSubtitle => 'Ai deblocat toate funcțiile Pro.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Prețurile nu au putut fi încărcate. Verifică-ți conexiunea și încearcă din nou.';
+
+  @override
+  String get proRetryButton => 'Încearcă din nou';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Bine ai venit în Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Achiziția ta a fost restaurată. Pro este activ.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Nu s-a găsit nicio achiziție Pro activă pentru acest cont.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Plata ta este în așteptare. Pro se va debloca automat imediat ce va fi aprobată.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Achiziție anulată.';
+
+  @override
+  String get proPurchaseErrorMessage =>
+      'Ceva nu a funcționat corect. Te rugăm să încerci din nou.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play este momentan indisponibil.';
 }

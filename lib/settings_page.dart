@@ -974,6 +974,21 @@ class _SettingsPageState extends State<SettingsPage> {
     Colors.lightGreen,
   ];
 
+  // Pro kısıtlaması: "Daha Fazla Vurgu Rengi" bir Pro özelliğidir (bkz.
+  // pro_upgrade_screen.dart -> proFeatureAccentColorsTitle). Serbest
+  // kullanıcıya sadece tema modlarının varsayılan renkleri (koyu tema ->
+  // Amber, açık tema -> Blue; bkz. theme.dart ->
+  // dNoteDefaultAccentColorForThemeMode) açık kalır, paletteki diğer 11
+  // renk kilitlidir.
+  static const List<Color> _freeAccentColors = [Colors.amber, Colors.blue];
+
+  bool _isAccentColorLocked(Color color) {
+    if (appIsPro.value) return false;
+    return !_freeAccentColors.any(
+      (free) => free.toARGB32() == color.toARGB32(),
+    );
+  }
+
   void _showAccentColorDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -989,8 +1004,20 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: _accentColorPalette.map((color) {
                   final bool selected =
                       color.toARGB32() == s._accentColor.toARGB32();
+                  final bool locked = _isAccentColorLocked(color);
                   return GestureDetector(
-                    onTap: () => _updateAccentColor(ctx, color, setDlg),
+                    onTap: () {
+                      if (locked) {
+                        Navigator.pop(dialogCtx);
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const ProUpgradeScreen(),
+                          ),
+                        );
+                        return;
+                      }
+                      _updateAccentColor(ctx, color, setDlg);
+                    },
                     child: Container(
                       width: 40,
                       height: 40,
@@ -1010,13 +1037,21 @@ class _SettingsPageState extends State<SettingsPage> {
                               ]
                             : null,
                       ),
-                      child: selected
-                          ? const Icon(
-                              Icons.check,
-                              color: Colors.black,
-                              size: 20,
+                      child: locked
+                          ? Icon(
+                              Icons.lock,
+                              color: color.computeLuminance() > 0.5
+                                  ? Colors.black54
+                                  : Colors.white70,
+                              size: 18,
                             )
-                          : null,
+                          : (selected
+                              ? const Icon(
+                                  Icons.check,
+                                  color: Colors.black,
+                                  size: 20,
+                                )
+                              : null),
                     ),
                   );
                 }).toList(),

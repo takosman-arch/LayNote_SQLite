@@ -3054,7 +3054,15 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                         ),
                       ),
                     ),
-                    onTap: () => Navigator.pop(context),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ProUpgradeScreen(),
+                        ),
+                      );
+                    },
                   ),
                   ListTile(
                     leading: Icon(

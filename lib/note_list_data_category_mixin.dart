@@ -720,6 +720,19 @@ mixin NoteListDataCategoryMixin on State<NoteListScreen> {
                   ),
                   onTap: () async {
                     Navigator.pop(sheetContext);
+                    // PRO KISITLAMASI: Kilitleme (isLocked -> true) Pro
+                    // gerektirir; kilit açma her zaman serbesttir (kullanıcı
+                    // Pro'sunu kaybederse zaten kilitli klasörde mahsur
+                    // kalmasın).
+                    if (!isLocked && !appIsPro.value) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ProUpgradeScreen(),
+                        ),
+                      );
+                      return;
+                    }
                     if (!_notePasswordEnabled) {
                       // Parola belirlenmemişse artık "Parola Gerekiyor"
                       // uyarı dialogu yerine doğrudan "Yeni Parola Oluştur"

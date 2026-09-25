@@ -2627,4 +2627,145 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Zamknij wyszukiwanie';
+
+  @override
+  String get proUpgradeHeadline => 'Więcej z Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Blokowanie folderów';
+
+  @override
+  String get proFeatureFolderLockSubtitle => 'Chroń wybrane foldery hasłem.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Podfoldery';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Dodaj jeden poziom podfolderów do swoich folderów.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Więcej kolorów akcentu';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Wybieraj z rozszerzonej palety kolorów.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Alarmy cykliczne';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Powtarzaj przypomnienia codziennie, co tydzień i nie tylko.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Nieograniczone przypinanie notatek';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Przypinaj do panelu powiadomień tyle notatek, ile chcesz.';
+
+  @override
+  String get proFeatureExportTitle => 'Eksport do PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Eksportuj notatki jako PDF lub obraz.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Skanowanie dokumentów';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Skanuj papierowe dokumenty aparatem i dodawaj je do notatki.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Zamiana mowy na tekst';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Dyktuj notatki, a zostaną automatycznie zamienione na tekst.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Nieograniczona liczba obrazów i plików';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Dodawaj do notatek tyle obrazów i plików, ile chcesz.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'System zakupów nie jest jeszcze połączony.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Pro miesięczne';
+
+  @override
+  String get proPlanMonthlySubtitle => 'Odnawia się automatycznie co miesiąc.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Pro dożywotnie';
+
+  @override
+  String get proPlanLifetimeSubtitle =>
+      'Jednorazowa płatność, na zawsze twoje.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / mies.';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price jednorazowo';
+  }
+
+  @override
+  String get proPurchaseButton => 'Kontynuuj';
+
+  @override
+  String get proRestorePurchasesButton => 'Przywróć zakupy';
+
+  @override
+  String get proSubscriptionNote =>
+      'Pro miesięczne odnawia się automatycznie. Możesz je anulować w dowolnym momencie w Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro aktywne';
+
+  @override
+  String get proActiveSubtitle => 'Odblokowałeś wszystkie funkcje Pro.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Nie udało się wczytać cen. Sprawdź połączenie i spróbuj ponownie.';
+
+  @override
+  String get proRetryButton => 'Spróbuj ponownie';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Witaj w Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Twój zakup został przywrócony. Pro jest aktywne.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Nie znaleziono aktywnego zakupu Pro dla tego konta.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Twoja płatność oczekuje na zatwierdzenie. Pro odblokuje się automatycznie po jej zatwierdzeniu.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Zakup anulowany.';
+
+  @override
+  String get proPurchaseErrorMessage => 'Coś poszło nie tak. Spróbuj ponownie.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play jest obecnie niedostępny.';
 }

@@ -2638,4 +2638,149 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Fermer la recherche';
+
+  @override
+  String get proUpgradeHeadline => 'Plus avec Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Verrouillage des dossiers';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'Protégez n’importe quel dossier par un mot de passe.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Sous-dossiers';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Ajoutez un niveau de sous-dossiers à vos dossiers.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Plus de couleurs d’accent';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Choisissez parmi une palette de couleurs élargie.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Alarmes récurrentes';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Répétez vos rappels chaque jour, chaque semaine, et plus encore.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Épinglage illimité de notes';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Épinglez autant de notes que vous le souhaitez dans le panneau de notifications.';
+
+  @override
+  String get proFeatureExportTitle => 'Export PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Exportez vos notes au format PDF ou en image.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Numérisation de documents';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Numérisez des documents papier avec l’appareil photo et ajoutez-les à votre note.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Dictée vocale';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Parlez pour prendre des notes : elles sont converties automatiquement en texte.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Images et fichiers illimités';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Ajoutez autant d’images et de fichiers à vos notes que vous le souhaitez.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Le système d’achat n’est pas encore connecté.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Pro mensuel';
+
+  @override
+  String get proPlanMonthlySubtitle =>
+      'Se renouvelle automatiquement chaque mois.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Pro à vie';
+
+  @override
+  String get proPlanLifetimeSubtitle =>
+      'Paiement unique, à vous pour toujours.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / mois';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price paiement unique';
+  }
+
+  @override
+  String get proPurchaseButton => 'Continuer';
+
+  @override
+  String get proRestorePurchasesButton => 'Restaurer les achats';
+
+  @override
+  String get proSubscriptionNote =>
+      'L’abonnement Pro mensuel se renouvelle automatiquement. Vous pouvez le résilier à tout moment depuis Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro actif';
+
+  @override
+  String get proActiveSubtitle =>
+      'Vous avez débloqué toutes les fonctionnalités Pro.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Impossible de charger les prix. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get proRetryButton => 'Réessayer';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Bienvenue dans Pro !';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Votre achat a été restauré. Pro est actif.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Aucun achat Pro actif n’a été trouvé pour ce compte.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Votre paiement est en attente. Pro se débloquera automatiquement une fois approuvé.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Achat annulé.';
+
+  @override
+  String get proPurchaseErrorMessage =>
+      'Une erreur s’est produite. Veuillez réessayer.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play est actuellement indisponible.';
 }

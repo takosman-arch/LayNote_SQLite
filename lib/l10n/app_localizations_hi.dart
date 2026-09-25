@@ -2609,4 +2609,146 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'खोज बंद करें';
+
+  @override
+  String get proUpgradeHeadline => 'Layout Pro के साथ और भी बहुत कुछ';
+
+  @override
+  String get proFeatureFolderLockTitle => 'फ़ोल्डर लॉक';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'अपने चुने हुए फ़ोल्डर को पासवर्ड से सुरक्षित करें।';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'उप-फ़ोल्डर';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'अपने फ़ोल्डर के अंदर एक स्तर के उप-फ़ोल्डर जोड़ें।';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'और अधिक एक्सेंट रंग';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'विस्तृत रंग पैलेट से अपनी पसंद का रंग चुनें।';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'दोहराए जाने वाले अलार्म';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'अपने रिमाइंडर को रोज़ाना, साप्ताहिक आदि में दोहराएँ।';
+
+  @override
+  String get proFeaturePinNotesTitle => 'असीमित नोट पिन करना';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'अधिसूचना पैनल में जितने चाहें उतने नोट पिन करें।';
+
+  @override
+  String get proFeatureExportTitle => 'PDF / JPG एक्सपोर्ट';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'अपने नोट को PDF या इमेज के रूप में एक्सपोर्ट करें।';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'दस्तावेज़ स्कैन';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'काग़ज़ी दस्तावेज़ों को कैमरे से स्कैन करके नोट में जोड़ें।';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'आवाज़ से टेक्स्ट';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'बोलकर नोट लिखें, वह अपने आप टेक्स्ट में बदल जाएगा।';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle => 'असीमित इमेज और फ़ाइलें';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'अपने नोट में जितनी चाहें उतनी इमेज और फ़ाइलें जोड़ें।';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'खरीदारी की सुविधा अभी जोड़ी नहीं गई है।';
+
+  @override
+  String get proPlanMonthlyTitle => 'मासिक प्रो';
+
+  @override
+  String get proPlanMonthlySubtitle => 'हर महीने अपने आप रिन्यू होता है।';
+
+  @override
+  String get proPlanLifetimeTitle => 'लाइफटाइम प्रो';
+
+  @override
+  String get proPlanLifetimeSubtitle =>
+      'एक बार भुगतान करें, हमेशा के लिए आपका।';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / माह';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price एकमुश्त';
+  }
+
+  @override
+  String get proPurchaseButton => 'जारी रखें';
+
+  @override
+  String get proRestorePurchasesButton => 'खरीदारी पुनर्स्थापित करें';
+
+  @override
+  String get proSubscriptionNote =>
+      'मासिक प्रो अपने आप रिन्यू होता है। आप इसे कभी भी Google Play से रद्द कर सकते हैं।';
+
+  @override
+  String get proActiveTitle => 'प्रो सक्रिय है';
+
+  @override
+  String get proActiveSubtitle => 'आपने सभी प्रो सुविधाएँ अनलॉक कर ली हैं।';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'कीमतें लोड नहीं हो सकीं। अपना कनेक्शन जाँचें और फिर से कोशिश करें।';
+
+  @override
+  String get proRetryButton => 'फिर कोशिश करें';
+
+  @override
+  String get proPurchaseSuccessMessage => 'प्रो में आपका स्वागत है!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'आपकी खरीदारी पुनर्स्थापित कर दी गई है। प्रो सक्रिय है।';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'इस खाते के लिए कोई सक्रिय प्रो खरीदारी नहीं मिली।';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'आपका भुगतान लंबित है। स्वीकृति मिलते ही प्रो अपने आप अनलॉक हो जाएगा।';
+
+  @override
+  String get proPurchaseCanceledMessage => 'खरीदारी रद्द कर दी गई।';
+
+  @override
+  String get proPurchaseErrorMessage =>
+      'कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें।';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play फ़िलहाल उपलब्ध नहीं है।';
 }

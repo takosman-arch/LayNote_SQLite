@@ -1235,5 +1235,59 @@
   "findNextTooltip": "Next match",
   "findShowReplaceTooltip": "Show replace field",
   "findHideReplaceTooltip": "Hide replace field",
-  "findCloseTooltip": "Close find"
+  "findCloseTooltip": "Close find",
+  "proUpgradeHeadline": "More with Layout Pro",
+  "proFeatureFolderLockTitle": "Folder Locking",
+  "proFeatureFolderLockSubtitle": "Protect any folder with a password.",
+  "proFeatureSubfoldersTitle": "Subfolders",
+  "proFeatureSubfoldersSubtitle": "Add one level of subfolders inside your folders.",
+  "proFeatureAccentColorsTitle": "More Accent Colors",
+  "proFeatureAccentColorsSubtitle": "Pick any color from an expanded palette.",
+  "proFeatureRecurringAlarmTitle": "Repeating Alarms",
+  "proFeatureRecurringAlarmSubtitle": "Repeat your reminders daily, weekly, and more.",
+  "proFeaturePinNotesTitle": "Unlimited Note Pinning",
+  "proFeaturePinNotesSubtitle": "Pin as many notes to your notification panel as you like.",
+  "proFeatureExportTitle": "PDF / JPG Export",
+  "proFeatureExportSubtitle": "Export your notes as PDF or images.",
+  "proFeatureDocumentScanTitle": "Document Scanning",
+  "proFeatureDocumentScanSubtitle": "Scan paper documents with your camera and add them to your note.",
+  "proFeatureSpeechToTextTitle": "Speech to Text",
+  "proFeatureSpeechToTextSubtitle": "Dictate a note and it is converted to text automatically.",
+  "proFeatureUnlimitedAttachmentsTitle": "Unlimited Images and Files",
+  "proFeatureUnlimitedAttachmentsSubtitle": "Attach as many images and files to your notes as you like.",
+  "proUpgradePurchaseNotReadyMessage": "The purchase system is not connected yet.",
+  "proPlanMonthlyTitle": "Monthly Pro",
+  "proPlanMonthlySubtitle": "Renews automatically every month.",
+  "proPlanLifetimeTitle": "Lifetime Pro",
+  "proPlanLifetimeSubtitle": "One-time payment, yours forever.",
+  "proPlanMonthlyPrice": "{price} / month",
+  "@proPlanMonthlyPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "proPlanLifetimePrice": "{price} one-time",
+  "@proPlanLifetimePrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "proPurchaseButton": "Continue",
+  "proRestorePurchasesButton": "Restore Purchases",
+  "proSubscriptionNote": "Monthly Pro renews automatically. You can cancel anytime in Google Play.",
+  "proActiveTitle": "Pro Active",
+  "proActiveSubtitle": "You’ve unlocked all Pro features.",
+  "proProductsLoadErrorMessage": "Couldn’t load prices. Check your connection and try again.",
+  "proRetryButton": "Retry",
+  "proPurchaseSuccessMessage": "Welcome to Pro!",
+  "proRestoreSuccessMessage": "Your purchase was restored. Pro is active.",
+  "proRestoreNothingFoundMessage": "No active Pro purchase was found for this account.",
+  "proPurchasePendingMessage": "Your payment is pending. Pro will unlock automatically once it’s approved.",
+  "proPurchaseCanceledMessage": "Purchase canceled.",
+  "proPurchaseErrorMessage": "Something went wrong. Please try again.",
+  "proStoreUnavailableMessage": "Google Play is currently unavailable."
 }

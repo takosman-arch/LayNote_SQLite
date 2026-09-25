@@ -2610,4 +2610,145 @@ class AppLocalizationsSv extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Stäng sökning';
+
+  @override
+  String get proUpgradeHeadline => 'Mer med Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Låsning av mappar';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'Skydda valfria mappar med ett lösenord.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Undermappar';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Lägg till en nivå undermappar i dina mappar.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Fler accentfärger';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Välj från en utökad färgpalett.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Återkommande alarm';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Upprepa dina påminnelser dagligen, varje vecka och mer.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Obegränsad fästning av anteckningar';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Fäst så många anteckningar du vill i aviseringspanelen.';
+
+  @override
+  String get proFeatureExportTitle => 'PDF-/JPG-export';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Exportera dina anteckningar som PDF eller bild.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Dokumentskanning';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Skanna pappersdokument med kameran och lägg till dem i din anteckning.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Tal till text';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Diktera dina anteckningar så omvandlas de automatiskt till text.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Obegränsat med bilder och filer';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Lägg till hur många bilder och filer du vill i dina anteckningar.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Köpsystemet är inte anslutet ännu.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Månatlig Pro';
+
+  @override
+  String get proPlanMonthlySubtitle => 'Förnyas automatiskt varje månad.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Livstids Pro';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'Engångsbetalning, din för alltid.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / månad';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price engångsbetalning';
+  }
+
+  @override
+  String get proPurchaseButton => 'Fortsätt';
+
+  @override
+  String get proRestorePurchasesButton => 'Återställ köp';
+
+  @override
+  String get proSubscriptionNote =>
+      'Månatlig Pro förnyas automatiskt. Du kan säga upp den när som helst i Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro är aktivt';
+
+  @override
+  String get proActiveSubtitle => 'Du har låst upp alla Pro-funktioner.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Kunde inte läsa in priser. Kontrollera din anslutning och försök igen.';
+
+  @override
+  String get proRetryButton => 'Försök igen';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Välkommen till Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Ditt köp återställdes. Pro är aktivt.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Inget aktivt Pro-köp hittades för det här kontot.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Din betalning väntar på godkännande. Pro låses upp automatiskt när den har godkänts.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Köpet avbröts.';
+
+  @override
+  String get proPurchaseErrorMessage => 'Något gick fel. Försök igen.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play är för närvarande otillgängligt.';
 }

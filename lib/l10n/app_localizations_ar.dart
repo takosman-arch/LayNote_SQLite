@@ -2593,4 +2593,140 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'إغلاق البحث';
+
+  @override
+  String get proUpgradeHeadline => 'المزيد مع Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'قفل المجلدات';
+
+  @override
+  String get proFeatureFolderLockSubtitle => 'احمِ أي مجلد تريده بكلمة مرور.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'مجلدات فرعية';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'أضف مستوى واحدًا من المجلدات الفرعية داخل مجلداتك.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'المزيد من ألوان التمييز';
+
+  @override
+  String get proFeatureAccentColorsSubtitle => 'اختر من لوحة ألوان موسّعة.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'تنبيهات متكررة';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'كرّر التذكيرات يوميًا أو أسبوعيًا وأكثر.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'تثبيت غير محدود للملاحظات';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'ثبّت أي عدد تريده من الملاحظات في لوحة الإشعارات.';
+
+  @override
+  String get proFeatureExportTitle => 'التصدير بصيغة PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle => 'صدّر ملاحظاتك بصيغة PDF أو كصور.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'مسح المستندات ضوئيًا';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'امسح المستندات الورقية ضوئيًا بالكاميرا وأضفها إلى ملاحظتك.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'تحويل الكلام إلى نص';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'أملِ ملاحظاتك صوتيًا لتتحول تلقائيًا إلى نص.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle => 'صور وملفات غير محدودة';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'أرفق بملاحظاتك أي عدد تريده من الصور والملفات.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage => 'نظام الشراء غير متصل بعد.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Pro الشهري';
+
+  @override
+  String get proPlanMonthlySubtitle => 'يتجدد تلقائيًا كل شهر.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Pro مدى الحياة';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'دفعة واحدة، ملكك إلى الأبد.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price شهريًا';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price دفعة واحدة';
+  }
+
+  @override
+  String get proPurchaseButton => 'متابعة';
+
+  @override
+  String get proRestorePurchasesButton => 'استعادة المشتريات';
+
+  @override
+  String get proSubscriptionNote =>
+      'يتجدد اشتراك Pro الشهري تلقائيًا. يمكنك إلغاءه في أي وقت من Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro مُفعَّل';
+
+  @override
+  String get proActiveSubtitle => 'لقد فتحت جميع ميزات Pro.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'تعذّر تحميل الأسعار. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get proRetryButton => 'إعادة المحاولة';
+
+  @override
+  String get proPurchaseSuccessMessage => 'مرحبًا بك في Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'تمت استعادة عملية الشراء. تم تفعيل Pro.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'لم يتم العثور على أي اشتراك Pro فعّال لهذا الحساب.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'دفعتك قيد الانتظار. سيتم تفعيل Pro تلقائيًا بعد الموافقة عليها.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'تم إلغاء عملية الشراء.';
+
+  @override
+  String get proPurchaseErrorMessage => 'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'تعذّر الوصول إلى Google Play حاليًا.';
 }

@@ -2574,4 +2574,139 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'סגור חיפוש';
+
+  @override
+  String get proUpgradeHeadline => 'עוד עם Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'נעילת תיקיות';
+
+  @override
+  String get proFeatureFolderLockSubtitle => 'הגן על כל תיקייה בסיסמה.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'תיקיות משנה';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'הוסף רמה אחת של תיקיות משנה בתוך התיקיות שלך.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'עוד צבעי הדגשה';
+
+  @override
+  String get proFeatureAccentColorsSubtitle => 'בחר צבע מפלטת צבעים מורחבת.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'התראות חוזרות';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'הגדר תזכורות שיחזרו מדי יום, מדי שבוע ועוד.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'הצמדת פתקיות ללא הגבלה';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'הצמד לחלונית ההתראות כמה פתקיות שתרצה.';
+
+  @override
+  String get proFeatureExportTitle => 'ייצוא ל-PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle => 'ייצא את הפתקיות שלך כ-PDF או כתמונה.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'סריקת מסמכים';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'סרוק מסמכי נייר במצלמה והוסף אותם לפתקית.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'דיבור לטקסט';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'הכתב פתקיות בקול והן יומרו לטקסט אוטומטית.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle => 'תמונות וקבצים ללא הגבלה';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'צרף לפתקיות כמה תמונות וקבצים שתרצה.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'מערכת הרכישות עדיין לא מחוברת.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Pro חודשי';
+
+  @override
+  String get proPlanMonthlySubtitle => 'מתחדש אוטומטית מדי חודש.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Pro לכל החיים';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'תשלום חד-פעמי, שלך לתמיד.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / חודש';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price תשלום חד-פעמי';
+  }
+
+  @override
+  String get proPurchaseButton => 'המשך';
+
+  @override
+  String get proRestorePurchasesButton => 'שחזור רכישות';
+
+  @override
+  String get proSubscriptionNote =>
+      'מנוי Pro החודשי מתחדש אוטומטית. תוכל לבטל אותו בכל עת דרך Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro פעיל';
+
+  @override
+  String get proActiveSubtitle => 'פתחת את כל תכונות ה-Pro.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'לא ניתן היה לטעון את המחירים. בדוק את החיבור שלך ונסה שוב.';
+
+  @override
+  String get proRetryButton => 'נסה שוב';
+
+  @override
+  String get proPurchaseSuccessMessage => 'ברוך הבא ל-Pro!';
+
+  @override
+  String get proRestoreSuccessMessage => 'הרכישה שלך שוחזרה. Pro פעיל.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'לא נמצאה רכישת Pro פעילה עבור חשבון זה.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'התשלום שלך ממתין לאישור. Pro ייפתח אוטומטית לאחר האישור.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'הרכישה בוטלה.';
+
+  @override
+  String get proPurchaseErrorMessage => 'משהו השתבש. נסה שוב.';
+
+  @override
+  String get proStoreUnavailableMessage => 'Google Play אינו זמין כרגע.';
 }

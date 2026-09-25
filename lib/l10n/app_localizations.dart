@@ -4859,6 +4859,246 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Bul modunu kapat'**
   String get findCloseTooltip;
+
+  /// Pro’ya Yükselt sayfasının üstündeki başlık metni
+  ///
+  /// In tr, this message translates to:
+  /// **'Layout Pro ile daha fazlası'**
+  String get proUpgradeHeadline;
+
+  /// Pro sayfasında klasör kilitleme özelliğinin başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Klasör Kilitleme'**
+  String get proFeatureFolderLockTitle;
+
+  /// Pro sayfasında klasör kilitleme özelliğinin açıklaması
+  ///
+  /// In tr, this message translates to:
+  /// **'İstediğin klasörleri şifreyle koruma altına al.'**
+  String get proFeatureFolderLockSubtitle;
+
+  /// Pro sayfasında bir kademe alt klasör özelliğinin başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Alt Klasörler'**
+  String get proFeatureSubfoldersTitle;
+
+  /// Pro sayfasında bir kademe alt klasör özelliğinin açıklaması
+  ///
+  /// In tr, this message translates to:
+  /// **'Klasörlerinin içine bir kademe alt klasör ekle.'**
+  String get proFeatureSubfoldersSubtitle;
+
+  /// Pro sayfasında ek vurgu renkleri özelliğinin başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Daha Fazla Vurgu Rengi'**
+  String get proFeatureAccentColorsTitle;
+
+  /// Pro sayfasında ek vurgu renkleri özelliğinin açıklaması
+  ///
+  /// In tr, this message translates to:
+  /// **'Genişletilmiş renk paletinden dilediğini seç.'**
+  String get proFeatureAccentColorsSubtitle;
+
+  /// Pro sayfasında tekrarlanan alarm özelliğinin başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekrarlanan Alarm'**
+  String get proFeatureRecurringAlarmTitle;
+
+  /// Pro sayfasında tekrarlanan alarm özelliğinin açıklaması
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatırlatıcılarını günlük/haftalık gibi tekrarlat.'**
+  String get proFeatureRecurringAlarmSubtitle;
+
+  /// Pro sayfasında sınırsız not sabitleme özelliğinin başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Sınırsız Not Sabitleme'**
+  String get proFeaturePinNotesTitle;
+
+  /// Pro sayfasında sınırsız not sabitleme özelliğinin açıklaması
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim ekranına istediğin kadar not sabitle.'**
+  String get proFeaturePinNotesSubtitle;
+
+  /// Pro sayfasında PDF/JPG dışa aktarma özelliğinin başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'PDF / JPG Dışa Aktarma'**
+  String get proFeatureExportTitle;
+
+  /// Pro sayfasında PDF/JPG dışa aktarma özelliğinin açıklaması
+  ///
+  /// In tr, this message translates to:
+  /// **'Notlarını PDF veya görsel olarak dışa aktar.'**
+  String get proFeatureExportSubtitle;
+
+  /// Pro sayfasında belge tarama özelliğinin başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Belge Tarama'**
+  String get proFeatureDocumentScanTitle;
+
+  /// Pro sayfasında belge tarama özelliğinin açıklaması
+  ///
+  /// In tr, this message translates to:
+  /// **'Kağıt belgeleri kamerayla tarayıp notuna ekle.'**
+  String get proFeatureDocumentScanSubtitle;
+
+  /// Pro sayfasında sesi yazıya çevirme özelliğinin başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Sesi Yazıya Çevirme'**
+  String get proFeatureSpeechToTextTitle;
+
+  /// Pro sayfasında sesi yazıya çevirme özelliğinin açıklaması
+  ///
+  /// In tr, this message translates to:
+  /// **'Konuşarak not al, otomatik olarak metne dönüşsün.'**
+  String get proFeatureSpeechToTextSubtitle;
+
+  /// Pro sayfasında sınırsız görsel/dosya ekleme özelliğinin başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Sınırsız Görsel ve Dosya Ekleme'**
+  String get proFeatureUnlimitedAttachmentsTitle;
+
+  /// Pro sayfasında sınırsız görsel/dosya ekleme özelliğinin açıklaması
+  ///
+  /// In tr, this message translates to:
+  /// **'Notlarına istediğin kadar görsel/dosya ekle.'**
+  String get proFeatureUnlimitedAttachmentsSubtitle;
+
+  /// Satın alma altyapısı bağlanmadan Pro’ya Yükselt düğmesine basıldığında gösterilen snackbar mesajı
+  ///
+  /// In tr, this message translates to:
+  /// **'Satın alma altyapısı henüz bağlanmadı.'**
+  String get proUpgradePurchaseNotReadyMessage;
+
+  /// No description provided for @proPlanMonthlyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aylık Pro'**
+  String get proPlanMonthlyTitle;
+
+  /// No description provided for @proPlanMonthlySubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her ay otomatik olarak yenilenir.'**
+  String get proPlanMonthlySubtitle;
+
+  /// No description provided for @proPlanLifetimeTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ömür Boyu Pro'**
+  String get proPlanLifetimeTitle;
+
+  /// No description provided for @proPlanLifetimeSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tek seferlik ödeme, sonsuza kadar senin.'**
+  String get proPlanLifetimeSubtitle;
+
+  /// No description provided for @proPlanMonthlyPrice.
+  ///
+  /// In tr, this message translates to:
+  /// **'{price} / ay'**
+  String proPlanMonthlyPrice(String price);
+
+  /// No description provided for @proPlanLifetimePrice.
+  ///
+  /// In tr, this message translates to:
+  /// **'{price} (tek seferlik)'**
+  String proPlanLifetimePrice(String price);
+
+  /// No description provided for @proPurchaseButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Devam Et'**
+  String get proPurchaseButton;
+
+  /// No description provided for @proRestorePurchasesButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Satın Almaları Geri Yükle'**
+  String get proRestorePurchasesButton;
+
+  /// No description provided for @proSubscriptionNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aylık Pro her ay otomatik olarak yenilenir. İstediğin zaman Google Play üzerinden iptal edebilirsin.'**
+  String get proSubscriptionNote;
+
+  /// No description provided for @proActiveTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pro Aktif'**
+  String get proActiveTitle;
+
+  /// No description provided for @proActiveSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm Pro özelliklerinin kilidini açtın.'**
+  String get proActiveSubtitle;
+
+  /// No description provided for @proProductsLoadErrorMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fiyatlar yüklenemedi. Bağlantını kontrol edip tekrar dene.'**
+  String get proProductsLoadErrorMessage;
+
+  /// No description provided for @proRetryButton.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekrar Dene'**
+  String get proRetryButton;
+
+  /// No description provided for @proPurchaseSuccessMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pro\'\'ya hoş geldin!'**
+  String get proPurchaseSuccessMessage;
+
+  /// No description provided for @proRestoreSuccessMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Satın alman geri yüklendi. Pro aktif.'**
+  String get proRestoreSuccessMessage;
+
+  /// No description provided for @proRestoreNothingFoundMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu hesapta geçerli bir Pro satın alma bulunamadı.'**
+  String get proRestoreNothingFoundMessage;
+
+  /// No description provided for @proPurchasePendingMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ödemen onay bekliyor. Onaylandığında Pro otomatik olarak açılacak.'**
+  String get proPurchasePendingMessage;
+
+  /// No description provided for @proPurchaseCanceledMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Satın alma iptal edildi.'**
+  String get proPurchaseCanceledMessage;
+
+  /// No description provided for @proPurchaseErrorMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bir şeyler ters gitti. Lütfen tekrar dene.'**
+  String get proPurchaseErrorMessage;
+
+  /// No description provided for @proStoreUnavailableMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Google Play\'\'e şu an ulaşılamıyor.'**
+  String get proStoreUnavailableMessage;
 }
 
 class _AppLocalizationsDelegate

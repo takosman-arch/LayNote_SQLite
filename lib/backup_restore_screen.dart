@@ -2,11 +2,11 @@ part of 'main.dart';
 
 // ════════════════════════════════════════════════════════════════════════
 // YEDEKLE & GERİ YÜKLE EKRANI — AŞAMA 3
-// "Yedekle & Geri Yükle" menüsünden açılan ekran. İki ana eylem sunar:
-//   1) Yedek Oluştur  → BackupHelper.createBackup() ile .zip oluşturur,
-//      cihaza kaydeder ve isteğe bağlı olarak share_plus ile paylaşır.
-//   2) Cihazdan Yedek Seç → file_picker ile bir .zip seçtirir ve
-//      BackupHelper.restoreBackup() ile geri yükler.
+// "Yedekle & Geri Yükle" menüsünden açılan ekran. Yedek Oluştur
+// (BackupHelper.createBackup() ile .zip oluşturur, cihaza kaydeder ve
+// isteğe bağlı olarak share_plus ile paylaşır) ve Drive'a Yedekle
+// eylemlerini sunar; geri yükleme "Yedek Geçmişi" (BackupHistoryScreen)
+// üzerinden yapılır.
 // Onay diyalogları, adım adım yükleniyor göstergesi (4.2), hataya özel
 // SnackBar + "Tekrar Dene" aksiyonları (4.3b) ve (4.3c) eksik ek dosya /
 // boş yedek uyarıları ile geri yükleme sonrası daha bilgilendirici
@@ -14,11 +14,8 @@ part of 'main.dart';
 //
 // AŞAMA 5.1: "Yedek Geçmişi" kartı eklendi — BackupHistoryScreen'de
 // listelenen bir yedek "Geri Yükle" ile seçildiğinde bu ekrana geri
-// döner ve aşağıdaki _restoreFromFile() üzerinden AYNI önizleme/onay/
-// geri yükleme akışı çalışır (dosya seçiciyle seçilen yedekle birebir
-// aynı davranış — kod tekrarı yok). Bu yüzden dosya-seçme adımı
-// (_pickAndRestore) ile asıl geri yükleme akışı (_restoreFromFile) ayrı
-// fonksiyonlara bölündü.
+// döner ve aşağıdaki _restoreFromFile() üzerinden önizleme/onay/geri
+// yükleme akışı çalışır.
 // AŞAMA 5.2: Ekranın en üstüne, son başarılı yedeklemenin ne zaman
 // alındığını gösteren LastBackupInfoTile widget'ı eklendi (bkz.
 // backup_last_info_widget_5_2.dart). Yeni bir yedek oluşturulduğunda bu
@@ -438,142 +435,6 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     _lastBackupKey.currentState?.refresh();
   }
 
-  // ── GOOGLE DRIVE'DAN GERİ YÜKLE — AŞAMA 6.6 ─────────────────────────
-  //
-  // Akış: izin kontrolü → (gerekiyorsa) Google'a bağlanma → Drive
-  // yedeklerini listeleme (Aşama 6.3) → kullanıcının bir yedek seçmesi →
-  // indirme (Aşama 6.4) → MEVCUT _restoreFromFile() akışı (Aşama 4).
-  // Not: burada basit bir seçim diyaloğu kullanılır; Aşama 6.7'de bu
-  // seçim, cihaz yedekleriyle aynı ekranda (Yedek Geçmişi) sekmeli/
-  // birleşik bir listeye taşınacak — bu fonksiyonun kendisi değişmeyecek,
-  // sadece listeyi kimin gösterdiği değişecek.
-  Future<void> _restoreFromDrive() async {
-    if (_busy) return;
-
-    if (!await _ensurePermission()) return;
-
-    if (!_driveSignedIn) {
-      if (!await _confirmConnectDriveFirst()) return;
-      await _connectGoogleDrive();
-      if (!_driveSignedIn) return;
-    }
-
-    _setBusy(true, label: AppLocalizations.of(context)!.backupDriveListingLabel);
-    List<GoogleDriveBackupFile> backups;
-    try {
-      backups = await GoogleDriveHelper.instance.listBackups();
-    } catch (e) {
-      _setBusy(false);
-      final ex = GoogleDriveException.fromError(e);
-      _showErrorSnack(
-        AppLocalizations.of(context)!.backupDriveListFailedMessage(ex.message),
-        retryable: ex.retryable,
-        onRetry: _restoreFromDrive,
-      );
-      return;
-    }
-    _setBusy(false);
-
-    if (backups.isEmpty) {
-      _showSnack(AppLocalizations.of(context)!.backupDriveNoBackupsMessage);
-      return;
-    }
-
-    if (!mounted) return;
-    final selected = await showDialog<GoogleDriveBackupFile>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: dNoteCardColor(ctx),
-        title: Text(
-          AppLocalizations.of(ctx)!.backupDrivePickTitle,
-          style: TextStyle(color: appAccentColor.value),
-        ),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.separated(
-            shrinkWrap: true,
-            itemCount: backups.length,
-            separatorBuilder: (_, __) => Divider(
-              color: dNoteBorderColor(ctx),
-              height: 1,
-            ),
-            itemBuilder: (_, i) {
-              final b = backups[i];
-              return ListTile(
-                leading: Icon(
-                  Icons.cloud_outlined,
-                  color: appAccentColor.value,
-                ),
-                title: Text(
-                  b.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: dNoteTextColor(ctx), fontSize: 13),
-                ),
-                subtitle: Text(
-                  '${_formatDriveDate(b.modifiedTime)} · '
-                  '${BackupHelper.instance.formatFileSize(b.sizeBytes)}',
-                  style: TextStyle(
-                    color: dNoteTextColor(ctx).withValues(alpha: 0.65),
-                    fontSize: 12,
-                  ),
-                ),
-                onTap: () => Navigator.pop(ctx, b),
-              );
-            },
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(AppLocalizations.of(ctx)!.backupCancelButton),
-          ),
-        ],
-      ),
-    );
-    if (selected == null) return;
-
-    _setBusy(true, label: AppLocalizations.of(context)!.backupDriveDownloadingLabel);
-    File localFile;
-    try {
-      localFile = await GoogleDriveHelper.instance.downloadBackup(
-        selected,
-        onProgress: (progress, step) {
-          if (mounted) {
-            setState(() {
-              _progress = progress;
-              _busyLabel = step;
-            });
-          }
-        },
-      );
-    } catch (e) {
-      _setBusy(false);
-      final ex = GoogleDriveException.fromError(e);
-      _showErrorSnack(
-        AppLocalizations.of(context)!.backupDriveDownloadFailedMessage(ex.message),
-        retryable: ex.retryable,
-        onRetry: _restoreFromDrive,
-      );
-      return;
-    }
-    _setBusy(false);
-
-    // AŞAMA 6.4'te açıklandığı gibi: indirilen dosya artık normal bir
-    // cihaz yedeğidir; kod tekrarı olmadan mevcut önizleme/onay/geri
-    // yükleme akışına (Aşama 4) doğrudan verilir.
-    await _restoreFromFile(localFile);
-  }
-
-  // Drive'dan gelen değiştirilme tarihini (DateTime?) ekrandaki diğer
-  // tarih formatlarıyla (bkz. _formatPreviewDate) tutarlı biçimde yazar.
-  String _formatDriveDate(DateTime? dt) {
-    if (dt == null) return AppLocalizations.of(context)!.backupUnknownDateLabel;
-    String two(int n) => n.toString().padLeft(2, '0');
-    return '${two(dt.day)}.${two(dt.month)}.${dt.year} '
-        '${two(dt.hour)}:${two(dt.minute)}';
-  }
-
   // ── Yedek oluştur ────────────────────────────────────────────────────
   Future<void> _createBackup() async {
     if (_busy) return;
@@ -781,44 +642,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     _refreshDriveStatus();
   }
 
-  // ── Cihazdan yedek seç & geri yükle ─────────────────────────────────
-  Future<void> _pickAndRestore() async {
-    if (_busy) return;
-
-    // AŞAMA 5.4: dosya seçici açılmadan önce (yalnızca eski Android'de
-    // anlamlı olan) depolama izni kontrol edilir.
-    if (!await _ensurePermission()) return;
-
-    FilePickerResult? result;
-    try {
-      result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['zip'],
-      );
-    } catch (e) {
-      _showSnack(
-        AppLocalizations.of(context)!.backupPickFileFailedMessage('$e'),
-        isError: true,
-      );
-      return;
-    }
-    if (result == null || result.files.isEmpty) return;
-
-    final path = result.files.single.path;
-    if (path == null) {
-      _showSnack(
-        AppLocalizations.of(context)!.backupPickedFileUnreachableMessage,
-        isError: true,
-      );
-      return;
-    }
-    await _restoreFromFile(File(path));
-  }
-
-  // AŞAMA 5.1: Yedek Geçmişi ekranından (Navigator.pop ile dönen File) ile
-  // dosya seçiciden gelen dosyanın izleyeceği önizleme/onay/geri yükleme
-  // akışı BİREBİR aynıdır; bu yüzden ortak bir fonksiyona alındı. Hem
-  // _pickAndRestore hem de _openHistory bunu çağırır.
+  // AŞAMA 5.1: Yedek Geçmişi ekranından (Navigator.pop ile dönen File)
+  // gelen dosyanın izleyeceği önizleme/onay/geri yükleme akışı; _openHistory
+  // tarafından çağrılır.
   Future<void> _restoreFromFile(File zipFile) async {
     if (_busy) return;
 

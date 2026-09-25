@@ -2615,4 +2615,146 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Sulje haku';
+
+  @override
+  String get proUpgradeHeadline => 'Enemmän Layout Prolla';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Kansioiden lukitus';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'Suojaa haluamasi kansiot salasanalla.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Alikansiot';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Lisää yksi alikansiotaso kansioihisi.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Lisää korostusvärejä';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Valitse väri laajennetusta värivalikoimasta.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Toistuvat hälytykset';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Toista muistutuksesi päivittäin, viikoittain ja niin edelleen.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Rajaton muistiinpanojen kiinnitys';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Kiinnitä ilmoituspaneeliin niin monta muistiinpanoa kuin haluat.';
+
+  @override
+  String get proFeatureExportTitle => 'PDF-/JPG-vienti';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Vie muistiinpanosi PDF-tiedostona tai kuvana.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Asiakirjojen skannaus';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Skannaa paperiasiakirjoja kameralla ja lisää ne muistiinpanoosi.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Puheesta tekstiksi';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Sanele muistiinpanosi, niin ne muunnetaan automaattisesti tekstiksi.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Rajattomat kuvat ja tiedostot';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Liitä muistiinpanoihisi niin monta kuvaa ja tiedostoa kuin haluat.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Ostojärjestelmää ei ole vielä yhdistetty.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Kuukausittainen Pro';
+
+  @override
+  String get proPlanMonthlySubtitle =>
+      'Uusiutuu automaattisesti joka kuukausi.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Elinikäinen Pro';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'Kertamaksu, sinun ikuisesti.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / kk';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price kertamaksu';
+  }
+
+  @override
+  String get proPurchaseButton => 'Jatka';
+
+  @override
+  String get proRestorePurchasesButton => 'Palauta ostokset';
+
+  @override
+  String get proSubscriptionNote =>
+      'Kuukausittainen Pro uusiutuu automaattisesti. Voit perua sen milloin tahansa Google Playssa.';
+
+  @override
+  String get proActiveTitle => 'Pro on aktiivinen';
+
+  @override
+  String get proActiveSubtitle => 'Olet avannut kaikki Pro-ominaisuudet.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Hintoja ei voitu ladata. Tarkista yhteytesi ja yritä uudelleen.';
+
+  @override
+  String get proRetryButton => 'Yritä uudelleen';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Tervetuloa Prohon!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Ostoksesi palautettiin. Pro on aktiivinen.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Tälle tilille ei löytynyt aktiivista Pro-ostosta.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Maksusi on vireillä. Pro avautuu automaattisesti, kun se on hyväksytty.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Ostos peruttu.';
+
+  @override
+  String get proPurchaseErrorMessage => 'Jotain meni pieleen. Yritä uudelleen.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play ei ole tällä hetkellä käytettävissä.';
 }

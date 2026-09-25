@@ -539,6 +539,23 @@ class DBHelper {
     return {for (final r in rows) r['key'] as String: r['value'] as String};
   }
 
+  // ── Pro durumu ───────────────────────────────────────────────────────
+  // Mevcut key-value 'settings' tablosunda 'is_pro' anahtarı altında
+  // 'true' / 'false' olarak saklanır (tema/dil ayarlarıyla aynı mantık).
+  // Anahtar hiç yoksa (ilk kurulum / eski sürüm) kullanıcı ücretsiz kabul
+  // edilir. Uygulama genelinde okuma için appIsPro (theme.dart) kullanılır;
+  // bu metotlar sadece kalıcı depolama katmanıdır.
+  static const String isProSettingKey = 'is_pro';
+
+  Future<bool> getIsPro() async {
+    final raw = (await getAllSettings())[isProSettingKey];
+    return raw == 'true';
+  }
+
+  Future<void> setIsPro(bool value) async {
+    await setSetting(isProSettingKey, value ? 'true' : 'false');
+  }
+
   // ── Bayrak (flama) renk isimleri ─────────────────────────────────────
   // Bayrak renkleri notlara özel değil, sabit palete (NoteFlagMixin.
   // _flagPalette) özeldir; bu yüzden ayrı bir sütun yerine mevcut

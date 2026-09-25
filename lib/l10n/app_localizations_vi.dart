@@ -2610,4 +2610,143 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Đóng tìm kiếm';
+
+  @override
+  String get proUpgradeHeadline => 'Nhiều hơn với Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Khóa thư mục';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'Bảo vệ bất kỳ thư mục nào bằng mật khẩu.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Thư mục con';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Thêm một cấp thư mục con bên trong thư mục của bạn.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Thêm màu nhấn';
+
+  @override
+  String get proFeatureAccentColorsSubtitle => 'Chọn màu từ bảng màu mở rộng.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Báo thức lặp lại';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Lặp lại lời nhắc hằng ngày, hằng tuần và hơn thế nữa.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Ghim ghi chú không giới hạn';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Ghim bao nhiêu ghi chú tùy ý vào bảng thông báo.';
+
+  @override
+  String get proFeatureExportTitle => 'Xuất PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Xuất ghi chú của bạn dưới dạng PDF hoặc hình ảnh.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Quét tài liệu';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Quét tài liệu giấy bằng camera và thêm vào ghi chú.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Giọng nói thành văn bản';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Đọc to để ghi chú, nội dung sẽ tự động chuyển thành văn bản.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Hình ảnh và tệp không giới hạn';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Đính kèm bao nhiêu hình ảnh và tệp vào ghi chú tùy ý.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Hệ thống mua hàng chưa được kết nối.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Pro hàng tháng';
+
+  @override
+  String get proPlanMonthlySubtitle => 'Tự động gia hạn mỗi tháng.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Pro trọn đời';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'Thanh toán một lần, sở hữu mãi mãi.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / tháng';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price một lần';
+  }
+
+  @override
+  String get proPurchaseButton => 'Tiếp tục';
+
+  @override
+  String get proRestorePurchasesButton => 'Khôi phục giao dịch mua';
+
+  @override
+  String get proSubscriptionNote =>
+      'Gói Pro hàng tháng tự động gia hạn. Bạn có thể hủy bất cứ lúc nào trong Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro đang hoạt động';
+
+  @override
+  String get proActiveSubtitle => 'Bạn đã mở khóa tất cả tính năng Pro.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Không thể tải giá. Kiểm tra kết nối rồi thử lại.';
+
+  @override
+  String get proRetryButton => 'Thử lại';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Chào mừng đến với Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Đã khôi phục giao dịch mua của bạn. Pro đang hoạt động.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Không tìm thấy giao dịch mua Pro nào đang hoạt động cho tài khoản này.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Khoản thanh toán của bạn đang chờ xử lý. Pro sẽ tự động mở khóa khi được phê duyệt.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Đã hủy giao dịch mua.';
+
+  @override
+  String get proPurchaseErrorMessage => 'Đã xảy ra lỗi. Vui lòng thử lại.';
+
+  @override
+  String get proStoreUnavailableMessage => 'Google Play hiện không khả dụng.';
 }

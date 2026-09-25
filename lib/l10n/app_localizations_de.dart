@@ -2627,4 +2627,147 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Suche schließen';
+
+  @override
+  String get proUpgradeHeadline => 'Mehr mit Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Ordner sperren';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'Schütze beliebige Ordner mit einem Passwort.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Unterordner';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Füge deinen Ordnern eine Ebene Unterordner hinzu.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Mehr Akzentfarben';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Wähle aus einer erweiterten Farbpalette.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Wiederkehrende Alarme';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Wiederhole deine Erinnerungen täglich, wöchentlich und mehr.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Unbegrenztes Anheften von Notizen';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Hefte so viele Notizen an dein Benachrichtigungsfeld an, wie du möchtest.';
+
+  @override
+  String get proFeatureExportTitle => 'PDF-/JPG-Export';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Exportiere deine Notizen als PDF oder Bild.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Dokumente scannen';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Scanne Papierdokumente mit der Kamera und füge sie deiner Notiz hinzu.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Sprache zu Text';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Sprich deine Notiz ein und sie wird automatisch in Text umgewandelt.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Unbegrenzt Bilder und Dateien';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Füge deinen Notizen beliebig viele Bilder und Dateien hinzu.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Das Kaufsystem ist noch nicht angebunden.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Monatliches Pro';
+
+  @override
+  String get proPlanMonthlySubtitle =>
+      'Verlängert sich automatisch jeden Monat.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Lebenslanges Pro';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'Einmalige Zahlung, für immer deins.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / Monat';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price einmalig';
+  }
+
+  @override
+  String get proPurchaseButton => 'Weiter';
+
+  @override
+  String get proRestorePurchasesButton => 'Käufe wiederherstellen';
+
+  @override
+  String get proSubscriptionNote =>
+      'Monatliches Pro verlängert sich automatisch. Du kannst jederzeit in Google Play kündigen.';
+
+  @override
+  String get proActiveTitle => 'Pro ist aktiv';
+
+  @override
+  String get proActiveSubtitle => 'Du hast alle Pro-Funktionen freigeschaltet.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Preise konnten nicht geladen werden. Überprüfe deine Verbindung und versuche es erneut.';
+
+  @override
+  String get proRetryButton => 'Erneut versuchen';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Willkommen bei Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Dein Kauf wurde wiederhergestellt. Pro ist aktiv.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Für dieses Konto wurde kein aktiver Pro-Kauf gefunden.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Deine Zahlung ist noch ausstehend. Pro wird automatisch freigeschaltet, sobald sie genehmigt ist.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Kauf abgebrochen.';
+
+  @override
+  String get proPurchaseErrorMessage =>
+      'Etwas ist schiefgelaufen. Bitte versuche es erneut.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play ist derzeit nicht verfügbar.';
 }

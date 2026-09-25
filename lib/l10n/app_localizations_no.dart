@@ -2606,4 +2606,145 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Lukk søk';
+
+  @override
+  String get proUpgradeHeadline => 'Mer med Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Mappelås';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'Beskytt hvilke mapper du vil med passord.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Undermapper';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Legg til ett nivå med undermapper i mappene dine.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Flere aksentfarger';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Velg fra en utvidet fargepalett.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Gjentakende alarmer';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Gjenta påminnelsene dine daglig, ukentlig og mer.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Ubegrenset festing av notater';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Fest så mange notater du vil i varselpanelet.';
+
+  @override
+  String get proFeatureExportTitle => 'PDF-/JPG-eksport';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Eksporter notatene dine som PDF eller bilde.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Dokumentskanning';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Skann papirdokumenter med kameraet og legg dem til i notatet.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Tale til tekst';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Snakk inn notater, så gjøres de automatisk om til tekst.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Ubegrensede bilder og filer';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Legg til så mange bilder og filer i notatene dine du vil.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Kjøpssystemet er ikke koblet til ennå.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Månedlig Pro';
+
+  @override
+  String get proPlanMonthlySubtitle => 'Fornyes automatisk hver måned.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Livstids Pro';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'Engangsbetaling, din for alltid.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / måned';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price engangsbeløp';
+  }
+
+  @override
+  String get proPurchaseButton => 'Fortsett';
+
+  @override
+  String get proRestorePurchasesButton => 'Gjenopprett kjøp';
+
+  @override
+  String get proSubscriptionNote =>
+      'Månedlig Pro fornyes automatisk. Du kan si opp når som helst i Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro er aktiv';
+
+  @override
+  String get proActiveSubtitle => 'Du har låst opp alle Pro-funksjoner.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Kunne ikke laste priser. Sjekk tilkoblingen og prøv igjen.';
+
+  @override
+  String get proRetryButton => 'Prøv igjen';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Velkommen til Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Kjøpet ditt ble gjenopprettet. Pro er aktivt.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Fant ingen aktivt Pro-kjøp for denne kontoen.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Betalingen din venter på godkjenning. Pro låses automatisk opp når den er godkjent.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Kjøp avbrutt.';
+
+  @override
+  String get proPurchaseErrorMessage => 'Noe gikk galt. Prøv igjen.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play er for øyeblikket utilgjengelig.';
 }

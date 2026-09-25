@@ -2622,4 +2622,145 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Закрыть поиск';
+
+  @override
+  String get proUpgradeHeadline => 'Больше возможностей с Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Блокировка папок';
+
+  @override
+  String get proFeatureFolderLockSubtitle => 'Защитите паролем любые папки.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Подпапки';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Добавляйте один уровень подпапок в свои папки.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Больше акцентных цветов';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Выбирайте цвет из расширенной палитры.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Повторяющиеся будильники';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Повторяйте напоминания ежедневно, еженедельно и не только.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Неограниченное закрепление заметок';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Закрепляйте в панели уведомлений сколько угодно заметок.';
+
+  @override
+  String get proFeatureExportTitle => 'Экспорт в PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Экспортируйте заметки в PDF или изображения.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Сканирование документов';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Сканируйте бумажные документы камерой и добавляйте их в заметку.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Голос в текст';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Диктуйте заметки — они автоматически превратятся в текст.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Неограниченные изображения и файлы';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Прикрепляйте к заметкам сколько угодно изображений и файлов.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Система покупок пока не подключена.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Pro на месяц';
+
+  @override
+  String get proPlanMonthlySubtitle =>
+      'Автоматически продлевается каждый месяц.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Pro навсегда';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'Разовый платёж — навсегда ваше.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / мес.';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price разовый платёж';
+  }
+
+  @override
+  String get proPurchaseButton => 'Продолжить';
+
+  @override
+  String get proRestorePurchasesButton => 'Восстановить покупки';
+
+  @override
+  String get proSubscriptionNote =>
+      'Ежемесячная подписка Pro продлевается автоматически. Вы можете отменить её в любой момент в Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro активен';
+
+  @override
+  String get proActiveSubtitle => 'Вы разблокировали все функции Pro.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Не удалось загрузить цены. Проверьте подключение и повторите попытку.';
+
+  @override
+  String get proRetryButton => 'Повторить';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Добро пожаловать в Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Ваша покупка восстановлена. Pro активен.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Для этой учётной записи не найдено активных покупок Pro.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Ваш платёж ожидает подтверждения. Pro активируется автоматически после подтверждения.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Покупка отменена.';
+
+  @override
+  String get proPurchaseErrorMessage =>
+      'Что-то пошло не так. Повторите попытку.';
+
+  @override
+  String get proStoreUnavailableMessage => 'Google Play сейчас недоступен.';
 }

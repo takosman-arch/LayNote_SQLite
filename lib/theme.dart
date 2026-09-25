@@ -5,9 +5,11 @@ part of 'main.dart';
 // Uygulama genelinde tema modu bu global ValueNotifier üzerinden yönetilir.
 // Ayarlar ekranındaki seçim değiştiğinde appThemeMode.value güncellenir;
 // bunu dinleyen DNoteApp, MaterialApp'i otomatik olarak yeniden kurar.
+// Başlangıç değeri Sistem'dir: hiç kayıtlı tercih yoksa (ilk kurulum)
+// cihazın kendi tema ayarına uyulur (bkz. main.dart -> main()).
 // ════════════════════════════════════════════════════════════════════════
 final ValueNotifier<ThemeMode> appThemeMode = ValueNotifier<ThemeMode>(
-  ThemeMode.dark,
+  ThemeMode.system,
 );
 
 ThemeMode themeModeFromSettingValue(String? value) {
@@ -19,7 +21,7 @@ ThemeMode themeModeFromSettingValue(String? value) {
     case 'dark':
       return ThemeMode.dark;
     default:
-      return ThemeMode.dark; // ayar hiç kaydedilmemişse eski davranış korunur
+      return ThemeMode.system; // beklenmeyen/bozuk değer: sistem temasına düş
   }
 }
 
@@ -98,6 +100,19 @@ String themeModeToSettingValue(ThemeMode mode) {
 // dili kullanır.
 // ════════════════════════════════════════════════════════════════════════
 final ValueNotifier<String> appLanguage = ValueNotifier<String>('system');
+
+// ════════════════════════════════════════════════════════════════════════
+// PRO DURUMU (Pro'ya Yükselt)
+// Kullanıcının Pro olup olmadığı bu global ValueNotifier üzerinden okunur.
+// Varsayılan false (ücretsiz). Açılışta main()'de DBHelper'daki 'is_pro'
+// ayarından doldurulur; satın alma başarılı olunca (ileride in_app_purchase
+// akışı) appIsPro.value = true yapılıp DBHelper.instance.setIsPro(true)
+// ile kalıcı hâle getirilecek. Kilitli bir özelliğin kullanıldığı yerlerde
+// "if (!appIsPro.value) { Pro ekranına yönlendir }" şeklinde kontrol edilir.
+// Arayüzün Pro durumuna göre kendini güncellemesi gerekiyorsa
+// ValueListenableBuilder<bool>(valueListenable: appIsPro, ...) kullanılabilir.
+// ════════════════════════════════════════════════════════════════════════
+final ValueNotifier<bool> appIsPro = ValueNotifier<bool>(false);
 
 // ════════════════════════════════════════════════════════════════════════
 // VURGU RENGİ (Ayarlar > Tema > Vurgu Rengi)

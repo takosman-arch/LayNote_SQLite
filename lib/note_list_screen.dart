@@ -1,4 +1,4 @@
-part of 'main.dart';
+1part of 'main.dart';
 
 class NoteListScreen extends StatefulWidget {
   const NoteListScreen({super.key});

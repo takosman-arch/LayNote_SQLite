@@ -50,6 +50,7 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:home_widget/home_widget.dart'; // Ana ekran widget'ı için
+import 'package:in_app_purchase/in_app_purchase.dart' as iap; // Pro satın alma (Google Play Billing) için
 
 
 
@@ -79,6 +80,8 @@ part 'note_tags_sheet.dart';
 part 'note_list_build_mixin.dart';
 part 'note_flag_mixin.dart';
 part 'settings_page.dart';
+part 'pro_service.dart';
+part 'pro_upgrade_screen.dart';
 part 'about_screen.dart';
 part 'calendar_screen.dart';
 part 'gundem_screen.dart';
@@ -117,10 +120,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Uygulama ilk kez çizilmeden önce kayıtlı tema tercihini oku; böylece
-  // açılışta koyu tema bir an için yanıp sönmez.
+  // açılışta yanlış tema bir an için yanıp sönmez.
   final settings = await DBHelper.instance.getAllSettings();
   final storedThemeMode = settings['theme_mode'];
   if (storedThemeMode != null) {
+    // Kullanıcı daha önce Ayarlar'dan bir tercih kaydetmiş: o tercih korunur.
     appThemeMode.value = themeModeFromSettingValue(storedThemeMode);
   } else {
     // Eski sürümden geliyorsa (theme_mode hiç yoksa) 'dark_theme' anahtarına
@@ -130,6 +134,10 @@ void main() async {
       appThemeMode.value = legacyDark == 'true'
           ? ThemeMode.dark
           : ThemeMode.light;
+    } else {
+      // Yepyeni kurulum: hiçbir tema tercihi kaydedilmemiş, cihazın kendi
+      // tema ayarı (Sistem) kullanılır.
+      appThemeMode.value = ThemeMode.system;
     }
   }
 
@@ -154,6 +162,11 @@ void main() async {
 
   // Dil tercihi: kayıtlı ayar yoksa (ilk kurulum) 'system' kalır.
   appLanguage.value = settings['app_language'] ?? 'system';
+
+  // Pro durumu: kayıtlı 'is_pro' ayarı yoksa (ilk kurulum) ücretsiz kalır.
+  // İlk çizimden önce okunur; böylece Pro'ya özel arayüz açılışta yanlış
+  // durumla yanıp sönmez.
+  appIsPro.value = settings[DBHelper.isProSettingKey] == 'true';
 
   // Bayrak renklerine daha önce verilmiş isimler (varsa) ilk çizimden
   // önce yüklenir; böylece kart rozetleri/menü satırı vb. ilk açılışta
@@ -180,6 +193,13 @@ void main() async {
 // Uygulamanın ilk frame'i çizildikten sonra arka planda başlatılan,
 // kullanıcının notu görmesi için beklenmesi gerekmeyen servisler.
 Future<void> _initBackgroundServices() async {
+  // Pro durumu: Play'e sorup önbelleği (appIsPro) sessizce günceller.
+  // purchaseStream'e olabildiğince erken abone olunması için (önceki
+  // oturumdan kalan bekleyen satın almaların yakalanabilmesi adına) bu,
+  // arka plan başlatma sırasında ilk iş olarak çağrılır (bkz.
+  // pro_service.dart -> ProService.init).
+  await ProService.instance.init();
+
   // Hatırlatıcı bildirimleri için bildirim eklentisini ve zaman dilimi
   // verisini hazırla. NoteListScreen._loadData() içindeki
   // getLaunchNoteId() çağrısı zaten kendi içinde "if (!_initialized)

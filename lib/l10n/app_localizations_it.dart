@@ -2623,4 +2623,145 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Chiudi ricerca';
+
+  @override
+  String get proUpgradeHeadline => 'Di più con Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Blocco delle cartelle';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'Proteggi con una password le cartelle che vuoi.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Sottocartelle';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Aggiungi un livello di sottocartelle alle tue cartelle.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Più colori d’accento';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Scegli da una tavolozza di colori ampliata.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Allarmi ricorrenti';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Ripeti i promemoria ogni giorno, ogni settimana e altro ancora.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Fissaggio illimitato delle note';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Fissa quante note vuoi nel pannello delle notifiche.';
+
+  @override
+  String get proFeatureExportTitle => 'Esportazione PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Esporta le tue note come PDF o immagine.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Scansione di documenti';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Scansiona i documenti cartacei con la fotocamera e aggiungili alla nota.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Da voce a testo';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Detta le tue note e verranno convertite automaticamente in testo.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Immagini e file illimitati';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Allega alle note quante immagini e file vuoi.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Il sistema di acquisto non è ancora collegato.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Pro mensile';
+
+  @override
+  String get proPlanMonthlySubtitle => 'Si rinnova automaticamente ogni mese.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Pro a vita';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'Pagamento unico, tuo per sempre.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / mese';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price pagamento unico';
+  }
+
+  @override
+  String get proPurchaseButton => 'Continua';
+
+  @override
+  String get proRestorePurchasesButton => 'Ripristina acquisti';
+
+  @override
+  String get proSubscriptionNote =>
+      'Pro mensile si rinnova automaticamente. Puoi annullarlo in qualsiasi momento da Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro attivo';
+
+  @override
+  String get proActiveSubtitle => 'Hai sbloccato tutte le funzionalità Pro.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Impossibile caricare i prezzi. Controlla la connessione e riprova.';
+
+  @override
+  String get proRetryButton => 'Riprova';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Benvenuto in Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Il tuo acquisto è stato ripristinato. Pro è attivo.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Non è stato trovato alcun acquisto Pro attivo per questo account.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Il tuo pagamento è in sospeso. Pro si sbloccherà automaticamente non appena verrà approvato.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Acquisto annullato.';
+
+  @override
+  String get proPurchaseErrorMessage => 'Qualcosa è andato storto. Riprova.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play non è al momento disponibile.';
 }

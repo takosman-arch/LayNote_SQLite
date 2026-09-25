@@ -54,6 +54,19 @@ class NoteEditorScrollPhysics extends ClampingScrollPhysics {
   }
 }
 
+// Pro kısıtlaması: Pro olmayan kullanıcılar en fazla bu kadar notu listenin
+// en üstüne sabitleyebilir; "Sınırsız not sabitleme" bir Pro özelliğidir
+// (bkz. pro_upgrade_screen.dart). Limiti değiştirmek için sadece bu sayıyı
+// değiştirmek yeterli. (Bildirim paneline sabitleme ayrı bir özelliktir,
+// bu limite dahil değildir.)
+const int _freePinnedNoteLimit = 3;
+
+// Pro kısıtlaması: Pro olmayan kullanıcılar bir nota en fazla bu kadar ek
+// dosya (resim, video, ses, belge vb.) ekleyebilir; "Sınırsız ek dosya" bir
+// Pro özelliğidir (bkz. pro_upgrade_screen.dart). Limiti değiştirmek için
+// sadece bu sayıyı değiştirmek yeterli.
+const int _freeAttachmentLimit = 3;
+
 mixin NoteListNoteDialogMixin on State<NoteListScreen> {
   // ---- Diğer mixin'lerde tanımlı, burada kullanılan üyeler ----
   Widget _buildAttachmentGrid({ required List<String> ids, required List<Map<String, dynamic>> attachmentsList, required void Function(String id) onRemove, required void Function(Map<String, dynamic> att) onOpen, required String? deletingId, required void Function(String? id) onDeletingIdChanged, });
@@ -4452,9 +4465,33 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                 List<Map<String, String>> files,
               ) async {
                 if (files.isEmpty) return;
+                // Pro kısıtlaması: Pro değilse notta en fazla
+                // _freeAttachmentLimit ek olabilir. Limit tamamen doluysa
+                // hiçbir şey eklenmez ve Pro ekranı açılır. Birden fazla
+                // dosya seçilip limit aşılıyorsa sığan kadarı eklenir,
+                // ardından Pro ekranı açılır. Notta zaten limitin üstünde ek
+                // varsa (Pro'su bitmiş kullanıcı) bunlar silinmez, yalnızca
+                // yenisi eklenemez.
+                var filesToAdd = files;
+                var attachmentLimitHit = false;
+                if (!appIsPro.value) {
+                  final remaining = _freeAttachmentLimit - attachments.length;
+                  if (remaining <= 0) {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const ProUpgradeScreen(),
+                      ),
+                    );
+                    return;
+                  }
+                  if (files.length > remaining) {
+                    filesToAdd = files.sublist(0, remaining);
+                    attachmentLimitHit = true;
+                  }
+                }
                 final dir = await DBHelper.instance.attachmentsDir();
                 final newOnes = <Map<String, dynamic>>[];
-                for (final f in files) {
+                for (final f in filesToAdd) {
                   final srcPath = f['path'];
                   if (srcPath == null || srcPath.isEmpty) continue;
                   final srcFile = File(srcPath);
@@ -4598,6 +4635,13 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                     }
                   });
                 }
+                if (attachmentLimitHit && isEditorOpen && context.mounted) {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const ProUpgradeScreen(),
+                    ),
+                  );
+                }
               }
 
               Future<void> pickAttachments() async {
@@ -4704,6 +4748,17 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
               // desen). Kullanıcı ayrıca taranan görseli ek olarak saklamayı
               // da seçebilir.
               Future<void> scanDocumentToText() async {
+                // Pro kısıtlaması: "Belge Tara" bir Pro özelliğidir (bkz.
+                // pro_upgrade_screen.dart). Pro değilse kamera hiç açılmaz,
+                // doğrudan Pro'ya Yükselt ekranına gidilir.
+                if (!appIsPro.value) {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const ProUpgradeScreen(),
+                    ),
+                  );
+                  return;
+                }
                 List<String>? scannedPaths;
                 try {
                   scannedPaths = await CunningDocumentScanner.getPictures(
@@ -6600,6 +6655,31 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                               findQueryFocusNode.requestFocus();
                             });
                           } else if (value == 'pin_note') {
+                            // Pro kısıtlaması: Pro değilse ve limit doluysa
+                            // YENİ sabitleme yapılamaz, Pro ekranına gidilir.
+                            // Sabitlemeyi kaldırmak her zaman serbesttir.
+                            // Şu an düzenlenen not sayıma dahil edilmez (kendi
+                            // kayıtlı durumu editördeki geçici durumla
+                            // çelişebileceği için); arşivdeki notlar da
+                            // sayılmaz.
+                            if (!notePinned && !appIsPro.value) {
+                              int pinnedCount = 0;
+                              for (var i = 0; i < _notes.length; i++) {
+                                if (i == index) continue;
+                                if (_notes[i]['isPinned'] == true &&
+                                    _notes[i]['isArchived'] != true) {
+                                  pinnedCount++;
+                                }
+                              }
+                              if (pinnedCount >= _freePinnedNoteLimit) {
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => const ProUpgradeScreen(),
+                                  ),
+                                );
+                                return;
+                              }
+                            }
                             // Sabitleme/kaldırma anında değişir; kayıt her
                             // zamanki gibi (kapatma/otomatik kayıt anında)
                             // _saveNoteIfValid'e notePinned olarak geçilir
@@ -10382,7 +10462,22 @@ mixin NoteListNoteDialogMixin on State<NoteListScreen> {
                                   ),
                                   onPressed: () => _showAddAttachmentSheet(
                                     context,
-                                    onSelected: (value) {
+                                    onSelected: (value) async {
+                                      // Pro kısıtlaması: limit doluysa
+                                      // kamera/kayıt/seçici hiç açılmasın
+                                      // (kullanıcı çekim/kayıt yapıp sonra
+                                      // reddedilmesin), doğrudan Pro ekranı.
+                                      if (!appIsPro.value &&
+                                          attachments.length >=
+                                              _freeAttachmentLimit) {
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                const ProUpgradeScreen(),
+                                          ),
+                                        );
+                                        return;
+                                      }
                                       if (value == 'file') {
                                         pickAttachments();
                                       } else if (value == 'image') {

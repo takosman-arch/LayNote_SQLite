@@ -2627,4 +2627,147 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Zoeken sluiten';
+
+  @override
+  String get proUpgradeHeadline => 'Meer met Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Mapvergrendeling';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'Beveilig de mappen van uw keuze met een wachtwoord.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Submappen';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Voeg een niveau submappen toe aan je mappen.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Meer accentkleuren';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Kies uit een uitgebreid kleurenpalet.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Herhalende alarmen';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Herhaal uw herinneringen dagelijks, wekelijks en meer.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Onbeperkt notities vastzetten';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Zet zoveel notities vast in het meldingenpaneel als u wilt.';
+
+  @override
+  String get proFeatureExportTitle => 'Exporteren naar PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Exporteer uw notities als pdf of afbeelding.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Documenten scannen';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Scan papieren documenten met de camera en voeg ze toe aan uw notitie.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Spraak naar tekst';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Dicteer uw notities en ze worden automatisch omgezet in tekst.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Onbeperkt afbeeldingen en bestanden';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Voeg zoveel afbeeldingen en bestanden aan uw notities toe als u wilt.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Het aankoopsysteem is nog niet gekoppeld.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Maandelijkse Pro';
+
+  @override
+  String get proPlanMonthlySubtitle => 'Wordt elke maand automatisch verlengd.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Levenslange Pro';
+
+  @override
+  String get proPlanLifetimeSubtitle =>
+      'Eenmalige betaling, voor altijd van u.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / maand';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price eenmalig';
+  }
+
+  @override
+  String get proPurchaseButton => 'Doorgaan';
+
+  @override
+  String get proRestorePurchasesButton => 'Aankopen herstellen';
+
+  @override
+  String get proSubscriptionNote =>
+      'Maandelijkse Pro wordt automatisch verlengd. U kunt op elk moment opzeggen via Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro actief';
+
+  @override
+  String get proActiveSubtitle => 'U hebt alle Pro-functies ontgrendeld.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Prijzen konden niet worden geladen. Controleer uw verbinding en probeer het opnieuw.';
+
+  @override
+  String get proRetryButton => 'Opnieuw proberen';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Welkom bij Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Uw aankoop is hersteld. Pro is actief.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Er is geen actieve Pro-aankoop gevonden voor dit account.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Uw betaling is in behandeling. Pro wordt automatisch ontgrendeld zodra deze is goedgekeurd.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Aankoop geannuleerd.';
+
+  @override
+  String get proPurchaseErrorMessage =>
+      'Er is iets misgegaan. Probeer het opnieuw.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play is momenteel niet beschikbaar.';
 }

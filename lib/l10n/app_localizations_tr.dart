@@ -2591,4 +2591,146 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Bul modunu kapat';
+
+  @override
+  String get proUpgradeHeadline => 'Layout Pro ile daha fazlası';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Klasör Kilitleme';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'İstediğin klasörleri şifreyle koruma altına al.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Alt Klasörler';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Klasörlerinin içine bir kademe alt klasör ekle.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Daha Fazla Vurgu Rengi';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Genişletilmiş renk paletinden dilediğini seç.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Tekrarlanan Alarm';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Hatırlatıcılarını günlük/haftalık gibi tekrarlat.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Sınırsız Not Sabitleme';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Bildirim ekranına istediğin kadar not sabitle.';
+
+  @override
+  String get proFeatureExportTitle => 'PDF / JPG Dışa Aktarma';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Notlarını PDF veya görsel olarak dışa aktar.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Belge Tarama';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Kağıt belgeleri kamerayla tarayıp notuna ekle.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Sesi Yazıya Çevirme';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Konuşarak not al, otomatik olarak metne dönüşsün.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Sınırsız Görsel ve Dosya Ekleme';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Notlarına istediğin kadar görsel/dosya ekle.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Satın alma altyapısı henüz bağlanmadı.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Aylık Pro';
+
+  @override
+  String get proPlanMonthlySubtitle => 'Her ay otomatik olarak yenilenir.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Ömür Boyu Pro';
+
+  @override
+  String get proPlanLifetimeSubtitle =>
+      'Tek seferlik ödeme, sonsuza kadar senin.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / ay';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price (tek seferlik)';
+  }
+
+  @override
+  String get proPurchaseButton => 'Devam Et';
+
+  @override
+  String get proRestorePurchasesButton => 'Satın Almaları Geri Yükle';
+
+  @override
+  String get proSubscriptionNote =>
+      'Aylık Pro her ay otomatik olarak yenilenir. İstediğin zaman Google Play üzerinden iptal edebilirsin.';
+
+  @override
+  String get proActiveTitle => 'Pro Aktif';
+
+  @override
+  String get proActiveSubtitle => 'Tüm Pro özelliklerinin kilidini açtın.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Fiyatlar yüklenemedi. Bağlantını kontrol edip tekrar dene.';
+
+  @override
+  String get proRetryButton => 'Tekrar Dene';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Pro\'ya hoş geldin!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Satın alman geri yüklendi. Pro aktif.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Bu hesapta geçerli bir Pro satın alma bulunamadı.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Ödemen onay bekliyor. Onaylandığında Pro otomatik olarak açılacak.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Satın alma iptal edildi.';
+
+  @override
+  String get proPurchaseErrorMessage =>
+      'Bir şeyler ters gitti. Lütfen tekrar dene.';
+
+  @override
+  String get proStoreUnavailableMessage => 'Google Play\'e şu an ulaşılamıyor.';
 }

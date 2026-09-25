@@ -2548,4 +2548,133 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get findCloseTooltip => '찾기 닫기';
+
+  @override
+  String get proUpgradeHeadline => 'Layout Pro로 더 많은 기능을';
+
+  @override
+  String get proFeatureFolderLockTitle => '폴더 잠금';
+
+  @override
+  String get proFeatureFolderLockSubtitle => '원하는 폴더를 비밀번호로 보호하세요.';
+
+  @override
+  String get proFeatureSubfoldersTitle => '하위 폴더';
+
+  @override
+  String get proFeatureSubfoldersSubtitle => '폴더 안에 한 단계의 하위 폴더를 추가하세요.';
+
+  @override
+  String get proFeatureAccentColorsTitle => '더 많은 강조 색상';
+
+  @override
+  String get proFeatureAccentColorsSubtitle => '확장된 색상 팔레트에서 원하는 색을 고르세요.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => '반복 알람';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle => '미리 알림을 매일, 매주 등으로 반복하세요.';
+
+  @override
+  String get proFeaturePinNotesTitle => '무제한 메모 고정';
+
+  @override
+  String get proFeaturePinNotesSubtitle => '알림 패널에 원하는 만큼 메모를 고정하세요.';
+
+  @override
+  String get proFeatureExportTitle => 'PDF / JPG 내보내기';
+
+  @override
+  String get proFeatureExportSubtitle => '메모를 PDF 또는 이미지로 내보내세요.';
+
+  @override
+  String get proFeatureDocumentScanTitle => '문서 스캔';
+
+  @override
+  String get proFeatureDocumentScanSubtitle => '종이 문서를 카메라로 스캔해 메모에 추가하세요.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => '음성을 텍스트로';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle => '말로 메모하면 자동으로 텍스트로 변환됩니다.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle => '무제한 이미지 및 파일 첨부';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      '메모에 원하는 만큼 이미지와 파일을 첨부하세요.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage => '구매 기능이 아직 연결되지 않았습니다.';
+
+  @override
+  String get proPlanMonthlyTitle => '월간 Pro';
+
+  @override
+  String get proPlanMonthlySubtitle => '매달 자동으로 갱신됩니다.';
+
+  @override
+  String get proPlanLifetimeTitle => '평생 Pro';
+
+  @override
+  String get proPlanLifetimeSubtitle => '한 번 결제로 평생 이용하세요.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / 월';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price (평생 1회 결제)';
+  }
+
+  @override
+  String get proPurchaseButton => '계속하기';
+
+  @override
+  String get proRestorePurchasesButton => '구매 복원';
+
+  @override
+  String get proSubscriptionNote =>
+      '월간 Pro는 자동으로 갱신됩니다. Google Play에서 언제든지 해지할 수 있습니다.';
+
+  @override
+  String get proActiveTitle => 'Pro 활성화됨';
+
+  @override
+  String get proActiveSubtitle => '모든 Pro 기능이 잠금 해제되었습니다.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      '가격을 불러오지 못했습니다. 연결 상태를 확인하고 다시 시도하세요.';
+
+  @override
+  String get proRetryButton => '다시 시도';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Pro에 오신 것을 환영합니다!';
+
+  @override
+  String get proRestoreSuccessMessage => '구매 내역이 복원되었습니다. Pro가 활성화되었습니다.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      '이 계정에서 활성화된 Pro 구매 내역을 찾을 수 없습니다.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      '결제가 승인 대기 중입니다. 승인되면 Pro가 자동으로 활성화됩니다.';
+
+  @override
+  String get proPurchaseCanceledMessage => '구매가 취소되었습니다.';
+
+  @override
+  String get proPurchaseErrorMessage => '문제가 발생했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get proStoreUnavailableMessage => '현재 Google Play를 사용할 수 없습니다.';
 }

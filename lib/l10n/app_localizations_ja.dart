@@ -2546,4 +2546,129 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get findCloseTooltip => '検索を閉じる';
+
+  @override
+  String get proUpgradeHeadline => 'Layout Proでさらに充実';
+
+  @override
+  String get proFeatureFolderLockTitle => 'フォルダのロック';
+
+  @override
+  String get proFeatureFolderLockSubtitle => '好きなフォルダをパスワードで保護します。';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'サブフォルダ';
+
+  @override
+  String get proFeatureSubfoldersSubtitle => 'フォルダの中に1階層のサブフォルダを追加できます。';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'アクセントカラーを追加';
+
+  @override
+  String get proFeatureAccentColorsSubtitle => '拡張されたカラーパレットから好きな色を選べます。';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => '繰り返しアラーム';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle => 'リマインダーを毎日や毎週などで繰り返せます。';
+
+  @override
+  String get proFeaturePinNotesTitle => 'ノートの固定を無制限に';
+
+  @override
+  String get proFeaturePinNotesSubtitle => '通知パネルに好きなだけノートを固定できます。';
+
+  @override
+  String get proFeatureExportTitle => 'PDF / JPGエクスポート';
+
+  @override
+  String get proFeatureExportSubtitle => 'ノートをPDFや画像として書き出せます。';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'ドキュメントスキャン';
+
+  @override
+  String get proFeatureDocumentScanSubtitle => '紙の書類をカメラでスキャンしてノートに追加できます。';
+
+  @override
+  String get proFeatureSpeechToTextTitle => '音声からテキストへ';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle => '話すだけでノートを作成し、自動でテキストに変換します。';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle => '画像とファイルを無制限に添付';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'ノートに好きなだけ画像やファイルを添付できます。';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage => '購入機能はまだ接続されていません。';
+
+  @override
+  String get proPlanMonthlyTitle => '月額プラン';
+
+  @override
+  String get proPlanMonthlySubtitle => '毎月自動的に更新されます。';
+
+  @override
+  String get proPlanLifetimeTitle => '永久プラン';
+
+  @override
+  String get proPlanLifetimeSubtitle => '一度の支払いで、ずっとあなたのものに。';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price（月額）';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price（買い切り）';
+  }
+
+  @override
+  String get proPurchaseButton => '続ける';
+
+  @override
+  String get proRestorePurchasesButton => '購入を復元';
+
+  @override
+  String get proSubscriptionNote => '月額Proは自動更新されます。Google Playからいつでも解約できます。';
+
+  @override
+  String get proActiveTitle => 'Pro 有効';
+
+  @override
+  String get proActiveSubtitle => 'すべてのPro機能が利用可能になりました。';
+
+  @override
+  String get proProductsLoadErrorMessage => '価格を読み込めませんでした。接続を確認してもう一度お試しください。';
+
+  @override
+  String get proRetryButton => '再試行';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Proへようこそ！';
+
+  @override
+  String get proRestoreSuccessMessage => '購入内容を復元しました。Proが有効になりました。';
+
+  @override
+  String get proRestoreNothingFoundMessage => 'このアカウントで有効なPro購入が見つかりませんでした。';
+
+  @override
+  String get proPurchasePendingMessage => 'お支払いは承認待ちです。承認され次第、自動的にProが有効になります。';
+
+  @override
+  String get proPurchaseCanceledMessage => '購入をキャンセルしました。';
+
+  @override
+  String get proPurchaseErrorMessage => 'エラーが発生しました。もう一度お試しください。';
+
+  @override
+  String get proStoreUnavailableMessage => '現在Google Playを利用できません。';
 }

@@ -44,7 +44,12 @@ class BackupHelper {
     final notes = await db.getNotes();
     final deletedNotes = await db.getDeletedNotes();
     final categoriesData = await db.getCategoriesData();
-    final settings = await db.getAllSettings();
+    // Pro durumu ('is_pro') yedeğe KONMAZ: yedek dosyası başka cihaza/hesaba
+    // taşınabildiği için, Pro'nun yedek üzerinden bedavaya açılmasını önlemek
+    // amacıyla bu anahtar hariç tutulur. Pro durumu satın alma doğrulamasından
+    // (ve "Satın Almaları Geri Yükle" akışından) gelir.
+    final settings = Map<String, String>.from(await db.getAllSettings())
+      ..remove(DBHelper.isProSettingKey);
 
     final lockedCategories = (categoriesData['locked'] as Set).cast<String>().toList();
 
@@ -484,6 +489,10 @@ class BackupHelper {
     );
     onProgress?.call(0.58, l10n.backupRestoreWritingSettingsLabel);
     for (final entry in settings.entries) {
+      // Eski sürümlerde oluşturulmuş ya da elle değiştirilmiş bir yedekte
+      // 'is_pro' bulunsa bile yok sayılır; mevcut cihazdaki Pro durumu
+      // yedekle ne açılır ne de kapanır.
+      if (entry.key == DBHelper.isProSettingKey) continue;
       await db.setSetting(entry.key, entry.value);
     }
     onProgress?.call(0.62, l10n.backupRestoreSettingsWrittenLabel);

@@ -2595,4 +2595,145 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Close find';
+
+  @override
+  String get proUpgradeHeadline => 'More with Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Folder Locking';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'Protect any folder with a password.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Subfolders';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Add one level of subfolders inside your folders.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'More Accent Colors';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Pick any color from an expanded palette.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Repeating Alarms';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Repeat your reminders daily, weekly, and more.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Unlimited Note Pinning';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Pin as many notes to your notification panel as you like.';
+
+  @override
+  String get proFeatureExportTitle => 'PDF / JPG Export';
+
+  @override
+  String get proFeatureExportSubtitle => 'Export your notes as PDF or images.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Document Scanning';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Scan paper documents with your camera and add them to your note.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Speech to Text';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Dictate a note and it is converted to text automatically.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Unlimited Images and Files';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Attach as many images and files to your notes as you like.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'The purchase system is not connected yet.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Monthly Pro';
+
+  @override
+  String get proPlanMonthlySubtitle => 'Renews automatically every month.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Lifetime Pro';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'One-time payment, yours forever.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / month';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price one-time';
+  }
+
+  @override
+  String get proPurchaseButton => 'Continue';
+
+  @override
+  String get proRestorePurchasesButton => 'Restore Purchases';
+
+  @override
+  String get proSubscriptionNote =>
+      'Monthly Pro renews automatically. You can cancel anytime in Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro Active';
+
+  @override
+  String get proActiveSubtitle => 'You’ve unlocked all Pro features.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Couldn’t load prices. Check your connection and try again.';
+
+  @override
+  String get proRetryButton => 'Retry';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Welcome to Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Your purchase was restored. Pro is active.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'No active Pro purchase was found for this account.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Your payment is pending. Pro will unlock automatically once it’s approved.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Purchase canceled.';
+
+  @override
+  String get proPurchaseErrorMessage =>
+      'Something went wrong. Please try again.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play is currently unavailable.';
 }

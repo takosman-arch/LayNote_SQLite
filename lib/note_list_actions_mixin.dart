@@ -618,17 +618,33 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
       );
     }
 
+    // Pro kısıtlaması: PDF ve JPG dışa aktarma Pro özelliğidir (bkz.
+    // pro_upgrade_screen.dart). TXT dışa aktarma ücretsiz kalır. Pro değilse
+    // PDF/JPG satırlarında kilit ikonu görünür ve seçilince Pro ekranı açılır.
+    final isProUser = appIsPro.value;
     final selected = await showMenu<String>(
       context: context,
       position: position,
-      items: const [
+      items: [
         PopupMenuItem(
           value: 'export_pdf',
           child: Row(
             children: [
-              Expanded(child: Text('PDF')),
-              SizedBox(width: 10),
-              Icon(Icons.picture_as_pdf, color: Colors.redAccent, size: 20),
+              const Expanded(child: Text('PDF')),
+              const SizedBox(width: 10),
+              if (!isProUser) ...[
+                Icon(
+                  Icons.lock_outline,
+                  size: 18,
+                  color: Colors.grey.withValues(alpha: 0.45),
+                ),
+                const SizedBox(width: 6),
+              ],
+              const Icon(
+                Icons.picture_as_pdf,
+                color: Colors.redAccent,
+                size: 20,
+              ),
             ],
           ),
         ),
@@ -636,9 +652,21 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
           value: 'export_jpg',
           child: Row(
             children: [
-              Expanded(child: Text('JPG')),
-              SizedBox(width: 10),
-              Icon(Icons.image_outlined, color: Colors.blueAccent, size: 20),
+              const Expanded(child: Text('JPG')),
+              const SizedBox(width: 10),
+              if (!isProUser) ...[
+                Icon(
+                  Icons.lock_outline,
+                  size: 18,
+                  color: Colors.grey.withValues(alpha: 0.45),
+                ),
+                const SizedBox(width: 6),
+              ],
+              const Icon(
+                Icons.image_outlined,
+                color: Colors.blueAccent,
+                size: 20,
+              ),
             ],
           ),
         ),
@@ -658,6 +686,12 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
         ),
       ],
     );
+
+    if ((selected == 'export_pdf' || selected == 'export_jpg') &&
+        !appIsPro.value) {
+      _goToProUpgradeScreen();
+      return;
+    }
 
     if (selected == 'export_pdf') {
       _exportNoteAsPdf(
@@ -1404,9 +1438,26 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     ).push(MaterialPageRoute(builder: (_) => SettingsPage(state: this as _NoteListScreenState)));
   }
 
+  // Pro kısıtlaması: "Klasör Kilitleme" bir Pro özelliğidir (bkz.
+  // pro_upgrade_screen.dart -> proFeatureFolderLockTitle). Pro değilse
+  // "Kilitli" klasörüne (var olan kilitli notlara bile) girilemez, doğrudan
+  // Pro'ya Yükselt ekranına yönlendirilir. Abonelik/satın alma sona erip
+  // appIsPro tekrar false olursa, kullanıcı Pro'ya dönene kadar bu klasöre
+  // erişemez — notlar silinmez, sadece erişim kilitlenir.
+  void _goToProUpgradeScreen() {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const ProUpgradeScreen()),
+    );
+  }
+
   // Yeni: "Kilitli" klasörüne girmeden önce parola sorar.
   Future<void> _openLockedFolder() async {
     Navigator.pop(context); // drawer'ı önce kapat
+
+    if (!appIsPro.value) {
+      _goToProUpgradeScreen();
+      return;
+    }
 
     if (!_notePasswordEnabled) {
       // DÜZELTME: uygulama parolası ayarlardan kaldırıldığında, içinde
@@ -1484,6 +1535,22 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
     String? parentCategory,
   }) {
     final isEditing = editingCategory != null;
+
+    // Pro kısıtlaması: "Sınırsız Alt Klasör" bir Pro özelliğidir (bkz.
+    // pro_upgrade_screen.dart -> proFeatureSubfoldersTitle). Pro olmayan
+    // kullanıcı toplamda (nerede olursa olsun) en fazla 1 alt klasör
+    // oluşturabilir; düzenleme (isEditing) bu sınırdan etkilenmez, çünkü
+    // var olan bir klasörü yeniden adlandırmak/renklendirmek yeni bir alt
+    // klasör eklemek değildir.
+    if (!isEditing && parentCategory != null && !appIsPro.value) {
+      final existingSubfolderCount =
+          _categoryParents.values.where((parent) => parent != null).length;
+      if (existingSubfolderCount >= 1) {
+        _goToProUpgradeScreen();
+        return;
+      }
+    }
+
     final isSubfolder =
         parentCategory != null ||
         (isEditing && _categoryParents[editingCategory] != null);
@@ -2086,12 +2153,16 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                           child: SizedBox(
                             width: 64,
                             height: 64,
-                            child: Center(
-                              child: Icon(
-                                action['icon'] as IconData,
-                                color: action['color'] as Color,
-                                size: 30,
-                              ),
+                            child: Stack(
+                              children: [
+                                Center(
+                                  child: Icon(
+                                    action['icon'] as IconData,
+                                    color: action['color'] as Color,
+                                    size: 30,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -2476,6 +2547,15 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                       }
 
                       if (key == 'speech_to_text') {
+                        // Pro kısıtlaması: "Sesli Yazma" bir Pro özelliğidir
+                        // (bkz. pro_upgrade_screen.dart). Pro değilse
+                        // mikrofon/dinleme sayfası hiç açılmaz. Not listesi
+                        // ve not düzenleyici bu eylemi aynı yerden çağırdığı
+                        // için tek kontrol ikisini de kapsar.
+                        if (!appIsPro.value) {
+                          _goToProUpgradeScreen();
+                          return;
+                        }
                         if (onInsertText == null) return;
                         if (!context.mounted) return;
                         final transcript = await showModalBottomSheet<String>(
@@ -2613,6 +2693,21 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                             icon: Icons.push_pin_outlined,
                           );
                         } else {
+                          // Pro kısıtlaması: Pro olmayan kullanıcı aynı anda
+                          // yalnızca 1 not sabitleyebilir (bkz.
+                          // pro_upgrade_screen.dart ->
+                          // proFeaturePinNotesTitle). Zaten sabitli bir not
+                          // varken ikinci bir not daha sabitlenmeye
+                          // çalışılırsa Pro ekranına yönlendirilir; mevcut
+                          // sabitlemeler etkilenmez ve kaldırma (yukarıdaki
+                          // currentlyPinned dalı) bu kontrolden muaftır.
+                          final pinnedCount = _notes
+                              .where((n) => n['isPinnedToNotification'] == true)
+                              .length;
+                          if (!appIsPro.value && pinnedCount >= 1) {
+                            _goToProUpgradeScreen();
+                            return;
+                          }
                           final title = (note['title'] ?? '').toString().trim();
                           final content = ContentBlocks.plainText(
                             note['content'] as String?,
@@ -2662,12 +2757,16 @@ mixin NoteListActionsMixin on State<NoteListScreen> {
                           child: SizedBox(
                             width: 64,
                             height: 64,
-                            child: Center(
-                              child: Icon(
-                                action['icon'] as IconData,
-                                color: action['color'] as Color,
-                                size: 30,
-                              ),
+                            child: Stack(
+                              children: [
+                                Center(
+                                  child: Icon(
+                                    action['icon'] as IconData,
+                                    color: action['color'] as Color,
+                                    size: 30,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

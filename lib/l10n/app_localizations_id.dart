@@ -2610,4 +2610,145 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Tutup pencarian';
+
+  @override
+  String get proUpgradeHeadline => 'Lebih banyak dengan Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Kunci Folder';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'Lindungi folder pilihan Anda dengan kata sandi.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Subfolder';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Tambahkan satu tingkat subfolder di dalam folder Anda.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Lebih Banyak Warna Aksen';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Pilih warna dari palet yang lebih lengkap.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Alarm Berulang';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Ulangi pengingat Anda setiap hari, setiap minggu, dan lainnya.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Sematkan Catatan Tanpa Batas';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Sematkan catatan sebanyak yang Anda mau ke panel notifikasi.';
+
+  @override
+  String get proFeatureExportTitle => 'Ekspor PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle =>
+      'Ekspor catatan Anda sebagai PDF atau gambar.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Pindai Dokumen';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Pindai dokumen kertas dengan kamera dan tambahkan ke catatan Anda.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Suara ke Teks';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Ucapkan catatan Anda dan otomatis diubah menjadi teks.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Gambar dan File Tanpa Batas';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Tambahkan gambar dan file ke catatan Anda sebanyak yang Anda mau.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'Sistem pembelian belum terhubung.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Pro Bulanan';
+
+  @override
+  String get proPlanMonthlySubtitle => 'Diperpanjang otomatis setiap bulan.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Pro Seumur Hidup';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'Bayar sekali, milik Anda selamanya.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / bulan';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price sekali bayar';
+  }
+
+  @override
+  String get proPurchaseButton => 'Lanjutkan';
+
+  @override
+  String get proRestorePurchasesButton => 'Pulihkan Pembelian';
+
+  @override
+  String get proSubscriptionNote =>
+      'Pro Bulanan diperpanjang otomatis. Anda dapat membatalkannya kapan saja di Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro Aktif';
+
+  @override
+  String get proActiveSubtitle => 'Anda telah membuka semua fitur Pro.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'Gagal memuat harga. Periksa koneksi Anda dan coba lagi.';
+
+  @override
+  String get proRetryButton => 'Coba Lagi';
+
+  @override
+  String get proPurchaseSuccessMessage => 'Selamat datang di Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Pembelian Anda telah dipulihkan. Pro kini aktif.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'Tidak ditemukan pembelian Pro aktif untuk akun ini.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Pembayaran Anda sedang diproses. Pro akan terbuka otomatis setelah disetujui.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Pembelian dibatalkan.';
+
+  @override
+  String get proPurchaseErrorMessage => 'Terjadi kesalahan. Silakan coba lagi.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play saat ini tidak tersedia.';
 }

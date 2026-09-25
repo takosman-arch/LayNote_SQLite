@@ -2633,4 +2633,144 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'Cerrar búsqueda';
+
+  @override
+  String get proUpgradeHeadline => 'Más con Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'Bloqueo de carpetas';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'Protege cualquier carpeta con contraseña.';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'Subcarpetas';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'Añade un nivel de subcarpetas dentro de tus carpetas.';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'Más colores de acento';
+
+  @override
+  String get proFeatureAccentColorsSubtitle =>
+      'Elige entre una paleta de colores ampliada.';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'Alarmas repetitivas';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'Repite tus recordatorios a diario, cada semana y más.';
+
+  @override
+  String get proFeaturePinNotesTitle => 'Fijación ilimitada de notas';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'Fija tantas notas como quieras en el panel de notificaciones.';
+
+  @override
+  String get proFeatureExportTitle => 'Exportar a PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle => 'Exporta tus notas como PDF o imagen.';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'Escaneo de documentos';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'Escanea documentos en papel con la cámara y añádelos a tu nota.';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'Voz a texto';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'Dicta tus notas y se convertirán en texto automáticamente.';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle =>
+      'Imágenes y archivos ilimitados';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'Adjunta a tus notas tantas imágenes y archivos como quieras.';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'El sistema de compras aún no está conectado.';
+
+  @override
+  String get proPlanMonthlyTitle => 'Pro mensual';
+
+  @override
+  String get proPlanMonthlySubtitle => 'Se renueva automáticamente cada mes.';
+
+  @override
+  String get proPlanLifetimeTitle => 'Pro de por vida';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'Pago único, tuyo para siempre.';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / mes';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price pago único';
+  }
+
+  @override
+  String get proPurchaseButton => 'Continuar';
+
+  @override
+  String get proRestorePurchasesButton => 'Restaurar compras';
+
+  @override
+  String get proSubscriptionNote =>
+      'Pro mensual se renueva automáticamente. Puedes cancelarlo cuando quieras desde Google Play.';
+
+  @override
+  String get proActiveTitle => 'Pro activo';
+
+  @override
+  String get proActiveSubtitle => 'Has desbloqueado todas las funciones Pro.';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'No se pudieron cargar los precios. Comprueba tu conexión e inténtalo de nuevo.';
+
+  @override
+  String get proRetryButton => 'Reintentar';
+
+  @override
+  String get proPurchaseSuccessMessage => '¡Bienvenido a Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'Se restauró tu compra. Pro está activo.';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'No se encontró ninguna compra Pro activa para esta cuenta.';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'Tu pago está pendiente. Pro se desbloqueará automáticamente en cuanto se apruebe.';
+
+  @override
+  String get proPurchaseCanceledMessage => 'Compra cancelada.';
+
+  @override
+  String get proPurchaseErrorMessage => 'Algo salió mal. Inténtalo de nuevo.';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'Google Play no está disponible en este momento.';
 }

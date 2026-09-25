@@ -464,6 +464,26 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
               );
             }
 
+            // Pro kısıtlaması: tekrarlayan alarm bir Pro özelliğidir (bkz.
+            // pro_upgrade_screen.dart). Pro değilse "Tekrar yok" dışındaki
+            // tüm seçeneklerin yanında kilit ikonu görünür.
+            PopupMenuItem<String> repeatItem(String value, String label) {
+              final locked = value != 'none' && !appIsPro.value;
+              return PopupMenuItem<String>(
+                value: value,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(label),
+                    if (locked) ...[
+                      const SizedBox(width: 8),
+                      Icon(Icons.lock_outline, size: 18, color: subtleColor),
+                    ],
+                  ],
+                ),
+              );
+            }
+
             return Dialog(
               backgroundColor: dNoteCardColor(context),
               shape: RoundedRectangleBorder(
@@ -583,44 +603,46 @@ mixin NoteListAttachmentMixin on State<NoteListScreen> {
                       icon: Icons.repeat,
                       label: _reminderRepeatLabelTr(context, selectedRepeat),
                       items: [
-                        PopupMenuItem(
-                          value: 'none',
-                          child: Text(
-                            AppLocalizations.of(context)!.reminderRepeatNoneLabel,
-                          ),
+                        repeatItem(
+                          'none',
+                          AppLocalizations.of(context)!.reminderRepeatNoneLabel,
                         ),
-                        PopupMenuItem(
-                          value: 'hourly',
-                          child: Text(
-                            AppLocalizations.of(context)!.reminderRepeatHourlyLabel,
-                          ),
+                        repeatItem(
+                          'hourly',
+                          AppLocalizations.of(context)!.reminderRepeatHourlyLabel,
                         ),
-                        PopupMenuItem(
-                          value: 'daily',
-                          child: Text(
-                            AppLocalizations.of(context)!.reminderRepeatDailyLabel,
-                          ),
+                        repeatItem(
+                          'daily',
+                          AppLocalizations.of(context)!.reminderRepeatDailyLabel,
                         ),
-                        PopupMenuItem(
-                          value: 'weekly',
-                          child: Text(
-                            AppLocalizations.of(context)!.reminderRepeatWeeklyLabel,
-                          ),
+                        repeatItem(
+                          'weekly',
+                          AppLocalizations.of(context)!.reminderRepeatWeeklyLabel,
                         ),
-                        PopupMenuItem(
-                          value: 'monthly',
-                          child: Text(
-                            AppLocalizations.of(context)!.reminderRepeatMonthlyLabel,
-                          ),
+                        repeatItem(
+                          'monthly',
+                          AppLocalizations.of(context)!.reminderRepeatMonthlyLabel,
                         ),
-                        PopupMenuItem(
-                          value: 'yearly',
-                          child: Text(
-                            AppLocalizations.of(context)!.reminderRepeatYearlyLabel,
-                          ),
+                        repeatItem(
+                          'yearly',
+                          AppLocalizations.of(context)!.reminderRepeatYearlyLabel,
                         ),
                       ],
-                      onSelected: (value) {
+                      onSelected: (value) async {
+                        // Pro değilse tekrar seçilemez: dialog açık kalır
+                        // (seçilen tarih/saat kaybolmasın), üstüne Pro'ya
+                        // Yükselt ekranı açılır. Dönüşte kilit ikonları
+                        // (satın alma yapıldıysa) yenilensin diye dialog
+                        // yeniden çizilir.
+                        if (value != 'none' && !appIsPro.value) {
+                          await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const ProUpgradeScreen(),
+                            ),
+                          );
+                          if (context.mounted) setDlgState(() {});
+                          return;
+                        }
                         setDlgState(
                           () => selectedRepeat = value == 'none'
                               ? null

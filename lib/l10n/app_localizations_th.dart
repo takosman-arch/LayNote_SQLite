@@ -2591,4 +2591,142 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get findCloseTooltip => 'ปิดการค้นหา';
+
+  @override
+  String get proUpgradeHeadline => 'เพิ่มขึ้นอีกมากด้วย Layout Pro';
+
+  @override
+  String get proFeatureFolderLockTitle => 'ล็อกโฟลเดอร์';
+
+  @override
+  String get proFeatureFolderLockSubtitle =>
+      'ปกป้องโฟลเดอร์ที่คุณต้องการด้วยรหัสผ่าน';
+
+  @override
+  String get proFeatureSubfoldersTitle => 'โฟลเดอร์ย่อย';
+
+  @override
+  String get proFeatureSubfoldersSubtitle =>
+      'เพิ่มโฟลเดอร์ย่อยได้อีกหนึ่งระดับภายในโฟลเดอร์ของคุณ';
+
+  @override
+  String get proFeatureAccentColorsTitle => 'สีเน้นเพิ่มเติม';
+
+  @override
+  String get proFeatureAccentColorsSubtitle => 'เลือกสีจากจานสีที่ขยายเพิ่ม';
+
+  @override
+  String get proFeatureRecurringAlarmTitle => 'การปลุกซ้ำ';
+
+  @override
+  String get proFeatureRecurringAlarmSubtitle =>
+      'ตั้งการแจ้งเตือนให้ซ้ำทุกวัน ทุกสัปดาห์ และอื่นๆ';
+
+  @override
+  String get proFeaturePinNotesTitle => 'ปักหมุดโน้ตไม่จำกัด';
+
+  @override
+  String get proFeaturePinNotesSubtitle =>
+      'ปักหมุดโน้ตในแผงการแจ้งเตือนได้ตามต้องการ';
+
+  @override
+  String get proFeatureExportTitle => 'ส่งออกเป็น PDF / JPG';
+
+  @override
+  String get proFeatureExportSubtitle => 'ส่งออกโน้ตของคุณเป็น PDF หรือรูปภาพ';
+
+  @override
+  String get proFeatureDocumentScanTitle => 'สแกนเอกสาร';
+
+  @override
+  String get proFeatureDocumentScanSubtitle =>
+      'สแกนเอกสารกระดาษด้วยกล้องแล้วเพิ่มลงในโน้ต';
+
+  @override
+  String get proFeatureSpeechToTextTitle => 'เสียงเป็นข้อความ';
+
+  @override
+  String get proFeatureSpeechToTextSubtitle =>
+      'พูดเพื่อจดโน้ต แล้วระบบจะแปลงเป็นข้อความให้อัตโนมัติ';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsTitle => 'รูปภาพและไฟล์ไม่จำกัด';
+
+  @override
+  String get proFeatureUnlimitedAttachmentsSubtitle =>
+      'แนบรูปภาพและไฟล์ในโน้ตได้ตามต้องการ';
+
+  @override
+  String get proUpgradePurchaseNotReadyMessage =>
+      'ระบบการซื้อยังไม่ได้เชื่อมต่อ';
+
+  @override
+  String get proPlanMonthlyTitle => 'Pro รายเดือน';
+
+  @override
+  String get proPlanMonthlySubtitle => 'ต่ออายุอัตโนมัติทุกเดือน';
+
+  @override
+  String get proPlanLifetimeTitle => 'Pro ตลอดชีพ';
+
+  @override
+  String get proPlanLifetimeSubtitle => 'จ่ายครั้งเดียว เป็นของคุณตลอดไป';
+
+  @override
+  String proPlanMonthlyPrice(String price) {
+    return '$price / เดือน';
+  }
+
+  @override
+  String proPlanLifetimePrice(String price) {
+    return '$price จ่ายครั้งเดียว';
+  }
+
+  @override
+  String get proPurchaseButton => 'ดำเนินการต่อ';
+
+  @override
+  String get proRestorePurchasesButton => 'กู้คืนการซื้อ';
+
+  @override
+  String get proSubscriptionNote =>
+      'Pro รายเดือนต่ออายุอัตโนมัติ คุณยกเลิกได้ทุกเมื่อใน Google Play';
+
+  @override
+  String get proActiveTitle => 'Pro เปิดใช้งานอยู่';
+
+  @override
+  String get proActiveSubtitle => 'คุณปลดล็อกฟีเจอร์ Pro ทั้งหมดแล้ว';
+
+  @override
+  String get proProductsLoadErrorMessage =>
+      'โหลดราคาไม่สำเร็จ ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง';
+
+  @override
+  String get proRetryButton => 'ลองอีกครั้ง';
+
+  @override
+  String get proPurchaseSuccessMessage => 'ยินดีต้อนรับสู่ Pro!';
+
+  @override
+  String get proRestoreSuccessMessage =>
+      'กู้คืนการซื้อของคุณแล้ว Pro เปิดใช้งานอยู่';
+
+  @override
+  String get proRestoreNothingFoundMessage =>
+      'ไม่พบการซื้อ Pro ที่ใช้งานอยู่สำหรับบัญชีนี้';
+
+  @override
+  String get proPurchasePendingMessage =>
+      'การชำระเงินของคุณกำลังรอดำเนินการ Pro จะปลดล็อกอัตโนมัติเมื่อได้รับการอนุมัติ';
+
+  @override
+  String get proPurchaseCanceledMessage => 'ยกเลิกการซื้อแล้ว';
+
+  @override
+  String get proPurchaseErrorMessage => 'เกิดข้อผิดพลาด กรุณาลองอีกครั้ง';
+
+  @override
+  String get proStoreUnavailableMessage =>
+      'ขณะนี้ไม่สามารถใช้งาน Google Play ได้';
 }

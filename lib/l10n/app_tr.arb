@@ -3334,5 +3334,119 @@
   "findNextTooltip": "Sonraki eşleşme",
   "findShowReplaceTooltip": "Değiştir alanını göster",
   "findHideReplaceTooltip": "Değiştir alanını gizle",
-  "findCloseTooltip": "Bul modunu kapat"
+  "findCloseTooltip": "Bul modunu kapat",
+  "proUpgradeHeadline": "Layout Pro ile daha fazlası",
+  "@proUpgradeHeadline": {
+    "description": "Pro’ya Yükselt sayfasının üstündeki başlık metni"
+  },
+  "proFeatureFolderLockTitle": "Klasör Kilitleme",
+  "@proFeatureFolderLockTitle": {
+    "description": "Pro sayfasında klasör kilitleme özelliğinin başlığı"
+  },
+  "proFeatureFolderLockSubtitle": "İstediğin klasörleri şifreyle koruma altına al.",
+  "@proFeatureFolderLockSubtitle": {
+    "description": "Pro sayfasında klasör kilitleme özelliğinin açıklaması"
+  },
+  "proFeatureSubfoldersTitle": "Alt Klasörler",
+  "@proFeatureSubfoldersTitle": {
+    "description": "Pro sayfasında bir kademe alt klasör özelliğinin başlığı"
+  },
+  "proFeatureSubfoldersSubtitle": "Klasörlerinin içine bir kademe alt klasör ekle.",
+  "@proFeatureSubfoldersSubtitle": {
+    "description": "Pro sayfasında bir kademe alt klasör özelliğinin açıklaması"
+  },
+  "proFeatureAccentColorsTitle": "Daha Fazla Vurgu Rengi",
+  "@proFeatureAccentColorsTitle": {
+    "description": "Pro sayfasında ek vurgu renkleri özelliğinin başlığı"
+  },
+  "proFeatureAccentColorsSubtitle": "Genişletilmiş renk paletinden dilediğini seç.",
+  "@proFeatureAccentColorsSubtitle": {
+    "description": "Pro sayfasında ek vurgu renkleri özelliğinin açıklaması"
+  },
+  "proFeatureRecurringAlarmTitle": "Tekrarlanan Alarm",
+  "@proFeatureRecurringAlarmTitle": {
+    "description": "Pro sayfasında tekrarlanan alarm özelliğinin başlığı"
+  },
+  "proFeatureRecurringAlarmSubtitle": "Hatırlatıcılarını günlük/haftalık gibi tekrarlat.",
+  "@proFeatureRecurringAlarmSubtitle": {
+    "description": "Pro sayfasında tekrarlanan alarm özelliğinin açıklaması"
+  },
+  "proFeaturePinNotesTitle": "Sınırsız Not Sabitleme",
+  "@proFeaturePinNotesTitle": {
+    "description": "Pro sayfasında sınırsız not sabitleme özelliğinin başlığı"
+  },
+  "proFeaturePinNotesSubtitle": "Bildirim ekranına istediğin kadar not sabitle.",
+  "@proFeaturePinNotesSubtitle": {
+    "description": "Pro sayfasında sınırsız not sabitleme özelliğinin açıklaması"
+  },
+  "proFeatureExportTitle": "PDF / JPG Dışa Aktarma",
+  "@proFeatureExportTitle": {
+    "description": "Pro sayfasında PDF/JPG dışa aktarma özelliğinin başlığı"
+  },
+  "proFeatureExportSubtitle": "Notlarını PDF veya görsel olarak dışa aktar.",
+  "@proFeatureExportSubtitle": {
+    "description": "Pro sayfasında PDF/JPG dışa aktarma özelliğinin açıklaması"
+  },
+  "proFeatureDocumentScanTitle": "Belge Tarama",
+  "@proFeatureDocumentScanTitle": {
+    "description": "Pro sayfasında belge tarama özelliğinin başlığı"
+  },
+  "proFeatureDocumentScanSubtitle": "Kağıt belgeleri kamerayla tarayıp notuna ekle.",
+  "@proFeatureDocumentScanSubtitle": {
+    "description": "Pro sayfasında belge tarama özelliğinin açıklaması"
+  },
+  "proFeatureSpeechToTextTitle": "Sesi Yazıya Çevirme",
+  "@proFeatureSpeechToTextTitle": {
+    "description": "Pro sayfasında sesi yazıya çevirme özelliğinin başlığı"
+  },
+  "proFeatureSpeechToTextSubtitle": "Konuşarak not al, otomatik olarak metne dönüşsün.",
+  "@proFeatureSpeechToTextSubtitle": {
+    "description": "Pro sayfasında sesi yazıya çevirme özelliğinin açıklaması"
+  },
+  "proFeatureUnlimitedAttachmentsTitle": "Sınırsız Görsel ve Dosya Ekleme",
+  "@proFeatureUnlimitedAttachmentsTitle": {
+    "description": "Pro sayfasında sınırsız görsel/dosya ekleme özelliğinin başlığı"
+  },
+  "proFeatureUnlimitedAttachmentsSubtitle": "Notlarına istediğin kadar görsel/dosya ekle.",
+  "@proFeatureUnlimitedAttachmentsSubtitle": {
+    "description": "Pro sayfasında sınırsız görsel/dosya ekleme özelliğinin açıklaması"
+  },
+  "proUpgradePurchaseNotReadyMessage": "Satın alma altyapısı henüz bağlanmadı.",
+  "@proUpgradePurchaseNotReadyMessage": {
+    "description": "Satın alma altyapısı bağlanmadan Pro’ya Yükselt düğmesine basıldığında gösterilen snackbar mesajı"
+  },
+  "proPlanMonthlyTitle": "Aylık Pro",
+  "proPlanMonthlySubtitle": "Her ay otomatik olarak yenilenir.",
+  "proPlanLifetimeTitle": "Ömür Boyu Pro",
+  "proPlanLifetimeSubtitle": "Tek seferlik ödeme, sonsuza kadar senin.",
+  "proPlanMonthlyPrice": "{price} / ay",
+  "@proPlanMonthlyPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "proPlanLifetimePrice": "{price} (tek seferlik)",
+  "@proPlanLifetimePrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "proPurchaseButton": "Devam Et",
+  "proRestorePurchasesButton": "Satın Almaları Geri Yükle",
+  "proSubscriptionNote": "Aylık Pro her ay otomatik olarak yenilenir. İstediğin zaman Google Play üzerinden iptal edebilirsin.",
+  "proActiveTitle": "Pro Aktif",
+  "proActiveSubtitle": "Tüm Pro özelliklerinin kilidini açtın.",
+  "proProductsLoadErrorMessage": "Fiyatlar yüklenemedi. Bağlantını kontrol edip tekrar dene.",
+  "proRetryButton": "Tekrar Dene",
+  "proPurchaseSuccessMessage": "Pro''ya hoş geldin!",
+  "proRestoreSuccessMessage": "Satın alman geri yüklendi. Pro aktif.",
+  "proRestoreNothingFoundMessage": "Bu hesapta geçerli bir Pro satın alma bulunamadı.",
+  "proPurchasePendingMessage": "Ödemen onay bekliyor. Onaylandığında Pro otomatik olarak açılacak.",
+  "proPurchaseCanceledMessage": "Satın alma iptal edildi.",
+  "proPurchaseErrorMessage": "Bir şeyler ters gitti. Lütfen tekrar dene.",
+  "proStoreUnavailableMessage": "Google Play''e şu an ulaşılamıyor."
 }
