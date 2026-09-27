@@ -3064,20 +3064,23 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       );
                     },
                   ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.volunteer_activism_outlined,
-                      color: appAccentColor.value,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.drawerSupportDevelopmentLabel,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
+                  // "Geliştirmeyi Destekle" şimdilik gizlendi.
+                  // Geri açmak için: false -> true yapmak yeterli.
+                  if (false)
+                    ListTile(
+                      leading: Icon(
+                        Icons.volunteer_activism_outlined,
+                        color: appAccentColor.value,
                       ),
+                      title: Text(
+                        AppLocalizations.of(context)!.drawerSupportDevelopmentLabel,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      onTap: () => Navigator.pop(context),
                     ),
-                    onTap: () => Navigator.pop(context),
-                  ),
                   ListTile(
                     leading: Icon(
                       Icons.rate_review_outlined,
