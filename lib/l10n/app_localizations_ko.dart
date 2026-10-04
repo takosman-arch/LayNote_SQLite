@@ -2611,13 +2611,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get proUpgradePurchaseNotReadyMessage => '구매 기능이 아직 연결되지 않았습니다.';
 
   @override
-  String get proPlanMonthlyTitle => '월간 Pro';
+  String get proPlanMonthlyTitle => '월간';
 
   @override
   String get proPlanMonthlySubtitle => '매달 자동으로 갱신됩니다.';
 
   @override
-  String get proPlanLifetimeTitle => '평생 Pro';
+  String get proPlanLifetimeTitle => '평생';
 
   @override
   String get proPlanLifetimeSubtitle => '한 번 결제로 평생 이용하세요.';
@@ -2629,7 +2629,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price (평생 1회 결제)';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => '연간';
+
+  @override
+  String get proPlanYearlySubtitle => '매년 자동으로 갱신됩니다.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / 년';
   }
 
   @override
@@ -2677,4 +2688,25 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get proStoreUnavailableMessage => '현재 Google Play를 사용할 수 없습니다.';
+
+  @override
+  String get proFeatureCloudBackupTitle => '클라우드 백업';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      '메모를 Google Drive에 수동 또는 자동으로 백업하세요';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Google Drive 백업은 Pro 기능입니다. Drive에 있는 기존 백업은 계속 복원할 수 있습니다.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Drive 백업에는 Pro가 필요하여 로컬 백업만 생성되었습니다.';
+
+  @override
+  String get autoBackupSettingsDriveProNote => 'Google Drive 백업은 Pro 기능입니다.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Pro로 업그레이드';
 }

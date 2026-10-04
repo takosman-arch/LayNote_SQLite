@@ -2627,7 +2627,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price（買い切り）';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => '年額プラン';
+
+  @override
+  String get proPlanYearlySubtitle => '毎年自動的に更新されます。';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price（年額）';
   }
 
   @override
@@ -2671,4 +2682,26 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get proStoreUnavailableMessage => '現在Google Playを利用できません。';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'クラウドバックアップ';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'ノートをGoogleドライブに手動または自動でバックアップします';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Googleドライブへのバックアップは Pro 限定の機能です。ドライブにある既存のバックアップは引き続き復元できます。';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'ドライブへのバックアップには Pro が必要です。ローカルバックアップのみ作成しました。';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Googleドライブへのバックアップは Pro 限定の機能です。';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Proにアップグレード';
 }

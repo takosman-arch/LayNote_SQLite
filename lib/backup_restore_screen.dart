@@ -334,6 +334,19 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   // Oluştur" ile BİREBİR aynı fonksiyonu kullanır — iki ayrı yedekleme
   // mantığı yoktur, sadece oluşan dosyanın gideceği yer farklıdır.
   Future<void> _backupToDrive() async {
+    // PRO KONTROLÜ: Drive'a yedekleme Pro'ya özeldir. Kontrol en başta
+    // yapılır; böylece ücretsiz kullanıcı için Google giriş/bağlanma
+    // akışı hiç açılmaz. Geri yükleme için Google'a bağlanmak ise
+    // kilitli DEĞİLDİR (Drive kartındaki "Bağlan" butonu doğrudan
+    // _connectGoogleDrive'ı çağırır).
+    if (!appIsPro.value) {
+      _showSnack(AppLocalizations.of(context)!.proCloudBackupRequiredMessage);
+      await Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const ProUpgradeScreen()),
+      );
+      return;
+    }
+
     if (_busy) return;
 
     if (!await _ensurePermission()) return;

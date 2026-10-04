@@ -2667,13 +2667,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'The purchase system is not connected yet.';
 
   @override
-  String get proPlanMonthlyTitle => 'Monthly Pro';
+  String get proPlanMonthlyTitle => 'Monthly';
 
   @override
   String get proPlanMonthlySubtitle => 'Renews automatically every month.';
 
   @override
-  String get proPlanLifetimeTitle => 'Lifetime Pro';
+  String get proPlanLifetimeTitle => 'Lifetime';
 
   @override
   String get proPlanLifetimeSubtitle => 'One-time payment, yours forever.';
@@ -2685,7 +2685,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price one-time';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'Yearly';
+
+  @override
+  String get proPlanYearlySubtitle => 'Renews automatically every year.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / year';
   }
 
   @override
@@ -2736,4 +2747,26 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get proStoreUnavailableMessage =>
       'Google Play is currently unavailable.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Cloud backup';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Back up your notes to Google Drive manually or automatically';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Backing up to Google Drive is a Pro feature. You can still restore your existing Drive backups.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Drive backup requires Pro; only a local backup was made.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Google Drive backup is a Pro feature.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Upgrade to Pro';
 }

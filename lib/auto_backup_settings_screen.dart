@@ -25,6 +25,10 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
   bool _driveConnected = false;
   bool _driveConnecting = false;
 
+  // Bulut yedekleme Pro'ya özeldir. Pro değilse Drive/Her İkisi segmentleri
+  // kilitli kalır ve "Bağlan" butonu yerine yükseltme yönlendirmesi çıkar.
+  bool _isPro = false;
+
   @override
   void initState() {
     super.initState();
@@ -50,20 +54,31 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
       _lastRunMessage = lastMessage;
     }
 
+    // Pro durumu (ön planda appIsPro güvenilir; main() içinde runApp'ten
+    // önce DB'deki is_pro değeriyle doldurulur).
+    final isPro = appIsPro.value;
+
     // Google Drive bağlantısını kontrol et. isSignedIn anlık (senkron)
     // durumu yansıtır ama uygulama yeni açıldıysa henüz güncellenmemiş
     // olabilir; bu yüzden gerekirse sessiz girişi de deneriz.
-    var driveConnected = GoogleDriveHelper.instance.isSignedIn;
-    if (!driveConnected) {
-      driveConnected = await GoogleDriveHelper.instance.trySilentSignIn();
+    // Pro değilse Drive zaten kullanılamayacağı için gereksiz Google
+    // isteği yapılmaz.
+    var driveConnected = false;
+    if (isPro) {
+      driveConnected = GoogleDriveHelper.instance.isSignedIn;
+      if (!driveConnected) {
+        driveConnected = await GoogleDriveHelper.instance.trySilentSignIn();
+      }
     }
 
-    // Kayıtlı hedef Drive/Her İkisi ama bağlantı yoksa (ör. oturum
-    // kapatılmış/token geçersiz), kullanıcının soluk/tıklanamaz bir
-    // segmentte "seçili" görünmesini önlemek için hedefi Yerel'e çekip
-    // kaydediyoruz.
+    // Kayıtlı hedef Drive/Her İkisi ama kullanıcı Pro değil ya da bağlantı
+    // yoksa (ör. oturum kapatılmış/token geçersiz), kullanıcının
+    // soluk/tıklanamaz bir segmentte "seçili" görünmesini önlemek için
+    // hedefi Yerel'e çekip kaydediyoruz. Pro için bu, arka plan
+    // görevindeki düşürmenin ayarlar ekranı tarafıdır; ayrıca periyodik
+    // görevin ağ kısıtı da yeni hedefe göre yeniden kurulur.
     var effectiveTarget = target;
-    if (!driveConnected && target != AutoBackupTarget.local) {
+    if ((!isPro || !driveConnected) && target != AutoBackupTarget.local) {
       effectiveTarget = AutoBackupTarget.local;
       await _backupService.setTarget(effectiveTarget);
       await _backupService.rescheduleFromSavedSettings();
@@ -75,11 +90,24 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
       _frequencyHours = frequency;
       _wifiOnly = wifiOnly;
       _driveConnected = driveConnected;
+      _isPro = isPro;
       _isLoading = false;
     });
   }
 
+  // Pro yükseltme ekranını açar; dönüşte (satın alma yapılmış olabilir)
+  // ayarlar yeniden yüklenir, böylece segmentler açılır. Hedef otomatik
+  // seçilmez, kullanıcı elle tekrar seçer.
+  Future<void> _openProUpgrade() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const ProUpgradeScreen()),
+    );
+    if (!mounted) return;
+    await _loadSettings();
+  }
+
   Future<void> _connectGoogleDrive() async {
+    if (!_isPro) return;
     setState(() => _driveConnecting = true);
     final success = await GoogleDriveHelper.instance.signIn();
     if (!mounted) return;
@@ -179,12 +207,12 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
                   ButtonSegment(
                     value: AutoBackupTarget.drive,
                     label: Text(AppLocalizations.of(context)!.autoBackupSettingsTargetDriveOption),
-                    enabled: _driveConnected,
+                    enabled: _isPro && _driveConnected,
                   ),
                   ButtonSegment(
                     value: AutoBackupTarget.both,
                     label: Text(AppLocalizations.of(context)!.autoBackupSettingsTargetBothOption),
-                    enabled: _driveConnected,
+                    enabled: _isPro && _driveConnected,
                   ),
                 ],
                 selected: {_target},
@@ -195,9 +223,34 @@ class _AutoBackupSettingsScreenState extends State<AutoBackupSettingsScreen> {
               ),
             ),
 
-            // Drive bağlı değilse: neden pasif olduğunu açıklayan kısa not
-            // ve bağlanmayı tetikleyen buton.
-            if (!_driveConnected)
+            // Pro değilse: Drive seçeneklerinin neden kilitli olduğunu
+            // açıklayan not ve yükseltme ekranına götüren buton.
+            if (!_isPro)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        AppLocalizations.of(context)!.autoBackupSettingsDriveProNote,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: dNoteTextColor(context).withValues(alpha: 0.6),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: _openProUpgrade,
+                      child: Text(AppLocalizations.of(context)!.autoBackupSettingsUpgradeButton),
+                    ),
+                  ],
+                ),
+              ),
+
+            // Pro ama Drive bağlı değilse: neden pasif olduğunu açıklayan
+            // kısa not ve bağlanmayı tetikleyen buton.
+            if (_isPro && !_driveConnected)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                 child: Row(

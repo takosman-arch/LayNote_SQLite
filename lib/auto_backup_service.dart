@@ -403,12 +403,30 @@ class AutoBackupService {
       // engellemesin.
     }
 
-    final target = await getTarget();
+    var target = await getTarget();
     final maxLocalBackups = await getMaxLocalBackups();
     final l10n = await _resolveL10n();
 
     final messages = <String>[];
     var anySuccess = false;
+
+    // PRO KONTROLÜ (bulut yedekleme Pro'ya özeldir).
+    // Bu görev arka plan isolate'inde çalışır; main isolate'teki appIsPro
+    // (ValueNotifier) burada YOKTUR. Bu yüzden Pro durumu DB'deki 'is_pro'
+    // önbelleğinden okunur (bkz. pro_service.dart -> _setPro, main.dart).
+    // Pro değilse ve kayıtlı hedef Drive içeriyorsa hedef KALICI olarak
+    // 'local'e çekilir; böylece hem bu çalışmada hem sonraki çalışmalarda
+    // Drive'a hiç istek gitmez ve kullanıcı en azından yerel yedek alır.
+    // Kullanıcı ayarlar ekranını hiç açmasa bile bu koruma işler.
+    var driveSkippedForPro = false;
+    if (target != AutoBackupTarget.local) {
+      final isPro = await DBHelper.instance.getIsPro();
+      if (!isPro) {
+        target = AutoBackupTarget.local;
+        driveSkippedForPro = true;
+        await setTarget(target);
+      }
+    }
 
     // 2. Yerel yedekleme (target: local veya both)
     if (target == AutoBackupTarget.local || target == AutoBackupTarget.both) {
@@ -420,6 +438,12 @@ class AutoBackupService {
       } catch (e) {
         messages.add(l10n.autoBackupLocalFailedMessage(e.toString()));
       }
+    }
+
+    // Pro olmayan kullanıcı için Drive adımı atlandıysa durum kartında
+    // nedenini göster.
+    if (driveSkippedForPro) {
+      messages.add(l10n.autoBackupDriveRequiresProMessage);
     }
 
     // 3. Google Drive yedekleme (target: drive veya both)

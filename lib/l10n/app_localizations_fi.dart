@@ -2688,14 +2688,14 @@ class AppLocalizationsFi extends AppLocalizations {
       'Ostojärjestelmää ei ole vielä yhdistetty.';
 
   @override
-  String get proPlanMonthlyTitle => 'Kuukausittainen Pro';
+  String get proPlanMonthlyTitle => 'Kuukausittainen';
 
   @override
   String get proPlanMonthlySubtitle =>
       'Uusiutuu automaattisesti joka kuukausi.';
 
   @override
-  String get proPlanLifetimeTitle => 'Elinikäinen Pro';
+  String get proPlanLifetimeTitle => 'Elinikäinen';
 
   @override
   String get proPlanLifetimeSubtitle => 'Kertamaksu, sinun ikuisesti.';
@@ -2707,7 +2707,18 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price kertamaksu';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'Vuosittainen';
+
+  @override
+  String get proPlanYearlySubtitle => 'Uusiutuu automaattisesti joka vuosi.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / vuosi';
   }
 
   @override
@@ -2757,4 +2768,26 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String get proStoreUnavailableMessage =>
       'Google Play ei ole tällä hetkellä käytettävissä.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Pilvivarmuuskopiointi';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Varmuuskopioi muistiinpanosi Google Driveen manuaalisesti tai automaattisesti';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Varmuuskopiointi Google Driveen on Pro-ominaisuus. Voit edelleen palauttaa olemassa olevat Drive-varmuuskopiosi.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Drive-varmuuskopiointi vaatii Pro-version; vain paikallinen varmuuskopio luotiin.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Varmuuskopiointi Google Driveen on Pro-ominaisuus.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Päivitä Pro-versioon';
 }

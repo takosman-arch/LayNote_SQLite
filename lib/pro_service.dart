@@ -2,8 +2,9 @@ part of 'main.dart';
 
 // ═══════════════════════════════════════════════════════════════════
 // PRO SERVİSİ (Google Play Billing)
-// Freemium modeli: iki plan vardır.
+// Freemium modeli: üç plan vardır.
 //   - Aylık Pro   -> abonelik (Play Console'da "Abonelikler" altında)
+//   - Yıllık Pro  -> abonelik (Play Console'da "Abonelikler" altında)
 //   - Ömür boyu   -> tek seferlik ürün (Play Console'da "Uygulama içi
 //                    ürünler" altında)
 // Ürün kimlikleri Play Console'da BİREBİR bu sabitlerle tanımlanmalıdır.
@@ -23,9 +24,11 @@ part of 'main.dart';
 // ═══════════════════════════════════════════════════════════════════
 
 const String kProMonthlyProductId = 'layout_pro_monthly';
+const String kProYearlyProductId = 'layout_pro_yearly';
 const String kProLifetimeProductId = 'layout_pro_lifetime';
 const Set<String> kProProductIds = {
   kProMonthlyProductId,
+  kProYearlyProductId,
   kProLifetimeProductId,
 };
 

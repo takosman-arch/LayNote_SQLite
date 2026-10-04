@@ -2681,13 +2681,13 @@ class AppLocalizationsDa extends AppLocalizations {
       'Købssystemet er ikke tilsluttet endnu.';
 
   @override
-  String get proPlanMonthlyTitle => 'Månedlig Pro';
+  String get proPlanMonthlyTitle => 'Månedlig';
 
   @override
   String get proPlanMonthlySubtitle => 'Fornyes automatisk hver måned.';
 
   @override
-  String get proPlanLifetimeTitle => 'Livstids Pro';
+  String get proPlanLifetimeTitle => 'Livstid';
 
   @override
   String get proPlanLifetimeSubtitle => 'Engangsbetaling, din for altid.';
@@ -2699,7 +2699,18 @@ class AppLocalizationsDa extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price engangsbeløb';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'Årlig';
+
+  @override
+  String get proPlanYearlySubtitle => 'Fornyes automatisk hvert år.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / år';
   }
 
   @override
@@ -2749,4 +2760,26 @@ class AppLocalizationsDa extends AppLocalizations {
   @override
   String get proStoreUnavailableMessage =>
       'Google Play er i øjeblikket utilgængelig.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Skysikkerhedskopiering';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Sikkerhedskopiér dine noter til Google Drive manuelt eller automatisk';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Sikkerhedskopiering til Google Drive er en Pro-funktion. Du kan stadig gendanne dine eksisterende sikkerhedskopier fra Drive.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Sikkerhedskopiering til Drive kræver Pro; der blev kun oprettet en lokal sikkerhedskopi.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Sikkerhedskopiering til Google Drive er en Pro-funktion.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Opgrader til Pro';
 }

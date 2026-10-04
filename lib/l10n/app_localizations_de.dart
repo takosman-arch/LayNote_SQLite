@@ -2700,14 +2700,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'Das Kaufsystem ist noch nicht angebunden.';
 
   @override
-  String get proPlanMonthlyTitle => 'Monatliches Pro';
+  String get proPlanMonthlyTitle => 'Monatlich';
 
   @override
   String get proPlanMonthlySubtitle =>
       'Verlängert sich automatisch jeden Monat.';
 
   @override
-  String get proPlanLifetimeTitle => 'Lebenslanges Pro';
+  String get proPlanLifetimeTitle => 'Lebenslang';
 
   @override
   String get proPlanLifetimeSubtitle => 'Einmalige Zahlung, für immer deins.';
@@ -2719,7 +2719,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price einmalig';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'Jährlich';
+
+  @override
+  String get proPlanYearlySubtitle => 'Verlängert sich automatisch jedes Jahr.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / Jahr';
   }
 
   @override
@@ -2770,4 +2781,26 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get proStoreUnavailableMessage =>
       'Google Play ist derzeit nicht verfügbar.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Cloud-Sicherung';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Sichere deine Notizen manuell oder automatisch in Google Drive';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Die Sicherung in Google Drive ist eine Pro-Funktion. Deine vorhandenen Drive-Sicherungen kannst du weiterhin wiederherstellen.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Die Drive-Sicherung erfordert Pro; es wurde nur eine lokale Sicherung erstellt.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Die Sicherung in Google Drive ist eine Pro-Funktion.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Auf Pro upgraden';
 }

@@ -1,0 +1,86 @@
+﻿lib\auto_backup_service.dart:414: // Bu görev arka plan isolate'inde çalışır; main isolate'teki appIsPro
+lib\auto_backup_service.dart:423: final isPro = await DBHelper.instance.getIsPro();
+lib\auto_backup_service.dart:424: if (!isPro) {
+lib\auto_backup_settings_screen.dart:30: bool _isPro = false;
+lib\auto_backup_settings_screen.dart:57: // Pro durumu (ön planda appIsPro güvenilir; main() içinde runApp'ten
+lib\auto_backup_settings_screen.dart:59: final isPro = appIsPro.value;
+lib\auto_backup_settings_screen.dart:67: if (isPro) {
+lib\auto_backup_settings_screen.dart:81: if ((!isPro || !driveConnected) && target != AutoBackupTarget.local) {
+lib\auto_backup_settings_screen.dart:93: _isPro = isPro;
+lib\auto_backup_settings_screen.dart:103: MaterialPageRoute(builder: (_) => const ProUpgradeScreen()),
+lib\auto_backup_settings_screen.dart:110: if (!_isPro) return;
+lib\auto_backup_settings_screen.dart:210: enabled: _isPro && _driveConnected,
+lib\auto_backup_settings_screen.dart:215: enabled: _isPro && _driveConnected,
+lib\auto_backup_settings_screen.dart:228: if (!_isPro)
+lib\auto_backup_settings_screen.dart:253: if (_isPro && !_driveConnected)
+lib\backup_helper.dart:52: ..remove(DBHelper.isProSettingKey);
+lib\backup_helper.dart:495: if (entry.key == DBHelper.isProSettingKey) continue;
+lib\backup_restore_screen.dart:342: if (!appIsPro.value) {
+lib\backup_restore_screen.dart:345: MaterialPageRoute(builder: (_) => const ProUpgradeScreen()),
+lib\db_helper.dart:546: // edilir. Uygulama genelinde okuma için appIsPro (theme.dart) kullanılır;
+lib\db_helper.dart:548: static const String isProSettingKey = 'is_pro';
+lib\db_helper.dart:551: final raw = (await getAllSettings())[isProSettingKey];
+lib\db_helper.dart:556: await setSetting(isProSettingKey, value ? 'true' : 'false');
+lib\main.dart:169: appIsPro.value = settings[DBHelper.isProSettingKey] == 'true';
+lib\main.dart:196: // Pro durumu: Play'e sorup önbelleği (appIsPro) sessizce günceller.
+lib\main.dart:200: // pro_service.dart -> ProService.init).
+lib\main.dart:201: await ProService.instance.init();
+lib\note_list_actions_mixin.dart:624: final isProUser = appIsPro.value;
+lib\note_list_actions_mixin.dart:635: if (!isProUser) ...[
+lib\note_list_actions_mixin.dart:657: if (!isProUser) ...[
+lib\note_list_actions_mixin.dart:691: !appIsPro.value) {
+lib\note_list_actions_mixin.dart:692: _goToProUpgradeScreen();
+lib\note_list_actions_mixin.dart:1445: // appIsPro tekrar false olursa, kullanıcı Pro'ya dönene kadar bu klasöre
+lib\note_list_actions_mixin.dart:1447: void _goToProUpgradeScreen() {
+lib\note_list_actions_mixin.dart:1449: MaterialPageRoute(builder: (_) => const ProUpgradeScreen()),
+lib\note_list_actions_mixin.dart:1457: if (!appIsPro.value) {
+lib\note_list_actions_mixin.dart:1458: _goToProUpgradeScreen();
+lib\note_list_actions_mixin.dart:1545: if (!isEditing && parentCategory != null && !appIsPro.value) {
+lib\note_list_actions_mixin.dart:1549: _goToProUpgradeScreen();
+lib\note_list_actions_mixin.dart:2555: if (!appIsPro.value) {
+lib\note_list_actions_mixin.dart:2556: _goToProUpgradeScreen();
+lib\note_list_actions_mixin.dart:2707: if (!appIsPro.value && pinnedCount >= 1) {
+lib\note_list_actions_mixin.dart:2708: _goToProUpgradeScreen();
+lib\note_list_attachment_mixin.dart:471: final locked = value != 'none' && !appIsPro.value;
+lib\note_list_attachment_mixin.dart:637: if (value != 'none' && !appIsPro.value) {
+lib\note_list_attachment_mixin.dart:640: builder: (_) => const ProUpgradeScreen(),
+lib\note_list_build_mixin.dart:3062: builder: (_) => const ProUpgradeScreen(),
+lib\note_list_data_category_mixin.dart:727: if (!isLocked && !appIsPro.value) {
+lib\note_list_data_category_mixin.dart:731: builder: (_) => const ProUpgradeScreen(),
+lib\note_list_note_dialog_mixin.dart:4477: if (!appIsPro.value) {
+lib\note_list_note_dialog_mixin.dart:4482: builder: (_) => const ProUpgradeScreen(),
+lib\note_list_note_dialog_mixin.dart:4641: builder: (_) => const ProUpgradeScreen(),
+lib\note_list_note_dialog_mixin.dart:4754: if (!appIsPro.value) {
+lib\note_list_note_dialog_mixin.dart:4757: builder: (_) => const ProUpgradeScreen(),
+lib\note_list_note_dialog_mixin.dart:6665: if (!notePinned && !appIsPro.value) {
+lib\note_list_note_dialog_mixin.dart:6677: builder: (_) => const ProUpgradeScreen(),
+lib\note_list_note_dialog_mixin.dart:10470: if (!appIsPro.value &&
+lib\note_list_note_dialog_mixin.dart:10476: const ProUpgradeScreen(),
+lib\pro_service.dart:46: class ProService extends ChangeNotifier {
+lib\pro_service.dart:47: ProService._();
+lib\pro_service.dart:48: static final ProService instance = ProService._();
+lib\pro_service.dart:309: if (appIsPro.value != value) appIsPro.value = value;
+lib\pro_upgrade_screen.dart:5: // Gerçek satın alma akışına bağlıdır (bkz. pro_service.dart -> ProService).
+lib\pro_upgrade_screen.dart:7: //     (ProService.products), kullanıcının para biriminde hazırdır.
+lib\pro_upgrade_screen.dart:8: //   - "Devam Et" seçili planı satın alma akışına gönderir (ProService.buy).
+lib\pro_upgrade_screen.dart:9: //   - "Satın Almaları Geri Yükle" ProService.refreshEntitlement() çağırır.
+lib\pro_upgrade_screen.dart:10: //   - ProService.events akışındaki sonuçlar (başarı, bekleyen ödeme, iptal,
+lib\pro_upgrade_screen.dart:12: //   - Pro zaten aktifse (appIsPro) plan kartları yerine "Pro aktif" kartı
+lib\pro_upgrade_screen.dart:31: class ProUpgradeScreen extends StatefulWidget {
+lib\pro_upgrade_screen.dart:32: const ProUpgradeScreen({super.key});
+lib\pro_upgrade_screen.dart:35: State<ProUpgradeScreen> createState() => _ProUpgradeScreenState();
+lib\pro_upgrade_screen.dart:38: class _ProUpgradeScreenState extends State<ProUpgradeScreen> {
+lib\pro_upgrade_screen.dart:39: final ProService _pro = ProService.instance;
+lib\pro_upgrade_screen.dart:59: // ProService'ten gelen sonuçları kullanıcıya bildirir.
+lib\pro_upgrade_screen.dart:178: // Hem ProService (ürünler, satın alma/geri yükleme durumu) hem de
+lib\pro_upgrade_screen.dart:179: // appIsPro değiştiğinde ekran yeniden çizilir.
+lib\pro_upgrade_screen.dart:181: listenable: Listenable.merge([_pro, appIsPro]),
+lib\pro_upgrade_screen.dart:189: final isPro = appIsPro.value;
+lib\pro_upgrade_screen.dart:221: if (isPro)
+lib\pro_upgrade_screen.dart:294: if (!isPro)
+lib\settings_page.dart:986: if (appIsPro.value) return false;
+lib\settings_page.dart:1014: builder: (_) => const ProUpgradeScreen(),
+lib\theme.dart:109: // akışı) appIsPro.value = true yapılıp DBHelper.instance.setIsPro(true)
+lib\theme.dart:111: // "if (!appIsPro.value) { Pro ekranına yönlendir }" şeklinde kontrol edilir.
+lib\theme.dart:113: // ValueListenableBuilder<bool>(valueListenable: appIsPro, ...) kullanılabilir.
+lib\theme.dart:115: final ValueNotifier<bool> appIsPro = ValueNotifier<bool>(false);

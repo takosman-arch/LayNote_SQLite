@@ -2713,14 +2713,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'O sistema de compras ainda não está ligado.';
 
   @override
-  String get proPlanMonthlyTitle => 'Pro mensal';
+  String get proPlanMonthlyTitle => 'Mensal';
 
   @override
   String get proPlanMonthlySubtitle =>
       'Renova-se automaticamente todos os meses.';
 
   @override
-  String get proPlanLifetimeTitle => 'Pro vitalício';
+  String get proPlanLifetimeTitle => 'Vitalício';
 
   @override
   String get proPlanLifetimeSubtitle => 'Pagamento único, seu para sempre.';
@@ -2732,7 +2732,19 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price pagamento único';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'Anual';
+
+  @override
+  String get proPlanYearlySubtitle =>
+      'Renova-se automaticamente todos os anos.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / ano';
   }
 
   @override
@@ -2782,4 +2794,26 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get proStoreUnavailableMessage =>
       'O Google Play está atualmente indisponível.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Cópia de segurança na nuvem';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Faça cópias de segurança das suas notas no Google Drive, manual ou automaticamente';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'A cópia de segurança no Google Drive é uma funcionalidade Pro. Continua a poder restaurar as suas cópias de segurança existentes do Drive.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'A cópia de segurança no Drive requer Pro; foi criada apenas uma cópia local.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'A cópia de segurança no Google Drive é uma funcionalidade Pro.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Atualizar para Pro';
 }

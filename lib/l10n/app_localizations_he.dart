@@ -2643,13 +2643,13 @@ class AppLocalizationsHe extends AppLocalizations {
       'מערכת הרכישות עדיין לא מחוברת.';
 
   @override
-  String get proPlanMonthlyTitle => 'Pro חודשי';
+  String get proPlanMonthlyTitle => 'חודשי';
 
   @override
   String get proPlanMonthlySubtitle => 'מתחדש אוטומטית מדי חודש.';
 
   @override
-  String get proPlanLifetimeTitle => 'Pro לכל החיים';
+  String get proPlanLifetimeTitle => 'לכל החיים';
 
   @override
   String get proPlanLifetimeSubtitle => 'תשלום חד-פעמי, שלך לתמיד.';
@@ -2661,7 +2661,18 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price תשלום חד-פעמי';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'שנתי';
+
+  @override
+  String get proPlanYearlySubtitle => 'מתחדש אוטומטית מדי שנה.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / שנה';
   }
 
   @override
@@ -2709,4 +2720,26 @@ class AppLocalizationsHe extends AppLocalizations {
 
   @override
   String get proStoreUnavailableMessage => 'Google Play אינו זמין כרגע.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'גיבוי בענן';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'גבה את הפתקיות שלך ל-Google Drive באופן ידני או אוטומטי';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'גיבוי ל-Google Drive הוא תכונת Pro. עדיין אפשר לשחזר את הגיבויים הקיימים שלך ב-Drive.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'גיבוי ל-Drive דורש Pro; נוצר גיבוי מקומי בלבד.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'גיבוי ל-Google Drive הוא תכונת Pro.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'שדרג ל-Pro';
 }

@@ -2683,13 +2683,13 @@ class AppLocalizationsId extends AppLocalizations {
       'Sistem pembelian belum terhubung.';
 
   @override
-  String get proPlanMonthlyTitle => 'Pro Bulanan';
+  String get proPlanMonthlyTitle => 'Bulanan';
 
   @override
   String get proPlanMonthlySubtitle => 'Diperpanjang otomatis setiap bulan.';
 
   @override
-  String get proPlanLifetimeTitle => 'Pro Seumur Hidup';
+  String get proPlanLifetimeTitle => 'Seumur Hidup';
 
   @override
   String get proPlanLifetimeSubtitle => 'Bayar sekali, milik Anda selamanya.';
@@ -2701,7 +2701,18 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price sekali bayar';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'Tahunan';
+
+  @override
+  String get proPlanYearlySubtitle => 'Diperpanjang otomatis setiap tahun.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / tahun';
   }
 
   @override
@@ -2751,4 +2762,26 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get proStoreUnavailableMessage =>
       'Google Play saat ini tidak tersedia.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Cadangan cloud';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Cadangkan catatan Anda ke Google Drive secara manual atau otomatis';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Pencadangan ke Google Drive adalah fitur Pro. Anda masih dapat memulihkan cadangan Drive yang sudah ada.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Cadangan Drive memerlukan Pro; hanya cadangan lokal yang dibuat.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Pencadangan ke Google Drive adalah fitur Pro.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Tingkatkan ke Pro';
 }

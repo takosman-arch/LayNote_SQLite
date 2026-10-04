@@ -2683,13 +2683,13 @@ class AppLocalizationsCs extends AppLocalizations {
       'Systém nákupů zatím není připojen.';
 
   @override
-  String get proPlanMonthlyTitle => 'Měsíční Pro';
+  String get proPlanMonthlyTitle => 'Měsíční';
 
   @override
   String get proPlanMonthlySubtitle => 'Automaticky se obnovuje každý měsíc.';
 
   @override
-  String get proPlanLifetimeTitle => 'Doživotní Pro';
+  String get proPlanLifetimeTitle => 'Doživotní';
 
   @override
   String get proPlanLifetimeSubtitle => 'Jednorázová platba, navždy vaše.';
@@ -2701,7 +2701,18 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price jednorázově';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'Roční';
+
+  @override
+  String get proPlanYearlySubtitle => 'Automaticky se obnovuje každý rok.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / rok';
   }
 
   @override
@@ -2752,4 +2763,26 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get proStoreUnavailableMessage =>
       'Google Play je momentálně nedostupný.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Cloudová záloha';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Zálohujte poznámky na Google Disk ručně nebo automaticky';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Zálohování na Google Disk je funkce Pro. Stávající zálohy na Disku můžete stále obnovit.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Záloha na Disk vyžaduje Pro; byla vytvořena pouze místní záloha.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Zálohování na Google Disk je funkce Pro.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Přejít na Pro';
 }

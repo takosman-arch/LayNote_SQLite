@@ -2699,13 +2699,13 @@ class AppLocalizationsPl extends AppLocalizations {
       'System zakupów nie jest jeszcze połączony.';
 
   @override
-  String get proPlanMonthlyTitle => 'Pro miesięczne';
+  String get proPlanMonthlyTitle => 'Miesięczne';
 
   @override
   String get proPlanMonthlySubtitle => 'Odnawia się automatycznie co miesiąc.';
 
   @override
-  String get proPlanLifetimeTitle => 'Pro dożywotnie';
+  String get proPlanLifetimeTitle => 'Dożywotnie';
 
   @override
   String get proPlanLifetimeSubtitle =>
@@ -2718,7 +2718,18 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price jednorazowo';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'Roczne';
+
+  @override
+  String get proPlanYearlySubtitle => 'Odnawia się automatycznie co rok.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / rok';
   }
 
   @override
@@ -2768,4 +2779,26 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get proStoreUnavailableMessage =>
       'Google Play jest obecnie niedostępny.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Kopia w chmurze';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Twórz kopie zapasowe notatek na Google Drive ręcznie lub automatycznie';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Tworzenie kopii zapasowych na Google Drive to funkcja Pro. Nadal możesz przywracać istniejące kopie z Drive.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Kopia na Drive wymaga Pro; utworzono tylko kopię lokalną.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Kopia zapasowa na Google Drive to funkcja Pro.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Przejdź na Pro';
 }

@@ -2664,13 +2664,13 @@ class AppLocalizationsTr extends AppLocalizations {
       'Satın alma altyapısı henüz bağlanmadı.';
 
   @override
-  String get proPlanMonthlyTitle => 'Aylık Pro';
+  String get proPlanMonthlyTitle => 'Aylık';
 
   @override
   String get proPlanMonthlySubtitle => 'Her ay otomatik olarak yenilenir.';
 
   @override
-  String get proPlanLifetimeTitle => 'Ömür Boyu Pro';
+  String get proPlanLifetimeTitle => 'Ömür Boyu';
 
   @override
   String get proPlanLifetimeSubtitle =>
@@ -2683,7 +2683,18 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price (tek seferlik)';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'Yıllık';
+
+  @override
+  String get proPlanYearlySubtitle => 'Her yıl otomatik olarak yenilenir.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / yıl';
   }
 
   @override
@@ -2733,4 +2744,26 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get proStoreUnavailableMessage => 'Google Play\'e şu an ulaşılamıyor.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Bulut yedekleme';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Notlarını Google Drive\'a manuel veya otomatik yedekle';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Google Drive\'a yedekleme Pro\'ya özeldir. Mevcut Drive yedeklerini geri yüklemeye devam edebilirsin.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Drive yedeği Pro gerektirir; yalnızca yerel yedek alındı.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Google Drive yedeklemesi Pro\'ya özeldir.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Pro\'ya Yükselt';
 }

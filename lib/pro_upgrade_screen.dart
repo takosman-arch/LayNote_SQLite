@@ -78,6 +78,11 @@ class _ProUpgradeScreenState extends State<ProUpgradeScreen> {
   // artık const değil; context/l10n her build'de okunur.
   List<_ProFeature> _features(AppLocalizations l10n) => [
         _ProFeature(
+          icon: Icons.cloud_upload_outlined,
+          title: l10n.proFeatureCloudBackupTitle,
+          subtitle: l10n.proFeatureCloudBackupSubtitle,
+        ),
+        _ProFeature(
           icon: Icons.lock_outline,
           title: l10n.proFeatureFolderLockTitle,
           subtitle: l10n.proFeatureFolderLockSubtitle,
@@ -124,10 +129,15 @@ class _ProUpgradeScreenState extends State<ProUpgradeScreen> {
         ),
       ];
 
-  // Play'den gelen planlar, ekranda gösterim sırasıyla (aylık, ömür boyu).
+  // Play'den gelen planlar, ekranda gösterim sırasıyla
+  // (aylık, yıllık, ömür boyu).
   List<iap.ProductDetails> _availablePlans() {
     final plans = <iap.ProductDetails>[];
-    for (final id in const [kProMonthlyProductId, kProLifetimeProductId]) {
+    for (final id in const [
+      kProMonthlyProductId,
+      kProYearlyProductId,
+      kProLifetimeProductId,
+    ]) {
       final d = _pro.products[id];
       if (d != null) plans.add(d);
     }
@@ -429,14 +439,23 @@ class _ProUpgradeScreenState extends State<ProUpgradeScreen> {
     required bool selected,
     required bool enabled,
   }) {
-    final isMonthly = d.id == kProMonthlyProductId;
-    final title =
-        isMonthly ? l10n.proPlanMonthlyTitle : l10n.proPlanLifetimeTitle;
-    final subtitle =
-        isMonthly ? l10n.proPlanMonthlySubtitle : l10n.proPlanLifetimeSubtitle;
-    final price = isMonthly
-        ? l10n.proPlanMonthlyPrice(d.price)
-        : l10n.proPlanLifetimePrice(d.price);
+    final (title, subtitle, price) = switch (d.id) {
+      kProMonthlyProductId => (
+          l10n.proPlanMonthlyTitle,
+          l10n.proPlanMonthlySubtitle,
+          l10n.proPlanMonthlyPrice(d.price),
+        ),
+      kProYearlyProductId => (
+          l10n.proPlanYearlyTitle,
+          l10n.proPlanYearlySubtitle,
+          l10n.proPlanYearlyPrice(d.price),
+        ),
+      _ => (
+          l10n.proPlanLifetimeTitle,
+          l10n.proPlanLifetimeSubtitle,
+          l10n.proPlanLifetimePrice(d.price),
+        ),
+    };
     final accent = appAccentColor.value;
 
     return Padding(

@@ -4983,7 +4983,7 @@ abstract class AppLocalizations {
   /// No description provided for @proPlanMonthlyTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Aylık Pro'**
+  /// **'Aylık'**
   String get proPlanMonthlyTitle;
 
   /// No description provided for @proPlanMonthlySubtitle.
@@ -4995,7 +4995,7 @@ abstract class AppLocalizations {
   /// No description provided for @proPlanLifetimeTitle.
   ///
   /// In tr, this message translates to:
-  /// **'Ömür Boyu Pro'**
+  /// **'Ömür Boyu'**
   String get proPlanLifetimeTitle;
 
   /// No description provided for @proPlanLifetimeSubtitle.
@@ -5013,8 +5013,26 @@ abstract class AppLocalizations {
   /// No description provided for @proPlanLifetimePrice.
   ///
   /// In tr, this message translates to:
-  /// **'{price} (tek seferlik)'**
+  /// **'{price}'**
   String proPlanLifetimePrice(String price);
+
+  /// No description provided for @proPlanYearlyTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yıllık'**
+  String get proPlanYearlyTitle;
+
+  /// No description provided for @proPlanYearlySubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Her yıl otomatik olarak yenilenir.'**
+  String get proPlanYearlySubtitle;
+
+  /// No description provided for @proPlanYearlyPrice.
+  ///
+  /// In tr, this message translates to:
+  /// **'{price} / yıl'**
+  String proPlanYearlyPrice(String price);
 
   /// No description provided for @proPurchaseButton.
   ///
@@ -5099,6 +5117,42 @@ abstract class AppLocalizations {
   /// In tr, this message translates to:
   /// **'Google Play\'\'e şu an ulaşılamıyor.'**
   String get proStoreUnavailableMessage;
+
+  /// Pro özellik listesi: Google Drive''a manuel ve otomatik yedekleme başlığı
+  ///
+  /// In tr, this message translates to:
+  /// **'Bulut yedekleme'**
+  String get proFeatureCloudBackupTitle;
+
+  /// Pro özellik listesi: bulut yedekleme alt açıklaması
+  ///
+  /// In tr, this message translates to:
+  /// **'Notlarını Google Drive\'\'a manuel veya otomatik yedekle'**
+  String get proFeatureCloudBackupSubtitle;
+
+  /// Ücretsiz kullanıcı Drive yedeklemesini denediğinde gösterilen bilgi mesajı
+  ///
+  /// In tr, this message translates to:
+  /// **'Google Drive\'\'a yedekleme Pro\'\'ya özeldir. Mevcut Drive yedeklerini geri yüklemeye devam edebilirsin.'**
+  String get proCloudBackupRequiredMessage;
+
+  /// Otomatik yedekleme durum kartında, Pro olmayan kullanıcı için Drive adımı atlandığında gösterilen not
+  ///
+  /// In tr, this message translates to:
+  /// **'Drive yedeği Pro gerektirir; yalnızca yerel yedek alındı.'**
+  String get autoBackupDriveRequiresProMessage;
+
+  /// Otomatik yedekleme ayarları: Drive seçenekleri kilitliyken gösterilen kısa not
+  ///
+  /// In tr, this message translates to:
+  /// **'Google Drive yedeklemesi Pro\'\'ya özeldir.'**
+  String get autoBackupSettingsDriveProNote;
+
+  /// Otomatik yedekleme ayarları: Pro yükseltme ekranına götüren buton
+  ///
+  /// In tr, this message translates to:
+  /// **'Pro\'\'ya Yükselt'**
+  String get autoBackupSettingsUpgradeButton;
 }
 
 class _AppLocalizationsDelegate

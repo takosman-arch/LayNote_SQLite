@@ -2694,14 +2694,14 @@ class AppLocalizationsRu extends AppLocalizations {
       'Система покупок пока не подключена.';
 
   @override
-  String get proPlanMonthlyTitle => 'Pro на месяц';
+  String get proPlanMonthlyTitle => 'На месяц';
 
   @override
   String get proPlanMonthlySubtitle =>
       'Автоматически продлевается каждый месяц.';
 
   @override
-  String get proPlanLifetimeTitle => 'Pro навсегда';
+  String get proPlanLifetimeTitle => 'Навсегда';
 
   @override
   String get proPlanLifetimeSubtitle => 'Разовый платёж — навсегда ваше.';
@@ -2713,7 +2713,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price разовый платёж';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'На год';
+
+  @override
+  String get proPlanYearlySubtitle => 'Автоматически продлевается каждый год.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / год';
   }
 
   @override
@@ -2763,4 +2774,26 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get proStoreUnavailableMessage => 'Google Play сейчас недоступен.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Облачное резервное копирование';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Копируйте заметки в Google Drive вручную или автоматически';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Резервное копирование в Google Drive доступно в Pro. Существующие резервные копии на Drive по-прежнему можно восстановить.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Для копирования на Drive нужен Pro; создана только локальная копия.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Резервное копирование в Google Drive доступно в Pro.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Перейти на Pro';
 }

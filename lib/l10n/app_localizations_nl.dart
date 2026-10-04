@@ -2700,13 +2700,13 @@ class AppLocalizationsNl extends AppLocalizations {
       'Het aankoopsysteem is nog niet gekoppeld.';
 
   @override
-  String get proPlanMonthlyTitle => 'Maandelijkse Pro';
+  String get proPlanMonthlyTitle => 'Maandelijks';
 
   @override
   String get proPlanMonthlySubtitle => 'Wordt elke maand automatisch verlengd.';
 
   @override
-  String get proPlanLifetimeTitle => 'Levenslange Pro';
+  String get proPlanLifetimeTitle => 'Levenslang';
 
   @override
   String get proPlanLifetimeSubtitle =>
@@ -2719,7 +2719,18 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price eenmalig';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'Jaarlijks';
+
+  @override
+  String get proPlanYearlySubtitle => 'Wordt elk jaar automatisch verlengd.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / jaar';
   }
 
   @override
@@ -2770,4 +2781,26 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get proStoreUnavailableMessage =>
       'Google Play is momenteel niet beschikbaar.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Cloudback-up';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Maak handmatig of automatisch een back-up van uw notities naar Google Drive';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Back-ups maken naar Google Drive is een Pro-functie. U kunt bestaande Drive-back-ups nog steeds herstellen.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Drive-back-up vereist Pro; er is alleen een lokale back-up gemaakt.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Back-up naar Google Drive is een Pro-functie.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Upgraden naar Pro';
 }

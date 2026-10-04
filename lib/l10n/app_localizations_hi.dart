@@ -2681,13 +2681,13 @@ class AppLocalizationsHi extends AppLocalizations {
       'खरीदारी की सुविधा अभी जोड़ी नहीं गई है।';
 
   @override
-  String get proPlanMonthlyTitle => 'मासिक प्रो';
+  String get proPlanMonthlyTitle => 'मासिक';
 
   @override
   String get proPlanMonthlySubtitle => 'हर महीने अपने आप रिन्यू होता है।';
 
   @override
-  String get proPlanLifetimeTitle => 'लाइफटाइम प्रो';
+  String get proPlanLifetimeTitle => 'लाइफटाइम';
 
   @override
   String get proPlanLifetimeSubtitle =>
@@ -2700,7 +2700,18 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price एकमुश्त';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'वार्षिक';
+
+  @override
+  String get proPlanYearlySubtitle => 'हर साल अपने आप रिन्यू होता है।';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / वर्ष';
   }
 
   @override
@@ -2751,4 +2762,26 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get proStoreUnavailableMessage =>
       'Google Play फ़िलहाल उपलब्ध नहीं है।';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'क्लाउड बैकअप';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'अपने नोट को Google Drive में मैन्युअल या स्वचालित रूप से बैकअप करें';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Google Drive में बैकअप लेना प्रो की सुविधा है। आप अपने मौजूदा Drive बैकअप अब भी रीस्टोर कर सकते हैं।';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Drive बैकअप के लिए प्रो ज़रूरी है; केवल लोकल बैकअप लिया गया।';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Google Drive बैकअप प्रो की सुविधा है।';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'प्रो में अपग्रेड करें';
 }

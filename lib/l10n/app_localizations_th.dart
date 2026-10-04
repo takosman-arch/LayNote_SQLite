@@ -2661,13 +2661,13 @@ class AppLocalizationsTh extends AppLocalizations {
       'ระบบการซื้อยังไม่ได้เชื่อมต่อ';
 
   @override
-  String get proPlanMonthlyTitle => 'Pro รายเดือน';
+  String get proPlanMonthlyTitle => 'รายเดือน';
 
   @override
   String get proPlanMonthlySubtitle => 'ต่ออายุอัตโนมัติทุกเดือน';
 
   @override
-  String get proPlanLifetimeTitle => 'Pro ตลอดชีพ';
+  String get proPlanLifetimeTitle => 'ตลอดชีพ';
 
   @override
   String get proPlanLifetimeSubtitle => 'จ่ายครั้งเดียว เป็นของคุณตลอดไป';
@@ -2679,7 +2679,18 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price จ่ายครั้งเดียว';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'รายปี';
+
+  @override
+  String get proPlanYearlySubtitle => 'ต่ออายุอัตโนมัติทุกปี';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / ปี';
   }
 
   @override
@@ -2729,4 +2740,26 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get proStoreUnavailableMessage =>
       'ขณะนี้ไม่สามารถใช้งาน Google Play ได้';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'สำรองข้อมูลบนคลาวด์';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'สำรองโน้ตของคุณไปยัง Google Drive ด้วยตนเองหรืออัตโนมัติ';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'การสำรองข้อมูลไปยัง Google Drive เป็นฟีเจอร์ Pro คุณยังคงกู้คืนข้อมูลสำรองที่มีอยู่ใน Drive ได้';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'การสำรองข้อมูลไปยัง Drive ต้องใช้ Pro จึงสำรองไว้ในเครื่องเท่านั้น';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'การสำรองข้อมูลไปยัง Google Drive เป็นฟีเจอร์ Pro';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'อัปเกรดเป็น Pro';
 }

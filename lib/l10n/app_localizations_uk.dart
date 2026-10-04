@@ -2697,13 +2697,13 @@ class AppLocalizationsUk extends AppLocalizations {
       'Систему покупок ще не підключено.';
 
   @override
-  String get proPlanMonthlyTitle => 'Щомісячний Pro';
+  String get proPlanMonthlyTitle => 'Щомісячний';
 
   @override
   String get proPlanMonthlySubtitle => 'Автоматично поновлюється щомісяця.';
 
   @override
-  String get proPlanLifetimeTitle => 'Pro назавжди';
+  String get proPlanLifetimeTitle => 'Назавжди';
 
   @override
   String get proPlanLifetimeSubtitle => 'Одноразовий платіж — назавжди ваше.';
@@ -2715,7 +2715,18 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price одноразово';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'Щорічний';
+
+  @override
+  String get proPlanYearlySubtitle => 'Автоматично поновлюється щороку.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / рік';
   }
 
   @override
@@ -2764,4 +2775,26 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get proStoreUnavailableMessage => 'Google Play зараз недоступний.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Хмарне резервне копіювання';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Копіюйте нотатки в Google Drive вручну або автоматично';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Резервне копіювання в Google Drive доступне в Pro. Наявні резервні копії на Drive, як і раніше, можна відновити.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Для копіювання на Drive потрібен Pro; створено лише локальну копію.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Резервне копіювання в Google Drive доступне в Pro.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Оновити до Pro';
 }

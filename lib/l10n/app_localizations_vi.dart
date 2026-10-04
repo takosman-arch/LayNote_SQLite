@@ -2682,13 +2682,13 @@ class AppLocalizationsVi extends AppLocalizations {
       'Hệ thống mua hàng chưa được kết nối.';
 
   @override
-  String get proPlanMonthlyTitle => 'Pro hàng tháng';
+  String get proPlanMonthlyTitle => 'Hàng tháng';
 
   @override
   String get proPlanMonthlySubtitle => 'Tự động gia hạn mỗi tháng.';
 
   @override
-  String get proPlanLifetimeTitle => 'Pro trọn đời';
+  String get proPlanLifetimeTitle => 'Trọn đời';
 
   @override
   String get proPlanLifetimeSubtitle => 'Thanh toán một lần, sở hữu mãi mãi.';
@@ -2700,7 +2700,18 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price một lần';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'Hàng năm';
+
+  @override
+  String get proPlanYearlySubtitle => 'Tự động gia hạn mỗi năm.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / năm';
   }
 
   @override
@@ -2749,4 +2760,26 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get proStoreUnavailableMessage => 'Google Play hiện không khả dụng.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Sao lưu đám mây';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Sao lưu ghi chú của bạn lên Google Drive thủ công hoặc tự động';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Sao lưu lên Google Drive là tính năng Pro. Bạn vẫn có thể khôi phục các bản sao lưu hiện có trên Drive.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Sao lưu lên Drive cần Pro; chỉ có bản sao lưu cục bộ được tạo.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Sao lưu lên Google Drive là tính năng Pro.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Nâng cấp lên Pro';
 }

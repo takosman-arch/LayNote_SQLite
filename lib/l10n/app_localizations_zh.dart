@@ -2578,13 +2578,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get proUpgradePurchaseNotReadyMessage => '购买功能尚未接入。';
 
   @override
-  String get proPlanMonthlyTitle => '包月专业版';
+  String get proPlanMonthlyTitle => '包月';
 
   @override
   String get proPlanMonthlySubtitle => '每月自动续订。';
 
   @override
-  String get proPlanLifetimeTitle => '永久专业版';
+  String get proPlanLifetimeTitle => '永久';
 
   @override
   String get proPlanLifetimeSubtitle => '一次付费，永久拥有。';
@@ -2596,7 +2596,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price（一次性）';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => '包年';
+
+  @override
+  String get proPlanYearlySubtitle => '每年自动续订。';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price/年';
   }
 
   @override
@@ -2640,4 +2651,23 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get proStoreUnavailableMessage => '目前无法连接 Google Play。';
+
+  @override
+  String get proFeatureCloudBackupTitle => '云备份';
+
+  @override
+  String get proFeatureCloudBackupSubtitle => '手动或自动将笔记备份到 Google Drive';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      '备份到 Google Drive 是专业版功能。你仍然可以恢复 Drive 上已有的备份。';
+
+  @override
+  String get autoBackupDriveRequiresProMessage => '备份到 Drive 需要专业版；仅创建了本地备份。';
+
+  @override
+  String get autoBackupSettingsDriveProNote => '备份到 Google Drive 是专业版功能。';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => '升级到专业版';
 }

@@ -5,6 +5,11 @@
     <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <!-- Uygulama içi satın alma (in-app products / abonelik) yapabilmek
+         için Google Play Billing'in gerektirdiği izin. Bu olmadan Play
+         Console'da "Tek sefer" veya "Abonelik" ürünleri oluşturulamıyor
+         ve satın alma akışı çalışmıyor. -->
+    <uses-permission android:name="com.android.vending.BILLING"/>
     <!-- Not içine ses kaydı ekleyebilmek için mikrofon izni -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <!-- Not içine video çekip ekleyebilmek için kamera izni -->

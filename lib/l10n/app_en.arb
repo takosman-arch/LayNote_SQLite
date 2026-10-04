@@ -1256,9 +1256,9 @@
   "proFeatureUnlimitedAttachmentsTitle": "Unlimited Images and Files",
   "proFeatureUnlimitedAttachmentsSubtitle": "Attach as many images and files to your notes as you like.",
   "proUpgradePurchaseNotReadyMessage": "The purchase system is not connected yet.",
-  "proPlanMonthlyTitle": "Monthly Pro",
+  "proPlanMonthlyTitle": "Monthly",
   "proPlanMonthlySubtitle": "Renews automatically every month.",
-  "proPlanLifetimeTitle": "Lifetime Pro",
+  "proPlanLifetimeTitle": "Lifetime",
   "proPlanLifetimeSubtitle": "One-time payment, yours forever.",
   "proPlanMonthlyPrice": "{price} / month",
   "@proPlanMonthlyPrice": {
@@ -1268,8 +1268,18 @@
       }
     }
   },
-  "proPlanLifetimePrice": "{price} one-time",
+  "proPlanLifetimePrice": "{price}",
   "@proPlanLifetimePrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "proPlanYearlyTitle": "Yearly",
+  "proPlanYearlySubtitle": "Renews automatically every year.",
+  "proPlanYearlyPrice": "{price} / year",
+  "@proPlanYearlyPrice": {
     "placeholders": {
       "price": {
         "type": "String"
@@ -1289,5 +1299,29 @@
   "proPurchasePendingMessage": "Your payment is pending. Pro will unlock automatically once it’s approved.",
   "proPurchaseCanceledMessage": "Purchase canceled.",
   "proPurchaseErrorMessage": "Something went wrong. Please try again.",
-  "proStoreUnavailableMessage": "Google Play is currently unavailable."
+  "proStoreUnavailableMessage": "Google Play is currently unavailable.",
+  "proFeatureCloudBackupTitle": "Cloud backup",
+  "@proFeatureCloudBackupTitle": {
+    "description": "Pro feature list: manual and automatic Google Drive backup title"
+  },
+  "proFeatureCloudBackupSubtitle": "Back up your notes to Google Drive manually or automatically",
+  "@proFeatureCloudBackupSubtitle": {
+    "description": "Pro feature list: cloud backup subtitle"
+  },
+  "proCloudBackupRequiredMessage": "Backing up to Google Drive is a Pro feature. You can still restore your existing Drive backups.",
+  "@proCloudBackupRequiredMessage": {
+    "description": "Info message shown when a free user tries to back up to Drive"
+  },
+  "autoBackupDriveRequiresProMessage": "Drive backup requires Pro; only a local backup was made.",
+  "@autoBackupDriveRequiresProMessage": {
+    "description": "Note in the auto-backup status card when the Drive step is skipped for a non-Pro user"
+  },
+  "autoBackupSettingsDriveProNote": "Google Drive backup is a Pro feature.",
+  "@autoBackupSettingsDriveProNote": {
+    "description": "Auto-backup settings: short note shown while Drive options are locked"
+  },
+  "autoBackupSettingsUpgradeButton": "Upgrade to Pro",
+  "@autoBackupSettingsUpgradeButton": {
+    "description": "Auto-backup settings: button that opens the Pro upgrade screen"
+  }
 }

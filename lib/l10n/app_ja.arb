@@ -1243,7 +1243,10 @@
   "proPlanLifetimeTitle": "永久プラン",
   "proPlanLifetimeSubtitle": "一度の支払いで、ずっとあなたのものに。",
   "proPlanMonthlyPrice": "{price}（月額）",
-  "proPlanLifetimePrice": "{price}（買い切り）",
+  "proPlanLifetimePrice": "{price}",
+  "proPlanYearlyTitle": "年額プラン",
+  "proPlanYearlySubtitle": "毎年自動的に更新されます。",
+  "proPlanYearlyPrice": "{price}（年額）",
   "proPurchaseButton": "続ける",
   "proRestorePurchasesButton": "購入を復元",
   "proSubscriptionNote": "月額Proは自動更新されます。Google Playからいつでも解約できます。",
@@ -1257,5 +1260,11 @@
   "proPurchasePendingMessage": "お支払いは承認待ちです。承認され次第、自動的にProが有効になります。",
   "proPurchaseCanceledMessage": "購入をキャンセルしました。",
   "proPurchaseErrorMessage": "エラーが発生しました。もう一度お試しください。",
-  "proStoreUnavailableMessage": "現在Google Playを利用できません。"
+  "proStoreUnavailableMessage": "現在Google Playを利用できません。",
+  "proFeatureCloudBackupTitle": "クラウドバックアップ",
+  "proFeatureCloudBackupSubtitle": "ノートをGoogleドライブに手動または自動でバックアップします",
+  "proCloudBackupRequiredMessage": "Googleドライブへのバックアップは Pro 限定の機能です。ドライブにある既存のバックアップは引き続き復元できます。",
+  "autoBackupDriveRequiresProMessage": "ドライブへのバックアップには Pro が必要です。ローカルバックアップのみ作成しました。",
+  "autoBackupSettingsDriveProNote": "Googleドライブへのバックアップは Pro 限定の機能です。",
+  "autoBackupSettingsUpgradeButton": "Proにアップグレード"
 }

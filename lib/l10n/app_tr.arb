@@ -3415,9 +3415,9 @@
   "@proUpgradePurchaseNotReadyMessage": {
     "description": "Satın alma altyapısı bağlanmadan Pro’ya Yükselt düğmesine basıldığında gösterilen snackbar mesajı"
   },
-  "proPlanMonthlyTitle": "Aylık Pro",
+  "proPlanMonthlyTitle": "Aylık",
   "proPlanMonthlySubtitle": "Her ay otomatik olarak yenilenir.",
-  "proPlanLifetimeTitle": "Ömür Boyu Pro",
+  "proPlanLifetimeTitle": "Ömür Boyu",
   "proPlanLifetimeSubtitle": "Tek seferlik ödeme, sonsuza kadar senin.",
   "proPlanMonthlyPrice": "{price} / ay",
   "@proPlanMonthlyPrice": {
@@ -3427,8 +3427,18 @@
       }
     }
   },
-  "proPlanLifetimePrice": "{price} (tek seferlik)",
+  "proPlanLifetimePrice": "{price}",
   "@proPlanLifetimePrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "proPlanYearlyTitle": "Yıllık",
+  "proPlanYearlySubtitle": "Her yıl otomatik olarak yenilenir.",
+  "proPlanYearlyPrice": "{price} / yıl",
+  "@proPlanYearlyPrice": {
     "placeholders": {
       "price": {
         "type": "String"
@@ -3448,5 +3458,29 @@
   "proPurchasePendingMessage": "Ödemen onay bekliyor. Onaylandığında Pro otomatik olarak açılacak.",
   "proPurchaseCanceledMessage": "Satın alma iptal edildi.",
   "proPurchaseErrorMessage": "Bir şeyler ters gitti. Lütfen tekrar dene.",
-  "proStoreUnavailableMessage": "Google Play''e şu an ulaşılamıyor."
+  "proStoreUnavailableMessage": "Google Play''e şu an ulaşılamıyor.",
+  "proFeatureCloudBackupTitle": "Bulut yedekleme",
+  "@proFeatureCloudBackupTitle": {
+    "description": "Pro özellik listesi: Google Drive''a manuel ve otomatik yedekleme başlığı"
+  },
+  "proFeatureCloudBackupSubtitle": "Notlarını Google Drive''a manuel veya otomatik yedekle",
+  "@proFeatureCloudBackupSubtitle": {
+    "description": "Pro özellik listesi: bulut yedekleme alt açıklaması"
+  },
+  "proCloudBackupRequiredMessage": "Google Drive''a yedekleme Pro''ya özeldir. Mevcut Drive yedeklerini geri yüklemeye devam edebilirsin.",
+  "@proCloudBackupRequiredMessage": {
+    "description": "Ücretsiz kullanıcı Drive yedeklemesini denediğinde gösterilen bilgi mesajı"
+  },
+  "autoBackupDriveRequiresProMessage": "Drive yedeği Pro gerektirir; yalnızca yerel yedek alındı.",
+  "@autoBackupDriveRequiresProMessage": {
+    "description": "Otomatik yedekleme durum kartında, Pro olmayan kullanıcı için Drive adımı atlandığında gösterilen not"
+  },
+  "autoBackupSettingsDriveProNote": "Google Drive yedeklemesi Pro''ya özeldir.",
+  "@autoBackupSettingsDriveProNote": {
+    "description": "Otomatik yedekleme ayarları: Drive seçenekleri kilitliyken gösterilen kısa not"
+  },
+  "autoBackupSettingsUpgradeButton": "Pro''ya Yükselt",
+  "@autoBackupSettingsUpgradeButton": {
+    "description": "Otomatik yedekleme ayarları: Pro yükseltme ekranına götüren buton"
+  }
 }

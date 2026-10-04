@@ -2661,13 +2661,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get proUpgradePurchaseNotReadyMessage => 'نظام الشراء غير متصل بعد.';
 
   @override
-  String get proPlanMonthlyTitle => 'Pro الشهري';
+  String get proPlanMonthlyTitle => 'الشهري';
 
   @override
   String get proPlanMonthlySubtitle => 'يتجدد تلقائيًا كل شهر.';
 
   @override
-  String get proPlanLifetimeTitle => 'Pro مدى الحياة';
+  String get proPlanLifetimeTitle => 'مدى الحياة';
 
   @override
   String get proPlanLifetimeSubtitle => 'دفعة واحدة، ملكك إلى الأبد.';
@@ -2679,7 +2679,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price دفعة واحدة';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'السنوي';
+
+  @override
+  String get proPlanYearlySubtitle => 'يتجدد تلقائيًا كل عام.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price سنويًا';
   }
 
   @override
@@ -2729,4 +2740,26 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get proStoreUnavailableMessage =>
       'تعذّر الوصول إلى Google Play حاليًا.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'النسخ الاحتياطي السحابي';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'انسخ ملاحظاتك احتياطيًا إلى Google Drive يدويًا أو تلقائيًا';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'النسخ الاحتياطي إلى Google Drive ميزة حصرية لـ Pro. لا يزال بإمكانك استعادة نسخك الاحتياطية الحالية على Drive.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'النسخ الاحتياطي إلى Drive يتطلب Pro؛ تم إنشاء نسخة احتياطية محلية فقط.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'النسخ الاحتياطي إلى Google Drive ميزة حصرية لـ Pro.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'الترقية إلى Pro';
 }

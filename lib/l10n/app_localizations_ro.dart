@@ -2689,14 +2689,14 @@ class AppLocalizationsRo extends AppLocalizations {
       'Sistemul de achiziții nu este încă conectat.';
 
   @override
-  String get proPlanMonthlyTitle => 'Pro lunar';
+  String get proPlanMonthlyTitle => 'Lunar';
 
   @override
   String get proPlanMonthlySubtitle =>
       'Se reînnoiește automat în fiecare lună.';
 
   @override
-  String get proPlanLifetimeTitle => 'Pro pe viață';
+  String get proPlanLifetimeTitle => 'Pe viață';
 
   @override
   String get proPlanLifetimeSubtitle =>
@@ -2709,7 +2709,18 @@ class AppLocalizationsRo extends AppLocalizations {
 
   @override
   String proPlanLifetimePrice(String price) {
-    return '$price plată unică';
+    return '$price';
+  }
+
+  @override
+  String get proPlanYearlyTitle => 'Anual';
+
+  @override
+  String get proPlanYearlySubtitle => 'Se reînnoiește automat în fiecare an.';
+
+  @override
+  String proPlanYearlyPrice(String price) {
+    return '$price / an';
   }
 
   @override
@@ -2760,4 +2771,26 @@ class AppLocalizationsRo extends AppLocalizations {
   @override
   String get proStoreUnavailableMessage =>
       'Google Play este momentan indisponibil.';
+
+  @override
+  String get proFeatureCloudBackupTitle => 'Backup în cloud';
+
+  @override
+  String get proFeatureCloudBackupSubtitle =>
+      'Faceți backup notițelor în Google Drive manual sau automat';
+
+  @override
+  String get proCloudBackupRequiredMessage =>
+      'Backup-ul în Google Drive este o funcție Pro. Puteți restaura în continuare backup-urile existente din Drive.';
+
+  @override
+  String get autoBackupDriveRequiresProMessage =>
+      'Backup-ul în Drive necesită Pro; a fost creat doar un backup local.';
+
+  @override
+  String get autoBackupSettingsDriveProNote =>
+      'Backup-ul în Google Drive este o funcție Pro.';
+
+  @override
+  String get autoBackupSettingsUpgradeButton => 'Actualizare la Pro';
 }
