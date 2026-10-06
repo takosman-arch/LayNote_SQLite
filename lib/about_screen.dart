@@ -31,6 +31,29 @@ class AboutScreen extends StatefulWidget {
 class _AboutScreenState extends State<AboutScreen> {
   PackageInfo? _packageInfo;
 
+  // Build numarası varsayılan olarak gizlidir; sürüm yazısına 3 kez
+  // dokununca görünür. Durum yalnızca bu ekranın State'inde tutulur, bu
+  // yüzden ekrandan çıkıp tekrar girince yeniden gizlenir.
+  int _versionTapCount = 0;
+  bool _showBuildNumber = false;
+
+  void _onVersionTap() {
+    if (_showBuildNumber) return;
+    _versionTapCount++;
+    if (_versionTapCount >= 3) {
+      setState(() => _showBuildNumber = true);
+    }
+  }
+
+  // "v1.0.0" veya (3 dokunuştan sonra) "v1.0.0 (7)".
+  String? get _versionText {
+    final info = _packageInfo;
+    if (info == null) return null;
+    return _showBuildNumber
+        ? 'v${info.version} (${info.buildNumber})'
+        : 'v${info.version}';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -120,9 +143,7 @@ class _AboutScreenState extends State<AboutScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final versionLabel = _packageInfo == null
-        ? null
-        : 'v${_packageInfo!.version} (${_packageInfo!.buildNumber})';
+    final versionLabel = _versionText;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsSectionAbout)),
@@ -182,13 +203,10 @@ class _AboutScreenState extends State<AboutScreen> {
                 iconColor: Theme.of(context).primaryColor,
                 title: l10n.aboutLicensesTitle,
                 onTap: () {
-                  final info = _packageInfo;
                   showLicensePage(
                     context: context,
                     applicationName: 'Layout',
-                    applicationVersion: info != null
-                        ? 'v${info.version} (${info.buildNumber})'
-                        : null,
+                    applicationVersion: _versionText,
                     applicationIcon: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Icon(
@@ -219,9 +237,19 @@ class _AboutScreenState extends State<AboutScreen> {
 
             const SizedBox(height: 24),
             Center(
-              child: Text(
-                versionLabel ?? l10n.settingsAboutVersionLoading,
-                style: TextStyle(color: Colors.grey[500], fontSize: 12),
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: _onVersionTap,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
+                  child: Text(
+                    versionLabel ?? l10n.settingsAboutVersionLoading,
+                    style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 24),

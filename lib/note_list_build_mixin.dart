@@ -3024,46 +3024,6 @@ mixin NoteListBuildMixin on State<NoteListScreen> {
                       );
                     },
                   ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.workspace_premium_outlined,
-                      color: appAccentColor.value,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.drawerUpgradeToProLabel,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    trailing: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: appAccentColor.value,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        AppLocalizations.of(context)!.drawerProBadgeLabel,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const ProUpgradeScreen(),
-                        ),
-                      );
-                    },
-                  ),
                   // "Geliştirmeyi Destekle" şimdilik gizlendi.
                   // Geri açmak için: false -> true yapmak yeterli.
                   if (false)
